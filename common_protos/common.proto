@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+// This is a wrapper packet every SCAII module must send through the router
+message ScaiiPacket {
+    // The protobuf-encoded packet that will be routed
+    bytes msg = 1;
+    // The target module, valid targets include: frontend, backend
+    string module = 2;
+}
