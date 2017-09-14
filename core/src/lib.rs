@@ -5,7 +5,7 @@ extern crate libc;
 use libc::{c_char, size_t};
 
 // Don't publicly expose our internal structure to FFI
-mod internal;
+pub(crate) mod internal;
 
 pub struct Environment;
 
