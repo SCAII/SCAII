@@ -11,6 +11,7 @@ crate-type = ["cdylib"]
 libloading="0.4.1"
 protobuf = { version = "1.4.1", features = ["with-bytes"] }
 bytes = "0.4"
+libc = "0.2"
 
 [build-dependencies]
 protoc-rust = "1.4.1"
