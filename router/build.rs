@@ -5,12 +5,14 @@ fn main() {
     use glob::glob;
 
     protoc_rust::run(protoc_rust::Args {
-        out_dir: "src/internal",
+        out_dir: "src/internal/protos",
         input: &["../common_protos/common.proto"],
         includes: &["../common_protos"],
     }).expect("Protoc Error");
 
     // Make our protobuf file a reason to recompile
+    // (See http://doc.crates.io/build-script.html for more info 
+    // on outputs)
     println!("cargo:rerun-if-changed=../common_protos/common.proto");
     
     // Unfortunately, rerun-if-changed overrides Cargo's default handling, which
