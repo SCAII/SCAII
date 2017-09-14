@@ -7,21 +7,21 @@ use libc::{c_char, size_t};
 // Don't publicly expose our internal structure to FFI
 mod internal;
 
-struct Environment;
+pub struct Environment;
 
 /// Given a configuration string, we can configure a new environment on which
 /// all other functions will be run. The resulting environment is allocated on the heap.
 #[no_mangle]
-fn new_environment(cfg_str: *const c_char, cfg_len: size_t) -> *mut Environment {
+pub fn new_environment(cfg_str: *const c_char, cfg_len: size_t) -> *mut Environment {
     use std::mem::ManuallyDrop;
 
-    let mut env = ManuallyDrop::new(Box::new(Environment {}));
+    let env = ManuallyDrop::new(Box::new(Environment {}));
     Box::into_raw(ManuallyDrop::into_inner(env))
 }
 
 /// Destroys the created environment, this should be called to avoid memory leaks.
 #[no_mangle]
-fn destroy_environment(env: *mut Environment) {
+pub fn destroy_environment(env: *mut Environment) {
     use std::mem::ManuallyDrop;
 
     unsafe {
@@ -32,7 +32,7 @@ fn destroy_environment(env: *mut Environment) {
 
 /// Changes the configuration of an existing environment using a configuration string.
 #[no_mangle]
-fn cfg_environment(env: *mut Environment, cfg_str: *const c_char, cfg_len: size_t) {}
+pub fn cfg_environment(env: *mut Environment, cfg_str: *const c_char, cfg_len: size_t) {}
 
 /// The `act` function routes an action message to the underlying environment and
 /// returns the size of the next message in the message queue (which will usually
@@ -52,7 +52,7 @@ fn cfg_environment(env: *mut Environment, cfg_str: *const c_char, cfg_len: size_
 /// except in the case where the backend is asynchronous, in which case it will **only**
 /// process messages from that specific asynchronous channel.
 #[no_mangle]
-fn act(env: *mut Environment, action_msg: *mut c_char, msg_len: size_t) -> size_t {
+pub fn act(env: *mut Environment, action_msg: *mut c_char, msg_len: size_t) -> size_t {
     0
 }
 
@@ -70,7 +70,7 @@ fn act(env: *mut Environment, action_msg: *mut c_char, msg_len: size_t) -> size_
 ///     3. This will cause messages from asynchronous modules (e.g. visualization) to process
 ///         similar to a call to `queued_messages`.
 #[no_mangle]
-fn act_and_route(
+pub fn act_and_route(
     env: *mut Environment,
     action_msg: *mut c_char,
     action_msg_len: size_t,
@@ -91,7 +91,7 @@ fn act_and_route(
 /// in its initialization, this will return a randomized state. If you wish to
 /// reset to a deterministic state (i.e. for rollout) please see `serialize`.
 #[no_mangle]
-fn reset(env: *mut Environment) -> size_t {
+pub fn reset(env: *mut Environment) -> size_t {
     0
 }
 
@@ -100,7 +100,7 @@ fn reset(env: *mut Environment) -> size_t {
 /// If non-diverging serialization is not supported, this will return 0 and
 /// append an error message to the message queue.
 #[no_mangle]
-fn serialize_size(env: *mut Environment) -> size_t {
+pub fn serialize_size(env: *mut Environment) -> size_t {
     0
 }
 
@@ -114,7 +114,7 @@ fn serialize_size(env: *mut Environment) -> size_t {
 /// If non-diverging serialization is not supported, this will append an error message
 /// to the message queue and the buffer will not be modified.
 #[no_mangle]
-fn serialize(env: *mut Environment, buf: *mut c_char, buf_len: size_t) {}
+pub fn serialize(env: *mut Environment, buf: *mut c_char, buf_len: size_t) {}
 
 /// Resets the underlying environment to the state described by the input buffer and
 /// returns the size of the next message.
@@ -126,7 +126,7 @@ fn serialize(env: *mut Environment, buf: *mut c_char, buf_len: size_t) {}
 /// will be returned **but** an error message will be appended to
 /// the queue **before** the response message.
 #[no_mangle]
-fn deserialize(env: *mut Environment, buf: *mut c_char, buf_len: size_t) -> size_t {
+pub fn deserialize(env: *mut Environment, buf: *mut c_char, buf_len: size_t) -> size_t {
     0
 }
 
@@ -138,7 +138,7 @@ fn deserialize(env: *mut Environment, buf: *mut c_char, buf_len: size_t) -> size
 /// If the environment is deterministic, this is equivalent to a call to
 /// `serialize_size`, and no error will be raised.
 #[no_mangle]
-fn serialize_diverging_size(env: *mut Environment) -> size_t {
+pub fn serialize_diverging_size(env: *mut Environment) -> size_t {
     0
 }
 
@@ -155,7 +155,7 @@ fn serialize_diverging_size(env: *mut Environment) -> size_t {
 /// If the environment is deterministic, this is equivalent to a call to
 /// `serialize`, and no error will be raised.
 #[no_mangle]
-fn serialize_diverging(env: *mut Environment, buf: *mut c_char, buf_len: size_t) {}
+pub fn serialize_diverging(env: *mut Environment, buf: *mut c_char, buf_len: size_t) {}
 
 /// Resets the underlying environment to the state described by the input buffer and
 /// returns the size of the next message.
@@ -170,7 +170,7 @@ fn serialize_diverging(env: *mut Environment, buf: *mut c_char, buf_len: size_t)
 /// If the environment is deterministic, this is equivalent to a call to
 /// `deserialize`, and no error will be raised.
 #[no_mangle]
-fn deserialize_diverging(env: *mut Environment, buf: *mut c_char, buf_len: size_t) -> size_t {
+pub fn deserialize_diverging(env: *mut Environment, buf: *mut c_char, buf_len: size_t) -> size_t {
     0
 }
 
@@ -183,14 +183,14 @@ fn deserialize_diverging(env: *mut Environment, buf: *mut c_char, buf_len: size_
 /// If the buffer is not large enough, the buffer will be partially filled,
 /// but an error message will be added to the queue.
 #[no_mangle]
-fn next_msg(env: *mut Environment, buf: *mut u8, buf_len: size_t) {}
+pub fn next_msg(env: *mut Environment, buf: *mut u8, buf_len: size_t) {}
 
 /// Queries the size of the next message intended for the owner of this environment.
 ///
 /// If no message exists, 0 will be returned and an error message will be added to the
 /// queue.
 #[no_mangle]
-fn next_msg_size(env: *mut Environment) -> size_t {
+pub fn next_msg_size(env: *mut Environment) -> size_t {
     0
 }
 
@@ -199,7 +199,7 @@ fn next_msg_size(env: *mut Environment) -> size_t {
 /// If asynchronous modules are loaded (such as RPC visualization), a call to this function
 /// will check for awaiting messages.
 #[no_mangle]
-fn queued_messages(env: *mut Environment) -> size_t {
+pub fn queued_messages(env: *mut Environment) -> size_t {
     0
 }
 
@@ -211,7 +211,7 @@ fn queued_messages(env: *mut Environment) -> size_t {
 ///
 /// The return value is equivalent to a query to `queued_messages`.
 #[no_mangle]
-fn route_msg(env: *mut Environment, msg_buf: *mut c_char, msg_len: size_t) -> size_t {
+pub fn route_msg(env: *mut Environment, msg_buf: *mut c_char, msg_len: size_t) -> size_t {
     0
 }
 
