@@ -6,14 +6,14 @@ fn main() {
 
     protoc_rust::run(protoc_rust::Args {
         out_dir: "src/internal/protos",
-        input: &["../common_protos/common.proto"],
+        input: &["../common_protos/universal_messages.proto"],
         includes: &["../common_protos"],
     }).expect("Protoc Error");
 
     // Make our protobuf file a reason to recompile
     // (See http://doc.crates.io/build-script.html for more info 
     // on outputs)
-    println!("cargo:rerun-if-changed=../common_protos/common.proto");
+    println!("cargo:rerun-if-changed=../common_protos/universal_messages.proto");
     
     // Unfortunately, rerun-if-changed overrides Cargo's default handling, which
     // is to rerun if any of our files change, so we have to re-add all our source

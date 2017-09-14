@@ -11,4 +11,4 @@ Cargo.lock
 
 # Don't check in the auto-generated protobuf file
 # We want to generate it on build
-**/common.rs
+**/universal_messages.rs
