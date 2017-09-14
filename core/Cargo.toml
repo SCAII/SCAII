@@ -1,5 +1,5 @@
 [package]
-name = "router"
+name = "scaii-core"
 version = "0.1.0"
 authors = ["Zoe Juozapaitis <jragonmiris@gmail.com>"]
 build = "build.rs"
