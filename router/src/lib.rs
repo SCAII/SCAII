@@ -26,7 +26,7 @@ fn destroy_environment(env: *mut Environment) {
 
     unsafe {
         let mut env = ManuallyDrop::new(Box::from_raw(env));
-        drop(env)
+        ManuallyDrop::drop(&mut env)
     }
 }
 
