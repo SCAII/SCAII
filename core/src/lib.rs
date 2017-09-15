@@ -1,6 +1,6 @@
 extern crate libloading;
 extern crate libc;
-extern crate serde;
+extern crate toml;
 extern crate scaii_defs;
 
 use libc::{c_char, size_t};
