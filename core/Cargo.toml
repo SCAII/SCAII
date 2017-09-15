@@ -2,17 +2,14 @@
 name = "scaii-core"
 version = "0.1.0"
 authors = ["Zoe Juozapaitis <jragonmiris@gmail.com>"]
-build = "build.rs"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
 libloading="0.4.1"
-protobuf = { version = "1.4.1", features = ["with-bytes"] }
-bytes = "0.4"
 libc = "0.2"
+serde = "1.0.14"
 
-[build-dependencies]
-protoc-rust = "1.4.1"
-glob = "0.2.11"
+# local deps
+scaii_defs = {path = "../scaii_defs"}

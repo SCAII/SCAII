@@ -1,0 +1,14 @@
+[package]
+name = "scaii_defs"
+version = "0.1.0"
+authors = ["Zoe Juozapaitis <Jragonmiris@gmail.com>"]
+build = "build.rs"
+
+[dependencies]
+serde = "1.0.14"
+serde_derive= "1.0.14"
+protobuf = "1"
+
+[build-dependencies]
+protoc-rust = "1.4.1"
+glob = "0.2.11"

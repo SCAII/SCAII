@@ -5,7 +5,7 @@ fn main() {
     use glob::glob;
 
     protoc_rust::run(protoc_rust::Args {
-        out_dir: "src/internal/protos",
+        out_dir: "src/protos",
         input: &["../common_protos/universal_messages.proto"],
         includes: &["../common_protos"],
     }).expect("Protoc Error");

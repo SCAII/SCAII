@@ -1,9 +1,15 @@
+use std::path::PathBuf;
 use libloading::Library;
+use scaii_defs::Msg;
 
-pub trait Backend {}
+trait Backend {
+    fn new(cfg: &str) -> Self;
 
-pub struct DynLibBackend {
-    lib: Library,
+    fn process_msg(&mut self, msg: &Msg);
+    fn get_messages(&mut self) -> &[Msg];
 }
 
-impl Backend for DynLibBackend {}
+pub struct RustDynamicBackend {
+    lib: Library,
+    plugin_name: String,
+}
