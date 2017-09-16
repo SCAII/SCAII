@@ -11,10 +11,10 @@ fn main() {
     }).expect("Protoc Error");
 
     // Make our protobuf file a reason to recompile
-    // (See http://doc.crates.io/build-script.html for more info 
+    // (See http://doc.crates.io/build-script.html for more info
     // on outputs)
     println!("cargo:rerun-if-changed=../common_protos/universal_messages.proto");
-    
+
     // Unfortunately, rerun-if-changed overrides Cargo's default handling, which
     // is to rerun if any of our files change, so we have to re-add all our source
     // files
@@ -22,7 +22,7 @@ fn main() {
 
     for entry in glob("src/*.rs").expect("Could not parse glob pattern") {
         if let Ok(path) = entry {
-            println!("cargo:rerun-if-changed={}",path.display())
+            println!("cargo:rerun-if-changed={}", path.display())
         }
     }
 }
