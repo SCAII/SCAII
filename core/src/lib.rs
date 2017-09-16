@@ -2,8 +2,11 @@ extern crate libloading;
 extern crate libc;
 extern crate toml;
 extern crate scaii_defs;
+#[macro_use]
+extern crate lazy_static;
 
 use libc::{c_char, size_t};
+
 
 // Don't publicly expose our internal structure to FFI
 pub(crate) mod internal;
@@ -17,7 +20,9 @@ pub fn new_environment(cfg_str: *const c_char, cfg_len: size_t) -> *mut Environm
     use std::mem::ManuallyDrop;
 
     let env = ManuallyDrop::new(Box::new(Environment {}));
-    Box::into_raw(ManuallyDrop::into_inner(env))
+    Box::into_raw(ManuallyDrop::into_inner(env));
+
+    unimplemented!()
 }
 
 /// Destroys the created environment, this should be called to avoid memory leaks.
@@ -27,13 +32,16 @@ pub fn destroy_environment(env: *mut Environment) {
 
     unsafe {
         let mut env = ManuallyDrop::new(Box::from_raw(env));
-        ManuallyDrop::drop(&mut env)
+        ManuallyDrop::drop(&mut env);
     }
+    unimplemented!()
 }
 
 /// Changes the configuration of an existing environment using a configuration string.
 #[no_mangle]
-pub fn cfg_environment(env: *mut Environment, cfg_str: *const c_char, cfg_len: size_t) {}
+pub fn cfg_environment(env: *mut Environment, cfg_str: *const c_char, cfg_len: size_t) {
+    unimplemented!()
+}
 
 /// The `act` function routes an action message to the underlying environment and
 /// returns the size of the next message in the message queue (which will usually
@@ -54,7 +62,7 @@ pub fn cfg_environment(env: *mut Environment, cfg_str: *const c_char, cfg_len: s
 /// process messages from that specific asynchronous channel.
 #[no_mangle]
 pub fn act(env: *mut Environment, action_msg: *mut c_char, msg_len: size_t) -> size_t {
-    0
+    unimplemented!()
 }
 
 /// This is similar to `act`, but also routes a `ScaiiPacket` to some target.
@@ -78,7 +86,7 @@ pub fn act_and_route(
     generic_msg: *mut c_char,
     generic_msg_len: size_t,
 ) -> size_t {
-    0
+    unimplemented!()
 }
 
 /// Resets the environment to a new episode and returns the size of the next message
@@ -93,7 +101,7 @@ pub fn act_and_route(
 /// reset to a deterministic state (i.e. for rollout) please see `serialize`.
 #[no_mangle]
 pub fn reset(env: *mut Environment) -> size_t {
-    0
+    unimplemented!()
 }
 
 /// Returns the size in bytes of a serialization of this environment.
@@ -102,7 +110,7 @@ pub fn reset(env: *mut Environment) -> size_t {
 /// append an error message to the message queue.
 #[no_mangle]
 pub fn serialize_size(env: *mut Environment) -> size_t {
-    0
+    unimplemented!()
 }
 
 /// Writes a serialization of the environment in the target buffer,
@@ -115,7 +123,9 @@ pub fn serialize_size(env: *mut Environment) -> size_t {
 /// If non-diverging serialization is not supported, this will append an error message
 /// to the message queue and the buffer will not be modified.
 #[no_mangle]
-pub fn serialize(env: *mut Environment, buf: *mut c_char, buf_len: size_t) {}
+pub fn serialize(env: *mut Environment, buf: *mut c_char, buf_len: size_t) {
+    unimplemented!()
+}
 
 /// Resets the underlying environment to the state described by the input buffer and
 /// returns the size of the next message.
@@ -128,7 +138,7 @@ pub fn serialize(env: *mut Environment, buf: *mut c_char, buf_len: size_t) {}
 /// the queue **before** the response message.
 #[no_mangle]
 pub fn deserialize(env: *mut Environment, buf: *mut c_char, buf_len: size_t) -> size_t {
-    0
+    unimplemented!()
 }
 
 /// Returns the size in bytes of a diverging serialization of this environment.
@@ -140,7 +150,7 @@ pub fn deserialize(env: *mut Environment, buf: *mut c_char, buf_len: size_t) -> 
 /// `serialize_size`, and no error will be raised.
 #[no_mangle]
 pub fn serialize_diverging_size(env: *mut Environment) -> size_t {
-    0
+    unimplemented!()
 }
 
 /// Writes a serialization of the environment in the target buffer,
@@ -156,7 +166,9 @@ pub fn serialize_diverging_size(env: *mut Environment) -> size_t {
 /// If the environment is deterministic, this is equivalent to a call to
 /// `serialize`, and no error will be raised.
 #[no_mangle]
-pub fn serialize_diverging(env: *mut Environment, buf: *mut c_char, buf_len: size_t) {}
+pub fn serialize_diverging(env: *mut Environment, buf: *mut c_char, buf_len: size_t) {
+    unimplemented!()
+}
 
 /// Resets the underlying environment to the state described by the input buffer and
 /// returns the size of the next message.
@@ -172,7 +184,7 @@ pub fn serialize_diverging(env: *mut Environment, buf: *mut c_char, buf_len: siz
 /// `deserialize`, and no error will be raised.
 #[no_mangle]
 pub fn deserialize_diverging(env: *mut Environment, buf: *mut c_char, buf_len: size_t) -> size_t {
-    0
+    unimplemented!()
 }
 
 /// Receives the next message intended for the owner of this environment and
@@ -184,7 +196,9 @@ pub fn deserialize_diverging(env: *mut Environment, buf: *mut c_char, buf_len: s
 /// If the buffer is not large enough, the buffer will be partially filled,
 /// but an error message will be added to the queue.
 #[no_mangle]
-pub fn next_msg(env: *mut Environment, buf: *mut u8, buf_len: size_t) {}
+pub fn next_msg(env: *mut Environment, buf: *mut u8, buf_len: size_t) {
+    unimplemented!()
+}
 
 /// Queries the size of the next message intended for the owner of this environment.
 ///
@@ -192,7 +206,7 @@ pub fn next_msg(env: *mut Environment, buf: *mut u8, buf_len: size_t) {}
 /// queue.
 #[no_mangle]
 pub fn next_msg_size(env: *mut Environment) -> size_t {
-    0
+    unimplemented!()
 }
 
 /// Queries the number of messages remaining for the owner of this environment.
@@ -201,7 +215,7 @@ pub fn next_msg_size(env: *mut Environment) -> size_t {
 /// will check for awaiting messages.
 #[no_mangle]
 pub fn queued_messages(env: *mut Environment) -> size_t {
-    0
+    unimplemented!()
 }
 
 /// Routes a message to an arbitrary receiver (e.g. visualization).
@@ -213,34 +227,34 @@ pub fn queued_messages(env: *mut Environment) -> size_t {
 /// The return value is equivalent to a query to `queued_messages`.
 #[no_mangle]
 pub fn route_msg(env: *mut Environment, msg_buf: *mut c_char, msg_len: size_t) -> size_t {
-    0
+    unimplemented!()
 }
 
 #[cfg(test)]
 mod test {
     #[test]
     fn act() {
-        assert!(false)
+        unimplemented!()
     }
 
     #[test]
     fn reset() {
-        assert!(false)
+        unimplemented!()
     }
 
     #[test]
     fn serialization() {
-        assert!(false)
+        unimplemented!()
     }
 
     #[test]
     fn message_queueing() {
-        assert!(false)
+        unimplemented!()
     }
 
     // Tests creating and changing the config of a test environment
     #[test]
     fn environment_manipulation() {
-        assert!(false)
+        unimplemented!()
     }
 }
