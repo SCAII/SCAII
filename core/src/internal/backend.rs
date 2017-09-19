@@ -33,7 +33,7 @@ impl RustDynamicBackend {
             });
 
 
-            let rclib = unsafe { rclib.lib.get::<fn(&str) -> Box<Backend>>(b"new\0")? };
+            let rclib = unsafe { rclib.lib.get::<fn(&str) -> Box<Backend>>(b"new_backend\0")? };
             Ok(RustDynamicBackend {
                 backend: rclib(backend_cfg_toml),
                 name: name,

@@ -70,12 +70,13 @@ impl Error for UnsupportedError {
 /// The Module trait describes any Module that may send and receive messages
 ///
 /// In addition, plugin objects that provide a **non-backend** Module must define a
-/// library-level function like so:
+/// crate root-level `#[no_mangle]` function like so:
 ///
-///     fn new(cfg_toml: &str) -> Box<Module>
-///
-/// Which takes in the text of a configuration .toml file that the plugin
-/// understands and returns a boxed trait object implementing this Trait.
+/// ```
+/// // Takes in the text of a configuration .toml file that the plugin
+/// // understands and returns a boxed trait object implementing this trait.
+/// fn new(cfg_toml: &str) -> Box<Module>
+/// ```
 ///
 /// Note that the trait object will properly call `drop` if implemented.
 pub trait Module {
@@ -97,19 +98,25 @@ pub trait Module {
 /// be matched by a corresponding `SupportedBehavior` that indicates
 /// the functions are not present.
 ///
-/// In addition, plugin objects meeting the backend definition must define a
-/// library-level function like so:
+/// In addition, plugin objects meeting the backend definition must define two
+/// public crate-root level `#[no_mangle]` functions like so:
 ///
-/// fn new(cfg_toml: &str) -> Box<Backend>
+/// ````
+/// // Takes in the text of a configuration .toml file that the plugin
+/// // understands and returns a boxed trait object implementing this trait.
+/// fn new_backend(cfg_toml: &str) -> Box<Backend>;
 ///
-/// Which takes in the text of a configuration .toml file that the plugin
-/// understands and returns a boxed trait object implementing this Trait.
+/// // Yields the supported behavior of a trait object returned by this backend
+/// fn supported_behavior() -> SupportedBehavior
+/// ```
 ///
 /// Note that the trait object will properly call `drop` if implemented.
+///
+/// Any backend plugin must additionally implement the crate-level `new` function
+/// that returns the backend as a `Box<Module>`.
 pub trait Backend: Module {
-    /// Returns a Scaii::SupportedBehavior indicating this Backend's
-    /// optional functionality (if any)
-    fn supported_behavior(&mut self) -> SupportedBehavior;
+    /// Convenience alias for the crate-level supported behavior function.
+    fn supported_behavior() -> SupportedBehavior;
 
     /// Non-divergently Serializes the state in the target buffer, or returns an error on improper
     /// serialization. Default implementation is that serialization is unsupported.
