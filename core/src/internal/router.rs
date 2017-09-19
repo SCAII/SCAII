@@ -1,4 +1,4 @@
-use scaii_defs::{Backend, Module, Msg};
+use scaii_defs::{Backend, Frontend, Module, Msg};
 use scaii_defs::protos::ScaiiPacket;
 use protobuf;
 
@@ -44,7 +44,7 @@ impl Display for ReservedNameError {
     fn fmt(&self, fmt: &mut Formatter) -> Result<(), fmt::Error> {
         write!(
             fmt,
-            "Module name is reserved: {} (if you tried to register a backend, use register_backend())",
+            "Module name is reserved: {} (if you tried to register a backend or frontend, use the dedicated functions)",
             self.name
         )
     }
@@ -60,6 +60,7 @@ impl Error for ReservedNameError {
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum RouterEndpoint<'a> {
     Backend,
+    Frontend,
     Module { name: &'a str },
 }
 
@@ -79,6 +80,7 @@ impl<'a> Display for RouterEndpoint<'a> {
             "{}",
             match *self {
                 RouterEndpoint::Backend => "backend",
+                RouterEndpoint::Frontend => "fronend",
                 RouterEndpoint::Module { ref name } => name,
             }
         )
@@ -88,6 +90,7 @@ impl<'a> Display for RouterEndpoint<'a> {
 /// A simple Router that sends protobuf messages to various modules
 pub struct Router {
     backend: Option<Box<Backend>>,
+    frontend: Option<Box<Frontend>>,
     modules: HashMap<String, Box<Module>>,
 }
 
@@ -96,6 +99,7 @@ impl Router {
     pub fn new() -> Self {
         Router {
             backend: None,
+            frontend: None,
             modules: HashMap::new(),
         }
     }
@@ -104,6 +108,7 @@ impl Router {
     pub fn from_backend(backend: Box<Backend>) -> Self {
         Router {
             backend: Some(backend),
+            frontend: None,
             modules: HashMap::new(),
         }
     }
@@ -143,6 +148,14 @@ impl Router {
                         NoSuchEndpointError { name: "backend".to_string() },
                     )))
             }
+            RouterEndpoint::Frontend => {
+                self.frontend
+                    .as_mut()
+                    .and_then(|v| Some(v.process_msg(msg)))
+                    .unwrap_or(Err(Box::new(
+                        NoSuchEndpointError { name: "frontend".to_string() },
+                    )))
+            }
             RouterEndpoint::Module { ref name } => {
                 self.modules
                     .get_mut(*name)
@@ -164,6 +177,16 @@ impl Router {
         self.backend.as_mut()
     }
 
+    /// Returns a reference to the registered frontend (if any).
+    pub fn frontend(&self) -> Option<&Box<Frontend>> {
+        self.frontend.as_ref()
+    }
+
+    /// Returns a mutable reference to the registered frontend (if any).
+    pub fn frontend_mut(&mut self) -> Option<&mut Box<Frontend>> {
+        self.frontend.as_mut()
+    }
+
     /// Returns a reference to the specified module (if it exists).
     ///
     /// Note, no parsing of the name is done; if you want the backend
@@ -183,7 +206,8 @@ impl Router {
     /// Registers the module under the given name. If a module already exists
     /// under this name, it will be returned.
     ///
-    /// If you attempt to register a reserved name (specifically: "backend"),
+    /// If you attempt to register a reserved name
+    /// (specifically: "backend" or "frontend"),
     /// this will return and error which contains the module you attempted to
     /// regiser.
     pub fn register_module(
@@ -193,7 +217,7 @@ impl Router {
     ) -> Result<Option<Box<Module>>, ReservedNameError> {
         use std::collections::hash_map::Entry::*;
 
-        if name == "backend" {
+        if name == "backend" || name == "frontend" {
             Err(ReservedNameError {
                 module: module,
                 name: name,

@@ -148,3 +148,11 @@ pub trait Backend: Module {
         Err(Box::new(UnsupportedError))
     }
 }
+
+/// A Frontend (aka RL environment or model) attached to this
+/// environment.
+///
+/// Another type of module (e.g. GUI-driven visualization) may want special
+/// methods to drive a subscriber frontend eventually, but at the moment
+/// this is just a marker trait.
+pub trait Frontend: Module {}
