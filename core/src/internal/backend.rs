@@ -1,4 +1,4 @@
-use scaii_defs::{Backend, EnvironmentInitArgs};
+use scaii_defs::{Backend, Module, EnvironmentInitArgs, Msg, SupportedBehavior};
 
 use std::error::Error;
 use std::ops::{Deref, DerefMut, Drop};
@@ -77,5 +77,37 @@ impl Drop for RustDynamicBackend {
                 lib_map.remove(&self.name);
             }
         }
+    }
+}
+
+impl Module for RustDynamicBackend {
+    fn process_msg(&mut self, msg: &Msg) -> Result<(), Box<Error>> {
+        self.backend.process_msg(msg)
+    }
+
+    fn get_messages(&mut self) -> Vec<Msg> {
+        self.backend.get_messages()
+    }
+}
+
+impl Backend for RustDynamicBackend {
+    fn supported_behavior(&self) -> SupportedBehavior {
+        self.backend.supported_behavior()
+    }
+
+    fn serialize(&mut self, into: Option<Vec<u8>>) -> Result<Vec<u8>, Box<Error>> {
+        self.backend.serialize(into)
+    }
+
+    fn deserialize(&mut self, buf: &[u8]) -> Result<(), Box<Error>> {
+        self.backend.deserialize(buf)
+    }
+
+    fn serialize_diverging(&mut self, into: Option<Vec<u8>>) -> Result<Vec<u8>, Box<Error>> {
+        self.backend.serialize_diverging(into)
+    }
+
+    fn deserialize_diverging(&mut self, buf: &[u8]) -> Result<(), Box<Error>> {
+        self.deserialize_diverging(buf)
     }
 }
