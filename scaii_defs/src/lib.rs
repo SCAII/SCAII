@@ -116,7 +116,8 @@ pub trait Module {
 /// that returns the backend as a `Box<Module>`.
 pub trait Backend: Module {
     /// Convenience alias for the crate-level supported behavior function.
-    fn supported_behavior() -> SupportedBehavior;
+    /// This takes `&self` for convenience of the core plugin wrapper.
+    fn supported_behavior(&self) -> SupportedBehavior;
 
     /// Non-divergently Serializes the state in the target buffer, or returns an error on improper
     /// serialization. Default implementation is that serialization is unsupported.
