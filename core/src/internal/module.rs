@@ -3,7 +3,7 @@ use scaii_defs::{Module, EnvironmentInitArgs, Msg};
 use std::error::Error;
 use std::ops::{Deref, DerefMut, Drop};
 
-#[cfg(not(release))]
+#[cfg(debug_assertions)]
 use scaii_defs::Language;
 
 pub struct RustDynamicModule {

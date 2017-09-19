@@ -3,7 +3,7 @@ use scaii_defs::{Backend, Module, EnvironmentInitArgs, Msg, SupportedBehavior};
 use std::error::Error;
 use std::ops::{Deref, DerefMut, Drop};
 
-#[cfg(not(release))]
+#[cfg(debug_assertions)]
 use scaii_defs::Language;
 
 pub struct RustDynamicBackend {
