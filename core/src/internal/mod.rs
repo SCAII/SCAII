@@ -1,6 +1,7 @@
 pub mod backend;
 pub mod router;
 pub mod frontend;
+pub mod module;
 
 use libloading::Library;
 
