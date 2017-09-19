@@ -1,4 +1,5 @@
 extern crate libloading;
+extern crate protobuf;
 extern crate libc;
 extern crate toml;
 extern crate scaii_defs;

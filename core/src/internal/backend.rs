@@ -108,6 +108,6 @@ impl Backend for RustDynamicBackend {
     }
 
     fn deserialize_diverging(&mut self, buf: &[u8]) -> Result<(), Box<Error>> {
-        self.deserialize_diverging(buf)
+        self.backend.deserialize_diverging(buf)
     }
 }
