@@ -121,13 +121,10 @@ impl Router {
     /// the module specified in the message does not exist,
     /// or the target errors on receiving the message.
     pub fn decode_and_route(&mut self, msg: &Msg) -> Result<(), Box<Error>> {
-        let ScaiiPacket {
-            msg: msg,
-            module: dest,
-            ..
-        } = protobuf::parse_from_bytes(&msg.msg[..])?;
+        let mut packet: ScaiiPacket = protobuf::parse_from_bytes(&msg.msg)?;
+        let msg = packet.take_msg();
         let msg = Msg { msg: msg };
-        let dest = RouterEndpoint::from_string(&dest);
+        let dest = RouterEndpoint::from_string(packet.get_module());
 
         self.route_to(&msg, &dest)
     }

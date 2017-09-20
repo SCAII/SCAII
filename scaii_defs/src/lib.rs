@@ -11,7 +11,7 @@ use std::fmt;
 pub mod protos;
 
 /// A pre-decoded Protobuf message.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Msg {
     pub msg: Vec<u8>,
 }

@@ -1,15 +1,26 @@
-syntax = "proto3";
+syntax = "proto2";
+
+import "google/protobuf/any.proto";
 
 // This is a wrapper packet every SCAII module must send through the router
 message ScaiiPacket {
     // The protobuf-encoded packet that will be routed
-    bytes msg = 1;
+    required bytes msg = 1;
     // The target module, valid targets include: frontend, backend
-    string module = 2;
+    required string module = 2;
 }
 
 // For sending multiple ScaiiPackets in one payload.
 message MultiMessage {
     // = 3 so this can't be mistaken for a ScaiiPacket
     repeated ScaiiPacket packets = 3;
+}
+
+enum Language {
+    RustPlugin = 0;
+}
+
+message CoreSetup {
+    optional Language lang = 1;
+    optional string plugin_path = 2;
 }

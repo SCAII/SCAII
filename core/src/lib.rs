@@ -12,7 +12,11 @@ use libc::{c_char, size_t};
 // Don't publicly expose our internal structure to FFI
 pub(crate) mod internal;
 
-pub struct Environment;
+use internal::router::Router;
+
+pub struct Environment {
+    router: internal::router::Router,
+}
 
 /// Given a configuration string, we can configure a new environment on which
 /// all other functions will be run. The resulting environment is allocated on the heap.
@@ -20,10 +24,10 @@ pub struct Environment;
 pub fn new_environment(cfg_str: *const c_char, cfg_len: size_t) -> *mut Environment {
     use std::mem::ManuallyDrop;
 
-    let env = ManuallyDrop::new(Box::new(Environment {}));
+    let env = ManuallyDrop::new(Box::new(Environment { router: Router::new() }));
     Box::into_raw(ManuallyDrop::into_inner(env));
 
-    unimplemented!()
+    unimplemented!("Router setup")
 }
 
 /// Destroys the created environment, this should be called to avoid memory leaks.
