@@ -81,7 +81,7 @@ impl<'a> Display for RouterEndpoint<'a> {
             "{}",
             match *self {
                 RouterEndpoint::Backend => "backend",
-                RouterEndpoint::Frontend => "fronend",
+                RouterEndpoint::Frontend => "frontend",
                 RouterEndpoint::Module { ref name } => name,
             }
         )
