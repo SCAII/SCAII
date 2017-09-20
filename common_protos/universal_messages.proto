@@ -7,3 +7,9 @@ message ScaiiPacket {
     // The target module, valid targets include: frontend, backend
     string module = 2;
 }
+
+// For sending multiple ScaiiPackets in one payload.
+message MultiMessage {
+    // = 3 so this can't be mistaken for a ScaiiPacket
+    repeated ScaiiPacket packets = 3;
+}

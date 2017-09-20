@@ -68,6 +68,7 @@ impl<'a> RouterEndpoint<'a> {
     pub fn from_string(name: &'a str) -> RouterEndpoint<'a> {
         match name {
             "backend" => RouterEndpoint::Backend,
+            "frontend" => RouterEndpoint::Frontend,
             _ => RouterEndpoint::Module { name: name },
         }
     }
