@@ -10,7 +10,6 @@ crate-type = ["cdylib"]
 libloading="0.4.1"
 protobuf = "1"
 libc = "0.2"
-toml =  "0.4"
 lazy_static = "0.2"
 
 # local deps

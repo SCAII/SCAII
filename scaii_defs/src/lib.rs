@@ -9,24 +9,63 @@ use std::fmt;
 
 /// Contains protobuf definitions
 pub mod protos;
+pub mod errors;
 
-/// A pre-decoded Protobuf message.
-#[derive(Clone, Debug, PartialEq)]
-pub struct Msg {
-    pub msg: Vec<u8>,
+use protos::{MultiMessage, ScaiiPacket, CoreCfg};
+
+/// Arguments for initializating a dynamically loaded Rust
+/// plugin.
+#[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Debug)]
+pub struct RustFFIArgs {
+    pub plugin_path: PathBuf,
 }
 
 /// The list of supported backend languages
-#[derive(Serialize, Deserialize, Clone, Copy, Eq, PartialEq, Debug)]
-pub enum Language {
-    RustFFI,
+#[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Debug)]
+pub enum PluginType {
+    RustFFI { args: RustFFIArgs },
+}
+
+/// Specifies which type of plugin to load the given environment as.
+#[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Hash, Debug)]
+pub enum InitAs {
+    Backend,
+    Module { name: String },
 }
 
 /// The parameters for creating a backend environment
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Debug)]
 pub struct EnvironmentInitArgs {
-    pub language: Language,
-    pub plugin_path: PathBuf,
+    pub module_type: PluginType,
+    pub init_as: InitAs,
+}
+
+impl EnvironmentInitArgs {
+    /// Creates environment initialization parameters
+    /// from a rust-friendly translation of CoreCfg
+    pub fn from_core_cfg(cfg: &CoreCfg) -> Self {
+        let init_as = if cfg.has_backend_init() {
+            InitAs::Backend
+        } else if cfg.has_module_init() {
+            InitAs::Module { name: cfg.get_module_init().get_name().to_string() }
+        } else {
+            unreachable!("These cover the only types")
+        };
+
+        if cfg.has_rust_plugin() {
+            let rust_cfg = cfg.get_rust_plugin();
+            EnvironmentInitArgs {
+                module_type: PluginType::RustFFI {
+                    args: RustFFIArgs {
+                        plugin_path: PathBuf::from(rust_cfg.get_plugin_path().to_string()),
+                    },
+                },
+                init_as: init_as,
+            }
+        } else {
+            unreachable!("Rust plugin is the only supported plugin")
+        }
+    }
 }
 
 /// The serialization style supported by an environment.
@@ -66,16 +105,15 @@ impl Error for UnsupportedError {
     }
 }
 
-
 /// The Module trait describes any Module that may send and receive messages
 ///
 /// In addition, plugin objects that provide a **non-backend** Module must define a
 /// crate root-level `#[no_mangle]` function like so:
 ///
 /// ```
-/// // Takes in the text of a configuration .toml file that the plugin
-/// // understands and returns a boxed trait object implementing this trait.
-/// fn new(cfg_toml: &str) -> Box<Module>
+/// // Returns a boxed backend, configuration is done through
+/// // initialization protobuf messages
+/// fn new() -> Box<Module>
 /// ```
 ///
 /// Note that the trait object will properly call `drop` if implemented.
@@ -83,13 +121,12 @@ pub trait Module {
     /// Processes a message and returns an error if the message is ill-formatted
     /// or unexpected.
     ///
-    /// This is called AFTER the `ScaiiPacket` is unwrapped and routed.
-    /// That is, the module only gets the payload, not the routing wrapper.
-    fn process_msg(&mut self, msg: &Msg) -> Result<(), Box<Error>>;
+    /// The receiver may assume that `msg.dest` corresponds to this module.
+    fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>>;
 
     /// Gets all waiting messages from the module, and clears the module's
     /// outgoing message queue.
-    fn get_messages(&mut self) -> Vec<Msg>;
+    fn get_messages(&mut self) -> MultiMessage;
 }
 
 /// The Backend trait provides specialized methods for Backend modules
@@ -102,9 +139,9 @@ pub trait Module {
 /// public crate-root level `#[no_mangle]` functions like so:
 ///
 /// ````
-/// // Takes in the text of a configuration .toml file that the plugin
-/// // understands and returns a boxed trait object implementing this trait.
-/// fn new_backend(cfg_toml: &str) -> Box<Backend>;
+/// // Returns a boxed backend, configuration is done through
+/// // initialization protobuf messages
+/// fn new_backend() -> Box<Backend>;
 ///
 /// // Yields the supported behavior of a trait object returned by this backend
 /// fn supported_behavior() -> SupportedBehavior
@@ -149,10 +186,10 @@ pub trait Backend: Module {
     }
 }
 
-/// A Frontend (aka RL environment or model) attached to this
+/// An Agent (aka RL environment or model) attached to this
 /// environment.
 ///
 /// Another type of module (e.g. GUI-driven visualization) may want special
 /// methods to drive a subscriber frontend eventually, but at the moment
 /// this is just a marker trait.
-pub trait Frontend: Module {}
+pub trait Agent: Module {}

@@ -1,21 +1,21 @@
-use scaii_defs::{Module, EnvironmentInitArgs, Msg};
+use scaii_defs::{Module, RustFFIArgs};
+use scaii_defs::protos::{MultiMessage, ScaiiPacket};
 
 use std::error::Error;
 use std::ops::{Deref, DerefMut, Drop};
 
-#[cfg(debug_assertions)]
-use scaii_defs::Language;
-
+/// A module loaded using FFI and
+/// Rust calling conventions. See the
+/// `Module` trait in `scaii_defs` for API info.
 pub struct RustDynamicModule {
     backend: Box<Module>,
     name: String,
 }
 
 impl RustDynamicModule {
-    pub fn new(args: EnvironmentInitArgs, module_cfg_toml: &str) -> Result<Self, Box<Error>> {
+    pub fn new(args: RustFFIArgs) -> Result<Self, Box<Error>> {
         use internal::RcLibrary;
         use libloading::Library;
-        debug_assert!(args.language == Language::RustFFI);
 
         let mu = &::internal::OPEN_LIBS;
         {
@@ -33,9 +33,9 @@ impl RustDynamicModule {
             });
 
 
-            let rclib = unsafe { rclib.lib.get::<fn(&str) -> Box<Module>>(b"new\0")? };
+            let rclib = unsafe { rclib.lib.get::<fn() -> Box<Module>>(b"new\0")? };
             Ok(RustDynamicModule {
-                backend: rclib(module_cfg_toml),
+                backend: rclib(),
                 name: name,
             })
 
@@ -81,11 +81,11 @@ impl Drop for RustDynamicModule {
 }
 
 impl Module for RustDynamicModule {
-    fn process_msg(&mut self, msg: &Msg) -> Result<(), Box<Error>> {
+    fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>> {
         self.backend.process_msg(msg)
     }
 
-    fn get_messages(&mut self) -> Vec<Msg> {
+    fn get_messages(&mut self) -> MultiMessage {
         self.backend.get_messages()
     }
 }

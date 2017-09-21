@@ -1,26 +1,241 @@
 syntax = "proto2";
 
-import "google/protobuf/any.proto";
-
-// This is a wrapper packet every SCAII module must send through the router
-message ScaiiPacket {
-    // The protobuf-encoded packet that will be routed
-    required bytes msg = 1;
-    // The target module, valid targets include: frontend, backend
-    required string module = 2;
-}
-
-// For sending multiple ScaiiPackets in one payload.
 message MultiMessage {
-    // = 3 so this can't be mistaken for a ScaiiPacket
-    repeated ScaiiPacket packets = 3;
+	repeated ScaiiPacket packets = 1;
 }
 
-enum Language {
-    RustPlugin = 0;
+message ScaiiPacket {
+	oneof specific_msg {
+		State state = 1;
+		Action action = 2;
+		Viz viz = 3;
+		Error err = 4;
+		Cfg config = 5;
+		SupportedBehavior supported = 6;
+		SerializationRequest ser_req = 7;
+		SerializationResponse ser_resp = 8;
+		bool reset_env = 9;
+		Other other = 29;
+	}
+	enum Endpoint {
+		BACKEND = 0;
+		AGENT = 1;
+		CORE = 2;
+		MODULE = 3;
+	}
+	required Endpoint dest = 30;
+	optional string module_name = 31;
+
+	required Endpoint source = 32;
+	optional string source_name = 33;
 }
 
-message CoreSetup {
-    optional Language lang = 1;
-    optional string plugin_path = 2;
+message Cfg {
+	oneof which_module {
+		CoreCfg core_cfg = 1;
+		BackendCfg backend_cfg = 2;
+		AgentCfg agent_cfg = 3;
+		ModuleCfg module_cfg = 4;
+	}
 }
+
+message CoreCfg {
+	oneof plugin_type {
+		RustFFIConfig rust_plugin = 1;
+	}
+
+	oneof init_as {
+		BackendInit backend_init = 100;
+		ModuleInit module_init = 101;
+	}
+}
+
+message BackendInit {}
+
+message ModuleInit {
+	required string name = 1;
+}
+
+message RustFFIConfig {
+	required string plugin_path = 1;
+}
+
+message BackendCfg {
+	extensions 10 to max;
+}
+
+message AgentCfg {
+	extensions 10 to max;
+}
+
+message ModuleCfg {
+	extensions 10 to max;
+}
+
+message SupportedBehavior {
+	oneof which_module {
+		BackendSupported backend = 1;
+		AgentSupported agent = 2;
+		ModuleSupported generic_module = 5;
+	}
+}
+
+message BackendSupported {
+	enum SerializationSupport {
+		NONE = 0;
+		DIVERGING_ONLY = 1;
+		NONDIVERGING_ONLY = 2;
+		FULL = 3;
+	}
+	required SerializationSupport serialization_support = 1;
+	extensions 100 to max;
+}
+
+message AgentSupported {
+	extensions 100 to max;
+}
+
+message ModuleSupported {
+	extensions 100 to max;
+}
+
+message State {
+ 	repeated double features = 1;
+	repeated uint32 feature_array_dims = 2;
+	 
+	optional double reward = 3;
+	
+	extensions 10 to max;
+}
+
+message Action {
+	repeated int32 discrete_actions = 1;
+	repeated double continuous_actions = 2;
+	
+	extensions 10 to max;
+}
+
+message Error {
+	required string description = 1;
+	optional bool fatal = 2 [default=false];
+
+	extensions 10 to max;
+}
+
+message Other {
+	required string name = 1;
+	
+	extensions 10 to max;
+}
+
+message Viz {
+	// TODO
+}
+
+enum SerializationFormat {
+	DIVERGING = 0;
+	NONDIVERGING = 1;
+}
+
+message SerializationRequest {
+	required SerializationFormat format = 1;
+}
+
+message SerializationResponse {
+	required bytes serialized = 1;
+	required SerializationFormat format = 2;
+}
+
+// Below: in progress visualization stuff
+
+// message VizInit {
+// 	repeated SpriteSheet sprite_sheet;
+// 	optional Image background;
+	
+// 	// Maps class of entity to group of sprites and animations
+// 	optional map<int32,SpriteGroup> sprite_map;
+// }
+
+// message SpriteGroup {
+// 	required int32 SpriteSheetId = 1;
+// 	repeated Animation;
+// }
+
+// message Animation {
+// 	// Unique to sprite group, not globally
+// 	required int32 animation_id;
+// 	repeated int32 sprite_sheet_x;
+// 	repeated int32 sprite_sheet_y;
+// }
+
+// // Complete draw information
+// message VizKey {
+	
+// }
+
+// // Changes from previous key+deltas
+// message VizDelta {
+
+// }
+
+// message EntityKey {
+// 	required int32 id = 1;
+// 	required int32 layer = 4;
+// 	required int32 posx = 2;
+// 	required int32 posy = 3;
+// 	required object_name string = 5;
+// 	repeated SpriteKey sprite = 1;
+// 	repeated ShapeKey shape = 1;
+// }
+
+// message ShapeKey {
+// 	oneOf {
+// 		Rectangle rect; // width+height
+// 		Triangle tri; // is a triangle
+// 		// ...
+// 	}
+	
+// 	required bool wireframe; // fill or only render edges
+// 	required Color color; // rgba
+// 	required int32 relative_layer;
+// }
+
+// message EntityDelta {
+// 	required int32 id = 1;
+// 	optional int32 layer_d = 2;
+// 	optional int32 posx_d = 3;
+// 	optional int32 posy_d = 4;
+// 	optional string new_object_name = 5;
+// 	repeated SpriteDelta sprite_updates = 6;
+// 	repeated ShapeDelta shape_updates = 7;
+	
+// 	repeated SpriteKey new_sprites = 8;
+// 	repeated ShapeKey new_shapes = 9;
+	
+// 	optional bool delete_entity = 10;
+// }
+
+// message SpriteDelta {
+// 	required int32 id= 1;
+// 	optional int32 delta_rel_posx = 2;
+// 	optional int32 delta_rel_posy = 3;
+// 	optional int32 delta_rel_layer = 4;
+// 	optional bool delete_sprite = 5;
+// }
+
+// message SpriteKey {
+// 	required int32 sprite_id = 1;
+	
+// 	// Relative to the center of the game object
+// 	required relative_pos_x = 1;
+// 	required relative_pos_y = 1;
+// 	// Data pointing to part of sprite sheet, etc
+	
+// 	required sprite_map_id;
+// 	// The animation from the sprite group
+// 	// specified in sprite_map_id
+// 	required animation_id;
+// 	required float animation_progress;
+// }
+
+

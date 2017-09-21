@@ -1,21 +1,21 @@
-use scaii_defs::{Backend, Module, EnvironmentInitArgs, Msg, SupportedBehavior};
+use scaii_defs::{Backend, Module, RustFFIArgs, SupportedBehavior};
+use scaii_defs::protos::{MultiMessage, ScaiiPacket};
 
 use std::error::Error;
 use std::ops::{Deref, DerefMut, Drop};
 
-#[cfg(debug_assertions)]
-use scaii_defs::Language;
-
+/// A backend loaded using FFI and
+/// Rust calling conventions. See the
+/// `Module` trait in `scaii_defs` for API info.
 pub struct RustDynamicBackend {
     backend: Box<Backend>,
     name: String,
 }
 
 impl RustDynamicBackend {
-    pub fn new(args: EnvironmentInitArgs, backend_cfg_toml: &str) -> Result<Self, Box<Error>> {
+    pub fn new(args: RustFFIArgs) -> Result<Self, Box<Error>> {
         use internal::RcLibrary;
         use libloading::Library;
-        debug_assert!(args.language == Language::RustFFI);
 
         let mu = &::internal::OPEN_LIBS;
         {
@@ -32,10 +32,10 @@ impl RustDynamicBackend {
                 uses: 1,
             });
 
-
-            let rclib = unsafe { rclib.lib.get::<fn(&str) -> Box<Backend>>(b"new_backend\0")? };
+            //rclib = rust-call lib
+            let rclib = unsafe { rclib.lib.get::<fn() -> Box<Backend>>(b"new_backend\0")? };
             Ok(RustDynamicBackend {
-                backend: rclib(backend_cfg_toml),
+                backend: rclib(),
                 name: name,
             })
 
@@ -81,11 +81,11 @@ impl Drop for RustDynamicBackend {
 }
 
 impl Module for RustDynamicBackend {
-    fn process_msg(&mut self, msg: &Msg) -> Result<(), Box<Error>> {
+    fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>> {
         self.backend.process_msg(msg)
     }
 
-    fn get_messages(&mut self) -> Vec<Msg> {
+    fn get_messages(&mut self) -> MultiMessage {
         self.backend.get_messages()
     }
 }

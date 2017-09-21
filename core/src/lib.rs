@@ -1,265 +1,303 @@
 extern crate libloading;
 extern crate protobuf;
 extern crate libc;
-extern crate toml;
 extern crate scaii_defs;
 #[macro_use]
 extern crate lazy_static;
 
-use libc::{c_char, size_t};
+use scaii_defs::protos::{RouterEndpoint, MultiMessage, ScaiiPacket, ScaiiPacket_Endpoint, Cfg};
+use scaii_defs::{EnvironmentInitArgs, InitAs, PluginType};
+
+use libc::{c_uchar, size_t};
 
 
 // Don't publicly expose our internal structure to FFI
 pub(crate) mod internal;
 
 use internal::router::Router;
+use internal::backend::RustDynamicBackend;
+use internal::module::RustDynamicModule;
 
+/// The Environment created by this library.
 pub struct Environment {
     router: internal::router::Router,
+    next_msg: Option<MultiMessage>,
 }
 
-/// Given a configuration string, we can configure a new environment on which
-/// all other functions will be run. The resulting environment is allocated on the heap.
+const FATAL_OWNER_ERROR: &'static str = "FATAL CORE ERROR: Cannot forward message to owner";
+
+impl Environment {
+    /// Processes all messages returned by module message processing routed to
+    /// "core"
+    fn process_core_messages(&mut self, packets: &mut [ScaiiPacket]) {
+        for packet in packets {
+            // Forward mesages sent to Core to the owner so they can choose
+            // what to do.
+            if packet.has_err() {
+                self.forward_err_to_owner(packet);
+            }
+
+            if packet.has_config() {
+                let mut cfg = packet.take_config();
+                if self.handle_cfg_errors(packet, &cfg) {
+                    continue;
+                }
+
+                let cfg = cfg.take_core_cfg();
+
+                let args = EnvironmentInitArgs::from_core_cfg(&cfg);
+
+                match args.init_as {
+                    InitAs::Backend => {
+                        let boxed_backend = match args.module_type {
+                            PluginType::RustFFI { args } => {
+                                let backend = RustDynamicBackend::new(args);
+                                if let Err(err) = backend {
+                                    self.handle_errors_possible_failure(
+                                        packet,
+                                        &format!("{}", err),
+                                    );
+                                    continue;
+                                }
+                                Box::new(backend.unwrap())
+                            }
+
+                        };
+
+                        let prev_backend = self.router.register_backend(boxed_backend);
+                        if prev_backend.is_some() {
+                            self.handle_errors_possible_failure(
+                                packet,
+                                "Backend was already registered, deleting",
+                            );
+                        }
+                    }
+                    InitAs::Module { ref name } => {
+                        let boxed_module = match args.module_type {
+                            PluginType::RustFFI { args } => {
+                                let module = RustDynamicModule::new(args);
+                                if let Err(err) = module {
+                                    self.handle_errors_possible_failure(
+                                        packet,
+                                        &format!("{}", err),
+                                    );
+                                    continue;
+                                }
+                                Box::new(module.unwrap())
+                            }
+
+                        };
+
+                        let prev_module = self.router.register_module(name.clone(), boxed_module);
+                        if prev_module.is_some() {
+                            self.handle_errors_possible_failure(
+                                packet,
+                                &format!("Module {} was already registered, deleting", name),
+                            );
+                        }
+                    }
+                }
+            }
+
+        }
+        unimplemented!()
+    }
+
+    /// Handles error forwarding. First it tries the module the packet originated from,
+    /// and if it can't get a hold of that it tries the owner.
+    /// Otherwise, it panics because something very bad has happened.
+    fn handle_errors_possible_failure(&mut self, packet: &ScaiiPacket, descrip: &str) {
+        let error_src = RouterEndpoint::from_scaii_packet_src(&packet);
+        if let Err(err) = error_src {
+            self.router
+                .send_error(
+                    &format!("{};{}", descrip, err),
+                    &RouterEndpoint::Agent,
+                    &RouterEndpoint::Core,
+                )
+                .expect(FATAL_OWNER_ERROR);
+
+            return;
+        }
+        let error_src = error_src.unwrap();
+        let res = self.router.send_error(
+            descrip,
+            &error_src,
+            &RouterEndpoint::Core,
+        );
+
+        if let Err(err) = res {
+            self.router
+                .send_error(
+                    &format!(
+                        "{};\n\
+                        The module who made this mistake no longer exists: {}",
+                        descrip,
+                        err
+                    ),
+                    &error_src,
+                    &RouterEndpoint::Core,
+                )
+                .expect(FATAL_OWNER_ERROR);
+            return;
+        }
+    }
+
+    /// Handles configuration errors. Just here to make the code cleaner.
+    fn handle_cfg_errors(&mut self, packet: &ScaiiPacket, cfg: &Cfg) -> bool {
+        if !cfg.has_core_cfg() {
+            self.handle_errors_possible_failure(
+                packet,
+                "Core only accepts Cfg packets of type CoreCfg",
+            );
+
+            true
+        } else {
+            false
+        }
+    }
+
+    /// Forwards an error to the owner of this environment,
+    /// panicking on failure because something has gone very wrong.
+    fn forward_err_to_owner(&mut self, packet: &mut ScaiiPacket) {
+        packet.set_dest(ScaiiPacket_Endpoint::AGENT);
+        packet.clear_module_name();
+        self.router.route_to(&packet).expect(FATAL_OWNER_ERROR);
+    }
+}
+
+/// Creates a clean environment, further configuration is done via sending
+/// `CoreCfg` messages.
 #[no_mangle]
-pub fn new_environment(cfg_str: *const c_char, cfg_len: size_t) -> *mut Environment {
-    use std::mem::ManuallyDrop;
+pub fn new_environment() -> *mut Environment {
+    let agent = internal::agent::PublisherAgent::new();
+    let env = Box::new(Environment {
+        router: Router::from_agent(Box::new(agent)),
+        next_msg: None,
+    });
 
-    let env = ManuallyDrop::new(Box::new(Environment { router: Router::new() }));
-    Box::into_raw(ManuallyDrop::into_inner(env));
-
-    unimplemented!("Router setup")
+    Box::into_raw(env)
 }
 
 /// Destroys the created environment, this should be called to avoid memory leaks.
 #[no_mangle]
 pub fn destroy_environment(env: *mut Environment) {
-    use std::mem::ManuallyDrop;
-
     unsafe {
-        let mut env = ManuallyDrop::new(Box::from_raw(env));
-        ManuallyDrop::drop(&mut env);
+        Box::from_raw(env);
     }
-    unimplemented!()
-}
-
-/// Changes the configuration of an existing environment using a configuration string.
-#[no_mangle]
-pub fn cfg_environment(env: *mut Environment, cfg_str: *const c_char, cfg_len: size_t) {
-    unimplemented!()
-}
-
-/// The `act` function routes an action message to the underlying environment and
-/// returns the size of the next message in the message queue (which will usually
-/// be the next state, or an error).
-///
-/// If the queue is not empty when this is called, the correct size of the first awaiting message
-/// will be returned **but** an error message will be appended to
-/// the queue **before** the response message.
-///
-/// The raw message should **not** be wrapped
-/// in a `ScaiiPacket`, as the target is presumed to be the backend.
-///
-/// This is a convenience function for `route_msg` with a `ScaiiWrapper` routed to
-/// "backend" followed by `next_msg_size`.
-///
-/// Unlike with a call to `queued_messages`, this will **not** process async module messages,
-/// except in the case where the backend is asynchronous, in which case it will **only**
-/// process messages from that specific asynchronous channel.
-#[no_mangle]
-pub fn act(env: *mut Environment, action_msg: *mut c_char, msg_len: size_t) -> size_t {
-    unimplemented!()
-}
-
-/// This is similar to `act`, but also routes a `ScaiiPacket` to some target.
-///
-/// If the `generic_msg_len` argument is zero, it will only perform the action.
-///
-/// If there is an error parsing the `generic_msg` into a `ScaiiPacket`, an error
-/// message will be appended to the message queue before any other messages are
-/// generated from this function.
-///
-/// This has three other key differences to act:
-///     1. The return value is the number of queued messages, not the size of the next message.
-///     2. Due to 1, a non-empty queue will not cause an error to be generated
-///     3. This will cause messages from asynchronous modules (e.g. visualization) to process
-///         similar to a call to `queued_messages`.
-#[no_mangle]
-pub fn act_and_route(
-    env: *mut Environment,
-    action_msg: *mut c_char,
-    action_msg_len: size_t,
-    generic_msg: *mut c_char,
-    generic_msg_len: size_t,
-) -> size_t {
-    unimplemented!()
-}
-
-/// Resets the environment to a new episode and returns the size of the next message
-/// in the queue.
-///
-/// If the queue is not empty when this is called, the correct size of the first awaiting message
-/// will be returned **but** an error message will be appended to
-/// the queue **before** the response message.
-///
-/// This is **not** deterministic, if the environment has elements of randomization
-/// in its initialization, this will return a randomized state. If you wish to
-/// reset to a deterministic state (i.e. for rollout) please see `serialize`.
-#[no_mangle]
-pub fn reset(env: *mut Environment) -> size_t {
-    unimplemented!()
-}
-
-/// Returns the size in bytes of a serialization of this environment.
-///
-/// If non-diverging serialization is not supported, this will return 0 and
-/// append an error message to the message queue.
-#[no_mangle]
-pub fn serialize_size(env: *mut Environment) -> size_t {
-    unimplemented!()
-}
-
-/// Writes a serialization of the environment in the target buffer,
-/// up to a max of buf_len.
-///
-/// This is defined to be a **non-diverging** serialization. That is,
-/// no matter how many times you load this state, performing the same
-/// action will result in the same next state.
-///
-/// If non-diverging serialization is not supported, this will append an error message
-/// to the message queue and the buffer will not be modified.
-#[no_mangle]
-pub fn serialize(env: *mut Environment, buf: *mut c_char, buf_len: size_t) {
-    unimplemented!()
-}
-
-/// Resets the underlying environment to the state described by the input buffer and
-/// returns the size of the next message.
-///
-/// If the deserialization is unsuccessful, or the environment does not support
-/// non-divergng seralization, an error will be added to the queue.
-///
-/// If the queue is not empty when this is called, the correct size of the first awaiting message
-/// will be returned **but** an error message will be appended to
-/// the queue **before** the response message.
-#[no_mangle]
-pub fn deserialize(env: *mut Environment, buf: *mut c_char, buf_len: size_t) -> size_t {
-    unimplemented!()
-}
-
-/// Returns the size in bytes of a diverging serialization of this environment.
-///
-/// If serialization is not supported, this will return 0 and
-/// append an error message to the message queue.
-///
-/// If the environment is deterministic, this is equivalent to a call to
-/// `serialize_size`, and no error will be raised.
-#[no_mangle]
-pub fn serialize_diverging_size(env: *mut Environment) -> size_t {
-    unimplemented!()
-}
-
-/// Writes a serialization of the environment in the target buffer,
-/// up to a max of buf_len.
-///
-/// This is defined to be a **diverging** serialization. That is,
-/// it does not reset the RNG state, if any, and thus loading this multiple times
-/// and performing the same action may yield different results.
-///
-/// If serialization is not supported, this will append an error message
-/// to the message queue and the buffer will not be modified.
-///
-/// If the environment is deterministic, this is equivalent to a call to
-/// `serialize`, and no error will be raised.
-#[no_mangle]
-pub fn serialize_diverging(env: *mut Environment, buf: *mut c_char, buf_len: size_t) {
-    unimplemented!()
-}
-
-/// Resets the underlying environment to the state described by the input buffer and
-/// returns the size of the next message.
-///
-/// If the deserialization is unsuccessful, or the environment does not support
-/// seralization, an error will be added to the queue.
-///
-/// If the queue is not empty when this is called, the correct size of the first awaiting message
-/// will be returned **but** an error message will be appended to
-/// the queue **before** the response message.
-///
-/// If the environment is deterministic, this is equivalent to a call to
-/// `deserialize`, and no error will be raised.
-#[no_mangle]
-pub fn deserialize_diverging(env: *mut Environment, buf: *mut c_char, buf_len: size_t) -> size_t {
-    unimplemented!()
 }
 
 /// Receives the next message intended for the owner of this environment and
 /// writes it into the target buffer, up to a max of buf_len.
 ///
-/// If no message exists, the buffer will not be filled and an error
+/// If no message exists, or the caller failed to make a previous call to
+/// next_msg_size, the buffer will not be filled and an error
 /// message will be added to the queue.
 ///
 /// If the buffer is not large enough, the buffer will be partially filled,
 /// but an error message will be added to the queue.
+///
+/// This message can be assumed to be the wire format of
+/// the SCAII protobuf type MultiMessage.
 #[no_mangle]
-pub fn next_msg(env: *mut Environment, buf: *mut u8, buf_len: size_t) {
-    unimplemented!()
+pub fn next_msg(env: *mut Environment, buf: *mut c_uchar, buf_len: size_t) {
+    use protobuf::{Message, CodedOutputStream};
+    use std::slice;
+
+    unsafe {
+        match (*env).next_msg {
+            None => {
+                (*env)
+                    .router
+                    .send_error(
+                        "Call to next_msg when no message\
+                 is queued or without preceding call to next_msg_size",
+                        &RouterEndpoint::Agent,
+                        &RouterEndpoint::Core,
+                    )
+                    .expect(FATAL_OWNER_ERROR);
+
+                return;
+            }
+            Some(ref msg) => {
+                let buf = slice::from_raw_parts_mut(buf, buf_len);
+                let mut out = CodedOutputStream::bytes(buf);
+                let result = msg.write_to(&mut out);
+                match result {
+                    Err(err) => {
+                        (*env)
+                            .router
+                            .send_error(
+                                &format!("Error writing to buffer: {}", err),
+                                &RouterEndpoint::Agent,
+                                &RouterEndpoint::Core,
+                            )
+                            .expect(FATAL_OWNER_ERROR);
+                    }
+                    Ok(_) => {}
+                }
+            }
+        }
+
+        (*env).next_msg = None;
+    }
 }
 
 /// Queries the size of the next message intended for the owner of this environment.
 ///
-/// If no message exists, 0 will be returned and an error message will be added to the
-/// queue.
+/// If no message exists, 0 will be returned.
+///
+/// A call to this will query any existing modules (backends etc)
+/// for any messages they would like to send. This is done
+/// BEFORE computing the size.
 #[no_mangle]
 pub fn next_msg_size(env: *mut Environment) -> size_t {
-    unimplemented!()
+    use protobuf::Message;
+    unsafe {
+        // TODO process messages from module
+        let mut core_msgs = (*env).router.process_module_messages();
+        (*env).process_core_messages(&mut core_msgs);
+        let next_msg = (*env).router.agent_mut().unwrap().get_messages();
+        let out = next_msg.compute_size() as size_t;
+
+        (*env).next_msg = Some(next_msg);
+
+        out
+    }
 }
 
-/// Queries the number of messages remaining for the owner of this environment.
+/// Routes a collection of messages to arbitrary receivers and checks for
+/// responses.
 ///
-/// If asynchronous modules are loaded (such as RPC visualization), a call to this function
-/// will check for awaiting messages.
-#[no_mangle]
-pub fn queued_messages(env: *mut Environment) -> size_t {
-    unimplemented!()
-}
-
-/// Routes a message to an arbitrary receiver (e.g. visualization).
-///
-/// The message must conform to the ScaiiPacket protobuf class. If
+/// The message must conform to the MultiMessage SCAII protobuf wire format. If
 /// the message cannot be parsed, an error will be added to the message
 /// queue.
 ///
-/// The return value is equivalent to a query to `queued_messages`.
+/// The return value is equivalent to a query to `next_msg_size`.
 #[no_mangle]
-pub fn route_msg(env: *mut Environment, msg_buf: *mut c_char, msg_len: size_t) -> size_t {
-    unimplemented!()
-}
+pub fn route_msg(env: *mut Environment, msg_buf: *mut c_uchar, msg_len: size_t) -> size_t {
+    use std::slice;
+    use protobuf;
 
-#[cfg(test)]
-mod test {
-    #[test]
-    fn act() {
-        unimplemented!()
-    }
+    unsafe {
+        let mut core_packets =
+            match protobuf::parse_from_bytes(slice::from_raw_parts(msg_buf, msg_len)) {
+                Err(err) => {
+                    (*env)
+                        .router
+                        .send_error(
+                            &format!("Could not parse message. Is it a MultiMessage? {}", err),
+                            &RouterEndpoint::Agent,
+                            &RouterEndpoint::Core,
+                        )
+                        .expect(FATAL_OWNER_ERROR);
+                    Vec::new()
+                }
+                Ok(msg) => (*env).router.decode_and_route(&msg),
+            };
 
-    #[test]
-    fn reset() {
-        unimplemented!()
-    }
+        (*env).process_core_messages(&mut core_packets);
 
-    #[test]
-    fn serialization() {
-        unimplemented!()
-    }
-
-    #[test]
-    fn message_queueing() {
-        unimplemented!()
-    }
-
-    // Tests creating and changing the config of a test environment
-    #[test]
-    fn environment_manipulation() {
-        unimplemented!()
+        next_msg_size(env)
     }
 }
