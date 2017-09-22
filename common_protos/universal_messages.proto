@@ -47,15 +47,14 @@ message Cfg {
 	}
 }
 
-message CoreCfg {
+message PluginType {
 	oneof plugin_type {
 		RustFFIConfig rust_plugin = 1;
 	}
+}
 
-	oneof init_as {
-		BackendInit backend_init = 100;
-		ModuleInit module_init = 101;
-	}
+message CoreCfg {
+	required PluginType plugin_type = 1;
 }
 
 message BackendInit {}
@@ -64,8 +63,16 @@ message ModuleInit {
 	required string name = 1;
 }
 
+message InitAs {
+	oneof init_as {
+		BackendInit backend = 1;
+		ModuleInit module = 2;
+	}
+}
+
 message RustFFIConfig {
 	required string plugin_path = 1;
+	required InitAs init_as = 2;
 }
 
 message BackendCfg {

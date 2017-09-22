@@ -23,7 +23,24 @@ pub struct RustFFIArgs {
 /// The list of supported backend languages
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Debug)]
 pub enum PluginType {
-    RustFFI { args: RustFFIArgs },
+    RustFFI { args: RustFFIArgs, init_as: InitAs },
+}
+
+impl PluginType {
+    fn from_plugin_type_proto(plugin_type: &protos::PluginType) -> Self {
+        if plugin_type.has_rust_plugin() {
+            PluginType::RustFFI {
+                args: RustFFIArgs {
+                    plugin_path: PathBuf::from(
+                        plugin_type.get_rust_plugin().get_plugin_path().to_string(),
+                    ),
+                },
+                init_as: InitAs::from_init_as_proto(plugin_type.get_rust_plugin().get_init_as()),
+            }
+        } else {
+            unreachable!("There are no other plugin types supported");
+        }
+    }
 }
 
 /// Specifies which type of plugin to load the given environment as.
@@ -33,37 +50,29 @@ pub enum InitAs {
     Module { name: String },
 }
 
+impl InitAs {
+    pub fn from_init_as_proto(init_as: &protos::InitAs) -> Self {
+        if init_as.has_backend() {
+            InitAs::Backend
+        } else {
+            let name = init_as.get_module().get_name().to_string();
+            InitAs::Module { name: name }
+        }
+    }
+}
+
 /// The parameters for creating a backend environment
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Debug)]
 pub struct EnvironmentInitArgs {
     pub module_type: PluginType,
-    pub init_as: InitAs,
 }
 
 impl EnvironmentInitArgs {
     /// Creates environment initialization parameters
     /// from a rust-friendly translation of CoreCfg
     pub fn from_core_cfg(cfg: &CoreCfg) -> Self {
-        let init_as = if cfg.has_backend_init() {
-            InitAs::Backend
-        } else if cfg.has_module_init() {
-            InitAs::Module { name: cfg.get_module_init().get_name().to_string() }
-        } else {
-            unreachable!("These cover the only types")
-        };
-
-        if cfg.has_rust_plugin() {
-            let rust_cfg = cfg.get_rust_plugin();
-            EnvironmentInitArgs {
-                module_type: PluginType::RustFFI {
-                    args: RustFFIArgs {
-                        plugin_path: PathBuf::from(rust_cfg.get_plugin_path().to_string()),
-                    },
-                },
-                init_as: init_as,
-            }
-        } else {
-            unreachable!("Rust plugin is the only supported plugin")
+        EnvironmentInitArgs {
+            module_type: PluginType::from_plugin_type_proto(cfg.get_plugin_type()),
         }
     }
 }

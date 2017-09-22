@@ -46,57 +46,52 @@ impl Environment {
                 let cfg = cfg.take_core_cfg();
 
                 let args = EnvironmentInitArgs::from_core_cfg(&cfg);
-
-                match args.init_as {
-                    InitAs::Backend => {
-                        let boxed_backend = match args.module_type {
-                            PluginType::RustFFI { args } => {
-                                let backend = RustDynamicBackend::new(args);
+                match args.module_type {
+                    PluginType::RustFFI { args, init_as } => {
+                        match init_as {
+                            // This is mostly the same code, not sure how to abstract it
+                            InitAs::Backend => {
+                                let backend = RustDynamicBackend::new(args.clone());
                                 if let Err(err) = backend {
                                     self.handle_errors_possible_failure(
                                         packet,
-                                        &format!("{}", err),
+                                        &format!("Backend could not be initialized: {}", err),
                                     );
                                     continue;
                                 }
-                                Box::new(backend.unwrap())
+                                let boxed = Box::new(backend.unwrap());
+
+                                let prev = self.router.register_backend(boxed);
+                                if prev.is_some() {
+                                    self.handle_errors_possible_failure(
+                                        packet,
+                                        "Previous backend already registered",
+                                    );
+                                }
                             }
-
-                        };
-
-                        let prev_backend = self.router.register_backend(boxed_backend);
-                        if prev_backend.is_some() {
-                            self.handle_errors_possible_failure(
-                                packet,
-                                "Backend was already registered, deleting",
-                            );
-                        }
-                    }
-                    InitAs::Module { ref name } => {
-                        let boxed_module = match args.module_type {
-                            PluginType::RustFFI { args } => {
-                                let module = RustDynamicModule::new(args);
+                            InitAs::Module { name } => {
+                                let module = RustDynamicModule::new(args.clone());
                                 if let Err(err) = module {
                                     self.handle_errors_possible_failure(
                                         packet,
-                                        &format!("{}", err),
+                                        &format!(
+                                            "Module {} could not be initialized: {}",
+                                            &name,
+                                            err
+                                        ),
                                     );
                                     continue;
                                 }
-                                Box::new(module.unwrap())
+                                let boxed = Box::new(module.unwrap());
+
+                                let prev = self.router.register_module(name.clone(), boxed);
+                                if prev.is_some() {
+                                    self.handle_errors_possible_failure(
+                                        packet,
+                                        &format!("Previous module {} already registered", name),
+                                    );
+                                }
                             }
-
-                        };
-
-                        let prev_module = self.router.register_module(name.clone(), boxed_module);
-                        if prev_module.is_some() {
-                            self.handle_errors_possible_failure(
-                                packet,
-                                &format!(
-                                    "A Module named {} was already registered, deleting",
-                                    name
-                                ),
-                            );
                         }
                     }
                 }
