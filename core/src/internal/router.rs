@@ -72,32 +72,13 @@ impl Router {
         let mut core_msgs: Vec<ScaiiPacket> = Vec::new();
 
         for msg in msg.get_packets().iter() {
-            let dest = RouterEndpoint::from_scaii_packet_dest(msg);
-            let src = RouterEndpoint::from_scaii_packet_src(msg);
-            if !src.is_ok() {
-                core_msgs.push(
-                    self.send_error(
-                        "Module contains malformed src field",
-                        &RouterEndpoint::Core,
-                        &RouterEndpoint::Core,
-                    ).unwrap()
-                        .unwrap(),
-                );
-                continue;
-            }
-            let src = src.unwrap();
+            let dest = RouterEndpoint::from_endpoint(msg.get_dest());
+            let src = RouterEndpoint::from_endpoint(msg.get_src());
             if src == RouterEndpoint::Core {
                 panic!(
                     "FATAL CORE ERROR: Core should not be using decode_and_route to send its messages."
                 )
             }
-
-            if let Err(err) = dest.clone() {
-                self.send_error(&format!("{}", err), &src, &RouterEndpoint::Core)
-                    .unwrap()
-                    .unwrap();
-            }
-            let dest = dest.unwrap();
 
             if dest == src {
                 self.send_error(
@@ -128,7 +109,7 @@ impl Router {
     /// Returns an error if the specified destination does not exist, or if the
     /// target errors on receiving the message.
     pub fn route_to(&mut self, msg: &ScaiiPacket) -> Result<Option<ScaiiPacket>, Box<Error>> {
-        let dest = &RouterEndpoint::from_scaii_packet_dest(msg)?;
+        let dest = &RouterEndpoint::from_endpoint(msg.get_dest());
         match *dest {
             RouterEndpoint::Backend => {
                 let res = self.backend.as_mut().and_then(|v| Some(v.process_msg(msg)));
@@ -217,18 +198,13 @@ impl Router {
             return Err(NoSuchEndpointError { end: dest.clone() });
         }
 
-        let (dest, mod_name) = dest.to_packet_dest();
-        let (src, src_mod_name) = src.to_packet_dest();
+        let dest = dest.to_endpoint();
+        let src = src.to_endpoint();
 
         let mut error_packet = ScaiiPacket::new();
         error_packet.set_dest(dest);
-        if let Some(mod_name) = mod_name {
-            error_packet.set_module_name(mod_name.to_string());
-        }
-        error_packet.set_source(src);
-        if let Some(src_mod_name) = src_mod_name {
-            error_packet.set_source_name(src_mod_name.to_string());
-        }
+        error_packet.set_src(src);
+
         let mut err = protos::Error::new();
         err.set_description(msg.to_string());
         error_packet.set_err(err);

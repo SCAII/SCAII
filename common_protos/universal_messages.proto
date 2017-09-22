@@ -17,17 +17,25 @@ message ScaiiPacket {
 		bool reset_env = 9;
 		Other other = 29;
 	}
-	enum Endpoint {
-		BACKEND = 0;
-		AGENT = 1;
-		CORE = 2;
-		MODULE = 3;
-	}
+	
+	required Endpoint src = 31;
 	required Endpoint dest = 30;
-	optional string module_name = 31;
+}
 
-	required Endpoint source = 32;
-	optional string source_name = 33;
+message Endpoint {
+	oneof endpoint {
+		BackendEndpoint backend = 1;
+		AgentEndpoint agent = 2;
+		CoreEndpoint core = 3;
+		ModuleEndpoint module = 4;
+	}
+}
+
+message BackendEndpoint {}
+message AgentEndpoint {}
+message CoreEndpoint {}
+message ModuleEndpoint {
+	required string name = 1;
 }
 
 message Cfg {

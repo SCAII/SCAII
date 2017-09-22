@@ -5,7 +5,7 @@ extern crate scaii_defs;
 #[macro_use]
 extern crate lazy_static;
 
-use scaii_defs::protos::{RouterEndpoint, MultiMessage, ScaiiPacket, ScaiiPacket_Endpoint, Cfg};
+use scaii_defs::protos::{RouterEndpoint, MultiMessage, ScaiiPacket, Cfg, AgentEndpoint, Endpoint};
 use scaii_defs::{EnvironmentInitArgs, InitAs, PluginType};
 
 use libc::{c_uchar, size_t};
@@ -92,7 +92,10 @@ impl Environment {
                         if prev_module.is_some() {
                             self.handle_errors_possible_failure(
                                 packet,
-                                &format!("Module {} was already registered, deleting", name),
+                                &format!(
+                                    "A Module named {} was already registered, deleting",
+                                    name
+                                ),
                             );
                         }
                     }
@@ -107,19 +110,7 @@ impl Environment {
     /// and if it can't get a hold of that it tries the owner.
     /// Otherwise, it panics because something very bad has happened.
     fn handle_errors_possible_failure(&mut self, packet: &ScaiiPacket, descrip: &str) {
-        let error_src = RouterEndpoint::from_scaii_packet_src(&packet);
-        if let Err(err) = error_src {
-            self.router
-                .send_error(
-                    &format!("{};{}", descrip, err),
-                    &RouterEndpoint::Agent,
-                    &RouterEndpoint::Core,
-                )
-                .expect(FATAL_OWNER_ERROR);
-
-            return;
-        }
-        let error_src = error_src.unwrap();
+        let error_src = RouterEndpoint::from_endpoint(packet.get_src());
         let res = self.router.send_error(
             descrip,
             &error_src,
@@ -160,8 +151,9 @@ impl Environment {
     /// Forwards an error to the owner of this environment,
     /// panicking on failure because something has gone very wrong.
     fn forward_err_to_owner(&mut self, packet: &mut ScaiiPacket) {
-        packet.set_dest(ScaiiPacket_Endpoint::AGENT);
-        packet.clear_module_name();
+        let mut dest = Endpoint::new();
+        dest.set_agent(AgentEndpoint::new());
+        packet.set_dest(dest);
         self.router.route_to(&packet).expect(FATAL_OWNER_ERROR);
     }
 }
