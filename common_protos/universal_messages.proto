@@ -1,5 +1,7 @@
 syntax = "proto2";
 
+package scaii.common;
+
 message MultiMessage {
 	repeated ScaiiPacket packets = 1;
 }
