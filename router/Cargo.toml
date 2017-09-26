@@ -1,9 +1,0 @@
-[package]
-name = "router"
-version = "0.1.0"
-authors = ["Zoe Juozapaitis <jragonmiris@gmail.com>"]
-
-[lib]
-crate-type = ["cdylib"]
-
-[dependencies]

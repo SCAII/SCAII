@@ -1,0 +1,16 @@
+[package]
+name = "scaii-core"
+version = "0.1.0"
+authors = ["Zoe Juozapaitis <jragonmiris@gmail.com>"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+libloading="0.4.1"
+prost = "0.2"
+libc = "0.2"
+lazy_static = "0.2"
+
+# local deps
+scaii_defs = {path = "../scaii_defs"}

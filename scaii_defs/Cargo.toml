@@ -1,0 +1,19 @@
+[package]
+name = "scaii_defs"
+version = "0.1.0"
+authors = ["Zoe Juozapaitis <Jragonmiris@gmail.com>"]
+build = "build.rs"
+
+[dependencies]
+serde = "1.0.14"
+serde_derive= "1.0.14"
+# NOTE: Prost and Bytes need to be in here, but the generated file
+# includes them on its own, don't delete this or add them to 
+# lib.rs, the current setup is intentional
+prost = "0.2"
+prost-derive = "0.2"
+bytes = "0.4.5"
+
+[build-dependencies]
+prost-build = "0.2"
+glob = "0.2.11"
