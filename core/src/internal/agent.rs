@@ -30,7 +30,7 @@ impl Module for PublisherAgent {
     // and since the frontend is a publisher
     // (driving) it will send responses itself
     fn get_messages(&mut self) -> MultiMessage {
-        MultiMessage::new()
+        MultiMessage { packets: Vec::new() }
     }
 }
 

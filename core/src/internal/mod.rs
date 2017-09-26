@@ -1,7 +1,6 @@
-pub mod backend;
 pub mod router;
 pub mod agent;
-pub mod module;
+pub mod rust_ffi;
 
 use libloading::Library;
 

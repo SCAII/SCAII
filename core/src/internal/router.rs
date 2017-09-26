@@ -1,5 +1,6 @@
 use scaii_defs::{Backend, Agent, Module};
-use scaii_defs::protos::{MultiMessage, ScaiiPacket, RouterEndpoint};
+use scaii_defs::protos::{MultiMessage, ScaiiPacket, ModuleEndpoint};
+use scaii_defs::protos::endpoint::Endpoint;
 
 use std::error::Error;
 use std::collections::HashMap;
@@ -8,14 +9,14 @@ use std::fmt::{Display, Formatter};
 
 /// Indicates an attempt to reach a module that has
 /// not been registered.
-#[derive(Clone, Eq, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct NoSuchEndpointError {
-    end: RouterEndpoint,
+    end: Endpoint,
 }
 
 impl Display for NoSuchEndpointError {
     fn fmt(&self, fmt: &mut Formatter) -> Result<(), fmt::Error> {
-        write!(fmt, "No such registered module: {}", self.end)
+        write!(fmt, "No such registered module: {:?}", self.end)
     }
 }
 
@@ -70,11 +71,13 @@ impl Router {
     /// including Errors the Core needs to forward to the owner module.
     pub fn decode_and_route(&mut self, msg: &MultiMessage) -> Vec<ScaiiPacket> {
         let mut core_msgs: Vec<ScaiiPacket> = Vec::new();
+        use scaii_defs::protos::endpoint::Endpoint;
+        use scaii_defs::protos::CoreEndpoint;
 
-        for msg in msg.get_packets().iter() {
-            let dest = RouterEndpoint::from_endpoint(msg.get_dest());
-            let src = RouterEndpoint::from_endpoint(msg.get_src());
-            if src == RouterEndpoint::Core {
+        for msg in &msg.packets {
+            let dest = msg.dest.endpoint.as_ref().expect("Malformed dest field");
+            let src = msg.src.endpoint.as_ref().expect("Malformed src field");
+            if src == &Endpoint::Core(CoreEndpoint {}) {
                 panic!(
                     "FATAL CORE ERROR: Core should not be using decode_and_route to send its messages."
                 )
@@ -84,7 +87,7 @@ impl Router {
                 self.send_error(
                     "Module attempted to send message to itself",
                     &src,
-                    &RouterEndpoint::Core,
+                    &Endpoint::Core(CoreEndpoint {}),
                 ).unwrap();
                 continue;
 
@@ -93,7 +96,7 @@ impl Router {
             match self.route_to(&msg) {
                 Err(err) => {
 
-                    self.send_error(&format!("{}", err), &src, &RouterEndpoint::Core)
+                    self.send_error(&format!("{}", err), &src, &Endpoint::Core(CoreEndpoint {}))
                         .unwrap();
 
                 }
@@ -109,9 +112,9 @@ impl Router {
     /// Returns an error if the specified destination does not exist, or if the
     /// target errors on receiving the message.
     pub fn route_to(&mut self, msg: &ScaiiPacket) -> Result<Option<ScaiiPacket>, Box<Error>> {
-        let dest = &RouterEndpoint::from_endpoint(msg.get_dest());
+        let dest = msg.dest.endpoint.as_ref().expect("Malformed dest field");
         match *dest {
-            RouterEndpoint::Backend => {
+            Endpoint::Backend(_) => {
                 let res = self.backend.as_mut().and_then(|v| Some(v.process_msg(msg)));
                 if let Some(Err(err)) = res {
                     return Err(err);
@@ -121,7 +124,7 @@ impl Router {
 
                 Ok(None)
             }
-            RouterEndpoint::Agent => {
+            Endpoint::Agent(_) => {
                 let res = self.agent.as_mut().and_then(|v| Some(v.process_msg(msg)));
                 if let Some(Err(err)) = res {
                     return Err(err);
@@ -131,8 +134,8 @@ impl Router {
 
                 Ok(None)
             }
-            RouterEndpoint::Core => Ok(Some(msg.clone())),
-            RouterEndpoint::Module { ref name } => {
+            Endpoint::Core(_) => Ok(Some(msg.clone())),
+            Endpoint::Module(ModuleEndpoint { ref name }) => {
                 let res = self.modules.get_mut(name).and_then(
                     |v| Some(v.process_msg(msg)),
                 );
@@ -159,14 +162,14 @@ impl Router {
         let msgs = if let Some(ref mut backend) = self.backend {
             backend.get_messages()
         } else {
-            MultiMessage::new()
+            MultiMessage { packets: Vec::new() }
         };
         core_messages.append(&mut self.decode_and_route(&msgs));
 
         let msgs = if let Some(ref mut agent) = self.agent {
             agent.get_messages()
         } else {
-            MultiMessage::new()
+            MultiMessage { packets: Vec::new() }
         };
         core_messages.append(&mut self.decode_and_route(&msgs));
 
@@ -189,25 +192,24 @@ impl Router {
     pub fn send_error(
         &mut self,
         msg: &str,
-        dest: &RouterEndpoint,
-        src: &RouterEndpoint,
+        dest: &Endpoint,
+        src: &Endpoint,
     ) -> Result<Option<ScaiiPacket>, NoSuchEndpointError> {
         use scaii_defs::protos;
+        use scaii_defs::protos::scaii_packet::SpecificMsg;
 
         if !self.endpoint_exists(dest) {
             return Err(NoSuchEndpointError { end: dest.clone() });
         }
 
-        let dest = dest.to_endpoint();
-        let src = src.to_endpoint();
-
-        let mut error_packet = ScaiiPacket::new();
-        error_packet.set_dest(dest);
-        error_packet.set_src(src);
-
-        let mut err = protos::Error::new();
-        err.set_description(msg.to_string());
-        error_packet.set_err(err);
+        let error_packet = ScaiiPacket {
+            dest: protos::Endpoint { endpoint: Some(dest.clone()) },
+            src: protos::Endpoint { endpoint: Some(src.clone()) },
+            specific_msg: Some(SpecificMsg::Err(protos::Error {
+                description: msg.to_string(),
+                fatal: None,
+            })),
+        };
 
         let panic_msg = "FATAL CORE ERROR: Cannot send error message from inside core";
         // At this point, we pretty much can't handle errors anymore
@@ -217,12 +219,12 @@ impl Router {
     }
 
     /// Determines if a given RouterEndpoint has been registered with this Router.
-    pub fn endpoint_exists(&self, end: &RouterEndpoint) -> bool {
+    pub fn endpoint_exists(&self, end: &Endpoint) -> bool {
         match *end {
-            RouterEndpoint::Core => true,
-            RouterEndpoint::Backend => self.backend.is_some(),
-            RouterEndpoint::Agent => self.agent.is_some(),
-            RouterEndpoint::Module { ref name } => self.modules.get(name).is_some(),
+            Endpoint::Core(_) => true,
+            Endpoint::Backend(_) => self.backend.is_some(),
+            Endpoint::Agent(_) => self.agent.is_some(),
+            Endpoint::Module(ModuleEndpoint { ref name }) => self.modules.get(name).is_some(),
         }
     }
 

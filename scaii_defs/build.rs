@@ -1,14 +1,13 @@
-extern crate protoc_rust;
+extern crate prost_build;
 extern crate glob;
 
 fn main() {
     use glob::glob;
 
-    protoc_rust::run(protoc_rust::Args {
-        out_dir: "src/protos",
-        input: &["../common_protos/universal_messages.proto"],
-        includes: &["../common_protos"],
-    }).expect("Protoc Error");
+    prost_build::compile_protos(
+        &["../common_protos/universal_messages.proto"],
+        &["../common_protos"],
+    ).unwrap();
 
     // Make our protobuf file a reason to recompile
     // (See http://doc.crates.io/build-script.html for more info

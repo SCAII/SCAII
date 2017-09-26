@@ -1,12 +1,13 @@
 extern crate libloading;
-extern crate protobuf;
+extern crate prost;
 extern crate libc;
 extern crate scaii_defs;
 #[macro_use]
 extern crate lazy_static;
 
-use scaii_defs::protos::{RouterEndpoint, MultiMessage, ScaiiPacket, Cfg, AgentEndpoint, Endpoint};
-use scaii_defs::{EnvironmentInitArgs, InitAs, PluginType};
+use scaii_defs::protos::{MultiMessage, ScaiiPacket, AgentEndpoint};
+use prost::Message;
+use std::error::Error;
 
 use libc::{c_uchar, size_t};
 
@@ -15,8 +16,6 @@ use libc::{c_uchar, size_t};
 pub(crate) mod internal;
 
 use internal::router::Router;
-use internal::backend::RustDynamicBackend;
-use internal::module::RustDynamicModule;
 
 /// The Environment created by this library.
 pub struct Environment {
@@ -29,87 +28,89 @@ const FATAL_OWNER_ERROR: &'static str = "FATAL CORE ERROR: Cannot forward messag
 impl Environment {
     /// Processes all messages returned by module message processing routed to
     /// "core"
-    fn process_core_messages(&mut self, packets: &mut [ScaiiPacket]) {
+    fn process_core_messages(&mut self, packets: Vec<ScaiiPacket>) {
+        use scaii_defs::protos::scaii_packet::SpecificMsg;
+        use scaii_defs::protos::{Cfg, CoreCfg, PluginType};
+        use scaii_defs::protos::cfg::WhichModule;
+
         for packet in packets {
-            // Forward mesages sent to Core to the owner so they can choose
-            // what to do.
-            if packet.has_err() {
-                self.forward_err_to_owner(packet);
+            if packet.specific_msg.is_none() {
+                self.handle_errors_possible_failure(
+                    &packet,
+                    "Specific Message field has invalid variant",
+                );
             }
 
-            if packet.has_config() {
-                let mut cfg = packet.take_config();
-                if self.handle_cfg_errors(packet, &cfg) {
-                    continue;
+            match packet.specific_msg.clone().unwrap() {
+                SpecificMsg::Err(_) => self.forward_err_to_owner(&mut packet.clone()),
+                SpecificMsg::Config(Cfg {
+                           which_module: Some(WhichModule::CoreCfg(CoreCfg { plugin_type: PluginType{ plugin_type: Some(ref mut plugin_type) } })),
+                       }) => {
+                           let res = self.load_cfg(plugin_type);
+                           if let Err(err) = res {
+                               self.handle_errors_possible_failure(&packet, &format!("Could not complete configuration: {}",err));
+                           }
+                       }
+                SpecificMsg::Config(Cfg { which_module: Some(_) }) => {
+                    self.handle_errors_possible_failure(
+                        &packet,
+                        "Core only handles correctly formed CoreCfg config messages.",
+                    )
                 }
+                _ => {
+                    self.handle_errors_possible_failure(&packet, "Message type not suited for Core")
+                }
+            }
+        }
+    }
 
-                let cfg = cfg.take_core_cfg();
+    fn load_cfg(
+        &mut self,
+        plugin_type: &mut scaii_defs::protos::plugin_type::PluginType,
+    ) -> Result<(), Box<Error>> {
+        use scaii_defs::protos::plugin_type::PluginType::*;
+        use internal::rust_ffi;
+        use internal::rust_ffi::LoadedAs;
 
-                let args = EnvironmentInitArgs::from_core_cfg(&cfg);
-                match args.module_type {
-                    PluginType::RustFFI { args, init_as } => {
-                        match init_as {
-                            // This is mostly the same code, not sure how to abstract it
-                            InitAs::Backend => {
-                                let backend = RustDynamicBackend::new(args.clone());
-                                if let Err(err) = backend {
-                                    self.handle_errors_possible_failure(
-                                        packet,
-                                        &format!("Backend could not be initialized: {}", err),
-                                    );
-                                    continue;
-                                }
-                                let boxed = Box::new(backend.unwrap());
-
-                                let prev = self.router.register_backend(boxed);
-                                if prev.is_some() {
-                                    self.handle_errors_possible_failure(
-                                        packet,
-                                        "Previous backend already registered",
-                                    );
-                                }
-                            }
-                            InitAs::Module { name } => {
-                                let module = RustDynamicModule::new(args.clone());
-                                if let Err(err) = module {
-                                    self.handle_errors_possible_failure(
-                                        packet,
-                                        &format!(
-                                            "Module {} could not be initialized: {}",
-                                            &name,
-                                            err
-                                        ),
-                                    );
-                                    continue;
-                                }
-                                let boxed = Box::new(module.unwrap());
-
-                                let prev = self.router.register_module(name.clone(), boxed);
-                                if prev.is_some() {
-                                    self.handle_errors_possible_failure(
-                                        packet,
-                                        &format!("Previous module {} already registered", name),
-                                    );
-                                }
-                            }
+        match *plugin_type {
+            RustPlugin(ref cfg) => {
+                match rust_ffi::init_ffi(cfg.clone())? {
+                    LoadedAs::Backend(backend) => {
+                        let prev = self.router.register_backend(backend);
+                        if prev.is_some() {
+                            Err("Backend previously registered, overwriting".to_string())?
+                        } else {
+                            Ok(())
+                        }
+                    }
+                    LoadedAs::Module(module, name) => {
+                        let prev = self.router.register_module(name.clone(), module);
+                        if prev.is_some() {
+                            Err(format!(
+                                "Module {} previously registered, overwriting",
+                                name
+                            ))?
+                        } else {
+                            Ok(())
                         }
                     }
                 }
             }
-
         }
-        unimplemented!()
     }
 
     /// Handles error forwarding. First it tries the module the packet originated from,
     /// and if it can't get a hold of that it tries the owner.
     /// Otherwise, it panics because something very bad has happened.
     fn handle_errors_possible_failure(&mut self, packet: &ScaiiPacket, descrip: &str) {
-        let error_src = RouterEndpoint::from_endpoint(packet.get_src());
+        use scaii_defs::protos::endpoint::Endpoint;
+        use scaii_defs::protos::CoreEndpoint;
+
+        let error_src = packet.src.endpoint.as_ref().unwrap();
         let res = self.router.send_error(
             descrip,
-            &error_src,
-            &RouterEndpoint::Core,
+            error_src,
+            &Endpoint::Core(CoreEndpoint {}),
         );
 
         if let Err(err) = res {
@@ -122,33 +123,21 @@ impl Environment {
                         err
                     ),
                     &error_src,
-                    &RouterEndpoint::Core,
+                    &Endpoint::Core(CoreEndpoint {}),
                 )
                 .expect(FATAL_OWNER_ERROR);
             return;
         }
     }
 
-    /// Handles configuration errors. Just here to make the code cleaner.
-    fn handle_cfg_errors(&mut self, packet: &ScaiiPacket, cfg: &Cfg) -> bool {
-        if !cfg.has_core_cfg() {
-            self.handle_errors_possible_failure(
-                packet,
-                "Core only accepts Cfg packets of type CoreCfg",
-            );
-
-            true
-        } else {
-            false
-        }
-    }
-
     /// Forwards an error to the owner of this environment,
     /// panicking on failure because something has gone very wrong.
     fn forward_err_to_owner(&mut self, packet: &mut ScaiiPacket) {
-        let mut dest = Endpoint::new();
-        dest.set_agent(AgentEndpoint::new());
-        packet.set_dest(dest);
+        use scaii_defs::protos::endpoint;
+        use scaii_defs::protos;
+
+        let dest = protos::Endpoint { endpoint: Some(endpoint::Endpoint::Agent(AgentEndpoint {})) };
+        packet.dest = dest;
         self.router.route_to(&packet).expect(FATAL_OWNER_ERROR);
     }
 }
@@ -188,8 +177,10 @@ pub fn destroy_environment(env: *mut Environment) {
 /// the SCAII protobuf type MultiMessage.
 #[no_mangle]
 pub fn next_msg(env: *mut Environment, buf: *mut c_uchar, buf_len: size_t) {
-    use protobuf::{Message, CodedOutputStream};
     use std::slice;
+    use std::io::Cursor;
+    use scaii_defs::protos::endpoint::Endpoint;
+    use scaii_defs::protos::{CoreEndpoint, AgentEndpoint};
 
     unsafe {
         match (*env).next_msg {
@@ -199,25 +190,24 @@ pub fn next_msg(env: *mut Environment, buf: *mut c_uchar, buf_len: size_t) {
                     .send_error(
                         "Call to next_msg when no message\
                  is queued or without preceding call to next_msg_size",
-                        &RouterEndpoint::Agent,
-                        &RouterEndpoint::Core,
+                        &Endpoint::Agent(AgentEndpoint {}),
+                        &Endpoint::Core(CoreEndpoint {}),
                     )
                     .expect(FATAL_OWNER_ERROR);
 
                 return;
             }
             Some(ref msg) => {
-                let buf = slice::from_raw_parts_mut(buf, buf_len);
-                let mut out = CodedOutputStream::bytes(buf);
-                let result = msg.write_to(&mut out);
+                let mut buf = slice::from_raw_parts_mut(buf, buf_len);
+                let result = msg.encode(&mut Cursor::new(&mut buf));
                 match result {
                     Err(err) => {
                         (*env)
                             .router
                             .send_error(
                                 &format!("Error writing to buffer: {}", err),
-                                &RouterEndpoint::Agent,
-                                &RouterEndpoint::Core,
+                                &Endpoint::Agent(AgentEndpoint {}),
+                                &Endpoint::Core(CoreEndpoint {}),
                             )
                             .expect(FATAL_OWNER_ERROR);
                     }
@@ -239,13 +229,12 @@ pub fn next_msg(env: *mut Environment, buf: *mut c_uchar, buf_len: size_t) {
 /// BEFORE computing the size.
 #[no_mangle]
 pub fn next_msg_size(env: *mut Environment) -> size_t {
-    use protobuf::Message;
     unsafe {
         // TODO process messages from module
-        let mut core_msgs = (*env).router.process_module_messages();
-        (*env).process_core_messages(&mut core_msgs);
+        let core_msgs = (*env).router.process_module_messages();
+        (*env).process_core_messages(core_msgs);
         let next_msg = (*env).router.agent_mut().unwrap().get_messages();
-        let out = next_msg.compute_size() as size_t;
+        let out = next_msg.encoded_len();
 
         (*env).next_msg = Some(next_msg);
 
@@ -264,26 +253,26 @@ pub fn next_msg_size(env: *mut Environment) -> size_t {
 #[no_mangle]
 pub fn route_msg(env: *mut Environment, msg_buf: *mut c_uchar, msg_len: size_t) -> size_t {
     use std::slice;
-    use protobuf;
+    use scaii_defs::protos::endpoint::Endpoint;
+    use scaii_defs::protos::{CoreEndpoint, AgentEndpoint};
 
     unsafe {
-        let mut core_packets =
-            match protobuf::parse_from_bytes(slice::from_raw_parts(msg_buf, msg_len)) {
-                Err(err) => {
-                    (*env)
-                        .router
-                        .send_error(
-                            &format!("Could not parse message. Is it a MultiMessage? {}", err),
-                            &RouterEndpoint::Agent,
-                            &RouterEndpoint::Core,
-                        )
-                        .expect(FATAL_OWNER_ERROR);
-                    Vec::new()
-                }
-                Ok(msg) => (*env).router.decode_and_route(&msg),
-            };
+        let core_packets = match MultiMessage::decode(slice::from_raw_parts(msg_buf, msg_len)) {
+            Err(err) => {
+                (*env)
+                    .router
+                    .send_error(
+                        &format!("Could not parse message. Is it a MultiMessage? {}", err),
+                        &Endpoint::Agent(AgentEndpoint {}),
+                        &Endpoint::Core(CoreEndpoint {}),
+                    )
+                    .expect(FATAL_OWNER_ERROR);
+                Vec::new()
+            }
+            Ok(msg) => (*env).router.decode_and_route(&msg),
+        };
 
-        (*env).process_core_messages(&mut core_packets);
+        (*env).process_core_messages(core_packets);
 
         next_msg_size(env)
     }
