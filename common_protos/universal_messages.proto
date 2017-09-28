@@ -17,6 +17,7 @@ message ScaiiPacket {
 		SerializationRequest ser_req = 7;
 		SerializationResponse ser_resp = 8;
 		bool reset_env = 9;
+		VizInit viz_init = 10;
 		Other other = 29;
 	}
 	
@@ -145,10 +146,6 @@ message Other {
 	extensions 10 to max;
 }
 
-message Viz {
-	// TODO
-}
-
 enum SerializationFormat {
 	DIVERGING = 0;
 	NONDIVERGING = 1;
@@ -163,96 +160,104 @@ message SerializationResponse {
 	required SerializationFormat format = 2;
 }
 
-// Below: in progress visualization stuff
+/// A marker for now, at the moment there's nothing we need to init.
+message VizInit {
 
-// message VizInit {
-// 	repeated SpriteSheet sprite_sheet;
-// 	optional Image background;
-	
-// 	// Maps class of entity to group of sprites and animations
-// 	optional map<int32,SpriteGroup> sprite_map;
-// }
+}
 
-// message SpriteGroup {
-// 	required int32 SpriteSheetId = 1;
-// 	repeated Animation;
-// }
+// The packet containing what to draw. This is ALWAYS
+// a delta, so the first packet should contain all
+// information. Future packets need only contain information
+// on what has changed since the last packet.
+message Viz {
+	repeated Entity entities = 1; 
+}
 
-// message Animation {
-// 	// Unique to sprite group, not globally
-// 	required int32 animation_id;
-// 	repeated int32 sprite_sheet_x;
-// 	repeated int32 sprite_sheet_y;
-// }
+// An drawable object
+message Entity {
+	// This is not globally unique, but rather
+	// unique to the sender of the packet
+	// (that is, the Endpoint reigstered as the
+	// "src" of the enclosing ScaiiPacket).
+	//
+	// This is so multiple modules do not need to
+	// coordinate their visualization IDs.
+	required uint64 id = 1;
 
-// // Complete draw information
-// message VizKey {
-	
-// }
+	// The absolute position of the entity,
+	// objects are drawn as if this is the
+	// center
+	optional Pos pos = 2;
 
-// // Changes from previous key+deltas
-// message VizDelta {
+	// A series of shapes that represent this
+	// entity
+	repeated Shape shapes = 3;
 
-// }
+	// Delete this entity, this does
+	// NOT trigger any death animations,
+	// you must orchestrate those yourself.
+	//
+	// If this is true, the other fields are
+	// ignored (except ID, naturally).
+	required bool delete = 4;
+}
 
-// message EntityKey {
-// 	required int32 id = 1;
-// 	required int32 layer = 4;
-// 	required int32 posx = 2;
-// 	required int32 posy = 3;
-// 	required object_name string = 5;
-// 	repeated SpriteKey sprite = 1;
-// 	repeated ShapeKey shape = 1;
-// }
+// A position.
+// The positions x and y can be interpreted
+// roughly as pixels.
+message Pos {
+	optional float x = 1;
+	optional float y = 2;
+}
 
-// message ShapeKey {
-// 	oneOf {
-// 		Rectangle rect; // width+height
-// 		Triangle tri; // is a triangle
-// 		// ...
-// 	}
-	
-// 	required bool wireframe; // fill or only render edges
-// 	required Color color; // rgba
-// 	required int32 relative_layer;
-// }
+// Note, since protobuf has no single "byte"
+// type, please clamp these values in [0,255]
+// yourself
+//
+// Fields are required since updating the
+// values individually can be a pain in
+// some libraries
+message Color {
+	required uint32 r = 1;
+	required uint32 g = 2;
+	required uint32 b = 3;
+	required uint32 a = 4;
+}
 
-// message EntityDelta {
-// 	required int32 id = 1;
-// 	optional int32 layer_d = 2;
-// 	optional int32 posx_d = 3;
-// 	optional int32 posy_d = 4;
-// 	optional string new_object_name = 5;
-// 	repeated SpriteDelta sprite_updates = 6;
-// 	repeated ShapeDelta shape_updates = 7;
-	
-// 	repeated SpriteKey new_sprites = 8;
-// 	repeated ShapeKey new_shapes = 9;
-	
-// 	optional bool delete_entity = 10;
-// }
-
-// message SpriteDelta {
-// 	required int32 id= 1;
-// 	optional int32 delta_rel_posx = 2;
-// 	optional int32 delta_rel_posy = 3;
-// 	optional int32 delta_rel_layer = 4;
-// 	optional bool delete_sprite = 5;
-// }
-
-// message SpriteKey {
-// 	required int32 sprite_id = 1;
-	
-// 	// Relative to the center of the game object
-// 	required relative_pos_x = 1;
-// 	required relative_pos_y = 1;
-// 	// Data pointing to part of sprite sheet, etc
-	
-// 	required sprite_map_id;
-// 	// The animation from the sprite group
-// 	// specified in sprite_map_id
-// 	required animation_id;
-// 	required float animation_progress;
-// }
+// An equilateral triangle with a base
+// of the given length
+message Triangle {
+	optional float base_len = 1;
+}
 
 
+// A rectangle
+message Rect {
+	optional float width = 1;
+	optional float height = 2;
+}
+
+// An arbitrary shape relative to the center
+// of the entity it belongs to
+message Shape {
+	// This ID is relative to the entity, not
+	// universally unique to the program
+	required uint64 id = 1;
+	optional Pos relative_pos = 2;
+	optional Color color = 3;
+
+	// What form the shape takes
+	// if multiple of these are set at once, the behavior
+	// is up to the viz engine implementer,
+	// and may not be consistent between packets
+	optional Rect rect = 20;
+	optional Triangle triangle = 21;
+
+	// delete this shape from the entity
+	// if this ID is not registered, it is a
+	// no-op
+	//
+	// If this is ture, the other fields (except ID)
+	// are ignored
+	required bool delete = 40;
+}
