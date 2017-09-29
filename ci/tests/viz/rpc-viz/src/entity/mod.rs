@@ -385,16 +385,17 @@ impl IdEntity {
             },
         ];
 
-        let choice = rng.gen_range(0, 100);
+        let upper = weights.iter().sum();
+        let choice = rng.gen_range(0, upper);
         let mut acc = 0;
         for (i, weight) in weights.into_iter().enumerate() {
             acc += weight;
-            if acc < choice {
+            if acc >= choice {
                 return options.swap_remove(i);
             }
         }
 
-        unreachable!("99 > 100?");
+        unreachable!("Weighted choice shouldn't get here");
     }
 }
 
