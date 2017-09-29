@@ -5,6 +5,9 @@ use std::error::Error;
 use std::ops::{Add, Sub};
 use std::collections::HashMap;
 
+#[cfg(test)]
+mod test;
+
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Color {
     pub r: u8,
@@ -301,10 +304,12 @@ impl IdEntity {
         Ok(IdEntity {
             id: entity.id as usize,
             entity: Entity {
-                pos: Pos::from_proto(entity
-                    .pos
-                    .as_ref()
-                    .ok_or::<Box<Error>>(Err("Entity lacks pos field")?)?)?,
+                pos: Pos::from_proto(
+                    entity
+                        .pos
+                        .as_ref()
+                        .ok_or::<Box<Error>>(From::from("Entity lacks pos field"))?,
+                )?,
                 shape: {
                     if entity.shapes.len() != 1 {
                         Err("Entity's shape field is not exactly 1")?;
