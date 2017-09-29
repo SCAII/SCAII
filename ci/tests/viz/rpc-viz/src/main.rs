@@ -393,22 +393,6 @@ fn first_delta(
     entity_map
 }
 
-fn min(x: usize, y: usize) -> usize {
-    if x < y {
-        x
-    } else {
-        y
-    }
-}
-
-fn max(x: usize, y: usize) -> usize {
-    if x > y {
-        x
-    } else {
-        y
-    }
-}
-
 // Updates entities randomly and composes a delta message
 fn update_entities<R: Rng>(entity_map: &mut HashMap<usize, IdEntity>, rng: &mut R) -> ScaiiPacket {
     use rand;
@@ -417,10 +401,11 @@ fn update_entities<R: Rng>(entity_map: &mut HashMap<usize, IdEntity>, rng: &mut 
 
     // Clone instead of count so we don't double dip updates (create and move in the same frame)
     let remaining_ids: Vec<usize> = entity_map.keys().cloned().collect();
-    let num_updates = min(
-        remaining_ids.len(),
-        rng.gen_range(5, max(remaining_ids.len() / 2, 5)),
-    );
+    let num_updates = if remaining_ids.len() <= 5 {
+        remaining_ids.len()
+    } else {
+        rng.gen_range(5, remaining_ids.len())
+    };
 
     let mut entity_protos = Vec::with_capacity(num_updates);
     if remaining_ids.len() < 5 {
