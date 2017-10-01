@@ -255,7 +255,10 @@ fn verify_scaii_packet(
                     );
 
                     client
-                        .send_message(&Message::close_because(1008, err_msg.clone()))
+                        .send_message(&Message::close_because(
+                            1008,
+                            "Entity received does not match reference entity",
+                        ))
                         .expect("Could not send error closure");
                     panic!(err_msg);
                 }
