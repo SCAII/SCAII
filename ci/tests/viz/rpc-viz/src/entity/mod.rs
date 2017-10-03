@@ -437,13 +437,10 @@ impl EntityUpdate {
                 }
             }
             Create => {
-                let mut id = rng.gen();
-                while entities.get(&id).is_some() {
-                    id = rng.gen();
-                }
-                let new_entity = IdEntity::rand_new(id, rng);
+                let next_id = entities.keys().max().unwrap() + 1;
+                let new_entity = IdEntity::rand_new(next_id, rng);
                 let proto = new_entity.to_proto();
-                entities.insert(id, new_entity);
+                entities.insert(next_id, new_entity);
                 proto
             }
             Move { x, y, subtract } => {

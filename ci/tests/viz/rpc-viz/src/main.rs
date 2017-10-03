@@ -424,14 +424,11 @@ fn update_entities<R: Rng>(entity_map: &mut HashMap<usize, IdEntity>, rng: &mut 
         entity_protos.reserve(to_gen);
 
         for _ in 0..to_gen {
-            let mut id = rng.gen();
-            while entity_map.get(&id).is_some() {
-                id = rng.gen();
-            }
-            let new_entity = IdEntity::rand_new(id, rng);
+            let next_id = entity_map.keys().max().unwrap() + 1;
+            let new_entity = IdEntity::rand_new(next_id, rng);
             let proto = new_entity.to_proto();
             entity_protos.push(proto);
-            entity_map.insert(id, new_entity);
+            entity_map.insert(next_id, new_entity);
         }
     }
 
