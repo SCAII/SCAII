@@ -224,7 +224,7 @@ fn verify_scaii_packet(
                         entity
                     );
                     client
-                        .send_message(&Message::close_because(1008, err_msg.clone()))
+                        .send_message(&Message::close_because(1008, "Error decoding entities, expected FULL data"))
                         .expect("Could not send error closure");
                     panic!(err_msg);
                 }
