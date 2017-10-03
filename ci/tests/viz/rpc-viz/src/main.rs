@@ -403,7 +403,15 @@ fn update_entities<R: Rng>(entity_map: &mut HashMap<usize, IdEntity>, rng: &mut 
     use scaii_defs::protos::{endpoint, scaii_packet};
 
     // Clone instead of count so we don't double dip updates (create and move in the same frame)
-    let remaining_ids: Vec<usize> = entity_map.keys().cloned().collect();
+    let mut remaining_ids: Vec<usize> = entity_map.keys().cloned().collect();
+    
+    // Ensure this is deterministic, without this there's a bug with the
+    // hash map not returning a consistent order which makes it diverge
+    remaining_ids.sort();
+
+    // Demutify
+    let remaining_ids = remaining_ids;
+
     let num_updates = if remaining_ids.len() <= 5 {
         remaining_ids.len()
     } else {
