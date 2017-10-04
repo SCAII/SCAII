@@ -8,6 +8,10 @@ use std::collections::HashMap;
 #[cfg(test)]
 mod test;
 
+mod util;
+
+use self::util::max;
+
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Color {
     pub r: u8,
@@ -537,14 +541,14 @@ impl EntityUpdate {
                 let rect_proto = protos::Rect {
                     width: width.and_then(|width| {
                         Some(if subtract {
-                            *e_width - width
+                            max(*e_width - width,0.1)
                         } else {
                             *e_width + width
                         })
                     }),
                     height: height.and_then(|height| {
                         Some(if subtract {
-                            *e_height - height
+                            max(*e_height - height,0.1)
                         } else {
                             *e_height + height
                         })
@@ -560,8 +564,8 @@ impl EntityUpdate {
                 };
 
                 if subtract {
-                    *e_width = width.map(|width| *e_width - width).unwrap_or(*e_width);
-                    *e_height = height.map(|height| *e_width - height).unwrap_or(*e_height);
+                    *e_width = width.map(|width| max(*e_width - width,0.1)).unwrap_or(*e_width);
+                    *e_height = height.map(|height| max(*e_width - height,0.1)).unwrap_or(*e_height);
                 } else {
                     *e_width = width.map(|width| *e_width + width).unwrap_or(*e_width);
                     *e_height = height.map(|height| *e_width + height).unwrap_or(*e_height);
@@ -584,7 +588,7 @@ impl EntityUpdate {
                     };
                 let triangle_proto = protos::Triangle {
                     base_len: Some(if subtract {
-                        *e_base - base
+                        max(*e_base - base,0.1)
                     } else {
                         *e_base + base
                     }),
@@ -599,7 +603,7 @@ impl EntityUpdate {
                 };
 
                 if subtract {
-                    *e_base -= base;
+                    *e_base = max(*e_base-base, 0.1);
                 } else {
                     *e_base += base;
                 }
