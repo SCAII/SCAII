@@ -78,12 +78,12 @@ impl Rand for Color {
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum SpecificShape {
-    Triangle { base: f32 },
-    Rect { width: f32, height: f32 },
+    Triangle { base: f64 },
+    Rect { width: f64, height: f64 },
 }
 
 impl SpecificShape {
-    pub fn fuzzy_eq(&self, other: &Self, thresh: f32) -> bool {
+    pub fn fuzzy_eq(&self, other: &Self, thresh: f64) -> bool {
         use SpecificShape::*;
         match (self, other) {
             (&Triangle { base: b1 }, &Triangle { base: b2 }) => (b1 - b2).abs() < thresh,
@@ -198,7 +198,7 @@ impl Shape {
         })
     }
 
-    pub fn fuzzy_eq(&self, other: &Self, thresh: f32) -> bool {
+    pub fn fuzzy_eq(&self, other: &Self, thresh: f64) -> bool {
         self.color == other.color && self.relative_pos.fuzzy_eq(&other.relative_pos, thresh) &&
             self.shape.fuzzy_eq(&other.shape, thresh)
     }
@@ -225,8 +225,8 @@ impl Rand for Shape {
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Pos {
-    pub x: f32,
-    pub y: f32,
+    pub x: f64,
+    pub y: f64,
 }
 
 impl Pos {
@@ -246,7 +246,7 @@ impl Pos {
         })
     }
 
-    pub fn fuzzy_eq(&self, other: &Self, thresh: f32) -> bool {
+    pub fn fuzzy_eq(&self, other: &Self, thresh: f64) -> bool {
         (self.x - other.x).abs() < thresh && (self.y - other.y).abs() < thresh
     }
 }
@@ -267,7 +267,7 @@ pub struct Entity {
 }
 
 impl Entity {
-    pub fn fuzzy_eq(&self, other: &Self, thresh: f32) -> bool {
+    pub fn fuzzy_eq(&self, other: &Self, thresh: f64) -> bool {
         self.pos.fuzzy_eq(&other.pos, thresh) && self.shape.fuzzy_eq(&other.shape, thresh)
     }
 }
@@ -324,7 +324,7 @@ impl IdEntity {
         })
     }
 
-    pub fn fuzzy_eq(&self, other: &Self, thresh: f32) -> bool {
+    pub fn fuzzy_eq(&self, other: &Self, thresh: f64) -> bool {
         self.id == other.id && self.entity.fuzzy_eq(&other.entity, thresh)
     }
 
@@ -405,8 +405,8 @@ impl IdEntity {
 
 pub enum EntityUpdate {
     Move {
-        x: Option<f32>,
-        y: Option<f32>,
+        x: Option<f64>,
+        y: Option<f64>,
         subtract: bool,
     },
     Delete,
@@ -414,11 +414,11 @@ pub enum EntityUpdate {
     ChangeShapeColor(Color, bool),
     ChangeShape(SpecificShape),
     AlterRect {
-        width: Option<f32>,
-        height: Option<f32>,
+        width: Option<f64>,
+        height: Option<f64>,
         subtract: bool,
     },
-    AlterTriangle { base: f32, subtract: bool },
+    AlterTriangle { base: f64, subtract: bool },
 }
 
 impl EntityUpdate {

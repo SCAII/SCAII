@@ -206,8 +206,8 @@ message Entity {
 // The positions x and y can be interpreted
 // roughly as pixels.
 message Pos {
-	optional float x = 1;
-	optional float y = 2;
+	optional double x = 1;
+	optional double y = 2;
 }
 
 // Note, since protobuf has no single "byte"
@@ -227,14 +227,14 @@ message Color {
 // An equilateral triangle with a base
 // of the given length
 message Triangle {
-	optional float base_len = 1;
+	optional double base_len = 1;
 }
 
 
 // A rectangle
 message Rect {
-	optional float width = 1;
-	optional float height = 2;
+	optional double width = 1;
+	optional double height = 2;
 }
 
 // An arbitrary shape relative to the center

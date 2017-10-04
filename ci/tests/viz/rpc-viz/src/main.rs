@@ -29,7 +29,7 @@ mod test;
 pub mod entity;
 use entity::*;
 
-const FUZZY_EQ_THRESH: f32 = 1e-4;
+const FUZZY_EQ_THRESH: f64 = 1e-4;
 
 #[derive(Serialize, Deserialize, Eq, PartialEq, Hash, Debug)]
 struct RandInit {
