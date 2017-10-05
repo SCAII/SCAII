@@ -43,11 +43,13 @@ impl Color {
 impl Add for Color {
     type Output = Self;
     fn add(self, other: Self) -> Self::Output {
+        use std::u8;
+
         Color {
-            r: self.r + other.r,
-            g: self.g + other.g,
-            b: self.b + other.b,
-            a: self.a + other.a,
+            r: if other.r > u8::MAX - self.r { u8::MAX } else { self.r + other.r },
+            g: if other.g > u8::MAX - self.g { u8::MAX } else { self.g + other.g },
+            b: if other.b > u8::MAX - self.b { u8::MAX } else { self.b + other.b },
+            a: if other.a > u8::MAX - self.a { u8::MAX } else { self.a + other.a },
         }
     }
 }
@@ -56,10 +58,10 @@ impl Sub for Color {
     type Output = Self;
     fn sub(self, other: Self) -> Self::Output {
         Color {
-            r: self.r - other.r,
-            g: self.g - other.g,
-            b: self.b - other.b,
-            a: self.a - other.a,
+            r: if other.r > self.r { 0 } else { self.r - other.r },
+            g: if other.g > self.g { 0 } else { self.g - other.g },
+            b: if other.b > self.b { 0 } else { self.b - other.b },
+            a: if other.a > self.a { 0 } else { self.a - other.a },
         }
     }
 }
@@ -87,16 +89,14 @@ impl SpecificShape {
         use SpecificShape::*;
         match (self, other) {
             (&Triangle { base: b1 }, &Triangle { base: b2 }) => (b1 - b2).abs() < thresh,
-            (
-                &Rect {
-                    width: w1,
-                    height: h1,
-                },
-                &Rect {
-                    width: w2,
-                    height: h2,
-                },
-            ) => (w1 - w2).abs() < thresh && (h1 - h2).abs() < thresh,
+            (&Rect {
+                 width: w1,
+                 height: h1,
+             },
+             &Rect {
+                 width: w2,
+                 height: h2,
+             }) => (w1 - w2).abs() < thresh && (h1 - h2).abs() < thresh,
             _ => false,
         }
     }
@@ -130,9 +130,7 @@ impl Shape {
                 None
             },
             triangle: if let SpecificShape::Triangle { ref base } = self.shape {
-                Some(protos::Triangle {
-                    base_len: Some(*base),
-                })
+                Some(protos::Triangle { base_len: Some(*base) })
             } else {
                 None
             },
@@ -145,17 +143,13 @@ impl Shape {
             Err(format!("Shape's id is not 0. Got: {}", shape.id))?;
         }
         Ok(Shape {
-            color: Color::from_proto(
-                shape
-                    .color
-                    .as_ref()
-                    .ok_or::<Box<Error>>(From::from("Shape lacks color field"))?,
-            )?,
+            color: Color::from_proto(shape.color.as_ref().ok_or::<Box<Error>>(
+                From::from("Shape lacks color field"),
+            )?)?,
             relative_pos: Pos::from_proto(
-                shape
-                    .relative_pos
-                    .as_ref()
-                    .ok_or::<Box<Error>>(From::from("Shape lacks relative_pos field"))?,
+                shape.relative_pos.as_ref().ok_or::<Box<Error>>(From::from(
+                    "Shape lacks relative_pos field",
+                ))?,
             )?,
             shape: {
                 if shape.rect.is_some() && shape.triangle.is_some() {
@@ -163,9 +157,9 @@ impl Shape {
                 }
 
                 if let Some(protos::Rect {
-                    width: Some(ref width),
-                    height: Some(ref height),
-                }) = shape.rect
+                                width: Some(ref width),
+                                height: Some(ref height),
+                            }) = shape.rect
                 {
                     SpecificShape::Rect {
                         width: *width,
@@ -176,9 +170,8 @@ impl Shape {
                         "Shape has malformed or missing rect fields: {:?}",
                         shape.rect
                     ))?;
-                } else if let Some(protos::Triangle {
-                    base_len: Some(ref base_len),
-                }) = shape.triangle
+                } else if let Some(protos::Triangle { base_len: Some(ref base_len) }) =
+                    shape.triangle
                 {
                     SpecificShape::Triangle { base: *base_len }
                 } else if let Some(protos::Triangle { .. }) = shape.triangle {
@@ -210,9 +203,7 @@ impl Rand for Shape {
             color: Color::rand(rng),
             relative_pos: Pos { x: 0.0, y: 0.0 },
             shape: if rng.gen::<bool>() {
-                SpecificShape::Triangle {
-                    base: rng.gen_range(0.0, 5.0),
-                }
+                SpecificShape::Triangle { base: rng.gen_range(0.0, 5.0) }
             } else {
                 SpecificShape::Rect {
                     width: rng.gen_range(0.0, 5.0),
@@ -239,10 +230,12 @@ impl Pos {
 
     pub fn from_proto(pos: &protos::Pos) -> Result<Self, Box<Error>> {
         Ok(Pos {
-            x: pos.x
-                .ok_or::<Box<Error>>(From::from("Position lacks x field"))?,
-            y: pos.y
-                .ok_or::<Box<Error>>(From::from("Position lacks y field"))?,
+            x: pos.x.ok_or::<Box<Error>>(
+                From::from("Position lacks x field"),
+            )?,
+            y: pos.y.ok_or::<Box<Error>>(
+                From::from("Position lacks y field"),
+            )?,
         })
     }
 
@@ -308,12 +301,9 @@ impl IdEntity {
         Ok(IdEntity {
             id: entity.id as usize,
             entity: Entity {
-                pos: Pos::from_proto(
-                    entity
-                        .pos
-                        .as_ref()
-                        .ok_or::<Box<Error>>(From::from("Entity lacks pos field"))?,
-                )?,
+                pos: Pos::from_proto(entity.pos.as_ref().ok_or::<Box<Error>>(
+                    From::from("Entity lacks pos field"),
+                )?)?,
                 shape: {
                     if entity.shapes.len() != 1 {
                         Err("Entity's shape field is not exactly 1")?;
@@ -331,23 +321,20 @@ impl IdEntity {
     pub fn create_update<R: Rng>(&self, rng: &mut R) -> EntityUpdate {
         use EntityUpdate::*;
 
-        let weights = vec![80, 2, 2, 10, 2, 4];
-        let mut options = vec![
+        let weights = [80, 2, 2, 10, 2, 4];
+        let options = [
             match rng.gen_range(0, 3) {
                 0 => Move {
-                    x: Some(rng.gen_range(1.0, 4.0)),
-                    y: Some(rng.gen_range(1.0, 4.0)),
-                    subtract: rng.gen(),
+                    x: Some(rng.gen_range(-4.0, 4.0)),
+                    y: Some(rng.gen_range(-4.0, 4.0)),
                 },
                 1 => Move {
-                    x: Some(rng.gen_range(1.0, 4.0)),
+                    x: Some(rng.gen_range(-4.0, 4.0)),
                     y: None,
-                    subtract: rng.gen(),
                 },
                 2 => Move {
                     x: None,
-                    y: Some(rng.gen_range(1.0, 4.0)),
-                    subtract: rng.gen(),
+                    y: Some(rng.gen_range(-4.0, 4.0)),
                 },
                 _ => unreachable!(),
             },
@@ -364,38 +351,34 @@ impl IdEntity {
             ),
             ChangeShape(rng.gen::<Shape>().shape),
             match self.entity.shape.shape {
-                SpecificShape::Rect { .. } => match rng.gen_range(0, 3) {
-                    0 => AlterRect {
-                        width: Some(rng.gen_range(1.0, 4.0)),
-                        height: Some(rng.gen_range(1.0, 4.0)),
-                        subtract: rng.gen(),
-                    },
-                    1 => AlterRect {
-                        width: Some(rng.gen_range(1.0, 4.0)),
-                        height: None,
-                        subtract: rng.gen(),
-                    },
-                    2 => AlterRect {
-                        width: None,
-                        height: Some(rng.gen_range(1.0, 4.0)),
-                        subtract: rng.gen(),
-                    },
-                    _ => unreachable!(),
-                },
-                SpecificShape::Triangle { .. } => AlterTriangle {
-                    base: rng.gen_range(1.0, 4.0),
-                    subtract: rng.gen(),
-                },
+                SpecificShape::Rect { .. } => {
+                    match rng.gen_range(0, 3) {
+                        0 => AlterRect {
+                            width: Some(rng.gen_range(-4.0, 4.0)),
+                            height: Some(rng.gen_range(-4.0, 4.0)),
+                        },
+                        1 => AlterRect {
+                            width: Some(rng.gen_range(-4.0, 4.0)),
+                            height: None,
+                        },
+                        2 => AlterRect {
+                            width: None,
+                            height: Some(rng.gen_range(-4.0, 4.0)),
+                        },
+                        _ => unreachable!(),
+                    }
+                }
+                SpecificShape::Triangle { .. } => AlterTriangle { base: rng.gen_range(-4.0, 4.0) },
             },
         ];
 
         let upper = weights.iter().sum();
         let choice = rng.gen_range(0, upper);
         let mut acc = 0;
-        for (i, weight) in weights.into_iter().enumerate() {
+        for (i, &weight) in weights.into_iter().enumerate() {
             acc += weight;
             if acc >= choice {
-                return options.swap_remove(i);
+                return options[i].clone();
             }
         }
 
@@ -403,12 +386,9 @@ impl IdEntity {
     }
 }
 
+#[derive(Clone,PartialEq,Debug)]
 pub enum EntityUpdate {
-    Move {
-        x: Option<f64>,
-        y: Option<f64>,
-        subtract: bool,
-    },
+    Move { x: Option<f64>, y: Option<f64> },
     Delete,
     Create,
     ChangeShapeColor(Color, bool),
@@ -416,9 +396,8 @@ pub enum EntityUpdate {
     AlterRect {
         width: Option<f64>,
         height: Option<f64>,
-        subtract: bool,
     },
-    AlterTriangle { base: f64, subtract: bool },
+    AlterTriangle { base: f64 },
 }
 
 impl EntityUpdate {
@@ -447,25 +426,26 @@ impl EntityUpdate {
                 entities.insert(next_id, new_entity);
                 proto
             }
-            Move { x, y, subtract } => {
+            Move { x, y } => {
                 let entity = entities.get_mut(&key).unwrap();
                 let pos = &mut entity.entity.pos;
+
+                let new_x = x.map(|x| pos.x + x);
+                let new_y = y.map(|y| pos.y + y);
+
                 let proto = protos::Entity {
                     id: key as u64,
                     delete: false,
                     pos: Some(protos::Pos {
-                        x: x.and_then(|x| Some(if subtract { pos.x - x } else { pos.x + x })),
-                        y: y.and_then(|y| Some(if subtract { pos.y - y } else { pos.y + y })),
+                        x: new_x,
+                        y: new_y,
                     }),
                     shapes: Vec::new(),
                 };
-                if subtract {
-                    pos.x = x.map(|x| pos.x - x).unwrap_or(pos.x);
-                    pos.y = y.map(|y| pos.y - y).unwrap_or(pos.y);
-                } else {
-                    pos.x = x.map(|x| pos.x + x).unwrap_or(pos.x);
-                    pos.y = y.map(|y| pos.y + y).unwrap_or(pos.y);
-                }
+                
+                pos.x = new_x.unwrap_or(pos.x);
+                pos.y = new_y.unwrap_or(pos.y);
+
                 proto
             }
             ChangeShapeColor(color, subtract) => {
@@ -507,9 +487,7 @@ impl EntityUpdate {
                         None
                     },
                     triangle: if let SpecificShape::Triangle { base } = specific_shape {
-                        Some(protos::Triangle {
-                            base_len: Some(base),
-                        })
+                        Some(protos::Triangle { base_len: Some(base) })
                     } else {
                         None
                     },
@@ -523,11 +501,7 @@ impl EntityUpdate {
                     shapes: vec![shape_proto],
                 }
             }
-            AlterRect {
-                width,
-                height,
-                subtract,
-            } => {
+            AlterRect { width, height } => {
                 let entity = entities.get_mut(&key).unwrap();
                 let (e_width, e_height) = if let SpecificShape::Rect {
                     ref mut width,
@@ -538,21 +512,13 @@ impl EntityUpdate {
                 } else {
                     unreachable!("This is verified when creating the update");
                 };
+
+                let new_width = width.map(|width| max(*e_width + width, 0.1));
+                let new_height = height.map(|height| max(*e_height + height, 0.1));
+
                 let rect_proto = protos::Rect {
-                    width: width.and_then(|width| {
-                        Some(if subtract {
-                            max(*e_width - width,0.1)
-                        } else {
-                            *e_width + width
-                        })
-                    }),
-                    height: height.and_then(|height| {
-                        Some(if subtract {
-                            max(*e_height - height,0.1)
-                        } else {
-                            *e_height + height
-                        })
-                    }),
+                    width: new_width,
+                    height: new_height,
                 };
                 let shape_proto = protos::Shape {
                     id: 0,
@@ -563,13 +529,8 @@ impl EntityUpdate {
                     relative_pos: None,
                 };
 
-                if subtract {
-                    *e_width = width.map(|width| max(*e_width - width,0.1)).unwrap_or(*e_width);
-                    *e_height = height.map(|height| max(*e_width - height,0.1)).unwrap_or(*e_height);
-                } else {
-                    *e_width = width.map(|width| *e_width + width).unwrap_or(*e_width);
-                    *e_height = height.map(|height| *e_width + height).unwrap_or(*e_height);
-                }
+                *e_width = new_width.unwrap_or(*e_width);
+                *e_height = new_height.unwrap_or(*e_height);
 
                 protos::Entity {
                     id: key as u64,
@@ -578,7 +539,7 @@ impl EntityUpdate {
                     shapes: vec![shape_proto],
                 }
             }
-            AlterTriangle { base, subtract } => {
+            AlterTriangle { base } => {
                 let entity = entities.get_mut(&key).unwrap();
                 let e_base =
                     if let SpecificShape::Triangle { ref mut base } = entity.entity.shape.shape {
@@ -586,13 +547,10 @@ impl EntityUpdate {
                     } else {
                         unreachable!("This is verified when creating the update");
                     };
-                let triangle_proto = protos::Triangle {
-                    base_len: Some(if subtract {
-                        max(*e_base - base,0.1)
-                    } else {
-                        *e_base + base
-                    }),
-                };
+
+                let new_base = *e_base + base;
+
+                let triangle_proto = protos::Triangle { base_len: Some(new_base) };
                 let shape_proto = protos::Shape {
                     id: 0,
                     delete: false,
@@ -602,11 +560,7 @@ impl EntityUpdate {
                     relative_pos: None,
                 };
 
-                if subtract {
-                    *e_base = max(*e_base-base, 0.1);
-                } else {
-                    *e_base += base;
-                }
+                *e_base = new_base;
 
                 protos::Entity {
                     id: key as u64,

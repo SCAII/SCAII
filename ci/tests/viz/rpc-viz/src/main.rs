@@ -39,9 +39,7 @@ struct RandInit {
 impl Default for RandInit {
     fn default() -> Self {
         use rand;
-        RandInit {
-            seed: rand::thread_rng().gen(),
-        }
+        RandInit { seed: rand::thread_rng().gen() }
     }
 }
 
@@ -60,13 +58,13 @@ impl Settings {
         use toml;
 
         if let Some(path) = args.skip(1).next() {
-            let mut reader = BufReader::new(
-                File::open(&path).expect("Could not open provided toml file path"),
-            );
+            let mut reader = BufReader::new(File::open(&path).expect(
+                "Could not open provided toml file path",
+            ));
             let mut toml_str = String::new();
-            reader
-                .read_to_string(&mut toml_str)
-                .expect("Could not read file as text");
+            reader.read_to_string(&mut toml_str).expect(
+                "Could not read file as text",
+            );
 
             toml::from_str(&toml_str).expect("Could not parse provided toml file")
         } else {
@@ -113,12 +111,12 @@ fn connect(settings: &Settings) -> Client<TcpStream> {
     we'll probably make this configurable */
     connection
         .tcp_stream()
-        .set_read_timeout(Some(Duration::new(5, 0)))
+        .set_read_timeout(Some(Duration::new(500, 0)))
         .expect("Could not change read timeout on socket");
 
     connection
         .tcp_stream()
-        .set_write_timeout(Some(Duration::new(5, 0)))
+        .set_write_timeout(Some(Duration::new(500, 0)))
         .expect("Could not change write timeout on socket");
 
     println!("Connection accepted\n");
@@ -140,9 +138,9 @@ fn make_viz_init() -> ScaiiPacket {
             endpoint: Some(endpoint::Endpoint::Backend(protos::BackendEndpoint {})),
         },
         dest: protos::Endpoint {
-            endpoint: Some(endpoint::Endpoint::Module(protos::ModuleEndpoint {
-                name: "viz".to_string(),
-            })),
+            endpoint: Some(endpoint::Endpoint::Module(
+                protos::ModuleEndpoint { name: "viz".to_string() },
+            )),
         },
 
         specific_msg: Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {})),
@@ -156,9 +154,9 @@ fn encode_and_send_proto(
     use prost::Message;
     use websocket::message;
     let mut buf: Vec<u8> = Vec::new();
-    packet
-        .encode(&mut buf)
-        .expect("Could not encode SCAII packet (server error)");
+    packet.encode(&mut buf).expect(
+        "Could not encode SCAII packet (server error)",
+    );
 
     client.send_message(&message::Message::binary(buf))?;
     Ok(())
@@ -175,9 +173,9 @@ fn verify_scaii_packet(
     use std::collections::HashSet;
 
     let expected_src = protos::Endpoint {
-        endpoint: Some(endpoint::Endpoint::Module(protos::ModuleEndpoint {
-            name: "viz".to_string(),
-        })),
+        endpoint: Some(endpoint::Endpoint::Module(
+            protos::ModuleEndpoint { name: "viz".to_string() },
+        )),
     };
     let expected_dest = protos::Endpoint {
         endpoint: Some(endpoint::Endpoint::Backend(protos::BackendEndpoint {})),
@@ -224,7 +222,10 @@ fn verify_scaii_packet(
                         entity
                     );
                     client
-                        .send_message(&Message::close_because(1008, "Error decoding entities, expected FULL data"))
+                        .send_message(&Message::close_because(
+                            1008,
+                            "Error decoding entities, expected FULL data",
+                        ))
                         .expect("Could not send error closure");
                     panic!(err_msg);
                 }
@@ -303,9 +304,9 @@ fn receive_and_decode_proto(client: &mut Client<TcpStream>) -> ScaiiPacket {
     use websocket::OwnedMessage;
     use websocket::message;
 
-    let msg = client
-        .recv_message()
-        .expect("Could not receive message from client");
+    let msg = client.recv_message().expect(
+        "Could not receive message from client",
+    );
     if let OwnedMessage::Binary(vec) = msg {
         let mut msg = match MultiMessage::decode(vec) {
             Err(err) => {
@@ -364,9 +365,9 @@ fn packet_from_entity_list(entities: Vec<protos::Entity>) -> ScaiiPacket {
             endpoint: Some(endpoint::Endpoint::Backend(protos::BackendEndpoint {})),
         },
         dest: protos::Endpoint {
-            endpoint: Some(endpoint::Endpoint::Module(protos::ModuleEndpoint {
-                name: "viz".to_string(),
-            })),
+            endpoint: Some(endpoint::Endpoint::Module(
+                protos::ModuleEndpoint { name: "viz".to_string() },
+            )),
         },
 
         specific_msg: Some(scaii_packet::SpecificMsg::Viz(
@@ -404,7 +405,7 @@ fn update_entities<R: Rng>(entity_map: &mut HashMap<usize, IdEntity>, rng: &mut 
 
     // Clone instead of count so we don't double dip updates (create and move in the same frame)
     let mut remaining_ids: Vec<usize> = entity_map.keys().cloned().collect();
-    
+
     // Ensure this is deterministic, without this there's a bug with the
     // hash map not returning a consistent order which makes it diverge
     remaining_ids.sort();
@@ -443,13 +444,13 @@ fn update_entities<R: Rng>(entity_map: &mut HashMap<usize, IdEntity>, rng: &mut 
             endpoint: Some(endpoint::Endpoint::Backend(protos::BackendEndpoint {})),
         },
         dest: protos::Endpoint {
-            endpoint: Some(endpoint::Endpoint::Module(protos::ModuleEndpoint {
-                name: "viz".to_string(),
-            })),
+            endpoint: Some(endpoint::Endpoint::Module(
+                protos::ModuleEndpoint { name: "viz".to_string() },
+            )),
         },
-        specific_msg: Some(scaii_packet::SpecificMsg::Viz(protos::Viz {
-            entities: entity_protos,
-        })),
+        specific_msg: Some(scaii_packet::SpecificMsg::Viz(
+            protos::Viz { entities: entity_protos },
+        )),
     }
 }
 

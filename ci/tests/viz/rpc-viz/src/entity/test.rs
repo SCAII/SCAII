@@ -9,11 +9,13 @@ fn test_to_from_proto() {
     let proto = entity.to_proto();
 
     match IdEntity::from_proto(&proto) {
-        Err(err) => panic!(
-            "Could not decode proto just created: {}. Proto: {:?}",
-            err,
-            proto
-        ),
+        Err(err) => {
+            panic!(
+                "Could not decode proto just created: {}. Proto: {:?}",
+                err,
+                proto
+            )
+        }
         Ok(got) => assert!(entity.fuzzy_eq(&got, FUZZY_EQ_THRESH)),
     }
 }

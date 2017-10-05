@@ -69,12 +69,12 @@ fn rand_init() {
 // and such can screw this up.
 #[test]
 fn seeded_rand_is_consistent() {
-    use rand::{XorShiftRng,SeedableRng};
+    use rand::{XorShiftRng, SeedableRng};
     use entity::IdEntity;
 
     use std::collections::HashMap;
 
-    let seed = [1,2,3,4];
+    let seed = [1, 2, 3, 4];
     let mut rng = XorShiftRng::from_seed(seed.clone());
 
     let master = super::gen_entities(&mut rng);
@@ -89,19 +89,19 @@ fn seeded_rand_is_consistent() {
     }
 
     // Now, verify updates are consistent
-    let entity_map: HashMap<usize,IdEntity> = master
+    let entity_map: HashMap<usize, IdEntity> = master
         .into_iter()
         .map(|entity| (entity.id, entity))
         .collect();
-    
 
-    let mut rng = XorShiftRng::from_seed([5,6,7,8]);
+
+    let mut rng = XorShiftRng::from_seed([5, 6, 7, 8]);
 
     let mut master_map = entity_map.clone();
     let master_packet = super::update_entities(&mut master_map, &mut rng);
 
     for _ in 0..RAND_VERIFY_ITERS {
-        let mut rng = XorShiftRng::from_seed([5,6,7,8]);
+        let mut rng = XorShiftRng::from_seed([5, 6, 7, 8]);
         let mut verify_map = entity_map.clone();
 
         let verify_packet = super::update_entities(&mut verify_map, &mut rng);
