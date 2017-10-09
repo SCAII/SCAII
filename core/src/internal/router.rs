@@ -1,5 +1,5 @@
-use scaii_defs::{Backend, Agent, Module};
-use scaii_defs::protos::{MultiMessage, ScaiiPacket, ModuleEndpoint};
+use scaii_defs::{Agent, Backend, Module};
+use scaii_defs::protos::{ModuleEndpoint, MultiMessage, ScaiiPacket};
 use scaii_defs::protos::endpoint::Endpoint;
 
 use std::error::Error;
@@ -79,7 +79,8 @@ impl Router {
             let src = msg.src.endpoint.as_ref().expect("Malformed src field");
             if src == &Endpoint::Core(CoreEndpoint {}) {
                 panic!(
-                    "FATAL CORE ERROR: Core should not be using decode_and_route to send its messages."
+                    "FATAL CORE ERROR:\
+                     Core should not be using decode_and_route to send its messages."
                 )
             }
 
@@ -90,15 +91,12 @@ impl Router {
                     &Endpoint::Core(CoreEndpoint {}),
                 ).unwrap();
                 continue;
-
             }
 
             match self.route_to(&msg) {
                 Err(err) => {
-
                     self.send_error(&format!("{}", err), &src, &Endpoint::Core(CoreEndpoint {}))
                         .unwrap();
-
                 }
                 Ok(Some(packet)) => core_msgs.push(packet),
                 Ok(None) => {}

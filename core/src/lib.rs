@@ -1,11 +1,11 @@
-extern crate libloading;
-extern crate prost;
-extern crate libc;
-extern crate scaii_defs;
 #[macro_use]
 extern crate lazy_static;
+extern crate libc;
+extern crate libloading;
+extern crate prost;
+extern crate scaii_defs;
 
-use scaii_defs::protos::{MultiMessage, ScaiiPacket, AgentEndpoint};
+use scaii_defs::protos::{AgentEndpoint, MultiMessage, ScaiiPacket};
 use prost::Message;
 use std::error::Error;
 
@@ -44,13 +44,24 @@ impl Environment {
             match packet.specific_msg.clone().unwrap() {
                 SpecificMsg::Err(_) => self.forward_err_to_owner(&mut packet.clone()),
                 SpecificMsg::Config(Cfg {
-                           which_module: Some(WhichModule::CoreCfg(CoreCfg { plugin_type: PluginType{ plugin_type: Some(ref mut plugin_type) } })),
-                       }) => {
-                           let res = self.load_cfg(plugin_type);
-                           if let Err(err) = res {
-                               self.handle_errors_possible_failure(&packet, &format!("Could not complete configuration: {}",err));
-                           }
-                       }
+                    which_module:
+                        Some(
+                            WhichModule::CoreCfg(CoreCfg {
+                                plugin_type:
+                                    PluginType {
+                                        plugin_type: Some(ref mut plugin_type),
+                                    },
+                            }),
+                        ),
+                }) => {
+                    let res = self.load_cfg(plugin_type);
+                    if let Err(err) = res {
+                        self.handle_errors_possible_failure(
+                            &packet,
+                            &format!("Could not complete configuration: {}", err),
+                        );
+                    }
+                }
                 SpecificMsg::Config(Cfg { which_module: Some(_) }) => {
                     self.handle_errors_possible_failure(
                         &packet,
@@ -118,7 +129,7 @@ impl Environment {
                 .send_error(
                     &format!(
                         "{};\n\
-                        The module who made this mistake no longer exists: {}",
+                         The module who made this mistake no longer exists: {}",
                         descrip,
                         err
                     ),
@@ -181,7 +192,7 @@ pub extern "C" fn next_msg(env: *mut Environment, buf: *mut c_uchar, buf_len: si
     use std::slice;
     use std::io::Cursor;
     use scaii_defs::protos::endpoint::Endpoint;
-    use scaii_defs::protos::{CoreEndpoint, AgentEndpoint};
+    use scaii_defs::protos::{AgentEndpoint, CoreEndpoint};
 
     unsafe {
         match (*env).next_msg {
@@ -190,7 +201,7 @@ pub extern "C" fn next_msg(env: *mut Environment, buf: *mut c_uchar, buf_len: si
                     .router
                     .send_error(
                         "Call to next_msg when no message\
-                 is queued or without preceding call to next_msg_size",
+                         is queued or without preceding call to next_msg_size",
                         &Endpoint::Agent(AgentEndpoint {}),
                         &Endpoint::Core(CoreEndpoint {}),
                     )
@@ -252,10 +263,14 @@ pub extern "C" fn next_msg_size(env: *mut Environment) -> size_t {
 ///
 /// The return value is equivalent to a query to `next_msg_size`.
 #[no_mangle]
-pub extern "C" fn route_msg(env: *mut Environment, msg_buf: *mut c_uchar, msg_len: size_t) -> size_t {
+pub extern "C" fn route_msg(
+    env: *mut Environment,
+    msg_buf: *mut c_uchar,
+    msg_len: size_t,
+) -> size_t {
     use std::slice;
     use scaii_defs::protos::endpoint::Endpoint;
-    use scaii_defs::protos::{CoreEndpoint, AgentEndpoint};
+    use scaii_defs::protos::{AgentEndpoint, CoreEndpoint};
 
     unsafe {
         let core_packets = match MultiMessage::decode(slice::from_raw_parts(msg_buf, msg_len)) {

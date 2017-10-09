@@ -46,10 +46,26 @@ impl Add for Color {
         use std::u8;
 
         Color {
-            r: if other.r > u8::MAX - self.r { u8::MAX } else { self.r + other.r },
-            g: if other.g > u8::MAX - self.g { u8::MAX } else { self.g + other.g },
-            b: if other.b > u8::MAX - self.b { u8::MAX } else { self.b + other.b },
-            a: if other.a > u8::MAX - self.a { u8::MAX } else { self.a + other.a },
+            r: if other.r > u8::MAX - self.r {
+                u8::MAX
+            } else {
+                self.r + other.r
+            },
+            g: if other.g > u8::MAX - self.g {
+                u8::MAX
+            } else {
+                self.g + other.g
+            },
+            b: if other.b > u8::MAX - self.b {
+                u8::MAX
+            } else {
+                self.b + other.b
+            },
+            a: if other.a > u8::MAX - self.a {
+                u8::MAX
+            } else {
+                self.a + other.a
+            },
         }
     }
 }
@@ -58,10 +74,26 @@ impl Sub for Color {
     type Output = Self;
     fn sub(self, other: Self) -> Self::Output {
         Color {
-            r: if other.r > self.r { 0 } else { self.r - other.r },
-            g: if other.g > self.g { 0 } else { self.g - other.g },
-            b: if other.b > self.b { 0 } else { self.b - other.b },
-            a: if other.a > self.a { 0 } else { self.a - other.a },
+            r: if other.r > self.r {
+                0
+            } else {
+                self.r - other.r
+            },
+            g: if other.g > self.g {
+                0
+            } else {
+                self.g - other.g
+            },
+            b: if other.b > self.b {
+                0
+            } else {
+                self.b - other.b
+            },
+            a: if other.a > self.a {
+                0
+            } else {
+                self.a - other.a
+            },
         }
     }
 }
@@ -386,7 +418,7 @@ impl IdEntity {
     }
 }
 
-#[derive(Clone,PartialEq,Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum EntityUpdate {
     Move { x: Option<f64>, y: Option<f64> },
     Delete,
@@ -436,13 +468,10 @@ impl EntityUpdate {
                 let proto = protos::Entity {
                     id: key as u64,
                     delete: false,
-                    pos: Some(protos::Pos {
-                        x: new_x,
-                        y: new_y,
-                    }),
+                    pos: Some(protos::Pos { x: new_x, y: new_y }),
                     shapes: Vec::new(),
                 };
-                
+
                 pos.x = new_x.unwrap_or(pos.x);
                 pos.y = new_y.unwrap_or(pos.y);
 
