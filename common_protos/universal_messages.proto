@@ -2,11 +2,26 @@ syntax = "proto2";
 
 package scaii.common;
 
+// A simple list of `ScaiiPacket`s that have accumulated
+// before the last time this module was checked for responses.
+// All modules should collect their responses into a single MultiMessage
+// when queried. 
+//
+// If no responses have accumulated, an empty MultiMessage is allowed.
 message MultiMessage {
 	repeated ScaiiPacket packets = 1;
 }
 
+// The main wrapper packet, everything else is in terms of this.
+// All Scaii Modules are expected to handle an arbitrary ScaiiPacket,
+// but may elect to redirect an `Error` to the `src` field if they are
+// given a message they do not specifically handle (for instance,
+// being given a VizInit packet as an environment backend).
+//
+// Silently ignoring unsupported packets is allowed as well, but
+// passing error messages may make debugging easier.
 message ScaiiPacket {
+	// The specific packet this resolves to
 	oneof specific_msg {
 		State state = 1;
 		Action action = 2;
@@ -20,11 +35,30 @@ message ScaiiPacket {
 		VizInit viz_init = 10;
 		Other other = 29;
 	}
-	
+
+	// The sender of this packet	
 	required Endpoint src = 31;
+
+	// The destination of this packet
 	required Endpoint dest = 30;
 }
 
+// An `Endpoint` simply represents the module
+// this message originated from or should be sent
+// to.
+//
+// `Core`, `Agent`, and `Backend` are considered special
+// cases, while a Module endpoint expects a name 
+// to disambiguate it from other plugins.
+//
+// The `Endpoint`s have little special meaning, and
+// largely only exist to minimize module name conflicts that might
+// accidentally clobber an important component upon being
+// registered with the core packet router. Messages are routed
+// the same way with no extra checks regardless of destination Endpoint.
+//
+// The special exception to this is `Core` in the case of `Error` messages.
+// See the `Error` description for more info.
 message Endpoint {
 	oneof endpoint {
 		BackendEndpoint backend = 1;
@@ -34,13 +68,26 @@ message Endpoint {
 	}
 }
 
+// A marker message for the registered backend.
 message BackendEndpoint {}
+
+// A marker message for the registered agent.
 message AgentEndpoint {}
+
+// A marker message for the core router and environment handler.
 message CoreEndpoint {}
+
+// A module. A name is required as multiple modules may be registered.
+// If no such module exists, an Error will be routed to the packet sender
+// in response.
 message ModuleEndpoint {
 	required string name = 1;
 }
 
+// A message specifying the configuration of some module.
+// Only CoreCfg and BackendCfg have any real specification,
+// the rest are handled with extensions (including special behavior
+// for the Backend configuration).
 message Cfg {
 	oneof which_module {
 		CoreCfg core_cfg = 1;
@@ -50,22 +97,21 @@ message Cfg {
 	}
 }
 
+// Specifies the type of plugin the Core plugin
+// manager should spawn. 
 message PluginType {
 	oneof plugin_type {
 		RustFFIConfig rust_plugin = 1;
 	}
 }
 
+// A configuration message to specify Core's behavior.
 message CoreCfg {
 	required PluginType plugin_type = 1;
 }
 
-message BackendInit {}
-
-message ModuleInit {
-	required string name = 1;
-}
-
+// What to initialize the given plugin as:
+// the backend, agent, or a generic module.
 message InitAs {
 	oneof init_as {
 		BackendInit backend = 1;
@@ -73,23 +119,66 @@ message InitAs {
 	}
 }
 
+// Initialization marker for a Backend.
+// See InitAs for more info.
+message BackendInit {}
+
+// Initialization for a Module. See
+// InitAs for more into.
+message ModuleInit {
+	required string name = 1;
+}
+
+// Arguments to initialize a plugin as a dynamically
+// loaded Rust plugin (dylib, so, dll, etc). 
+// 
+// A given Rust plugin may be
+// loaded multiple times as different modules
+// as long as it does not have mutable global state that
+// may cause multiple independent instances to conflict
+// with each other.
 message RustFFIConfig {
 	required string plugin_path = 1;
 	required InitAs init_as = 2;
 }
 
+// Configuration of a Backend. This is handled
+// by a given Backend, please check that environment's
+// protobuf files for an extension to `BackendCfg` for more info
+// on that Backend's configuration.
+//
+// Fields 0-10 are reserved in case universal Backend configuration
+// information must be specified later down the line.
 message BackendCfg {
 	extensions 10 to max;
 }
 
+
+// Configuration of an Agent. 
+// This is handled by a given Agent, and generally will only be used within
+// your own modules and programs (e.g. two cooperative modules both acting
+// as agents).
+//
+// Fields 0-10 are reserved in case universal Agent configuration
+// information must be specified later down the line.
 message AgentCfg {
 	extensions 10 to max;
 }
 
+
+// Configuration of a Module. Any generic module may
+// elect to specify its own configuration like Backend.
+//
+// A Backend may elect to also handle `ModuleCfg` if it expects
+// to be run as a Module (e.g. for multiple instances).
+//
+// Fields 0-10 are reserved in case universal Module configuration
+// information must be specified later down the line.
 message ModuleCfg {
 	extensions 10 to max;
 }
 
+// What kind of special behavior a given module supports.
 message SupportedBehavior {
 	oneof which_module {
 		BackendSupported backend = 1;
@@ -98,6 +187,13 @@ message SupportedBehavior {
 	}
 }
 
+// Defines any special behavior a Backend may support.
+//
+// The types specified here denote the only configuration
+// the core plugin loader cares about.
+//
+// Additional extensions may be declared in an environment's
+// protobuf files to be handled by dedicated game wrappers.
 message BackendSupported {
 	enum SerializationSupport {
 		NONE = 0;
@@ -109,14 +205,48 @@ message BackendSupported {
 	extensions 100 to max;
 }
 
+// Any special behavior an agent supports.
+// Similar to AgentCfg, this will likely only
+// be used in your own modules that act
+// coopoeratively with an Agent.
 message AgentSupported {
 	extensions 100 to max;
 }
 
+// Any special behavior a module supports.
+// See a Module's protobuf files for more info.
 message ModuleSupported {
 	extensions 100 to max;
 }
 
+// A basic state reply from an environment 
+// featuring a feature description
+// as well as a reward.
+//
+// Note: this is NOT the same as a visualization state.
+// For communicating with the visualization suite see `Viz` and
+// `VizInit`, as rendering is handled by each environment.
+//
+// All backends must minimally support this encoding, a dense
+// n-dimensional array with some encoding that should be meaninful
+// and useful for an agent to interpret as input (e.g. as neural net 
+// features). If the array dimensions are unspecified, it is assumed
+// to be a 1D array the same length as `features`.
+//
+// It need not be the **best** encoding possible, but simply a usable encoding.
+//
+/// Environments may, and are encouraged to, offer alternate state descriptions
+// as extensions that may be requested via a `BackendCfg`. These backend environments
+// may then communicate with a game wrapper for the given frontend language to decode
+// that state into a more readable or queryable format for an agent to use.
+// A good example being the RTS protobuf state extensions in SCAII/Sky-RTS.
+//
+// This extended state is allowed to have any semantics it wishes (e.g. delta
+// encoding, sparse matrices etc) as long as it is well documented and
+// properly handled by the matching wrappers.
+//
+// If the state representation is set to an alternate one by the user, 
+// the features and array dimensions are allowed to be empty.
 message State {
  	repeated double features = 1;
 	repeated uint32 feature_array_dims = 2;
@@ -126,6 +256,24 @@ message State {
 	extensions 10 to max;
 }
 
+// A basic action reply from an agent to a backend.
+//
+// The most simple version of this is a length 1 `discrete_actions`
+// that denotes one of a finite number of actions specified by the environment.
+//
+// However, more complex representations may be used by an environment so long as they
+// are documented (e.g. a Go program may elect to instead use two discrete actions representing
+// an x and y for a grid square on which to place a piece).
+//
+// Like states, an `Action` has extensions available to be defined by each environment
+// for use with a given game wrapper upon request. Each environment is encouraged, if necessary,
+// to have a more descriptive action set that can be built from a matching wrapper.
+//
+// A good example is Sky-RTS's move list action extension, which is an enhanced representation 
+// allowing agents to specify an arbitrarily complex order for each unit each state.
+//
+// Like the state description, if an alternate action encoding is set up by the user,
+// it is legal to only set those fields and leave `discrete` and `continuous` actions blank.
 message Action {
 	repeated int32 discrete_actions = 1;
 	repeated double continuous_actions = 2;
@@ -133,6 +281,22 @@ message Action {
 	extensions 10 to max;
 }
 
+// A basic error message providing a string describing what went wrong.
+//
+// Extensions are available to provide more specific information
+// between an environment's backend and its game wrapper.
+//
+// An error should generally be directed to the module that sent the
+// packet triggering the error. However, one may also elect to direct
+// a message to `Core` which has special semantics. It will automatically
+// direct the error to the "owner" of the environment.
+//
+// The "owner" is usually the agent which controlling the program (causing
+// an exception or error log depending on the language, source and severity),
+// but in certain cases such as replays this may be something like the
+// visualization engine or the replay loader itself.
+//
+// If an error is fatal, it **will** trigger a termination of the program.
 message Error {
 	required string description = 1;
 	optional bool fatal = 2 [default=false];
@@ -140,27 +304,56 @@ message Error {
 	extensions 10 to max;
 }
 
+// A message meant to send info not covered by one of these
+// cases between modules. The `name` field should provide some
+// hint to disambiguate which type of message to decode this
+// into by the recipient (this is similar to Protobuf 3's `Any` type).
+//
+// Using this is not advised, but is here in case it's necessary.
 message Other {
 	required string name = 1;
 	
 	extensions 10 to max;
 }
 
+// The type of serialization requested,
+// an error may be returned if this type is not
+// supported.
+//
+// Diverging refers to a serialization that does
+// not preserve the RNG state (if any), while
+// nondiverging is expected to always yield the same
+// sequence of states given the same sequence of actions
+// after it's loaded.
+//
+// In the case of deterministic environments, diverging
+// and nondiverging are equivalent. 
 enum SerializationFormat {
 	DIVERGING = 0;
 	NONDIVERGING = 1;
 }
 
+// A request to serialize the current environment
+// state in the given manner. Yields an error if the
+// given serialization type is not supported, or a 
+// SerializationResponse if it is.
 message SerializationRequest {
 	required SerializationFormat format = 1;
 }
 
+// The serialized bytes of an environment, with the format
+// requested for confirmation.
 message SerializationResponse {
 	required bytes serialized = 1;
 	required SerializationFormat format = 2;
 }
 
-/// A marker for now, at the moment there's nothing we need to init.
+// A message to initialize the visualization environment.
+//
+// In the future this will contain things like sprite sheet paths
+// and animation info for certain classes of entities, but at the 
+// moment visualization is primitive enough that this is a marker
+// reserved for future extension.
 message VizInit {
 
 }
