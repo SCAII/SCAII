@@ -4,13 +4,13 @@ extern crate prost_derive;
 extern crate serde_derive;
 
 use std::error::Error;
-use std::fmt::{Formatter, Display};
+use std::fmt::{Display, Formatter};
 use std::fmt;
 
 /// Contains protobuf definitions
 pub mod protos;
 
-use protos::{ScaiiPacket, MultiMessage};
+use protos::{MultiMessage, ScaiiPacket};
 
 /// The serialization style supported by an environment.
 /// Currently, Nondiverging is for the benefit of a frontend only (i.e.
@@ -34,7 +34,6 @@ pub struct BackendSupported {
 
 impl BackendSupported {
     pub fn from_prost(proto: protos::BackendSupported) -> Self {
-
         BackendSupported {
             serialization: match proto.serialization_support {
                 0 => SerializationStyle::None,
@@ -69,10 +68,10 @@ impl Error for UnsupportedError {
 /// In addition, plugin objects that provide a **non-backend** Module must define a
 /// crate root-level `#[no_mangle]` function like so:
 ///
-/// ```
+/// ```text
 /// // Returns a boxed backend, configuration is done through
 /// // initialization protobuf messages
-/// fn new() -> Box<Module>
+/// fn new() -> Box<Module>;
 /// ```
 ///
 /// Note that the trait object will properly call `drop` if implemented.
@@ -97,13 +96,13 @@ pub trait Module {
 /// In addition, plugin objects meeting the backend definition must define two
 /// public crate-root level `#[no_mangle]` functions like so:
 ///
-/// ````
+/// ```text
 /// // Returns a boxed backend, configuration is done through
 /// // initialization protobuf messages
 /// fn new_backend() -> Box<Backend>;
 ///
 /// // Yields the supported behavior of a trait object returned by this backend
-/// fn supported_behavior() -> BackendSupported
+/// fn supported_behavior() -> BackendSupported;
 /// ```
 ///
 /// Note that the trait object will properly call `drop` if implemented.
