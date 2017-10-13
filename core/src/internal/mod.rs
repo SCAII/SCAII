@@ -1,8 +1,16 @@
 pub mod router;
 pub mod agent;
 pub mod rust_ffi;
+pub mod rpc;
 
 use libloading::Library;
+
+use scaii_defs::{Module, Backend};
+
+pub enum LoadedAs {
+    Module(Box<Module>, String),
+    Backend(Box<Backend>),
+}
 
 use std::sync::Mutex;
 use std::collections::HashMap;
