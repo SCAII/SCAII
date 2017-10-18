@@ -11,6 +11,7 @@ libloading="0.4.1"
 prost = "0.2"
 libc = "0.2"
 lazy_static = "0.2"
+websocket="0.20"
 
 # local deps
 scaii_defs = {path = "../scaii_defs"}

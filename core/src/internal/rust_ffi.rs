@@ -4,10 +4,7 @@ use scaii_defs::protos::{MultiMessage, ScaiiPacket, RustFfiConfig};
 use std::error::Error;
 use std::ops::{Deref, DerefMut, Drop};
 
-pub enum LoadedAs {
-    Module(Box<Module>, String),
-    Backend(Box<Backend>),
-}
+use super::LoadedAs;
 
 pub fn init_ffi(args: RustFfiConfig) -> Result<LoadedAs, Box<Error>> {
     use internal::RcLibrary;

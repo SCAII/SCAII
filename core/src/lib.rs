@@ -4,6 +4,7 @@ extern crate libc;
 extern crate libloading;
 extern crate prost;
 extern crate scaii_defs;
+extern crate websocket;
 
 use scaii_defs::protos::{AgentEndpoint, MultiMessage, ScaiiPacket};
 use prost::Message;
@@ -32,7 +33,6 @@ impl Environment {
         use scaii_defs::protos::scaii_packet::SpecificMsg;
         use scaii_defs::protos::{Cfg, CoreCfg, PluginType};
         use scaii_defs::protos::cfg::WhichModule;
-
         for packet in packets {
             if packet.specific_msg.is_none() {
                 self.handle_errors_possible_failure(
@@ -80,8 +80,8 @@ impl Environment {
         plugin_type: &mut scaii_defs::protos::plugin_type::PluginType,
     ) -> Result<(), Box<Error>> {
         use scaii_defs::protos::plugin_type::PluginType::*;
-        use internal::rust_ffi;
-        use internal::rust_ffi::LoadedAs;
+        use internal::{rpc,rust_ffi};
+        use internal::LoadedAs;
 
         match *plugin_type {
             RustPlugin(ref cfg) => {
@@ -94,6 +94,22 @@ impl Environment {
                             Ok(())
                         }
                     }
+                    LoadedAs::Module(module, name) => {
+                        let prev = self.router.register_module(name.clone(), module);
+                        if prev.is_some() {
+                            Err(format!(
+                                "Module {} previously registered, overwriting",
+                                name
+                            ))?
+                        } else {
+                            Ok(())
+                        }
+                    }
+                }
+            }
+            Rpc(ref cfg) => {
+                match rpc::init_rpc(cfg.clone())? {
+                    LoadedAs::Backend(_) => { unimplemented!() },
                     LoadedAs::Module(module, name) => {
                         let prev = self.router.register_module(name.clone(), module);
                         if prev.is_some() {
