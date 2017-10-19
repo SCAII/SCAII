@@ -1,3 +1,6 @@
+// For clippy
+#![allow(unknown_lints)]
+
 #[macro_use]
 extern crate lazy_static;
 extern crate libc;
@@ -80,7 +83,7 @@ impl Environment {
         plugin_type: &mut scaii_defs::protos::plugin_type::PluginType,
     ) -> Result<(), Box<Error>> {
         use scaii_defs::protos::plugin_type::PluginType::*;
-        use internal::{rpc,rust_ffi};
+        use internal::{rpc, rust_ffi};
         use internal::LoadedAs;
 
         match *plugin_type {
@@ -109,7 +112,7 @@ impl Environment {
             }
             Rpc(ref cfg) => {
                 match rpc::init_rpc(cfg.clone())? {
-                    LoadedAs::Backend(_) => { unimplemented!() },
+                    LoadedAs::Backend(_) => unimplemented!(),
                     LoadedAs::Module(module, name) => {
                         let prev = self.router.register_module(name.clone(), module);
                         if prev.is_some() {
@@ -149,7 +152,7 @@ impl Environment {
                         descrip,
                         err
                     ),
-                    &error_src,
+                    error_src,
                     &Endpoint::Core(CoreEndpoint {}),
                 )
                 .expect(FATAL_OWNER_ERROR);
@@ -165,7 +168,7 @@ impl Environment {
 
         let dest = protos::Endpoint { endpoint: Some(endpoint::Endpoint::Agent(AgentEndpoint {})) };
         packet.dest = dest;
-        self.router.route_to(&packet).expect(FATAL_OWNER_ERROR);
+        self.router.route_to(packet).expect(FATAL_OWNER_ERROR);
     }
 }
 
@@ -173,7 +176,7 @@ impl Environment {
 /// Creates a clean environment, further configuration is done via sending
 /// `CoreCfg` messages.
 #[no_mangle]
-pub extern "C" fn new_environment() -> *mut Environment {
+pub unsafe extern "C" fn new_environment() -> *mut Environment {
     let agent = internal::agent::PublisherAgent::new();
     let env = Box::new(Environment {
         router: Router::from_agent(Box::new(agent)),
@@ -185,67 +188,60 @@ pub extern "C" fn new_environment() -> *mut Environment {
 
 /// Destroys the created environment, this should be called to avoid memory leaks.
 #[no_mangle]
-pub extern "C" fn destroy_environment(env: *mut Environment) {
-    unsafe {
-        Box::from_raw(env);
-    }
+pub unsafe extern "C" fn destroy_environment(env: *mut Environment) {
+    Box::from_raw(env);
 }
 
 /// Receives the next message intended for the owner of this environment and
-/// writes it into the target buffer, up to a max of buf_len.
+/// writes it into the target buffer, up to a max of `buf_len`.
 ///
 /// If no message exists, or the caller failed to make a previous call to
-/// next_msg_size, the buffer will not be filled and an error
+/// `next_msg_size`, the buffer will not be filled and an error
 /// message will be added to the queue.
 ///
 /// If the buffer is not large enough, the buffer will be partially filled,
 /// but an error message will be added to the queue.
 ///
 /// This message can be assumed to be the wire format of
-/// the SCAII protobuf type MultiMessage.
+/// the SCAII protobuf type `MultiMessage`.
 #[no_mangle]
-pub extern "C" fn next_msg(env: *mut Environment, buf: *mut c_uchar, buf_len: size_t) {
+pub unsafe extern "C" fn next_msg(env: *mut Environment, buf: *mut c_uchar, buf_len: size_t) {
     use std::slice;
     use std::io::Cursor;
     use scaii_defs::protos::endpoint::Endpoint;
     use scaii_defs::protos::{AgentEndpoint, CoreEndpoint};
 
-    unsafe {
-        match (*env).next_msg {
-            None => {
+    match (*env).next_msg {
+        None => {
+            (*env)
+                .router
+                .send_error(
+                    "Call to next_msg when no message\
+                     is queued or without preceding call to next_msg_size",
+                    &Endpoint::Agent(AgentEndpoint {}),
+                    &Endpoint::Core(CoreEndpoint {}),
+                )
+                .expect(FATAL_OWNER_ERROR);
+
+            return;
+        }
+        Some(ref msg) => {
+            let mut buf = slice::from_raw_parts_mut(buf, buf_len);
+            let result = msg.encode(&mut Cursor::new(&mut buf));
+            if let Err(err) = result {
                 (*env)
                     .router
                     .send_error(
-                        "Call to next_msg when no message\
-                         is queued or without preceding call to next_msg_size",
+                        &format!("Error writing to buffer: {}", err),
                         &Endpoint::Agent(AgentEndpoint {}),
                         &Endpoint::Core(CoreEndpoint {}),
                     )
                     .expect(FATAL_OWNER_ERROR);
-
-                return;
-            }
-            Some(ref msg) => {
-                let mut buf = slice::from_raw_parts_mut(buf, buf_len);
-                let result = msg.encode(&mut Cursor::new(&mut buf));
-                match result {
-                    Err(err) => {
-                        (*env)
-                            .router
-                            .send_error(
-                                &format!("Error writing to buffer: {}", err),
-                                &Endpoint::Agent(AgentEndpoint {}),
-                                &Endpoint::Core(CoreEndpoint {}),
-                            )
-                            .expect(FATAL_OWNER_ERROR);
-                    }
-                    Ok(_) => {}
-                }
             }
         }
-
-        (*env).next_msg = None;
     }
+
+    (*env).next_msg = None;
 }
 
 /// Queries the size of the next message intended for the owner of this environment.
@@ -256,30 +252,27 @@ pub extern "C" fn next_msg(env: *mut Environment, buf: *mut c_uchar, buf_len: si
 /// for any messages they would like to send. This is done
 /// BEFORE computing the size.
 #[no_mangle]
-pub extern "C" fn next_msg_size(env: *mut Environment) -> size_t {
-    unsafe {
-        // TODO process messages from module
-        let core_msgs = (*env).router.process_module_messages();
-        (*env).process_core_messages(core_msgs);
-        let next_msg = (*env).router.agent_mut().unwrap().get_messages();
-        let out = next_msg.encoded_len();
+pub unsafe extern "C" fn next_msg_size(env: *mut Environment) -> size_t {
+    let core_msgs = (*env).router.process_module_messages();
+    (*env).process_core_messages(core_msgs);
+    let next_msg = (*env).router.agent_mut().unwrap().get_messages();
+    let out = next_msg.encoded_len();
 
-        (*env).next_msg = Some(next_msg);
+    (*env).next_msg = Some(next_msg);
 
-        out
-    }
+    out
 }
 
 /// Routes a collection of messages to arbitrary receivers and checks for
 /// responses.
 ///
-/// The message must conform to the MultiMessage SCAII protobuf wire format. If
+/// The message must conform to the `MultiMessage` SCAII protobuf wire format. If
 /// the message cannot be parsed, an error will be added to the message
 /// queue.
 ///
 /// The return value is equivalent to a query to `next_msg_size`.
 #[no_mangle]
-pub extern "C" fn route_msg(
+pub unsafe extern "C" fn route_msg(
     env: *mut Environment,
     msg_buf: *mut c_uchar,
     msg_len: size_t,
@@ -288,24 +281,22 @@ pub extern "C" fn route_msg(
     use scaii_defs::protos::endpoint::Endpoint;
     use scaii_defs::protos::{AgentEndpoint, CoreEndpoint};
 
-    unsafe {
-        let core_packets = match MultiMessage::decode(slice::from_raw_parts(msg_buf, msg_len)) {
-            Err(err) => {
-                (*env)
-                    .router
-                    .send_error(
-                        &format!("Could not parse message. Is it a MultiMessage? {}", err),
-                        &Endpoint::Agent(AgentEndpoint {}),
-                        &Endpoint::Core(CoreEndpoint {}),
-                    )
-                    .expect(FATAL_OWNER_ERROR);
-                Vec::new()
-            }
-            Ok(msg) => (*env).router.decode_and_route(&msg),
-        };
+    let core_packets = match MultiMessage::decode(slice::from_raw_parts(msg_buf, msg_len)) {
+        Err(err) => {
+            (*env)
+                .router
+                .send_error(
+                    &format!("Could not parse message. Is it a MultiMessage? {}", err),
+                    &Endpoint::Agent(AgentEndpoint {}),
+                    &Endpoint::Core(CoreEndpoint {}),
+                )
+                .expect(FATAL_OWNER_ERROR);
+            Vec::new()
+        }
+        Ok(msg) => (*env).router.decode_and_route(&msg),
+    };
 
-        (*env).process_core_messages(core_packets);
+    (*env).process_core_messages(core_packets);
 
-        next_msg_size(env)
-    }
+    next_msg_size(env)
 }

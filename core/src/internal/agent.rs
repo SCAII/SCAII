@@ -9,7 +9,7 @@ use std::error::Error;
 /// use case).
 ///
 /// Its only member is an incoming messages queue for calls
-/// to next_msg.
+/// to `next_msg`.
 pub struct PublisherAgent {
     pub incoming_messages: Vec<ScaiiPacket>,
 }

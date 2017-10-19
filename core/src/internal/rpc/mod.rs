@@ -21,10 +21,9 @@ pub fn init_rpc(rpc_config: RpcConfig) -> Result<LoadedAs, Box<Error>> {
 
     let client = connect(&rpc_config)?;
 
-    match rpc_config.init_as.init_as.ok_or::<Box<Error>>(From::from(
-        "Malformed InitAs field in RpcPlugin"
-            .to_string(),
-    ))? {
+    match rpc_config.init_as.init_as.ok_or_else::<Box<Error>, _>(|| {
+        From::from("Malformed InitAs field in RpcPlugin".to_string())
+    })? {
         InitAs::Module(ModuleInit { name }) => Ok(LoadedAs::Module(
             Box::new(RpcModule {
                 rpc: Rpc {
@@ -37,7 +36,6 @@ pub fn init_rpc(rpc_config: RpcConfig) -> Result<LoadedAs, Box<Error>> {
         )),
         _ => unimplemented!("Still need to implement Backend match arm"),
     }
-
 }
 
 struct Rpc {
@@ -55,22 +53,25 @@ impl Rpc {
         let result = encode_and_send_proto(&mut self.socket_client, msg);
         match result {
             Ok(()) => {
-                let packet = receive_and_decode_proto(&mut self.socket_client).unwrap_or_else(|e| {
-                    let err_packet = ScaiiPacket {
-                        src: protos::Endpoint{
-                            endpoint: Some(Endpoint::Core(protos::CoreEndpoint{}))
-                        },
-                        dest: protos::Endpoint{ endpoint: Some(self.owner.clone())},
-                        specific_msg: Some(scaii_packet::SpecificMsg::Err(
-                            protos::Error {
+                let packet =
+                    receive_and_decode_proto(&mut self.socket_client).unwrap_or_else(|e| {
+                        let err_packet = ScaiiPacket {
+                            src: protos::Endpoint {
+                                endpoint: Some(Endpoint::Core(protos::CoreEndpoint {})),
+                            },
+                            dest: protos::Endpoint {
+                                endpoint: Some(self.owner.clone()),
+                            },
+                            specific_msg: Some(scaii_packet::SpecificMsg::Err(protos::Error {
                                 fatal: None,
                                 description: format!("Error decoding in core: {}", e),
-                            }
-                        ))
-                    };
+                            })),
+                        };
 
-                    MultiMessage{ packets: vec![err_packet ]}
-                });
+                        MultiMessage {
+                            packets: vec![err_packet],
+                        }
+                    });
 
                 self.inbound_messages.push(packet);
             }
@@ -117,8 +118,7 @@ impl Module for RpcModule {
     }
 
     fn get_messages(&mut self) -> MultiMessage {
-        let m_message = self.rpc.get_messages();
-        m_message
+        self.rpc.get_messages()
     }
 }
 
@@ -160,7 +160,7 @@ fn connect(settings: &RpcConfig) -> Result<Client<TcpStream>, Box<Error>> {
     use std::{u16, u32};
 
     let port = settings.port.unwrap();
-    if port > u16::MAX as u32 {
+    if port > u32::from(u16::MAX) {
         return Err(From::from(
             "Port overflows uint16, \
              protobuf does not have uint16 so it's your responsibility to \
@@ -169,7 +169,7 @@ fn connect(settings: &RpcConfig) -> Result<Client<TcpStream>, Box<Error>> {
     }
 
     let mut server = Server::bind(SocketAddr::new(
-        IpAddr::from_str(&settings.ip.as_ref().unwrap())?,
+        IpAddr::from_str(settings.ip.as_ref().unwrap())?,
         port as u16,
     ))?;
     let connection = match server.accept() {

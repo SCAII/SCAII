@@ -21,6 +21,7 @@ pub struct Color {
 }
 
 impl Color {
+    #[allow(cast_lossless)]
     pub fn to_proto(&self) -> protos::Color {
         protos::Color {
             r: self.r as u32,
@@ -30,6 +31,7 @@ impl Color {
         }
     }
 
+    #[allow(cast_lossless)]
     pub fn from_proto(color: &protos::Color) -> Result<Self, Box<Error>> {
         Ok(Color {
             r: color.r as u8,
@@ -175,13 +177,15 @@ impl Shape {
             Err(format!("Shape's id is not 0. Got: {}", shape.id))?;
         }
         Ok(Shape {
-            color: Color::from_proto(shape.color.as_ref().ok_or::<Box<Error>>(
-                From::from("Shape lacks color field"),
+            color: Color::from_proto(shape.color.as_ref().ok_or_else::<Box<Error>, _>(
+                || From::from("Shape lacks color field"),
             )?)?,
             relative_pos: Pos::from_proto(
-                shape.relative_pos.as_ref().ok_or::<Box<Error>>(From::from(
-                    "Shape lacks relative_pos field",
-                ))?,
+                shape.relative_pos.as_ref().ok_or_else::<Box<Error>, _>(
+                    || {
+                        From::from("Shape lacks relative_pos field")
+                    },
+                )?,
             )?,
             shape: {
                 if shape.rect.is_some() && shape.triangle.is_some() {
@@ -262,11 +266,11 @@ impl Pos {
 
     pub fn from_proto(pos: &protos::Pos) -> Result<Self, Box<Error>> {
         Ok(Pos {
-            x: pos.x.ok_or::<Box<Error>>(
-                From::from("Position lacks x field"),
+            x: pos.x.ok_or_else::<Box<Error>, _>(
+                || From::from("Position lacks x field"),
             )?,
-            y: pos.y.ok_or::<Box<Error>>(
-                From::from("Position lacks y field"),
+            y: pos.y.ok_or_else::<Box<Error>, _>(
+                || From::from("Position lacks y field"),
             )?,
         })
     }
@@ -333,8 +337,8 @@ impl IdEntity {
         Ok(IdEntity {
             id: entity.id as usize,
             entity: Entity {
-                pos: Pos::from_proto(entity.pos.as_ref().ok_or::<Box<Error>>(
-                    From::from("Entity lacks pos field"),
+                pos: Pos::from_proto(entity.pos.as_ref().ok_or_else::<Box<Error>, _>(
+                    || From::from("Entity lacks pos field"),
                 )?)?,
                 shape: {
                     if entity.shapes.len() != 1 {

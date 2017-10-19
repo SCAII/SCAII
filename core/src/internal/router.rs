@@ -87,15 +87,15 @@ impl Router {
             if dest == src {
                 self.send_error(
                     "Module attempted to send message to itself",
-                    &src,
+                    src,
                     &Endpoint::Core(CoreEndpoint {}),
                 ).unwrap();
                 continue;
             }
 
-            match self.route_to(&msg) {
+            match self.route_to(msg) {
                 Err(err) => {
-                    self.send_error(&format!("{}", err), &src, &Endpoint::Core(CoreEndpoint {}))
+                    self.send_error(&format!("{}", err), src, &Endpoint::Core(CoreEndpoint {}))
                         .unwrap();
                 }
                 Ok(Some(packet)) => core_msgs.push(packet),
@@ -227,13 +227,13 @@ impl Router {
     }
 
     /// Returns a reference to the registered backend (if any).
-    #[allow(dead_code)]
+    #[allow(dead_code, borrowed_box)]
     pub fn backend(&self) -> Option<&Box<Backend>> {
         self.backend.as_ref()
     }
 
     /// Returns a mutable reference to the registered backend (if any).
-    #[allow(dead_code)]
+    #[allow(dead_code, borrowed_box)]
     pub fn backend_mut(&mut self) -> Option<&mut Box<Backend>> {
         self.backend.as_mut()
     }
@@ -246,13 +246,13 @@ impl Router {
     }
 
     /// Returns a reference to the registered agent (if any).
-    #[allow(dead_code)]
+    #[allow(dead_code, borrowed_box)]
     pub fn agent(&self) -> Option<&Box<Agent>> {
         self.agent.as_ref()
     }
 
     /// Returns a mutable reference to the registered agent (if any).
-    #[allow(dead_code)]
+    #[allow(dead_code, borrowed_box)]
     pub fn agent_mut(&mut self) -> Option<&mut Box<Agent>> {
         self.agent.as_mut()
     }
@@ -265,13 +265,13 @@ impl Router {
     }
 
     /// Returns a reference to the specified module (if it exists).
-    #[allow(dead_code)]
+    #[allow(dead_code, borrowed_box)]
     pub fn module(&self, name: &str) -> Option<&Box<Module>> {
         self.modules.get(name)
     }
 
     /// Returns a mutable reference to the specified module (if it exists).
-    #[allow(dead_code)]
+    #[allow(dead_code, borrowed_box)]
     pub fn module_mut(&mut self, name: &str) -> Option<&mut Box<Module>> {
         self.modules.get_mut(name)
     }

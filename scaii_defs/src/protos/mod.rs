@@ -7,7 +7,7 @@ include!(concat!(env!("OUT_DIR"), "/scaii.common.rs"));
 /// If `msgs` is empty, `None` is returned. If it's of length 1,
 /// that `MultiMessage` will be returned without modification.
 pub fn merge_multi_messages(mut msgs: Vec<MultiMessage>) -> Option<MultiMessage> {
-    if msgs.len() == 0 {
+    if msgs.is_empty() {
         return None;
     } else if msgs.len() == 1 {
         return msgs.pop();

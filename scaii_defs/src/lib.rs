@@ -14,7 +14,7 @@ use protos::{MultiMessage, ScaiiPacket};
 
 /// The serialization style supported by an environment.
 /// Currently, Nondiverging is for the benefit of a frontend only (i.e.
-/// optimizing MCTS for deterministic environments), NondivergingOnly,
+/// optimizing MCTS for deterministic environments),` NondivergingOnly`,
 /// and Full are treated the same way by the SCAII internals (and
 /// backends, by spec).
 #[derive(Serialize, Deserialize, Clone, Copy, Eq, PartialEq, Debug)]

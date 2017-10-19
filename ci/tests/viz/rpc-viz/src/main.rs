@@ -1,3 +1,5 @@
+#![allow(unknown_lints)]
+
 extern crate prost;
 extern crate rand;
 extern crate scaii_defs;
@@ -52,12 +54,12 @@ struct Settings {
 }
 
 impl Settings {
-    fn from_args(args: Args) -> Self {
+    fn from_args(mut args: Args) -> Self {
         use std::fs::File;
         use std::io::{BufReader, Read};
         use toml;
 
-        if let Some(path) = args.skip(1).next() {
+        if let Some(path) = args.nth(1) {
             let mut reader = BufReader::new(File::open(&path).expect(
                 "Could not open provided toml file path",
             ));
@@ -316,7 +318,7 @@ fn receive_and_decode_proto(client: &mut Client<TcpStream>) -> ScaiiPacket {
                         "Malformed MultiMessage",
                     ))
                     .expect("Could not send error closure");
-                panic!("Client send something that couldn't be decoded {}", err);
+                panic!("Client send something that couldn't be decoded {}", err)
             }
             Ok(msg) => msg,
         };
@@ -484,13 +486,13 @@ fn test_loop<R: Rng>(
         .expect("Could not send success close message");
 }
 
-fn test_viz_client(settings: Settings) {
+fn test_viz_client(settings: &Settings) {
     use rand::XorShiftRng;
 
     println!("INFO: using following rng seed: {:?}", settings.rand.seed);
     let mut rng = XorShiftRng::from_seed(settings.rand.seed);
 
-    let mut client = connect(&settings);
+    let mut client = connect(settings);
     server_startup(&mut client);
 
     let init_entities = gen_entities(&mut rng);
@@ -500,5 +502,5 @@ fn test_viz_client(settings: Settings) {
 
 fn main() {
     use std::env;
-    test_viz_client(Settings::from_args(env::args()));
+    test_viz_client(&Settings::from_args(env::args()));
 }
