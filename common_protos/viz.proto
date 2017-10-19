@@ -1,0 +1,111 @@
+syntax = "proto2";
+
+package scaii.common;
+
+
+// A message to initialize the visualization environment.
+//
+// In the future this will contain things like sprite sheet paths
+// and animation info for certain classes of entities, but at the 
+// moment visualization is primitive enough that this is a marker
+// reserved for future extension.
+message VizInit {
+
+}
+
+// The packet containing what to draw. This is ALWAYS
+// a delta, so the first packet should contain all
+// information. Future packets need only contain information
+// on what has changed since the last packet.
+message Viz {
+	repeated Entity entities = 1; 
+}
+
+// An drawable object
+message Entity {
+	// This is not globally unique, but rather
+	// unique to the sender of the packet
+	// (that is, the Endpoint reigstered as the
+	// "src" of the enclosing `ScaiiPacket`).
+	//
+	// This is so multiple modules do not need to
+	// coordinate their visualization IDs.
+	required uint64 id = 1;
+
+	// The absolute position of the entity,
+	// objects are drawn as if this is the
+	// center
+	optional Pos pos = 2;
+
+	// A series of shapes that represent this
+	// entity
+	repeated Shape shapes = 3;
+
+	// Delete this entity, this does
+	// NOT trigger any death animations,
+	// you must orchestrate those yourself.
+	//
+	// If this is true, the other fields are
+	// ignored (except ID, naturally).
+	required bool delete = 4;
+}
+
+// A position.
+// The positions x and y can be interpreted
+// roughly as pixels.
+message Pos {
+	optional double x = 1;
+	optional double y = 2;
+}
+
+// Note, since protobuf has no single "byte"
+// type, please clamp these values in [0,255]
+// yourself
+//
+// Fields are required since updating the
+// values individually can be a pain in
+// some libraries
+message Color {
+	required uint32 r = 1;
+	required uint32 g = 2;
+	required uint32 b = 3;
+	required uint32 a = 4;
+}
+
+// An equilateral triangle with a base
+// of the given length
+message Triangle {
+	optional double base_len = 1;
+}
+
+
+// A rectangle
+message Rect {
+	optional double width = 1;
+	optional double height = 2;
+}
+
+// An arbitrary shape relative to the center
+// of the entity it belongs to
+message Shape {
+	// This ID is relative to the entity, not
+	// universally unique to the program
+	required uint64 id = 1;
+	optional Pos relative_pos = 2;
+	optional Color color = 3;
+
+	// What form the shape takes
+	// if multiple of these are set at once, the behavior
+	// is up to the viz engine implementer,
+	// and may not be consistent between packets
+	optional Rect rect = 20;
+	optional Triangle triangle = 21;
+
+	// delete this shape from the entity
+	// if this ID is not registered, it is a
+	// no-op
+	//
+	// If this is ture, the other fields (except ID)
+	// are ignored
+	required bool delete = 40;
+}
