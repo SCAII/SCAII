@@ -10,6 +10,7 @@ use std::error::Error;
 ///
 /// Its only member is an incoming messages queue for calls
 /// to `next_msg`.
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct PublisherAgent {
     pub incoming_messages: Vec<ScaiiPacket>,
 }

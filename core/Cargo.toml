@@ -3,8 +3,14 @@ name = "scaii-core"
 version = "0.1.0"
 authors = ["Zoe Juozapaitis <jragonmiris@gmail.com>"]
 
+[features]
+default = ["c_api"]
+
+c_api = []
+rust_api = []
+
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["cdylib","rlib"]
 
 [dependencies]
 libloading="0.4.1"

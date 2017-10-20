@@ -6,6 +6,8 @@ extern crate serde_derive;
 use std::error::Error;
 use std::fmt::{Display, Formatter};
 use std::fmt;
+use std::rc::Rc;
+use std::cell::RefCell;
 
 /// Contains protobuf definitions
 pub mod protos;
@@ -151,3 +153,38 @@ pub trait Backend: Module {
 /// methods to drive a subscriber frontend eventually, but at the moment
 /// this is just a marker trait.
 pub trait Agent: Module {}
+
+
+impl<T: Module> Module for Rc<RefCell<T>> {
+    fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>> {
+        (*self.borrow_mut()).process_msg(msg)
+    }
+
+    fn get_messages(&mut self) -> MultiMessage {
+        self.borrow_mut().get_messages()
+    }
+}
+
+impl<T: Backend> Backend for Rc<RefCell<T>> {
+    fn supported_behavior(&self) -> BackendSupported {
+        (*self.borrow()).supported_behavior()
+    }
+
+    fn serialize(&mut self, into: Option<Vec<u8>>) -> Result<Vec<u8>, Box<Error>> {
+        (*self.borrow_mut()).serialize(into)
+    }
+
+    fn deserialize(&mut self, buf: &[u8]) -> Result<(), Box<Error>> {
+        (*self.borrow_mut()).deserialize(buf)
+    }
+
+    fn serialize_diverging(&mut self, into: Option<Vec<u8>>) -> Result<Vec<u8>, Box<Error>> {
+        (*self.borrow_mut()).serialize_diverging(into)
+    }
+
+    fn deserialize_diverging(&mut self, buf: &[u8]) -> Result<(), Box<Error>> {
+        (*self.borrow_mut()).deserialize_diverging(buf)
+    }
+}
+
+impl<T: Agent> Agent for Rc<RefCell<T>> {}
