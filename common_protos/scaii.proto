@@ -121,7 +121,7 @@ message State {
 	 
 	optional double reward = 3;
 	
-	extensions 10 to max;
+	optional bytes expanded_state = 4;
 }
 
 // A basic action reply from an agent to a backend.
@@ -146,7 +146,7 @@ message Action {
 	repeated int32 discrete_actions = 1;
 	repeated double continuous_actions = 2;
 	
-	extensions 10 to max;
+	optional bytes alternate_actions = 3;
 }
 
 // A basic error message providing a string describing what went wrong.
@@ -169,7 +169,7 @@ message Error {
 	required string description = 1;
 	optional bool fatal = 2 [default=false];
 
-	extensions 10 to max;
+	optional bytes error_info = 3;
 }
 
 // A message meant to send info not covered by one of these
@@ -181,7 +181,7 @@ message Error {
 message Other {
 	required string name = 1;
 	
-	extensions 10 to max;
+	optional bytes msg = 2;
 }
 
 // The type of serialization requested,

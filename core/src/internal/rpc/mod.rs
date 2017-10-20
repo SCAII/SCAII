@@ -64,6 +64,7 @@ impl Rpc {
                             },
                             specific_msg: Some(scaii_packet::SpecificMsg::Err(protos::Error {
                                 fatal: None,
+                                error_info: None,
                                 description: format!("Error decoding in core: {}", e),
                             })),
                         };
@@ -86,6 +87,7 @@ impl Rpc {
                     },
                     specific_msg: Some(scaii_packet::SpecificMsg::Err(protos::Error {
                         fatal: None,
+                        error_info: None,
                         description: format!(
                             "Could not communicate with RPC plugin: {:?}.\n Err: {}",
                             self.owner,
@@ -102,8 +104,11 @@ impl Rpc {
     }
     pub fn get_messages(&mut self) -> MultiMessage {
         use scaii_defs::protos;
-        protos::merge_multi_messages(self.inbound_messages.drain(..).collect())
-            .unwrap_or(MultiMessage { packets: Vec::new() })
+        protos::merge_multi_messages(self.inbound_messages.drain(..).collect()).unwrap_or(
+            MultiMessage {
+                packets: Vec::new(),
+            },
+        )
     }
 }
 
@@ -177,13 +182,13 @@ fn connect(settings: &RpcConfig) -> Result<Client<TcpStream>, Box<Error>> {
         Ok(connection) => connection,
     };
 
-    connection.tcp_stream().set_read_timeout(
-        Some(Duration::new(500, 0)),
-    )?;
+    connection
+        .tcp_stream()
+        .set_read_timeout(Some(Duration::new(500, 0)))?;
 
-    connection.tcp_stream().set_write_timeout(
-        Some(Duration::new(500, 0)),
-    )?;
+    connection
+        .tcp_stream()
+        .set_write_timeout(Some(Duration::new(500, 0)))?;
 
     match connection.accept() {
         Ok(conn) => Ok(conn),

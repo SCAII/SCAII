@@ -215,6 +215,7 @@ impl Router {
             specific_msg: Some(SpecificMsg::Err(protos::Error {
                 description: msg.to_string(),
                 fatal: None,
+                error_info: None,
             })),
         };
 

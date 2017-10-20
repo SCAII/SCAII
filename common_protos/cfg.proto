@@ -75,11 +75,8 @@ message RpcConfig {
 // by a given Backend, please check that environment's
 // protobuf files for an extension to `BackendCfg` for more info
 // on that Backend's configuration.
-//
-// Fields 0-10 are reserved in case universal Backend configuration
-// information must be specified later down the line.
 message BackendCfg {
-	extensions 10 to max;
+	optional bytes cfg_msg = 1;
 }
 
 
@@ -87,11 +84,8 @@ message BackendCfg {
 // This is handled by a given Agent, and generally will only be used within
 // your own modules and programs (e.g. two cooperative modules both acting
 // as agents).
-//
-// Fields 0-10 are reserved in case universal Agent configuration
-// information must be specified later down the line.
 message AgentCfg {
-	extensions 10 to max;
+	optional bytes cfg_msg = 1;
 }
 
 
@@ -100,11 +94,8 @@ message AgentCfg {
 //
 // A Backend may elect to also handle `ModuleCfg` if it expects
 // to be run as a Module (e.g. for multiple instances).
-//
-// Fields 0-10 are reserved in case universal Module configuration
-// information must be specified later down the line.
 message ModuleCfg {
-	extensions 10 to max;
+	optional bytes cfg_msg = 1;
 }
 
 // What kind of special behavior a given module supports.
