@@ -27,6 +27,7 @@ impl Error for NoSuchEndpointError {
 }
 
 /// A simple Router that sends protobuf messages to various modules
+#[derive(Default)]
 pub struct Router {
     backend: Option<Box<Backend>>,
     agent: Option<Box<Agent>>,
@@ -134,9 +135,9 @@ impl Router {
             }
             Endpoint::Core(_) => Ok(Some(msg.clone())),
             Endpoint::Module(ModuleEndpoint { ref name }) => {
-                let res = self.modules.get_mut(name).and_then(
-                    |v| Some(v.process_msg(msg)),
-                );
+                let res = self.modules
+                    .get_mut(name)
+                    .and_then(|v| Some(v.process_msg(msg)));
                 if let Some(Err(err)) = res {
                     return Err(err);
                 } else if res.is_none() {
@@ -160,14 +161,18 @@ impl Router {
         let msgs = if let Some(ref mut backend) = self.backend {
             backend.get_messages()
         } else {
-            MultiMessage { packets: Vec::new() }
+            MultiMessage {
+                packets: Vec::new(),
+            }
         };
         core_messages.append(&mut self.decode_and_route(&msgs));
 
         let msgs = if let Some(ref mut agent) = self.agent {
             agent.get_messages()
         } else {
-            MultiMessage { packets: Vec::new() }
+            MultiMessage {
+                packets: Vec::new(),
+            }
         };
         core_messages.append(&mut self.decode_and_route(&msgs));
 
@@ -201,8 +206,12 @@ impl Router {
         }
 
         let error_packet = ScaiiPacket {
-            dest: protos::Endpoint { endpoint: Some(dest.clone()) },
-            src: protos::Endpoint { endpoint: Some(src.clone()) },
+            dest: protos::Endpoint {
+                endpoint: Some(dest.clone()),
+            },
+            src: protos::Endpoint {
+                endpoint: Some(src.clone()),
+            },
             specific_msg: Some(SpecificMsg::Err(protos::Error {
                 description: msg.to_string(),
                 fatal: None,
@@ -211,9 +220,11 @@ impl Router {
 
         let panic_msg = "FATAL CORE ERROR: Cannot send error message from inside core";
         // At this point, we pretty much can't handle errors anymore
-        Ok(Some(self.route_to(&error_packet).expect(panic_msg).expect(
-            panic_msg,
-        )))
+        Ok(Some(
+            self.route_to(&error_packet)
+                .expect(panic_msg)
+                .expect(panic_msg),
+        ))
     }
 
     /// Determines if a given RouterEndpoint has been registered with this Router.

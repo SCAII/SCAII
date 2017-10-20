@@ -10,26 +10,59 @@ extern crate scaii_defs;
 extern crate websocket;
 
 use scaii_defs::protos::{AgentEndpoint, MultiMessage, ScaiiPacket};
-use prost::Message;
 use std::error::Error;
+use internal::router::Router;
+use internal::agent::PublisherAgent;
+use std::rc::Rc;
+use std::cell::RefCell;
 
-use libc::{c_uchar, size_t};
+#[cfg(feature = "c_api")]
+mod c_api;
+#[cfg(feature = "c_api")]
+pub use c_api::*;
 
 
 // Don't publicly expose our internal structure to FFI
 pub(crate) mod internal;
 
-use internal::router::Router;
-
 /// The Environment created by this library.
+#[derive(Default)]
 pub struct Environment {
-    router: internal::router::Router,
-    next_msg: Option<MultiMessage>,
+    router: Router,
 }
 
 const FATAL_OWNER_ERROR: &'static str = "FATAL CORE ERROR: Cannot forward message to owner";
 
 impl Environment {
+    pub fn new() -> Self {
+        Environment { router: Router::new() }
+    }
+
+    pub fn agent_owned() -> (Self, Rc<RefCell<PublisherAgent>>) {
+        let agent = Rc::new(RefCell::new(PublisherAgent::new()));
+        let me = Environment { router: Router::from_agent(Box::new(Rc::clone(&agent))) };
+
+        (me, agent)
+    }
+
+    pub fn router(&self) -> &Router {
+        &self.router
+    }
+
+    pub fn router_mut(&mut self) -> &mut Router {
+        &mut self.router
+    }
+
+    pub fn update(&mut self) {
+        let core_msgs = self.router.process_module_messages();
+        self.process_core_messages(core_msgs);
+    }
+
+    pub fn route_messages(&mut self, msg: &MultiMessage) {
+        let core_msgs = self.router.decode_and_route(msg);
+        self.process_core_messages(core_msgs);
+    }
+
     /// Processes all messages returned by module message processing routed to
     /// "core"
     fn process_core_messages(&mut self, packets: Vec<ScaiiPacket>) {
@@ -170,133 +203,4 @@ impl Environment {
         packet.dest = dest;
         self.router.route_to(packet).expect(FATAL_OWNER_ERROR);
     }
-}
-
-
-/// Creates a clean environment, further configuration is done via sending
-/// `CoreCfg` messages.
-#[no_mangle]
-pub unsafe extern "C" fn new_environment() -> *mut Environment {
-    let agent = internal::agent::PublisherAgent::new();
-    let env = Box::new(Environment {
-        router: Router::from_agent(Box::new(agent)),
-        next_msg: None,
-    });
-
-    Box::into_raw(env)
-}
-
-/// Destroys the created environment, this should be called to avoid memory leaks.
-#[no_mangle]
-pub unsafe extern "C" fn destroy_environment(env: *mut Environment) {
-    Box::from_raw(env);
-}
-
-/// Receives the next message intended for the owner of this environment and
-/// writes it into the target buffer, up to a max of `buf_len`.
-///
-/// If no message exists, or the caller failed to make a previous call to
-/// `next_msg_size`, the buffer will not be filled and an error
-/// message will be added to the queue.
-///
-/// If the buffer is not large enough, the buffer will be partially filled,
-/// but an error message will be added to the queue.
-///
-/// This message can be assumed to be the wire format of
-/// the SCAII protobuf type `MultiMessage`.
-#[no_mangle]
-pub unsafe extern "C" fn next_msg(env: *mut Environment, buf: *mut c_uchar, buf_len: size_t) {
-    use std::slice;
-    use std::io::Cursor;
-    use scaii_defs::protos::endpoint::Endpoint;
-    use scaii_defs::protos::{AgentEndpoint, CoreEndpoint};
-
-    match (*env).next_msg {
-        None => {
-            (*env)
-                .router
-                .send_error(
-                    "Call to next_msg when no message\
-                     is queued or without preceding call to next_msg_size",
-                    &Endpoint::Agent(AgentEndpoint {}),
-                    &Endpoint::Core(CoreEndpoint {}),
-                )
-                .expect(FATAL_OWNER_ERROR);
-
-            return;
-        }
-        Some(ref msg) => {
-            let mut buf = slice::from_raw_parts_mut(buf, buf_len);
-            let result = msg.encode(&mut Cursor::new(&mut buf));
-            if let Err(err) = result {
-                (*env)
-                    .router
-                    .send_error(
-                        &format!("Error writing to buffer: {}", err),
-                        &Endpoint::Agent(AgentEndpoint {}),
-                        &Endpoint::Core(CoreEndpoint {}),
-                    )
-                    .expect(FATAL_OWNER_ERROR);
-            }
-        }
-    }
-
-    (*env).next_msg = None;
-}
-
-/// Queries the size of the next message intended for the owner of this environment.
-///
-/// If no message exists, 0 will be returned.
-///
-/// A call to this will query any existing modules (backends etc)
-/// for any messages they would like to send. This is done
-/// BEFORE computing the size.
-#[no_mangle]
-pub unsafe extern "C" fn next_msg_size(env: *mut Environment) -> size_t {
-    let core_msgs = (*env).router.process_module_messages();
-    (*env).process_core_messages(core_msgs);
-    let next_msg = (*env).router.agent_mut().unwrap().get_messages();
-    let out = next_msg.encoded_len();
-
-    (*env).next_msg = Some(next_msg);
-
-    out
-}
-
-/// Routes a collection of messages to arbitrary receivers and checks for
-/// responses.
-///
-/// The message must conform to the `MultiMessage` SCAII protobuf wire format. If
-/// the message cannot be parsed, an error will be added to the message
-/// queue.
-///
-/// The return value is equivalent to a query to `next_msg_size`.
-#[no_mangle]
-pub unsafe extern "C" fn route_msg(
-    env: *mut Environment,
-    msg_buf: *mut c_uchar,
-    msg_len: size_t,
-) -> size_t {
-    use std::slice;
-    use scaii_defs::protos::endpoint::Endpoint;
-    use scaii_defs::protos::{AgentEndpoint, CoreEndpoint};
-
-    let core_packets = match MultiMessage::decode(slice::from_raw_parts(msg_buf, msg_len)) {
-        Err(err) => {
-            (*env)
-                .router
-                .send_error(
-                    &format!("Could not parse message. Is it a MultiMessage? {}", err),
-                    &Endpoint::Agent(AgentEndpoint {}),
-                    &Endpoint::Core(CoreEndpoint {}),
-                )
-                .expect(FATAL_OWNER_ERROR);
-            Vec::new()
-        }
-        Ok(msg) => (*env).router.decode_and_route(&msg),
-    };
-
-    (*env).process_core_messages(core_packets);
-
-    next_msg_size(env)
 }
