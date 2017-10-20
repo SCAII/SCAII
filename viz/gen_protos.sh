@@ -1,14 +1,7 @@
 #!/usr/bin/env bash
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
-exec_dir=".."
-if [ "$DIR" != "`pwd`" ]
-then
-    exec_dir=`pwd`
-    cd $DIR
-fi
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)/js"
+cd DIR
 
-echo "Building protobuf file"
-protoc --proto_path="../../common_protos" --js_out=library=vizProto,binary:"." "../../common_protos/*.proto"
-
-cd "$exec_dir"
+printf "Building protobuf file\n"
+protoc --proto_path="$DIR/../../common_protos" --js_out=library=vizProto,binary:"." "$DIR/../../common_protos/*.proto"
