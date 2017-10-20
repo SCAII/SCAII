@@ -21,3 +21,7 @@ websocket="0.20"
 
 # local deps
 scaii_defs = {path = "../scaii_defs"}
+
+[profile.release]
+#We can't unwind over C boundaries
+panic = "abort"
