@@ -49,7 +49,7 @@ goog.require('proto.scaii.common.VizInit');
 * LICENSE file in the root directory of this source tree. An additional grant
 * of patent rights can be found in the PATENTS file in the same directory.
 */
-
+var sessionState = "pending";
 // Create the canvas
 var spacingFactor = 1;
 var sizingFactor = 1;
@@ -498,8 +498,29 @@ function buildReturnMultiMessageFromState(entities) {
   mm.addPackets(returnScaiiPacket, 0);
   return mm;
 }
+function tryConnect(dots, attemptCount) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.font = "40px Georgia";
+  if (dots == '.') {
+    dots = '..';
+  }
+  else if (dots == '..') {
+    dots = '...';
+  }
+  else {
+    dots = '.';
+  }
+  attemptCount = attemptCount + 1
+  ctx.fillText("Connecting to SCAII - try " + attemptCount + dots, 10, 50);
+  connect(dots, attemptCount);
+}
 var main = function () {
+  tryConnect('.', 0);
+}
+//var configureConnection = function () {
+var connect = function (dots, attemptCount) {
   dealer = new WebSocket('ws://localhost:6112');
+
   dealer.binaryType = 'arraybuffer';
   dealer.onopen = function (event) {
     console.log("WS Opened.");
@@ -507,6 +528,7 @@ var main = function () {
   }
 
   dealer.onmessage = function (message) {
+    sessionState = "inProgress";
     var s = message.data;
     //var view   = new Int8Array(s);
     //var dec = new TextDecoder();
@@ -528,12 +550,18 @@ var main = function () {
     }
 
   };
-  dealer.onclose = function () {
-    alert("Closed!");
+  dealer.onclose = function (closeEvent) {
+    console.log("closefired " + attemptCount);
+    if (sessionState == "pending") {
+      // the closed connection was likely due to failed connection. try reconnecting
+      setTimeout(function () { tryConnect(dots, attemptCount); }, 1500);
+    }
+    //alert("Closed!");
   };
 
   dealer.onerror = function (err) {
-    alert("Error: " + err);
+    console.log("Error: " + err);
+    //alert("Error: " + err);
   };
 };
 
