@@ -2,106 +2,75 @@ use scaii_defs::Module;
 use scaii_defs::protos::{MultiMessage, ScaiiPacket};
 use scaii_defs::protos::{ModuleInit, RpcConfig};
 use std::error::Error;
-use std::fmt::{Display, Formatter};
-use std::fmt;
 use std::net::{IpAddr, SocketAddr};
-//use crossbeam;
 use websocket::client::sync::Client;
 use websocket::stream::sync::TcpStream;
 
 use scaii_defs::protos::endpoint::Endpoint;
+use std::process::Child;
 use std::process::Command;
 use super::LoadedAs;
 use scaii_defs::protos::init_as::InitAs;
 use scaii_defs::protos;
 use std::thread;
 use std::sync::mpsc;
-use std::sync::Mutex;
 
 #[cfg(test)]
 mod test;
 
-
-/// Indicates that the optional functionality requested is not
-/// present on this backend.
-#[derive(Debug, Copy, Clone, Eq, PartialEq)]
-pub struct RpcError;
-
-impl Display for RpcError {
-    fn fmt(&self, f: &mut Formatter) -> Result<(), fmt::Error> {
-        f.write_str(self.description())
-    }
-}
-
-impl Error for RpcError {
-    fn description(&self) -> &str {
-        "Problem starting RpcModule"
-    }
-}
-unsafe impl Send for RpcError {}
-// pub fn init_rpc(rpc_config: RpcConfig) -> Result<LoadedAs, Box<Error>> {
-//     //let mut result = Result::Err(());
-//     crossbeam::scope(|scope| {
-//         let (tx, rx) = mpsc::channel();
-//         scope.spawn(move || {
-//             let result = startup_module(&rpc_config);
-//             let mutex = Mutex::new(result);
-//             tx.send(mutex).unwrap();
-//             //tx.send(result).unwrap();
-//         });
-//         match rpc_config.command {
-//             None => (()),
-//             Some(command_string) => {
-//                 let args = rpc_config.command_args;
-//                 //for arg in args.iter() {}
-//                 launch_far_end(command_string, args);
-//             }
-//         }
-//         let mutex = rx.recv().unwrap();
-
-//         let result = mutex.lock().unwrap();
-//         //let result = rx.recv().unwrap();
-//         return result;
-//         //handle.join();
-//     });
-//     //let unused_result = Box<Result::Err(())>;
-//     //let result = Err(Box::new(ffi::NulError));
-//     //result
-//     panic!("could not instantiate");
-// }
-
 pub fn init_rpc(rpc_config: RpcConfig) -> Result<LoadedAs, Box<Error>> {
     let (tx, rx) = mpsc::channel();
-    let handle = thread::spawn(move || {
-        let result = startup_module(&rpc_config);
-        let mutex = Mutex::new(result);
-        tx.send(mutex).unwrap();
-    });
-    match rpc_config.command {
-        None => (()),
-        Some(command_string) => {
-            let args = rpc_config.command_args;
-            launch_far_end(command_string, args);
+    let command = rpc_config.command.clone();
+    match command {
+        None => (),
+        Some(cmd) => {
+            let args = rpc_config.command_args.clone();
+            let _handle = thread::spawn(move || {
+                launch_far_end(&cmd, args.to_vec());
+                rx.recv().unwrap();
+            });
         }
     }
-    let mutex = rx.recv().unwrap();
-    let result = mutex.lock().unwrap();
-    handle.join();
-    *result
-    // // convert the Result<LoadedAs, Box<Error+Send>> to Result<LoadedAs, Box<Error>>
-    // let result = match *result {
-    //     Ok(x) => Ok(x),
-    //     Err(y) => {
-    //         let error_that_was_boxed = *y.get;
-    //         Err(Box::new(error_that_was_boxed))
-    //     }
-    // };
-    // result
+
+    let result = startup_module(&rpc_config);
+    tx.send(String::from("rpc_started")).unwrap();
+    result
 }
+// pub fn init_rpc_broken(rpc_config: RpcConfig) -> Result<LoadedAs, Box<Error>> {
+//     let (tx, rx) = mpsc::channel();
+//     let command = rpc_config.command.clone();
+//     let args = rpc_config.command_args.clone();
+//     let handle = thread::spawn(move || match command {
+//         None => (()),
+//         Some(command_string) => {
+//             let mut child = launch_far_end(&command_string, args.to_vec());
+//             while let Err(_) = rx.try_recv() {
+//                 //let exit_status: Result<Option<ExitStatus>> = child.try_wait();
+//                 let exit_status = child.try_wait();
+//                 match exit_status {
+//                     Ok(Some(_status)) => {
+//                         // process must have stopped - try to restart it
+//                         launch_far_end(&command_string, args.to_vec());
+//                     }
+//                     Ok(None) => (),
+//                     Err(err) => panic!(
+//                         "RPC endpoint exited with error: {} - {}",
+//                         command_string,
+//                         err
+//                     ),
+//                 }
+//             }
+//         }
+//     });
+//     let result = startup_module(&rpc_config);
+//     tx.send(String::from("rpc_started")).unwrap();
+//     handle.join().unwrap();
+//     result
+// }
 fn startup_module(rpc_config: &RpcConfig) -> Result<LoadedAs, Box<Error>> {
     let client = connect(&rpc_config)?;
-
-    let result = match rpc_config.init_as.init_as.ok_or_else::<Box<Error>, _>(|| {
+    let init_as = rpc_config.init_as.clone();
+    let result = match init_as.init_as.ok_or_else::<Box<Error>, _>(|| {
         From::from("Malformed InitAs field in RpcPlugin".to_string())
     })? {
         InitAs::Module(ModuleInit { name }) => Ok(LoadedAs::Module(
@@ -119,29 +88,30 @@ fn startup_module(rpc_config: &RpcConfig) -> Result<LoadedAs, Box<Error>> {
     result
 }
 
-fn launch_far_end(command: String, args: Vec<String>) {
-    let cmd = &command;
+fn launch_far_end(command: &String, args: Vec<String>) -> Child {
     if cfg!(target_os = "windows") {
         let mut c = Command::new("cmd");
         let c = c.arg("/C");
-        let c = c.arg(&cmd);
+        let c = c.arg(command);
         for arg in args.iter() {
             c.arg(arg);
         }
-        c.spawn().expect(&String::as_str(
-            &format!("failed to launch command {}", &cmd),
-        ))
+        let child = c.spawn().expect(&String::as_str(
+            &format!("failed to launch command {}", command),
+        ));
+        child
     } else {
         let mut c = Command::new("sh");
         let c = c.arg("-c");
-        let c = c.arg(&cmd);
+        let c = c.arg(command);
         for arg in args.iter() {
             c.arg(arg);
         }
-        c.spawn().expect(&String::as_str(
-            &format!("failed to launch command {}", &cmd),
-        ))
-    };
+        let child = c.spawn().expect(&String::as_str(
+            &format!("failed to launch command {}", command),
+        ));
+        child
+    }
 }
 
 struct Rpc {

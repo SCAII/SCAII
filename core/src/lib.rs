@@ -1,7 +1,6 @@
 // For clippy
 #![allow(unknown_lints)]
 
-extern crate crossbeam;
 #[macro_use]
 extern crate lazy_static;
 extern crate libc;
@@ -35,12 +34,16 @@ const FATAL_OWNER_ERROR: &'static str = "FATAL CORE ERROR: Cannot forward messag
 
 impl Environment {
     pub fn new() -> Self {
-        Environment { router: Router::new() }
+        Environment {
+            router: Router::new(),
+        }
     }
 
     pub fn agent_owned() -> (Self, Rc<RefCell<PublisherAgent>>) {
         let agent = Rc::new(RefCell::new(PublisherAgent::new()));
-        let me = Environment { router: Router::from_agent(Box::new(Rc::clone(&agent))) };
+        let me = Environment {
+            router: Router::from_agent(Box::new(Rc::clone(&agent))),
+        };
 
         (me, agent)
     }

@@ -77,7 +77,7 @@ impl Error for UnsupportedError {
 /// ```
 ///
 /// Note that the trait object will properly call `drop` if implemented.
-pub trait Module: Send {
+pub trait Module {
     /// Processes a message and returns an error if the message is ill-formatted
     /// or unexpected.
     ///

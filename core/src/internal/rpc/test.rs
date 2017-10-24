@@ -5,144 +5,122 @@ use websocket::message;
 use websocket::OwnedMessage;
 use scaii_defs::protos;
 
-// KEEP THIS TEST - JUST COMMENTED OUT SO I CAN RUN THE OTHER TEST ALONE FOR NOW
-// #[test]
-// fn connect_attempt() {
-//     use super::*;
-//     use scaii_defs::protos::InitAs;
-//     use scaii_defs::protos::ModuleInit;
-//     use scaii_defs::protos::scaii_packet;
-//     let (tx, rx) = mpsc::channel();
-//     // start a thread that starts listening on the port
-//     let handle = thread::spawn(move || {
-//         let config = RpcConfig {
-//             ip: Some("127.0.0.1".to_string()),
-//             port: Some(6112),
-//             init_as: InitAs {
-//                 init_as: Some(protos::init_as::InitAs::Module(ModuleInit {
-//                     name: String::from("RpcPluginModule"),
-//                 })),
-//             },
-//             command: None,
-//             command_args: Vec::new(),
-//         };
-//         let result = init_rpc(config).expect("trying to init_rpc");
-//         match result {
-//             LoadedAs::Module(mut rpc_module, _) => {
-//                 println!("RPCModule here");
-//                 // we'll get here after the wakeup connectioncomes in
-//                 let dummy_scaii_pkt = get_dummy_scaii_pkt();
-//                 // send the message
-//                 rpc_module.process_msg(&dummy_scaii_pkt).unwrap();
-//                 let mut multi_message = rpc_module.get_messages();
-//                 let pkt = multi_message.packets.pop().unwrap();
-//                 if pkt.specific_msg == Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {}))
-//                 {
-//                     tx.send(String::from("success")).unwrap();
-//                 } else {
-//                     tx.send(String::from("fail")).unwrap();
-//                 }
-//             }
-//             LoadedAs::Backend(_) => (),
-//         }
-//     });
-
-//     // connect to the port and send a message
-//     use websocket::ClientBuilder;
-
-//     let mut client = ClientBuilder::new("ws://127.0.0.1:6112")
-//         .unwrap()
-//         .connect_insecure()
-//         .unwrap();
-//     println!("connected via Client::bind");
-//     let msg = client
-//         .recv_message()
-//         .expect("Could not receive ping message from local client");
-//     println!("msg received was {:?} ", msg);
-//     let scaii_packet = decode_scaii_packet(msg);
-//     let mut pkt_vec: Vec<ScaiiPacket> = Vec::new();
-//     pkt_vec.push(scaii_packet);
-//     let multi_message = protos::MultiMessage { packets: pkt_vec };
-
-//     let buf = encode_multi_message(&multi_message);
-//     client.send_message(&message::Message::binary(buf)).unwrap();
-//     println!("sent echo message from far client");
-//     let payload = rx.recv().unwrap();
-//     assert!(payload == String::from("success"));
-//     handle.join().unwrap();
-// }
-
-
-
 #[test]
-fn launch_attempt_windows() {
+fn connect_attempt() {
     use super::*;
     use scaii_defs::protos::InitAs;
     use scaii_defs::protos::ModuleInit;
     use scaii_defs::protos::scaii_packet;
+    let (tx, rx) = mpsc::channel();
+    // start a thread that starts listening on the port
+    let handle = thread::spawn(move || {
+        let config = RpcConfig {
+            ip: Some("127.0.0.1".to_string()),
+            port: Some(6112),
+            init_as: InitAs {
+                init_as: Some(protos::init_as::InitAs::Module(ModuleInit {
+                    name: String::from("RpcPluginModule"),
+                })),
+            },
+            command: None,
+            command_args: Vec::new(),
+        };
+        let result = init_rpc(config).expect("trying to init_rpc");
+        match result {
+            LoadedAs::Module(mut rpc_module, _) => {
+                println!("RPCModule here");
+                // we'll get here after the wakeup connectioncomes in
+                let dummy_scaii_pkt = get_dummy_scaii_pkt();
+                // send the message
+                rpc_module.process_msg(&dummy_scaii_pkt).unwrap();
+                let mut multi_message = rpc_module.get_messages();
+                let pkt = multi_message.packets.pop().unwrap();
+                if pkt.specific_msg == Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {}))
+                {
+                    tx.send(String::from("success")).unwrap();
+                } else {
+                    tx.send(String::from("fail")).unwrap();
+                }
+            }
+            LoadedAs::Backend(_) => (),
+        }
+    });
 
-    let comm = Some(String::from(
-        "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
-    ));
-    let mut vec: Vec<String> = Vec::new();
-    vec.push(String::from(
-        "file:///C:/Users/Jed%20Irvine/exact/SCAII/viz/index.html",
-    ));
-    let config = RpcConfig {
-        ip: Some("127.0.0.1".to_string()),
-        port: Some(6112),
-        init_as: InitAs {
-            init_as: Some(protos::init_as::InitAs::Module(ModuleInit {
-                name: String::from("RpcPluginModule"),
-            })),
-        },
-        command: comm,
-        command_args: vec,
-    };
-    let result = init_rpc(config).expect("trying to init_rpc");
-    // match result {
-    //     LoadedAs::Module(mut rpc_module, _) => {
-    //         println!("RPCModule here");
-    //         // we'll get here after the wakeup connectioncomes in
-    //         let dummy_scaii_pkt = get_dummy_scaii_pkt();
-    //         // send the message
-    //         rpc_module.process_msg(&dummy_scaii_pkt).unwrap();
-    //         let mut multi_message = rpc_module.get_messages();
-    //         let pkt = multi_message.packets.pop().unwrap();
-    //         if pkt.specific_msg == Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {})) {
-    //             tx.send(String::from("success")).unwrap();
-    //         } else {
-    //             tx.send(String::from("fail")).unwrap();
-    //         }
-    //     }
-    //     LoadedAs::Backend(_) => (),
-    // }
+    // connect to the port and send a message
+    use websocket::ClientBuilder;
 
+    let mut client = ClientBuilder::new("ws://127.0.0.1:6112")
+        .unwrap()
+        .connect_insecure()
+        .unwrap();
+    println!("connected via Client::bind");
+    let msg = client
+        .recv_message()
+        .expect("Could not receive ping message from local client");
+    println!("msg received was {:?} ", msg);
+    let scaii_packet = decode_scaii_packet(msg);
+    let mut pkt_vec: Vec<ScaiiPacket> = Vec::new();
+    pkt_vec.push(scaii_packet);
+    let multi_message = protos::MultiMessage { packets: pkt_vec };
 
-    // // connect to the port and send a message
-    // use websocket::ClientBuilder;
-
-    // let mut client = ClientBuilder::new("ws://127.0.0.1:6112")
-    //     .unwrap()
-    //     .connect_insecure()
-    //     .unwrap();
-    // println!("connected via Client::bind");
-    // let msg = client
-    //     .recv_message()
-    //     .expect("Could not receive ping message from local client");
-    // println!("msg received was {:?} ", msg);
-    // let scaii_packet = decode_scaii_packet(msg);
-    // let mut pkt_vec: Vec<ScaiiPacket> = Vec::new();
-    // pkt_vec.push(scaii_packet);
-    // let multi_message = protos::MultiMessage { packets: pkt_vec };
-
-    // let buf = encode_multi_message(&multi_message);
-    // client.send_message(&message::Message::binary(buf)).unwrap();
-    // println!("sent echo message from far client");
-    // let payload = rx.recv().unwrap();
-    // assert!(payload == String::from("success"));
-    // handle.join().unwrap();
+    let buf = encode_multi_message(&multi_message);
+    client.send_message(&message::Message::binary(buf)).unwrap();
+    println!("sent echo message from far client");
+    let payload = rx.recv().unwrap();
+    assert!(payload == String::from("success"));
+    handle.join().unwrap();
 }
+
+
+// //this test launches a chrome tab so commented out so it won't run with usual tests
+// #[test]
+// fn launch_attempt_windows() {
+    
+//     use super::*;
+//     use scaii_defs::protos::InitAs;
+//     use scaii_defs::protos::ModuleInit;
+//     use scaii_defs::protos::scaii_packet;
+
+//     let comm = Some(String::from(
+//         "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+//     ));
+//     let mut vec: Vec<String> = Vec::new();
+//     vec.push(String::from(
+//         "file:///C:/Users/Jed%20Irvine/exact/SCAII/viz/index.html",
+//     ));
+//     let config = RpcConfig {
+//         ip: Some("127.0.0.1".to_string()),
+//         port: Some(6112),
+//         init_as: InitAs {
+//             init_as: Some(protos::init_as::InitAs::Module(ModuleInit {
+//                 name: String::from("RpcPluginModule"),
+//             })),
+//         },
+//         command: comm,
+//         command_args: vec,
+//     };
+//     let result = init_rpc(config).expect("trying to init_rpc");
+//     match result {
+//         LoadedAs::Module(mut rpc_module, _) => {
+//             println!("RPCModule here");
+//             // we'll get here after the wakeup connectioncomes in
+//             let dummy_scaii_pkt = get_dummy_scaii_pkt();
+//             // send the message
+//             println!("sending viz init message");
+//             rpc_module.process_msg(&dummy_scaii_pkt).unwrap();
+//             println!("sent viz init message");
+//             let mut multi_message = rpc_module.get_messages();
+//             let pkt = multi_message.packets.pop().unwrap();
+//             if pkt.specific_msg == Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {}))
+//             {
+//                 println!("success - vizInit returned from far end");
+//             } else {
+//                 println!("fail - non Vizinit pket returned from far end");
+//             }
+//         }
+//         LoadedAs::Backend(_) => (),
+//     }
+// }
 
 fn get_dummy_scaii_pkt() -> ScaiiPacket {
     use scaii_defs::protos;
