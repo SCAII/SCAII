@@ -18,9 +18,9 @@ fn connect_attempt() {
             ip: Some("127.0.0.1".to_string()),
             port: Some(6112),
             init_as: InitAs {
-                init_as: Some(protos::init_as::InitAs::Module(
-                    ModuleInit { name: String::from("RpcPluginModule") },
-                )),
+                init_as: Some(protos::init_as::InitAs::Module(ModuleInit {
+                    name: String::from("RpcPluginModule"),
+                })),
             },
             command: None,
             command_args: Vec::new(),
@@ -34,11 +34,8 @@ fn connect_attempt() {
                 // send the message
                 rpc_module.process_msg(&dummy_scaii_pkt).unwrap();
                 let mut multi_message = rpc_module.get_messages();
-                println!("AAA");
                 let pkt = multi_message.packets.pop().unwrap();
-                println!("BBB");
-                if pkt.specific_msg ==
-                    Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {}))
+                if pkt.specific_msg == Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {}))
                 {
                     tx.send(String::from("success")).unwrap();
                 } else {
@@ -57,9 +54,9 @@ fn connect_attempt() {
         .connect_insecure()
         .unwrap();
     println!("connected via Client::bind");
-    let msg = client.recv_message().expect(
-        "Could not receive ping message from local client",
-    );
+    let msg = client
+        .recv_message()
+        .expect("Could not receive ping message from local client");
     println!("msg received was {:?} ", msg);
     let scaii_packet = decode_scaii_packet(msg);
     let mut pkt_vec: Vec<ScaiiPacket> = Vec::new();
@@ -74,6 +71,57 @@ fn connect_attempt() {
     handle.join().unwrap();
 }
 
+
+// //this test launches a chrome tab so commented out so it won't run with usual tests
+// #[test]
+// fn launch_attempt_windows() {
+    
+//     use super::*;
+//     use scaii_defs::protos::InitAs;
+//     use scaii_defs::protos::ModuleInit;
+//     use scaii_defs::protos::scaii_packet;
+
+//     let comm = Some(String::from(
+//         "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+//     ));
+//     let mut vec: Vec<String> = Vec::new();
+//     vec.push(String::from(
+//         "file:///C:/Users/Jed%20Irvine/exact/SCAII/viz/index.html",
+//     ));
+//     let config = RpcConfig {
+//         ip: Some("127.0.0.1".to_string()),
+//         port: Some(6112),
+//         init_as: InitAs {
+//             init_as: Some(protos::init_as::InitAs::Module(ModuleInit {
+//                 name: String::from("RpcPluginModule"),
+//             })),
+//         },
+//         command: comm,
+//         command_args: vec,
+//     };
+//     let result = init_rpc(config).expect("trying to init_rpc");
+//     match result {
+//         LoadedAs::Module(mut rpc_module, _) => {
+//             println!("RPCModule here");
+//             // we'll get here after the wakeup connectioncomes in
+//             let dummy_scaii_pkt = get_dummy_scaii_pkt();
+//             // send the message
+//             println!("sending viz init message");
+//             rpc_module.process_msg(&dummy_scaii_pkt).unwrap();
+//             println!("sent viz init message");
+//             let mut multi_message = rpc_module.get_messages();
+//             let pkt = multi_message.packets.pop().unwrap();
+//             if pkt.specific_msg == Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {}))
+//             {
+//                 println!("success - vizInit returned from far end");
+//             } else {
+//                 println!("fail - non Vizinit pket returned from far end");
+//             }
+//         }
+//         LoadedAs::Backend(_) => (),
+//     }
+// }
+
 fn get_dummy_scaii_pkt() -> ScaiiPacket {
     use scaii_defs::protos;
     use scaii_defs::protos::{endpoint, scaii_packet};
@@ -82,9 +130,9 @@ fn get_dummy_scaii_pkt() -> ScaiiPacket {
             endpoint: Some(endpoint::Endpoint::Backend(protos::BackendEndpoint {})),
         },
         dest: protos::Endpoint {
-            endpoint: Some(endpoint::Endpoint::Module(
-                protos::ModuleEndpoint { name: "viz".to_string() },
-            )),
+            endpoint: Some(endpoint::Endpoint::Module(protos::ModuleEndpoint {
+                name: "viz".to_string(),
+            })),
         },
         specific_msg: Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {})),
     }
@@ -96,9 +144,9 @@ fn encode_multi_message(
     use prost::Message;
     let mut buf: Vec<u8> = Vec::new();
     //packet.encode(&mut buf).expect(
-    multi_message.encode(&mut buf).expect(
-        "Could not encode SCAII packet (server error)",
-    );
+    multi_message
+        .encode(&mut buf)
+        .expect("Could not encode SCAII packet (server error)");
     buf
 }
 

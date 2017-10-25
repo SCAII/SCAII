@@ -36,6 +36,7 @@ message ScaiiPacket {
 		SerializationResponse ser_resp = 8;
 		bool reset_env = 9;
 		VizInit viz_init = 10;
+		UserCommand user_command = 11;
 		Other other = 29;
 	}
 
@@ -214,4 +215,16 @@ message SerializationRequest {
 message SerializationResponse {
 	required bytes serialized = 1;
 	required SerializationFormat format = 2;
+}
+// Since Rpc waits for a response for each packet that is sent,
+// but in non-testing mode, Viz does not send back state,
+// we send back a UserCommand of the NONE variety as a simple Ack.  
+// EXPLAIN is a standin for when explanation info is requested.
+enum UserCommandType {
+	NONE = 0;
+	EXPLAIN = 1;
+}
+message UserCommand {
+	required UserCommandType user_command_type = 1;
+	repeated string args = 2;
 }

@@ -41,7 +41,9 @@ struct RandInit {
 impl Default for RandInit {
     fn default() -> Self {
         use rand;
-        RandInit { seed: rand::thread_rng().gen() }
+        RandInit {
+            seed: rand::thread_rng().gen(),
+        }
     }
 }
 
@@ -60,13 +62,12 @@ impl Settings {
         use toml;
 
         if let Some(path) = args.nth(1) {
-            let mut reader = BufReader::new(File::open(&path).expect(
-                "Could not open provided toml file path",
-            ));
+            let mut reader =
+                BufReader::new(File::open(&path).expect("Could not open provided toml file path"));
             let mut toml_str = String::new();
-            reader.read_to_string(&mut toml_str).expect(
-                "Could not read file as text",
-            );
+            reader
+                .read_to_string(&mut toml_str)
+                .expect("Could not read file as text");
 
             toml::from_str(&toml_str).expect("Could not parse provided toml file")
         } else {
@@ -132,7 +133,7 @@ fn connect(settings: &Settings) -> Client<TcpStream> {
     connection.accept().expect("Couldn't accept the connection")
 }
 
-fn make_viz_init() -> ScaiiPacket {
+fn make_viz_init(test_mode: bool) -> ScaiiPacket {
     use scaii_defs::protos;
     use scaii_defs::protos::{endpoint, scaii_packet};
     ScaiiPacket {
@@ -140,12 +141,14 @@ fn make_viz_init() -> ScaiiPacket {
             endpoint: Some(endpoint::Endpoint::Backend(protos::BackendEndpoint {})),
         },
         dest: protos::Endpoint {
-            endpoint: Some(endpoint::Endpoint::Module(
-                protos::ModuleEndpoint { name: "viz".to_string() },
-            )),
+            endpoint: Some(endpoint::Endpoint::Module(protos::ModuleEndpoint {
+                name: "viz".to_string(),
+            })),
         },
 
-        specific_msg: Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {})),
+        specific_msg: Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {
+            test_mode: Some(test_mode),
+        })),
     }
 }
 
@@ -156,9 +159,9 @@ fn encode_and_send_proto(
     use prost::Message;
     use websocket::message;
     let mut buf: Vec<u8> = Vec::new();
-    packet.encode(&mut buf).expect(
-        "Could not encode SCAII packet (server error)",
-    );
+    packet
+        .encode(&mut buf)
+        .expect("Could not encode SCAII packet (server error)");
 
     client.send_message(&message::Message::binary(buf))?;
     Ok(())
@@ -175,9 +178,9 @@ fn verify_scaii_packet(
     use std::collections::HashSet;
 
     let expected_src = protos::Endpoint {
-        endpoint: Some(endpoint::Endpoint::Module(
-            protos::ModuleEndpoint { name: "viz".to_string() },
-        )),
+        endpoint: Some(endpoint::Endpoint::Module(protos::ModuleEndpoint {
+            name: "viz".to_string(),
+        })),
     };
     let expected_dest = protos::Endpoint {
         endpoint: Some(endpoint::Endpoint::Backend(protos::BackendEndpoint {})),
@@ -306,9 +309,9 @@ fn receive_and_decode_proto(client: &mut Client<TcpStream>) -> ScaiiPacket {
     use websocket::OwnedMessage;
     use websocket::message;
 
-    let msg = client.recv_message().expect(
-        "Could not receive message from client",
-    );
+    let msg = client
+        .recv_message()
+        .expect("Could not receive message from client");
     if let OwnedMessage::Binary(vec) = msg {
         let mut msg = match MultiMessage::decode(vec) {
             Err(err) => {
@@ -352,10 +355,12 @@ fn receive_and_decode_proto(client: &mut Client<TcpStream>) -> ScaiiPacket {
 }
 
 fn server_startup(client: &mut Client<TcpStream>) {
-    println!("Sending a VizInit ScaiiPacket, no response expected");
+    println!("Sending a VizInit ScaiiPacket");
 
-    let viz_init = make_viz_init();
+    let viz_init = make_viz_init(true);
     encode_and_send_proto(client, &viz_init).expect("Could not send VizInit message");
+    let _echoed_viz_init = receive_and_decode_proto(client);
+    println!("received echoed VizInit ScaiiPacket");
 }
 
 fn packet_from_entity_list(entities: Vec<protos::Entity>) -> ScaiiPacket {
@@ -367,9 +372,9 @@ fn packet_from_entity_list(entities: Vec<protos::Entity>) -> ScaiiPacket {
             endpoint: Some(endpoint::Endpoint::Backend(protos::BackendEndpoint {})),
         },
         dest: protos::Endpoint {
-            endpoint: Some(endpoint::Endpoint::Module(
-                protos::ModuleEndpoint { name: "viz".to_string() },
-            )),
+            endpoint: Some(endpoint::Endpoint::Module(protos::ModuleEndpoint {
+                name: "viz".to_string(),
+            })),
         },
 
         specific_msg: Some(scaii_packet::SpecificMsg::Viz(
@@ -381,6 +386,7 @@ fn packet_from_entity_list(entities: Vec<protos::Entity>) -> ScaiiPacket {
 fn first_delta(
     client: &mut Client<TcpStream>,
     entities: Vec<IdEntity>,
+    verify_state: bool,
 ) -> HashMap<usize, IdEntity> {
     let protos = entities.iter().map(|e| e.to_proto()).collect();
     println!("Sending first volley of entities to initialize list");
@@ -393,9 +399,9 @@ fn first_delta(
         .into_iter()
         .map(|entity| (entity.id, entity))
         .collect();
-
-    verify_scaii_packet(client, &entity_map, &response);
-
+    if verify_state {
+        verify_scaii_packet(client, &entity_map, &response);
+    }
     entity_map
 }
 
@@ -446,13 +452,13 @@ fn update_entities<R: Rng>(entity_map: &mut HashMap<usize, IdEntity>, rng: &mut 
             endpoint: Some(endpoint::Endpoint::Backend(protos::BackendEndpoint {})),
         },
         dest: protos::Endpoint {
-            endpoint: Some(endpoint::Endpoint::Module(
-                protos::ModuleEndpoint { name: "viz".to_string() },
-            )),
+            endpoint: Some(endpoint::Endpoint::Module(protos::ModuleEndpoint {
+                name: "viz".to_string(),
+            })),
         },
-        specific_msg: Some(scaii_packet::SpecificMsg::Viz(
-            protos::Viz { entities: entity_protos },
-        )),
+        specific_msg: Some(scaii_packet::SpecificMsg::Viz(protos::Viz {
+            entities: entity_protos,
+        })),
     }
 }
 
@@ -496,7 +502,7 @@ fn test_viz_client(settings: &Settings) {
     server_startup(&mut client);
 
     let init_entities = gen_entities(&mut rng);
-    let mut entity_map = first_delta(&mut client, init_entities);
+    let mut entity_map = first_delta(&mut client, init_entities, true);
     test_loop(&mut client, &mut entity_map, &mut rng);
 }
 
