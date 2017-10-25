@@ -2,15 +2,15 @@ syntax = "proto2";
 
 package scaii.common;
 
-
 // A message to initialize the visualization environment.
 //
 // In the future this will contain things like sprite sheet paths
-// and animation info for certain classes of entities, but at the 
-// moment visualization is primitive enough that this is a marker
-// reserved for future extension.
+// and animation info for certain classes of entities.  At this point
+// the only field is a flog to control whether viz will run in test 
+// mode (which means it will echo back state after state updates) or
+// non-test mode (which means it will send back an RpcAck)
 message VizInit {
-
+	optional bool test_mode = 1;
 }
 
 // The packet containing what to draw. This is ALWAYS

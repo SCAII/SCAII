@@ -49,6 +49,7 @@ goog.require('proto.scaii.common.VizInit');
 * LICENSE file in the root directory of this source tree. An additional grant
 * of patent rights can be found in the PATENTS file in the same directory.
 */
+var testingMode = false;
 var sessionState = "pending";
 // Create the canvas
 var spacingFactor = 1;
@@ -421,6 +422,12 @@ function renderState(entities) {
 function handleVizInit(vizInit) {
   clearUI();
   ctx.fillText("Received VizInit!", 10, 50);
+  if (vizInit.hasTestMode()) {
+    if (vizInit.getTestMode()) {
+      testingMode = true;
+    }
+  }
+
   mm = buildEchoVizInitMultiMessage(vizInit);
   return mm;
 }
@@ -472,6 +479,12 @@ function handleViz(vizData) {
 function buildEchoVizInitMultiMessage(vizInit) {
   var returnScaiiPacket = new proto.scaii.common.ScaiiPacket;
   returnScaiiPacket.setVizInit(vizInit);
+  var mm = buildReturnMultiMessageFromScaiiPacket(returnScaiiPacket);
+  return mm;
+}
+function buildMultiMessageWithUserCommand(userCommand) {
+  var returnScaiiPacket = new proto.scaii.common.ScaiiPacket;
+  returnScaiiPacket.setUserCommand(userCommand);
   var mm = buildReturnMultiMessageFromScaiiPacket(returnScaiiPacket);
   return mm;
 }
@@ -533,22 +546,17 @@ function tryConnect(dots, attemptCount) {
 var main = function () {
   tryConnect('.', 0);
 }
-//var configureConnection = function () {
 var connect = function (dots, attemptCount) {
   dealer = new WebSocket('ws://localhost:6112');
 
   dealer.binaryType = 'arraybuffer';
   dealer.onopen = function (event) {
     console.log("WS Opened.");
-    //dealer.send("Hello Server dude");
   }
 
   dealer.onmessage = function (message) {
     sessionState = "inProgress";
     var s = message.data;
-    //var view   = new Int8Array(s);
-    //var dec = new TextDecoder();
-    //console.log(dec.decode(view));
     var sPacket = proto.scaii.common.ScaiiPacket.deserializeBinary(s);
     if (sPacket.hasVizInit()) {
       var vizInit = sPacket.getVizInit();
@@ -559,7 +567,15 @@ var connect = function (dots, attemptCount) {
     else if (sPacket.hasViz()) {
       var viz = sPacket.getViz();
       handleViz(viz);
-      var mm = buildReturnMultiMessageFromState(masterEntities);
+      var mm;
+      if (testingMode) {
+        mm = buildReturnMultiMessageFromState(masterEntities);
+      }
+      else {
+        var userCommand = new proto.scaii.common.UserCommand;
+        userCommand.setUserCommandType(proto.scaii.common.UserCommandType.NONE);
+        mm = buildMultiMessageWithUserCommand(userCommand);
+      }
       var returnMessage = mm.serializeBinary();
       dealer.send(returnMessage);
     }
