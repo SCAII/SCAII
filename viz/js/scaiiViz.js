@@ -49,7 +49,7 @@ goog.require('proto.scaii.common.VizInit');
 * LICENSE file in the root directory of this source tree. An additional grant
 * of patent rights can be found in the PATENTS file in the same directory.
 */
-
+var sessionState = "pending";
 // Create the canvas
 var spacingFactor = 1;
 var sizingFactor = 1;
@@ -73,9 +73,7 @@ var button_left = left_frame_width + 30;
 var osu_button_left = left_frame_width + 30;
 
 var masterEntities = {};
-function handleVizInit(vizInit) {
-  console.log('received VizInit');
-}
+
 function logEntity(entity) {
   if (entity == undefined) {
     console.log('ENTITY undefined');
@@ -403,7 +401,7 @@ function loadShapeColorAsRGBAString(shape) {
   return result;
 }
 function renderState(entities) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  clearUI();
   for (var i in entities) {
     var entity = entities[i];
     if (entity != undefined) {
@@ -419,6 +417,12 @@ function renderState(entities) {
 
 
   }
+}
+function handleVizInit(vizInit) {
+  clearUI();
+  ctx.fillText("Received VizInit!", 10, 50);
+  mm = buildEchoVizInitMultiMessage(vizInit);
+  return mm;
 }
 function handleViz(vizData) {
   console.log('received Viz...');
@@ -465,6 +469,12 @@ function handleViz(vizData) {
   renderState(masterEntities);
 
 }
+function buildEchoVizInitMultiMessage(vizInit) {
+  var returnScaiiPacket = new proto.scaii.common.ScaiiPacket;
+  returnScaiiPacket.setVizInit(vizInit);
+  var mm = buildReturnMultiMessageFromScaiiPacket(returnScaiiPacket);
+  return mm;
+}
 function buildReturnMultiMessageFromState(entities) {
   var entityKeys = Object.keys(entities);
   var returnState = new proto.scaii.common.Viz;
@@ -481,7 +491,10 @@ function buildReturnMultiMessageFromState(entities) {
   var returnScaiiPacket = new proto.scaii.common.ScaiiPacket;
 
   returnScaiiPacket.setViz(returnState);
-
+  var mm = buildReturnMultiMessageFromScaiiPacket(returnScaiiPacket);
+  return mm;
+}
+function buildReturnMultiMessageFromScaiiPacket(scPkt) {
   var moduleEndpoint = new proto.scaii.common.ModuleEndpoint;
   moduleEndpoint.setName("viz");
   var srcEndpoint = new proto.scaii.common.Endpoint;
@@ -491,15 +504,39 @@ function buildReturnMultiMessageFromState(entities) {
   var destEndpoint = new proto.scaii.common.Endpoint;
   destEndpoint.setBackend(backendEndpoint);
 
-  returnScaiiPacket.setSrc(srcEndpoint);
-  returnScaiiPacket.setDest(destEndpoint);
+  scPkt.setSrc(srcEndpoint);
+  scPkt.setDest(destEndpoint);
 
   var mm = new proto.scaii.common.MultiMessage;
-  mm.addPackets(returnScaiiPacket, 0);
+  mm.addPackets(scPkt, 0);
   return mm;
 }
+function clearUI() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+function tryConnect(dots, attemptCount) {
+  clearUI();
+  ctx.font = "40px Georgia";
+  if (dots == '.') {
+    dots = '..';
+  }
+  else if (dots == '..') {
+    dots = '...';
+  }
+  else {
+    dots = '.';
+  }
+  attemptCount = attemptCount + 1
+  ctx.fillText("Connecting to SCAII - try " + attemptCount + dots, 10, 50);
+  connect(dots, attemptCount);
+}
 var main = function () {
+  tryConnect('.', 0);
+}
+//var configureConnection = function () {
+var connect = function (dots, attemptCount) {
   dealer = new WebSocket('ws://localhost:6112');
+
   dealer.binaryType = 'arraybuffer';
   dealer.onopen = function (event) {
     console.log("WS Opened.");
@@ -507,6 +544,7 @@ var main = function () {
   }
 
   dealer.onmessage = function (message) {
+    sessionState = "inProgress";
     var s = message.data;
     //var view   = new Int8Array(s);
     //var dec = new TextDecoder();
@@ -514,7 +552,9 @@ var main = function () {
     var sPacket = proto.scaii.common.ScaiiPacket.deserializeBinary(s);
     if (sPacket.hasVizInit()) {
       var vizInit = sPacket.getVizInit();
-      handleVizInit(vizInit);
+      var mm = handleVizInit(vizInit);
+      var returnMessage = mm.serializeBinary();
+      dealer.send(returnMessage);
     }
     else if (sPacket.hasViz()) {
       var viz = sPacket.getViz();
@@ -528,12 +568,18 @@ var main = function () {
     }
 
   };
-  dealer.onclose = function () {
-    alert("Closed!");
+  dealer.onclose = function (closeEvent) {
+    console.log("closefired " + attemptCount);
+    if (sessionState == "pending") {
+      // the closed connection was likely due to failed connection. try reconnecting
+      setTimeout(function () { tryConnect(dots, attemptCount); }, 1500);
+    }
+    //alert("Closed!");
   };
 
   dealer.onerror = function (err) {
-    alert("Error: " + err);
+    console.log("Error: " + err);
+    //alert("Error: " + err);
   };
 };
 
