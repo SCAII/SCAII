@@ -381,10 +381,8 @@ function layoutEntityAtPosition(x, y, entity) {
       }
       else if (shape.hasTriangle()) {
         var triangle = shape.getTriangle();
-        var baseLen = 40;
-        if (triangle.hasBaseLen()) {
-          base_len = triangle.getBaseLen();
-        }
+        var baseLen = triangle.getBaseLen();
+
         var colorRGBA = loadShapeColorAsRGBAString(shape);
         drawTriangle(x, y, baseLen, colorRGBA);
       }
