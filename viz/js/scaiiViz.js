@@ -287,7 +287,7 @@ function drawTriangle(x, y, baseLen, colorRGBA) {
   var xTip = x;
   var xBottomLeft = x - baseLen / 2;
   var xBottomRight = x + baseLen / 2;
-  console.log('drawing triangle ' + xTip + ',' + yTip + ' ; ' + xBottomRight + ',' + yBottom + ' ; ' + xBottomLeft + ',' + yBottom);
+  console.log('drawing triangle ' + xTip + ',' + yTip + ' ; ' + xBottomRight + ',' + yBottom + ' ; ' + xBottomLeft + ',' + yBottom + ';' + colorRGBA);
   ctx.beginPath();
   ctx.moveTo(xTip, yTip);
   ctx.lineTo(xBottomRight, yBottom);
@@ -327,9 +327,10 @@ function drawRect(x, y, width, height, colorRGBA) {
     y2 = 200;
   }
 
-  console.log('drawing rect ' + x1 + ' ' + x2 + ' ' + y1 + ' ' + y2);
+  console.log('drawing rect ' + x1 + ' ' + x2 + ' ' + y1 + ' ' + y2 + ';' + colorRGBA);
   ctx.beginPath();
   ctx.strokeStyle = colorRGBA;
+  ctx.fillStyle = colorRGBA;
   //ctx.rect(x1, y1, x2 - x1, y2 - y1);
   ctx.fillRect(x1, y1, x2 - x1, y2 - y1);
   // ctx.stroke();
@@ -409,7 +410,7 @@ function loadShapeColorAsRGBAString(shape) {
       color['B'] = color.getB();
     }
     if (color.hasA()) {
-      color['A'] = color.getA();
+      color['A'] = color.getA() / 255;
     }
   }
   var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
