@@ -56,6 +56,9 @@ var spacingFactor = 1;
 var sizingFactor = 1;
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
+var shape_outline_color = '#202020';
+var shape_outline_width = 2;
+var use_shape_color_for_outline = false;
 canvas.width = 1400;
 canvas.height = 1000;
 
@@ -295,12 +298,14 @@ function drawTriangle(x, y, baseLen, colorRGBA) {
   ctx.closePath();
 
   // the outline
-  ctx.lineWidth = 4;
-  ctx.strokeStyle = '#202020';
+  ctx.lineWidth = shape_outline_width;
+  ctx.strokeStyle = shape_outline_color;
+  if (use_shape_color_for_outline) {
+    ctx.strokeStyle = colorRGBA;
+  }
   ctx.stroke();
 
   // the fill color
-  //ctx.fillStyle = "#FFCC00";
   ctx.fillStyle = colorRGBA;
   ctx.fill();
 }
@@ -319,22 +324,19 @@ function drawRect(x, y, width, height, colorRGBA) {
     y1 = 0;
   }
   var x2 = x + (width / 2);
-  if (x2 > 200) {
-    x2 = 200;
-  }
   var y2 = y + (height / 2);
-  if (y2 > 200) {
-    y2 = 200;
-  }
 
   console.log('drawing rect ' + x1 + ' ' + x2 + ' ' + y1 + ' ' + y2 + ';' + colorRGBA);
   ctx.beginPath();
-  ctx.strokeStyle = colorRGBA;
+
+  ctx.lineWidth = shape_outline_width;
+  ctx.strokeStyle = shape_outline_color;
+  if (use_shape_color_for_outline) {
+    ctx.strokeStyle = colorRGBA;
+  }
+  ctx.strokeRect(x1, y1, width, height);
   ctx.fillStyle = colorRGBA;
-  //ctx.rect(x1, y1, x2 - x1, y2 - y1);
   ctx.fillRect(x1, y1, x2 - x1, y2 - y1);
-  // ctx.stroke();
-  //ctx.closePath();
 }
 
 function getAbsoluteOrigin(x, y, relPos) {
@@ -389,7 +391,15 @@ function layoutEntityAtPosition(x, y, entity) {
     }
   }
 }
-
+function getBasicColorRGBA() {
+  color = {};
+  color['R'] = 200;
+  color['G'] = 200;
+  color['B'] = 200;
+  color['A'] = 0.5;
+  var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
+  return result;
+}
 function loadShapeColorAsRGBAString(shape) {
   color = {};
   color['R'] = 200;
@@ -558,7 +568,12 @@ function tryConnect(dots, attemptCount) {
   ctx.fillText("Connecting to SCAII - try " + attemptCount + dots, 10, 50);
   connect(dots, attemptCount);
 }
-
+var draw_example_shapes = function () {
+  clearUI();
+  colorRGBA = getBasicColorRGBA();
+  drawRect(100, 100, 80, 80, colorRGBA);
+  drawTriangle(200, 200, 80, colorRGBA);
+}
 var main = function () {
   tryConnect('.', 0);
 }
