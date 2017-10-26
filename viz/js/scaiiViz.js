@@ -49,6 +49,7 @@ goog.require('proto.scaii.common.VizInit');
 * LICENSE file in the root directory of this source tree. An additional grant
 * of patent rights can be found in the PATENTS file in the same directory.
 */
+var testingMode = false;
 var sessionState = "pending";
 // Create the canvas
 var spacingFactor = 1;
@@ -93,6 +94,7 @@ function logEntity(entity) {
     logShape(shape);
   }
 }
+
 function deleteShape(shapeList, shape) {
   var index = shapeList.indexOf(shape);
   if (index != -1) {
@@ -102,9 +104,11 @@ function deleteShape(shapeList, shape) {
     console.log('ERROR - asked to delete shape that is not in master list!');
   }
 }
+
 function addShape(shapesList, shape) {
   masterShapes.push(updateShape);
 }
+
 function updateMasterPosition(masterPos, updatePos) {
   if (updatePos != undefined) {
     if (updatePos.hasX()) {
@@ -115,6 +119,7 @@ function updateMasterPosition(masterPos, updatePos) {
     }
   }
 }
+
 function limitFilterColorValue(value) {
   if (value < 0) {
     return 0;
@@ -124,6 +129,7 @@ function limitFilterColorValue(value) {
   }
   else return value;
 }
+
 function updateMasterColor(masterShape, masterColor, updateColor) {
   if (updateColor == undefined) {
     return;
@@ -145,6 +151,7 @@ function updateMasterColor(masterShape, masterColor, updateColor) {
     masterColor.setA(limitFilterColorValue(updateColor.getA()));
   }
 }
+
 function updateMasterRect(masterShape, masterRect, updateRect) {
   if (updateRect == undefined) {
     return;
@@ -162,6 +169,7 @@ function updateMasterRect(masterShape, masterRect, updateRect) {
     masterRect.setHeight(updateRect.getHeight());
   }
 }
+
 function updateMasterTriangle(masterShape, masterTri, updateTri) {
   if (updateTri == undefined) {
     return;
@@ -175,6 +183,7 @@ function updateMasterTriangle(masterShape, masterTri, updateTri) {
     masterTri.setBaseLen(updateTri.getBaseLen());
   }
 }
+
 function updateMasterShape(master, update) {
   var updatePos = update.getRelativePos();
   var masterPos = master.getRelativePos();
@@ -216,6 +225,7 @@ function updateMasterShape(master, update) {
     }
   }
 }
+
 function getShapeWithMatchingId(shapesList, shapeId) {
   for (var i in shapesList) {
     var shape = shapesList[i];
@@ -228,6 +238,7 @@ function getShapeWithMatchingId(shapesList, shapeId) {
   }
   return undefined;
 }
+
 function updateMasterEntity(master, update) {
   if (update.hasPos()) {
     var updatePos = update.getPos();
@@ -264,6 +275,7 @@ function updateMasterEntity(master, update) {
     }
   }
 }
+
 function drawTriangle(x, y, baseLen, colorRGBA) {
   baseLen = baseLen * sizingFactor;
   x = x * spacingFactor;
@@ -292,6 +304,7 @@ function drawTriangle(x, y, baseLen, colorRGBA) {
   ctx.fillStyle = colorRGBA;
   ctx.fill();
 }
+
 function drawRect(x, y, width, height, colorRGBA) {
   width = width * sizingFactor;
   height = height * sizingFactor;
@@ -322,6 +335,7 @@ function drawRect(x, y, width, height, colorRGBA) {
   // ctx.stroke();
   //ctx.closePath();
 }
+
 function getAbsoluteOrigin(x, y, relPos) {
   var xDelta = 0;
   var yDelta = 0;
@@ -341,6 +355,7 @@ function getAbsoluteOrigin(x, y, relPos) {
   }
   return [absX, absY];
 }
+
 function layoutEntityAtPosition(x, y, entity) {
   var shapesList = entity.getShapesList();
   for (var j in shapesList) {
@@ -374,8 +389,8 @@ function layoutEntityAtPosition(x, y, entity) {
       }
     }
   }
-
 }
+
 function loadShapeColorAsRGBAString(shape) {
   color = {};
   color['R'] = 200;
@@ -400,6 +415,7 @@ function loadShapeColorAsRGBAString(shape) {
   var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
   return result;
 }
+
 function renderState(entities) {
   clearUI();
   for (var i in entities) {
@@ -414,13 +430,17 @@ function renderState(entities) {
         }
       }
     }
-
-
   }
 }
+
 function handleVizInit(vizInit) {
   clearUI();
   ctx.fillText("Received VizInit!", 10, 50);
+  if (vizInit.hasTestMode()) {
+    if (vizInit.getTestMode()) {
+      testingMode = true;
+    }
+  }
   mm = buildEchoVizInitMultiMessage(vizInit);
   return mm;
 }
@@ -467,11 +487,18 @@ function handleViz(vizData) {
 
   }
   renderState(masterEntities);
-
 }
+
 function buildEchoVizInitMultiMessage(vizInit) {
   var returnScaiiPacket = new proto.scaii.common.ScaiiPacket;
   returnScaiiPacket.setVizInit(vizInit);
+  var mm = buildReturnMultiMessageFromScaiiPacket(returnScaiiPacket);
+  return mm;
+}
+
+function buildMultiMessageWithUserCommand(userCommand) {
+  var returnScaiiPacket = new proto.scaii.common.ScaiiPacket;
+  returnScaiiPacket.setUserCommand(userCommand);
   var mm = buildReturnMultiMessageFromScaiiPacket(returnScaiiPacket);
   return mm;
 }
@@ -511,9 +538,11 @@ function buildReturnMultiMessageFromScaiiPacket(scPkt) {
   mm.addPackets(scPkt, 0);
   return mm;
 }
+
 function clearUI() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
+
 function tryConnect(dots, attemptCount) {
   clearUI();
   ctx.font = "40px Georgia";
@@ -530,25 +559,22 @@ function tryConnect(dots, attemptCount) {
   ctx.fillText("Connecting to SCAII - try " + attemptCount + dots, 10, 50);
   connect(dots, attemptCount);
 }
+
 var main = function () {
   tryConnect('.', 0);
 }
-//var configureConnection = function () {
+
 var connect = function (dots, attemptCount) {
   dealer = new WebSocket('ws://localhost:6112');
 
   dealer.binaryType = 'arraybuffer';
   dealer.onopen = function (event) {
     console.log("WS Opened.");
-    //dealer.send("Hello Server dude");
   }
 
   dealer.onmessage = function (message) {
     sessionState = "inProgress";
     var s = message.data;
-    //var view   = new Int8Array(s);
-    //var dec = new TextDecoder();
-    //console.log(dec.decode(view));
     var sPacket = proto.scaii.common.ScaiiPacket.deserializeBinary(s);
     if (sPacket.hasVizInit()) {
       var vizInit = sPacket.getVizInit();
@@ -559,14 +585,21 @@ var connect = function (dots, attemptCount) {
     else if (sPacket.hasViz()) {
       var viz = sPacket.getViz();
       handleViz(viz);
-      var mm = buildReturnMultiMessageFromState(masterEntities);
+      var mm;
+      if (testingMode) {
+        mm = buildReturnMultiMessageFromState(masterEntities);
+      }
+      else {
+        var userCommand = new proto.scaii.common.UserCommand;
+        userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.NONE);
+        mm = buildMultiMessageWithUserCommand(userCommand);
+      }
       var returnMessage = mm.serializeBinary();
       dealer.send(returnMessage);
     }
     else {
       console.log('unexpected message from system!');
     }
-
   };
   dealer.onclose = function (closeEvent) {
     console.log("closefired " + attemptCount);

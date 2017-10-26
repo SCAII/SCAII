@@ -35,8 +35,9 @@ fn connect_attempt() {
                 rpc_module.process_msg(&dummy_scaii_pkt).unwrap();
                 let mut multi_message = rpc_module.get_messages();
                 let pkt = multi_message.packets.pop().unwrap();
-                if pkt.specific_msg == Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {}))
-                {
+                if pkt.specific_msg == Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {
+                    test_mode: Some(false),
+                })) {
                     tx.send(String::from("success")).unwrap();
                 } else {
                     tx.send(String::from("fail")).unwrap();
@@ -83,7 +84,9 @@ fn get_dummy_scaii_pkt() -> ScaiiPacket {
                 name: "viz".to_string(),
             })),
         },
-        specific_msg: Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {})),
+        specific_msg: Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {
+            test_mode: Some(false),
+        })),
     }
 }
 fn encode_multi_message(
