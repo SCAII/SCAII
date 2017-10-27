@@ -139,6 +139,8 @@ message State {
 	optional double reward = 3;
 	
 	optional bytes expanded_state = 4;
+	map<string,double> typed_reward = 5;
+	required bool terminal = 6;
 }
 
 // A basic action reply from an agent to a backend.
