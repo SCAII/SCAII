@@ -221,11 +221,7 @@ impl Router {
 
         let panic_msg = "FATAL CORE ERROR: Cannot send error message from inside core";
         // At this point, we pretty much can't handle errors anymore
-        Ok(Some(
-            self.route_to(&error_packet)
-                .expect(panic_msg)
-                .expect(panic_msg),
-        ))
+        Ok(self.route_to(&error_packet).expect(panic_msg))
     }
 
     /// Determines if a given RouterEndpoint has been registered with this Router.

@@ -1,13 +1,12 @@
-use scaii_defs::{Backend, Module, BackendSupported};
-use scaii_defs::protos::{MultiMessage, ScaiiPacket, RustFfiConfig};
+use scaii_defs::{Backend, BackendSupported, Module};
+use scaii_defs::protos::{MultiMessage, RustFfiConfig, ScaiiPacket};
 
 use std::error::Error;
-use std::ops::{Deref, DerefMut, Drop};
+use std::ops::{Deref, DerefMut};
 
 use super::LoadedAs;
 
 pub fn init_ffi(args: RustFfiConfig) -> Result<LoadedAs, Box<Error>> {
-    use internal::RcLibrary;
     use libloading::Library;
     use scaii_defs::protos::init_as::InitAs;
     use scaii_defs::protos::ModuleInit;
@@ -15,30 +14,31 @@ pub fn init_ffi(args: RustFfiConfig) -> Result<LoadedAs, Box<Error>> {
     let mu = &::internal::OPEN_LIBS;
     {
         let mut lib_map = mu.lock()?;
-        let plugin_path = args.plugin_path;
+        let plugin_path = args.plugin_path.clone();
 
         //rclib = rust-call lib
-        let rclib = lib_map.entry(plugin_path.clone()).or_insert(RcLibrary {
-            lib: Library::new(&plugin_path)?,
-            uses: 1,
-        });
+        let lib = lib_map
+            .entry(plugin_path.clone())
+            .or_insert(Library::new(&plugin_path)?);
 
-        match args.init_as.init_as.ok_or::<Box<Error>>(Err(
-            "Malformed InitAs field in RustFfi"
-                .to_string(),
-        )?)? {
+        match args.clone()
+            .init_as
+            .init_as
+            .ok_or_else::<Box<Error>, _>(|| {
+                From::from(format!("Malformed InitAs field in RustFfi {:?}", args))
+            })? {
             InitAs::Backend(_) => {
-                let rclib = unsafe { rclib.lib.get::<fn() -> Box<Backend>>(b"new_backend\0")? };
+                let lib = unsafe { lib.get::<fn() -> Box<Backend>>(b"new_backend\0")? };
                 Ok(LoadedAs::Backend(Box::new(RustDynamicBackend {
-                    backend: rclib(),
+                    backend: lib(),
                     plugin_path: plugin_path,
                 })))
             }
             InitAs::Module(ModuleInit { name }) => {
-                let rclib = unsafe { rclib.lib.get::<fn(&str) -> Box<Module>>(b"new\0")? };
+                let lib = unsafe { lib.get::<fn(&str) -> Box<Module>>(b"new\0")? };
                 Ok(LoadedAs::Module(
                     Box::new(RustDynamicModule {
-                        module: rclib(&name),
+                        module: lib(&name),
                         plugin_path: plugin_path,
                     }),
                     name,
@@ -53,7 +53,7 @@ pub fn init_ffi(args: RustFfiConfig) -> Result<LoadedAs, Box<Error>> {
 /// `Module` trait in `scaii_defs` for API info.
 struct RustDynamicBackend {
     backend: Box<Backend>,
-    plugin_path: String,
+    pub plugin_path: String,
 }
 
 impl RustDynamicBackend {}
@@ -68,30 +68,6 @@ impl Deref for RustDynamicBackend {
 impl DerefMut for RustDynamicBackend {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut *self.backend
-    }
-}
-
-impl Drop for RustDynamicBackend {
-    // Handle gracefully unloading plugins no longer in use
-    fn drop(&mut self) {
-        let mu = &::internal::OPEN_LIBS;
-        {
-            // We can't handle errors in drop so we have to pray
-            // panic in drop is very bad, but we have no choice
-            let mut lib_map = mu.lock().unwrap();
-
-            // Have to do this so the borrow ends and we can remove if need be
-            let uses = {
-                let rclib = lib_map.get_mut(&self.plugin_path).unwrap();
-
-                rclib.uses -= 1;
-                rclib.uses
-            };
-
-            if uses == 0 {
-                lib_map.remove(&self.plugin_path);
-            }
-        }
     }
 }
 
@@ -129,7 +105,7 @@ impl Backend for RustDynamicBackend {
 
 struct RustDynamicModule {
     module: Box<Module>,
-    plugin_path: String,
+    pub plugin_path: String,
 }
 
 impl Deref for RustDynamicModule {
@@ -145,30 +121,6 @@ impl DerefMut for RustDynamicModule {
     }
 }
 
-impl Drop for RustDynamicModule {
-    // Handle gracefully unloading plugins no longer in use
-    fn drop(&mut self) {
-        let mu = &::internal::OPEN_LIBS;
-        {
-            // We can't handle errors in drop so we have to pray
-            // panic in drop is very bad, but we have no choice
-            let mut lib_map = mu.lock().unwrap();
-
-            // Have to do this so the borrow ends and we can remove if need be
-            let uses = {
-                let rclib = lib_map.get_mut(&self.plugin_path).unwrap();
-
-                rclib.uses -= 1;
-                rclib.uses
-            };
-
-            if uses == 0 {
-                lib_map.remove(&self.plugin_path);
-            }
-        }
-    }
-}
-
 impl Module for RustDynamicModule {
     fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>> {
         self.module.process_msg(msg)
@@ -177,4 +129,21 @@ impl Module for RustDynamicModule {
     fn get_messages(&mut self) -> MultiMessage {
         self.module.get_messages()
     }
+}
+
+#[test]
+fn load_destroy() {
+    use scaii_defs::protos::{BackendInit, InitAs};
+    use scaii_defs::protos::init_as;
+
+    let args = RustFfiConfig {
+        init_as: InitAs {
+            init_as: Some(init_as::InitAs::Backend(BackendInit {})),
+        },
+        plugin_path: "../../sky-rts/backend/target/debug/backend.dll".to_string(),
+    };
+
+    init_ffi(args).unwrap();
+
+    println!("Initialized")
 }

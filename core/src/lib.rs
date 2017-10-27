@@ -184,7 +184,11 @@ impl Environment {
                     error_src,
                     &Endpoint::Core(CoreEndpoint {}),
                 )
-                .expect(FATAL_OWNER_ERROR);
+                .expect(&format!(
+                    "{}:\n\t(Original Error): {}",
+                    FATAL_OWNER_ERROR,
+                    err
+                ));
             return;
         }
     }
