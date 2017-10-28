@@ -12,6 +12,13 @@ rust_api = []
 [lib]
 crate-type = ["cdylib","rlib"]
 
+[[bin]]
+name = "replay"
+path = "src/internal/replay/main.rs"
+test = true
+doc = true
+harness = true
+
 [dependencies]
 libloading="0.4.1"
 prost = "0.2"
