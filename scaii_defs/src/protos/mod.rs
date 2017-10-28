@@ -26,3 +26,17 @@ pub fn merge_multi_messages(mut msgs: Vec<MultiMessage>) -> Option<MultiMessage>
 
     Some(msgs.swap_remove(0))
 }
+pub fn packet_from_entity_list(entities: Vec<Entity>) -> ScaiiPacket {
+    ScaiiPacket {
+        src: Endpoint {
+            endpoint: Some(endpoint::Endpoint::Backend(BackendEndpoint {})),
+        },
+        dest: Endpoint {
+            endpoint: Some(endpoint::Endpoint::Module(ModuleEndpoint {
+                name: "viz".to_string(),
+            })),
+        },
+
+        specific_msg: Some(scaii_packet::SpecificMsg::Viz(Viz { entities: entities })),
+    }
+}

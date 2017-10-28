@@ -363,26 +363,6 @@ fn server_startup(client: &mut Client<TcpStream>) {
     println!("received echoed VizInit ScaiiPacket");
 }
 
-fn packet_from_entity_list(entities: Vec<protos::Entity>) -> ScaiiPacket {
-    use scaii_defs::protos;
-    use scaii_defs::protos::{endpoint, scaii_packet};
-
-    ScaiiPacket {
-        src: protos::Endpoint {
-            endpoint: Some(endpoint::Endpoint::Backend(protos::BackendEndpoint {})),
-        },
-        dest: protos::Endpoint {
-            endpoint: Some(endpoint::Endpoint::Module(protos::ModuleEndpoint {
-                name: "viz".to_string(),
-            })),
-        },
-
-        specific_msg: Some(scaii_packet::SpecificMsg::Viz(
-            protos::Viz { entities: entities },
-        )),
-    }
-}
-
 fn first_delta(
     client: &mut Client<TcpStream>,
     entities: Vec<IdEntity>,
@@ -390,7 +370,9 @@ fn first_delta(
 ) -> HashMap<usize, IdEntity> {
     let protos = entities.iter().map(|e| e.to_proto()).collect();
     println!("Sending first volley of entities to initialize list");
-    encode_and_send_proto(client, &packet_from_entity_list(protos))
+    let scaii_pkt = scaii_defs::protos::packet_from_entity_list(protos);
+    encode_and_send_proto(client, &scaii_pkt)
+    //encode_and_send_proto(client, &packet_from_entity_list(protos))
         .expect("Could not send initial entity list");
 
     let response = receive_and_decode_proto(client);
