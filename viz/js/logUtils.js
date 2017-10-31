@@ -159,3 +159,23 @@ function logShape(shape){
   console.log(shapeDeleteString);
   console.log('- - - - - - - - - -')
 }
+
+function logEntity(entity) {
+  if (entity == undefined) {
+    console.log('ENTITY undefined');
+    return;
+  }
+  console.log('- - - - - - - - - - -');
+  console.log('entity ' + entity.getId());
+  console.log('- - - - - - - - - - -');
+  var posString = getEntityPosString(entity);
+  var deleteString = getEntityDeleteString(entity);
+  console.log(posString + ' ; ' + deleteString);
+
+  var shapes = entity.getShapesList();
+  console.log('shape count ' + shapes.length);
+  for (var i in shapes) {
+    var shape = shapes[i];
+    logShape(shape);
+  }
+}

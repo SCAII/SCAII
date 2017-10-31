@@ -11,8 +11,22 @@ package scaii.common;
 // non-test mode (which means it will send back an RpcAck)
 message VizInit {
 	optional bool test_mode = 1;
+    optional uint32 step_count = 2;
+    optional uint32 gameboard_width = 3;
+    optional uint32 gameboard_height = 4;
+    repeated ExplanationPoint explanations = 5;
 }
-
+message ExplanationPoint {
+	// which step in the game this explanation corresponds to
+    optional uint32 step = 1;
+	// the id will be a one-up number that may or may not be equiv to the step
+    optional uint32 id = 2; 
+	// short identifier to be shown on timeline (ex "knight attacks x")
+    optional string title = 3; 
+	// longer string that could be shown in tooltip on mouseover  
+	// (if the particular explanation system in play can generate a meaningful summary) 
+    optional string description = 4;  
+}
 // The packet containing what to draw. This is ALWAYS
 // a delta, so the first packet should contain all
 // information. Future packets need only contain information

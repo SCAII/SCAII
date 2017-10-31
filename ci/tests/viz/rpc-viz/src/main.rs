@@ -148,6 +148,10 @@ fn make_viz_init(test_mode: bool) -> ScaiiPacket {
 
         specific_msg: Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {
             test_mode: Some(test_mode),
+            step_count: Some(100),
+            gameboard_height: Some(400),
+            gameboard_width: Some(400),
+            explanations: Vec::new(),
         })),
     }
 }
