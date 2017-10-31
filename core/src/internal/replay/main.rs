@@ -47,7 +47,6 @@ impl MockRts {
             match entity {
                 Some(x) => {
                     let viz: ScaiiPacket = wrap_entity_in_viz_packet(x);
-                    //let viz: ScaiiPacket = self.wrap_entity_in_Viz_packet();
                     self.viz_sequence.push(viz);
                 }
                 None => (),
@@ -66,7 +65,6 @@ fn replay_test_mode() {
     rts.init(count);
     let mut replay = Replay {
         environment: Environment::new(),
-//        backend: &rts,
     };
     // start up viz
     let rpc_config_pkt = create_rpc_config_message();
@@ -84,7 +82,7 @@ fn replay_test_mode() {
 fn create_test_viz_init(step_count: u32, width: u32, height: u32) -> ScaiiPacket {
     ScaiiPacket {
         src: protos::Endpoint {
-            endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
+            endpoint: Some(Endpoint::Agent(AgentEndpoint {})),
         },
         dest: protos::Endpoint {
             endpoint: Some(Endpoint::Module(ModuleEndpoint {
