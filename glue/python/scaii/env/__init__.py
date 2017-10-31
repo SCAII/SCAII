@@ -112,7 +112,7 @@ class ScaiiEnv():
         packet.config.core_cfg.plugin_type.rust_plugin.plugin_path = plugin_path
         packet.config.core_cfg.plugin_type.rust_plugin.init_as.backend.SetInParent()
 
-        _decode_handle_msg(self._msg_buf)
+        self._decode_handle_msg(self.next_msg.SerializeToString())
 
 
 class ScaiiError(Exception):
