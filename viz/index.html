@@ -8,6 +8,7 @@
 	  <script>
 	  	goog.require('goog.dom');
 	  </script>
+	  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	  <script src="js\protobuf_js\binary\arith.js"></script>
       <script src="js\protobuf_js\binary\constants.js"></script>
       <script src="js\protobuf_js\binary\utils.js"></script>
@@ -21,6 +22,7 @@
       <script src="js\vizProto.js"></script>
       <script src="js\logUtils.js"></script>
       <script src="js\renderEntities.js"></script>
+      <script src="js\renderExplanation.js"></script>
       <script src="js\gameState.js"></script>
       <script src="js\protobufUtils.js"></script>
       
@@ -35,60 +37,58 @@
     display: flex;
     flex-direction: column;
     background-color: lightgrey;
-    /*width: 400px;*/
-    /*height: 460px;*/
     margin: 2px;
 }
 #scaii-explanations {
     display: flex;
     flex-direction: column;
     background-color: lightgrey;
-    /*width: 300px;*/
-    /*height: 460px;*/
     margin: 2px;
 }
 
 #scaii-interface-title {
-	/*display: flex;*/
 	background-color: lightgrey;
     width: 400px;
     height: 20px;
     margin: 0px;
 }
 #scaii-gameboard {
-	/*display: flex;*/
 	background-color: lightgrey;
     width: 400px;
     height: 200px;
     margin: 0px;
 }
-#scaii-game-controls {
-	/*display: flex;*/
+<!--#scaii-timeline {
 	background-color: lightgrey;
     width: 400px;
-    height: 40px;
+    height: 20px;
     margin: 0px;
-}
+}-->
+
+<!--#scaii-game-controls {
+	background-color: lightgrey;
+    width: 400px;
+    height: 20px;
+    margin: 2px;-->
+
 
 #explanations-interface-title {
-	/*display: flex;*/
 	background-color: lightgrey;
-    width: 300px;
+    width: 400px;
     height: 20px;
     margin: 0px;
 }
-#explanations-selector {
+<!--#explanations-selector {
 	/*display: flex;*/
 	background-color: #555555;
     width: 300px;
     height: 100px;
     margin: 0px;
-}
+}-->
 #explanations-interface {
-	d/*display: flex;*/
-	background-color: #C0C0C0;
-    width: 300px;
-    height: 340px;
+	background-color: red /*#C0C0C0*/;
+    width: 400px;
+    height: 400px;
     margin: 0px;
 }
 </style>
@@ -100,11 +100,12 @@
 			<div id="scaii-game">
 				<div id="scaii-interface-title"></div>
 				<div id="scaii-gameboard"></div>
-				<div id="scaii-game-controls"></div>
+				<!--<div id="scaii-timeline"></div>-->
+				<!--<div id="scaii-game-controls"></div>-->
 			</div>
 			<div id="scaii-explanations">
 				<div id="explanations-interface-title"></div>
-				<div id="explanations-selector"></div>
+				<!--<div id="explanations-selector"></div>-->
 				<div id="explanations-interface"></div>
 			</div>
 		</div>

@@ -63,6 +63,11 @@ var sizingFactor = 1;
 var gameboard_canvas = document.createElement("canvas");
 var gameboard_ctx = gameboard_canvas.getContext("2d");
 
+var timeline_canvas = document.createElement("canvas");
+var timeline_ctx = timeline_canvas.getContext("2d");
+
+
+
 var shape_outline_color = '#202020';
 var shape_outline_width = 2;
 var use_shape_color_for_outline = false;
@@ -90,6 +95,7 @@ function handleVizInit(vizInit) {
     gameboardHeight = vizInit.getTestMode();
   }
   explanations = vizInit.getExplanationsList();
+  renderTimeline(stepCount);
   mm = buildEchoVizInitMultiMessage(vizInit);
   return mm;
 }
@@ -152,8 +158,14 @@ var draw_example_shapes = function () {
 }
 var main = function () {
   initUI();	
+  
+  //var redrawChartHiddenButton = document.createElement("BUTTON");
+  //redrawChartHiddenButton.setAttribute("id", "chartRedrawTriggerButton");
+  //redrawChartHiddenButton.appendChild(document.createTextNode("Refresh"));
+  //$("#scaii-game-controls").append(redrawChartHiddenButton);
   tryConnect('.', 0);
 }
+
 var initUI = function(){
 	gameboard_canvas.width = 400;
 	gameboard_canvas.height = 400;
@@ -167,14 +179,62 @@ var initUI = function(){
 	$("#scaii-interface-title").css("font-size", "12px");
 	$("#scaii-interface-title").css("padding-left", "6px");
 	$("#scaii-interface-title").css("padding-top", "4px");
+	//$("#scaii-interface-title").css("text-align", "center");
 	$("#scaii-interface-title").html(systemTitle);
 	
-	$("#explanations-interface-title").css("font-family", "Fira Sans");
-	$("#explanations-interface-title").css("font-size", "12px");
-	$("#explanations-interface-title").css("padding-left", "6px");
-	$("#explanations-interface-title").css("padding-top", "4px");
-	$("#explanations-interface-title").css("text-align", "center");
-	$("#explanations-interface-title").html("- Explanations -");
+	
+/*	
+	$("#scaii-game-controls").css("text-align", "center");
+	var pauseButton = document.createElement("BUTTON");       
+	var pauseText = document.createTextNode("Pause");
+	pauseButton.setAttribute("class", "controlButton");	
+	pauseButton.appendChild(pauseText);                                
+	$("#scaii-game-controls").append(pauseButton);
+	var resumeButton = document.createElement("BUTTON");       
+	var resumeText = document.createTextNode("Resume");   
+	resumeButton.setAttribute("class", "controlButton");
+	resumeButton.disabled = true;	
+	resumeButton.appendChild(resumeText);                                
+	$("#scaii-game-controls").append(resumeButton);
+	$(".controlButton").css("font-family", "Arial");
+	$(".controlButton").css("font-size", "10px");
+	$(".controlButton").css("margin-right", "20px");
+	$(".controlButton").css("margin-left", "20px");
+	
+	timeline_canvas.width = 400;
+	timeline_canvas.height = 20;
+	$("#scaii-timeline").append(timeline_canvas);
+	timeline_ctx.lineWidth = 1;
+	//timeline_ctx.strokeStyle = shape_outline_color;
+	timeline_ctx.beginPath();
+	timeline_ctx.moveTo(10, 10);
+	timeline_ctx.lineTo(390, 10);
+	timeline_ctx.stroke();
+	
+	var exp1 = {name:"attack knight", description:"attack the closest knight", step:5, type:"attack"};
+	var exp2 = {name:"retreat west", description:"running from group", step:20, type:"retreat"};
+	var exp3 = {name:"retreat north", description:"running from group", step:50, type:"retreat"};
+	var exp4 = {name:"attack knight", description:"attack the closest knight", step:75, type:"attack"};
+	var exp5 = {name:"attack dragon", description:"attack the closest dragon", step:80, type:"attack"};
+	var exp6 = {name:"retreat", description:"running from dragon", step:85, type:"retreat"};
+	var explanations = [exp1, exp2, exp3, exp4, exp5, exp6];
+	for (var i = 0; i < explanations.length; i++){
+		var exp = explanations[i];
+		drawExplanationBox(exp.step, exp.type);
+	}
+	*/
+}
+
+function drawExplanationBox(step, type){
+	var stepNumber = Number.parseInt(step);
+	var startX = 10 + step*4;
+	var startY = 10;
+	timeline_ctx.moveTo(startX, startY);
+	timeline_ctx.lineTo(startX-7, startY-7);
+	timeline_ctx.lineTo(startX+7, startY-7);
+	timeline_ctx.moveTo(startX, startY);
+	timeline_ctx.stroke();
+	//timeline_ctx.addHitRegion({id: step});
 }
 // calls connect and paints "working" dots.  If connect fails, it calls tryConnect again
 function tryConnect(dots, attemptCount) {
@@ -194,7 +254,37 @@ function tryConnect(dots, attemptCount) {
   //gameboard_ctx.fillText("connecting  " + attemptCount + " " + dots, 10, 50);
   connect(dots, attemptCount);
 }
-
+var drawExplanationBarChart = function(){
+	
+	$("#explanations-interface-title").css("font-family", "Fira Sans");
+	$("#explanations-interface-title").css("font-size", "12px");
+	//$("#explanations-interface-title").css("padding-left", "6px");
+	$("#explanations-interface-title").css("padding-top", "4px");
+	$("#explanations-interface-title").css("padding-bottom", "6px");
+	$("#explanations-interface-title").css("text-align", "center");
+	$("#explanations-interface-title").html("- Explanations -");
+	var options = {
+		//legend: { position: "none" },
+        title: 'Population of Largest U.S. Cities',
+        chartArea: {width: '50%'},
+        hAxis: {
+          title: 'Total Population',
+          minValue: 0
+        },
+        vAxis: {
+          title: 'City'
+        },
+		'width':400,
+        'height':400
+      };
+	  var chartData = [
+        ['Decision', 'r1', 'r2'],
+        ['unit victorious', 0.77, 0.4],
+        ['unit loses', -0.39, 0.6],
+        ['adversary flees', 0.2, 0.3]
+      ];
+	  drawBarChart(chartData, options);
+}
 var connect = function (dots, attemptCount) {
   dealer = new WebSocket('ws://localhost:6112');
 
@@ -237,7 +327,9 @@ var connect = function (dots, attemptCount) {
     console.log("closefired " + attemptCount);
     if (sessionState == "pending") {
       // the closed connection was likely due to failed connection. try reconnecting
-      setTimeout(function () { tryConnect(dots, attemptCount); }, 1500);
+	  
+	  drawExplanationBarChart();
+      setTimeout(function () { tryConnect(dots, attemptCount); }, 2000);
     }
     //alert("Closed!");
   };
