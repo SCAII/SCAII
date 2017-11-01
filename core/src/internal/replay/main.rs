@@ -2,11 +2,14 @@ extern crate scaii_core;
 extern crate scaii_defs;
 use scaii_core::Environment;
 use scaii_defs::protos;
+use scaii_defs::{Backend, BackendSupported, Module, SerializationStyle};
 use protos::{scaii_packet, AgentEndpoint, CoreEndpoint, Entity, InitAs, ModuleInit,
              MultiMessage, ScaiiPacket, BackendEndpoint, ModuleEndpoint, Viz, VizInit};
+//use protos::BackendInit;
 use protos::cfg::WhichModule;
 use protos::endpoint::Endpoint;
 use protos::scaii_packet::SpecificMsg;
+use std::error::Error;
 
 // The testing mode for Replay follows the following dynamic:
 //      - startup an environment
@@ -37,6 +40,7 @@ struct Replay {
 //#[derive(Copy, Clone)]
 struct MockRts {
     viz_sequence: Vec<protos::ScaiiPacket>,
+    incoming_messages: Vec<protos::ScaiiPacket>
 }
 impl MockRts {
     fn init(&mut self, count:u32) {
@@ -54,35 +58,87 @@ impl MockRts {
         }
     }
 }
+impl Backend for MockRts {
+    fn supported_behavior(&self) -> BackendSupported {
+        BackendSupported {
+            serialization: SerializationStyle::None,
+        }
+    }
+}
+impl Module for MockRts {
+    fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>>{
+         self.incoming_messages.push(msg.clone());
+         Ok(())
+    }
+
+    /// return empty messages.
+    fn get_messages(&mut self) -> MultiMessage{
+        let mut pkts: Vec<ScaiiPacket> = Vec::new();
+        MultiMessage { packets: pkts }
+    }
+}
 fn replay_live_mode() {
     // stubbed out for now
 }
 fn replay_test_mode() {
+    use std::rc::Rc;
+    use std::cell::RefCell;
+
     let mut rts = MockRts {
         viz_sequence: Vec::new(),
+        incoming_messages: Vec::new(),
     };
     let count: u32= 5;
     rts.init(count);
     let mut replay = Replay {
         environment: Environment::new(),
     };
+    // register backend
+    //let mut rts = Rc::new(RefCell::new(rts));
+    let rts = Rc::new(RefCell::new(rts));
+    replay.environment.router_mut().register_backend(Box::new(rts.clone()));
     // start up viz
     let rpc_config_pkt = create_rpc_config_message();
     let mut multi_message = wrap_packet_in_multi_message(rpc_config_pkt);
     replay.environment.route_messages(&multi_message);
+    println!("sent viz startup message!");
     // create viz init message
     let viz_init = create_test_viz_init(count, 800, 800);
     multi_message = wrap_packet_in_multi_message(viz_init);
     replay.environment.route_messages(&multi_message);
+    println!("sent VizInit message!");
     // loop and send Viz
-
-
-
+    let mut more_remaining : bool = true;
+    while more_remaining {
+        let mut_borrowed_rts = &mut *rts.borrow_mut();
+        let pkt_to_send = mut_borrowed_rts.viz_sequence.pop();
+        match pkt_to_send {
+            Some(p) => {
+                multi_message = wrap_packet_in_multi_message(p);
+                replay.environment.route_messages(&multi_message);
+                println!("sent Viz message!");
+                replay.environment.update();
+                println!("called replay.environment.update()...");
+                let msgs : Vec<protos::ScaiiPacket> = { 
+                    //let mut rts = &mut *rts.borrow_mut();
+                    //rts.incoming_messages.drain(..).collect()
+                    mut_borrowed_rts.incoming_messages.drain(..).collect()
+                };
+                println!("message count returned {}", msgs.len());
+                // handle messages, do updates,etc
+            }
+            None => ()
+        }
+        if mut_borrowed_rts.viz_sequence.len() > 0 {
+            more_remaining = false;
+        }
+    }
 }
 fn create_test_viz_init(step_count: u32, width: u32, height: u32) -> ScaiiPacket {
     ScaiiPacket {
         src: protos::Endpoint {
-            endpoint: Some(Endpoint::Agent(AgentEndpoint {})),
+            endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
+            //endpoint: Some(Endpoint::Agent(AgentEndpoint {})),
         },
         dest: protos::Endpoint {
             endpoint: Some(Endpoint::Module(ModuleEndpoint {
@@ -98,7 +154,46 @@ fn create_test_viz_init(step_count: u32, width: u32, height: u32) -> ScaiiPacket
         })),
     }
 }
+// fn create_agent_cfg_message() -> ScaiiPacket {
+//     ScaiiPacket {
+//         src: protos::Endpoint {
+//             endpoint: Some(Endpoint::Agent(AgentEndpoint {})),
+//         },
+//         dest: protos::Endpoint {
+//             endpoint: Some(Endpoint::Core(CoreEndpoint {})),
+//         },
+//         specific_msg: Some(SpecificMsg::Config(protos::Cfg {
+//             which_module: Some(WhichModule::AgentCfg(protos::AgentCfg {
+//                 cfg_msg: None,
+//                 },
+//             )),
+//         })),
+//     }
+// }
+// fn create_backend_cfg_message() -> ScaiiPacket {
+//     let rust_ffi_config = protos::RustFfiConfig {
+//         plugin_path: "?".to_string(),
+//         init_as: InitAs {
+//             init_as: Some(protos::init_as::InitAs::Backend(BackendInit {})),
+//         },
+//     };
 
+//     ScaiiPacket {
+//         src: protos::Endpoint {
+//             endpoint: Some(Endpoint::Agent(AgentEndpoint {})),
+//         },
+//         dest: protos::Endpoint {
+//             endpoint: Some(Endpoint::Core(CoreEndpoint {})),
+//         },
+//         specific_msg: Some(SpecificMsg::Config(protos::Cfg {
+//             which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
+//                 plugin_type: protos::PluginType {
+//                     plugin_type: Some(protos::plugin_type::PluginType::RustPlugin(rust_ffi_config)),
+//                 },
+//             })),
+//         })),
+//     }
+// }
 fn wrap_packet_in_multi_message(pkt: ScaiiPacket) -> MultiMessage {
     let mut pkts: Vec<ScaiiPacket> = Vec::new();
     pkts.push(pkt);
