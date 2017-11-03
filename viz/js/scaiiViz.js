@@ -170,7 +170,7 @@ var main = function () {
   //redrawChartHiddenButton.setAttribute("id", "chartRedrawTriggerButton");
   //redrawChartHiddenButton.appendChild(document.createTextNode("Refresh"));
   //$("#scaii-game-controls").append(redrawChartHiddenButton);
-  var debug = false;
+  var debug = true;
   if (debug){
 	var connectButton = document.createElement("BUTTON");       
 	var connectText = document.createTextNode("Connect");

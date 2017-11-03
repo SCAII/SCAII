@@ -215,6 +215,19 @@ message ChartValueVector {
 }
 */
 fn generate_chart_info() -> ChartInfo {
+    /*  The code below populates chartInfo in such a way that the following javascript 
+        array-of-arrays is handed to the charting package:
+
+        [
+            ["Moves","Location_(0,1)","Location_(0,2)""],
+            ["left",    0.1,            0.5]
+            ["right",   0.2,            0.6]
+            ["up",      0.3,            0.7]
+            ["down",    0.4,            0.8]
+        ]
+        ... where the values under each location represent the rewards corresponding to 
+        each move listed on the left. 
+    */
     let mut value_vectors: Vec<ChartValueVector> = Vec::new();
 
     let mut values: Vec<f64> = Vec::new();
