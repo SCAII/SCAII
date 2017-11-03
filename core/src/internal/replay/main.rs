@@ -110,8 +110,11 @@ fn replay_test_mode() {
     // loop and send Viz
     let mut more_remaining : bool = true;
     while more_remaining {
-        let mut_borrowed_rts = &mut *rts.borrow_mut();
-        let pkt_to_send = mut_borrowed_rts.viz_sequence.pop();
+        let pkt_to_send = {
+            let mut_borrowed_rts = &mut *rts.borrow_mut();
+            mut_borrowed_rts.viz_sequence.pop()
+        };
+        
         match pkt_to_send {
             Some(p) => {
                 multi_message = wrap_packet_in_multi_message(p);
@@ -120,16 +123,23 @@ fn replay_test_mode() {
                 replay.environment.update();
                 println!("called replay.environment.update()...");
                 let msgs : Vec<protos::ScaiiPacket> = { 
-                    //let mut rts = &mut *rts.borrow_mut();
-                    //rts.incoming_messages.drain(..).collect()
-                    mut_borrowed_rts.incoming_messages.drain(..).collect()
+                    let mut rts = &mut *rts.borrow_mut();
+                    let result : Vec<protos::ScaiiPacket> = rts.incoming_messages.drain(..).collect();
+                    result
                 };
                 println!("message count returned {}", msgs.len());
                 // handle messages, do updates,etc
+                for msg in msgs.iter() {
+                    println!("msg : {:?}", msg);
+                }
             }
             None => ()
         }
-        if mut_borrowed_rts.viz_sequence.len() > 0 {
+        let remaining_packet_count = {
+            let borrowed_rts = & *rts.borrow();
+            borrowed_rts.viz_sequence.len()
+        };
+        if remaining_packet_count == 0 {
             more_remaining = false;
         }
     }
@@ -247,9 +257,10 @@ fn wrap_entity_in_viz_packet(entity: Entity) -> ScaiiPacket {
                 name: "viz".to_string(),
             })),
         },
-        specific_msg: Some(SpecificMsg::Viz(Viz { entities: entities })),
+        specific_msg: Some(SpecificMsg::Viz(Viz { entities: entities, chart:None })),
     }
 }
+
 fn generate_entity_sequence(count: u32) -> Vec<Entity> {
     let mut entities: Vec<Entity> = Vec::new();
     let mut x: f64 = 70.0;
