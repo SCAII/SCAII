@@ -96,7 +96,10 @@ function handleVizInit(vizInit) {
   }
   explanations = vizInit.getExplanationsList();
   //renderTimeline(stepCount);
-  mm = buildEchoVizInitMultiMessage(vizInit);
+  var userCommand = new proto.scaii.common.UserCommand;
+  userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.NONE);
+  mm = buildMultiMessageWithUserCommand(userCommand);
+  //mm = buildEchoVizInitMultiMessage(vizInit);
   return mm;
 }
 function handleViz(vizData){
@@ -203,7 +206,13 @@ var initUI = function(){
 	//$("#scaii-interface-title").css("text-align", "center");
 	$("#scaii-interface-title").html(systemTitle);
 	
-	
+	$("#explanations-interface-title").css("font-family", "Fira Sans");
+	$("#explanations-interface-title").css("font-size", "12px");
+	//$("#explanations-interface-title").css("padding-left", "6px");
+	$("#explanations-interface-title").css("padding-top", "4px");
+	$("#explanations-interface-title").css("padding-bottom", "6px");
+	$("#explanations-interface-title").css("text-align", "center");
+	$("#explanations-interface-title").html("- Explanations -");
 /*	
 	$("#scaii-game-controls").css("text-align", "center");
 	var pauseButton = document.createElement("BUTTON");       
@@ -277,13 +286,7 @@ function tryConnect(dots, attemptCount) {
 }
 var drawExplanationBarChart = function(){
 	
-	$("#explanations-interface-title").css("font-family", "Fira Sans");
-	$("#explanations-interface-title").css("font-size", "12px");
-	//$("#explanations-interface-title").css("padding-left", "6px");
-	$("#explanations-interface-title").css("padding-top", "4px");
-	$("#explanations-interface-title").css("padding-bottom", "6px");
-	$("#explanations-interface-title").css("text-align", "center");
-	$("#explanations-interface-title").html("- Explanations -");
+	
 	var options = {
 		//legend: { position: "none" },
         title: 'Population of Largest U.S. Cities',
@@ -295,7 +298,7 @@ var drawExplanationBarChart = function(){
         vAxis: {
           title: 'City'
         },
-		'width':400,
+		'width':600,
         'height':400
       };
 	  var chartData = [
