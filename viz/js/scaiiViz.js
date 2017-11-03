@@ -95,14 +95,21 @@ function handleVizInit(vizInit) {
     gameboardHeight = vizInit.getTestMode();
   }
   explanations = vizInit.getExplanationsList();
-  renderTimeline(stepCount);
+  //renderTimeline(stepCount);
   mm = buildEchoVizInitMultiMessage(vizInit);
   return mm;
 }
-
-function handleViz(vizData) {
+function handleViz(vizData){
   console.log('received Viz...');
-  var entitiesList = vizData.getEntitiesList()
+  var entitiesList = vizData.getEntitiesList();
+  handleEntities(entitiesList);
+  if (vizData.hasChart()){
+	  var chartInfo = vizData.getChart();
+	  renderChartInfo(chartInfo);
+  }
+}
+function handleEntities(entitiesList) {
+  
   console.log('entities count :' + entitiesList.length);
   for (var i in entitiesList) {
     var entity = entitiesList[i];
@@ -163,7 +170,21 @@ var main = function () {
   //redrawChartHiddenButton.setAttribute("id", "chartRedrawTriggerButton");
   //redrawChartHiddenButton.appendChild(document.createTextNode("Refresh"));
   //$("#scaii-game-controls").append(redrawChartHiddenButton);
-  tryConnect('.', 0);
+  var debug = false;
+  if (debug){
+	var connectButton = document.createElement("BUTTON");       
+	var connectText = document.createTextNode("Connect");
+	connectButton.setAttribute("class", "connectButton");	
+	connectButton.appendChild(connectText);
+	connectButton.onclick = function(){
+		console.log("calling tryConnect");
+		tryConnect('.',0);
+	};
+	$("#scaii-interface-title").append(connectButton);
+  }else {
+	  tryConnect('.', 0);
+  }
+  
 }
 
 var initUI = function(){
@@ -285,6 +306,8 @@ var drawExplanationBarChart = function(){
       ];
 	  drawBarChart(chartData, options);
 }
+
+
 var connect = function (dots, attemptCount) {
   dealer = new WebSocket('ws://localhost:6112');
 
@@ -328,7 +351,6 @@ var connect = function (dots, attemptCount) {
     if (sessionState == "pending") {
       // the closed connection was likely due to failed connection. try reconnecting
 	  
-	  drawExplanationBarChart();
       setTimeout(function () { tryConnect(dots, attemptCount); }, 2000);
     }
     //alert("Closed!");
