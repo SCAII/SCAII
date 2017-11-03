@@ -31,14 +31,14 @@ var drawBarChart = function(chartData, options) {
         vAxis: {
           title: 'decision'
         },
-		'width':400,
+		'width':600,
         'height':400
       };
 
       chart.draw(data, options);
 }
 */
-var getOptionsFromChartInfo = function(chartInfo){
+var getOptionsFromChartInfo = function(chartInfo, gameboardHeight){
 	var chartTitle = "explanations";
 	if (chartInfo.hasChartTitle){
 		chartTitle = chartInfo.getChartTitle();
@@ -57,7 +57,8 @@ var getOptionsFromChartInfo = function(chartInfo){
 	var options = {
 		//legend: { position: "none" },
         title: chartTitle,
-        chartArea: {width: '50%'},
+        //chartArea: {width: '50%', left:70},
+        chartArea: {width: '50%', left:"15%"},
         hAxis: {
           title: hAxisTitle,
           //minValue: 0
@@ -65,10 +66,9 @@ var getOptionsFromChartInfo = function(chartInfo){
         vAxis: {
           title: vAxisTitle
         },
-		'width':400,
-        'height':400
+		'width':600,
+        'height':gameboardHeight
       };
-	  console.log("options looks like: " + options);
 	  return options;
 }
 var getChartDataFromChartInfo = function(chartInfo){
@@ -95,7 +95,6 @@ var getChartDataFromChartInfo = function(chartInfo){
 	for (var i = 0; i < valueVectors.length ; i++){
 		var label = "?";
 		var valueVector = valueVectors[i];
-		console.log("valueVector: " + valueVector);
 
 		if (valueVector.hasLabel()){
 			label = valueVector.getLabel();
@@ -119,11 +118,10 @@ var getChartDataFromChartInfo = function(chartInfo){
     //    ['unit loses', -0.39, 0.6],
     //    ['adversary flees', 0.2, 0.3]
     //  ];  
-	console.log("grid looks like :" + grid);
 	return grid;
 }
-var renderChartInfo = function(chartInfo){
-	var options = getOptionsFromChartInfo(chartInfo);
+var renderChartInfo = function(chartInfo, gameboardHeight){
+	var options = getOptionsFromChartInfo(chartInfo, gameboardHeight);
 	var chartData = getChartDataFromChartInfo(chartInfo);
 	drawBarChart(chartData, options);
 }

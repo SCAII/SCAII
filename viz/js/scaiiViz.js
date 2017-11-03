@@ -62,7 +62,8 @@ var sizingFactor = 1;
 // Create the gameboard canvas
 var gameboard_canvas = document.createElement("canvas");
 var gameboard_ctx = gameboard_canvas.getContext("2d");
-
+var gameboardWidth;
+var gameboardHeight;
 var timeline_canvas = document.createElement("canvas");
 var timeline_ctx = timeline_canvas.getContext("2d");
 
@@ -89,10 +90,16 @@ function handleVizInit(vizInit) {
     stepCount = vizInit.getStepCount();
   }
   if (vizInit.hasGameboardWidth()) {
-    gameboardWidth = vizInit.getTestMode();
+    gameboardWidth = vizInit.getGameboardWidth();
+	console.log("gameboard width : " + gameboardWidth);
+	$("#scaii-gameboard").css("width", gameboardWidth);
+	gameboard_canvas.width = gameboardWidth;
+	
   }
   if (vizInit.hasGameboardHeight()) {
-    gameboardHeight = vizInit.getTestMode();
+    gameboardHeight = vizInit.getGameboardHeight();
+	$("#scaii-gameboard").css("height", gameboardHeight);
+	gameboard_canvas.height = gameboardHeight;
   }
   explanations = vizInit.getExplanationsList();
   //renderTimeline(stepCount);
@@ -108,7 +115,7 @@ function handleViz(vizData){
   handleEntities(entitiesList);
   if (vizData.hasChart()){
 	  var chartInfo = vizData.getChart();
-	  renderChartInfo(chartInfo);
+	  renderChartInfo(chartInfo, gameboardHeight);
   }
 }
 function handleEntities(entitiesList) {
