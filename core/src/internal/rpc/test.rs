@@ -188,10 +188,10 @@ fn send_chart_info() {
             let x: f64 = 50.0;
             let y: f64 = 75.0;
             let entity = create_entity_at(&x, &y);
-            let chartInfo = generate_chart_info();
-            println!("chartInfo {:?})", chartInfo);
-            let vizPkt = wrap_entity_in_viz_packet(entity, chartInfo);
-            rpc_module.process_msg(&vizPkt).unwrap();
+            let chart_info = generate_chart_info();
+            println!("chart_info {:?})", chart_info);
+            let viz_pkt = wrap_entity_in_viz_packet(entity, chart_info);
+            rpc_module.process_msg(&viz_pkt).unwrap();
             multi_message = rpc_module.get_messages();
         }
         LoadedAs::Backend(_) => (),
@@ -243,10 +243,10 @@ fn generate_chart_info() -> ChartInfo {
     value_vectors.push(cvv);
 
     let mut values: Vec<f64> = Vec::new();
-    values.push(0.5);
-    values.push(0.6);
-    values.push(0.7);
-    values.push(0.8);
+    values.push(-0.5);
+    values.push(-0.6);
+    values.push(-0.7);
+    values.push(-0.8);
 
     let cvv = ChartValueVector {
         label: Some(String::from("Location_(0,2)")),
@@ -291,8 +291,8 @@ fn create_entity_at(x: &f64, y: &f64) -> Entity {
                     a: 255,
                 }),
                 rect: Some(protos::Rect {
-                    width: Some(10.0),
-                    height: Some(10.0),
+                    width: Some(4.0),
+                    height: Some(4.0),
                 }),
                 triangle: None,
                 delete: false,
@@ -301,7 +301,7 @@ fn create_entity_at(x: &f64, y: &f64) -> Entity {
         delete: false,
     }
 }
-fn wrap_entity_in_viz_packet(entity: Entity, chartInfo: ChartInfo) -> ScaiiPacket {
+fn wrap_entity_in_viz_packet(entity: Entity, chart_info: ChartInfo) -> ScaiiPacket {
     let mut entities: Vec<Entity> = Vec::new();
     entities.push(entity);
 
@@ -316,7 +316,7 @@ fn wrap_entity_in_viz_packet(entity: Entity, chartInfo: ChartInfo) -> ScaiiPacke
         },
         specific_msg: Some(SpecificMsg::Viz(Viz {
             entities: entities,
-            chart: Some(chartInfo),
+            chart: Some(chart_info),
         })),
     }
 }
