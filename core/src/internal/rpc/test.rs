@@ -1,5 +1,5 @@
 use std::sync::mpsc;
-use std::thread;
+use std::{thread, time};
 use websocket::message;
 use websocket::OwnedMessage;
 use scaii_defs::protos;
@@ -185,14 +185,23 @@ fn send_chart_info() {
             } else {
                 println!("fail - non Vizinit pket returned from far end");
             }
-            let x: f64 = 50.0;
-            let y: f64 = 75.0;
-            let entity = create_entity_at(&x, &y);
-            let chart_info = generate_chart_info();
-            println!("chart_info {:?})", chart_info);
-            let viz_pkt = wrap_entity_in_viz_packet(entity, chart_info);
-            rpc_module.process_msg(&viz_pkt).unwrap();
-            multi_message = rpc_module.get_messages();
+            let mut x: f64 = 50.0;
+            let mut y: f64 = 75.0;
+            
+            for i in 0..100 {
+                let entity = create_entity_at(&x, &y);
+                let float_multiplier = i as f64;
+                let chart_info = generate_busy_chart_info(0.0 + float_multiplier*2.0);
+                println!("chart_info {:?})", chart_info);
+                let viz_pkt = wrap_entity_in_viz_packet(entity, chart_info);
+                rpc_module.process_msg(&viz_pkt).unwrap();
+                multi_message = rpc_module.get_messages();
+                x = x + 2.0;
+                y = y + 2.0;
+                let delay = time::Duration::from_millis(400);
+                thread::sleep(delay);
+            }
+            
         }
         LoadedAs::Backend(_) => (),
     }
@@ -260,9 +269,53 @@ fn generate_chart_info() -> ChartInfo {
     move_names.push(String::from("up"));
     move_names.push(String::from("down"));
     ChartInfo {
-        chart_title: Some(String::from("chartTitle")),
-        h_axis_title: Some(String::from("X axis title")),
-        v_axis_title: Some(String::from("Y axis title")),
+        chart_title: Some(String::from("Why did I make a move?")),
+        h_axis_title: Some(String::from("reward")),
+        v_axis_title: Some(String::from("Q value")),
+        actions: Some(ChartActions {
+            actions_label: Some(String::from("Moves")),
+            action_names: move_names,
+        }),
+        value_vectors: value_vectors,
+    }
+}
+fn generate_chart_value_vector(label : String, basis: f64) -> ChartValueVector {
+    let mut values: Vec<f64> = Vec::new();
+    
+    values.push(basis + 0.0);
+    values.push(basis + 2.0);
+    values.push(basis + 4.0);
+    values.push(basis + 6.0);
+
+    ChartValueVector {
+        label: Some(label),
+        action_values: values,
+    }
+}
+fn generate_busy_chart_info(center : f64) -> ChartInfo {
+    let mut value_vectors: Vec<ChartValueVector> = Vec::new();
+
+    value_vectors.push(generate_chart_value_vector(String::from("Location_(0,1)"),  center + 0.0));
+    value_vectors.push(generate_chart_value_vector(String::from("Location_(1,1)"),  center + 1.0));
+    value_vectors.push(generate_chart_value_vector(String::from("Location_(20,3)"), center - 15.0));
+    value_vectors.push(generate_chart_value_vector(String::from("Location_(0,8)"),  center + 20.0));
+    value_vectors.push(generate_chart_value_vector(String::from("Location_(9,2)"),  center + 22.0));
+    value_vectors.push(generate_chart_value_vector(String::from("Location_(6,6)"),  center + 29.0));
+    value_vectors.push(generate_chart_value_vector(String::from("Location_(75,4)"), center - 20.0));
+    value_vectors.push(generate_chart_value_vector(String::from("Location_(5,7)"),  center + 4.0));
+    value_vectors.push(generate_chart_value_vector(String::from("Location_(6,7)"),  center + 3.0));
+    value_vectors.push(generate_chart_value_vector(String::from("Location_(7,7)"),  center + 2.0));
+
+
+    let mut move_names: Vec<String> = Vec::new();
+    move_names.push(String::from("left"));
+    move_names.push(String::from("right"));
+    move_names.push(String::from("up"));
+    move_names.push(String::from("down"));
+    ChartInfo {
+        chart_title: Some(String::from("Why did I make a move?")),
+        h_axis_title: Some(String::from("reward")),
+        v_axis_title: Some(String::from("Q value")),
         actions: Some(ChartActions {
             actions_label: Some(String::from("Moves")),
             action_names: move_names,
