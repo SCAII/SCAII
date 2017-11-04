@@ -10,7 +10,9 @@ fn main() {
     // (See http://doc.crates.io/build-script.html for more info
     // on outputs)
     for entry in glob("../common_protos/*.rs") {
-        println!("cargo:rerun-if-changed={}", path.display());
+        if let Ok(path) = entry {
+            println!("cargo:rerun-if-changed={}", path.display());
+        }
     }
 
     // Unfortunately, rerun-if-changed overrides Cargo's default handling, which
