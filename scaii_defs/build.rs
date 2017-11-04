@@ -9,7 +9,7 @@ fn main() {
     // Make our protobuf file a reason to recompile
     // (See http://doc.crates.io/build-script.html for more info
     // on outputs)
-    for entry in glob("../common_protos/*.rs") {
+    for entry in glob("../common_protos/*.rs").expect("Could not parse glob pattern") {
         if let Ok(path) = entry {
             println!("cargo:rerun-if-changed={}", path.display());
         }
@@ -19,6 +19,7 @@ fn main() {
     // is to rerun if any of our files change, so we have to re-add all our source
     // files
     println!("cargo:rerun-if-changed=Cargo.toml");
+    println!("cargo:rerun-if-changed=build.rs");
 
     for entry in glob("src/*.rs").expect("Could not parse glob pattern") {
         if let Ok(path) = entry {
