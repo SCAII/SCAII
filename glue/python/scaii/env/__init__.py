@@ -76,6 +76,12 @@ class ScaiiEnv():
         self._reset_packet()
         return self.start()
 
+    def reset_viz(self):
+        packet = self.next_msg.packets.add()
+        packet.src.agent.SetInParent()
+        packet.dest.module.name = 'viz'
+        packet.viz_init.SetInParent()
+
     def act(self, actions=None, continuous_actions=None):
         """
         Send an action to the underlying environment and returns
@@ -114,6 +120,21 @@ class ScaiiEnv():
 
         self._decode_handle_msg(self.next_msg.SerializeToString())
 
+    def load_rpc_module(self, name):
+        """
+        Bootstraps an RPC module in Viz with the given name.
+        """
+        packet = self.next_msg.packets.add()
+
+        packet.src.agent.SetInParent()
+        packet.dest.core.SetInParent()
+        packet.config.core_cfg.plugin_type.rpc.init_as.module.name = name
+        packet.config.core_cfg.plugin_type.rpc.port = 6112
+        packet.config.core_cfg.plugin_type.rpc.ip = "127.0.0.1"
+
+    def handle_messages(self):
+        _decode_handle_msg(self._msg_buf)
+
 
 class ScaiiError(Exception):
     """
@@ -127,7 +148,7 @@ class ScaiiError(Exception):
         self.message = message
         self.packet = packet
 
-        Exception.__init__(self)
+        Exception.__init__(self, self.message)
 
 
 def _decode_handle_msg(buf):
