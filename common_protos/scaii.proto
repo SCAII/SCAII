@@ -225,6 +225,9 @@ message UserCommand {
 	enum UserCommandType {
 		NONE = 0;
 		EXPLAIN = 1;
+		PAUSE = 2;
+		RESUME = 3;
+		REWIND = 4;
 	}
 	required UserCommandType command_type = 1;
 	repeated string args = 2;
