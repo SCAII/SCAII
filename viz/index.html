@@ -55,22 +55,23 @@
 #scaii-gameboard {
 	background-color: lightgrey;
     width: 400px;
-    height: 200px;
+    height: 400px;
     margin: 0px;
 }
-<!--#scaii-timeline {
+#scaii-timeline {
+	text-align:center;
 	background-color: lightgrey;
     width: 400px;
     height: 20px;
     margin: 0px;
-}-->
+}
 
-<!--#scaii-game-controls {
+#scaii-game-controls {
 	background-color: lightgrey;
     width: 400px;
     height: 20px;
-    margin: 2px;-->
-
+    margin: 2px;
+}
 
 #explanations-interface-title {
 	background-color: lightgrey;
@@ -78,34 +79,53 @@
     height: 20px;
     margin: 0px;
 }
-<!--#explanations-selector {
+#explanations-selector {
 	/*display: flex;*/
 	background-color: #555555;
-    width: 300px;
+    width: 600px;
     height: 100px;
     margin: 0px;
-}-->
+}
 #explanations-interface {
-	background-color: red /*#C0C0C0*/;
+	background-color: #C0C0C0;
     width: 600px;
-    height: 400px;
+    height: 300px;
     margin: 0px;
 }
+#game-progress {
+  width: 80%;
+  height: 15px;
+  background-color: white;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  /*margin-left:70px;
+  margin-right: 70px;*/
+  border: 1px solid #0063a6;
+}
+/*
+#game-progress-value {
+  width: 25%;
+  height: 15px;
+  background-color: #4CAF50;
+}*/
 </style>
 	</head>
 	<body>
 	  
-	  
+
 		<div id="scaii-interface">
+			
 			<div id="scaii-game">
 				<div id="scaii-interface-title"></div>
 				<div id="scaii-gameboard"></div>
-				<!--<div id="scaii-timeline"></div>-->
-				<!--<div id="scaii-game-controls"></div>-->
+				<div id="scaii-timeline">
+					<progress id="game-progress" value="00" max="100"></progress>
+				</div>
+				<div id="scaii-game-controls"></div>
 			</div>
 			<div id="scaii-explanations">
 				<div id="explanations-interface-title"></div>
-				<!--<div id="explanations-selector"></div>-->
+				<div id="explanations-selector"></div>
 				<div id="explanations-interface"></div>
 			</div>
 		</div>

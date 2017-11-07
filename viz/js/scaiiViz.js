@@ -130,10 +130,10 @@ function handleEntities(entitiesList) {
 
     if (entity.hasId()) {
       var idString = '' + entity.getId();
-      if (idString == '8') {
-        console.log('=========== UPDATING ENTITY ===================')
-        logEntity(entity);
-      }
+      //if (idString == '8') {
+      //  console.log('=========== UPDATING ENTITY ===================')
+      //  logEntity(entity);
+      //}
       console.log('############## id string read as ' + idString + '###############');
       if (masterEntities[idString] == undefined) {
         if (entity.hasDelete() && entity.getDelete()) {
@@ -221,27 +221,37 @@ var initUI = function(){
 	$("#explanations-interface-title").css("font-size", "12px");
 	//$("#explanations-interface-title").css("padding-left", "6px");
 	$("#explanations-interface-title").css("padding-top", "4px");
-	$("#explanations-interface-title").css("padding-bottom", "6px");
+	//$("#explanations-interface-title").css("padding-bottom", "6px");
 	$("#explanations-interface-title").css("text-align", "center");
 	$("#explanations-interface-title").html("- Explanations -");
-/*	
+	
+	var rewindButton = document.createElement("BUTTON");       
+	rewindButton.setAttribute("class", "controlButton");
+	rewindButton.disabled = true;	
+	rewindButton.innerHTML = '<img src="imgs/rewind.png", height="8px" width="10px"/>';    
+	$("#scaii-game-controls").append(rewindButton);
+	
 	$("#scaii-game-controls").css("text-align", "center");
 	var pauseButton = document.createElement("BUTTON");       
-	var pauseText = document.createTextNode("Pause");
 	pauseButton.setAttribute("class", "controlButton");	
-	pauseButton.appendChild(pauseText);                                
+	pauseButton.innerHTML = '<img src="imgs/pause.png", height="8px" width="10px"/>';   
 	$("#scaii-game-controls").append(pauseButton);
-	var resumeButton = document.createElement("BUTTON");       
-	var resumeText = document.createTextNode("Resume");   
-	resumeButton.setAttribute("class", "controlButton");
-	resumeButton.disabled = true;	
-	resumeButton.appendChild(resumeText);                                
-	$("#scaii-game-controls").append(resumeButton);
-	$(".controlButton").css("font-family", "Arial");
-	$(".controlButton").css("font-size", "10px");
+	
+	
+	
+	//$(".controlButton").css("font-family", "Arial");
+	//$(".controlButton").css("font-size", "10px");
 	$(".controlButton").css("margin-right", "20px");
 	$(".controlButton").css("margin-left", "20px");
-	
+	$(".controlButton").css("padding-left", "2px");
+	$(".controlButton").css("padding-right", "2px");
+	$(".controlButton").css("padding-bottom", "0px");
+	$(".controlButton").css("padding-top", "0px");
+	//$(".controlButton").css("border-top", "1px");
+	//$(".controlButton").css("border-bottom", "1px");
+	//$(".controlButton").css("border-left", "1px");
+	//$(".controlButton").css("border-right", "1px");
+	/*
 	timeline_canvas.width = 400;
 	timeline_canvas.height = 20;
 	$("#scaii-timeline").append(timeline_canvas);
@@ -349,9 +359,9 @@ var connect = function (dots, attemptCount) {
         mm = buildReturnMultiMessageFromState(masterEntities);
       }
       else {
-        // var userCommand = new proto.scaii.common.UserCommand;
-        // userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.NONE);
-        // mm = buildMultiMessageWithUserCommand(userCommand);
+        //var userCommand = new proto.scaii.common.UserCommand;
+        //userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.NONE);
+        //mm = buildMultiMessageWithUserCommand(userCommand);
 
         mm = new proto.scaii.common.MultiMessage;
         dealer.send(mm.serializeBinary());
