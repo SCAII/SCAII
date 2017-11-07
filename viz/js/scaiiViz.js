@@ -54,7 +54,7 @@ var systemTitle = "SCAII - Small Configurable AI Interface";
 var testingMode = false;
 var stepCount = 0;
 var explanations = [];
-
+var userCommandScaiiPackets = [];
 var sessionState = "pending";
 
 var spacingFactor = 1;
@@ -238,6 +238,7 @@ var initUI = function(){
 	pauseButton.setAttribute("class", "controlButton");	
 	pauseButton.innerHTML = '<img src="imgs/pause.png", height="8px" width="10px"/>';   
 	$("#scaii-game-controls").append(pauseButton);
+	pauseButton.onclick = pauseGame;
 	
 	
 	
@@ -364,9 +365,9 @@ var connect = function (dots, attemptCount) {
         //var userCommand = new proto.scaii.common.UserCommand;
         //userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.NONE);
         //mm = buildMultiMessageWithUserCommand(userCommand);
-
-        mm = new proto.scaii.common.MultiMessage;
-        dealer.send(mm.serializeBinary());
+        mm = buildReturnMultiMessageFromScaiiPackets(userCommandScaiiPackets);
+        //mm = new proto.scaii.common.MultiMessage;
+        //dealer.send(mm.serializeBinary());
       }
       var returnMessage = mm.serializeBinary();
       dealer.send(returnMessage);

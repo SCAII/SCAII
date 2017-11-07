@@ -14,6 +14,12 @@ function buildMultiMessageWithUserCommand(userCommand) {
 }
 
 function buildReturnMultiMessageFromScaiiPacket(scPkt) {
+  var scPkts = [];
+  scPkts.push(scPkt);
+  buildReturnMultiMessageFromScaiiPackets(scPkts);
+}
+	
+function buildReturnMultiMessageFromScaiiPackets(scPkts) {
   var moduleEndpoint = new proto.scaii.common.ModuleEndpoint;
   moduleEndpoint.setName("viz");
   var srcEndpoint = new proto.scaii.common.Endpoint;
@@ -22,12 +28,21 @@ function buildReturnMultiMessageFromScaiiPacket(scPkt) {
   var backendEndpoint = new proto.scaii.common.BackendEndpoint;
   var destEndpoint = new proto.scaii.common.Endpoint;
   destEndpoint.setBackend(backendEndpoint);
-
-  scPkt.setSrc(srcEndpoint);
-  scPkt.setDest(destEndpoint);
-
   var mm = new proto.scaii.common.MultiMessage;
-  mm.addPackets(scPkt, 0);
+  var nextPkt = scPkts.shift();
+  while (nextPkt != undefined){
+	  nextPkt.setSrc(srcEndpoint);
+      nextPkt.setDest(destEndpoint);
+      //mm.addPackets(nextPkt, 0);
+      mm.addPackets(nextPkt);
+	  nextPkt = scPkts.shift();
+  }
+//  for (var scPkt in scPkts){
+//	scPkt.setSrc(srcEndpoint);
+ //   scPkt.setDest(destEndpoint);
+//	//mm.addPackets(scPkt, 0);
+//	mm.addPackets(scPkt);
+//  }
   return mm;
 }
 
