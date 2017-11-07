@@ -116,6 +116,8 @@ function handleVizInit(vizInit) {
 function handleViz(vizData){
   console.log('received Viz...');
   var entitiesList = vizData.getEntitiesList();
+  var step = vizData.getStep();
+  updateProgress(step, stepCount);
   handleEntities(entitiesList);
   if (vizData.hasChart()){
 	  var chartInfo = vizData.getChart();
