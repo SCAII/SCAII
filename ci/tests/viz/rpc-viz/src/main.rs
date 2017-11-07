@@ -444,6 +444,8 @@ fn update_entities<R: Rng>(entity_map: &mut HashMap<usize, IdEntity>, rng: &mut 
         },
         specific_msg: Some(scaii_packet::SpecificMsg::Viz(protos::Viz {
             entities: entity_protos,
+            chart: None,
+            step: None,
         })),
     }
 }

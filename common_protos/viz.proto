@@ -34,6 +34,7 @@ message ExplanationPoint {
 message Viz {
 	repeated Entity entities = 1; 
 	optional ChartInfo chart = 2;
+	optional uint32 step = 3;
 }
 // chart info for Magesh data demo
 message ChartInfo {
