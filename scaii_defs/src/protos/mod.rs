@@ -1,5 +1,8 @@
 include!(concat!(env!("OUT_DIR"), "/scaii.common.rs"));
 
+use protos::user_command::UserCommandType;
+use protos;
+use std;
 /// Merges a bunch of `MultiMessage`s into a new one.
 ///
 /// The result will preserve the order of the input multimessages.
@@ -43,4 +46,26 @@ pub fn packet_from_entity_list(entities: Vec<Entity>) -> ScaiiPacket {
             step: None,
         })),
     }
+}
+pub fn is_user_command_pkt(scaii_pkt: &ScaiiPacket) -> bool {
+    true
+}
+pub fn is_error_pkt(scaii_pkt: &ScaiiPacket) -> bool {
+    true
+}
+pub fn get_user_command_type(
+    scaii_pkt: &ScaiiPacket,
+) -> Result<UserCommandType, Box<std::error::Error>> {
+    Ok(UserCommandType::None)
+}
+pub fn get_error_from_pkt(
+    scaii_pkt: &ScaiiPacket,
+) -> Result<protos::Error, Box<std::error::Error>> {
+    let byte_vec: Vec<u8> = Vec::new();
+    let error = protos::Error {
+        description: String::from("bogusError"),
+        fatal: Some(false),
+        error_info: Some(byte_vec),
+    };
+    Ok(error)
 }
