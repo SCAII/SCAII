@@ -37,6 +37,7 @@ message ScaiiPacket {
 		bool reset_env = 9;
 		VizInit viz_init = 10;
 		UserCommand user_command = 11;
+		ReplayStep replay_step = 12;
 		Other other = 29;
 	}
 
@@ -69,8 +70,11 @@ message Endpoint {
 		AgentEndpoint agent = 2;
 		CoreEndpoint core = 3;
 		ModuleEndpoint module = 4;
+		ReplayEndpoint replay = 5;
 	}
 }
+
+message ReplayStep {}
 
 // A marker message for the registered backend.
 message BackendEndpoint {}
@@ -87,6 +91,9 @@ message CoreEndpoint {}
 message ModuleEndpoint {
 	required string name = 1;
 }
+
+// A marker message for the replay mechanism.
+message ReplayEndpoint {}
 
 // A basic state reply from an environment 
 // featuring a feature description
