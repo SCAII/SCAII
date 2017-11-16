@@ -46,7 +46,7 @@ fn startup_module(rpc_config: &RpcConfig) -> Result<LoadedAs, Box<Error>> {
             Box::new(RpcModule {
                 rpc: Rpc {
                     socket_client: client,
-                    inbound_messages: Vec::with_capacity(5),
+                    messages_from_socket_client: Vec::with_capacity(5),
                     owner: Endpoint::Module(protos::ModuleEndpoint { name: name.clone() }),
                 },
             }),
@@ -85,7 +85,7 @@ fn launch_far_end(command: &String, args: Vec<String>) -> Child {
 
 struct Rpc {
     socket_client: Client<TcpStream>,
-    inbound_messages: Vec<MultiMessage>,
+    messages_from_socket_client: Vec<MultiMessage>,
     owner: Endpoint,
 }
 
@@ -119,7 +119,7 @@ impl Rpc {
                         }
                     });
 
-                self.inbound_messages.push(packet);
+                self.messages_from_socket_client.push(packet);
             }
             Err(e) => {
                 // Send error msg to ourselves.
@@ -141,7 +141,7 @@ impl Rpc {
                     })),
                 };
 
-                self.inbound_messages.push(MultiMessage {
+                self.messages_from_socket_client.push(MultiMessage {
                     packets: vec![err_packet],
                 });
             }
@@ -149,7 +149,7 @@ impl Rpc {
     }
     pub fn get_messages(&mut self) -> MultiMessage {
         use scaii_defs::protos;
-        protos::merge_multi_messages(self.inbound_messages.drain(..).collect()).unwrap_or(
+        protos::merge_multi_messages(self.messages_from_socket_client.drain(..).collect()).unwrap_or(
             MultiMessage {
                 packets: Vec::new(),
             },
