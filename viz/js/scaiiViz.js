@@ -103,21 +103,13 @@ function handleVizInit(vizInit) {
   }
   explanations = vizInit.getExplanationsList();
   //renderTimeline(stepCount);
-  // var userCommand = new proto.scaii.common.UserCommand;
-  // userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.NONE);
-  // mm = buildMultiMessageWithUserCommand(userCommand);
-  //mm = buildEchoVizInitMultiMessage(vizInit);
-
-
-  mm = new proto.scaii.common.MultiMessage;
-  dealer.send(mm.serializeBinary());
-  return mm;
 }
 function handleViz(vizData){
   console.log('received Viz...');
   var entitiesList = vizData.getEntitiesList();
   var step = vizData.getStep();
-  updateProgress(step, stepCount);
+  console.log("step in vizData was " + step);
+  updateProgress(step + 1, stepCount);
   handleEntities(entitiesList);
   if (vizData.hasChart()){
 	  var chartInfo = vizData.getChart();
@@ -350,33 +342,36 @@ var connect = function (dots, attemptCount) {
     var sPacket = proto.scaii.common.ScaiiPacket.deserializeBinary(s);
     if (sPacket.hasVizInit()) {
       var vizInit = sPacket.getVizInit();
-      var mm = handleVizInit(vizInit);
-      var returnMessage = mm.serializeBinary();
-      dealer.send(returnMessage);
+      handleVizInit(vizInit);
+	  var mm = new proto.scaii.common.MultiMessage;
+	  dealer.send(mm.serializeBinary());
     }
     else if (sPacket.hasViz()) {
       var viz = sPacket.getViz();
       handleViz(viz);
-      var mm;
+	  var mm;
       if (testingMode) {
         mm = buildReturnMultiMessageFromState(masterEntities);
-      }
-      else {
-        //var userCommand = new proto.scaii.common.UserCommand;
-        //userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.NONE);
-        //mm = buildMultiMessageWithUserCommand(userCommand);
-        mm = buildReturnMultiMessageFromScaiiPackets(userCommandScaiiPackets);
-        //mm = new proto.scaii.common.MultiMessage;
-        //dealer.send(mm.serializeBinary());
-      }
-      var returnMessage = mm.serializeBinary();
-      dealer.send(returnMessage);
+	  }
+	  else {
+		mm = new proto.scaii.common.MultiMessage;
+	  }
+      dealer.send(mm.serializeBinary());
     }
     else if (sPacket.hasErr()) {
       console.log(sPacket.getErr().getDescription())
       mm = new proto.scaii.common.MultiMessage;
       dealer.send(mm.serializeBinary());
     }
+	else if (sPacket.hasUserCommand()) {
+	  var userCommand = sPacket.getUserCommand();
+	  var commandType = userCommand.getCommandType();
+	  if (commandType == proto.scaii.common.UserCommand.UserCommandType.POLL_FOR_COMMANDS){
+		var mm = buildResponseToReplay(userCommandScaiiPackets);
+		var returnMessage = mm.serializeBinary();
+		dealer.send(returnMessage);
+	  }
+	}
     else {
       console.log(sPacket.toString())
       console.log('unexpected message from system!');

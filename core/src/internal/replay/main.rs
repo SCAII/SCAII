@@ -2,380 +2,301 @@ extern crate scaii_core;
 extern crate scaii_defs;
 use scaii_core::Environment;
 use scaii_defs::protos;
-use scaii_defs::{Agent,Backend, BackendSupported, Module, SerializationStyle};
+use scaii_defs::{Agent,Backend, BackendSupported, Module, Replay, SerializationStyle};
 use protos::{scaii_packet, AgentEndpoint, CoreEndpoint, Entity, InitAs, ModuleInit,
-             MultiMessage, ScaiiPacket, BackendEndpoint, ModuleEndpoint, UserCommand, Viz, VizInit};
+             MultiMessage, ScaiiPacket, BackendEndpoint, ModuleEndpoint, ReplayEndpoint, 
+             ReplayStep, Viz, VizInit};
 use protos::cfg::WhichModule;
 use protos::user_command::UserCommandType;
 use protos::endpoint::Endpoint;
 use protos::scaii_packet::SpecificMsg;
 use std::error::Error;
 use std::{thread, time};
+use std::rc::Rc;
+use std::cell::RefCell;
 
-// The testing mode for Replay follows the following dynamic:
-//      - startup an environment
-//      - send RpcConfig message to start up Viz
-//      - start loop that asks MockRts for next Viz pkt, but obeying user commands
-//          to pause, jump, explain
-//
-//  The live mode for Replay follows the following dynamic:
-//      - startup an environment
-//      - load cfg messages from replay file and send them to core
-//      - send RpcConfig message to start up Viz
-//
-//      - start loop that sends KeyFrame, Actions to RTS, but obeying user commands
-//          to pause, jump, explain
-
-struct ReplayManager<'a> {
-    replay_delay: u32,
-    poll_delay: u32,
-    replayable: &'a mut (Replayable + 'a),
+#[derive(Clone)]
+enum Action {
+     DecisionPoint(protos::Action),
+     Step,
 }
-impl<'a> ReplayManager<'a> {
-    fn new(the_replayable: &'a mut Replayable, replay_delay: u32, poll_delay: u32) -> ReplayManager<'a> {
-        ReplayManager { 
-            replayable: the_replayable,
-            replay_delay : replay_delay,
-            poll_delay : poll_delay,
+
+#[derive(Clone)]
+enum ReplayAction {
+    Header(ReplayHeader),
+    Delta(Action),
+    Keyframe(SerializationInfo,Action),
+}
+
+#[derive(Clone)]
+struct SerializationInfo {
+    source_module_name: String,
+    data: protos::SerializationResponse,
+}
+
+#[derive(Clone)]
+struct ReplayHeader {
+    configs: Vec<protos::ScaiiPacket>,
+}
+
+/// Replay owns the environment, but we need this
+/// inside the environment (router) to collect messages
+struct ReplayMessageQueue {
+    incoming_messages: Vec<protos::ScaiiPacket>,
+}
+
+impl  Module for ReplayMessageQueue  {
+    fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>>{
+         self.incoming_messages.push(msg.clone());
+         Ok(())
+    }
+
+    /// return empty messages
+    fn get_messages(&mut self) -> MultiMessage{
+        let pkts: Vec<ScaiiPacket> = Vec::new();
+        MultiMessage { packets: pkts }
+    }
+}
+
+impl Replay for ReplayMessageQueue {}
+
+
+struct ReplayManager {
+    incoming_message_queue:Rc<RefCell<ReplayMessageQueue>>, // going to go in router
+    replay_delay: u64,
+    poll_delay: u64,
+    shutdown_received: bool,
+    env: Environment,
+    replay_data: Vec<ReplayAction>,
+    step_position: u64,
+}
+
+impl ReplayManager  {
+    fn start(&mut self){
+        // startup viz via rpc
+        let mm = wrap_packet_in_multi_message(create_rpc_config_message());
+        self.env.route_messages(&mm);
+        self.env.update();
+        // pull off header and configure
+        let header: ReplayAction = self.replay_data.remove(0);
+        self.configure_as_per_header(header);
+        self.run_and_poll();
+    }
+
+    fn configure_as_per_header(&mut self, header: ReplayAction) {
+
+    }
+    fn poll_viz(&mut self) -> Result<Vec<ScaiiPacket>, Box<Error>> {
+        let result : Vec<protos::ScaiiPacket> = Vec::new();
+        let mut to_send : Vec<protos::ScaiiPacket> = Vec::new();
+        let pkt : ScaiiPacket = ScaiiPacket {
+            src: protos::Endpoint {
+                endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+            },
+            dest: protos::Endpoint {
+                endpoint: Some(Endpoint::Module(ModuleEndpoint {
+                    name: "RpcPluginModule".to_string(),
+                })),
+            },
+            specific_msg: Some(scaii_packet::SpecificMsg::UserCommand(protos::UserCommand {
+                command_type: protos::user_command::UserCommandType::PollForCommands as i32,
+                args: Vec::new(),
+            })),
+
+        };
+        to_send.push(pkt);
+        let mm = MultiMessage { packets: to_send };
+        self.env.route_messages(&mm);
+        self.env.update();
+        let scaii_pkts : Vec<protos::ScaiiPacket> = { 
+            let mut queue  = &mut *self.incoming_message_queue.borrow_mut();
+            let result : Vec<protos::ScaiiPacket> = queue.incoming_messages.drain(..).collect();
+            result
+        };
+        Ok(result)
+    }
+
+    fn has_more_steps(&mut self) -> bool {
+        println!("REPLAY has_more_steps? step_position {} < replay_data.len() {} - 1?",self.step_position, self.replay_data.len());
+        if self.step_position < self.replay_data.len() as u64 - 1 {
+            true
+        }
+        else {
+            false
         }
     }
-    fn start(&mut self){
-        self.replayable.init();
-        self.run_or_poll();
+
+    fn wrap_response_in_scaii_pkt(&mut self, ser_response : protos::SerializationResponse) -> ScaiiPacket {
+        ScaiiPacket {
+            src: protos::Endpoint {
+                endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+            },
+            dest: protos::Endpoint {
+                endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
+            },
+            specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::SerResp(ser_response)),
+        }
     }
-    fn poll_viz(&mut self) -> Option<UserCommandType> {
-        None
-    }
-    fn run_or_poll(&mut self){
-        let shutdown_received: bool = false;
-        let game_paused : bool = false;
-        while !shutdown_received {
-            if (game_paused){
-                let command : Option<UserCommandType> = self.poll_viz();
-                match command {
-                    Some(commandType) => {
-                        match commandType {
-                            UserCommandType::None => {},
-                            UserCommandType::Explain => {},
-                            UserCommandType::Pause => {},
-                            UserCommandType::Resume => {},
-                            UserCommandType::Rewind => {},
-                }
+
+    fn convert_action_info_to_action_pkt(&mut self, action : Action) -> ScaiiPacket {
+        match action {
+            Action::DecisionPoint(protosAction) => {
+                ScaiiPacket {
+                    src: protos::Endpoint {
+                        endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
                     },
-                    None => {}
+                    dest: protos::Endpoint {
+                        endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
+                    },
+                    specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::Action(protosAction)),
                 }
-                
+            }
+            Action::Step => {
+                ScaiiPacket {
+                    src: protos::Endpoint {
+                        endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+                    },
+                    dest: protos::Endpoint {
+                        endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
+                    },
+                    specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::ReplayStep(ReplayStep{})),
+                }
+            }
+        }
+        
+    }
+
+    fn send_replay_action_to_backend(&mut self) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
+        let empty_vec : Vec<protos::ScaiiPacket> = Vec::new();
+        let replay_action : ReplayAction = self.replay_data[self.step_position as usize].clone();
+        match replay_action {
+            ReplayAction::Delta(action) => {
+                println!("REPLAY found delta...");
+                let action_pkt : ScaiiPacket = self.convert_action_info_to_action_pkt(action);
+                let mut pkts: Vec<ScaiiPacket> = Vec::new();
+                pkts.push(action_pkt);
+                let mm = MultiMessage { packets: pkts };
+                self.env.route_messages(&mm);
+                self.env.update();
+                println!("REPLAY routed Action messages and called update...");
+                let scaii_pkts : Vec<protos::ScaiiPacket> = { 
+                    let mut queue  = &mut *self.incoming_message_queue.borrow_mut();
+                    let result : Vec<protos::ScaiiPacket> = queue.incoming_messages.drain(..).collect();
+                    result
+                };
+                println!("REPLAY returend packet count was {}", scaii_pkts.len());
+                Ok(scaii_pkts)
+            }
+            ReplayAction::Keyframe(serializationInfo, action) => {
+                println!("REPLAY found keyframe...");
+                let ser_response : protos::SerializationResponse = serializationInfo.data;
+                let ser_response_pkt : ScaiiPacket = self.wrap_response_in_scaii_pkt(ser_response);
+                let action_pkt : ScaiiPacket = self.convert_action_info_to_action_pkt(action);
+                let mut pkts: Vec<ScaiiPacket> = Vec::new();
+                pkts.push(ser_response_pkt);
+                pkts.push(action_pkt);
+                let mm = MultiMessage { packets: pkts };
+                self.env.route_messages(&mm);
+                self.env.update();
+                 println!("REPLAY routed serResp and Action messages and called update...");
+                let scaii_pkts : Vec<protos::ScaiiPacket> = { 
+                    let mut queue  = &mut *self.incoming_message_queue.borrow_mut();
+                    let result : Vec<protos::ScaiiPacket> = queue.incoming_messages.drain(..).collect();
+                    result
+                };
+                println!("REPLAY returned packet count was {}", scaii_pkts.len());
+                Ok(scaii_pkts)
+            }
+            ReplayAction::Header(_) => {
+                Ok(empty_vec)
+            }
+        }
+        
+    }
+
+    fn execute_run_step(&mut self) -> Result<bool, Box<Error>>{
+        let mut game_paused: bool = false;
+        if self.has_more_steps() {
+            println!("REPLAY execute_run_step calling send_replay_action_to_backend...");
+            let scaii_pkts =  self.send_replay_action_to_backend()?;
+            self.step_position = self.step_position + 1;
+            for scaii_pkt in scaii_pkts.iter() {
+                if scaii_defs::protos::is_error_pkt(&scaii_pkt){
+                    // Error would have already been shown to user at UI
+                    println!("REPLAY ERROR received as result of run_step {:?}", scaii_pkt);
+                }
+                else {
+                    println!("REPLAY unexpected pkt received after sending ReplayAction {:?}", scaii_pkt);
+                }
+            }
+        }
+        else {
+            // game will automatically pause at end, switch to polling mode
+            game_paused = true;
+        }
+        println!("REPLAY game paused after run step? {}... wait(replay_delay)", game_paused);
+        wait(self.replay_delay);
+        Ok(game_paused)
+    }
+   
+    fn execute_poll_step(&mut self) -> Result<bool, Box<Error>> {
+        let mut game_paused : bool = false;
+        println!("REPLAY execute_poll_step calling poll_viz");
+        let scaii_pkts: Vec<ScaiiPacket> = self.poll_viz()?;
+        for scaii_pkt in scaii_pkts.iter(){
+            if scaii_defs::protos::is_user_command_pkt(&scaii_pkt){
+                // we would get args here when they are relevant
+                let user_command_type = scaii_defs::protos::get_user_command_type(scaii_pkt)?;
+                match user_command_type {
+                    UserCommandType::None => { /* do nothing, continue polling */},
+                    UserCommandType::Explain => {},
+                    UserCommandType::Pause => { game_paused = true; },
+                    UserCommandType::Resume => { game_paused = false; },
+                    UserCommandType::Rewind => {},
+                    UserCommandType::PollForCommands => {},
+                }
+            }
+            else if scaii_defs::protos::is_error_pkt(&scaii_pkt){
+                // Error would have already been shown to user at UI
             }
             else {
-                let result = self.replayable.step_forward();
-                match result {
-                    Ok(()) => {
-
-                    }
-                    Err(e) => {
-                        println!("got error from VIZ {:?}", e);
-                    }
-                }
-            }
-            
-        }
-    }
-}
-
-pub trait Replayable {
-    fn init(&mut self);
-    fn step_forward(&mut self) -> Result<(), Box<Error>>;
-    fn hop_to_step(&mut self, step: u32)  -> Result<(), Box<Error>>;
-}
-
-struct TestReplay {
-   viz_sequence: Vec<protos::ScaiiPacket>,
-}
-impl TestReplay {
-    fn gen_entity_sequence(&mut self, count: u32) -> Vec<Entity> {
-        let mut entities : Vec<Entity> = Vec::new();
-        let mut x: f64 = 200.0;
-        let mut y: f64 = 200.0;
-        for _i in 0..count {
-            let entity = create_entity_at(&x, &y);
-            entities.push(entity);
-            x = x - 2.0;
-            y = y  - 2.0;
-        };
-        entities
-    }
-}
-impl Replayable for TestReplay {
-    fn init(&mut self){
-        let count = 20;
-        let mut entities : Vec<Entity> = self.gen_entity_sequence(count);
-        for i in (0..count).rev() {
-            let entity = entities.pop();
-            match entity {
-                Some(x) => {
-                    let viz: ScaiiPacket = wrap_entity_in_viz_packet(i, x);
-                    self.viz_sequence.push(viz);
-                }
-                None => (),
+                println!("REPLAY unexpected pkt received by Viz polling {:?}", scaii_pkt);
             }
         }
+        wait(self.poll_delay);
+        Ok(game_paused)
     }
-    fn step_forward(&mut self) -> Result<(), Box<Error>>{
-        Ok(())
-    }
-    fn hop_to_step(&mut self, step: u32)  -> Result<(), Box<Error>>{
+    
+    fn run_and_poll(&mut self) -> Result<(), Box<Error>>{
+        let mut game_paused : bool = false;
+        while !self.shutdown_received {
+            if !game_paused{
+                game_paused = self.execute_run_step()?;
+            }
+            game_paused = self.execute_poll_step()?; 
+        }
         Ok(())
     }
 }
-//struct Replay<'a> {
-struct Replay {
-    incoming_messages: Vec<protos::ScaiiPacket>
-//    backend: &'a (ReplayBackend + 'a),
-}
-impl Agent for Replay { }
-impl Module for Replay {
-    fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>>{
-         self.incoming_messages.push(msg.clone());
-         Ok(())
-    }
 
-    /// return empty messages.
-    fn get_messages(&mut self) -> MultiMessage{
-        let pkts: Vec<ScaiiPacket> = Vec::new();
-        MultiMessage { packets: pkts }
-    }
-}
-//impl<'a> Replay<'a> {}
-
-// pub trait ReplayBackend {
-//     fn init(&mut self);
-//     fn start_game(&self);
-// }
-//#[derive(Copy, Clone)]
-struct MockRts {
-    viz_sequence: Vec<protos::ScaiiPacket>,
-    incoming_messages: Vec<protos::ScaiiPacket>,
-    step_position: u32,
-}
-impl MockRts {
-    fn init(&mut self, count:u32) {
-        let mut entities = generate_entity_sequence(count);
-        //entities.reverse();
-        for i in (0..count).rev() {
-            let entity = entities.pop();
-            match entity {
-                Some(x) => {
-                    let viz: ScaiiPacket = wrap_entity_in_viz_packet(i, x);
-                    self.viz_sequence.push(viz);
-                }
-                None => (),
-            }
-        }
-    }
-    fn step(){
-
-    }
-}
-impl Backend for MockRts {
-    fn supported_behavior(&self) -> BackendSupported {
-        BackendSupported {
-            serialization: SerializationStyle::None,
-        }
-    }
-}
-impl Module for MockRts {
-    fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>>{
-         self.incoming_messages.push(msg.clone());
-         Ok(())
-    }
-
-    /// return empty messages.
-    fn get_messages(&mut self) -> MultiMessage{
-        let pkts: Vec<ScaiiPacket> = Vec::new();
-        MultiMessage { packets: pkts }
-    }
-}
-fn replay_live_mode() {
-    // stubbed out for now
-}
 fn configure_system(environment : &mut Environment, config_messages : Vec<MultiMessage>) {
     for mm in config_messages.iter(){
         println!("sending config_message...");
         environment.route_messages(&mm);
     }
 }
-fn wait() {
-    let delay = time::Duration::from_millis(500);
+
+fn wait(milliseconds : u64) {
+    let delay = time::Duration::from_millis(milliseconds);
     thread::sleep(delay);
 }
-fn replay_test_mode() {
-    use std::rc::Rc;
-    use std::cell::RefCell;
 
-    let mut rts = MockRts {
-        viz_sequence: Vec::new(),
-        incoming_messages: Vec::new(),
-        step_position: 0,
-    };
-    let count: u32= 20;
-    rts.init(count);
-    let mut env =  Environment::new();
-    let mut replay = Replay {
-        incoming_messages: Vec::new(),
-    };
-   
-    let rts = Rc::new(RefCell::new(rts));
-    let replay = Rc::new(RefCell::new(replay));
-    {
-        let mut replay_borrow_mut = &mut *replay.borrow_mut();
-        env.router_mut().register_backend(Box::new(rts.clone()));
-        env.router_mut().register_agent(Box::new(replay.clone()));
-        // configure the system
-        let mut config_messages : Vec<MultiMessage> = Vec::new();
-        config_messages.push(wrap_packet_in_multi_message(create_rpc_config_message()));
-        config_messages.push(wrap_packet_in_multi_message(create_test_viz_init(count, 400, 400)));
-        configure_system(&mut env, config_messages);
-    }
-    
-   
-
-//
-//   do I need to put the loop contents below into the step method of MockRts which does need to be a backend? Re-read the issue in Github
-//
-    // loop and send Viz
-    let mut more_remaining : bool = true;
-    while more_remaining {
-        wait();
-        let pkt_to_send = {
-            let mut_borrowed_rts = &mut *rts.borrow_mut();
-            mut_borrowed_rts.viz_sequence.pop()
-        };
-        
-        match pkt_to_send {
-            Some(p) => {
-                let multi_message = wrap_packet_in_multi_message(p);
-                {
-                    env.route_messages(&multi_message);
-                    println!("sent Viz message!");
-                    env.update();
-                    println!("called replay.environment.update()...");
-                }
-                
-                let msgs : Vec<protos::ScaiiPacket> = { 
-                    let mut rts = &mut *rts.borrow_mut();
-                    let result : Vec<protos::ScaiiPacket> = rts.incoming_messages.drain(..).collect();
-                    result
-                };
-                println!("message count returned {}", msgs.len());
-                // handle messages, do updates,etc
-                for msg in msgs.iter() {
-                    println!("msg : {:?}", msg);
-                }
-            }
-            None => ()
-        }
-        let remaining_packet_count = {
-            let borrowed_rts = & *rts.borrow();
-            borrowed_rts.viz_sequence.len()
-        };
-        if remaining_packet_count == 0 {
-            more_remaining = false;
-        }
-    }
-}
-fn create_test_viz_init(step_count: u32, width: u32, height: u32) -> ScaiiPacket {
-    ScaiiPacket {
-        src: protos::Endpoint {
-            endpoint: Some(Endpoint::Agent(AgentEndpoint {})),
-        },
-        dest: protos::Endpoint {
-            endpoint: Some(Endpoint::Module(ModuleEndpoint {
-                name: "RpcPluginModule".to_string(),
-            })),
-        },
-        specific_msg: Some(scaii_packet::SpecificMsg::VizInit(VizInit {
-            test_mode: Some(false),
-            step_count: Some(step_count),
-            gameboard_width: Some(width),
-            gameboard_height: Some(height),
-            explanations : Vec::new(),
-        })),
-    }
-}
-// fn create_viz_module_registration_message() -> ScaiiPacket {
-//     use protos::plugin_type;
-//     use protos::{Cfg, CoreCfg, RustFfiConfig};
-//     ScaiiPacket {
-//          src: protos::Endpoint {
-//              endpoint: Some(Endpoint::Agent(AgentEndpoint {})),
-//          },
-//          dest: protos::Endpoint {
-//              endpoint: Some(Endpoint::Core(CoreEndpoint {})),
-//          },
-//         specific_msg: Some(SpecificMsg::Config(Cfg {
-//             which_module:
-//             Some(WhichModule::CoreCfg(CoreCfg {
-//                 plugin_type:   protos::PluginType {
-//                         plugin_type: Some(plugin_type::PluginType::RustPlugin(
-//                             RustFfiConfig {
-//                                 plugin_path: String::from("?"),
-//                                 init_as: InitAs {
-//                                     init_as : Some(protos::init_as::InitAs::Module(
-//                                                     ModuleInit {
-//                                                         name: String::from("viz"),
-//                                                     }))
-//                                 },
-//                             })),
-//                         },
-//                 })),
-//         }))
-//     }
-// }
-// fn create_agent_cfg_message() -> ScaiiPacket {
-//     ScaiiPacket {
-//         src: protos::Endpoint {
-//             endpoint: Some(Endpoint::Agent(AgentEndpoint {})),
-//         },
-//         dest: protos::Endpoint {
-//             endpoint: Some(Endpoint::Core(CoreEndpoint {})),
-//         },
-//         specific_msg: Some(SpecificMsg::Config(protos::Cfg {
-//             which_module: Some(WhichModule::AgentCfg(protos::AgentCfg {
-//                 cfg_msg: None,
-//                 },
-//             )),
-//         })),
-//     }
-// }
-// fn create_backend_cfg_message() -> ScaiiPacket {
-//     let rust_ffi_config = protos::RustFfiConfig {
-//         plugin_path: "?".to_string(),
-//         init_as: InitAs {
-//             init_as: Some(protos::init_as::InitAs::Backend(BackendInit {})),
-//         },
-//     };
-
-//     ScaiiPacket {
-//         src: protos::Endpoint {
-//             endpoint: Some(Endpoint::Agent(AgentEndpoint {})),
-//         },
-//         dest: protos::Endpoint {
-//             endpoint: Some(Endpoint::Core(CoreEndpoint {})),
-//         },
-//         specific_msg: Some(SpecificMsg::Config(protos::Cfg {
-//             which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
-//                 plugin_type: protos::PluginType {
-//                     plugin_type: Some(protos::plugin_type::PluginType::RustPlugin(rust_ffi_config)),
-//                 },
-//             })),
-//         })),
-//     }
-// }
 fn wrap_packet_in_multi_message(pkt: ScaiiPacket) -> MultiMessage {
     let mut pkts: Vec<ScaiiPacket> = Vec::new();
     pkts.push(pkt);
     MultiMessage { packets: pkts }
 }
+
 fn create_rpc_config_message() -> ScaiiPacket {
     let comm = Some(String::from(
         "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
@@ -412,6 +333,7 @@ fn create_rpc_config_message() -> ScaiiPacket {
         })),
     }
 }
+
 fn wrap_entity_in_viz_packet(step: u32, entity: Entity) -> ScaiiPacket {
     let mut entities: Vec<Entity> = Vec::new();
     entities.push(entity);
@@ -441,6 +363,7 @@ fn generate_entity_sequence(count: u32) -> Vec<Entity> {
     }
     entities
 }
+
 fn create_entity_at(x: &f64, y: &f64) -> Entity {
     Entity {
         id: 1,
@@ -472,16 +395,215 @@ fn create_entity_at(x: &f64, y: &f64) -> Entity {
         delete: false,
     }
 }
-fn main() {
-    let test_mode = true;
-    if test_mode {
-        let mut testReplay = TestReplay {
-            viz_sequence: Vec::new(),
-        };
-        let mut replayManager = ReplayManager::new(&mut testReplay as &mut Replayable, 500, 300);
-        replayManager.start();
-        //replay_test_mode();
-    } else {
-        replay_live_mode();
+
+fn get_test_mode_replay_header(step_count: u32) -> ReplayHeader {
+    let mut configs : Vec<protos::ScaiiPacket> = Vec::new();
+    // rpc is done by replay not at gameplay time so won't be in header
+    // viz init will be sent by backend so not from here
+    ReplayHeader {
+        configs: configs,
     }
 }
+
+fn get_test_mode_key_frame() -> ReplayAction {
+    let ser_info = SerializationInfo {
+        source_module_name: String::from("rts"),
+        data: protos::SerializationResponse {
+            serialized: Vec::new(),
+            format: 1,
+        },
+    };
+    let action = Action::Step;
+    ReplayAction::Keyframe(ser_info, action)
+}
+
+fn get_test_mode_replay_info(step_count: u32) -> Vec<ReplayAction> {
+    let mut result: Vec<ReplayAction> = Vec::new();
+    // add Header
+    let replay_header = get_test_mode_replay_header(step_count);
+    result.push(ReplayAction::Header(replay_header));
+    // add token keyframe
+    let key_frame = get_test_mode_key_frame();
+    
+    result.push(key_frame);
+    // add Deltas 
+    let mut d_actions : Vec<i32> = Vec::new();
+    d_actions.push(5);
+    let delta_1 = ReplayAction::Delta(Action::DecisionPoint(protos::Action{
+        discrete_actions: d_actions,
+        continuous_actions: Vec::new(),
+        alternate_actions:None,
+    }));
+    result.push(delta_1);
+    let remaining : u32 = step_count - 1;
+    for _number in 1..remaining {
+        let delta_2 = ReplayAction::Delta(Action::Step);
+        result.push(delta_2);
+    }
+    result
+}
+
+// need to add a recorderConfig message (sent by agent)  - it will contain repeated Cfg  to capture the various configs
+// if recorder gets recorderConfig message , it starts recordings
+// so always be instantiated by core, just will remain dormant unless it gets that message
+// don't need a special proto message to convey the list of Cfg's because I can just persist them as part of structs and then send individual Cfg messages around at replay time.
+
+fn main() {
+    let mut environment : Environment = Environment::new();
+    let test_mode = true;
+    let mut replay_info : Vec<ReplayAction> = Vec::new();
+    if test_mode {
+        let step_count : u32 = 10;
+        configure_and_register_mock_rts(&mut environment,step_count);
+        replay_info = get_test_mode_replay_info(step_count);
+    }
+    else {
+        // TBD
+    }
+    let replay_message_queue = ReplayMessageQueue {
+        incoming_messages: Vec::new(),
+    };
+    let rc_replay_message_queue = Rc::new(RefCell::new(replay_message_queue));
+    
+    {
+        environment.router_mut().register_replay(Box::new(rc_replay_message_queue.clone()));
+
+        debug_assert!(environment.router().replay().is_some());
+    }
+    let mut replay_manager =  ReplayManager {
+        incoming_message_queue:rc_replay_message_queue,
+        replay_delay: 800,
+        poll_delay: 700,
+        shutdown_received: false,
+        env: environment,
+        replay_data: replay_info,
+        step_position: 0,
+    };
+    replay_manager.start();
+    println!("launched replay_manager...");
+}
+
+fn configure_and_register_mock_rts(env: &mut Environment, count : u32){
+    let mut rts = MockRts {
+        viz_sequence: Vec::new(),
+        incoming_messages: Vec::new(),
+        outbound_messages: Vec::new(),
+        step_position: 0,
+        step_count: count,
+        sent_viz_init: false,
+    };
+    rts.init();
+    {
+        env.router_mut().register_backend(Box::new(rts));
+    }
+    
+}
+
+
+struct MockRts {
+    viz_sequence: Vec<protos::ScaiiPacket>,
+    incoming_messages: Vec<protos::ScaiiPacket>,
+    outbound_messages: Vec<protos::MultiMessage>,
+    step_count : u32,
+    step_position: u32,
+    sent_viz_init: bool,
+}
+
+impl MockRts {
+    fn init(&mut self) {
+        let mut entities = generate_entity_sequence(self.step_count);
+        for i in (0..self.step_count) {
+            let entity = entities.remove(0);
+            let viz: ScaiiPacket = wrap_entity_in_viz_packet(i, entity);
+            self.viz_sequence.push(viz);
+        }
+    }
+
+    fn step(&mut self){
+        println!("MockRTS in step()....");
+        println!("MockRTS outbound_messages len: {}", self.outbound_messages.len());
+        let pkt_to_send = self.viz_sequence[self.step_position as usize].clone();
+        self.step_position = self.step_position + 1;
+        println!("MockRTS self.step_position now {}", self.step_position);
+        let mm = wrap_packet_in_multi_message(pkt_to_send);
+        println!("MockRTS made mm");
+        self.outbound_messages.push(mm);
+        println!("MockRTS pushed onto outbound_messages");
+        ()
+    }
+
+    fn send_viz_init(&mut self) {
+        let scaii_packet_viz_init = self.create_test_viz_init(400, 400);
+        self.outbound_messages.push(MultiMessage { packets: vec![scaii_packet_viz_init] });
+    }
+
+    fn create_test_viz_init(&mut self, width: u32, height: u32) -> ScaiiPacket {
+        ScaiiPacket {
+            src: protos::Endpoint {
+                endpoint: Some(Endpoint::Agent(AgentEndpoint {})),
+            },
+            dest: protos::Endpoint {
+                endpoint: Some(Endpoint::Module(ModuleEndpoint {
+                    name: "RpcPluginModule".to_string(),
+                })),
+            },
+            specific_msg: Some(scaii_packet::SpecificMsg::VizInit(VizInit {
+                test_mode: Some(false),
+                step_count: Some(self.step_count),
+                gameboard_width: Some(width),
+                gameboard_height: Some(height),
+                explanations : Vec::new(),
+            })),
+        }
+    }
+}
+
+impl Backend for MockRts {
+    fn supported_behavior(&self) -> BackendSupported {
+        BackendSupported {
+            serialization: SerializationStyle::None,
+        }
+    }
+}
+
+impl Module for MockRts {
+    fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>>{
+        let specific_msg = &msg.specific_msg;
+        match specific_msg {
+            &Some(scaii_packet::SpecificMsg::SerResp(protos::SerializationResponse { serialized: _ , format: _ })) => {
+                if self.sent_viz_init == false {
+                    println!("MOCKRTS sending viz init!");
+                    self.send_viz_init();
+                    self.sent_viz_init= true;
+                }
+            },
+            &Some(scaii_packet::SpecificMsg::ReplayStep(protos::ReplayStep { })) => {
+                if self.step_position < self.step_count {
+                    println!("MOCKRTS step due to replayStep!");
+                    self.step();
+                }
+            },
+            &Some(scaii_packet::SpecificMsg::Action(protos::Action { discrete_actions: _ , continuous_actions: _, alternate_actions: _})) => {
+                if self.step_position < self.step_count {
+                    println!("MOCKRTS step due to agent Action!");
+                    self.step();
+                }
+            },
+            _ => {
+                println!("MOCKRTS process_message called with unknown");
+            },
+        }
+        
+        Ok(())
+    }
+
+    /// return empty messages.
+    fn get_messages(&mut self) -> MultiMessage{
+        protos::merge_multi_messages(self.outbound_messages.drain(..).collect()).unwrap_or(
+            MultiMessage {
+                packets: Vec::new(),
+            },
+        )
+    }
+}
+
