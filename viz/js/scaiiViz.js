@@ -334,71 +334,76 @@ var connect = function (dots, attemptCount) {
   dealer.onopen = function (event) {
 	$("#scaii-interface-title").html(systemTitle);
     console.log("WS Opened.");
-  }
+  };
 
   dealer.onmessage = function (message) {
-    sessionState = "inProgress";
-    var s = message.data;
-    var sPacket = proto.scaii.common.ScaiiPacket.deserializeBinary(s);
-    if (sPacket.hasVizInit()) {
-      var vizInit = sPacket.getVizInit();
-      handleVizInit(vizInit);
-	  var mm = new proto.scaii.common.MultiMessage;
-	  dealer.send(mm.serializeBinary());
-    }
-    else if (sPacket.hasViz()) {
-      var viz = sPacket.getViz();
-      handleViz(viz);
-	  var mm;
-      if (testingMode) {
-        mm = buildReturnMultiMessageFromState(masterEntities);
+	try {
+	  sessionState = "inProgress";
+      var s = message.data;
+      var sPacket = proto.scaii.common.ScaiiPacket.deserializeBinary(s);
+      if (sPacket.hasVizInit()) {
+        var vizInit = sPacket.getVizInit();
+        handleVizInit(vizInit);
+	    var mm = new proto.scaii.common.MultiMessage;
+	    dealer.send(mm.serializeBinary());
+      }
+      else if (sPacket.hasViz()) {
+        var viz = sPacket.getViz();
+        handleViz(viz);
+	    var mm;
+        if (testingMode) {
+          mm = buildReturnMultiMessageFromState(masterEntities);
+	    }
+	    else {
+	  	  mm = new proto.scaii.common.MultiMessage;
+	    }
+        dealer.send(mm.serializeBinary());
+      }
+      else if (sPacket.hasErr()) {
+        console.log(sPacket.getErr().getDescription())
+        mm = new proto.scaii.common.MultiMessage;
+        dealer.send(mm.serializeBinary());
+      }
+	  else if (sPacket.hasUserCommand()) {
+	    var userCommand = sPacket.getUserCommand();
+	    var commandType = userCommand.getCommandType();
+	    if (commandType == proto.scaii.common.UserCommand.UserCommandType.POLL_FOR_COMMANDS){
+		  var mm;
+		  if (userCommandScaiiPackets.length > 0){
+	        mm = buildResponseToReplay(userCommandScaiiPackets);
+		  }
+		  else {
+		    mm = new proto.scaii.common.MultiMessage;
+		  }
+		  dealer.send(mm.serializeBinary());
+		  userCommandScaiiPackets = [];
+        }
 	  }
-	  else {
-		mm = new proto.scaii.common.MultiMessage;
-	  }
-      dealer.send(mm.serializeBinary());
-    }
-    else if (sPacket.hasErr()) {
-      console.log(sPacket.getErr().getDescription())
-      mm = new proto.scaii.common.MultiMessage;
-      dealer.send(mm.serializeBinary());
-    }
-	else if (sPacket.hasUserCommand()) {
-	  var userCommand = sPacket.getUserCommand();
-	  var commandType = userCommand.getCommandType();
-	  if (commandType == proto.scaii.common.UserCommand.UserCommandType.POLL_FOR_COMMANDS){
-		var mm;
-		if (userCommandScaiiPackets.length > 0){
-	      mm = buildResponseToReplay(userCommandScaiiPackets);
-		}
-		else {
-		  mm = new proto.scaii.common.MultiMessage;
-		}
-		dealer.send(mm.serializeBinary());
-		userCommandScaiiPackets = [];
-	  }
+      else {
+        console.log(sPacket.toString())
+        console.log('unexpected message from system!');
+        mm = new proto.scaii.common.MultiMessage;
+        dealer.send(mm.serializeBinary());
+      }
 	}
-    else {
-      console.log(sPacket.toString())
-      console.log('unexpected message from system!');
-      mm = new proto.scaii.common.MultiMessage;
-      dealer.send(mm.serializeBinary());
-    }
+	catch (err) {
+	  alert(err.message);
+	}
   };
+	
   dealer.onclose = function (closeEvent) {
     console.log("closefired " + attemptCount);
     if (sessionState == "pending") {
       // the closed connection was likely due to failed connection. try reconnecting
-	  
       setTimeout(function () { tryConnect(dots, attemptCount); }, 2000);
     }
-    //alert("Closed!");
   };
 
   dealer.onerror = function (err) {
     console.log("Error: " + err);
-    //alert("Error: " + err);
+    alert("Error: " + err);
   };
+  
 };
 
 var then = Date.now();
