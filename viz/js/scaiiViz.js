@@ -66,7 +66,7 @@ var gameboardWidth;
 var gameboardHeight;
 var timeline_canvas = document.createElement("canvas");
 var timeline_ctx = timeline_canvas.getContext("2d");
-
+var pauseButton = document.createElement("BUTTON"); 
 
 
 var shape_outline_color = '#202020';
@@ -226,7 +226,7 @@ var initUI = function(){
 	$("#scaii-game-controls").append(rewindButton);
 	
 	$("#scaii-game-controls").css("text-align", "center");
-	var pauseButton = document.createElement("BUTTON");       
+	      
 	pauseButton.setAttribute("class", "controlButton");	
 	pauseButton.innerHTML = '<img src="imgs/pause.png", height="8px" width="10px"/>';   
 	$("#scaii-game-controls").append(pauseButton);
