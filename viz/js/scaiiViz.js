@@ -367,9 +367,15 @@ var connect = function (dots, attemptCount) {
 	  var userCommand = sPacket.getUserCommand();
 	  var commandType = userCommand.getCommandType();
 	  if (commandType == proto.scaii.common.UserCommand.UserCommandType.POLL_FOR_COMMANDS){
-		var mm = buildResponseToReplay(userCommandScaiiPackets);
-		var returnMessage = mm.serializeBinary();
-		dealer.send(returnMessage);
+		var mm;
+		if (userCommandScaiiPackets.length > 0){
+	      mm = buildResponseToReplay(userCommandScaiiPackets);
+		}
+		else {
+		  mm = new proto.scaii.common.MultiMessage;
+		}
+		dealer.send(mm.serializeBinary());
+		userCommandScaiiPackets = [];
 	  }
 	}
     else {

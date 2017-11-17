@@ -7,10 +7,12 @@ function createMultiMessageFromPacket(scPkt){
 
 function createMultiMessageFromPackets(scPkts){
   var mm = new proto.scaii.common.MultiMessage;
-  var nextPkt = scPkts.shift();
-  while (nextPkt != undefined){
+  if (scPkts.length > 0){
+	var nextPkt = scPkts.shift();
+    while (nextPkt != undefined){
       mm.addPackets(nextPkt);
 	  nextPkt = scPkts.shift();
+	}
   }
   return mm;
 }
@@ -26,7 +28,7 @@ function setSourceEndpoint(pkt){
 function setDestinationEndpointToReplay(pkt){
   var replayEndpoint = new proto.scaii.common.ReplayEndpoint;
   var destEndpoint = new proto.scaii.common.Endpoint;
-  destEndpoint.setBackend(replayEndpoint);
+  destEndpoint.setReplay(replayEndpoint);
   pkt.setDest(destEndpoint);
 }
 
@@ -37,22 +39,14 @@ function setDestinationEndpointToBackend(pkt){
   pkt.setDest(destEndpoint);
 }
 
-function buildResponseToBackend(scPkts){
-	for (var pkt in scPkts){
-		setSourceEndpoint(pkt)
-		setDestinationEndpointToBackend(pkt);
-	}
-	var mm = createMultiMessageFromPackets(scPkts);
-	return mm;
-}
-
 function buildResponseToReplay(scPkts){
-	for (var pkt in scPkts){
-		setSourceEndpoint(pkt)
-		setDestinationEndpointToReplay(pkt);
-	}
-	var mm = createMultiMessageFromPackets(scPkts);
-	return mm;
+  for (var i = 0; i < scPkts.length; i++) {
+	var pkt = scPkts[i];
+    setSourceEndpoint(pkt)
+    setDestinationEndpointToReplay(pkt);
+  }
+  var mm = createMultiMessageFromPackets(scPkts);
+  return mm;
 }
 
 function buildReturnMultiMessageFromState(entities) {

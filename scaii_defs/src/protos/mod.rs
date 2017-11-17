@@ -3,6 +3,7 @@ include!(concat!(env!("OUT_DIR"), "/scaii.common.rs"));
 use protos::user_command::UserCommandType;
 use protos;
 use std;
+use std::fmt;
 /// Merges a bunch of `MultiMessage`s into a new one.
 ///
 /// The result will preserve the order of the input multimessages.
@@ -48,24 +49,94 @@ pub fn packet_from_entity_list(entities: Vec<Entity>) -> ScaiiPacket {
     }
 }
 pub fn is_user_command_pkt(scaii_pkt: &ScaiiPacket) -> bool {
-    true
+    let specific_msg = &scaii_pkt.specific_msg;
+    match specific_msg {
+        &Some(
+            scaii_packet::SpecificMsg::UserCommand(protos::UserCommand {
+                command_type: _,
+                args: _,
+            }),
+        ) => true,
+        _ => false,
+    }
 }
 pub fn is_error_pkt(scaii_pkt: &ScaiiPacket) -> bool {
-    true
+    let specific_msg = &scaii_pkt.specific_msg;
+    match specific_msg {
+        &Some(
+            scaii_packet::SpecificMsg::Err(protos::Error {
+                description: _,
+                fatal: _,
+                error_info: _,
+            }),
+        ) => true,
+        _ => false,
+    }
 }
 pub fn get_user_command_type(
     scaii_pkt: &ScaiiPacket,
-) -> Result<UserCommandType, Box<std::error::Error>> {
-    Ok(UserCommandType::None)
+) -> Result<UserCommandType, Box<ProtobufEnumWorkaroundError>> {
+    let specific_msg = &scaii_pkt.specific_msg;
+    match specific_msg {
+        &Some(
+            scaii_packet::SpecificMsg::UserCommand(protos::UserCommand {
+                command_type: x,
+                args: _,
+            }),
+        ) => match x {
+            0 => Ok(UserCommandType::None),
+            1 => Ok(UserCommandType::Explain),
+            2 => Ok(UserCommandType::Pause),
+            3 => Ok(UserCommandType::Resume),
+            4 => Ok(UserCommandType::Rewind),
+            5 => Ok(UserCommandType::PollForCommands),
+            _ => Err(Box::new(ProtobufEnumWorkaroundError::new(
+                "likely added new UserCommandType and forgot to change this hack.",
+            ))),
+        },
+        _ => Err(Box::new(ProtobufEnumWorkaroundError::new(
+            "expected a UserCommand packet",
+        ))),
+    }
 }
-pub fn get_error_from_pkt(
-    scaii_pkt: &ScaiiPacket,
-) -> Result<protos::Error, Box<std::error::Error>> {
-    let byte_vec: Vec<u8> = Vec::new();
-    let error = protos::Error {
-        description: String::from("bogusError"),
-        fatal: Some(false),
-        error_info: Some(byte_vec),
-    };
-    Ok(error)
+
+pub fn get_error_from_pkt(scaii_pkt: &ScaiiPacket) -> Result<protos::Error, &'static str> {
+    let specific_msg = scaii_pkt.specific_msg.clone();
+    match specific_msg {
+        Some(scaii_packet::SpecificMsg::Err(x)) => Ok(x),
+        _ => Err("Asked for protos::Error from non Err ScaiiPacket.Backend"),
+    }
+}
+//?????
+// pub fn get_error_from_pkt2(scaii_pkt: &ScaiiPacket) -> Result<protos::Error, &'static str> {
+//     let specific_msg = &scaii_pkt.specific_msg;
+//     match specific_msg {
+//         &Some(scaii_packet::SpecificMsg::Err(ref x)) => Ok(x),
+//         _ => Err("Asked for protos::Error from non Err ScaiiPacket.Backend"),
+//     }
+// }
+
+#[derive(Debug)]
+pub struct ProtobufEnumWorkaroundError {
+    details: String,
+}
+
+impl ProtobufEnumWorkaroundError {
+    fn new(msg: &str) -> ProtobufEnumWorkaroundError {
+        ProtobufEnumWorkaroundError {
+            details: msg.to_string(),
+        }
+    }
+}
+
+impl fmt::Display for ProtobufEnumWorkaroundError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.details)
+    }
+}
+
+impl std::error::Error for ProtobufEnumWorkaroundError {
+    fn description(&self) -> &str {
+        &self.details
+    }
 }
