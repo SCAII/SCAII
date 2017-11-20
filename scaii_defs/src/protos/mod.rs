@@ -30,6 +30,7 @@ pub fn merge_multi_messages(mut msgs: Vec<MultiMessage>) -> Option<MultiMessage>
 
     Some(msgs.swap_remove(0))
 }
+
 pub fn packet_from_entity_list(entities: Vec<Entity>) -> ScaiiPacket {
     ScaiiPacket {
         src: Endpoint {
@@ -48,6 +49,7 @@ pub fn packet_from_entity_list(entities: Vec<Entity>) -> ScaiiPacket {
         })),
     }
 }
+
 pub fn is_user_command_pkt(scaii_pkt: &ScaiiPacket) -> bool {
     let specific_msg = &scaii_pkt.specific_msg;
     match specific_msg {
@@ -60,6 +62,7 @@ pub fn is_user_command_pkt(scaii_pkt: &ScaiiPacket) -> bool {
         _ => false,
     }
 }
+
 pub fn is_error_pkt(scaii_pkt: &ScaiiPacket) -> bool {
     let specific_msg = &scaii_pkt.specific_msg;
     match specific_msg {
@@ -73,10 +76,12 @@ pub fn is_error_pkt(scaii_pkt: &ScaiiPacket) -> bool {
         _ => false,
     }
 }
+
 pub fn get_user_command_type(
     scaii_pkt: &ScaiiPacket,
 ) -> Result<UserCommandType, Box<ProtobufEnumWorkaroundError>> {
     let specific_msg = &scaii_pkt.specific_msg;
+
     match specific_msg {
         &Some(
             scaii_packet::SpecificMsg::UserCommand(protos::UserCommand {
