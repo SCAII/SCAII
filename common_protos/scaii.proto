@@ -38,6 +38,7 @@ message ScaiiPacket {
 		VizInit viz_init = 10;
 		UserCommand user_command = 11;
 		ReplayStep replay_step = 12;
+		TestControl test_control = 13;
 		Other other = 29;
 	}
 
@@ -239,4 +240,9 @@ message UserCommand {
 	}
 	required UserCommandType command_type = 1;
 	repeated string args = 2;
+}
+
+// Some testing requires sending special messages to test components ex. Replay controlling MockRts.
+message TestControl {
+	repeated string args = 1;
 }
