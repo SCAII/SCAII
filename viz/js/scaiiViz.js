@@ -352,6 +352,7 @@ var connect = function (dots, attemptCount) {
       if (sPacket.hasVizInit()) {
         var vizInit = sPacket.getVizInit();
         handleVizInit(vizInit);
+		controlsManager.disableAllControls();
 		controlsManager.gameStarted();
 	    var mm = new proto.scaii.common.MultiMessage;
 	    dealer.send(mm.serializeBinary());
@@ -360,7 +361,7 @@ var connect = function (dots, attemptCount) {
         var viz = sPacket.getViz();
         handleViz(viz);
 		// we're moving forward so rewind should be enabled
-		controlsManager.enableRewind();
+		controlsManager.enableAllControls();
 	    var mm;
         if (testingMode) {
           mm = buildReturnMultiMessageFromState(masterEntities);
