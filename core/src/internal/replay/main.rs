@@ -15,6 +15,12 @@ use std::{thread, time};
 use std::rc::Rc;
 use std::cell::RefCell;
 
+#[derive(Debug)]
+enum GameState {
+    Running,
+    Paused,
+    RewoundNeedingToSendInitialKeyframe,
+}
 #[derive(Clone)]
 enum Action {
      DecisionPoint(protos::Action),
@@ -69,6 +75,7 @@ struct ReplayManager {
     env: Environment,
     replay_data: Vec<ReplayAction>,
     step_position: u64,
+    test_mode: bool,
 }
 
 impl ReplayManager  {
@@ -172,6 +179,17 @@ impl ReplayManager  {
         
     }
 
+    fn deploy_replay_directives_to_backend(&mut self, mm: MultiMessage) ->Result<Vec<protos::ScaiiPacket>, Box<Error>> {
+        self.env.route_messages(&mm);
+        self.env.update();
+        let scaii_pkts : Vec<protos::ScaiiPacket> = { 
+            let queue  = &mut *self.incoming_message_queue.borrow_mut();
+            let result : Vec<protos::ScaiiPacket> = queue.incoming_messages.drain(..).collect();
+            result
+        };
+        println!("REPLAY returend packet count was {}", scaii_pkts.len());
+        Ok(scaii_pkts)
+    }
     fn send_replay_action_to_backend(&mut self) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
         let empty_vec : Vec<protos::ScaiiPacket> = Vec::new();
         let replay_action : ReplayAction = self.replay_data[self.step_position as usize].clone();
@@ -182,15 +200,7 @@ impl ReplayManager  {
                 let mut pkts: Vec<ScaiiPacket> = Vec::new();
                 pkts.push(action_pkt);
                 let mm = MultiMessage { packets: pkts };
-                self.env.route_messages(&mm);
-                self.env.update();
-                println!("REPLAY routed Action messages and called update...");
-                let scaii_pkts : Vec<protos::ScaiiPacket> = { 
-                    let queue  = &mut *self.incoming_message_queue.borrow_mut();
-                    let result : Vec<protos::ScaiiPacket> = queue.incoming_messages.drain(..).collect();
-                    result
-                };
-                println!("REPLAY returend packet count was {}", scaii_pkts.len());
+                let scaii_pkts = self.deploy_replay_directives_to_backend(mm)?;
                 Ok(scaii_pkts)
             }
             ReplayAction::Keyframe(serialization_info, action) => {
@@ -202,26 +212,39 @@ impl ReplayManager  {
                 pkts.push(ser_response_pkt);
                 pkts.push(action_pkt);
                 let mm = MultiMessage { packets: pkts };
-                self.env.route_messages(&mm);
-                self.env.update();
-                 println!("REPLAY routed serResp and Action messages and called update...");
-                let scaii_pkts : Vec<protos::ScaiiPacket> = { 
-                    let queue  = &mut *self.incoming_message_queue.borrow_mut();
-                    let result : Vec<protos::ScaiiPacket> = queue.incoming_messages.drain(..).collect();
-                    result
-                };
-                println!("REPLAY returned packet count was {}", scaii_pkts.len());
+                let scaii_pkts = self.deploy_replay_directives_to_backend(mm)?;
                 Ok(scaii_pkts)
             }
             ReplayAction::Header(_) => {
                 Ok(empty_vec)
             }
         }
-        
     }
 
-    fn execute_run_step(&mut self) -> Result<bool, Box<Error>>{
-        let mut game_paused: bool = false;
+    fn send_test_mode_rewind_hint_message(&mut self) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
+        let target : String = String::from("MockRts");
+        let command : String = String::from("rewind");
+        let mut args_list : Vec<String> = Vec::new();
+        args_list.push(target);
+        args_list.push(command);
+        let pkt = ScaiiPacket {
+            src: protos::Endpoint {
+                endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+            },
+            dest: protos::Endpoint {
+                 endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
+            },
+            specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::TestControl(protos::TestControl{args: args_list,})),
+        };
+        let mut pkts: Vec<ScaiiPacket> = Vec::new();
+        pkts.push(pkt);
+        let mm = MultiMessage { packets: pkts };
+        let scaii_pkts = self.deploy_replay_directives_to_backend(mm)?;
+        Ok(scaii_pkts)
+    }
+
+    fn execute_run_step(&mut self) -> Result<GameState, Box<Error>>{
+        let mut game_state: GameState = GameState::Running;
         if self.has_more_steps() {
             println!("REPLAY execute_run_step calling send_replay_action_to_backend...");
             let scaii_pkts =  self.send_replay_action_to_backend()?;
@@ -238,14 +261,14 @@ impl ReplayManager  {
         }
         else {
             // game will automatically pause at end, switch to polling mode
-            game_paused = true;
+            game_state = GameState::Paused;
         }
-        println!("REPLAY game paused after run step? {}... wait(replay_delay)", game_paused);
+        println!("REPLAY game state after run step? {:?}... wait(replay_delay)", game_state);
         wait(self.replay_delay);
-        Ok(game_paused)
+        Ok(game_state)
     }
    
-    fn execute_poll_step(&mut self, mut game_paused : bool) -> Result<bool, Box<Error>> {
+    fn execute_poll_step(&mut self, mut game_state : GameState) -> Result<GameState, Box<Error>> {
         println!("REPLAY execute_poll_step calling poll_viz");
         let scaii_pkts: Vec<ScaiiPacket> = self.poll_viz()?;
         for scaii_pkt in scaii_pkts.iter(){
@@ -260,10 +283,17 @@ impl ReplayManager  {
                     UserCommandType::Explain => {println!("================RECEIVED UserCommandType::Explain================");},
                     UserCommandType::Pause => { 
                         println!("================RECEIVED UserCommandType::Pause================");
-                        game_paused = true; 
+                        game_state = GameState::Paused; 
                     },
-                    UserCommandType::Resume => { game_paused = false; println!("================RECEIVED UserCommandType::Resume================"); },
-                    UserCommandType::Rewind => {println!("================RECEIVED UserCommandType::Rewind================"); },
+                    UserCommandType::Resume => { game_state = GameState::Running; println!("================RECEIVED UserCommandType::Resume================"); },
+                    UserCommandType::Rewind => {
+                        println!("================RECEIVED UserCommandType::Rewind================"); 
+                        self.step_position = 0;
+                        if self.test_mode {
+                            let _pkts :Vec<ScaiiPacket> = self.send_test_mode_rewind_hint_message()?;
+                        }
+                        game_state = GameState::RewoundNeedingToSendInitialKeyframe;
+                    },
                     UserCommandType::PollForCommands => {println!("================RECEIVED UserCommandType::PollForCommands================");},
                 }
             }
@@ -275,18 +305,28 @@ impl ReplayManager  {
             }
         }
         wait(self.poll_delay);
-        Ok(game_paused)
+        Ok(game_state)
     }
     
     fn run_and_poll(&mut self) -> Result<(), Box<Error>>{
-        let mut game_paused : bool = false;
+        let mut game_state : GameState = GameState::Running;
         while !self.shutdown_received {
-            if !game_paused{
-                game_paused = self.execute_run_step()?;
-                println!("game_paused in run_and_poll is now {} after run step", game_paused);
+            match game_state {
+                GameState::Running => {
+                    game_state = self.execute_run_step()?;
+                    println!("game_state in run_and_poll is now {:?} after run step", game_state);
+                },
+                GameState::Paused=> {
+                    // do nothing
+                },
+                GameState::RewoundNeedingToSendInitialKeyframe => {
+                    let _ignored_game_state : GameState = self.execute_run_step()?;
+                    game_state = GameState::Paused; // after rewind, we assume they don't want it to start playing
+                    println!("game_state in run_and_poll is now {:?} after run step as per RewoundNeedingToSendInitialKeyframe", game_state);
+                },
             }
-            game_paused = self.execute_poll_step(game_paused)?; 
-            println!("game_paused in run_and_poll is now {} after poll step", game_paused);
+            game_state = self.execute_poll_step(game_state)?; 
+            println!("game_state in run_and_poll is now {:?} after poll step", game_state);
         }
         Ok(())
     }
@@ -459,7 +499,7 @@ fn main() {
     let test_mode = true;
     let mut replay_info : Vec<ReplayAction> = Vec::new();
     if test_mode {
-        let step_count : u32 = 10;
+        let step_count : u32 = 20;
         configure_and_register_mock_rts(&mut environment,step_count);
         replay_info = get_test_mode_replay_info(step_count);
     }
@@ -484,7 +524,11 @@ fn main() {
         env: environment,
         replay_data: replay_info,
         step_position: 0,
+        test_mode: false,
     };
+    if test_mode {
+        replay_manager.test_mode = true;
+    }
     replay_manager.start();
     println!("launched replay_manager...");
 }
@@ -500,8 +544,7 @@ fn configure_and_register_mock_rts(env: &mut Environment, count : u32){
     rts.init();
     {
         env.router_mut().register_backend(Box::new(rts));
-    }
-    
+    } 
 }
 
 
@@ -591,6 +634,15 @@ impl Module for MockRts {
                 if self.step_position < self.step_count {
                     println!("MOCKRTS step due to agent Action!");
                     self.step();
+                }
+            },
+            &Some(scaii_packet::SpecificMsg::TestControl(protos::TestControl { args: ref command_args})) => {
+                let target : &String = &command_args[0];
+                if target == &String::from("MockRts"){
+                    let command : &String = &command_args[1];
+                    if command == &String::from("rewind"){
+                        self.step_position = 0;
+                    }
                 }
             },
             _ => {

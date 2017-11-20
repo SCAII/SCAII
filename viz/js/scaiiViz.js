@@ -66,15 +66,21 @@ var gameboardWidth;
 var gameboardHeight;
 var timeline_canvas = document.createElement("canvas");
 var timeline_ctx = timeline_canvas.getContext("2d");
-var pauseButton = document.createElement("BUTTON"); 
+var pauseResumeButton = document.createElement("BUTTON"); 
+var rewindButton = document.createElement("BUTTON");
+rewindButton.disabled = true;	
+rewindButton.setAttribute("id", "rewindButton");
+pauseResumeButton.disabled = true;
+pauseResumeButton.setAttribute("id", "pauseResumeButton");
 
-
+var controlsManager = configureControlsManager(pauseResumeButton, rewindButton);
 var shape_outline_color = '#202020';
 var shape_outline_width = 2;
 var use_shape_color_for_outline = false;
 
 var dealer;
 var masterEntities = {};
+
 
 
 
@@ -180,7 +186,7 @@ var main = function () {
   //$("#scaii-game-controls").append(redrawChartHiddenButton);
   var debug = true;
   if (debug){
-	var connectButton = document.createElement("BUTTON");       
+	var connectButton = document.createElement("BUTTON");
 	var connectText = document.createTextNode("Connect");
 	connectButton.setAttribute("class", "connectButton");	
 	connectButton.appendChild(connectText);
@@ -196,6 +202,7 @@ var main = function () {
 }
 
 var initUI = function(){
+	controlsManager.setControlsNotReady();
 	gameboard_canvas.width = 400;
 	gameboard_canvas.height = 400;
 	$("#scaii-gameboard").append(gameboard_canvas);
@@ -219,18 +226,18 @@ var initUI = function(){
 	$("#explanations-interface-title").css("text-align", "center");
 	$("#explanations-interface-title").html("- Explanations -");
 	
-	var rewindButton = document.createElement("BUTTON");       
+	     
 	rewindButton.setAttribute("class", "controlButton");
-	rewindButton.disabled = true;	
-	rewindButton.innerHTML = '<img src="imgs/rewind.png", height="8px" width="10px"/>';    
+	rewindButton.innerHTML = '<img src="imgs/rewind.png", height="8px" width="10px"/>'; 
+    rewindButton.onclick = rewindGame;	
 	$("#scaii-game-controls").append(rewindButton);
 	
 	$("#scaii-game-controls").css("text-align", "center");
 	      
-	pauseButton.setAttribute("class", "controlButton");	
-	pauseButton.innerHTML = '<img src="imgs/pause.png", height="8px" width="10px"/>';   
-	$("#scaii-game-controls").append(pauseButton);
-	pauseButton.onclick = pauseGame;
+	pauseResumeButton.setAttribute("class", "controlButton");	
+	pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="8px" width="10px"/>';   
+	$("#scaii-game-controls").append(pauseResumeButton);
+	pauseResumeButton.onclick = pauseGame;
 	
 	
 	
@@ -269,6 +276,7 @@ var initUI = function(){
 		drawExplanationBox(exp.step, exp.type);
 	}
 	*/
+	
 }
 
 function drawExplanationBox(step, type){
@@ -344,12 +352,15 @@ var connect = function (dots, attemptCount) {
       if (sPacket.hasVizInit()) {
         var vizInit = sPacket.getVizInit();
         handleVizInit(vizInit);
+		controlsManager.gameStarted();
 	    var mm = new proto.scaii.common.MultiMessage;
 	    dealer.send(mm.serializeBinary());
       }
       else if (sPacket.hasViz()) {
         var viz = sPacket.getViz();
         handleViz(viz);
+		// we're moving forward so rewind should be enabled
+		controlsManager.enableRewind();
 	    var mm;
         if (testingMode) {
           mm = buildReturnMultiMessageFromState(masterEntities);
@@ -371,11 +382,14 @@ var connect = function (dots, attemptCount) {
 		  var mm;
 		  if (userCommandScaiiPackets.length > 0){
 	        mm = buildResponseToReplay(userCommandScaiiPackets);
+			dealer.send(mm.serializeBinary());
+			controlsManager.userCommandSent();
 		  }
 		  else {
 		    mm = new proto.scaii.common.MultiMessage;
+			dealer.send(mm.serializeBinary());
 		  }
-		  dealer.send(mm.serializeBinary());
+		  
 		  userCommandScaiiPackets = [];
         }
 	  }
