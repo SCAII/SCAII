@@ -276,7 +276,7 @@ var initUI = function(){
 		drawExplanationBox(exp.step, exp.type);
 	}
 	*/
-	
+	$("#game-progress").click(processTimelineClick);
 }
 
 function drawExplanationBox(step, type){

@@ -4,6 +4,18 @@ var updateProgress = function(step, stepCount){
 	var progressString = "" + progressValue;
 	$("#game-progress").attr("value", progressString);
 }
+var processTimelineClick = function(e){
+	var clickX = e.offsetX;
+	var width = $("#game-progress").width();
+	var percent = clickX / width;
+	var targetStepCount = Math.floor(stepCount * percent);
+	var targetStepCountString = "" + targetStepCount;
+	var args = [ targetStepCountString ];
+	var userCommand = new proto.scaii.common.UserCommand;
+	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+	userCommand.setArgsList(args);
+	stageUserCommand(userCommand);
+}
 var stageUserCommand = function(userCommand){
 	var scaiiPkt = new proto.scaii.common.ScaiiPacket;
 	scaiiPkt.setUserCommand(userCommand);
