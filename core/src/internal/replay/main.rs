@@ -14,12 +14,37 @@ use std::error::Error;
 use std::{thread, time};
 use std::rc::Rc;
 use std::cell::RefCell;
+use std::fmt;
+
+#[derive(Debug)]
+struct ReplayError {
+    details: String
+}
+
+impl ReplayError {
+    fn new(msg: &str) -> ReplayError {
+        ReplayError{details: msg.to_string()}
+    }
+}
+
+impl fmt::Display for ReplayError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f,"{}",self.details)
+    }
+}
+
+impl Error for ReplayError {
+    fn description(&self) -> &str {
+        &self.details
+    }
+}
 
 #[derive(Debug)]
 enum GameState {
     Running,
     Paused,
-    RewoundNeedingToSendInitialKeyframe,
+    RewoundAndNeedingToSendInitialKeyframe,
+    JumpedAndNeedingToDoFollowupNavigation,
 }
 #[derive(Clone)]
 enum Action {
@@ -221,13 +246,27 @@ impl ReplayManager  {
         }
     }
 
-    fn send_test_mode_rewind_hint_message(&mut self) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
+    fn send_test_mode_jump_to_message(&mut self, target_step : &String) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
         let target : String = String::from("MockRts");
-        let command : String = String::from("rewind");
+        let command : String = String::from("jumpTo");
         let mut args_list : Vec<String> = Vec::new();
         args_list.push(target);
         args_list.push(command);
-        let pkt = ScaiiPacket {
+        args_list.push(target_step.clone());
+        let pkt : ScaiiPacket = self.create_test_control_message(args_list);
+        return self.send_packet_to_backend(pkt);
+    }
+
+    fn send_packet_to_backend(&mut self, pkt: ScaiiPacket)-> Result<Vec<protos::ScaiiPacket>, Box<Error>>{
+        let mut pkts: Vec<ScaiiPacket> = Vec::new();    
+        pkts.push(pkt);
+        let mm = MultiMessage { packets: pkts };
+        let scaii_pkts = self.deploy_replay_directives_to_backend(mm)?;
+        Ok(scaii_pkts)
+    }
+
+    fn create_test_control_message(&mut self, args_list : Vec<String>) -> ScaiiPacket {
+        ScaiiPacket {
             src: protos::Endpoint {
                 endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
             },
@@ -235,12 +274,27 @@ impl ReplayManager  {
                  endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
             },
             specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::TestControl(protos::TestControl{args: args_list,})),
-        };
-        let mut pkts: Vec<ScaiiPacket> = Vec::new();
-        pkts.push(pkt);
-        let mm = MultiMessage { packets: pkts };
-        let scaii_pkts = self.deploy_replay_directives_to_backend(mm)?;
-        Ok(scaii_pkts)
+        }
+    }
+    fn send_test_mode_rewind_hint_message(&mut self) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
+        let target : String = String::from("MockRts");
+        let command : String = String::from("rewind");
+        let mut args_list : Vec<String> = Vec::new();
+        args_list.push(target);
+        args_list.push(command);
+        let pkt : ScaiiPacket = self.create_test_control_message(args_list);
+        self.send_packet_to_backend(pkt)
+    }
+    fn send_test_mode_jump_to_hint_message(&mut self, target_index: u64) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
+        let target : String = String::from("MockRts");
+        let command : String = String::from("jump");
+        let index: String = format!("{}",target_index);
+        let mut args_list : Vec<String> = Vec::new();
+        args_list.push(target);
+        args_list.push(command);
+        args_list.push(index);
+        let pkt : ScaiiPacket = self.create_test_control_message(args_list);
+        self.send_packet_to_backend(pkt)
     }
 
     fn execute_run_step(&mut self) -> Result<GameState, Box<Error>>{
@@ -275,6 +329,7 @@ impl ReplayManager  {
             println!("REPLAY = =====  examining returned packet");
             if scaii_defs::protos::is_user_command_pkt(&scaii_pkt){
                 println!("REPLAY = =====  is userCommand packet");
+                let user_command_args : Vec<String> = scaii_defs::protos::get_user_command_args(&scaii_pkt);
                 // we would get args here when they are relevant
                 let user_command_type = scaii_defs::protos::get_user_command_type(scaii_pkt)?;
                 println!("got userCOmmandType {:?}", user_command_type);
@@ -292,9 +347,15 @@ impl ReplayManager  {
                         if self.test_mode {
                             let _pkts :Vec<ScaiiPacket> = self.send_test_mode_rewind_hint_message()?;
                         }
-                        game_state = GameState::RewoundNeedingToSendInitialKeyframe;
+                        game_state = GameState::RewoundAndNeedingToSendInitialKeyframe;
                     },
                     UserCommandType::PollForCommands => {println!("================RECEIVED UserCommandType::PollForCommands================");},
+                    UserCommandType::JumpToStep => {
+                        println!("================RECEIVED UserCommandType::JumpToStep================");
+                        println!("args : {:?}", user_command_args);
+                        let jump_target: &String = &user_command_args[0];
+                        game_state = self.handle_jump_request(jump_target)?;
+                    }
                 }
             }
             else if scaii_defs::protos::is_error_pkt(&scaii_pkt){
@@ -308,6 +369,43 @@ impl ReplayManager  {
         Ok(game_state)
     }
     
+    fn handle_jump_request(&mut self, jump_target: &String) ->  Result<GameState, Box<Error>> {
+        let result = jump_target.parse::<u32>();
+        match result {
+            Ok(jump_target_int) => {
+                if jump_target_int > self.replay_data.len() as u32 {
+                    return Err(Box::new(ReplayError::new(&format!("Jump target {} not in range of step count {}", jump_target_int,self.replay_data.len()))));
+                }
+                self.step_position = jump_target_int as u64;
+                if self.test_mode {
+                    let _pkts :Vec<ScaiiPacket> = self.send_test_mode_jump_to_message(jump_target)?;
+                }
+            }
+            Err(_) => {
+                Box::new(ReplayError::new(&format!("Jump target {} not valid number.", jump_target)));
+            }
+        }
+        
+        Ok(GameState::JumpedAndNeedingToDoFollowupNavigation)
+    }
+
+    fn get_keyframe_index_prior_to_current_step_position(&mut self) -> Result<u64, Box<Error>>{
+        let mut cur_index : u64 = self.step_position;
+        let mut seeking : bool = true;
+        while seeking {
+            if cur_index < 0 as u64{
+                return Err(Box::new(ReplayError::new(&format!("Jump-to navigation looked past 0 index for KeyFrame"))));
+            }
+            let cur_replay_action = &self.replay_data[cur_index as usize];
+            match cur_replay_action {
+                &ReplayAction::Header(_) => { } // has been removed from list by now - no need to take into account},
+                &ReplayAction::Delta(_) => { cur_index = cur_index - 1; },
+                &ReplayAction::Keyframe(_,_) => { seeking = false; },
+            }
+        }
+        Ok(cur_index)
+    }
+
     fn run_and_poll(&mut self) -> Result<(), Box<Error>>{
         let mut game_state : GameState = GameState::Running;
         while !self.shutdown_received {
@@ -319,14 +417,33 @@ impl ReplayManager  {
                 GameState::Paused=> {
                     // do nothing
                 },
-                GameState::RewoundNeedingToSendInitialKeyframe => {
+                GameState::RewoundAndNeedingToSendInitialKeyframe => {
                     let _ignored_game_state : GameState = self.execute_run_step()?;
                     game_state = GameState::Paused; // after rewind, we assume they don't want it to start playing
-                    println!("game_state in run_and_poll is now {:?} after run step as per RewoundNeedingToSendInitialKeyframe", game_state);
+                    println!("game_state in run_and_poll is now {:?} after run step as per RewoundAndNeedingToSendInitialKeyframe", game_state);
+                },
+                GameState::JumpedAndNeedingToDoFollowupNavigation => {
+                    println!("now need to follow up on jump!");
+                    let backup_target : u64 = self.get_keyframe_index_prior_to_current_step_position()?;
+                    let forward_target : u64 = self.step_position;
+                    self.keyframe_to_later_step(backup_target, forward_target)?;
+                    game_state = GameState::Paused;
                 },
             }
             game_state = self.execute_poll_step(game_state)?; 
             println!("game_state in run_and_poll is now {:?} after poll step", game_state);
+        }
+        Ok(())
+    }
+
+    // this should happen atomically - in between pollings, so no game_state change should be occurring so we can ignore
+    fn keyframe_to_later_step(&mut self, keyframe_index: u64, target_index: u64) -> Result<(), Box<Error>>{
+        if self.test_mode {
+            let _pkts :Vec<ScaiiPacket> = self.send_test_mode_jump_to_hint_message(keyframe_index)?;
+        }
+        self.step_position = keyframe_index;
+        while self.step_position <= target_index {
+            let _game_state = self.execute_run_step()?;
         }
         Ok(())
     }
@@ -463,31 +580,65 @@ fn get_test_mode_key_frame() -> ReplayAction {
     ReplayAction::Keyframe(ser_info, action)
 }
 
-fn get_test_mode_replay_info(step_count: u32) -> Vec<ReplayAction> {
+fn get_test_mode_replay_info(step_count: u32, interval: u32) -> Vec<ReplayAction> {
     let mut result: Vec<ReplayAction> = Vec::new();
     // add Header
     let replay_header = get_test_mode_replay_header();
     result.push(ReplayAction::Header(replay_header));
-    // add token keyframe
-    let key_frame = get_test_mode_key_frame();
-    
-    result.push(key_frame);
-    // add Deltas 
-    let mut d_actions : Vec<i32> = Vec::new();
-    d_actions.push(5);
-    let delta_1 = ReplayAction::Delta(Action::DecisionPoint(protos::Action{
-        discrete_actions: d_actions,
-        continuous_actions: Vec::new(),
-        alternate_actions:None,
-    }));
-    result.push(delta_1);
-    let remaining : u32 = step_count - 1;
-    for _number in 1..remaining {
-        let delta_2 = ReplayAction::Delta(Action::Step);
-        result.push(delta_2);
+
+    for number in 0..step_count {
+        if number % interval == 0 {
+            println!("...KEYFRAME");
+            let key_frame = get_test_mode_key_frame();
+            result.push(key_frame);
+        }
+        else if number % interval == 1 {
+            println!("...DECISION POINT DELTA");
+            let mut d_actions : Vec<i32> = Vec::new();
+            d_actions.push(3);
+            let delta_1 = ReplayAction::Delta(Action::DecisionPoint(protos::Action{
+                discrete_actions: d_actions,
+                continuous_actions: Vec::new(),
+                alternate_actions:None,
+            }));
+            result.push(delta_1);
+        }
+        else {
+            println!("...STEP DELTA");
+            let delta_2 = ReplayAction::Delta(Action::Step);
+            result.push(delta_2);
+        }
     }
     result
 }
+
+
+// fn get_test_mode_replay_info(step_count: u32) -> Vec<ReplayAction> {
+//     let mut result: Vec<ReplayAction> = Vec::new();
+//     // add Header
+//     let replay_header = get_test_mode_replay_header();
+//     result.push(ReplayAction::Header(replay_header));
+//     // add token keyframe
+//     let key_frame = get_test_mode_key_frame();
+    
+//     result.push(key_frame);
+//     // add Deltas 
+//     let mut d_actions : Vec<i32> = Vec::new();
+//     d_actions.push(3);
+//     let delta_1 = ReplayAction::Delta(Action::DecisionPoint(protos::Action{
+//         discrete_actions: d_actions,
+//         continuous_actions: Vec::new(),
+//         alternate_actions:None,
+//     }));
+//     result.push(delta_1);
+//     let remaining : u32 = step_count - 1;
+//     for _number in 1..remaining {
+//         let delta_2 = ReplayAction::Delta(Action::Step);
+//         result.push(delta_2);
+//     }
+//     result
+// }
+
 
 // need to add a recorderConfig message (sent by agent)  - it will contain repeated Cfg  to capture the various configs
 // if recorder gets recorderConfig message , it starts recordings
@@ -499,12 +650,12 @@ fn main() {
     let test_mode = true;
     let mut replay_info : Vec<ReplayAction> = Vec::new();
     if test_mode {
-        let step_count : u32 = 20;
+        let step_count : u32 = 15;
         configure_and_register_mock_rts(&mut environment,step_count);
-        replay_info = get_test_mode_replay_info(step_count);
+        replay_info = get_test_mode_replay_info(step_count,5);
     }
     else {
-        // TBD
+        // TBD replay_info = load_from_file()
     }
     let replay_message_queue = ReplayMessageQueue {
         incoming_messages: Vec::new(),
@@ -640,9 +791,26 @@ impl Module for MockRts {
                 let target : &String = &command_args[0];
                 if target == &String::from("MockRts"){
                     let command : &String = &command_args[1];
-                    if command == &String::from("rewind"){
-                        self.step_position = 0;
-                    }
+                    match &command[..] {
+                       "rewind" => {
+                            self.step_position = 0;
+                        },
+                        "jump" => {
+                            let jump_target: &String = &command_args[2];
+                            let result = jump_target.parse::<u32>();
+                            match result {
+                                Ok(jump_target_int) => {
+                                    self.step_position = jump_target_int;
+                                    println!("MockRTS jump target int was {}", jump_target_int);
+                                },
+                                Err(_) => {
+                                    Box::new(ReplayError::new(&format!("Jump target {} not valid number.", jump_target)));
+                                },
+                            };
+                            
+                        },
+                        _ => {}
+                    };
                 }
             },
             _ => {
