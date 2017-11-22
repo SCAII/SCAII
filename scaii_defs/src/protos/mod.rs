@@ -50,6 +50,23 @@ pub fn packet_from_entity_list(entities: Vec<Entity>) -> ScaiiPacket {
     }
 }
 
+pub fn get_user_command_args(scaii_pkt: &ScaiiPacket) -> Vec<String> {
+    let mut result : Vec<String> = Vec::new();
+    let specific_msg = &scaii_pkt.specific_msg;
+    match specific_msg {
+        &Some(
+            scaii_packet::SpecificMsg::UserCommand(protos::UserCommand {
+                command_type: _,
+                args: ref args_list,
+            }),
+        ) => {
+            result = args_list.clone();
+        },
+        _ => {},
+    };
+    result
+}
+
 pub fn is_user_command_pkt(scaii_pkt: &ScaiiPacket) -> bool {
     let specific_msg = &scaii_pkt.specific_msg;
     match specific_msg {
@@ -95,6 +112,7 @@ pub fn get_user_command_type(
             3 => Ok(UserCommandType::Resume),
             4 => Ok(UserCommandType::Rewind),
             5 => Ok(UserCommandType::PollForCommands),
+            6 => Ok(UserCommandType::JumpToStep),
             _ => Err(Box::new(ProtobufEnumWorkaroundError::new(
                 "likely added new UserCommandType and forgot to change this hack.",
             ))),
