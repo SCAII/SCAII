@@ -19,6 +19,14 @@ test = true
 doc = true
 harness = true
 
+[[bin]]
+name = "recorder"
+path = "src/internal/recorder/main.rs"
+test = true
+doc = true
+harness = true
+
+
 [dependencies]
 libloading="0.4.1"
 prost = "0.2"
