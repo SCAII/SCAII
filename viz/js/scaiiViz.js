@@ -393,6 +393,11 @@ var connect = function (dots, attemptCount) {
 		  
 		  userCommandScaiiPackets = [];
         }
+		else if (commandType == proto.scaii.common.UserCommand.UserCommandType.JUMP_COMPLETED) {
+			controlsManager.jumpCompleted();
+			mm = new proto.scaii.common.MultiMessage;
+			dealer.send(mm.serializeBinary());
+		}
 	  }
       else {
         console.log(sPacket.toString())

@@ -5,16 +5,23 @@ var updateProgress = function(step, stepCount){
 	$("#game-progress").attr("value", progressString);
 }
 var processTimelineClick = function(e){
-	var clickX = e.offsetX;
-	var width = $("#game-progress").width();
-	var percent = clickX / width;
-	var targetStepCount = Math.floor(stepCount * percent);
-	var targetStepCountString = "" + targetStepCount;
-	var args = [ targetStepCountString ];
-	var userCommand = new proto.scaii.common.UserCommand;
-	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-	userCommand.setArgsList(args);
-	stageUserCommand(userCommand);
+	try {
+		controlsManager.userJumped();
+		var clickX = e.offsetX;
+		var width = $("#game-progress").width();
+		var percent = clickX / width;
+		var targetStepCount = Math.floor(stepCount * percent);
+		var targetStepCountString = "" + targetStepCount;
+		var args = [ targetStepCountString ];
+		var userCommand = new proto.scaii.common.UserCommand;
+		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+		userCommand.setArgsList(args);
+		stageUserCommand(userCommand);
+	}
+	catch(err){
+		alert(err.message);
+	}
+	
 }
 var stageUserCommand = function(userCommand){
 	var scaiiPkt = new proto.scaii.common.ScaiiPacket;
@@ -75,6 +82,11 @@ var configureControlsManager = function(pauseResumeButton, rewindButton){
 		this.enableAllControls()
 	}
 	
+	manager.userJumped = function() {
+		this.saveCurrentStates();
+		this.disableAllControls();
+		// no pending action for this, re-enablingcontrols happenes when we get a JUMP_COMPLETED message from replay
+	}
 	manager.userClickedPause = function() {
 		this.saveCurrentStates();
 		this.disableAllControls();
@@ -92,7 +104,10 @@ var configureControlsManager = function(pauseResumeButton, rewindButton){
 		this.disableAllControls();
 		this.pendingAction = this.adjustToRewindClick;
 	}
-	
+	manager.jumpCompleted = function() {
+		this.restorePriorStates();
+		this.adjustToPauseClick(); // pause automatically engaged in Replay when jump completed.
+	}
 	manager.adjustToPauseClick = function(){
 		this.pauseResumeButton.onclick = resumeGame;
 		this.pauseResumeButton.innerHTML = '<img src="imgs/play.png", height="8px" width="10px"/>'; 

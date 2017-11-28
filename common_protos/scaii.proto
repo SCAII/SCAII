@@ -238,6 +238,7 @@ message UserCommand {
 		REWIND = 4;
 		POLL_FOR_COMMANDS= 5;
 		JUMP_TO_STEP = 6;
+		JUMP_COMPLETED = 7;
 	}
 	required UserCommandType command_type = 1;
 	repeated string args = 2;

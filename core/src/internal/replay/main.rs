@@ -125,8 +125,41 @@ impl ReplayManager  {
     fn configure_as_per_header(&mut self, _header: ReplayAction) {
         //TBD
     }
-    fn poll_viz(&mut self) -> Result<Vec<ScaiiPacket>, Box<Error>> {
+
+    fn notify_viz_that_jump_completed(&mut self)  -> Result<Vec<ScaiiPacket>, Box<Error>> {
+        let pkt : ScaiiPacket = ScaiiPacket {
+            src: protos::Endpoint {
+                endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+            },
+            dest: protos::Endpoint {
+                endpoint: Some(Endpoint::Module(ModuleEndpoint {
+                    name: "RpcPluginModule".to_string(),
+                })),
+            },
+            specific_msg: Some(scaii_packet::SpecificMsg::UserCommand(protos::UserCommand {
+                command_type: protos::user_command::UserCommandType::JumpCompleted as i32,
+                args: Vec::new(),
+            })),
+        };
+        let result = self.send_pkt_to_viz(pkt)?;
+        Ok(result)
+    }
+
+    fn send_pkt_to_viz(&mut self, pkt: ScaiiPacket) -> Result<Vec<ScaiiPacket>, Box<Error>> {
         let mut to_send : Vec<protos::ScaiiPacket> = Vec::new();
+        to_send.push(pkt);
+        let mm = MultiMessage { packets: to_send };
+        self.env.route_messages(&mm);
+        self.env.update();
+        let scaii_pkts : Vec<protos::ScaiiPacket> = { 
+            let queue  = &mut *self.incoming_message_queue.borrow_mut();
+            let result : Vec<protos::ScaiiPacket> = queue.incoming_messages.drain(..).collect();
+            //println!("====================got result packets {} ", result.len());
+            result
+        };
+        Ok(scaii_pkts)
+    }
+    fn poll_viz(&mut self) -> Result<Vec<ScaiiPacket>, Box<Error>> {
         let pkt : ScaiiPacket = ScaiiPacket {
             src: protos::Endpoint {
                 endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
@@ -142,17 +175,8 @@ impl ReplayManager  {
             })),
 
         };
-        to_send.push(pkt);
-        let mm = MultiMessage { packets: to_send };
-        self.env.route_messages(&mm);
-        self.env.update();
-        let scaii_pkts : Vec<protos::ScaiiPacket> = { 
-            let queue  = &mut *self.incoming_message_queue.borrow_mut();
-            let result : Vec<protos::ScaiiPacket> = queue.incoming_messages.drain(..).collect();
-            //println!("====================got result packets {} ", result.len());
-            result
-        };
-        Ok(scaii_pkts)
+        let result = self.send_pkt_to_viz(pkt)?;
+        Ok(result)
     }
 
     fn has_more_steps(&mut self) -> bool {
@@ -347,7 +371,8 @@ impl ReplayManager  {
                         println!("args : {:?}", user_command_args);
                         let jump_target: &String = &user_command_args[0];
                         game_state = self.handle_jump_request(jump_target)?;
-                    }
+                    },
+                    UserCommandType::JumpCompleted => {} // sent to viz, not received from viz
                 }
             }
             else if scaii_defs::protos::is_error_pkt(&scaii_pkt){
@@ -492,6 +517,7 @@ impl ReplayManager  {
         while self.step_position <= target_index {
             let _game_state = self.execute_run_step()?;
         }
+        let _result = self.notify_viz_that_jump_completed()?;
         Ok(())
     }
 }

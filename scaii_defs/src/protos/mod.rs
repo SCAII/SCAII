@@ -113,6 +113,7 @@ pub fn get_user_command_type(
             4 => Ok(UserCommandType::Rewind),
             5 => Ok(UserCommandType::PollForCommands),
             6 => Ok(UserCommandType::JumpToStep),
+            7 => Ok(UserCommandType::JumpCompleted),
             _ => Err(Box::new(ProtobufEnumWorkaroundError::new(
                 "likely added new UserCommandType and forgot to change this hack.",
             ))),
