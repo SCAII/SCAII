@@ -68,6 +68,7 @@ var timeline_canvas = document.createElement("canvas");
 var timeline_ctx = timeline_canvas.getContext("2d");
 var pauseResumeButton = document.createElement("BUTTON"); 
 var rewindButton = document.createElement("BUTTON");
+var speedSlider = document.createElement("input");
 rewindButton.disabled = true;	
 rewindButton.setAttribute("id", "rewindButton");
 pauseResumeButton.disabled = true;
@@ -205,8 +206,18 @@ var main = function () {
   }
   
 }
-
+var configureSpeedSlider = function(){
+	speedSlider.setAttribute("type", "range");
+	speedSlider.setAttribute("min", "1");
+	speedSlider.setAttribute("max", "100");
+	speedSlider.setAttribute("value", "50");
+	speedSlider.setAttribute("class", "slider");
+	speedSlider.setAttribute("id", "speed-slider");
+	
+	//<input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+}
 var initUI = function(){
+	configureSpeedSlider();
 	controlsManager.setControlsNotReady();
 	gameboard_canvas.width = 400;
 	gameboard_canvas.height = 400;
@@ -231,7 +242,26 @@ var initUI = function(){
 	$("#explanations-interface-title").css("text-align", "center");
 	$("#explanations-interface-title").html("- Explanations -");
 	
-	     
+	var speedSliderLabel = document.createElement("div");
+	$("#scaii-game-controls").append(speedSliderLabel);  
+	speedSliderLabel.setAttribute("id", "speed-slider-label");
+	$("#speed-slider-label").html("replay speed");
+	$("#speed-slider-label").css("font-family", "Fira Sans");
+	$("#speed-slider-label").css("font-size", "12px");
+	$("#speed-slider-label").css("padding-left", "6px");
+	$("#speed-slider-label").css("padding-right", "4px");
+	$("#speed-slider-label").css("padding-top", "2px");
+	
+	var blankSpacerLeft = document.createElement("div");
+	blankSpacerLeft.setAttribute("id","controls-spacer-left");
+	var blankSpacerRight = document.createElement("div");
+	blankSpacerRight.setAttribute("id","controls-spacer-right");
+	
+	$("#scaii-game-controls").append(speedSlider); 
+	$("#scaii-game-controls").append(blankSpacerLeft); 
+	//$("#controls-spacer-left").html(" ");
+	//$("#speed-slider").css("flex-grow","50");
+    
 	rewindButton.setAttribute("class", "controlButton");
 	rewindButton.innerHTML = '<img src="imgs/rewind.png", height="8px" width="10px"/>'; 
     rewindButton.onclick = rewindGame;	
@@ -240,16 +270,21 @@ var initUI = function(){
 	$("#scaii-game-controls").css("text-align", "center");
 	      
 	pauseResumeButton.setAttribute("class", "controlButton");	
-	pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="8px" width="10px"/>';   
+	pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="8px" width="10px"/>';  
+	
 	$("#scaii-game-controls").append(pauseResumeButton);
 	pauseResumeButton.onclick = pauseGame;
 	
+	$("#scaii-game-controls").append(blankSpacerRight); 
+	
+	$("#controls-spacer-left").css("flex-grow","1");
+	$("#controls-spacer-right").css("flex-grow","1");
 	
 	
 	//$(".controlButton").css("font-family", "Arial");
 	//$(".controlButton").css("font-size", "10px");
-	$(".controlButton").css("margin-right", "20px");
-	$(".controlButton").css("margin-left", "20px");
+	$(".controlButton").css("margin-right", "5px");
+	$(".controlButton").css("margin-left", "5px");
 	$(".controlButton").css("padding-left", "2px");
 	$(".controlButton").css("padding-right", "2px");
 	$(".controlButton").css("padding-bottom", "0px");
