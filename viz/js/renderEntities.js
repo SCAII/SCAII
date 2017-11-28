@@ -14,7 +14,7 @@ function drawRect(ctx, x, y, width, height, colorRGBA) {
   var x2 = x + (width / 2);
   var y2 = y + (height / 2);
 
-  console.log('drawing rect ' + x1 + ' ' + x2 + ' ' + y1 + ' ' + y2 + ';' + colorRGBA);
+  //console.log('drawing rect ' + x1 + ' ' + x2 + ' ' + y1 + ' ' + y2 + ';' + colorRGBA);
   ctx.beginPath();
 
   ctx.lineWidth = shape_outline_width;
@@ -58,7 +58,7 @@ function drawTriangle(ctx, x, y, baseLen, colorRGBA) {
   var xTip = x;
   var xBottomLeft = x - baseLen / 2;
   var xBottomRight = x + baseLen / 2;
-  console.log('drawing triangle ' + xTip + ',' + yTip + ' ; ' + xBottomRight + ',' + yBottom + ' ; ' + xBottomLeft + ',' + yBottom + ';' + colorRGBA);
+  //console.log('drawing triangle ' + xTip + ',' + yTip + ' ; ' + xBottomRight + ',' + yBottom + ' ; ' + xBottomLeft + ',' + yBottom + ';' + colorRGBA);
   ctx.beginPath();
   ctx.moveTo(xTip, yTip);
   ctx.lineTo(xBottomRight, yBottom);

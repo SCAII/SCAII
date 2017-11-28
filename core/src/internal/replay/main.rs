@@ -372,7 +372,13 @@ impl ReplayManager  {
                         let jump_target: &String = &user_command_args[0];
                         game_state = self.handle_jump_request(jump_target)?;
                     },
-                    UserCommandType::JumpCompleted => {} // sent to viz, not received from viz
+                    UserCommandType::JumpCompleted => {}, // sent to viz, not received from viz
+                    UserCommandType::SetSpeed => {
+                        println!("================RECEIVED UserCommandType::SetSpeed================");
+                        let speed: &String = &user_command_args[0];
+                        
+                        self.adjust_replay_speed(speed)?;
+                    }, 
                 }
             }
             else if scaii_defs::protos::is_error_pkt(&scaii_pkt){
@@ -386,6 +392,20 @@ impl ReplayManager  {
         Ok(game_state)
     }
     
+    fn adjust_replay_speed(&mut self, speed_string : &String) -> Result<(), Box<Error>> {
+        let speed = speed_string.parse::<u64>()?;
+        // speed = 0  => 2001 ms or one ~ every 2 seconds
+        // speed = 90 => 201 ms or ~ 5/sec,
+        // speed = 100 => 1 ms
+        let translation_step1: u64 = 100 as u64 - speed;
+        let translation_step2: u64 = translation_step1 * 20;
+        let msec_delay = translation_step2 + 1;
+        println!(" speed string was {} and delay is {}", speed, msec_delay);
+        let mut num = self.step_delay.lock().unwrap();
+        *num = msec_delay;
+        Ok(())
+    }
+
     fn handle_jump_request(&mut self, jump_target: &String) ->  Result<GameState, Box<Error>> {
         let result = jump_target.parse::<u32>();
         match result {
@@ -720,7 +740,7 @@ fn main() {
     let test_mode = true;
     let mut replay_info : Vec<ReplayAction> = Vec::new();
     if test_mode {
-        let step_count : u32 = 50;
+        let step_count : u32 = 300;
         configure_and_register_mock_rts(&mut environment,step_count);
         replay_info = get_test_mode_replay_info(step_count,5);
     }
@@ -739,7 +759,7 @@ fn main() {
     }
     let mut replay_manager =  ReplayManager {
         incoming_message_queue:rc_replay_message_queue,
-        step_delay: Arc::new(Mutex::new(200)),
+        step_delay: Arc::new(Mutex::new(201)),
         poll_delay: Arc::new(Mutex::new(50)),
         shutdown_received: false,
         env: environment,

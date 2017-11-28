@@ -98,7 +98,7 @@ function handleVizInit(vizInit) {
   }
   if (vizInit.hasGameboardWidth()) {
     gameboardWidth = vizInit.getGameboardWidth();
-	console.log("gameboard width : " + gameboardWidth);
+	//console.log("gameboard width : " + gameboardWidth);
 	$("#scaii-gameboard").css("width", gameboardWidth);
 	gameboard_canvas.width = gameboardWidth;
 	
@@ -115,7 +115,7 @@ function handleViz(vizData){
   console.log('received Viz...');
   var entitiesList = vizData.getEntitiesList();
   var step = vizData.getStep();
-  console.log("step in vizData was " + step+ "maxStep is " + maxStep);
+  //console.log("step in vizData was " + step+ "maxStep is " + maxStep);
   updateProgress(step, maxStep);
   
   handleEntities(entitiesList);
@@ -130,7 +130,7 @@ function handleViz(vizData){
 }
 function handleEntities(entitiesList) {
   
-  console.log('entities count :' + entitiesList.length);
+  //console.log('entities count :' + entitiesList.length);
   for (var i in entitiesList) {
     var entity = entitiesList[i];
 
@@ -140,7 +140,7 @@ function handleEntities(entitiesList) {
       //  console.log('=========== UPDATING ENTITY ===================')
       //  logEntity(entity);
       //}
-      console.log('############## id string read as ' + idString + '###############');
+      //console.log('############## id string read as ' + idString + '###############');
       if (masterEntities[idString] == undefined) {
         if (entity.hasDelete() && entity.getDelete()) {
           // do not add new entity that is marked as delete
@@ -158,10 +158,10 @@ function handleEntities(entitiesList) {
           updateMasterEntity(masterEntity, entity);
         }
       }
-      if (idString == '8') {
-        console.log('=========== MASTER ENTITY AFTER UPDATE===================')
-        logEntity(masterEntities[idString]);
-      }
+      //if (idString == '8') {
+      //  console.log('=========== MASTER ENTITY AFTER UPDATE===================')
+      //  logEntity(masterEntities[idString]);
+      //}
 
     }
     else {
@@ -210,10 +210,17 @@ var configureSpeedSlider = function(){
 	speedSlider.setAttribute("type", "range");
 	speedSlider.setAttribute("min", "1");
 	speedSlider.setAttribute("max", "100");
-	speedSlider.setAttribute("value", "50");
+	speedSlider.setAttribute("value", "90");
 	speedSlider.setAttribute("class", "slider");
 	speedSlider.setAttribute("id", "speed-slider");
-	
+	speedSlider.oninput = function() {
+		var speedString = "" + this.value;
+		var args = [ speedString ];
+		var userCommand = new proto.scaii.common.UserCommand;
+		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.SET_SPEED);
+		userCommand.setArgsList(args);
+		stageUserCommand(userCommand);
+	}
 	//<input type="range" min="1" max="100" value="50" class="slider" id="myRange">
 }
 var initUI = function(){
@@ -224,7 +231,7 @@ var initUI = function(){
 	$("#scaii-gameboard").append(gameboard_canvas);
 	$("#scaii-gameboard").css("width", gameboard_canvas.width);
 	$("#scaii-gameboard").css("height", gameboard_canvas.height);
-	console.log("set height to " + gameboard_canvas.height)
+	//console.log("set height to " + gameboard_canvas.height)
 	$("#scaii-gameboard").css("background-color", "#123456");
 	
 	$("#scaii-interface-title").css("font-family", "Fira Sans");

@@ -136,10 +136,12 @@ var configureControlsManager = function(pauseResumeButton, rewindButton){
 	}
 	
 	manager.disableRewind = function() {
+		console.log("disablin' rewind");
 		this.rewindButton.disabled = true;
 	}
 	
 	manager.enableRewind = function(){
+		console.log("enablin' rewind");
 		this.rewindButton.disabled = false;
 	}
 	
