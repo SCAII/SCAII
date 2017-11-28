@@ -52,7 +52,7 @@ goog.require('proto.scaii.common.VizInit');
 var systemTitle = "SCAII - Small Configurable AI Interface";
 // VizInit defaults
 var testingMode = false;
-var stepCount = 0;
+var maxStep = 0;
 var explanations = [];
 var userCommandScaiiPackets = [];
 var sessionState = "pending";
@@ -93,7 +93,7 @@ function handleVizInit(vizInit) {
     }
   }
   if (vizInit.hasStepCount()) {
-    stepCount = vizInit.getStepCount();
+    maxStep = vizInit.getStepCount() - 1;
   }
   if (vizInit.hasGameboardWidth()) {
     gameboardWidth = vizInit.getGameboardWidth();
@@ -108,15 +108,20 @@ function handleVizInit(vizInit) {
 	gameboard_canvas.height = gameboardHeight;
   }
   explanations = vizInit.getExplanationsList();
-  //renderTimeline(stepCount);
+  //renderTimeline(maxStep);
 }
 function handleViz(vizData){
   console.log('received Viz...');
   var entitiesList = vizData.getEntitiesList();
   var step = vizData.getStep();
-  console.log("step in vizData was " + step);
-  updateProgress(step + 1, stepCount);
+  console.log("step in vizData was " + step+ "maxStep is " + maxStep);
+  updateProgress(step, maxStep);
+  
   handleEntities(entitiesList);
+  if (step == maxStep){
+	  controlsManager.adjustToPauseClick();
+	  controlsManager.disablePauseResume();
+  }
   if (vizData.hasChart()){
 	  var chartInfo = vizData.getChart();
 	  renderChartInfo(chartInfo, gameboardHeight);
@@ -361,7 +366,7 @@ var connect = function (dots, attemptCount) {
         var viz = sPacket.getViz();
         handleViz(viz);
 		// we're moving forward so rewind should be enabled
-		controlsManager.enableAllControls();
+		controlsManager.enableRewind();
 	    var mm;
         if (testingMode) {
           mm = buildReturnMultiMessageFromState(masterEntities);

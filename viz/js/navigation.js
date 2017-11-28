@@ -1,5 +1,5 @@
-var updateProgress = function(step, stepCount){
-	var percentComplete = step / (stepCount - 1);// because it will be 0 to stepCount - 1
+var updateProgress = function(step, maxStep){
+	var percentComplete = step / maxStep;
 	var progressValue = percentComplete * 100;
 	var progressString = "" + progressValue;
 	$("#game-progress").attr("value", progressString);
@@ -10,7 +10,7 @@ var processTimelineClick = function(e){
 		var clickX = e.offsetX;
 		var width = $("#game-progress").width();
 		var percent = clickX / width;
-		var targetStepCount = Math.floor(stepCount * percent);
+		var targetStepCount = Math.floor(maxStep * percent);
 		var targetStepCountString = "" + targetStepCount;
 		var args = [ targetStepCountString ];
 		var userCommand = new proto.scaii.common.UserCommand;
@@ -126,10 +126,12 @@ var configureControlsManager = function(pauseResumeButton, rewindButton){
 		this.enableRewind();
 	}
 	manager.disablePauseResume = function() {
+		console.log("disablin' pauseResume");
 		this.pauseResumeButton.disabled = true;
 	}
 	
 	manager.enablePauseResume = function(){
+		console.log("enablin' pauseResume");
 		this.pauseResumeButton.disabled = false;
 	}
 	

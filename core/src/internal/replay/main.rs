@@ -180,7 +180,7 @@ impl ReplayManager  {
     }
 
     fn has_more_steps(&mut self) -> bool {
-        if self.step_position < self.replay_data.len() as u64 - 1 {
+        if self.step_position <= self.replay_data.len() as u64 - 1 {
             true
         }
         else {
@@ -720,7 +720,7 @@ fn main() {
     let test_mode = true;
     let mut replay_info : Vec<ReplayAction> = Vec::new();
     if test_mode {
-        let step_count : u32 = 100;
+        let step_count : u32 = 50;
         configure_and_register_mock_rts(&mut environment,step_count);
         replay_info = get_test_mode_replay_info(step_count,5);
     }
