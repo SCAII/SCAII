@@ -15,6 +15,7 @@ use std::{thread, time};
 use std::rc::Rc;
 use std::cell::RefCell;
 use std::fmt;
+use std::sync::{Arc, mpsc, Mutex};
 
 #[derive(Debug)]
 struct ReplayError {
@@ -94,8 +95,8 @@ impl Replay for ReplayMessageQueue {}
 
 struct ReplayManager {
     incoming_message_queue:Rc<RefCell<ReplayMessageQueue>>, // going to go in router
-    replay_delay: u64,
-    poll_delay: u64,
+    step_delay: Arc<Mutex<u64>>,
+    poll_delay: Arc<Mutex<u64>>,
     shutdown_received: bool,
     env: Environment,
     replay_data: Vec<ReplayAction>,
@@ -148,7 +149,7 @@ impl ReplayManager  {
         let scaii_pkts : Vec<protos::ScaiiPacket> = { 
             let queue  = &mut *self.incoming_message_queue.borrow_mut();
             let result : Vec<protos::ScaiiPacket> = queue.incoming_messages.drain(..).collect();
-            println!("====================got result packets {} ", result.len());
+            //println!("====================got result packets {} ", result.len());
             result
         };
         Ok(scaii_pkts)
@@ -314,7 +315,6 @@ impl ReplayManager  {
             // game will automatically pause at end, switch to polling mode
             game_state = GameState::Paused;
         }
-        wait(self.replay_delay);
         Ok(game_state)
     }
    
@@ -357,7 +357,7 @@ impl ReplayManager  {
                 println!("REPLAY unexpected pkt received by Viz polling {:?}", scaii_pkt);
             }
         }
-        wait(self.poll_delay);
+        wait(*self.poll_delay.lock().unwrap());
         Ok(game_state)
     }
     
@@ -400,28 +400,87 @@ impl ReplayManager  {
 
     fn run_and_poll(&mut self) -> Result<(), Box<Error>>{
         let mut game_state : GameState = GameState::Running;
-        while !self.shutdown_received {
-            match game_state {
-                GameState::Running => {
-                    game_state = self.execute_run_step()?;
-                },
-                GameState::Paused=> {
-                    // do nothing
-                },
-                GameState::RewoundAndNeedingToSendInitialKeyframe => {
-                    let _ignored_game_state : GameState = self.execute_run_step()?;
-                    game_state = GameState::Paused; // after rewind, we assume they don't want it to start playing
-                },
-                GameState::JumpedAndNeedingToDoFollowupNavigation => {
-                    let backup_target : u64 = self.get_keyframe_index_prior_to_current_step_position()?;
-                    let forward_target : u64 = self.step_position;
-                    self.keyframe_to_later_step(backup_target, forward_target)?;
-                    game_state = GameState::Paused;
-                },
+        let (tx_step, rx) = mpsc::channel();
+        let (tx_step_ack, rx_step_ack) = mpsc::channel();
+        let (tx_poll_ack, rx_poll_ack)= mpsc::channel();
+        let tx_poll = mpsc::Sender::clone(&tx_step);
+        let arc_poll_delay = Arc::clone(&self.poll_delay);
+        // start poll nudge  thread
+        let poll_nudge_handle = thread::spawn(move || {
+            //let mut i: u64 = 0;
+            loop {
+                //println!("poll loop sending nudge {}", i);
+                //i = i + 1;
+                tx_poll.send(String::from("poll_nudge")).unwrap();
+                let _ack = rx_poll_ack.recv().unwrap();
+                wait(*arc_poll_delay.lock().unwrap());
             }
-            game_state = self.execute_poll_step(game_state)?; 
+        });
+
+        let arc_step_delay = Arc::clone(&self.step_delay);
+        // start step nudge thread
+        let step_nudge_handle = thread::spawn(move || {
+            //let mut i: u64 = 0;
+            loop {
+                //println!("step loop sending nudge {}", i);
+                //i = i + 1;
+                tx_step.send(String::from("step_nudge")).unwrap();
+                let _ack = rx_step_ack.recv().unwrap();
+                wait(*arc_step_delay.lock().unwrap());
+            }
+        });
+        //let mut snudge_count : u64 = 0;
+        //let mut pnudge_count : u64 = 0;
+        while !self.shutdown_received {
+            let received = rx.recv();
+            match received {
+                Ok(nudge) => {
+                    match nudge.as_ref() {
+                        "step_nudge" => {
+                            //println!("main loop got step_nudge {}", snudge_count);
+                            //snudge_count = snudge_count + 1;
+                            game_state = self.handle_step_nudge(game_state)?;
+                            let _ack_result = tx_step_ack.send(String::from("ack")).unwrap();
+                        },
+                        "poll_nudge" => {
+                            //println!("main loop got poll_nudge {}", pnudge_count);
+                            //pnudge_count = pnudge_count + 1;
+                            game_state = self.execute_poll_step(game_state)?; 
+                            let _ack_result = tx_poll_ack.send(String::from("ack")).unwrap();
+                             
+                        },
+                        _ => {},
+                    } 
+                }
+                Err(receive_error) => return Err(Box::new(receive_error)),
+            }
+            //wait(50);
         }
+        poll_nudge_handle.join().unwrap();
+        step_nudge_handle.join().unwrap();
         Ok(())
+    }
+
+    fn handle_step_nudge(&mut self, mut game_state: GameState) -> Result<GameState, Box<Error>> {
+        match game_state {
+            GameState::Running => {
+                game_state = self.execute_run_step()?;
+            },
+            GameState::Paused=> {
+                // do nothing
+            },
+            GameState::RewoundAndNeedingToSendInitialKeyframe => {
+                let _ignored_game_state : GameState = self.execute_run_step()?;
+                game_state = GameState::Paused; // after rewind, we assume they don't want it to start playing
+            },
+            GameState::JumpedAndNeedingToDoFollowupNavigation => {
+                let backup_target : u64 = self.get_keyframe_index_prior_to_current_step_position()?;
+                let forward_target : u64 = self.step_position;
+                self.keyframe_to_later_step(backup_target, forward_target)?;
+                game_state = GameState::Paused;
+            },
+        }
+        Ok(game_state)
     }
 
     // this should happen atomically - in between pollings, so no game_state change should be occurring so we can ignore
@@ -504,13 +563,13 @@ fn wrap_entity_in_viz_packet(step: u32, entity: Entity) -> ScaiiPacket {
 
 fn generate_entity_sequence(count: u32) -> Vec<Entity> {
     let mut entities: Vec<Entity> = Vec::new();
-    let mut x: f64 = 200.0;
-    let mut y: f64 = 200.0;
+    let mut x: f64 = 300.0;
+    let mut y: f64 = 300.0;
     for _i in 0..count {
         let entity = create_entity_at(&x, &y);
         entities.push(entity);
-        x = x - 2.0;
-        y = y  - 2.0;
+        x = x - 1.0;
+        y = y  - 1.0;
     }
     entities
 }
@@ -635,7 +694,7 @@ fn main() {
     let test_mode = true;
     let mut replay_info : Vec<ReplayAction> = Vec::new();
     if test_mode {
-        let step_count : u32 = 15;
+        let step_count : u32 = 100;
         configure_and_register_mock_rts(&mut environment,step_count);
         replay_info = get_test_mode_replay_info(step_count,5);
     }
@@ -654,8 +713,8 @@ fn main() {
     }
     let mut replay_manager =  ReplayManager {
         incoming_message_queue:rc_replay_message_queue,
-        replay_delay: 800,
-        poll_delay: 700,
+        step_delay: Arc::new(Mutex::new(200)),
+        poll_delay: Arc::new(Mutex::new(50)),
         shutdown_received: false,
         env: environment,
         replay_data: replay_info,
