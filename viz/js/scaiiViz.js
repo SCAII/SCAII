@@ -49,6 +49,7 @@ goog.require('proto.scaii.common.VizInit');
 * LICENSE file in the root directory of this source tree. An additional grant
 * of patent rights can be found in the PATENTS file in the same directory.
 */
+var userInputBlocked = false;
 var systemTitle = "SCAII - Small Configurable AI Interface";
 // VizInit defaults
 var testingMode = false;
@@ -112,7 +113,7 @@ function handleVizInit(vizInit) {
   //renderTimeline(maxStep);
 }
 function handleViz(vizData){
-  console.log('received Viz...');
+  //console.log('received Viz...');
   var entitiesList = vizData.getEntitiesList();
   var step = vizData.getStep();
   //console.log("step in vizData was " + step+ "maxStep is " + maxStep);
@@ -120,8 +121,7 @@ function handleViz(vizData){
   
   handleEntities(entitiesList);
   if (step == maxStep){
-	  controlsManager.adjustToPauseClick();
-	  controlsManager.disablePauseResume();
+	  controlsManager.reachedEndOfGame();
   }
   if (vizData.hasChart()){
 	  var chartInfo = vizData.getChart();
@@ -271,7 +271,7 @@ var initUI = function(){
     
 	rewindButton.setAttribute("class", "controlButton");
 	rewindButton.innerHTML = '<img src="imgs/rewind.png", height="8px" width="10px"/>'; 
-    rewindButton.onclick = rewindGame;	
+    rewindButton.onclick = tryRewind;	
 	$("#scaii-game-controls").append(rewindButton);
 	
 	$("#scaii-game-controls").css("text-align", "center");
@@ -280,7 +280,7 @@ var initUI = function(){
 	pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="8px" width="10px"/>';  
 	
 	$("#scaii-game-controls").append(pauseResumeButton);
-	pauseResumeButton.onclick = pauseGame;
+	pauseResumeButton.onclick = tryPause;
 	
 	$("#scaii-game-controls").append(blankSpacerRight); 
 	
@@ -399,7 +399,6 @@ var connect = function (dots, attemptCount) {
       if (sPacket.hasVizInit()) {
         var vizInit = sPacket.getVizInit();
         handleVizInit(vizInit);
-		controlsManager.disableAllControls();
 		controlsManager.gameStarted();
 	    var mm = new proto.scaii.common.MultiMessage;
 	    dealer.send(mm.serializeBinary());
@@ -408,7 +407,7 @@ var connect = function (dots, attemptCount) {
         var viz = sPacket.getViz();
         handleViz(viz);
 		// we're moving forward so rewind should be enabled
-		controlsManager.enableRewind();
+		controlsManager.gameSteppingForward();
 	    var mm;
         if (testingMode) {
           mm = buildReturnMultiMessageFromState(masterEntities);

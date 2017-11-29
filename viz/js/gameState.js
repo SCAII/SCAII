@@ -57,9 +57,8 @@ function updateMasterRect(masterShape, masterRect, updateRect) {
   if (updateRect.hasWidth()) {
     masterRect.setWidth(updateRect.getWidth());
   }
-  console.log("CHECKING HEIGHT");
   if (updateRect.hasHeight()) {
-    console.log('updating rect HEIGHT from ' + masterRect.getHeight() + ' to ' + updateRect.getHeight());
+    //console.log('updating rect HEIGHT from ' + masterRect.getHeight() + ' to ' + updateRect.getHeight());
     masterRect.setHeight(updateRect.getHeight());
   }
 }
@@ -147,7 +146,7 @@ function updateMasterEntity(master, update) {
     }
     else {
       if (updateShape.hasDelete() && updateShape.getDelete()) {
-        console.log('DELETING shape ' + updateShapeId);
+        //console.log('DELETING shape ' + updateShapeId);
         deleteShape(masterShapes, masterShape);
       }
       else {

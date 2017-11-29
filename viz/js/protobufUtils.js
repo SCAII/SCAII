@@ -56,7 +56,7 @@ function buildReturnMultiMessageFromState(entities) {
     var entityId = entityKeys[i]
     var entity = entities[entityId];
     if (entityId == '8') {
-      console.log('++++++++++++++ENTITY SEND ' + entityId + '++++++++++++++++');
+      //console.log('++++++++++++++ENTITY SEND ' + entityId + '++++++++++++++++');
       logEntity(entity);
     }
     returnState.addEntities(entity);

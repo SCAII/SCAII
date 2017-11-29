@@ -6,27 +6,33 @@ var updateProgress = function(step, maxStep){
 }
 var processTimelineClick = function(e){
 	try {
-		controlsManager.userJumped();
-		var clickX = e.offsetX;
-		var width = $("#game-progress").width();
-		var percent = clickX / width;
-		var targetStepCount = Math.floor(maxStep * percent);
-		var targetStepCountString = "" + targetStepCount;
-		var args = [ targetStepCountString ];
-		var userCommand = new proto.scaii.common.UserCommand;
-		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-		userCommand.setArgsList(args);
-		stageUserCommand(userCommand);
+		if (!userInputBlocked){
+			controlsManager.userJumped();
+			var clickX = e.offsetX;
+			var width = $("#game-progress").width();
+			var percent = clickX / width;
+			var targetStepCount = Math.floor(maxStep * percent);
+			var targetStepCountString = "" + targetStepCount;
+			var args = [ targetStepCountString ];
+			var userCommand = new proto.scaii.common.UserCommand;
+			userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+			userCommand.setArgsList(args);
+			stageUserCommand(userCommand);
+		}
 	}
 	catch(err){
 		alert(err.message);
 	}
-	
 }
 var stageUserCommand = function(userCommand){
 	var scaiiPkt = new proto.scaii.common.ScaiiPacket;
 	scaiiPkt.setUserCommand(userCommand);
 	userCommandScaiiPackets.push(scaiiPkt);
+}
+var tryPause = function() {
+	if (!userInputBlocked){
+		pauseGame();
+	}
 }
 var pauseGame = function(){
 	try {
@@ -39,6 +45,13 @@ var pauseGame = function(){
 		alert(err.message);
 	}
 }
+
+var tryResume = function() {
+	if (!userInputBlocked){
+		resumeGame();
+	}
+}
+
 var resumeGame = function(){
 	try {
 		controlsManager.userClickedResume();
@@ -50,16 +63,19 @@ var resumeGame = function(){
 		alert(err.message);
 	}
 }
+
+var tryRewind = function() {
+	if (!userInputBlocked){
+		rewindGame();
+	}
+}
 var rewindGame = function(){
 	pauseGame();
 	try {
 		controlsManager.userClickedRewind();
-		//var userCommand1 = new proto.scaii.common.UserCommand;
-		//userCommand1.setCommandType(proto.scaii.common.UserCommand.UserCommandType.PAUSE);
-		//stageUserCommand(userCommand1);
-		var userCommand2 = new proto.scaii.common.UserCommand;
-		userCommand2.setCommandType(proto.scaii.common.UserCommand.UserCommandType.REWIND);
-		stageUserCommand(userCommand2);
+		var userCommand = new proto.scaii.common.UserCommand;
+		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.REWIND);
+		stageUserCommand(userCommand);
 	}
 	catch(err){
 		alert(err.message);
@@ -72,82 +88,103 @@ var configureControlsManager = function(pauseResumeButton, rewindButton){
 	manager.rewindButton = rewindButton;
 	
 	manager.setControlsNotReady = function() {
-		this.priorStateRewindButton = "off";
-		this.priorStatePauseResumeButton = "off";
-		this.rewindButton.disabled = true;
-		this.pauseResumeButton.disabled = true;
+		userInputBlocked = true;
 	}
 	
 	manager.gameStarted = function() {
+		userInputBlocked = false;
 		this.enableAllControls()
 	}
 	
+	manager.gameSteppingForward = function(){
+		this.enableRewind();
+	}
+	manager.reachedEndOfGame = function() {
+		this.expressResumeButton();
+		this.disablePauseResume();
+	}
+	
+	//
+	//   JUMP
+	//
 	manager.userJumped = function() {
-		this.saveCurrentStates();
-		this.disableAllControls();
+		userInputBlocked = true;
 		// no pending action for this, re-enablingcontrols happenes when we get a JUMP_COMPLETED message from replay
 	}
-	manager.userClickedPause = function() {
-		this.saveCurrentStates();
-		this.disableAllControls();
-		this.pendingAction = this.adjustToPauseClick;
+	
+	manager.jumpCompleted = function() {
+		userInputBlocked = false;
+		this.expressResumeButton(); // pause automatically engaged in Replay when jump completed.
+		this.enablePauseResume();
 	}
+	
+	//
+	//  pause
+	//
+	manager.userClickedPause = function() {
+		userInputBlocked = true;
+		this.pendingAction = this.expressResumeButton;
+	}
+	
+	manager.expressResumeButton = function(){
+		this.pauseResumeButton.onclick = tryResume;
+		this.pauseResumeButton.innerHTML = '<img src="imgs/play.png", height="8px" width="10px"/>'; 
+	}
+	
+	//
+	//  resume
+	//
 	
 	manager.userClickedResume = function() {
-		this.saveCurrentStates();
-		this.disableAllControls();
-		this.pendingAction = this.adjustToResumeClick;
+		userInputBlocked = true;
+		this.pendingAction = this.expressPauseButton;
 	}
 	
+	manager.expressPauseButton = function(){
+		this.pauseResumeButton.onclick = tryPause;
+		this.pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="8px" width="10px"/>'; 
+	}
+	
+	//
+	// rewind
+	//
 	manager.userClickedRewind = function() {
-		this.saveCurrentStates();
-		this.disableAllControls();
+		userInputBlocked = true;
 		this.pendingAction = this.adjustToRewindClick;
-	}
-	manager.jumpCompleted = function() {
-		this.restorePriorStates();
-		this.adjustToPauseClick(); // pause automatically engaged in Replay when jump completed.
-	}
-	manager.adjustToPauseClick = function(){
-		this.pauseResumeButton.onclick = resumeGame;
-		this.pauseResumeButton.innerHTML = '<img src="imgs/play.png", height="8px" width="10px"/>'; 
 	}
 	
 	manager.adjustToRewindClick = function(){
 		// since we sent pause command as first part of rewind, we need to show the play button 
-		this.adjustToPauseClick();
+		this.expressResumeButton();
 		this.disableRewind();
 		this.enablePauseResume();
 	}
 	
-	manager.adjustToResumeClick = function(){
-		this.pauseResumeButton.onclick = pauseGame;
-		this.pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="8px" width="10px"/>'; 
-		this.enableRewind();
-	}
+	//
+	//  enabling/disabling
+	//
 	manager.disablePauseResume = function() {
 		console.log("disablin' pauseResume");
+		$("#pauseResumeButton").css("opacity", "0.6");
 		this.pauseResumeButton.disabled = true;
 	}
 	
 	manager.enablePauseResume = function(){
 		console.log("enablin' pauseResume");
+		$("#pauseResumeButton").css("opacity", "1.0");
 		this.pauseResumeButton.disabled = false;
 	}
 	
 	manager.disableRewind = function() {
 		console.log("disablin' rewind");
+		$("#rewindButton").css("opacity", "0.6");
 		this.rewindButton.disabled = true;
 	}
 	
 	manager.enableRewind = function(){
 		console.log("enablin' rewind");
+		$("#rewindButton").css("opacity", "1.0");
 		this.rewindButton.disabled = false;
-	}
-	
-	manager.disableAllControls = function() {
-		this.disableRewind();
-		this.disablePauseResume();
 	}
 	
 	manager.enableAllControls = function() {
@@ -155,38 +192,16 @@ var configureControlsManager = function(pauseResumeButton, rewindButton){
 		this.enablePauseResume();
 	}
 	
-	manager.saveCurrentStates = function(){
-		if (this.rewindButton.disabled){
-			this.priorStateRewindButton = "off";
-		}
-		else {
-			this.priorStateRewindButton = "on";
-		}
-		if (this.pauseResumeButton.disabled){
-			this.priorStatePauseResumeButton = "off";
-		}
-		else {
-			this.priorStatePauseResumeButton = "on";
-		}
-	}
-	
+	//
+	//  do any pending action
+	//
 	manager.userCommandSent = function() {
-		this.restorePriorStates();
+		//this.restorePriorStates();
 		if (this.pendingAction != undefined){
 			this.pendingAction();
-			this.pendingAction = undefined;
 		}
+		userInputBlocked = false;
 	}
 	
-	manager.restorePriorStates = function(){
-		this.resetControlToPriorState(this.rewindButton, this.priorStateRewindButton);
-		this.resetControlToPriorState(this.pauseResumeButton, this.priorStatePauseResumeButton);
-	}
-	
-	manager.resetControlToPriorState = function(control, priorState){
-		if (priorState == "off") { control.disabled = true; }
-		else { control.disabled = false; }
-	}
-	
-	return manager
+	return manager;
 }
