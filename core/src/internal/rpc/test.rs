@@ -193,7 +193,7 @@ fn send_chart_info() {
                 let float_multiplier = i as f64;
                 let chart_info = generate_busy_chart_info(0.0 + float_multiplier*2.0);
                 println!("chart_info {:?})", chart_info);
-                let viz_pkt = wrap_entity_in_viz_packet(entity, chart_info);
+                let viz_pkt = wrap_entity_in_viz_packet(entity, chart_info, i as u32);
                 rpc_module.process_msg(&viz_pkt).unwrap();
                 multi_message = rpc_module.get_messages();
                 x = x + 2.0;
@@ -354,7 +354,7 @@ fn create_entity_at(x: &f64, y: &f64) -> Entity {
         delete: false,
     }
 }
-fn wrap_entity_in_viz_packet(entity: Entity, chart_info: ChartInfo) -> ScaiiPacket {
+fn wrap_entity_in_viz_packet(entity: Entity, chart_info: ChartInfo, step : u32) -> ScaiiPacket {
     let mut entities: Vec<Entity> = Vec::new();
     entities.push(entity);
 
@@ -370,6 +370,7 @@ fn wrap_entity_in_viz_packet(entity: Entity, chart_info: ChartInfo) -> ScaiiPack
         specific_msg: Some(SpecificMsg::Viz(Viz {
             entities: entities,
             chart: Some(chart_info),
+            step: Some(step),
         })),
     }
 }
