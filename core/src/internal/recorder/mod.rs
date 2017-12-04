@@ -1,4 +1,3 @@
-//use scaii_defs;
 use scaii_defs::protos;
 use scaii_defs::{Module, Recorder};
 use scaii_defs::protos::{MultiMessage, RecorderStep, ScaiiPacket};

@@ -40,7 +40,7 @@ impl Agent for RecorderTesterMessageQueue {}
     
 
 impl RecorderTester {
-    fn run(&mut self, mut env: Environment) -> Result<(), Box<Error>>{
+    fn run(&mut self, env: Environment) -> Result<(), Box<Error>>{
         self.env = env;
         let step_count : u32 = 2;
         
@@ -48,7 +48,7 @@ impl RecorderTester {
         let mut recorder_manager =  RecorderManager::new();
         recorder_manager.init();
         println!("called init...");
-        recorder_manager.accept_config_message(self.create_cfg_message());
+        recorder_manager.accept_config_message(self.create_cfg_message())?;
 
         let rc_recorder_manager = Rc::new(RefCell::new(recorder_manager));
         {
@@ -57,11 +57,11 @@ impl RecorderTester {
         }
         
         let total: u32 = step_count * 4;
-        for i in (0..total) {
+        for i in 0..total {
             println!("sending send_test_mode_step_hint_message {}", i);
             let _pkts :Vec<ScaiiPacket> = self.send_test_mode_step_hint_message()?;
         }
-        rc_recorder_manager.borrow_mut().persist();
+        rc_recorder_manager.borrow_mut().persist()?;
         verify_persisted_file();
         Ok(())
     }
@@ -161,7 +161,7 @@ fn test_recorder() {
 }
 
 fn verify_persisted_file() {
-    println!("verify persisted file...");
+    println!("verifying persisted file...");
     let mut f = File::open("C:\\Users\\Jed Irvine\\exact\\SCAII\\core\\replay_data\\replay_data.txt").expect("file not found");
     let mut buf: Vec<u8> = Vec::new();
     f.read_to_end(&mut buf).expect("could not read all bytes from file");
@@ -169,6 +169,7 @@ fn verify_persisted_file() {
     for i in 0..decoded.len() {
         println!("REPLAY ACTION : {:?}", decoded[i]);
     }
+    //verify
     println!("decoded replay has this many elements {}", decoded.len());
 }
 
