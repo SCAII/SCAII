@@ -7,6 +7,9 @@ extern crate libc;
 extern crate libloading;
 extern crate prost;
 extern crate scaii_defs;
+#[macro_use]
+extern crate serde_derive;
+extern crate bincode;
 extern crate websocket;
 use scaii_defs::protos::{AgentEndpoint, MultiMessage, ScaiiPacket};
 use std::error::Error;

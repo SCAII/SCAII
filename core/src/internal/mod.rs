@@ -2,6 +2,7 @@ pub mod router;
 pub mod agent;
 pub mod rust_ffi;
 pub mod rpc;
+pub mod recorder;
 
 use libloading::Library;
 
