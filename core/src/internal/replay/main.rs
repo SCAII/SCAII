@@ -703,32 +703,6 @@ fn get_test_mode_replay_info(step_count: u32, interval: u32) -> Vec<ReplayAction
 }
 
 
-// fn get_test_mode_replay_info(step_count: u32) -> Vec<ReplayAction> {
-//     let mut result: Vec<ReplayAction> = Vec::new();
-//     // add Header
-//     let replay_header = get_test_mode_replay_header();
-//     result.push(ReplayAction::Header(replay_header));
-//     // add token keyframe
-//     let key_frame = get_test_mode_key_frame();
-    
-//     result.push(key_frame);
-//     // add Deltas 
-//     let mut d_actions : Vec<i32> = Vec::new();
-//     d_actions.push(3);
-//     let delta_1 = ReplayAction::Delta(Action::DecisionPoint(protos::Action{
-//         discrete_actions: d_actions,
-//         continuous_actions: Vec::new(),
-//         alternate_actions:None,
-//     }));
-//     result.push(delta_1);
-//     let remaining : u32 = step_count - 1;
-//     for _number in 1..remaining {
-//         let delta_2 = ReplayAction::Delta(Action::Step);
-//         result.push(delta_2);
-//     }
-//     result
-// }
-
 
 // need to add a recorderConfig message (sent by agent)  - it will contain repeated Cfg  to capture the various configs
 // if recorder gets recorderConfig message , it starts recordings
