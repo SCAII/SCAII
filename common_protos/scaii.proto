@@ -39,6 +39,7 @@ message ScaiiPacket {
 		UserCommand user_command = 11;
 		ReplayStep replay_step = 12;
 		TestControl test_control = 13;
+		RecorderStep recorder_step = 14;
 		Other other = 29;
 	}
 
@@ -72,6 +73,7 @@ message Endpoint {
 		CoreEndpoint core = 3;
 		ModuleEndpoint module = 4;
 		ReplayEndpoint replay = 5;
+		RecorderEndpoint recorder = 6;
 	}
 }
 
@@ -95,6 +97,9 @@ message ModuleEndpoint {
 
 // A marker message for the replay mechanism.
 message ReplayEndpoint {}
+
+// A marker message for the recorder mechanism.
+message RecorderEndpoint {}
 
 // A basic state reply from an environment 
 // featuring a feature description
@@ -248,4 +253,11 @@ message UserCommand {
 // Some testing requires sending special messages to test components ex. Replay controlling MockRts.
 message TestControl {
 	repeated string args = 1;
+}
+
+// Sent from backend to recorder each frame to denote a new
+// step in the recording
+message RecorderStep {
+     optional Action action = 1;
+     required bool is_decision_point = 2;
 }
