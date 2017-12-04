@@ -194,13 +194,18 @@ var main = function () {
   if (debug){
 	var connectButton = document.createElement("BUTTON");
 	var connectText = document.createTextNode("Connect");
-	connectButton.setAttribute("class", "connectButton");	
+	connectButton.setAttribute("class", "connectButton");
+	connectButton.setAttribute("id", "connectButton");	
 	connectButton.appendChild(connectText);
 	connectButton.onclick = function(){
 		console.log("calling tryConnect");
 		tryConnect('.',0);
 	};
 	$("#scaii-interface-title").append(connectButton);
+	$("#connectButton").css("margin-left", "30px");
+	$("#connectButton").css("font-family", "Fira Sans");
+	$("#connectButton").css("font-size", "12px");
+	
   }else {
 	  tryConnect('.', 0);
   }
