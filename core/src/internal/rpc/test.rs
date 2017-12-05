@@ -1,96 +1,95 @@
-use std::sync::mpsc;
-use std::{thread, time};
+use std::time;
 use websocket::message;
 use websocket::OwnedMessage;
 use scaii_defs::protos;
-use scaii_defs::{Backend, BackendSupported, Module, SerializationStyle};
-use scaii_defs::protos::{scaii_packet, AgentEndpoint, BackendEndpoint, ChartActions, ChartInfo,
-                         ChartValueVector, CoreEndpoint, Entity, InitAs, ModuleEndpoint,
-                         ModuleInit, MultiMessage, ScaiiPacket, Viz, VizInit};
-use scaii_defs::protos::cfg::WhichModule;
+use scaii_defs::protos::{BackendEndpoint, ChartActions, ChartInfo,
+                         ChartValueVector, Entity, ModuleEndpoint,
+                         MultiMessage, ScaiiPacket, Viz};
 use scaii_defs::protos::endpoint::Endpoint;
 use scaii_defs::protos::scaii_packet::SpecificMsg;
 
-// #[test]
-// fn connect_attempt() {
-//     use super::*;
-//     use scaii_defs::protos::InitAs;
-//     use scaii_defs::protos::ModuleInit;
-//     use scaii_defs::protos::scaii_packet;
-//     let (tx, rx) = mpsc::channel();
-//     // start a thread that starts listening on the port
-//     let handle = thread::spawn(move || {
-//         let config = RpcConfig {
-//             ip: Some("127.0.0.1".to_string()),
-//             port: Some(6112),
-//             init_as: InitAs {
-//                 init_as: Some(protos::init_as::InitAs::Module(ModuleInit {
-//                     name: String::from("RpcPluginModule"),
-//                 })),
-//             },
-//             command: None,
-//             command_args: Vec::new(),
-//         };
-//         let result = init_rpc(config).expect("trying to init_rpc");
-//         match result {
-//             LoadedAs::Module(mut rpc_module, _) => {
-//                 println!("RPCModule here");
-//                 // we'll get here after the wakeup connectioncomes in
-//                 let dummy_scaii_pkt = get_dummy_scaii_pkt();
-//                 // send the message
-//                 rpc_module.process_msg(&dummy_scaii_pkt).unwrap();
-//                 let mut multi_message = rpc_module.get_messages();
-//                 let pkt = multi_message.packets.pop().unwrap();
-//                 if pkt.specific_msg == Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {
-//                     test_mode: Some(false),
-//                     step_count: Some(100),
-//                     gameboard_width: Some(400),
-//                     gameboard_height: Some(400),
-//                     explanations: Vec::new(),
-//                 })) {
-//                     tx.send(String::from("success")).unwrap();
-//                 } else {
-//                     tx.send(String::from("fail")).unwrap();
-//                 }
-//             }
-//             LoadedAs::Backend(_) => (),
-//         }
-//     });
+#[test]
+fn connect_attempt() {
+    use std::sync::mpsc;
+    use std::thread;
+    use super::*;
+    use scaii_defs::protos::InitAs;
+    use scaii_defs::protos::ModuleInit;
+    use scaii_defs::protos::scaii_packet;
+    let (tx, rx) = mpsc::channel();
+    // start a thread that starts listening on the port
+    let handle = thread::spawn(move || {
+        let config = RpcConfig {
+            ip: Some("127.0.0.1".to_string()),
+            port: Some(6112),
+            init_as: InitAs {
+                init_as: Some(protos::init_as::InitAs::Module(ModuleInit {
+                    name: String::from("RpcPluginModule"),
+                })),
+            },
+            command: None,
+            command_args: Vec::new(),
+        };
+        let result = init_rpc(config).expect("trying to init_rpc");
+        match result {
+            LoadedAs::Module(mut rpc_module, _) => {
+                println!("RPCModule here");
+                // we'll get here after the wakeup connectioncomes in
+                let dummy_scaii_pkt = get_dummy_scaii_pkt();
+                // send the message
+                rpc_module.process_msg(&dummy_scaii_pkt).unwrap();
+                let mut multi_message = rpc_module.get_messages();
+                let pkt = multi_message.packets.pop().unwrap();
+                if pkt.specific_msg == Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {
+                    test_mode: Some(false),
+                    step_count: Some(100),
+                    gameboard_width: Some(400),
+                    gameboard_height: Some(400),
+                    explanations: Vec::new(),
+                })) {
+                    tx.send(String::from("success")).unwrap();
+                } else {
+                    tx.send(String::from("fail")).unwrap();
+                }
+            }
+            LoadedAs::Backend(_) => (),
+        }
+    });
 
-//     // connect to the port and send a message
-//     use websocket::ClientBuilder;
+    // connect to the port and send a message
+    use websocket::ClientBuilder;
 
-//     let mut client = ClientBuilder::new("ws://127.0.0.1:6112")
-//         .unwrap()
-//         .connect_insecure()
-//         .unwrap();
-//     println!("connected via Client::bind");
-//     let msg = client
-//         .recv_message()
-//         .expect("Could not receive ping message from local client");
-//     println!("msg received was {:?} ", msg);
-//     let scaii_packet = decode_scaii_packet(msg);
-//     let mut pkt_vec: Vec<ScaiiPacket> = Vec::new();
-//     pkt_vec.push(scaii_packet);
-//     let multi_message = protos::MultiMessage { packets: pkt_vec };
+    let mut client = ClientBuilder::new("ws://127.0.0.1:6112")
+        .unwrap()
+        .connect_insecure()
+        .unwrap();
+    println!("connected via Client::bind");
+    let msg = client
+        .recv_message()
+        .expect("Could not receive ping message from local client");
+    println!("msg received was {:?} ", msg);
+    let scaii_packet = decode_scaii_packet(msg);
+    let mut pkt_vec: Vec<ScaiiPacket> = Vec::new();
+    pkt_vec.push(scaii_packet);
+    let multi_message = protos::MultiMessage { packets: pkt_vec };
 
-//     let buf = encode_multi_message(&multi_message);
-//     client.send_message(&message::Message::binary(buf)).unwrap();
-//     println!("sent echo message from far client");
-//     let payload = rx.recv().unwrap();
-//     assert!(payload == String::from("success"));
-//     handle.join().unwrap();
-// }
+    let buf = encode_multi_message(&multi_message);
+    client.send_message(&message::Message::binary(buf)).unwrap();
+    println!("sent echo message from far client");
+    let payload = rx.recv().unwrap();
+    assert!(payload == String::from("success"));
+    handle.join().unwrap();
+}
 
 fn get_dummy_scaii_pkt() -> ScaiiPacket {
     use scaii_defs::protos;
     use scaii_defs::protos::{endpoint, scaii_packet};
     ScaiiPacket {
         src: protos::Endpoint {
-            endpoint: Some(endpoint::Endpoint::Backend(protos::BackendEndpoint {})),
+            endpoint: Some(endpoint::Endpoint::Backend(BackendEndpoint {})),
         },
         dest: protos::Endpoint {
-            endpoint: Some(endpoint::Endpoint::Module(protos::ModuleEndpoint {
+            endpoint: Some(endpoint::Endpoint::Module(ModuleEndpoint {
                 name: "viz".to_string(),
             })),
         },
@@ -141,7 +140,6 @@ fn send_chart_info() {
     use super::*;
     use scaii_defs::protos::InitAs;
     use scaii_defs::protos::ModuleInit;
-    use scaii_defs::protos::scaii_packet;
 
     //prost_build::compile_protos(&["../common_protos/scaii.proto"], &["../common_protos"]).unwrap();
     let comm = Some(String::from(
@@ -172,19 +170,8 @@ fn send_chart_info() {
             println!("sending viz init message");
             rpc_module.process_msg(&dummy_scaii_pkt).unwrap();
             println!("sent viz init message");
-            let mut multi_message = rpc_module.get_messages();
-            let pkt = multi_message.packets.pop().unwrap();
-            if pkt.specific_msg == Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {
-                test_mode: Some(false),
-                step_count: Some(100),
-                gameboard_width: Some(400),
-                gameboard_height: Some(400),
-                explanations: Vec::new(),
-            })) {
-                println!("success - vizInit returned from far end");
-            } else {
-                println!("fail - non Vizinit pket returned from far end");
-            }
+            let mut _multi_message = rpc_module.get_messages();
+            
             let mut x: f64 = 50.0;
             let mut y: f64 = 75.0;
             
@@ -192,10 +179,10 @@ fn send_chart_info() {
                 let entity = create_entity_at(&x, &y);
                 let float_multiplier = i as f64;
                 let chart_info = generate_busy_chart_info(0.0 + float_multiplier*2.0);
-                println!("chart_info {:?})", chart_info);
+                println!("sent chart_info {:?}", i);
                 let viz_pkt = wrap_entity_in_viz_packet(entity, chart_info, i as u32);
                 rpc_module.process_msg(&viz_pkt).unwrap();
-                multi_message = rpc_module.get_messages();
+                let _multi_message = rpc_module.get_messages();
                 x = x + 2.0;
                 y = y + 2.0;
                 let delay = time::Duration::from_millis(400);
@@ -223,6 +210,7 @@ message ChartValueVector {
 	repeated double action_values = 2;
 }
 */
+#[allow(dead_code)]
 fn generate_chart_info() -> ChartInfo {
     /*  The code below populates chartInfo in such a way that the following javascript 
         array-of-arrays is handed to the charting package:
