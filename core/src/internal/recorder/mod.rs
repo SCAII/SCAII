@@ -1,7 +1,9 @@
+#![allow(dead_code)]
+
+
 use scaii_defs::protos;
 use scaii_defs::{Module, Recorder};
 use scaii_defs::protos::{MultiMessage, RecorderStep, ScaiiPacket};
-// ask Zoe why this won't work, when it works in  replay's main.rs     use protos::{MultiMessage, ScaiiPacket};
 use scaii_defs::protos::scaii_packet::SpecificMsg;
 use std::error::Error;
 use std::fmt;
@@ -38,63 +40,59 @@ impl Error for RecorderError {
 }
 
 //
-//  The generated proto messages are not Serializable so we use Stunt versions for these actors
+// wrapper structs for serialized proto messages
 //
 
-// to serialize protomessage
-//   let mut buf: Vec<u8> = Vec::new();
-//    packet.encode(&mut buf)?;
+#[derive(Clone,Serialize, Deserialize, PartialEq, Debug)]
+pub struct SerializedProtosSerializationResponse {
+    data: Vec<u8>,
+}
+#[derive(Clone,Serialize, Deserialize, PartialEq, Debug)]
+pub struct SerializedProtosAction {
+    data: Vec<u8>,
+}
+#[derive(Clone,Serialize, Deserialize, PartialEq, Debug)]
+pub struct SerializedProtosScaiiPacket {
+    data: Vec<u8>,
+}
+#[derive(Clone,Serialize, Deserialize, PartialEq, Debug)]
+pub struct SerializedProtosEndpoint {
+    data: Vec<u8>,
+}
 
+//
+//  structs supporting ReplayAction
+//
 
-
 #[derive(Clone,Serialize, Deserialize, PartialEq, Debug)]
-struct SerializedProtosSerializationResponse {
-    data: Vec<u8>,
-}
-#[derive(Clone,Serialize, Deserialize, PartialEq, Debug)]
-struct SerializedProtosAction {
-    data: Vec<u8>,
-}
-#[derive(Clone,Serialize, Deserialize, PartialEq, Debug)]
-struct SerializedProtosScaiiPacket {
-    data: Vec<u8>,
-}
-#[derive(Clone,Serialize, Deserialize, PartialEq, Debug)]
-struct SerializedProtosEndpoint {
-    data: Vec<u8>,
-}
-#[derive(Clone,Serialize, Deserialize, PartialEq, Debug)]
-enum GameAction {
+pub enum GameAction {
      DecisionPoint(SerializedProtosAction),
      Step,
 }
 
 #[derive(Clone,Serialize, Deserialize, PartialEq, Debug)]
-enum ReplayAction {
+pub enum ReplayAction {
     Header(ReplayHeader),
     Delta(GameAction),
     Keyframe(SerializationInfo,GameAction),
 }
 
 #[derive(Clone,Serialize, Deserialize, PartialEq, Debug)]
-struct SerializationInfo {
+pub struct SerializationInfo {
     source: SerializedProtosEndpoint,
     data: SerializedProtosSerializationResponse,
 }
 
 #[derive(Clone,Serialize, Deserialize, PartialEq, Debug)]
-struct ReplayHeader {
+pub struct ReplayHeader {
     configs: Vec<SerializedProtosScaiiPacket>,
 }
 
-/// need this inside the environment (router) to collect messages
-//struct RecorderMessageQueue {
-    //incoming_messages: Vec<protos::ScaiiPacket>,
-//}
+//
+// RecorderManager manages recording
+//
 
-
-struct RecorderManager {
-    //incoming_message_queue:Rc<RefCell<RecorderMessageQueue>>, // going to go in router
+pub struct RecorderManager {
     staged_ser_info: Option<SerializationInfo>,
     file_path: Option<String>,
     replay: Vec<ReplayAction>,
@@ -209,12 +207,11 @@ impl RecorderManager  {
         let encoded: Vec<u8> = serialize(&self.replay, Infinite).unwrap();
         let data_size = encoded.len();
         if self.file_path == None {
-            return Err(Box::new(RecorderError::new("RecorderManager.file_path not specifiedprior to calling persist.")));
+            return Err(Box::new(RecorderError::new("RecorderManager.file_path not specified prior to calling persist.")));
         } 
         let path = self.file_path.clone().unwrap();  
         println!("trying to write to file {}", path);     
         let mut f = OpenOptions::new().write(true).open(&path[..]).expect("could not write to replay file");
-        //let mut f = OpenOptions::new().write(true).open(&self.file_path.clone().unwrap()[..]).expect("could not write to replay file");
 
         let write_result = f.write(&encoded);
         if write_result.unwrap() != data_size {
