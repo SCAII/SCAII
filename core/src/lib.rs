@@ -26,6 +26,8 @@ pub use c_api::*;
 
 // Don't publicly expose our internal structure to FFI
 pub(crate) mod internal;
+//...but expose ReplayAction so Replay can access it in Recorder (Replay is a binary so different crate)
+pub use internal::recorder::ReplayAction;
 
 /// The Environment created by this library.
 #[derive(Default)]
