@@ -2,15 +2,18 @@ use super::*;
 use super::super::super::Environment;
 use scaii_defs::protos;
 use scaii_defs::{Agent, Backend, BackendSupported, Module, Recorder, SerializationStyle};
-use scaii_defs::protos::{scaii_packet, AgentEndpoint, BackendCfg, cfg, Cfg,
-             MultiMessage, ScaiiPacket, BackendEndpoint, RecorderEndpoint, SerializationResponse};
+use scaii_defs::protos::{scaii_packet, AgentCfg, AgentEndpoint, cfg, Cfg,
+             MultiMessage, ScaiiPacket, BackendEndpoint, RecorderConfig, RecorderEndpoint, 
+             SerializationResponse};
 use scaii_defs::protos::endpoint::Endpoint;
 use scaii_defs::protos::scaii_packet::SpecificMsg;
 use std::error::Error;
 use std::rc::Rc;
 use std::cell::RefCell;
 use std::fs::File;
-use bincode::{deserialize};
+use bincode::{deserialize_from, Infinite};
+use std::io::BufReader;
+
 
 struct RecorderTesterMessageQueue {
     incoming_messages: Vec<protos::ScaiiPacket>,
@@ -29,7 +32,6 @@ impl  Module for RecorderTesterMessageQueue  {
     }
 }
 
-impl Recorder for RecorderTesterMessageQueue {}
 
 
 struct RecorderTester {
@@ -47,21 +49,20 @@ impl RecorderTester {
         self.configure_and_register_mock_rts(step_count);
         let mut recorder_manager =  RecorderManager::new();
         recorder_manager.init();
-        println!("called init...");
-        recorder_manager.accept_config_message(self.create_cfg_message())?;
-
+        
         let rc_recorder_manager = Rc::new(RefCell::new(recorder_manager));
         {
             self.env.router_mut().register_recorder(Box::new(rc_recorder_manager.clone()));
             debug_assert!(self.env.router().recorder().is_some());
         }
-        
+        let cfg_pkt = self.create_cfg_pkt();
+        let result = self.send_packet(cfg_pkt);
         let total: u32 = step_count * 4;
         for i in 0..total {
             println!("sending send_test_mode_step_hint_message {}", i);
             let _pkts :Vec<ScaiiPacket> = self.send_test_mode_step_hint_message()?;
         }
-        rc_recorder_manager.borrow_mut().persist()?;
+        rc_recorder_manager.borrow_mut().stop_recording();
         verify_persisted_file();
         Ok(())
     }
@@ -83,18 +84,18 @@ impl RecorderTester {
         args_list.push(target);
         args_list.push(command);
         let pkt : ScaiiPacket = self.create_test_control_message(args_list);
-        self.send_packet_to_backend(pkt)
+        self.send_packet(pkt)
     }
 
 
-    fn send_packet_to_backend(&mut self, pkt: ScaiiPacket)-> Result<Vec<protos::ScaiiPacket>, Box<Error>>{
+    fn send_packet(&mut self, pkt: ScaiiPacket)-> Result<Vec<protos::ScaiiPacket>, Box<Error>>{
         let mut pkts: Vec<ScaiiPacket> = Vec::new();    
         pkts.push(pkt);
         let mm = MultiMessage { packets: pkts };
-        let scaii_pkts = self.deploy_replay_directives_to_backend(mm)?;
+        let scaii_pkts = self.send_multimessage(mm)?;
         Ok(scaii_pkts)
     }
-    fn deploy_replay_directives_to_backend(&mut self, mm: MultiMessage) ->Result<Vec<protos::ScaiiPacket>, Box<Error>> {
+    fn send_multimessage(&mut self, mm: MultiMessage) ->Result<Vec<protos::ScaiiPacket>, Box<Error>> {
         self.env.route_messages(&mm);
         self.env.update();
         let scaii_pkts : Vec<protos::ScaiiPacket> = { 
@@ -109,7 +110,15 @@ impl RecorderTester {
     // so always be instantiated by core, just will remain dormant unless it gets that message
     // don't need a special proto message to convey the list of Cfg's because I can just persist them as part of structs and then send individual Cfg messages around at replay time.
 
-    fn create_cfg_message(&mut self, ) -> ScaiiPacket {
+
+    fn create_cfg_pkt(&mut self, ) -> ScaiiPacket {
+        let mut cfg_vec: Vec<Cfg> = Vec::new();
+        let cfg = Cfg {
+            which_module: Some(cfg::WhichModule::AgentCfg(AgentCfg {
+                cfg_msg: Some(Vec::new()),
+            })),
+        };
+        cfg_vec.push(cfg);
         ScaiiPacket {
             src: protos::Endpoint {
                 endpoint: Some(Endpoint::Agent(AgentEndpoint {})),
@@ -117,11 +126,12 @@ impl RecorderTester {
             dest: protos::Endpoint {
                 endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})),
             },
-            specific_msg: Some(scaii_packet::SpecificMsg::Config(Cfg {
-                which_module: Some(cfg::WhichModule::BackendCfg(BackendCfg {cfg_msg: Some(Vec::new()) })),
+            specific_msg: Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig {
+                cfgs: cfg_vec,
             })),
         }
     }
+
 
     fn configure_and_register_mock_rts(&mut self,count : u32){
         let mut rts = MockRts {
@@ -161,16 +171,27 @@ fn test_recorder() {
 }
 
 fn verify_persisted_file() {
+    use super::ReplayAction;
     println!("verifying persisted file...");
-    let mut f = File::open("C:\\Users\\Jed Irvine\\exact\\SCAII\\core\\replay_data\\replay_data.txt").expect("file not found");
-    let mut buf: Vec<u8> = Vec::new();
-    f.read_to_end(&mut buf).expect("could not read all bytes from file");
-    let decoded: Vec<ReplayAction> = deserialize(&buf[..]).unwrap();
-    for i in 0..decoded.len() {
-        println!("REPLAY ACTION : {:?}", decoded[i]);
+    let replay_file = File::open("C:\\Users\\Jed Irvine\\exact\\SCAII\\core\\replay_data\\replay_data.txt").expect("file not found");
+    let mut replay_vec : Vec<ReplayAction> = Vec::new();
+    let mut reader = BufReader::new(replay_file);
+    let header = deserialize_from::<BufReader<File>,ReplayAction,Infinite>(&mut reader, Infinite);
+    println!("header {:?}", header);
+    while let Ok(action) = deserialize_from::<BufReader<File>,ReplayAction,Infinite>(&mut reader, Infinite) {
+        println!("action deserialized as {:?}", action);
+        replay_vec.push(action);
     }
+
+
+    //let mut buf: Vec<u8> = Vec::new();
+    //f.read_to_end(&mut buf).expect("could not read all bytes from file");
+    //let decoded: Vec<ReplayAction> = deserialize(&buf[..]).unwrap();
+    //for i in 0..replay_vec.len() {
+    //    println!("REPLAY ACTION : {:?}", replay_vec[i]);
+    //}
     //verify
-    println!("decoded replay has this many elements {}", decoded.len());
+    println!("decoded replay has this many elements {}", replay_vec.len());
 }
 
 impl Backend for MockRts {
