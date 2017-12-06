@@ -40,6 +40,7 @@ message ScaiiPacket {
 		ReplayStep replay_step = 12;
 		TestControl test_control = 13;
 		RecorderStep recorder_step = 14;
+		RecorderConfig recorder_config = 15;
 		Other other = 29;
 	}
 
@@ -260,4 +261,9 @@ message TestControl {
 message RecorderStep {
      optional Action action = 1;
      required bool is_decision_point = 2;
+}
+
+// message to trigger recorder
+message RecorderConfig {
+	repeated Cfg cfgs = 1;
 }
