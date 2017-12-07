@@ -48,7 +48,7 @@ impl RecorderTester {
         
         self.configure_and_register_mock_rts(step_count);
         let mut recorder_manager =  RecorderManager::new();
-        recorder_manager.init();
+        let _result = recorder_manager.init()?;
         
         let rc_recorder_manager = Rc::new(RefCell::new(recorder_manager));
         {
@@ -62,8 +62,11 @@ impl RecorderTester {
             println!("sending send_test_mode_step_hint_message {}", i);
             let _pkts :Vec<ScaiiPacket> = self.send_test_mode_step_hint_message()?;
         }
+    
         rc_recorder_manager.borrow_mut().stop_recording();
-        verify_persisted_file();
+        let path_buf = rc_recorder_manager.borrow_mut().get_default_replay_file_path()?;
+        let path = path_buf.as_path();
+        verify_persisted_file(&path);
         Ok(())
     }
     fn create_test_control_message(&mut self, args_list : Vec<String>) -> ScaiiPacket {
@@ -167,13 +170,20 @@ fn test_recorder() {
         incoming_message_queue:rc_recorder_tester_message_queue,
         env: environment_unused,
     };
-    let _result = recorder_tester.run(environment);
+    let result = recorder_tester.run(environment);
+    match result {
+        Ok(()) => {},
+        Err(e) => {
+            assert!(false, "ERROR = {}", e.description().clone());
+        },
+    }
 }
 
-fn verify_persisted_file() {
+
+fn verify_persisted_file(path: &Path) {
     use super::ReplayAction;
     println!("verifying persisted file...");
-    let replay_file = File::open("C:\\Users\\Jed Irvine\\exact\\SCAII\\core\\replay_data\\replay_data.txt").expect("file not found");
+    let replay_file = File::open(path).expect("file not found");
     let mut replay_vec : Vec<ReplayAction> = Vec::new();
     let mut reader = BufReader::new(replay_file);
     let header = deserialize_from::<BufReader<File>,ReplayAction,Infinite>(&mut reader, Infinite);

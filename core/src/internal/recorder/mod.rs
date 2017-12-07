@@ -6,7 +6,11 @@ use scaii_defs::{Module, Recorder};
 use scaii_defs::protos::{MultiMessage, RecorderStep, ScaiiPacket};
 use scaii_defs::protos::scaii_packet::SpecificMsg;
 use std::error::Error;
+use std::env;
 use std::fmt;
+use std::path::{Path,PathBuf};
+use std::ffi::OsString;
+use std::fs;
 
 use bincode::{serialize, Infinite};
 use std::io::prelude::*;
@@ -94,7 +98,7 @@ pub struct ReplayHeader {
 
 pub struct RecorderManager {
     staged_ser_info: Option<SerializationInfo>,
-    file_path: Option<String>,
+    file_path: Option<PathBuf>,
     replay: Vec<ReplayAction>,
     is_recording: bool,
     writable_file: Option<File>
@@ -110,8 +114,41 @@ impl RecorderManager  {
         }
     }
 
-    fn init(&mut self){
-        self.file_path = Some(String::from("C:\\Users\\Jed Irvine\\exact\\SCAII\\core\\replay_data\\replay_data.txt"));
+    fn init(&mut self) -> Result<(), Box<Error>>{
+        let replay_dir_path_buf = self.get_default_replay_dir()?;
+        self.ensure_dir_exists(&replay_dir_path_buf)?;
+        let path_buf = self.get_default_replay_file_path()?;
+        self.file_path = Some(path_buf);
+        Ok(())
+    }
+
+    fn get_default_replay_file_path(&mut self) -> Result<PathBuf, Box<Error>> {
+        let mut replay_dir_path_buf = self.get_default_replay_dir()?;
+        replay_dir_path_buf.push("replay_data.txt");
+        Ok(replay_dir_path_buf)
+    }
+
+    fn get_default_replay_dir(&mut self) -> Result<PathBuf, Box<Error>> {
+        match env::var("SCAII_ROOT") {
+            Ok(root) => {
+                let mut path = PathBuf::from(root);
+                path.push("core");
+                path.push("replay_data");
+                Ok(path)
+            },
+            Err(e) => {
+                let error_message = e.description().clone();
+                let message = format!("RecorderManager could not determine environment variable SCAII_ROOT. {}", error_message);
+                Err(Box::new(RecorderError::new(message.as_str())))
+            },
+        }
+    }
+
+    fn ensure_dir_exists(&mut self, pathBuf: &PathBuf) -> Result<(), Box<Error>> {
+        if !pathBuf.as_path().exists() {
+            fs::create_dir_all(pathBuf.as_path())?;
+        }
+        Ok(())
     }
    
     fn get_serialized_protos_action(&mut self, action: protos::Action) -> Result<SerializedProtosAction, Box<Error>> {
@@ -188,8 +225,7 @@ impl RecorderManager  {
             return Err(Box::new(RecorderError::new("RecorderManager.file_path not specified prior to start of recording.")));
         } 
         let path = self.file_path.clone().unwrap();       
-        //let f = OpenOptions::new().write(true).open(&path[..]).expect("could not write to replay file");
-        let f = File::create(&path[..]).expect("could not write to replay file");
+        let f = File::create(&path).expect("could not write to replay file");
         self.writable_file = Some(f);
         self.persist_replay_action(header_replay_action)?;
         Ok(())
