@@ -211,6 +211,9 @@ impl RecorderManager  {
                     }  
                 }
             },
+            &Some(SpecificMsg::GameComplete(ref game_complete)) => {
+                self.stop_recording();
+            },
             _ => {},
         }
         Ok(())
@@ -219,6 +222,7 @@ impl RecorderManager  {
     fn stop_recording(&mut self) {
         self.writable_file = None;  
     }
+
     fn start_recording(&mut self, header_replay_action : ReplayAction) -> Result<(), Box<Error>> {
         println!("recording header.");
         if self.file_path == None {
@@ -248,6 +252,7 @@ impl RecorderManager  {
         }
         Ok(())
     }
+
     fn get_game_action_for_protos_action(&mut self, rec_step: &RecorderStep) -> Result<GameAction, Box<Error>> {
         if rec_step.is_decision_point {
             if rec_step.action == None {
@@ -260,6 +265,7 @@ impl RecorderManager  {
             Ok(GameAction::Step)
         }
     }
+
     fn save_keyframe(&mut self, rec_step: &RecorderStep) ->  Result<(), Box<Error>> {
         if rec_step.action == None {
             return Err(Box::new(RecorderError::new("Cannot create keyFrame to store - action missing.")));
@@ -275,6 +281,7 @@ impl RecorderManager  {
         Ok(())
     }
 }
+
 impl Module for RecorderManager  {
     fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>>{
         println!("recorderManager handling packet");

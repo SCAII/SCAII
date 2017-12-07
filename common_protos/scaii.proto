@@ -41,6 +41,7 @@ message ScaiiPacket {
 		TestControl test_control = 13;
 		RecorderStep recorder_step = 14;
 		RecorderConfig recorder_config = 15;
+		GameComplete game_complete = 16;
 		Other other = 29;
 	}
 
@@ -267,3 +268,5 @@ message RecorderStep {
 message RecorderConfig {
 	repeated Cfg cfgs = 1;
 }
+
+message GameComplete {}

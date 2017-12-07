@@ -2,7 +2,7 @@ use super::*;
 use super::super::super::Environment;
 use scaii_defs::protos;
 use scaii_defs::{Agent, Backend, BackendSupported, Module, Recorder, SerializationStyle};
-use scaii_defs::protos::{scaii_packet, AgentCfg, AgentEndpoint, cfg, Cfg,
+use scaii_defs::protos::{scaii_packet, AgentCfg, AgentEndpoint, cfg, Cfg, GameComplete,
              MultiMessage, ScaiiPacket, BackendEndpoint, RecorderConfig, RecorderEndpoint, 
              SerializationResponse};
 use scaii_defs::protos::endpoint::Endpoint;
@@ -62,13 +62,26 @@ impl RecorderTester {
             println!("sending send_test_mode_step_hint_message {}", i);
             let _pkts :Vec<ScaiiPacket> = self.send_test_mode_step_hint_message()?;
         }
-    
-        rc_recorder_manager.borrow_mut().stop_recording();
+        let complete_message = self.create_game_complete_packet();
+        self.send_packet(complete_message);
         let path_buf = rc_recorder_manager.borrow_mut().get_default_replay_file_path()?;
         let path = path_buf.as_path();
         verify_persisted_file(&path);
         Ok(())
     }
+
+    fn create_game_complete_packet(&mut self, ) -> ScaiiPacket {
+        ScaiiPacket {
+            src: protos::Endpoint {
+                endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
+            },
+            dest: protos::Endpoint {
+                endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})),
+            },
+            specific_msg: Some(scaii_packet::SpecificMsg::GameComplete(GameComplete {})),
+        }
+    }
+
     fn create_test_control_message(&mut self, args_list : Vec<String>) -> ScaiiPacket {
         ScaiiPacket {
             src: protos::Endpoint {
@@ -108,11 +121,6 @@ impl RecorderTester {
         };
         Ok(scaii_pkts)
     }
-    // need to add a recorderConfig message (sent by agent)  - it will contain repeated Cfg  to capture the various configs
-    // if recorder gets recorderConfig message , it starts recordings
-    // so always be instantiated by core, just will remain dormant unless it gets that message
-    // don't need a special proto message to convey the list of Cfg's because I can just persist them as part of structs and then send individual Cfg messages around at replay time.
-
 
     fn create_cfg_pkt(&mut self, ) -> ScaiiPacket {
         let mut cfg_vec: Vec<Cfg> = Vec::new();
@@ -134,7 +142,6 @@ impl RecorderTester {
             })),
         }
     }
-
 
     fn configure_and_register_mock_rts(&mut self,count : u32){
         let mut rts = MockRts {
