@@ -8,13 +8,12 @@ use scaii_defs::protos::scaii_packet::SpecificMsg;
 use std::error::Error;
 use std::env;
 use std::fmt;
-use std::path::{Path,PathBuf};
-use std::ffi::OsString;
+use std::path::PathBuf;
 use std::fs;
 
 use bincode::{serialize, Infinite};
 use std::io::prelude::*;
-use std::fs::{File, OpenOptions};
+use std::fs::File;
  use prost::Message;
 
 #[cfg(test)]
@@ -144,9 +143,9 @@ impl RecorderManager  {
         }
     }
 
-    fn ensure_dir_exists(&mut self, pathBuf: &PathBuf) -> Result<(), Box<Error>> {
-        if !pathBuf.as_path().exists() {
-            fs::create_dir_all(pathBuf.as_path())?;
+    fn ensure_dir_exists(&mut self, path_buf: &PathBuf) -> Result<(), Box<Error>> {
+        if !path_buf.as_path().exists() {
+            fs::create_dir_all(path_buf.as_path())?;
         }
         Ok(())
     }
@@ -211,7 +210,7 @@ impl RecorderManager  {
                     }  
                 }
             },
-            &Some(SpecificMsg::GameComplete(ref game_complete)) => {
+            &Some(SpecificMsg::GameComplete(_)) => {
                 self.stop_recording();
             },
             _ => {},

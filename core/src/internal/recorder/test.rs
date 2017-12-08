@@ -1,7 +1,7 @@
 use super::*;
 use super::super::super::Environment;
 use scaii_defs::protos;
-use scaii_defs::{Agent, Backend, BackendSupported, Module, Recorder, SerializationStyle};
+use scaii_defs::{Agent, Backend, BackendSupported, Module, SerializationStyle};
 use scaii_defs::protos::{scaii_packet, AgentCfg, AgentEndpoint, cfg, Cfg, GameComplete,
              MultiMessage, ScaiiPacket, BackendEndpoint, RecorderConfig, RecorderEndpoint, 
              SerializationResponse};
@@ -10,8 +10,9 @@ use scaii_defs::protos::scaii_packet::SpecificMsg;
 use std::error::Error;
 use std::rc::Rc;
 use std::cell::RefCell;
+use std::path::Path;
 use std::fs::File;
-use bincode::{deserialize_from, Infinite};
+use bincode::{ErrorKind, deserialize_from, Infinite};
 use std::io::BufReader;
 
 
@@ -56,17 +57,17 @@ impl RecorderTester {
             debug_assert!(self.env.router().recorder().is_some());
         }
         let cfg_pkt = self.create_cfg_pkt();
-        let result = self.send_packet(cfg_pkt);
+        let _result = self.send_packet(cfg_pkt)?;
         let total: u32 = step_count * 4;
         for i in 0..total {
             println!("sending send_test_mode_step_hint_message {}", i);
             let _pkts :Vec<ScaiiPacket> = self.send_test_mode_step_hint_message()?;
         }
         let complete_message = self.create_game_complete_packet();
-        self.send_packet(complete_message);
+        self.send_packet(complete_message)?;
         let path_buf = rc_recorder_manager.borrow_mut().get_default_replay_file_path()?;
         let path = path_buf.as_path();
-        verify_persisted_file(&path);
+        verify_persisted_file(&path)?;
         Ok(())
     }
 
@@ -186,29 +187,192 @@ fn test_recorder() {
     }
 }
 
+//pub enum ReplayAction {
+//    Header(ReplayHeader),
+//    Delta(GameAction),
+//    Keyframe(SerializationInfo,GameAction),
+//}
 
-fn verify_persisted_file(path: &Path) {
+fn packet_source_is_agent(pkt : &ScaiiPacket) -> bool {
+    if let Some(Endpoint::Agent(AgentEndpoint {})) = pkt.src.endpoint {
+        return true;
+    }
+    false
+}
+
+fn packet_dest_is_recorder(pkt : &ScaiiPacket) -> bool {
+    if let Some(Endpoint::Recorder(RecorderEndpoint {})) = pkt.dest.endpoint {
+        return true;
+    }
+    false
+}
+
+fn spec_msg_is_recorder_config(pkt : &ScaiiPacket) -> bool {
+    if let Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig {
+                cfgs: _,
+            })) = pkt.specific_msg {
+        return true;
+    }
+    false
+}
+
+fn cfg_payload_is_agentcfg(pkt : &ScaiiPacket) -> bool {
+    match pkt.specific_msg {
+        Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig { cfgs: ref cfg_vec,})) => {
+            if cfg_vec.len() != 1 {
+                return false;
+            }
+            let cfg = &cfg_vec[0];
+            match cfg {
+                &Cfg { which_module: Some(cfg::WhichModule::AgentCfg(AgentCfg { cfg_msg: Some(_),})),} => true,
+                _ => false
+            }
+        }
+        _ => false
+    }
+}
+
+fn verify_game_action_step(replay_action_result: &Result<ReplayAction,Box<ErrorKind>>) -> bool {
+    match replay_action_result {
+        &Ok(ref replay_action) => {
+            match replay_action {
+                &ReplayAction::Delta(GameAction::Step) => true,
+                _ => {
+                    assert!(false, "ERROR = expected Delta(GameAction::Step), got {:?}", replay_action);
+                    false
+                },
+            }
+        },
+        &Err(ref e) => {
+             assert!(false, "ERROR = {}", e.description().clone());
+             false
+        },
+    }
+}
+
+fn verify_key_frame(replay_action:ReplayAction, replay_vec : &mut Vec<ReplayAction>) -> bool {
+    match replay_action {
+        ReplayAction::Keyframe(
+            SerializationInfo { 
+                source: SerializedProtosEndpoint { data: ref spe_data }, 
+                data: SerializedProtosSerializationResponse { data: ref spsr_data }, 
+            }, 
+            GameAction::DecisionPoint(SerializedProtosAction { data: ref spa_data })) => {
+                let endpoint = protos::Endpoint::decode(spe_data);
+                match endpoint {
+                    Ok(protos::Endpoint { endpoint: Some(Endpoint::Backend(BackendEndpoint {})) }) => {},
+                    _ => assert!(false, "ERROR = expected backend endpoint in keyframe, got {:?}", endpoint),
+                }
+                let ser_response = SerializationResponse::decode(spsr_data);
+                match ser_response {
+                    Ok(SerializationResponse { serialized: ref ser_vec, format: an_i32 }) => {
+                        assert!(ser_vec.len() == 3, "ERROR: expected 3 bytes in serialized {:?}", ser_response);
+                        assert!(ser_vec[0] == 7,"ERROR: expected 7 {}", ser_vec[0]);
+                        assert!(ser_vec[1] == 8,"ERROR: expected 8 {}", ser_vec[1]);
+                        assert!(ser_vec[2] == 9,"ERROR: expected 9 {}", ser_vec[2]);
+                        assert!(an_i32 == 1 as i32,"ERROR: expected format 1 {}", an_i32 );
+                    },
+                    _ => assert!(false, "ERROR = expected ser resp with 7,8,9, got {:?}", ser_response),
+                }
+                let protos_action = protos::Action::decode(spa_data);
+                match protos_action {
+                    Ok(protos::Action {
+                        discrete_actions: i32vec,
+                        continuous_actions: empty_vec,
+                        alternate_actions: None,}) => {
+                            if !(i32vec.len() == 1 && i32vec[0] == 1 as i32) {
+                                assert!(false, "ERROR = expected protos action to be discrete 1 , got {:?}", i32vec);
+                            }
+                            if empty_vec.len() != 0 {
+                                assert!(false, "ERROR = expected no continuous actions , got {:?}", empty_vec);
+                            }
+                        },
+                    _ => assert!(false, "ERROR = unexpected protos::Action {:?}", protos_action),
+                }
+                replay_vec.push(replay_action.clone());
+                true
+            },
+        _ => {
+            assert!(false, "ERROR = expected particular keyframe, got {:?}", replay_action);
+            false
+        }
+    }
+
+}
+
+fn verify_persisted_file(path: &Path)  -> Result<(), Box<Error>> {
     use super::ReplayAction;
     println!("verifying persisted file...");
     let replay_file = File::open(path).expect("file not found");
     let mut replay_vec : Vec<ReplayAction> = Vec::new();
     let mut reader = BufReader::new(replay_file);
-    let header = deserialize_from::<BufReader<File>,ReplayAction,Infinite>(&mut reader, Infinite);
-    println!("header {:?}", header);
-    while let Ok(action) = deserialize_from::<BufReader<File>,ReplayAction,Infinite>(&mut reader, Infinite) {
-        println!("action deserialized as {:?}", action);
-        replay_vec.push(action);
+
+    let replay_action_0 = deserialize_from::<BufReader<File>,ReplayAction,Infinite>(&mut reader, Infinite);
+    // deser cfg scaiiPacket 
+    // header Ok(Header(ReplayHeader { configs: SerializedProtosScaiiPacket { data: [122, 6, 10, 4, 26, 2, 10, 0, 242, 1, 2, 50, 0, 250, 1, 2, 18, 0] } }))
+    match replay_action_0 {
+        Ok(header) => {
+            match header {
+                ReplayAction::Header(replay_header) => {
+                    let vec = replay_header.configs.data;
+                    let pkt = ScaiiPacket::decode(vec)?;
+                    assert!(packet_source_is_agent(&pkt), "Expected packet source to be agent {:?}", &pkt);
+                    assert!(packet_dest_is_recorder(&pkt), "Expected packet dest to be recorder {:?}", &pkt);
+                    assert!(spec_msg_is_recorder_config(&pkt), "Expected specific message to be recorder config {:?}", &pkt);
+                    assert!(cfg_payload_is_agentcfg(&pkt), "Expected AgentCfg {:?}", &pkt);
+                },
+                _ => assert!(false, "ERROR = expected ReplayAction::Header, got {:?}", header),
+            }
+        }
+        Err(e) => {
+             assert!(false, "ERROR = {}", e.description().clone());
+        }
     }
-
-
-    //let mut buf: Vec<u8> = Vec::new();
-    //f.read_to_end(&mut buf).expect("could not read all bytes from file");
-    //let decoded: Vec<ReplayAction> = deserialize(&buf[..]).unwrap();
-    //for i in 0..replay_vec.len() {
-    //    println!("REPLAY ACTION : {:?}", replay_vec[i]);
+    let replay_action_1 = deserialize_from::<BufReader<File>,ReplayAction,Infinite>(&mut reader, Infinite);
+    // deser SerializedProtosSerializationResponse
+    // deser SerializedProtosAction
+    let _result = verify_key_frame(replay_action_1.unwrap().clone(), &mut replay_vec);
+    
+    let replay_action_2 = deserialize_from::<BufReader<File>,ReplayAction,Infinite>(&mut reader, Infinite);
+    // verify Delta(Step)
+    //action deserialized as Delta(Step)
+    verify_game_action_step(&replay_action_2);
+    replay_vec.push(replay_action_2.unwrap());
+    
+    let replay_action_3 = deserialize_from::<BufReader<File>,ReplayAction,Infinite>(&mut reader, Infinite);
+    // verify Delta(Step)
+    //action deserialized as Delta(Step)
+verify_game_action_step(&replay_action_3);
+    replay_vec.push(replay_action_3.unwrap());
+    
+    let replay_action_4 = deserialize_from::<BufReader<File>,ReplayAction,Infinite>(&mut reader, Infinite);
+    // deser SerializedProtosSerializationResponse
+    // deser SerializedProtosAction
+    //action deserialized as Keyframe(SerializationInfo { source: SerializedProtosEndpoint { data: [10, 0] }, data: SerializedProtosSerializationResponse { data: [10, 3, 7, 8, 9, 16, 1] } }, DecisionPoint(SerializedProtosAction { data: [8, 1] }))
+    let _result = verify_key_frame(replay_action_4.unwrap().clone(), &mut replay_vec);
+    
+    //replay_vec.push(replay_action_4);
+    
+    let replay_action_5 = deserialize_from::<BufReader<File>,ReplayAction,Infinite>(&mut reader, Infinite);
+    // verify Delta(Step)
+    //action deserialized as Delta(Step)
+    verify_game_action_step(&replay_action_5);
+    replay_vec.push(replay_action_5.unwrap());
+    
+    let replay_action_6 = deserialize_from::<BufReader<File>,ReplayAction,Infinite>(&mut reader, Infinite);
+    // verify Delta(Step)
+    //action deserialized as Delta(Step)
+    verify_game_action_step(&replay_action_6);
+    replay_vec.push(replay_action_6.unwrap());
+    
+    //while let Ok(action) = deserialize_from::<BufReader<File>,ReplayAction,Infinite>(&mut reader, Infinite) {
+    //    println!("action deserialized as {:?}", action);
+    //    replay_vec.push(action);
     //}
-    //verify
-    println!("decoded replay has this many elements {}", replay_vec.len());
+
+
+    assert!(replay_vec.len() == 6, "reconstructed ReplayAction list length incorrect: {}", replay_vec.len());
+    Ok(())
 }
 
 impl Backend for MockRts {
