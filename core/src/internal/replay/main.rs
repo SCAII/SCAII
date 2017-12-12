@@ -1,21 +1,30 @@
 extern crate scaii_core;
 extern crate scaii_defs;
-use scaii_core::Environment;
-use scaii_defs::protos;
-use scaii_defs::{Backend, BackendSupported, Module, Replay, SerializationStyle};
-use protos::{scaii_packet, AgentEndpoint, CoreEndpoint, Entity, InitAs, ModuleInit,
-             MultiMessage, ScaiiPacket, BackendEndpoint, ModuleEndpoint, ReplayEndpoint, 
+extern crate bincode;
+extern crate prost;
+use prost::Message;
+use protos::{scaii_packet, AgentCfg, AgentEndpoint, cfg, Cfg, CoreEndpoint, Entity, InitAs, ModuleInit,
+             MultiMessage, ScaiiPacket, BackendEndpoint, ModuleEndpoint, ReplayEndpoint, RecorderConfig, RecorderEndpoint,
              ReplayStep, Viz, VizInit};
 use protos::cfg::WhichModule;
 use protos::user_command::UserCommandType;
 use protos::endpoint::Endpoint;
 use protos::scaii_packet::SpecificMsg;
+use scaii_core::Environment;
+use scaii_core::{SerializedProtosSerializationResponse,SerializedProtosAction, SerializedProtosScaiiPacket,
+                SerializedProtosEndpoint,GameAction,ReplayAction,SerializationInfo,ReplayHeader};
+use scaii_defs::protos;
+use scaii_defs::{Backend, BackendSupported, Module, Replay, SerializationStyle};
 use std::error::Error;
 use std::{thread, time};
 use std::rc::Rc;
 use std::cell::RefCell;
 use std::fmt;
 use std::sync::{Arc, mpsc, Mutex};
+use std::fs::File;
+use std::path::{Path};
+use std::io::BufReader;
+use bincode::{deserialize_from, Infinite};
 
 #[derive(Debug)]
 struct ReplayError {
@@ -46,29 +55,6 @@ enum GameState {
     Paused,
     RewoundAndNeedingToSendInitialKeyframe,
     JumpedAndNeedingToDoFollowupNavigation,
-}
-#[derive(Clone)]
-enum Action {
-     DecisionPoint(protos::Action),
-     Step,
-}
-
-#[derive(Clone)]
-enum ReplayAction {
-    Header(ReplayHeader),
-    Delta(Action),
-    Keyframe(SerializationInfo,Action),
-}
-
-#[derive(Clone)]
-struct SerializationInfo {
-    source_module_name: String,
-    data: protos::SerializationResponse,
-}
-
-#[derive(Clone)]
-struct ReplayHeader {
-    configs: Vec<protos::ScaiiPacket>,
 }
 
 /// Replay owns the environment, but we need this
@@ -159,6 +145,7 @@ impl ReplayManager  {
         };
         Ok(scaii_pkts)
     }
+
     fn poll_viz(&mut self) -> Result<Vec<ScaiiPacket>, Box<Error>> {
         let pkt : ScaiiPacket = ScaiiPacket {
             src: protos::Endpoint {
@@ -200,21 +187,27 @@ impl ReplayManager  {
         }
     }
 
-    fn convert_action_info_to_action_pkt(&mut self, action : Action) -> ScaiiPacket {
+    fn convert_action_info_to_action_pkt(&mut self, action : GameAction) -> Result<ScaiiPacket, Box<Error>> {
         match action {
-            Action::DecisionPoint(protos_action) => {
-                ScaiiPacket {
-                    src: protos::Endpoint {
-                        endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+            GameAction::DecisionPoint(serialized_protos_action) => {
+                let protos_action_decode_result = protos::Action::decode(serialized_protos_action.data);
+                match protos_action_decode_result {
+                    Ok(protos_action) => {
+                        Ok(ScaiiPacket {
+                            src: protos::Endpoint {
+                                endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+                            },
+                            dest: protos::Endpoint {
+                                endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
+                            },
+                            specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::Action(protos_action)),
+                        })
                     },
-                    dest: protos::Endpoint {
-                        endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-                    },
-                    specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::Action(protos_action)),
+                    Err(err) => { return Err(Box::new(err)); }
                 }
             }
-            Action::Step => {
-                ScaiiPacket {
+            GameAction::Step => {
+                Ok(ScaiiPacket {
                     src: protos::Endpoint {
                         endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
                     },
@@ -222,7 +215,7 @@ impl ReplayManager  {
                         endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
                     },
                     specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::ReplayStep(ReplayStep{})),
-                }
+                })
             }
         }
         
@@ -238,13 +231,14 @@ impl ReplayManager  {
         };
         Ok(scaii_pkts)
     }
+
     fn send_replay_action_to_backend(&mut self) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
         let empty_vec : Vec<protos::ScaiiPacket> = Vec::new();
         let replay_action : ReplayAction = self.replay_data[self.step_position as usize].clone();
         match replay_action {
             ReplayAction::Delta(action) => {
                 println!("REPLAY found delta...");
-                let action_pkt : ScaiiPacket = self.convert_action_info_to_action_pkt(action);
+                let action_pkt : ScaiiPacket = self.convert_action_info_to_action_pkt(action)?;
                 let mut pkts: Vec<ScaiiPacket> = Vec::new();
                 pkts.push(action_pkt);
                 let mm = MultiMessage { packets: pkts };
@@ -253,15 +247,24 @@ impl ReplayManager  {
             }
             ReplayAction::Keyframe(serialization_info, action) => {
                 println!("REPLAY found keyframe...");
-                let ser_response : protos::SerializationResponse = serialization_info.data;
-                let ser_response_pkt : ScaiiPacket = self.wrap_response_in_scaii_pkt(ser_response);
-                let action_pkt : ScaiiPacket = self.convert_action_info_to_action_pkt(action);
-                let mut pkts: Vec<ScaiiPacket> = Vec::new();
-                pkts.push(ser_response_pkt);
-                pkts.push(action_pkt);
-                let mm = MultiMessage { packets: pkts };
-                let scaii_pkts = self.deploy_replay_directives_to_backend(mm)?;
-                Ok(scaii_pkts)
+                let ser_proto_ser_resp : SerializedProtosSerializationResponse = serialization_info.data;
+                let ser_response_decode_result = protos::SerializationResponse::decode(ser_proto_ser_resp.data);
+                match ser_response_decode_result {
+                    Ok(ser_response) => {
+                        let ser_response_pkt : ScaiiPacket = self.wrap_response_in_scaii_pkt(ser_response);
+                        let action_pkt : ScaiiPacket = self.convert_action_info_to_action_pkt(action)?;
+                        let mut pkts: Vec<ScaiiPacket> = Vec::new();
+                        pkts.push(ser_response_pkt);
+                        pkts.push(action_pkt);
+                        let mm = MultiMessage { packets: pkts };
+                        let scaii_pkts = self.deploy_replay_directives_to_backend(mm)?;
+                        Ok(scaii_pkts)
+                    }
+                    Err(err) => {
+                        Err(Box::new(err))
+                    }
+                }
+                
             }
             ReplayAction::Header(_) => {
                 Ok(empty_vec)
@@ -299,6 +302,7 @@ impl ReplayManager  {
             specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::TestControl(protos::TestControl{args: args_list,})),
         }
     }
+
     fn send_test_mode_rewind_hint_message(&mut self) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
         let target : String = String::from("MockRts");
         let command : String = String::from("rewind");
@@ -308,6 +312,7 @@ impl ReplayManager  {
         let pkt : ScaiiPacket = self.create_test_control_message(args_list);
         self.send_packet_to_backend(pkt)
     }
+
     fn send_test_mode_jump_to_hint_message(&mut self, target_index: u64) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
         let target : String = String::from("MockRts");
         let command : String = String::from("jump");
@@ -652,31 +657,77 @@ fn create_entity_at(x: &f64, y: &f64) -> Entity {
     }
 }
 
-fn get_test_mode_replay_header() -> ReplayHeader {
-    let configs : Vec<protos::ScaiiPacket> = Vec::new();
-    // rpc is done by replay not at gameplay time so won't be in header
-    // viz init will be sent by backend so not from here
-    ReplayHeader {
-        configs: configs,
+fn get_test_mode_replay_header() -> Result<ReplayHeader, Box<Error>> {
+    let config_packet  = create_cfg_pkt();
+    let mut data_vec : Vec<u8> = Vec::new();
+    let result = config_packet.encode(&mut data_vec);
+    match result {
+        Ok(_) => {
+            let spsp = SerializedProtosScaiiPacket{
+                data: data_vec,
+            };
+            // rpc is done by replay not at gameplay time so won't be in header
+            // viz init will be sent by backend so not from here
+            Ok(ReplayHeader {
+                configs: spsp,
+            })
+        }
+        Err(err) => {
+            Err(Box::new(err))
+        }
+    }
+    
+}
+
+fn create_cfg_pkt() -> ScaiiPacket {
+    let mut cfg_vec: Vec<Cfg> = Vec::new();
+    let cfg = Cfg {
+        which_module: Some(cfg::WhichModule::AgentCfg(AgentCfg {
+            cfg_msg: Some(Vec::new()),
+        })),
+    };
+    cfg_vec.push(cfg);
+    ScaiiPacket {
+        src: protos::Endpoint {
+            endpoint: Some(Endpoint::Agent(AgentEndpoint {})),
+        },
+        dest: protos::Endpoint {
+            endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})),
+        },
+        specific_msg: Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig {
+            cfgs: cfg_vec,
+        })),
     }
 }
 
 fn get_test_mode_key_frame() -> ReplayAction {
-    let ser_info = SerializationInfo {
-        source_module_name: String::from("rts"),
-        data: protos::SerializationResponse {
-            serialized: Vec::new(),
-            format: 1,
-        },
+    let protos_ser_response = protos::SerializationResponse {
+        serialized: Vec::new(),
+        format: 1,
     };
-    let action = Action::Step;
+    let mut psr_data : Vec<u8> = Vec::new();
+    let _result = protos_ser_response.encode(&mut psr_data);
+    let serialized_protos_ser_response = SerializedProtosSerializationResponse {
+        data: psr_data,
+    };
+    let endpoint = protos::Endpoint { endpoint: Some(Endpoint::Backend(BackendEndpoint {})),};
+    let mut ept_data : Vec<u8> = Vec::new();
+    let _result = endpoint.encode(&mut ept_data);
+    let serialized_protos_endpoint = SerializedProtosEndpoint {
+        data: ept_data,
+    };
+    let ser_info = SerializationInfo {
+        source: serialized_protos_endpoint,
+        data: serialized_protos_ser_response,
+    };
+    let action = GameAction::Step;
     ReplayAction::Keyframe(ser_info, action)
 }
 
-fn get_test_mode_replay_info(step_count: u32, interval: u32) -> Vec<ReplayAction> {
+fn get_test_mode_replay_info(step_count: u32, interval: u32) -> Result<Vec<ReplayAction>, Box<Error>> {
     let mut result: Vec<ReplayAction> = Vec::new();
     // add Header
-    let replay_header = get_test_mode_replay_header();
+    let replay_header = get_test_mode_replay_header()?;
     result.push(ReplayAction::Header(replay_header));
 
     for number in 0..step_count {
@@ -687,48 +738,103 @@ fn get_test_mode_replay_info(step_count: u32, interval: u32) -> Vec<ReplayAction
         else if number % interval == 1 {
             let mut d_actions : Vec<i32> = Vec::new();
             d_actions.push(3);
-            let delta_1 = ReplayAction::Delta(Action::DecisionPoint(protos::Action{
+            let protos_action = protos::Action{
                 discrete_actions: d_actions,
                 continuous_actions: Vec::new(),
                 alternate_actions:None,
-            }));
-            result.push(delta_1);
+            };
+            let mut serialized_protos_action_bytes : Vec<u8> = Vec::new();
+            let protos_action_encode_result = protos_action.encode(&mut serialized_protos_action_bytes);
+            match protos_action_encode_result {
+                Ok(_) => {
+                    let serialized_protos_action = SerializedProtosAction {
+                        data: serialized_protos_action_bytes,
+                    };
+                    let delta_1 = ReplayAction::Delta(GameAction::DecisionPoint(serialized_protos_action));
+                    result.push(delta_1);
+                },
+                Err(err) => {
+                    return Err(Box::new(err));
+                }
+            }
+            
         }
         else {
-            let delta_2 = ReplayAction::Delta(Action::Step);
+            let delta_2 = ReplayAction::Delta(GameAction::Step);
             result.push(delta_2);
         }
     }
-    result
+    Ok(result)
 }
 
+fn load_replay_file(path: &Path)  -> Result<Vec<ReplayAction>, Box<Error>> {
+    //use super::ReplayAction;
+    println!("loading replay file...");
+    let replay_file = File::open(path).expect("file not found");
+    let mut replay_vec : Vec<ReplayAction> = Vec::new();
+    let mut reader = BufReader::new(replay_file);
 
+    while let Ok(action) = deserialize_from::<BufReader<File>,ReplayAction,Infinite>(&mut reader, Infinite) {
+        println!("action deserialized as {:?}", action);
+        replay_vec.push(action);
+    }
+    Ok(replay_vec)
+}
 
-// need to add a recorderConfig message (sent by agent)  - it will contain repeated Cfg  to capture the various configs
-// if recorder gets recorderConfig message , it starts recordings
-// so always be instantiated by core, just will remain dormant unless it gets that message
-// don't need a special proto message to convey the list of Cfg's because I can just persist them as part of structs and then send individual Cfg messages around at replay time.
+fn load_replay_info_from_recorder_produced_file() -> Result<Vec<ReplayAction>, Box<Error>> {
+    let path_result = scaii_core::get_default_replay_file_path();
+    match path_result {
+        Ok(path) => {
+            let load_result = load_replay_file(&path);
+            match load_result {
+                Ok(replay_vec) => {
+                    Ok(replay_vec)
+                }
+                Err(err) => Err(err)
+            }
+        }
+        Err(err) => {
+            Err(err)
+        }
+    }
+}
+#[allow(dead_code)]
+enum RunMode {
+    Live,
+    TestUsingDataFromFileGeneratedByRecorder,
+    TestUsingDataGeneratedLocally,
+}
 
+#[allow(unused_assignments)]
 fn main() {
     let mut environment : Environment = Environment::new();
-    let test_mode = true;
+    //let run_mode = RunMode::TestUsingDataFromFileGeneratedByRecorder;
+    let run_mode = RunMode::TestUsingDataGeneratedLocally;
+    //let run_mode = RunMode::Live;
     let mut replay_info : Vec<ReplayAction> = Vec::new();
-    if test_mode {
-        let step_count : u32 = 300;
-        configure_and_register_mock_rts(&mut environment,step_count);
-        replay_info = get_test_mode_replay_info(step_count,5);
+    match run_mode{
+        RunMode::TestUsingDataFromFileGeneratedByRecorder => {
+            let step_count : u32 = 6;
+            configure_and_register_mock_rts(&mut environment,step_count);
+            replay_info = load_replay_info_from_recorder_produced_file().expect("Error - problem generating test replay_info");
+        }
+        RunMode::TestUsingDataGeneratedLocally => {
+            let step_count : u32 = 300;
+            configure_and_register_mock_rts(&mut environment,step_count);
+            replay_info = get_test_mode_replay_info(step_count,5).expect("Error - problem generating test replay_info");
+        }
+        RunMode::Live => {
+            println!("Live run mode not yet implemented...");
+            return;
+        }
     }
-    else {
-        // TBD replay_info = load_from_file()
-    }
+    
     let replay_message_queue = ReplayMessageQueue {
         incoming_messages: Vec::new(),
     };
     let rc_replay_message_queue = Rc::new(RefCell::new(replay_message_queue));
-    
     {
         environment.router_mut().register_replay(Box::new(rc_replay_message_queue.clone()));
-
         debug_assert!(environment.router().replay().is_some());
     }
     let mut replay_manager =  ReplayManager {
@@ -741,8 +847,10 @@ fn main() {
         step_position: 0,
         test_mode: false,
     };
-    if test_mode {
-        replay_manager.test_mode = true;
+    match run_mode {
+        RunMode::TestUsingDataFromFileGeneratedByRecorder => replay_manager.test_mode = true,
+        RunMode::TestUsingDataGeneratedLocally =>            replay_manager.test_mode = true,
+        RunMode::Live =>                                     replay_manager.test_mode = false,
     }
     replay_manager.start();
 }

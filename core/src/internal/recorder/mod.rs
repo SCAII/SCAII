@@ -14,7 +14,7 @@ use std::fs;
 use bincode::{serialize, Infinite};
 use std::io::prelude::*;
 use std::fs::File;
- use prost::Message;
+use prost::Message;
 
 #[cfg(test)]
 mod test;
@@ -48,19 +48,19 @@ impl Error for RecorderError {
 
 #[derive(Clone,Serialize, Deserialize, PartialEq, Debug)]
 pub struct SerializedProtosSerializationResponse {
-    data: Vec<u8>,
+    pub data: Vec<u8>,
 }
 #[derive(Clone,Serialize, Deserialize, PartialEq, Debug)]
 pub struct SerializedProtosAction {
-    data: Vec<u8>,
+    pub data: Vec<u8>,
 }
 #[derive(Clone,Serialize, Deserialize, PartialEq, Debug)]
 pub struct SerializedProtosScaiiPacket {
-    data: Vec<u8>,
+    pub data: Vec<u8>,
 }
 #[derive(Clone,Serialize, Deserialize, PartialEq, Debug)]
 pub struct SerializedProtosEndpoint {
-    data: Vec<u8>,
+    pub data: Vec<u8>,
 }
 
 //
@@ -82,13 +82,13 @@ pub enum ReplayAction {
 
 #[derive(Clone,Serialize, Deserialize, PartialEq, Debug)]
 pub struct SerializationInfo {
-    source: SerializedProtosEndpoint,
-    data: SerializedProtosSerializationResponse,
+    pub source: SerializedProtosEndpoint,
+    pub data: SerializedProtosSerializationResponse,
 }
 
 #[derive(Clone,Serialize, Deserialize, PartialEq, Debug)]
 pub struct ReplayHeader {
-    configs: SerializedProtosScaiiPacket,
+    pub configs: SerializedProtosScaiiPacket,
 }
 
 //
@@ -114,41 +114,14 @@ impl RecorderManager  {
     }
 
     fn init(&mut self) -> Result<(), Box<Error>>{
-        let replay_dir_path_buf = self.get_default_replay_dir()?;
-        self.ensure_dir_exists(&replay_dir_path_buf)?;
-        let path_buf = self.get_default_replay_file_path()?;
+        let replay_dir_path_buf = get_default_replay_dir()?;
+        ensure_dir_exists(&replay_dir_path_buf)?;
+        let path_buf = get_default_replay_file_path()?;
         self.file_path = Some(path_buf);
         Ok(())
     }
 
-    fn get_default_replay_file_path(&mut self) -> Result<PathBuf, Box<Error>> {
-        let mut replay_dir_path_buf = self.get_default_replay_dir()?;
-        replay_dir_path_buf.push("replay_data.txt");
-        Ok(replay_dir_path_buf)
-    }
 
-    fn get_default_replay_dir(&mut self) -> Result<PathBuf, Box<Error>> {
-        match env::var("SCAII_ROOT") {
-            Ok(root) => {
-                let mut path = PathBuf::from(root);
-                path.push("core");
-                path.push("replay_data");
-                Ok(path)
-            },
-            Err(e) => {
-                let error_message = e.description().clone();
-                let message = format!("RecorderManager could not determine environment variable SCAII_ROOT. {}", error_message);
-                Err(Box::new(RecorderError::new(message.as_str())))
-            },
-        }
-    }
-
-    fn ensure_dir_exists(&mut self, path_buf: &PathBuf) -> Result<(), Box<Error>> {
-        if !path_buf.as_path().exists() {
-            fs::create_dir_all(path_buf.as_path())?;
-        }
-        Ok(())
-    }
    
     fn get_serialized_protos_action(&mut self, action: protos::Action) -> Result<SerializedProtosAction, Box<Error>> {
         let mut action_data: Vec<u8> = Vec::new();
@@ -296,3 +269,31 @@ impl Module for RecorderManager  {
 
 impl Recorder for RecorderManager {}
 
+pub fn get_default_replay_file_path() -> Result<PathBuf, Box<Error>> {
+    let mut replay_dir_path_buf = get_default_replay_dir()?;
+    replay_dir_path_buf.push("replay_data.txt");
+    Ok(replay_dir_path_buf)
+}
+
+pub fn get_default_replay_dir() -> Result<PathBuf, Box<Error>> {
+    match env::var("SCAII_ROOT") {
+        Ok(root) => {
+            let mut path = PathBuf::from(root);
+            path.push("core");
+            path.push("replay_data");
+            Ok(path)
+        },
+        Err(e) => {
+            let error_message = e.description().clone();
+            let message = format!("RecorderManager could not determine environment variable SCAII_ROOT. {}", error_message);
+            Err(Box::new(RecorderError::new(message.as_str())))
+        },
+    }
+}
+
+fn ensure_dir_exists(path_buf: &PathBuf) -> Result<(), Box<Error>> {
+    if !path_buf.as_path().exists() {
+        fs::create_dir_all(path_buf.as_path())?;
+    }
+    Ok(())
+}
