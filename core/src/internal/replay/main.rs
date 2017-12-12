@@ -5,7 +5,7 @@ extern crate prost;
 use prost::Message;
 use protos::{scaii_packet, AgentCfg, AgentEndpoint, cfg, Cfg, CoreEndpoint, Entity, InitAs, ModuleInit,
              MultiMessage, ScaiiPacket, BackendEndpoint, ModuleEndpoint, ReplayEndpoint, RecorderConfig, RecorderEndpoint,
-             ReplayStep, Viz, VizInit};
+             ReplayStep, ReplaySessionConfig, Viz, VizInit};
 use protos::cfg::WhichModule;
 use protos::user_command::UserCommandType;
 use protos::endpoint::Endpoint;
@@ -99,12 +99,29 @@ impl ReplayManager  {
         // pull off header and configure
         let header: ReplayAction = self.replay_data.remove(0);
         self.configure_as_per_header(header);
+        let steps = self.replay_data.len() as i64;
+        let mm = wrap_packet_in_multi_message(self.create_replay_session_config_message(steps));
+        self.env.route_messages(&mm);
+        self.env.update();
+
         let result = self.run_and_poll();
         match result {
             Ok(_) => {},
             Err(e) => {
                 panic!("problem in run_and_poll: {:?}", e);
             }
+        }
+    }
+
+    fn create_replay_session_config_message(&mut self, steps : i64) -> ScaiiPacket {
+        ScaiiPacket {
+            src: protos::Endpoint {
+                endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+            },
+            dest: protos::Endpoint {
+                endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
+            },
+            specific_msg: Some(SpecificMsg::ReplaySessionConfig( ReplaySessionConfig { step_count: steps})),
         }
     }
 
@@ -808,20 +825,20 @@ enum RunMode {
 #[allow(unused_assignments)]
 fn main() {
     let mut environment : Environment = Environment::new();
-    //let run_mode = RunMode::TestUsingDataFromFileGeneratedByRecorder;
-    let run_mode = RunMode::TestUsingDataGeneratedLocally;
+    let run_mode = RunMode::TestUsingDataFromFileGeneratedByRecorder;
+    //let run_mode = RunMode::TestUsingDataGeneratedLocally;
     //let run_mode = RunMode::Live;
     let mut replay_info : Vec<ReplayAction> = Vec::new();
     match run_mode{
         RunMode::TestUsingDataFromFileGeneratedByRecorder => {
-            let step_count : u32 = 6;
-            configure_and_register_mock_rts(&mut environment,step_count);
+            configure_and_register_mock_rts(&mut environment);
             replay_info = load_replay_info_from_recorder_produced_file().expect("Error - problem generating test replay_info");
         }
         RunMode::TestUsingDataGeneratedLocally => {
+            configure_and_register_mock_rts(&mut environment);
             let step_count : u32 = 300;
-            configure_and_register_mock_rts(&mut environment,step_count);
-            replay_info = get_test_mode_replay_info(step_count,5).expect("Error - problem generating test replay_info");
+            let interval : u32 = 5;
+            replay_info = get_test_mode_replay_info(step_count,interval).expect("Error - problem generating test replay_info");
         }
         RunMode::Live => {
             println!("Live run mode not yet implemented...");
@@ -855,15 +872,15 @@ fn main() {
     replay_manager.start();
 }
 
-fn configure_and_register_mock_rts(env: &mut Environment, count : u32){
-    let mut rts = MockRts {
+fn configure_and_register_mock_rts(env: &mut Environment){
+    let rts = MockRts {
         viz_sequence: Vec::new(),
         outbound_messages: Vec::new(),
         step_position: 0,
-        step_count: count,
+        step_count: 0,
         sent_viz_init: false,
     };
-    rts.init();
+    
     {
         env.router_mut().register_backend(Box::new(rts));
     } 
@@ -879,7 +896,7 @@ struct MockRts {
 }
 
 impl MockRts {
-    fn init(&mut self) {
+    fn init_entity_sequence(&mut self) {
         let mut entities = generate_entity_sequence(self.step_count);
         for i in 0..self.step_count {
             let entity = entities.remove(0);
@@ -941,6 +958,10 @@ impl Module for MockRts {
                     self.send_viz_init();
                     self.sent_viz_init= true;
                 }
+            },
+            &Some(scaii_packet::SpecificMsg::ReplaySessionConfig(protos::ReplaySessionConfig { step_count: steps })) => {
+                self.step_count = steps as u32;
+                self.init_entity_sequence();
             },
             &Some(scaii_packet::SpecificMsg::ReplayStep(protos::ReplayStep { })) => {
                 if self.step_position < self.step_count {

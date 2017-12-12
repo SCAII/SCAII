@@ -42,6 +42,7 @@ message ScaiiPacket {
 		RecorderStep recorder_step = 14;
 		RecorderConfig recorder_config = 15;
 		GameComplete game_complete = 16;
+		ReplaySessionConfig replay_session_config = 17;
 		Other other = 29;
 	}
 
@@ -270,3 +271,7 @@ message RecorderConfig {
 }
 
 message GameComplete {}
+
+message ReplaySessionConfig {
+	required int64 step_count = 1;
+}
