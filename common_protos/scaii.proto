@@ -267,7 +267,7 @@ message RecorderStep {
 
 // message to trigger recorder
 message RecorderConfig {
-	repeated Cfg cfgs = 1;
+	repeated ScaiiPacket pkts = 1;
 }
 
 message GameComplete {}

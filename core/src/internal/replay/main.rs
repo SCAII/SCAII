@@ -91,26 +91,20 @@ struct ReplayManager {
 }
 
 impl ReplayManager  {
-    fn start(&mut self){
+    fn start(&mut self) -> Result<(), Box<Error>> {
         // startup viz via rpc
         let mm = wrap_packet_in_multi_message(create_rpc_config_message());
         self.env.route_messages(&mm);
         self.env.update();
         // pull off header and configure
         let header: ReplayAction = self.replay_data.remove(0);
-        self.configure_as_per_header(header);
+        self.configure_as_per_header(header)?;
         let steps = self.replay_data.len() as i64;
         let mm = wrap_packet_in_multi_message(self.create_replay_session_config_message(steps));
         self.env.route_messages(&mm);
         self.env.update();
 
-        let result = self.run_and_poll();
-        match result {
-            Ok(_) => {},
-            Err(e) => {
-                panic!("problem in run_and_poll: {:?}", e);
-            }
-        }
+        self.run_and_poll()
     }
 
     fn create_replay_session_config_message(&mut self, steps : i64) -> ScaiiPacket {
@@ -125,8 +119,28 @@ impl ReplayManager  {
         }
     }
 
-    fn configure_as_per_header(&mut self, _header: ReplayAction) {
-        //TBD
+    fn configure_as_per_header(&mut self, header: ReplayAction) -> Result<(), Box<Error>> {
+        match header {
+            ReplayAction::Header(ReplayHeader { configs: SerializedProtosScaiiPacket { data:  u8_vec, }, }) => {
+                let pkt = ScaiiPacket::decode(u8_vec)?;
+                match pkt.specific_msg {
+                    Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig { pkts: pkt_vec,})) => {
+                        for pkt in pkt_vec.iter() {
+                            let pkt_to_send= pkt.clone();
+                            let mm = wrap_packet_in_multi_message(pkt_to_send);
+                            self.env.route_messages(&mm);
+                            self.env.update();
+                            println!("==========================================sent config============");
+                        }
+                        Ok(())
+                    }
+                    _ => Err(Box::new(ReplayError::new(&format!("replay action header malformed - should contain RecorderConfig ScaiiPacket {:?}", pkt)[..])))
+                }
+            }
+            _ => {
+                Err(Box::new(ReplayError::new(&format!("replay action header malformed - should be ReplayAction::Header(ReplayHeader)... {:?}", header)[..])))
+            }
+        }
     }
 
     fn notify_viz_that_jump_completed(&mut self)  -> Result<Vec<ScaiiPacket>, Box<Error>> {
@@ -697,13 +711,18 @@ fn get_test_mode_replay_header() -> Result<ReplayHeader, Box<Error>> {
 }
 
 fn create_cfg_pkt() -> ScaiiPacket {
-    let mut cfg_vec: Vec<Cfg> = Vec::new();
+    let mut vec: Vec<ScaiiPacket> = Vec::new();
     let cfg = Cfg {
         which_module: Some(cfg::WhichModule::AgentCfg(AgentCfg {
             cfg_msg: Some(Vec::new()),
         })),
     };
-    cfg_vec.push(cfg);
+    let cfg_packet = ScaiiPacket {
+        src: protos::Endpoint {  endpoint: Some(Endpoint::Agent(AgentEndpoint {}))},
+        dest: protos::Endpoint { endpoint: Some(Endpoint::Backend(BackendEndpoint {}))},
+        specific_msg: Some(scaii_packet::SpecificMsg::Config(cfg)),
+    };
+    vec.push(cfg_packet);
     ScaiiPacket {
         src: protos::Endpoint {
             endpoint: Some(Endpoint::Agent(AgentEndpoint {})),
@@ -712,7 +731,7 @@ fn create_cfg_pkt() -> ScaiiPacket {
             endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})),
         },
         specific_msg: Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig {
-            cfgs: cfg_vec,
+            pkts: vec,
         })),
     }
 }
@@ -825,8 +844,8 @@ enum RunMode {
 #[allow(unused_assignments)]
 fn main() {
     let mut environment : Environment = Environment::new();
-    let run_mode = RunMode::TestUsingDataFromFileGeneratedByRecorder;
-    //let run_mode = RunMode::TestUsingDataGeneratedLocally;
+    //let run_mode = RunMode::TestUsingDataFromFileGeneratedByRecorder;
+    let run_mode = RunMode::TestUsingDataGeneratedLocally;
     //let run_mode = RunMode::Live;
     let mut replay_info : Vec<ReplayAction> = Vec::new();
     match run_mode{
@@ -869,7 +888,14 @@ fn main() {
         RunMode::TestUsingDataGeneratedLocally =>            replay_manager.test_mode = true,
         RunMode::Live =>                                     replay_manager.test_mode = false,
     }
-    replay_manager.start();
+    let result = replay_manager.start();
+    match result {
+        Ok(_) => {},
+        Err(e) => {
+            println!("Replay Error {:?}", e);
+            return;
+        }
+    }
 }
 
 fn configure_and_register_mock_rts(env: &mut Environment){

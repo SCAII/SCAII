@@ -65,7 +65,7 @@ impl RecorderTester {
         }
         let complete_message = self.create_game_complete_packet();
         self.send_packet(complete_message)?;
-        let path_buf = rc_recorder_manager.borrow_mut().get_default_replay_file_path()?;
+        let path_buf = get_default_replay_file_path()?;
         let path = path_buf.as_path();
         verify_persisted_file(&path)?;
         Ok(())
@@ -124,13 +124,18 @@ impl RecorderTester {
     }
 
     fn create_cfg_pkt(&mut self, ) -> ScaiiPacket {
-        let mut cfg_vec: Vec<Cfg> = Vec::new();
+        let mut vec: Vec<ScaiiPacket> = Vec::new();
         let cfg = Cfg {
             which_module: Some(cfg::WhichModule::AgentCfg(AgentCfg {
                 cfg_msg: Some(Vec::new()),
             })),
         };
-        cfg_vec.push(cfg);
+        let cfg_packet = ScaiiPacket {
+            src: protos::Endpoint {  endpoint: Some(Endpoint::Agent(AgentEndpoint {}))},
+            dest: protos::Endpoint { endpoint: Some(Endpoint::Backend(BackendEndpoint {}))},
+            specific_msg: Some(scaii_packet::SpecificMsg::Config(cfg)),
+        };
+        vec.push(cfg_packet);
         ScaiiPacket {
             src: protos::Endpoint {
                 endpoint: Some(Endpoint::Agent(AgentEndpoint {})),
@@ -139,7 +144,7 @@ impl RecorderTester {
                 endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})),
             },
             specific_msg: Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig {
-                cfgs: cfg_vec,
+                pkts: vec,
             })),
         }
     }
@@ -209,7 +214,7 @@ fn packet_dest_is_recorder(pkt : &ScaiiPacket) -> bool {
 
 fn spec_msg_is_recorder_config(pkt : &ScaiiPacket) -> bool {
     if let Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig {
-                cfgs: _,
+                pkts: _,
             })) = pkt.specific_msg {
         return true;
     }
@@ -218,13 +223,13 @@ fn spec_msg_is_recorder_config(pkt : &ScaiiPacket) -> bool {
 
 fn cfg_payload_is_agentcfg(pkt : &ScaiiPacket) -> bool {
     match pkt.specific_msg {
-        Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig { cfgs: ref cfg_vec,})) => {
-            if cfg_vec.len() != 1 {
+        Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig { pkts: ref pkt_vec,})) => {
+            if pkt_vec.len() != 1 {
                 return false;
             }
-            let cfg = &cfg_vec[0];
-            match cfg {
-                &Cfg { which_module: Some(cfg::WhichModule::AgentCfg(AgentCfg { cfg_msg: Some(_),})),} => true,
+            let contained_pkt = &pkt_vec[0];
+            match contained_pkt.specific_msg {
+                Some(scaii_packet::SpecificMsg::Config(Cfg { which_module: Some(cfg::WhichModule::AgentCfg(AgentCfg { cfg_msg: Some(_),})),})) => true,
                 _ => false
             }
         }
