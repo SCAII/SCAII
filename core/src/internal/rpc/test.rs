@@ -19,17 +19,18 @@ fn connect_attempt() {
     let (tx, rx) = mpsc::channel();
     // start a thread that starts listening on the port
     let handle = thread::spawn(move || {
-        let config = RpcConfig {
-            ip: Some("127.0.0.1".to_string()),
-            port: Some(6112),
-            init_as: InitAs {
-                init_as: Some(protos::init_as::InitAs::Module(ModuleInit {
-                    name: String::from("RpcPluginModule"),
-                })),
-            },
-            command: None,
-            command_args: Vec::new(),
-        };
+        let config = super::get_rpc_config_for_viz(None, Vec::new());
+        // let config = RpcConfig {
+        //     ip: Some("127.0.0.1".to_string()),
+        //     port: Some(6112),
+        //     init_as: InitAs {
+        //         init_as: Some(protos::init_as::InitAs::Module(ModuleInit {
+        //             name: String::from("RpcPluginModule"),
+        //         })),
+        //     },
+        //     command: None,
+        //     command_args: Vec::new(),
+        // };
         let result = init_rpc(config).expect("trying to init_rpc");
         match result {
             LoadedAs::Module(mut rpc_module, _) => {
@@ -142,6 +143,8 @@ fn send_chart_info() {
     use scaii_defs::protos::ModuleInit;
 
     //prost_build::compile_protos(&["../common_protos/scaii.proto"], &["../common_protos"]).unwrap();
+
+
     let comm = Some(String::from(
         "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
     ));
@@ -149,17 +152,8 @@ fn send_chart_info() {
     vec.push(String::from(
         "file:///C:/Users/Jed%20Irvine/exact/SCAII/viz/index.html",
     ));
-    let config = RpcConfig {
-        ip: Some("127.0.0.1".to_string()),
-        port: Some(6112),
-        init_as: InitAs {
-            init_as: Some(protos::init_as::InitAs::Module(ModuleInit {
-                name: String::from("RpcPluginModule"),
-            })),
-        },
-        command: comm,
-        command_args: vec,
-    };
+    let config = super::get_rpc_config_for_viz(comm, vec);
+    
     let result = init_rpc(config).expect("trying to init_rpc");
     match result {
         LoadedAs::Module(mut rpc_module, _) => {

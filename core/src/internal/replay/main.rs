@@ -2,8 +2,10 @@ extern crate scaii_core;
 extern crate scaii_defs;
 extern crate bincode;
 extern crate prost;
+extern crate url;
+
 use prost::Message;
-use protos::{scaii_packet, AgentCfg, AgentEndpoint, cfg, Cfg, CoreEndpoint, Entity, InitAs, ModuleInit,
+use protos::{scaii_packet, AgentCfg, AgentEndpoint, cfg, Cfg, CoreEndpoint, Entity,
              MultiMessage, ScaiiPacket, BackendEndpoint, ModuleEndpoint, ReplayEndpoint, RecorderConfig, RecorderEndpoint,
              ReplayStep, ReplaySessionConfig, Viz, VizInit};
 use protos::cfg::WhichModule;
@@ -22,7 +24,7 @@ use std::cell::RefCell;
 use std::fmt;
 use std::sync::{Arc, mpsc, Mutex};
 use std::fs::File;
-use std::path::{Path};
+use std::path::{Path, PathBuf};
 use std::io::BufReader;
 use bincode::{deserialize_from, Infinite};
 
@@ -93,7 +95,7 @@ struct ReplayManager {
 impl ReplayManager  {
     fn start(&mut self) -> Result<(), Box<Error>> {
         // startup viz via rpc
-        let mm = wrap_packet_in_multi_message(create_rpc_config_message());
+        let mm = wrap_packet_in_multi_message(create_rpc_config_message()?);
         self.env.route_messages(&mm);
         self.env.update();
         // pull off header and configure
@@ -589,27 +591,90 @@ fn wrap_packet_in_multi_message(pkt: ScaiiPacket) -> MultiMessage {
     MultiMessage { packets: pkts }
 }
 
-fn create_rpc_config_message() -> ScaiiPacket {
-    let comm = Some(String::from(
-        "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
-    ));
-    let mut vec: Vec<String> = Vec::new();
-    vec.push(String::from(
-        "file:///C:/Users/Jed%20Irvine/exact/SCAII/viz/index.html",
-    ));
-    let rpc_config = protos::RpcConfig {
-        ip: Some("127.0.0.1".to_string()),
-        port: Some(6112),
-        init_as: InitAs {
-            init_as: Some(protos::init_as::InitAs::Module(ModuleInit {
-                name: String::from("RpcPluginModule"),
-            })),
+fn get_viz_index_dot_html_filepath() -> Result<String, Box<Error>> {
+    // needs to return "file:///C:/Users/Jed%20Irvine/exact/SCAII/viz/index.html" 
+    // i.e. based on {SCAII_ROOT}/viz/index.html
+    match std::env::var("SCAII_ROOT") {
+        Ok(root) => {
+            let mut pathbuf = PathBuf::from(root);
+            pathbuf.push("viz");
+            pathbuf.push("index.html");
+            let path = pathbuf.as_path();
+            let url_result = url::Url::from_file_path(&path);
+            match url_result {
+                Ok(url) => {
+                    //let path_string = String::from(path.to_str());
+                    let path_str = url.as_str();
+                    println!("path_string is {}", path_str);
+                    Ok(String::from(path_str))
+                }
+                Err(err) => {
+                    let message = format!("Replay could convert html path to url. {:?} {:?}", path, err);
+                    Err(Box::new(ReplayError::new(message.as_str())))
+                }
+            }
+            
         },
-        command: comm,
-        command_args: vec,
-    };
+        Err(e) => {
+            let error_message = e.description().clone();
+            let message = format!("Replay could not determine environment variable SCAII_ROOT. {}", error_message);
+            Err(Box::new(ReplayError::new(message.as_str())))
+        },
+    }
+}
 
-    ScaiiPacket {
+fn get_chrome_command_for_windows() -> String {
+    let result = String::from("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe");
+    result
+}
+
+fn get_default_browser_command_for_mac() -> Result<String, Box<Error>> {
+    // needs to return "open <SCAII_ROOT>/viz/index.html"
+    let html_file_path = get_viz_index_dot_html_filepath()?;
+    let result = format!("open {}/viz/index.html", html_file_path);
+    Ok(result)
+}
+
+fn get_ui_html_filepath_for_windows() -> Result<String, Box<Error>> {
+    // needs to return "<SCAII_ROOT>/viz/index.html"
+    let result = get_viz_index_dot_html_filepath()?;
+    Ok(result)
+}
+
+#[allow(unused_assignments)]
+fn create_rpc_config_message() -> Result<ScaiiPacket, Box<Error>> {
+    let mut comm : Option<String> = None;
+    if cfg!(target_os = "windows") {
+        let windows_command_string = get_chrome_command_for_windows();
+        comm = Some(windows_command_string);
+    }
+    else if cfg!(target_os = "unix") {
+        panic!("rpc config message for unix not yet implemented!");
+    }
+    else {
+        // mac
+        let mac_command_string = get_default_browser_command_for_mac()?;
+        comm = Some(mac_command_string);
+    }
+    
+    //
+    // Add arguments on windows
+    //
+    let mut vec: Vec<String> = Vec::new();
+    if cfg!(target_os = "windows") {
+        let target_url = get_ui_html_filepath_for_windows()?;
+        vec.push(target_url);
+    }
+    else if cfg!(target_os = "unix") {
+        // will panic earlier in function if we are on unix
+    }
+    else {
+        // mac adds no arguments - its all in command (workaround to browser launching issue on mac)
+    }
+    
+    let rpc_config = scaii_core::get_rpc_config_for_viz(comm, vec);
+
+    Ok(ScaiiPacket {
         src: protos::Endpoint {
             endpoint: Some(Endpoint::Agent(AgentEndpoint {})),
         },
@@ -623,7 +688,7 @@ fn create_rpc_config_message() -> ScaiiPacket {
                 },
             })),
         })),
-    }
+    })
 }
 
 fn wrap_entity_in_viz_packet(step: u32, entity: Entity) -> ScaiiPacket {
@@ -844,8 +909,8 @@ enum RunMode {
 #[allow(unused_assignments)]
 fn main() {
     let mut environment : Environment = Environment::new();
-    //let run_mode = RunMode::TestUsingDataFromFileGeneratedByRecorder;
-    let run_mode = RunMode::TestUsingDataGeneratedLocally;
+    let run_mode = RunMode::TestUsingDataFromFileGeneratedByRecorder;
+    //let run_mode = RunMode::TestUsingDataGeneratedLocally;
     //let run_mode = RunMode::Live;
     let mut replay_info : Vec<ReplayAction> = Vec::new();
     match run_mode{

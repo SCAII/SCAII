@@ -30,6 +30,7 @@ pub(crate) mod internal;
 pub use internal::recorder::{GameAction, get_default_replay_file_path, ReplayAction, ReplayHeader, SerializedProtosAction, 
                 SerializedProtosEndpoint, SerializedProtosScaiiPacket,
                 SerializedProtosSerializationResponse, SerializationInfo};
+pub use internal::rpc::get_rpc_config_for_viz;
 
 /// The Environment created by this library.
 #[derive(Default)]

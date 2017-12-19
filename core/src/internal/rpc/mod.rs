@@ -1,6 +1,5 @@
 use scaii_defs::Module;
-use scaii_defs::protos::{MultiMessage, ScaiiPacket};
-use scaii_defs::protos::{ModuleInit, RpcConfig};
+use scaii_defs::protos::{ModuleInit, MultiMessage, RpcConfig, ScaiiPacket};
 use std::error::Error;
 use std::net::{IpAddr, SocketAddr};
 use websocket::client::sync::Client;
@@ -61,6 +60,20 @@ fn launch_far_end(command: &String, args: Vec<String>) -> Child {
     if cfg!(target_os = "windows") {
         let mut c = Command::new("cmd");
         let c = c.arg("/C");
+        //let quoted_command = format!("\"{}\"", command);
+        let c = c.arg(command);
+        for arg in args.iter() {
+            c.arg(arg);
+        }
+        println!("command struct is {:?}", c);
+        let child = c.spawn().expect(&String::as_str(
+            &format!("failed to launch command {}", command),
+        ));
+        child
+    } 
+    else if cfg!(target_os = "unix") {
+        let mut c = Command::new("sh");
+        let c = c.arg("-c");
         let c = c.arg(command);
         for arg in args.iter() {
             c.arg(arg);
@@ -69,13 +82,14 @@ fn launch_far_end(command: &String, args: Vec<String>) -> Child {
             &format!("failed to launch command {}", command),
         ));
         child
-    } else {
+    }
+    else {
+        // assume mac
         let mut c = Command::new("sh");
         let c = c.arg("-c");
+        // for mac, command plus the args come across in the command value - if we split it
+        // up like we do on windows in command and arg, it doesn't work foe some reasoin ("open file:///...") 
         let c = c.arg(command);
-        for arg in args.iter() {
-            c.arg(arg);
-        }
         let child = c.spawn().expect(&String::as_str(
             &format!("failed to launch command {}", command),
         ));
@@ -240,5 +254,19 @@ fn connect(settings: &RpcConfig) -> Result<Client<TcpStream>, Box<Error>> {
         // going to reattempt connections, just alert
         // the user of the error
         Err((_, err)) => Err(Box::new(err)),
+    }
+}
+
+pub fn get_rpc_config_for_viz(comm : Option<String>, args_vec : Vec<String>) -> protos::RpcConfig {
+    protos::RpcConfig {
+        ip: Some("127.0.0.1".to_string()),
+        port: Some(6112),
+        init_as: protos::InitAs {
+            init_as: Some(protos::init_as::InitAs::Module(ModuleInit {
+                name: String::from("RpcPluginModule"),
+            })),
+        },
+        command: comm,
+        command_args: args_vec,
     }
 }

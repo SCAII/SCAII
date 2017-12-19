@@ -28,6 +28,7 @@ websocket="0.20"
 serde = "1"
 serde_derive="1"
 "bincode"= "0.9.2"
+url = "1.5.1"
 
 # local deps
 scaii_defs = {path = "../scaii_defs"}
