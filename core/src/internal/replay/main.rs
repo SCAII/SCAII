@@ -631,7 +631,7 @@ fn get_chrome_command_for_windows() -> String {
 fn get_default_browser_command_for_mac() -> Result<String, Box<Error>> {
     // needs to return "open <SCAII_ROOT>/viz/index.html"
     let html_file_path = get_viz_index_dot_html_filepath()?;
-    let result = format!("open {}/viz/index.html", html_file_path);
+    let result = format!("open {}", html_file_path);
     Ok(result)
 }
 
