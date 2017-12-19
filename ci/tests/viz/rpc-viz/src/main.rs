@@ -316,7 +316,7 @@ fn receive_and_decode_empty_message(client: &mut Client<TcpStream>) {
         .recv_message()
         .expect("Could not receive message from client");
     if let OwnedMessage::Binary(vec) = msg {
-        let mut msg = match MultiMessage::decode(vec) {
+        let msg = match MultiMessage::decode(vec) {
             Err(err) => {
                 client
                     .send_message(&message::Message::close_because(
