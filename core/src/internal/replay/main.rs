@@ -127,7 +127,7 @@ impl ReplayManager  {
                 let pkt = ScaiiPacket::decode(u8_vec)?;
                 match pkt.specific_msg {
                     Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig { pkts: pkt_vec,})) => {
-                        for pkt in pkt_vec.iter() {
+                        for pkt in &pkt_vec {
                             let pkt_to_send= pkt.clone();
                             let mm = wrap_packet_in_multi_message(pkt_to_send);
                             self.env.route_messages(&mm);
@@ -200,12 +200,7 @@ impl ReplayManager  {
     }
 
     fn has_more_steps(&mut self) -> bool {
-        if self.step_position <= self.replay_data.len() as u64 - 1 {
-            true
-        }
-        else {
-            false
-        }
+        self.step_position <= self.replay_data.len() as u64 - 1
     }
 
     fn wrap_response_in_scaii_pkt(&mut self, ser_response : protos::SerializationResponse) -> ScaiiPacket {
@@ -236,7 +231,7 @@ impl ReplayManager  {
                             specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::Action(protos_action)),
                         })
                     },
-                    Err(err) => { return Err(Box::new(err)); }
+                    Err(err) => { Err(Box::new(err)) }
                 }
             }
             GameAction::Step => {
@@ -254,8 +249,8 @@ impl ReplayManager  {
         
     }
 
-    fn deploy_replay_directives_to_backend(&mut self, mm: MultiMessage) ->Result<Vec<protos::ScaiiPacket>, Box<Error>> {
-        self.env.route_messages(&mm);
+    fn deploy_replay_directives_to_backend(&mut self, mm: &MultiMessage) ->Result<Vec<protos::ScaiiPacket>, Box<Error>> {
+        self.env.route_messages(mm);
         self.env.update();
         let scaii_pkts : Vec<protos::ScaiiPacket> = { 
             let queue  = &mut *self.incoming_message_queue.borrow_mut();
@@ -275,7 +270,7 @@ impl ReplayManager  {
                 let mut pkts: Vec<ScaiiPacket> = Vec::new();
                 pkts.push(action_pkt);
                 let mm = MultiMessage { packets: pkts };
-                let scaii_pkts = self.deploy_replay_directives_to_backend(mm)?;
+                let scaii_pkts = self.deploy_replay_directives_to_backend(&mm)?;
                 Ok(scaii_pkts)
             }
             ReplayAction::Keyframe(serialization_info, action) => {
@@ -290,7 +285,7 @@ impl ReplayManager  {
                         pkts.push(ser_response_pkt);
                         pkts.push(action_pkt);
                         let mm = MultiMessage { packets: pkts };
-                        let scaii_pkts = self.deploy_replay_directives_to_backend(mm)?;
+                        let scaii_pkts = self.deploy_replay_directives_to_backend(&mm)?;
                         Ok(scaii_pkts)
                     }
                     Err(err) => {
@@ -313,14 +308,14 @@ impl ReplayManager  {
         args_list.push(command);
         args_list.push(target_step.clone());
         let pkt : ScaiiPacket = self.create_test_control_message(args_list);
-        return self.send_packet_to_backend(pkt);
+        self.send_packet_to_backend(pkt)
     }
 
     fn send_packet_to_backend(&mut self, pkt: ScaiiPacket)-> Result<Vec<protos::ScaiiPacket>, Box<Error>>{
         let mut pkts: Vec<ScaiiPacket> = Vec::new();    
         pkts.push(pkt);
         let mm = MultiMessage { packets: pkts };
-        let scaii_pkts = self.deploy_replay_directives_to_backend(mm)?;
+        let scaii_pkts = self.deploy_replay_directives_to_backend(&mm)?;
         Ok(scaii_pkts)
     }
 
@@ -362,9 +357,9 @@ impl ReplayManager  {
         let mut game_state: GameState = GameState::Running;
         if self.has_more_steps() {
             let scaii_pkts =  self.send_replay_action_to_backend()?;
-            self.step_position = self.step_position + 1;
-            for scaii_pkt in scaii_pkts.iter() {
-                if scaii_defs::protos::is_error_pkt(&scaii_pkt){
+            self.step_position += 1;
+            for scaii_pkt in &scaii_pkts {
+                if scaii_defs::protos::is_error_pkt(scaii_pkt){
                     // Error would have already been shown to user at UI
                     println!("REPLAY ERROR received as result of run_step {:?}", scaii_pkt);
                 }
@@ -382,9 +377,9 @@ impl ReplayManager  {
    
     fn execute_poll_step(&mut self, mut game_state : GameState) -> Result<GameState, Box<Error>> {
         let scaii_pkts: Vec<ScaiiPacket> = self.poll_viz()?;
-        for scaii_pkt in scaii_pkts.iter(){
-            if scaii_defs::protos::is_user_command_pkt(&scaii_pkt){
-                let user_command_args : Vec<String> = scaii_defs::protos::get_user_command_args(&scaii_pkt);
+        for scaii_pkt in &scaii_pkts {
+            if scaii_defs::protos::is_user_command_pkt(scaii_pkt){
+                let user_command_args : Vec<String> = scaii_defs::protos::get_user_command_args(scaii_pkt);
                 // we would get args here when they are relevant
                 let user_command_type = scaii_defs::protos::get_user_command_type(scaii_pkt)?;
                 match user_command_type {
@@ -419,7 +414,7 @@ impl ReplayManager  {
                     }, 
                 }
             }
-            else if scaii_defs::protos::is_error_pkt(&scaii_pkt){
+            else if scaii_defs::protos::is_error_pkt(scaii_pkt){
                 // Error would have already been shown to user at UI
             }
             else {
@@ -430,7 +425,7 @@ impl ReplayManager  {
         Ok(game_state)
     }
     
-    fn adjust_replay_speed(&mut self, speed_string : &String) -> Result<(), Box<Error>> {
+    fn adjust_replay_speed(&mut self, speed_string : &str) -> Result<(), Box<Error>> {
         let speed = speed_string.parse::<u64>()?;
         // speed = 0  => 2001 ms or one ~ every 2 seconds
         // speed = 90 => 201 ms or ~ 5/sec,
@@ -451,7 +446,7 @@ impl ReplayManager  {
                 if jump_target_int > self.replay_data.len() as u32 {
                     return Err(Box::new(ReplayError::new(&format!("Jump target {} not in range of step count {}", jump_target_int,self.replay_data.len()))));
                 }
-                self.step_position = jump_target_int as u64;
+                self.step_position = u64::from(jump_target_int);
                 if self.test_mode {
                     let _pkts :Vec<ScaiiPacket> = self.send_test_mode_jump_to_message(jump_target)?;
                 }
@@ -468,14 +463,11 @@ impl ReplayManager  {
         let mut cur_index : u64 = self.step_position;
         let mut seeking : bool = true;
         while seeking {
-            if cur_index < 0 as u64{
-                return Err(Box::new(ReplayError::new(&format!("Jump-to navigation looked past 0 index for KeyFrame"))));
-            }
             let cur_replay_action = &self.replay_data[cur_index as usize];
-            match cur_replay_action {
-                &ReplayAction::Header(_) => { } // has been removed from list by now - no need to take into account},
-                &ReplayAction::Delta(_) => { cur_index = cur_index - 1; },
-                &ReplayAction::Keyframe(_,_) => { seeking = false; },
+            match *cur_replay_action {
+                ReplayAction::Header(_) => { } // has been removed from list by now - no need to take into account},
+                ReplayAction::Delta(_) => { cur_index -= 1; },
+                ReplayAction::Keyframe(_,_) => { seeking = false; },
             }
         }
         Ok(cur_index)
@@ -523,13 +515,13 @@ impl ReplayManager  {
                             //println!("main loop got step_nudge {}", snudge_count);
                             //snudge_count = snudge_count + 1;
                             game_state = self.handle_step_nudge(game_state)?;
-                            let _ack_result = tx_step_ack.send(String::from("ack")).unwrap();
+                            tx_step_ack.send(String::from("ack")).unwrap();
                         },
                         "poll_nudge" => {
                             //println!("main loop got poll_nudge {}", pnudge_count);
                             //pnudge_count = pnudge_count + 1;
                             game_state = self.execute_poll_step(game_state)?; 
-                            let _ack_result = tx_poll_ack.send(String::from("ack")).unwrap();
+                            tx_poll_ack.send(String::from("ack")).unwrap();
                              
                         },
                         _ => {},
@@ -624,15 +616,13 @@ fn get_viz_index_dot_html_filepath() -> Result<String, Box<Error>> {
 }
 
 fn get_chrome_command_for_windows() -> String {
-    let result = String::from("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe");
-    result
+    String::from("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe")
 }
 
 fn get_default_browser_command_for_mac() -> Result<String, Box<Error>> {
     // needs to return "open <SCAII_ROOT>/viz/index.html"
     let html_file_path = get_viz_index_dot_html_filepath()?;
-    let result = format!("open {}", html_file_path);
-    Ok(result)
+    Ok(format!("open {}", html_file_path))
 }
 
 fn get_ui_html_filepath_for_windows() -> Result<String, Box<Error>> {
@@ -715,8 +705,8 @@ fn generate_entity_sequence(count: u32) -> Vec<Entity> {
     for _i in 0..count {
         let entity = create_entity_at(&x, &y);
         entities.push(entity);
-        x = x - 1.0;
-        y = y  - 1.0;
+        x -= 1.0;
+        y -= 1.0;
     }
     entities
 }
@@ -935,7 +925,7 @@ fn main() {
     };
     let rc_replay_message_queue = Rc::new(RefCell::new(replay_message_queue));
     {
-        environment.router_mut().register_replay(Box::new(rc_replay_message_queue.clone()));
+        environment.router_mut().register_replay(Box::new(Rc::clone(&rc_replay_message_queue)));
         debug_assert!(environment.router().replay().is_some());
     }
     let mut replay_manager =  ReplayManager {
@@ -949,8 +939,8 @@ fn main() {
         test_mode: false,
     };
     match run_mode {
-        RunMode::TestUsingDataFromFileGeneratedByRecorder => replay_manager.test_mode = true,
-        RunMode::TestUsingDataGeneratedLocally =>            replay_manager.test_mode = true,
+        RunMode::TestUsingDataFromFileGeneratedByRecorder | 
+        RunMode::TestUsingDataGeneratedLocally => replay_manager.test_mode = true,
         RunMode::Live =>                                     replay_manager.test_mode = false,
     }
     let result = replay_manager.start();
@@ -998,7 +988,7 @@ impl MockRts {
 
     fn step(&mut self){
         let pkt_to_send = self.viz_sequence[self.step_position as usize].clone();
-        self.step_position = self.step_position + 1;
+        self.step_position += 1;
         println!("MockRTS self.step_position now {}", self.step_position);
         let mm = wrap_packet_in_multi_message(pkt_to_send);
         self.outbound_messages.push(mm);
@@ -1042,31 +1032,31 @@ impl Backend for MockRts {
 impl Module for MockRts {
     fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>>{
         let specific_msg = &msg.specific_msg;
-        match specific_msg {
-            &Some(scaii_packet::SpecificMsg::SerResp(protos::SerializationResponse { serialized: _ , format: _ })) => {
-                if self.sent_viz_init == false {
+        match *specific_msg {
+            Some(scaii_packet::SpecificMsg::SerResp(protos::SerializationResponse { .. })) => {
+                if !self.sent_viz_init {
                     println!("MOCKRTS sending viz init!");
                     self.send_viz_init();
                     self.sent_viz_init= true;
                 }
             },
-            &Some(scaii_packet::SpecificMsg::ReplaySessionConfig(protos::ReplaySessionConfig { step_count: steps })) => {
+            Some(scaii_packet::SpecificMsg::ReplaySessionConfig(protos::ReplaySessionConfig { step_count: steps })) => {
                 self.step_count = steps as u32;
                 self.init_entity_sequence();
             },
-            &Some(scaii_packet::SpecificMsg::ReplayStep(protos::ReplayStep { })) => {
+            Some(scaii_packet::SpecificMsg::ReplayStep(protos::ReplayStep { })) => {
                 if self.step_position < self.step_count {
                     println!("MOCKRTS step due to replayStep!");
                     self.step();
                 }
             },
-            &Some(scaii_packet::SpecificMsg::Action(protos::Action { discrete_actions: _ , continuous_actions: _, alternate_actions: _})) => {
+            Some(scaii_packet::SpecificMsg::Action(protos::Action { .. })) => {
                 if self.step_position < self.step_count {
                     println!("MOCKRTS step due to agent Action!");
                     self.step();
                 }
             },
-            &Some(scaii_packet::SpecificMsg::TestControl(protos::TestControl { args: ref command_args})) => {
+            Some(scaii_packet::SpecificMsg::TestControl(protos::TestControl { args: ref command_args})) => {
                 let target : &String = &command_args[0];
                 if target == &String::from("MockRts"){
                     let command : &String = &command_args[1];

@@ -123,7 +123,7 @@ impl RecorderManager  {
 
 
    
-    fn get_serialized_protos_action(&mut self, action: protos::Action) -> Result<SerializedProtosAction, Box<Error>> {
+    fn get_serialized_protos_action(&mut self, action: &protos::Action) -> Result<SerializedProtosAction, Box<Error>> {
         let mut action_data: Vec<u8> = Vec::new();
         action.encode(&mut action_data)?;
         Ok(SerializedProtosAction {
@@ -149,41 +149,41 @@ impl RecorderManager  {
         Ok(SerializedProtosScaiiPacket { data: pkt_data })
     }
 
-    fn handle_pkt(&mut self, pkt: ScaiiPacket) -> Result<(), Box<Error>>{
+    fn handle_pkt(&mut self, pkt: &ScaiiPacket) -> Result<(), Box<Error>>{
         let src_endpoint = &pkt.src;
         let ser_protos_src_endpoint = self.get_serialized_protos_endpoint(src_endpoint)?;
         let specific_msg = &pkt.specific_msg;
-        match specific_msg {
-            &Some(SpecificMsg::RecorderConfig(_)) => {
+        match *specific_msg {
+            Some(SpecificMsg::RecorderConfig(_)) => {
                 self.is_recording = true;
-                let ser_protos_scaii_pkt = self.get_serialized_protos_scaii_packet(&pkt)?;
+                let ser_protos_scaii_pkt = self.get_serialized_protos_scaii_packet(pkt)?;
                 let replay_header = ReplayHeader { configs: ser_protos_scaii_pkt,};
                 let replay_action = ReplayAction::Header(replay_header);
-                self.start_recording(replay_action)?; 
+                self.start_recording(&replay_action)?; 
             },
-            &Some(SpecificMsg::SerResp(ref ser_resp)) => {
+            Some(SpecificMsg::SerResp(ref ser_resp)) => {
                 if self.is_recording {
                     let ser_protos_ser_resp = self.get_serialized_protos_serialization_response(ser_resp)?;
                     let ser_info = SerializationInfo { source: ser_protos_src_endpoint, data: ser_protos_ser_resp };
-                    if let Some(SerializationInfo { source:_, data:_}) = self.staged_ser_info {
+                    if let Some(SerializationInfo { .. }) = self.staged_ser_info {
                         return Err(Box::new(RecorderError::new("Received consecutive SerializationInfo packets - expected RecorderStep in between.")));
                     }
                     self.staged_ser_info = Some(ser_info);
                 }
             },
-            &Some(SpecificMsg::RecorderStep(ref rec_step)) => {
+            Some(SpecificMsg::RecorderStep(ref rec_step)) => {
                 if self.is_recording {
-                    if let Some(SerializationInfo{source:_, data:_}) = self.staged_ser_info {
+                    if let Some(SerializationInfo{ .. }) = self.staged_ser_info {
                         self.save_keyframe(rec_step)?;
                     }
                     else {
                         let game_action = self.get_game_action_for_protos_action(rec_step)?;
                         let replay_action = ReplayAction::Delta(game_action);
-                        self.persist_replay_action(replay_action)?;
+                        self.persist_replay_action(&replay_action)?;
                     }  
                 }
             },
-            &Some(SpecificMsg::GameComplete(_)) => {
+            Some(SpecificMsg::GameComplete(_)) => {
                 self.stop_recording();
             },
             _ => {},
@@ -195,7 +195,7 @@ impl RecorderManager  {
         self.writable_file = None;  
     }
 
-    fn start_recording(&mut self, header_replay_action : ReplayAction) -> Result<(), Box<Error>> {
+    fn start_recording(&mut self, header_replay_action : &ReplayAction) -> Result<(), Box<Error>> {
         println!("recording header.");
         if self.file_path == None {
             return Err(Box::new(RecorderError::new("RecorderManager.file_path not specified prior to start of recording.")));
@@ -207,14 +207,14 @@ impl RecorderManager  {
         Ok(())
     }
 
-    fn persist_replay_action(&mut self, replay_action: ReplayAction) -> Result<(), Box<Error>>{
+    fn persist_replay_action(&mut self, replay_action: &ReplayAction) -> Result<(), Box<Error>>{
         println!("persisting replayAction {:?}", replay_action);
         match self.writable_file {
             None => {
                 return Err(Box::new(RecorderError::new("RecorderManager.writable_file not open for recording replay action.")));
             }
             Some(ref mut file) => {
-                let encoded: Vec<u8> = serialize(&replay_action, Infinite).unwrap();
+                let encoded: Vec<u8> = serialize(replay_action, Infinite).unwrap();
                 let data_size = encoded.len(); 
                 let write_result = file.write(&encoded);
                 if write_result.unwrap() != data_size {
@@ -230,7 +230,7 @@ impl RecorderManager  {
             if rec_step.action == None {
                     return Err(Box::new(RecorderError::new("Malformed RecordStep: no action present but is_decision_point was true.")));
             }
-            let serialized_protos_action = self.get_serialized_protos_action(rec_step.action.clone().unwrap())?;
+            let serialized_protos_action = self.get_serialized_protos_action(&rec_step.action.clone().unwrap())?;
             Ok(GameAction::DecisionPoint(serialized_protos_action))
         }
         else {
@@ -248,7 +248,7 @@ impl RecorderManager  {
             return Err(Box::new(RecorderError::new("Cannot create keyFrame to store - ser_info missing.")));
         }
         let replay_action = ReplayAction::Keyframe(ser_info.clone().unwrap(), game_action);
-        self.persist_replay_action(replay_action)?;
+        self.persist_replay_action(&replay_action)?;
         self.staged_ser_info = None;
         Ok(())
     }
@@ -257,7 +257,7 @@ impl RecorderManager  {
 impl Module for RecorderManager  {
     fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>>{
         println!("recorderManager handling packet");
-        self.handle_pkt(msg.clone())
+        self.handle_pkt(msg)
     }
 
     /// return empty messages

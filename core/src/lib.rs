@@ -152,7 +152,7 @@ impl Environment {
                     }
                 }
             },
-            Rpc(ref cfg) => match rpc::init_rpc(cfg.clone())? {
+            Rpc(ref cfg) => match rpc::init_rpc(cfg)? {
                 LoadedAs::Backend(_) => unimplemented!(),
                 LoadedAs::Module(module, name) => {
                     let prev = self.router.register_module(name.clone(), module);

@@ -16,7 +16,7 @@ use std::sync::mpsc;
 #[cfg(test)]
 mod test;
 
-pub fn init_rpc(rpc_config: RpcConfig) -> Result<LoadedAs, Box<Error>> {
+pub fn init_rpc(rpc_config: &RpcConfig) -> Result<LoadedAs, Box<Error>> {
     let (tx, rx) = mpsc::channel();
     let command = rpc_config.command.clone();
     match command {
@@ -24,21 +24,21 @@ pub fn init_rpc(rpc_config: RpcConfig) -> Result<LoadedAs, Box<Error>> {
         Some(cmd) => {
             let args = rpc_config.command_args.clone();
             let _handle = thread::spawn(move || {
-                launch_far_end(&cmd, args.to_vec());
+                launch_far_end(&cmd, &args.to_vec());
                 rx.recv().unwrap();
             });
         }
     }
 
-    let result = startup_module(&rpc_config);
+    let result = startup_module(rpc_config);
     tx.send(String::from("rpc_started")).unwrap();
     result
 }
 
 fn startup_module(rpc_config: &RpcConfig) -> Result<LoadedAs, Box<Error>> {
-    let client = connect(&rpc_config)?;
+    let client = connect(rpc_config)?;
     let init_as = rpc_config.init_as.clone();
-    let result = match init_as.init_as.ok_or_else::<Box<Error>, _>(|| {
+    match init_as.init_as.ok_or_else::<Box<Error>, _>(|| {
         From::from("Malformed InitAs field in RpcPlugin".to_string())
     })? {
         InitAs::Module(ModuleInit { name }) => Ok(LoadedAs::Module(
@@ -52,11 +52,10 @@ fn startup_module(rpc_config: &RpcConfig) -> Result<LoadedAs, Box<Error>> {
             name,
         )),
         _ => unimplemented!("Still need to implement Backend match arm"),
-    };
-    result
+    }
 }
 
-fn launch_far_end(command: &String, args: Vec<String>) -> Child {
+fn launch_far_end(command: &str, args: &[String]) -> Child {
     if cfg!(target_os = "windows") {
         let mut c = Command::new("cmd");
         let c = c.arg("/C");
@@ -66,10 +65,8 @@ fn launch_far_end(command: &String, args: Vec<String>) -> Child {
             c.arg(arg);
         }
         println!("command struct is {:?}", c);
-        let child = c.spawn().expect(&String::as_str(
-            &format!("failed to launch command {}", command),
-        ));
-        child
+        c.spawn().expect(String::as_str(
+            &format!("failed to launch command {}", command)))
     } 
     else if cfg!(target_os = "unix") {
         let mut c = Command::new("sh");
@@ -78,10 +75,8 @@ fn launch_far_end(command: &String, args: Vec<String>) -> Child {
         for arg in args.iter() {
             c.arg(arg);
         }
-        let child = c.spawn().expect(&String::as_str(
-            &format!("failed to launch command {}", command),
-        ));
-        child
+        c.spawn().expect(String::as_str(
+            &format!("failed to launch command {}", command)))
     }
     else {
         // assume mac
@@ -90,10 +85,8 @@ fn launch_far_end(command: &String, args: Vec<String>) -> Child {
         // for mac, command plus the args come across in the command value - if we split it
         // up like we do on windows in command and arg, it doesn't work foe some reasoin ("open file:///...") 
         let c = c.arg(command);
-        let child = c.spawn().expect(&String::as_str(
-            &format!("failed to launch command {}", command),
-        ));
-        child
+        c.spawn().expect(String::as_str(
+            &format!("failed to launch command {}", command)))
     }
 }
 
