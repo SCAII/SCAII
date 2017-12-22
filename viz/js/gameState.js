@@ -24,6 +24,13 @@ function updateMasterPosition(masterPos, updatePos) {
   }
 }
 
+function updateMasterRotation(masterShape, masterRotation, updateRotation) {
+  if (updateRotation == undefined) {
+    return;
+  }
+  masterShape.setRotation(updateRotation);
+}
+
 function updateMasterColor(masterShape, masterColor, updateColor) {
   if (updateColor == undefined) {
     return;
@@ -84,6 +91,9 @@ function updateMasterShape(master, update) {
   var updateColor = update.getColor();
   var masterColor = master.getColor();
   updateMasterColor(master, masterColor, updateColor);
+  var updateRotation = update.getRotation();
+  var masterRotation = master.getRotation();
+  updateMasterRotation(master, masterRotation, updateRotation);
   var updateRect = update.getRect();
   var masterRect = master.getRect();
   var updateTriangle = update.getTriangle();

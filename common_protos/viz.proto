@@ -126,6 +126,8 @@ message Shape {
 	optional Pos relative_pos = 2;
 	optional Color color = 3;
 
+	// Orientation in radians 
+	required double rotation = 4;
 	// What form the shape takes
 	// if multiple of these are set at once, the behavior
 	// is up to the viz engine implementer,
@@ -140,4 +142,5 @@ message Shape {
 	// If this is ture, the other fields (except ID)
 	// are ignored
 	required bool delete = 40;
+
 }

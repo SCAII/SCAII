@@ -681,9 +681,10 @@ fn create_rpc_config_message() -> Result<ScaiiPacket, Box<Error>> {
     })
 }
 
-fn wrap_entity_in_viz_packet(step: u32, entity: Entity) -> ScaiiPacket {
+fn wrap_entities_in_viz_packet(step: u32, entity1: Entity, entity2: Entity) -> ScaiiPacket {
     let mut entities: Vec<Entity> = Vec::new();
-    entities.push(entity);
+    entities.push(entity1);
+    entities.push(entity2);
     ScaiiPacket {
         src: protos::Endpoint {
             endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
@@ -698,20 +699,31 @@ fn wrap_entity_in_viz_packet(step: u32, entity: Entity) -> ScaiiPacket {
     }
 }
 
-fn generate_entity_sequence(count: u32) -> Vec<Entity> {
+fn generate_entity_sequence(count: u32, shape: &str, x_displacement: f64) -> Vec<Entity> {
     let mut entities: Vec<Entity> = Vec::new();
-    let mut x: f64 = 300.0;
+    let mut x: f64 = 300.0 + x_displacement;
     let mut y: f64 = 300.0;
+    let mut j: f64 = 0.0;
     for _i in 0..count {
-        let entity = create_entity_at(&x, &y);
+        let entity = create_entity_at(&x, &y, shape, &j);
         entities.push(entity);
-        x -= 1.0;
-        y -= 1.0;
+        x = x - 1.0;
+        y = y  - 1.0;
+        j = j - 0.1;
     }
     entities
 }
 
-fn create_entity_at(x: &f64, y: &f64) -> Entity {
+
+fn create_entity_at(x: &f64, y: &f64, shape: &str, orient: &f64) -> Entity {
+    match shape {
+        "rectangle" => create_rectangle_entity_at(x,y, orient),
+        "triangle" => create_triangle_entity_at(x,y, orient),
+        _ => create_triangle_entity_at(x,y, orient),
+    }
+}
+
+fn create_rectangle_entity_at(x: &f64, y: &f64, orient: &f64) -> Entity {
     Entity {
         id: 1,
         pos: Some(protos::Pos {
@@ -731,6 +743,7 @@ fn create_entity_at(x: &f64, y: &f64) -> Entity {
                     g: 255,
                     a: 255,
                 }),
+                rotation: *orient,
                 rect: Some(protos::Rect {
                     width: Some(10.0),
                     height: Some(10.0),
@@ -742,6 +755,39 @@ fn create_entity_at(x: &f64, y: &f64) -> Entity {
         delete: false,
     }
 }
+
+fn create_triangle_entity_at(x: &f64, y: &f64, orient: &f64) -> Entity {
+    Entity {
+        id: 2,
+        pos: Some(protos::Pos {
+            x: Some(*x),
+            y: Some(*y),
+        }),
+        shapes: vec![
+            protos::Shape {
+                id: 0,
+                relative_pos: Some(protos::Pos {
+                    x: Some(0.0),
+                    y: Some(0.0),
+                }),
+                color: Some(protos::Color {
+                    r: 0,
+                    b: 0,
+                    g: 255,
+                    a: 255,
+                }),
+                rotation: *orient,
+                rect: None,
+                triangle: Some(protos::Triangle {
+                    base_len: Some(10.0),
+                }),
+                delete: false,
+            },
+        ],
+        delete: false,
+    }
+}
+
 
 fn get_test_mode_replay_header() -> Result<ReplayHeader, Box<Error>> {
     let config_packet  = create_cfg_pkt();
@@ -899,8 +945,8 @@ enum RunMode {
 #[allow(unused_assignments)]
 fn main() {
     let mut environment : Environment = Environment::new();
-    let run_mode = RunMode::TestUsingDataFromFileGeneratedByRecorder;
-    //let run_mode = RunMode::TestUsingDataGeneratedLocally;
+    //let run_mode = RunMode::TestUsingDataFromFileGeneratedByRecorder;
+    let run_mode = RunMode::TestUsingDataGeneratedLocally;
     //let run_mode = RunMode::Live;
     let mut replay_info : Vec<ReplayAction> = Vec::new();
     match run_mode{
@@ -978,10 +1024,12 @@ struct MockRts {
 
 impl MockRts {
     fn init_entity_sequence(&mut self) {
-        let mut entities = generate_entity_sequence(self.step_count);
+        let mut entities1 = generate_entity_sequence(self.step_count, "triangle", -30.0);
+        let mut entities2 = generate_entity_sequence(self.step_count, "rectangle", 30.0);
         for i in 0..self.step_count {
-            let entity = entities.remove(0);
-            let viz: ScaiiPacket = wrap_entity_in_viz_packet(i, entity);
+            let entity1 = entities1.remove(0);
+            let entity2 = entities2.remove(0);
+            let viz: ScaiiPacket = wrap_entities_in_viz_packet(i, entity1, entity2);
             self.viz_sequence.push(viz);
         }
     }
