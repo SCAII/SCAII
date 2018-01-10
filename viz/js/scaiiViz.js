@@ -42,431 +42,105 @@ goog.require('proto.scaii.common.VizInit');
 
 
 /**
-* Copyright (c) 2017-present, Facebook, Inc.
+* Copyright (c) 2017-present, Oregon State University, Inc.
 * All rights reserved.
 *
 * This source code is licensed under the BSD-style license found in the
 * LICENSE file in the root directory of this source tree. An additional grant
 * of patent rights can be found in the PATENTS file in the same directory.
 */
+var userInputBlocked = false;
+var systemTitle = "SCAII - Small Configurable AI Interface";
+// VizInit defaults
 var testingMode = false;
+var maxStep = 0;
+var explanations = [];
+var userCommandScaiiPackets = [];
 var sessionState = "pending";
-// Create the canvas
+
 var spacingFactor = 1;
 var sizingFactor = 1;
-var canvas = document.createElement("canvas");
-var ctx = canvas.getContext("2d");
+// Create the gameboard canvas
+var gameboard_canvas = document.createElement("canvas");
+var gameboard_ctx = gameboard_canvas.getContext("2d");
+var gameboardWidth;
+var gameboardHeight;
+var timeline_canvas = document.createElement("canvas");
+var timeline_ctx = timeline_canvas.getContext("2d");
+var pauseResumeButton = document.createElement("BUTTON"); 
+var rewindButton = document.createElement("BUTTON");
+var speedSlider = document.createElement("input");
+rewindButton.disabled = true;	
+rewindButton.setAttribute("id", "rewindButton");
+pauseResumeButton.disabled = true;
+pauseResumeButton.setAttribute("id", "pauseResumeButton");
+
+var controlsManager = configureControlsManager(pauseResumeButton, rewindButton);
 var shape_outline_color = '#202020';
 var shape_outline_width = 2;
 var use_shape_color_for_outline = false;
-canvas.width = 1400;
-canvas.height = 1000;
 
-document.body.appendChild(canvas);
-var left_frame_width = 1000;
-var cell_size = 50;
-var rect_size = 50;
-var unit_size = 32;
-//var cell_colors = ['#404040', 'blue', 'black'];
-var cell_colors = [];
-var player_colors = ['blue', 'red', 'yellow']
-
-var tick = 0;
 var dealer;
-var button_left = left_frame_width + 30;
-var osu_button_left = left_frame_width + 30;
-
 var masterEntities = {};
 
-function logEntity(entity) {
-  if (entity == undefined) {
-    console.log('ENTITY undefined');
-    return;
-  }
-  console.log('- - - - - - - - - - -');
-  console.log('entity ' + entity.getId());
-  console.log('- - - - - - - - - - -');
-  var posString = getEntityPosString(entity);
-  var deleteString = getEntityDeleteString(entity);
-  console.log(posString + ' ; ' + deleteString);
 
-  var shapes = entity.getShapesList();
-  console.log('shape count ' + shapes.length);
-  for (var i in shapes) {
-    var shape = shapes[i];
-    logShape(shape);
-  }
-}
 
-function deleteShape(shapeList, shape) {
-  var index = shapeList.indexOf(shape);
-  if (index != -1) {
-    shapeList.splice(index, 1);
-  }
-  else {
-    console.log('ERROR - asked to delete shape that is not in master list!');
-  }
-}
-
-function addShape(shapesList, shape) {
-  masterShapes.push(updateShape);
-}
-
-function updateMasterPosition(masterPos, updatePos) {
-  if (updatePos != undefined) {
-    if (updatePos.hasX()) {
-      masterPos.setX(updatePos.getX());
-    }
-    if (updatePos.hasY()) {
-      masterPos.setY(updatePos.getY());
-    }
-  }
-}
-
-function limitFilterColorValue(value) {
-  if (value < 0) {
-    return 0;
-  }
-  else if (value > 255) {
-    return 255;
-  }
-  else return value;
-}
-
-function updateMasterColor(masterShape, masterColor, updateColor) {
-  if (updateColor == undefined) {
-    return;
-  }
-  if (masterColor == undefined) {
-    masterShape.setColor(updateColor);
-    return;
-  }
-  if (updateColor.hasR()) {
-    masterColor.setR(limitFilterColorValue(updateColor.getR()));
-  }
-  if (updateColor.hasG()) {
-    masterColor.setG(limitFilterColorValue(updateColor.getG()));
-  }
-  if (updateColor.hasB()) {
-    masterColor.setB(limitFilterColorValue(updateColor.getB()));
-  }
-  if (updateColor.hasA()) {
-    masterColor.setA(limitFilterColorValue(updateColor.getA()));
-  }
-}
-
-function updateMasterRect(masterShape, masterRect, updateRect) {
-  if (updateRect == undefined) {
-    return;
-  }
-  if (masterRect == undefined) {
-    masterShape.setRect(updateRect);
-    return;
-  }
-  if (updateRect.hasWidth()) {
-    masterRect.setWidth(updateRect.getWidth());
-  }
-  console.log("CHECKING HEIGHT");
-  if (updateRect.hasHeight()) {
-    console.log('updating rect HEIGHT from ' + masterRect.getHeight() + ' to ' + updateRect.getHeight());
-    masterRect.setHeight(updateRect.getHeight());
-  }
-}
-
-function updateMasterTriangle(masterShape, masterTri, updateTri) {
-  if (updateTri == undefined) {
-    return;
-  }
-  if (masterTri == undefined) {
-    masterShape.setTriangle(updateTri);
-    return;
-  }
-
-  if (updateTri.hasBaseLen()) {
-    masterTri.setBaseLen(updateTri.getBaseLen());
-  }
-}
-
-function updateMasterShape(master, update) {
-  var updatePos = update.getRelativePos();
-  var masterPos = master.getRelativePos();
-  updateMasterPosition(masterPos, updatePos);
-  var updateColor = update.getColor();
-  var masterColor = master.getColor();
-  updateMasterColor(master, masterColor, updateColor);
-  var updateRect = update.getRect();
-  var masterRect = master.getRect();
-  var updateTriangle = update.getTriangle();
-  var masterTriangle = master.getTriangle();
-  if (masterRect != undefined) {
-    if (updateTriangle != undefined) {
-      // the triangle is replacing the rectangle
-      master.clearRect();
-      master.setTriangle(updateTriangle)
-    }
-    else if (updateRect != undefined) {
-      // we're updating the existing rectangle
-      updateMasterRect(master, masterRect, updateRect);
-    }
-    else {
-      // do nothing
-    }
-
-  }
-  else if (masterTriangle != undefined) {
-    if (updateRect != undefined) {
-      //the rectangle is replacing the triangle
-      master.clearTriangle();
-      master.setRect(updateRect);
-    }
-    else if (updateTriangle != undefined) {
-      // we're updating the triangle  
-      updateMasterTriangle(master, masterTriangle, updateTriangle);
-    }
-    else {
-      //do nothing
-    }
-  }
-}
-
-function getShapeWithMatchingId(shapesList, shapeId) {
-  for (var i in shapesList) {
-    var shape = shapesList[i];
-    if (!shape.hasId()) {
-      console.log('-----ERROR----- shape in master shapes list has no id');
-    }
-    else if (shape.getId() == shapeId) {
-      return shape;
-    }
-  }
-  return undefined;
-}
-
-function updateMasterEntity(master, update) {
-  if (update.hasPos()) {
-    var updatePos = update.getPos();
-    if (master.hasPos()) {
-      var masterPos = master.getPos();
-      updateMasterPosition(masterPos, updatePos);
-    }
-    else {
-      master.setPos(update.getPos());
-    }
-  }
-  var masterShapes = master.getShapesList();
-  var updateShapes = update.getShapesList();
-  var newShapesToAdd = [];
-  for (var i in updateShapes) {
-    var updateShape = updateShapes[i];
-    if (!updateShape.hasId()) {
-      console.log('-------ERROR------ updateShape has no id');
-      continue;
-    }
-    var updateShapeId = updateShape.getId();
-    var masterShape = getShapeWithMatchingId(masterShapes, updateShapeId);
-    if (masterShape == undefined) {
-      addShape(masterShapes, updateShape);
-    }
-    else {
-      if (updateShape.hasDelete() && updateShape.getDelete()) {
-        console.log('DELETING shape ' + updateShapeId);
-        deleteShape(masterShapes, masterShape);
-      }
-      else {
-        updateMasterShape(masterShape, updateShape);
-      }
-    }
-  }
-}
-
-function drawTriangle(x, y, baseLen, colorRGBA) {
-  baseLen = baseLen * sizingFactor;
-  x = x * spacingFactor;
-  y = y * spacingFactor;
-  var radians = 60 * Math.PI / 180;
-  var height = (Math.tan(radians) * baseLen) / 2;
-  var yTip = y - height / 2;
-  var yBottom = y + height / 2;
-  var xTip = x;
-  var xBottomLeft = x - baseLen / 2;
-  var xBottomRight = x + baseLen / 2;
-  console.log('drawing triangle ' + xTip + ',' + yTip + ' ; ' + xBottomRight + ',' + yBottom + ' ; ' + xBottomLeft + ',' + yBottom + ';' + colorRGBA);
-  ctx.beginPath();
-  ctx.moveTo(xTip, yTip);
-  ctx.lineTo(xBottomRight, yBottom);
-  ctx.lineTo(xBottomLeft, yBottom);
-  ctx.closePath();
-
-  // the outline
-  ctx.lineWidth = shape_outline_width;
-  ctx.strokeStyle = shape_outline_color;
-  if (use_shape_color_for_outline) {
-    ctx.strokeStyle = colorRGBA;
-  }
-  ctx.stroke();
-
-  // the fill color
-  ctx.fillStyle = colorRGBA;
-  ctx.fill();
-}
-
-function drawRect(x, y, width, height, colorRGBA) {
-  width = width * sizingFactor;
-  height = height * sizingFactor;
-  x = x * spacingFactor;
-  y = y * spacingFactor;
-  var x1 = x - (width / 2);
-  if (x1 < 0) {
-    x1 = 0;
-  }
-  var y1 = y - (height / 2);
-  if (y1 < 0) {
-    y1 = 0;
-  }
-  var x2 = x + (width / 2);
-  var y2 = y + (height / 2);
-
-  console.log('drawing rect ' + x1 + ' ' + x2 + ' ' + y1 + ' ' + y2 + ';' + colorRGBA);
-  ctx.beginPath();
-
-  ctx.lineWidth = shape_outline_width;
-  ctx.strokeStyle = shape_outline_color;
-  if (use_shape_color_for_outline) {
-    ctx.strokeStyle = colorRGBA;
-  }
-  ctx.strokeRect(x1, y1, width, height);
-  ctx.fillStyle = colorRGBA;
-  ctx.fillRect(x1, y1, x2 - x1, y2 - y1);
-}
-
-function getAbsoluteOrigin(x, y, relPos) {
-  var xDelta = 0;
-  var yDelta = 0;
-  if (relPos.hasX()) {
-    xDelta = relPos.getX();
-  }
-  if (relPos.hasY()) {
-    yDelta = relPos.getY();
-  }
-  var absX = x + xDelta;
-  var absY = y + yDelta;
-  if (absX < 0) {
-    absX = 0;
-  }
-  if (absY < 0) {
-    absY = 0;
-  }
-  return [absX, absY];
-}
-
-function layoutEntityAtPosition(x, y, entity) {
-  var shapesList = entity.getShapesList();
-  for (var j in shapesList) {
-    var shape = shapesList[j];
-    if (shape.hasRelativePos()) {
-      var relPos = shape.getRelativePos();
-      var absPos = getAbsoluteOrigin(x, y, relPos);
-      var absX = absPos[0];
-      var absY = absPos[2];
-      if (shape.hasRect()) {
-        var rect = shape.getRect();
-        var width = 40;
-        var height = 30;
-        if (rect.hasWidth()) {
-          width = rect.getWidth();
-        }
-        if (rect.hasHeight()) {
-          height = rect.getHeight();
-        }
-        var colorRGBA = loadShapeColorAsRGBAString(shape);
-        drawRect(x, y, width, height, colorRGBA);
-      }
-      else if (shape.hasTriangle()) {
-        var triangle = shape.getTriangle();
-        var baseLen = triangle.getBaseLen();
-
-        var colorRGBA = loadShapeColorAsRGBAString(shape);
-        drawTriangle(x, y, baseLen, colorRGBA);
-      }
-    }
-  }
-}
-function getBasicColorRGBA() {
-  color = {};
-  color['R'] = 200;
-  color['G'] = 200;
-  color['B'] = 200;
-  color['A'] = 0.5;
-  var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
-  return result;
-}
-function loadShapeColorAsRGBAString(shape) {
-  color = {};
-  color['R'] = 200;
-  color['G'] = 200;
-  color['B'] = 200;
-  color['A'] = 0.5;
-  if (shape.hasColor()) {
-    var color = shape.getColor();
-    if (color.hasR()) {
-      color['R'] = color.getR();
-    }
-    if (color.hasG()) {
-      color['G'] = color.getG();
-    }
-    if (color.hasB()) {
-      color['B'] = color.getB();
-    }
-    if (color.hasA()) {
-      color['A'] = color.getA() / 255;
-    }
-  }
-  var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
-  return result;
-}
-
-function renderState(entities) {
-  clearUI();
-  for (var i in entities) {
-    var entity = entities[i];
-    if (entity != undefined) {
-      if (entity.hasPos()) {
-        var pos = entity.getPos();
-        if (pos.hasX() && pos.hasY()) {
-          var x = pos.getX();
-          var y = pos.getY();
-          layoutEntityAtPosition(x, y, entity);
-        }
-      }
-    }
-  }
-}
 
 function handleVizInit(vizInit) {
-  clearUI();
-  ctx.fillText("Received VizInit!", 10, 50);
+  clearGameBoard();
+  //gameboard_ctx.fillText("Received VizInit!", 10, 50);
   if (vizInit.hasTestMode()) {
     if (vizInit.getTestMode()) {
       testingMode = true;
     }
   }
-  mm = buildEchoVizInitMultiMessage(vizInit);
-  return mm;
+  if (vizInit.hasStepCount()) {
+    maxStep = vizInit.getStepCount() - 1;
+  }
+  if (vizInit.hasGameboardWidth()) {
+    gameboardWidth = vizInit.getGameboardWidth();
+	//console.log("gameboard width : " + gameboardWidth);
+	$("#scaii-gameboard").css("width", gameboardWidth);
+	gameboard_canvas.width = gameboardWidth;
+	
+  }
+  if (vizInit.hasGameboardHeight()) {
+    gameboardHeight = vizInit.getGameboardHeight();
+	$("#scaii-gameboard").css("height", gameboardHeight);
+	gameboard_canvas.height = gameboardHeight;
+  }
+  explanations = vizInit.getExplanationsList();
+  //renderTimeline(maxStep);
 }
-function handleViz(vizData) {
-  console.log('received Viz...');
-  var entitiesList = vizData.getEntitiesList()
-  console.log('entities count :' + entitiesList.length);
+function handleViz(vizData){
+  //console.log('received Viz...');
+  var entitiesList = vizData.getEntitiesList();
+  var step = vizData.getStep();
+  //console.log("step in vizData was " + step+ "maxStep is " + maxStep);
+  updateProgress(step, maxStep);
+  
+  handleEntities(entitiesList);
+  if (step == maxStep){
+	  controlsManager.reachedEndOfGame();
+  }
+  if (vizData.hasChart()){
+	  var chartInfo = vizData.getChart();
+	  renderChartInfo(chartInfo, gameboardHeight);
+  }
+}
+function handleEntities(entitiesList) {
+  
+  //console.log('entities count :' + entitiesList.length);
   for (var i in entitiesList) {
     var entity = entitiesList[i];
 
     if (entity.hasId()) {
       var idString = '' + entity.getId();
-      if (idString == '8') {
-        console.log('=========== UPDATING ENTITY ===================')
-        logEntity(entity);
-      }
-      console.log('############## id string read as ' + idString + '###############');
+      //if (idString == '8') {
+      //  console.log('=========== UPDATING ENTITY ===================')
+      //  logEntity(entity);
+      //}
+      //console.log('############## id string read as ' + idString + '###############');
       if (masterEntities[idString] == undefined) {
         if (entity.hasDelete() && entity.getDelete()) {
           // do not add new entity that is marked as delete
@@ -484,10 +158,10 @@ function handleViz(vizData) {
           updateMasterEntity(masterEntity, entity);
         }
       }
-      if (idString == '8') {
-        console.log('=========== MASTER ENTITY AFTER UPDATE===================')
-        logEntity(masterEntities[idString]);
-      }
+      //if (idString == '8') {
+      //  console.log('=========== MASTER ENTITY AFTER UPDATE===================')
+      //  logEntity(masterEntities[idString]);
+      //}
 
     }
     else {
@@ -495,66 +169,183 @@ function handleViz(vizData) {
     }
 
   }
-  renderState(masterEntities);
+  renderState(gameboard_ctx, masterEntities);
 }
 
-function buildEchoVizInitMultiMessage(vizInit) {
-  var returnScaiiPacket = new proto.scaii.common.ScaiiPacket;
-  returnScaiiPacket.setVizInit(vizInit);
-  var mm = buildReturnMultiMessageFromScaiiPacket(returnScaiiPacket);
-  return mm;
+function clearGameBoard() {
+  gameboard_ctx.clearRect(0, 0, gameboard_canvas.width, gameboard_canvas.height);
 }
 
-function buildMultiMessageWithUserCommand(userCommand) {
-  var returnScaiiPacket = new proto.scaii.common.ScaiiPacket;
-  returnScaiiPacket.setUserCommand(userCommand);
-  var mm = buildReturnMultiMessageFromScaiiPacket(returnScaiiPacket);
-  return mm;
-}
-function buildReturnMultiMessageFromState(entities) {
-  var entityKeys = Object.keys(entities);
-  var returnState = new proto.scaii.common.Viz;
-  for (var i in entityKeys) {
-    var entityId = entityKeys[i]
-    var entity = entities[entityId];
-    if (entityId == '8') {
-      console.log('++++++++++++++ENTITY SEND ' + entityId + '++++++++++++++++');
-      logEntity(entity);
-    }
 
-    returnState.addEntities(entity);
+var draw_example_shapes = function () {
+  clearGameBoard();
+  colorRGBA = getBasicColorRGBA();
+  drawRect(gameboard_ctx,100, 100, 80, 80, colorRGBA);
+  drawTriangle(gameboard_ctx,200, 200, 80, colorRGBA);
+}
+var main = function () {
+  initUI();	
+  
+  //var redrawChartHiddenButton = document.createElement("BUTTON");
+  //redrawChartHiddenButton.setAttribute("id", "chartRedrawTriggerButton");
+  //redrawChartHiddenButton.appendChild(document.createTextNode("Refresh"));
+  //$("#scaii-game-controls").append(redrawChartHiddenButton);
+  var debug = true;
+  if (debug){
+	var connectButton = document.createElement("BUTTON");
+	var connectText = document.createTextNode("Connect");
+	connectButton.setAttribute("class", "connectButton");
+	connectButton.setAttribute("id", "connectButton");	
+	connectButton.appendChild(connectText);
+	connectButton.onclick = function(){
+		console.log("calling tryConnect");
+		tryConnect('.',0);
+	};
+	$("#scaii-interface-title").append(connectButton);
+	$("#connectButton").css("margin-left", "30px");
+	$("#connectButton").css("font-family", "Fira Sans");
+	$("#connectButton").css("font-size", "12px");
+	
+  }else {
+	  tryConnect('.', 0);
   }
-  var returnScaiiPacket = new proto.scaii.common.ScaiiPacket;
-
-  returnScaiiPacket.setViz(returnState);
-  var mm = buildReturnMultiMessageFromScaiiPacket(returnScaiiPacket);
-  return mm;
+  
 }
-function buildReturnMultiMessageFromScaiiPacket(scPkt) {
-  var moduleEndpoint = new proto.scaii.common.ModuleEndpoint;
-  moduleEndpoint.setName("viz");
-  var srcEndpoint = new proto.scaii.common.Endpoint;
-  srcEndpoint.setModule(moduleEndpoint);
-
-  var backendEndpoint = new proto.scaii.common.BackendEndpoint;
-  var destEndpoint = new proto.scaii.common.Endpoint;
-  destEndpoint.setBackend(backendEndpoint);
-
-  scPkt.setSrc(srcEndpoint);
-  scPkt.setDest(destEndpoint);
-
-  var mm = new proto.scaii.common.MultiMessage;
-  mm.addPackets(scPkt, 0);
-  return mm;
+var configureSpeedSlider = function(){
+	speedSlider.setAttribute("type", "range");
+	speedSlider.setAttribute("min", "1");
+	speedSlider.setAttribute("max", "100");
+	speedSlider.setAttribute("value", "90");
+	speedSlider.setAttribute("class", "slider");
+	speedSlider.setAttribute("id", "speed-slider");
+	speedSlider.oninput = function() {
+		var speedString = "" + this.value;
+		var args = [ speedString ];
+		var userCommand = new proto.scaii.common.UserCommand;
+		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.SET_SPEED);
+		userCommand.setArgsList(args);
+		stageUserCommand(userCommand);
+	}
+	//<input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+}
+var initUI = function(){
+	configureSpeedSlider();
+	controlsManager.setControlsNotReady();
+	gameboard_canvas.width = 400;
+	gameboard_canvas.height = 400;
+	$("#scaii-gameboard").append(gameboard_canvas);
+	$("#scaii-gameboard").css("width", gameboard_canvas.width);
+	$("#scaii-gameboard").css("height", gameboard_canvas.height);
+	//console.log("set height to " + gameboard_canvas.height)
+	$("#scaii-gameboard").css("background-color", "#123456");
+	
+	$("#scaii-interface-title").css("font-family", "Fira Sans");
+	$("#scaii-interface-title").css("font-size", "12px");
+	$("#scaii-interface-title").css("padding-left", "6px");
+	$("#scaii-interface-title").css("padding-top", "4px");
+	//$("#scaii-interface-title").css("text-align", "center");
+	$("#scaii-interface-title").html(systemTitle);
+	
+	$("#explanations-interface-title").css("font-family", "Fira Sans");
+	$("#explanations-interface-title").css("font-size", "12px");
+	//$("#explanations-interface-title").css("padding-left", "6px");
+	$("#explanations-interface-title").css("padding-top", "4px");
+	//$("#explanations-interface-title").css("padding-bottom", "6px");
+	$("#explanations-interface-title").css("text-align", "center");
+	$("#explanations-interface-title").html("- Explanations -");
+	
+	var speedSliderLabel = document.createElement("div");
+	$("#scaii-game-controls").append(speedSliderLabel);  
+	speedSliderLabel.setAttribute("id", "speed-slider-label");
+	$("#speed-slider-label").html("replay speed");
+	$("#speed-slider-label").css("font-family", "Fira Sans");
+	$("#speed-slider-label").css("font-size", "12px");
+	$("#speed-slider-label").css("padding-left", "6px");
+	$("#speed-slider-label").css("padding-right", "4px");
+	$("#speed-slider-label").css("padding-top", "2px");
+	
+	var blankSpacerLeft = document.createElement("div");
+	blankSpacerLeft.setAttribute("id","controls-spacer-left");
+	var blankSpacerRight = document.createElement("div");
+	blankSpacerRight.setAttribute("id","controls-spacer-right");
+	
+	$("#scaii-game-controls").append(speedSlider); 
+	$("#scaii-game-controls").append(blankSpacerLeft); 
+	//$("#controls-spacer-left").html(" ");
+	//$("#speed-slider").css("flex-grow","50");
+    
+	rewindButton.setAttribute("class", "controlButton");
+	rewindButton.innerHTML = '<img src="imgs/rewind.png", height="8px" width="10px"/>'; 
+    rewindButton.onclick = tryRewind;	
+	$("#scaii-game-controls").append(rewindButton);
+	
+	$("#scaii-game-controls").css("text-align", "center");
+	      
+	pauseResumeButton.setAttribute("class", "controlButton");	
+	pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="8px" width="10px"/>';  
+	
+	$("#scaii-game-controls").append(pauseResumeButton);
+	pauseResumeButton.onclick = tryPause;
+	
+	$("#scaii-game-controls").append(blankSpacerRight); 
+	
+	$("#controls-spacer-left").css("flex-grow","1");
+	$("#controls-spacer-right").css("flex-grow","1");
+	
+	
+	//$(".controlButton").css("font-family", "Arial");
+	//$(".controlButton").css("font-size", "10px");
+	$(".controlButton").css("margin-right", "5px");
+	$(".controlButton").css("margin-left", "5px");
+	$(".controlButton").css("padding-left", "2px");
+	$(".controlButton").css("padding-right", "2px");
+	$(".controlButton").css("padding-bottom", "0px");
+	$(".controlButton").css("padding-top", "0px");
+	//$(".controlButton").css("border-top", "1px");
+	//$(".controlButton").css("border-bottom", "1px");
+	//$(".controlButton").css("border-left", "1px");
+	//$(".controlButton").css("border-right", "1px");
+	/*
+	timeline_canvas.width = 400;
+	timeline_canvas.height = 20;
+	$("#scaii-timeline").append(timeline_canvas);
+	timeline_ctx.lineWidth = 1;
+	//timeline_ctx.strokeStyle = shape_outline_color;
+	timeline_ctx.beginPath();
+	timeline_ctx.moveTo(10, 10);
+	timeline_ctx.lineTo(390, 10);
+	timeline_ctx.stroke();
+	
+	var exp1 = {name:"attack knight", description:"attack the closest knight", step:5, type:"attack"};
+	var exp2 = {name:"retreat west", description:"running from group", step:20, type:"retreat"};
+	var exp3 = {name:"retreat north", description:"running from group", step:50, type:"retreat"};
+	var exp4 = {name:"attack knight", description:"attack the closest knight", step:75, type:"attack"};
+	var exp5 = {name:"attack dragon", description:"attack the closest dragon", step:80, type:"attack"};
+	var exp6 = {name:"retreat", description:"running from dragon", step:85, type:"retreat"};
+	var explanations = [exp1, exp2, exp3, exp4, exp5, exp6];
+	for (var i = 0; i < explanations.length; i++){
+		var exp = explanations[i];
+		drawExplanationBox(exp.step, exp.type);
+	}
+	*/
+	$("#game-progress").click(processTimelineClick);
 }
 
-function clearUI() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+function drawExplanationBox(step, type){
+	var stepNumber = Number.parseInt(step);
+	var startX = 10 + step*4;
+	var startY = 10;
+	timeline_ctx.moveTo(startX, startY);
+	timeline_ctx.lineTo(startX-7, startY-7);
+	timeline_ctx.lineTo(startX+7, startY-7);
+	timeline_ctx.moveTo(startX, startY);
+	timeline_ctx.stroke();
+	//timeline_ctx.addHitRegion({id: step});
 }
-
+// calls connect and paints "working" dots.  If connect fails, it calls tryConnect again
 function tryConnect(dots, attemptCount) {
-  clearUI();
-  ctx.font = "40px Georgia";
+  clearGameBoard();
+  gameboard_ctx.font = "40px Georgia";
   if (dots == '.') {
     dots = '..';
   }
@@ -564,70 +355,126 @@ function tryConnect(dots, attemptCount) {
   else {
     dots = '.';
   }
-  attemptCount = attemptCount + 1
-  ctx.fillText("Connecting to SCAII - try " + attemptCount + dots, 10, 50);
+  attemptCount = attemptCount + 1;
+  $("#scaii-interface-title").html(systemTitle + " (... connecting " + attemptCount + " " + dots + ")");
+  //gameboard_ctx.fillText("connecting  " + attemptCount + " " + dots, 10, 50);
   connect(dots, attemptCount);
 }
-var draw_example_shapes = function () {
-  clearUI();
-  colorRGBA = getBasicColorRGBA();
-  drawRect(100, 100, 80, 80, colorRGBA);
-  drawTriangle(200, 200, 80, colorRGBA);
+var drawExplanationBarChart = function(){
+	
+	
+	var options = {
+		//legend: { position: "none" },
+        title: 'Population of Largest U.S. Cities',
+        chartArea: {width: '50%'},
+        hAxis: {
+          title: 'Total Population',
+          minValue: 0
+        },
+        vAxis: {
+          title: 'City'
+        },
+		'width':600,
+        'height':400
+      };
+	  var chartData = [
+        ['Decision', 'r1', 'r2'],
+        ['unit victorious', 0.77, 0.4],
+        ['unit loses', -0.39, 0.6],
+        ['adversary flees', 0.2, 0.3]
+      ];
+	  drawBarChart(chartData, options);
 }
-var main = function () {
-  tryConnect('.', 0);
-}
+
 
 var connect = function (dots, attemptCount) {
   dealer = new WebSocket('ws://localhost:6112');
 
   dealer.binaryType = 'arraybuffer';
   dealer.onopen = function (event) {
+	$("#scaii-interface-title").html(systemTitle);
     console.log("WS Opened.");
-  }
+  };
 
   dealer.onmessage = function (message) {
-    sessionState = "inProgress";
-    var s = message.data;
-    var sPacket = proto.scaii.common.ScaiiPacket.deserializeBinary(s);
-    if (sPacket.hasVizInit()) {
-      var vizInit = sPacket.getVizInit();
-      var mm = handleVizInit(vizInit);
-      var returnMessage = mm.serializeBinary();
-      dealer.send(returnMessage);
-    }
-    else if (sPacket.hasViz()) {
-      var viz = sPacket.getViz();
-      handleViz(viz);
-      var mm;
-      if (testingMode) {
-        mm = buildReturnMultiMessageFromState(masterEntities);
+	try {
+	  sessionState = "inProgress";
+      var s = message.data;
+      var sPacket = proto.scaii.common.ScaiiPacket.deserializeBinary(s);
+      if (sPacket.hasVizInit()) {
+        var vizInit = sPacket.getVizInit();
+        handleVizInit(vizInit);
+		controlsManager.gameStarted();
+	    var mm = new proto.scaii.common.MultiMessage;
+	    dealer.send(mm.serializeBinary());
       }
+      else if (sPacket.hasViz()) {
+        var viz = sPacket.getViz();
+        handleViz(viz);
+		// we're moving forward so rewind should be enabled
+		controlsManager.gameSteppingForward();
+	    var mm;
+        if (testingMode) {
+          mm = buildReturnMultiMessageFromState(masterEntities);
+	    }
+	    else {
+	  	  mm = new proto.scaii.common.MultiMessage;
+	    }
+        dealer.send(mm.serializeBinary());
+      }
+      else if (sPacket.hasErr()) {
+        console.log(sPacket.getErr().getDescription())
+        mm = new proto.scaii.common.MultiMessage;
+        dealer.send(mm.serializeBinary());
+      }
+	  else if (sPacket.hasUserCommand()) {
+	    var userCommand = sPacket.getUserCommand();
+	    var commandType = userCommand.getCommandType();
+	    if (commandType == proto.scaii.common.UserCommand.UserCommandType.POLL_FOR_COMMANDS){
+		  var mm;
+		  if (userCommandScaiiPackets.length > 0){
+	        mm = buildResponseToReplay(userCommandScaiiPackets);
+			dealer.send(mm.serializeBinary());
+			controlsManager.userCommandSent();
+		  }
+		  else {
+		    mm = new proto.scaii.common.MultiMessage;
+			dealer.send(mm.serializeBinary());
+		  }
+		  
+		  userCommandScaiiPackets = [];
+        }
+		else if (commandType == proto.scaii.common.UserCommand.UserCommandType.JUMP_COMPLETED) {
+			controlsManager.jumpCompleted();
+			mm = new proto.scaii.common.MultiMessage;
+			dealer.send(mm.serializeBinary());
+		}
+	  }
       else {
-        var userCommand = new proto.scaii.common.UserCommand;
-        userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.NONE);
-        mm = buildMultiMessageWithUserCommand(userCommand);
+        console.log(sPacket.toString())
+        console.log('unexpected message from system!');
+        mm = new proto.scaii.common.MultiMessage;
+        dealer.send(mm.serializeBinary());
       }
-      var returnMessage = mm.serializeBinary();
-      dealer.send(returnMessage);
-    }
-    else {
-      console.log('unexpected message from system!');
-    }
+	}
+	catch (err) {
+	  alert(err.message);
+	}
   };
+	
   dealer.onclose = function (closeEvent) {
     console.log("closefired " + attemptCount);
     if (sessionState == "pending") {
       // the closed connection was likely due to failed connection. try reconnecting
-      setTimeout(function () { tryConnect(dots, attemptCount); }, 1500);
+      setTimeout(function () { tryConnect(dots, attemptCount); }, 2000);
     }
-    //alert("Closed!");
   };
 
   dealer.onerror = function (err) {
     console.log("Error: " + err);
-    //alert("Error: " + err);
+    alert("Error: " + err);
   };
+  
 };
 
 var then = Date.now();

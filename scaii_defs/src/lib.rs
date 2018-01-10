@@ -154,6 +154,11 @@ pub trait Backend: Module {
 /// this is just a marker trait.
 pub trait Agent: Module {}
 
+/// The Replay mechanism attached to this environment
+pub trait Replay: Module {}
+
+/// The Recorder mechanism attached to this environment
+pub trait Recorder: Module {}
 
 impl<T: Module> Module for Rc<RefCell<T>> {
     fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>> {
@@ -164,6 +169,11 @@ impl<T: Module> Module for Rc<RefCell<T>> {
         self.borrow_mut().get_messages()
     }
 }
+
+impl<T: Replay> Replay for Rc<RefCell<T>> {}
+
+
+impl<T: Recorder> Recorder for Rc<RefCell<T>> {}
 
 impl<T: Backend> Backend for Rc<RefCell<T>> {
     fn supported_behavior(&self) -> BackendSupported {

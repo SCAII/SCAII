@@ -7,6 +7,9 @@ extern crate libc;
 extern crate libloading;
 extern crate prost;
 extern crate scaii_defs;
+#[macro_use]
+extern crate serde_derive;
+extern crate bincode;
 extern crate websocket;
 use scaii_defs::protos::{AgentEndpoint, MultiMessage, ScaiiPacket};
 use std::error::Error;
@@ -23,6 +26,11 @@ pub use c_api::*;
 
 // Don't publicly expose our internal structure to FFI
 pub(crate) mod internal;
+//...but expose ReplayAction so Replay can access it in Recorder (Replay is a binary so different crate)
+pub use internal::recorder::{GameAction, get_default_replay_file_path, ReplayAction, ReplayHeader, SerializedProtosAction, 
+                SerializedProtosEndpoint, SerializedProtosScaiiPacket,
+                SerializedProtosSerializationResponse, SerializationInfo};
+pub use internal::rpc::get_rpc_config_for_viz;
 
 /// The Environment created by this library.
 #[derive(Default)]
@@ -144,7 +152,7 @@ impl Environment {
                     }
                 }
             },
-            Rpc(ref cfg) => match rpc::init_rpc(cfg.clone())? {
+            Rpc(ref cfg) => match rpc::init_rpc(cfg)? {
                 LoadedAs::Backend(_) => unimplemented!(),
                 LoadedAs::Module(module, name) => {
                     let prev = self.router.register_module(name.clone(), module);

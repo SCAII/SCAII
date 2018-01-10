@@ -1,6 +1,5 @@
 use scaii_defs::Module;
-use scaii_defs::protos::{MultiMessage, ScaiiPacket};
-use scaii_defs::protos::{ModuleInit, RpcConfig};
+use scaii_defs::protos::{ModuleInit, MultiMessage, RpcConfig, ScaiiPacket};
 use std::error::Error;
 use std::net::{IpAddr, SocketAddr};
 use websocket::client::sync::Client;
@@ -17,7 +16,7 @@ use std::sync::mpsc;
 #[cfg(test)]
 mod test;
 
-pub fn init_rpc(rpc_config: RpcConfig) -> Result<LoadedAs, Box<Error>> {
+pub fn init_rpc(rpc_config: &RpcConfig) -> Result<LoadedAs, Box<Error>> {
     let (tx, rx) = mpsc::channel();
     let command = rpc_config.command.clone();
     match command {
@@ -25,67 +24,75 @@ pub fn init_rpc(rpc_config: RpcConfig) -> Result<LoadedAs, Box<Error>> {
         Some(cmd) => {
             let args = rpc_config.command_args.clone();
             let _handle = thread::spawn(move || {
-                launch_far_end(&cmd, args.to_vec());
+                launch_far_end(&cmd, &args.to_vec());
                 rx.recv().unwrap();
             });
         }
     }
 
-    let result = startup_module(&rpc_config);
+    let result = startup_module(rpc_config);
     tx.send(String::from("rpc_started")).unwrap();
     result
 }
 
 fn startup_module(rpc_config: &RpcConfig) -> Result<LoadedAs, Box<Error>> {
-    let client = connect(&rpc_config)?;
+    let client = connect(rpc_config)?;
     let init_as = rpc_config.init_as.clone();
-    let result = match init_as.init_as.ok_or_else::<Box<Error>, _>(|| {
+    match init_as.init_as.ok_or_else::<Box<Error>, _>(|| {
         From::from("Malformed InitAs field in RpcPlugin".to_string())
     })? {
         InitAs::Module(ModuleInit { name }) => Ok(LoadedAs::Module(
             Box::new(RpcModule {
                 rpc: Rpc {
                     socket_client: client,
-                    inbound_messages: Vec::with_capacity(5),
+                    messages_from_socket_client: Vec::with_capacity(5),
                     owner: Endpoint::Module(protos::ModuleEndpoint { name: name.clone() }),
                 },
             }),
             name,
         )),
         _ => unimplemented!("Still need to implement Backend match arm"),
-    };
-    result
+    }
 }
 
-fn launch_far_end(command: &String, args: Vec<String>) -> Child {
+fn launch_far_end(command: &str, args: &[String]) -> Child {
     if cfg!(target_os = "windows") {
         let mut c = Command::new("cmd");
         let c = c.arg("/C");
+        //let quoted_command = format!("\"{}\"", command);
         let c = c.arg(command);
         for arg in args.iter() {
             c.arg(arg);
         }
-        let child = c.spawn().expect(&String::as_str(
-            &format!("failed to launch command {}", command),
-        ));
-        child
-    } else {
+        println!("command struct is {:?}", c);
+        c.spawn().expect(String::as_str(
+            &format!("failed to launch command {}", command)))
+    } 
+    else if cfg!(target_os = "unix") {
         let mut c = Command::new("sh");
         let c = c.arg("-c");
         let c = c.arg(command);
         for arg in args.iter() {
             c.arg(arg);
         }
-        let child = c.spawn().expect(&String::as_str(
-            &format!("failed to launch command {}", command),
-        ));
-        child
+        c.spawn().expect(String::as_str(
+            &format!("failed to launch command {}", command)))
+    }
+    else {
+        // assume mac
+        let mut c = Command::new("sh");
+        let c = c.arg("-c");
+        // for mac, command plus the args come across in the command value - if we split it
+        // up like we do on windows in command and arg, it doesn't work foe some reasoin ("open file:///...") 
+        let c = c.arg(command);
+        c.spawn().expect(String::as_str(
+            &format!("failed to launch command {}", command)))
     }
 }
 
 struct Rpc {
     socket_client: Client<TcpStream>,
-    inbound_messages: Vec<MultiMessage>,
+    messages_from_socket_client: Vec<MultiMessage>,
     owner: Endpoint,
 }
 
@@ -119,7 +126,7 @@ impl Rpc {
                         }
                     });
 
-                self.inbound_messages.push(packet);
+                self.messages_from_socket_client.push(packet);
             }
             Err(e) => {
                 // Send error msg to ourselves.
@@ -141,7 +148,7 @@ impl Rpc {
                     })),
                 };
 
-                self.inbound_messages.push(MultiMessage {
+                self.messages_from_socket_client.push(MultiMessage {
                     packets: vec![err_packet],
                 });
             }
@@ -149,7 +156,7 @@ impl Rpc {
     }
     pub fn get_messages(&mut self) -> MultiMessage {
         use scaii_defs::protos;
-        protos::merge_multi_messages(self.inbound_messages.drain(..).collect()).unwrap_or(
+        protos::merge_multi_messages(self.messages_from_socket_client.drain(..).collect()).unwrap_or(
             MultiMessage {
                 packets: Vec::new(),
             },
@@ -240,5 +247,19 @@ fn connect(settings: &RpcConfig) -> Result<Client<TcpStream>, Box<Error>> {
         // going to reattempt connections, just alert
         // the user of the error
         Err((_, err)) => Err(Box::new(err)),
+    }
+}
+
+pub fn get_rpc_config_for_viz(comm : Option<String>, args_vec : Vec<String>) -> protos::RpcConfig {
+    protos::RpcConfig {
+        ip: Some("127.0.0.1".to_string()),
+        port: Some(6112),
+        init_as: protos::InitAs {
+            init_as: Some(protos::init_as::InitAs::Module(ModuleInit {
+                name: String::from("RpcPluginModule"),
+            })),
+        },
+        command: comm,
+        command_args: args_vec,
     }
 }

@@ -148,6 +148,10 @@ fn make_viz_init(test_mode: bool) -> ScaiiPacket {
 
         specific_msg: Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {
             test_mode: Some(test_mode),
+            step_count: Some(100),
+            gameboard_height: Some(400),
+            gameboard_width: Some(400),
+            explanations: Vec::new(),
         })),
     }
 }
@@ -302,7 +306,54 @@ fn verify_scaii_packet(
         );
     }
 }
+fn receive_and_decode_empty_message(client: &mut Client<TcpStream>) {
+    use scaii_defs::protos::MultiMessage;
+    use prost::Message;
+    use websocket::OwnedMessage;
+    use websocket::message;
 
+    let msg = client
+        .recv_message()
+        .expect("Could not receive message from client");
+    if let OwnedMessage::Binary(vec) = msg {
+        let msg = match MultiMessage::decode(vec) {
+            Err(err) => {
+                client
+                    .send_message(&message::Message::close_because(
+                        1008,
+                        "Malformed MultiMessage",
+                    ))
+                    .expect("Could not send error closure");
+                panic!("Client send something that couldn't be decoded {}", err)
+            }
+            Ok(msg) => msg,
+        };
+
+        if msg.packets.len() != 0 {
+            client
+                .send_message(&message::Message::close_because(
+                    1008,
+                    "Expected exactly 0 ScaiiPacket for this exchange",
+                ))
+                .expect("Could not send error closure");
+
+            panic!("Client send the wrong number of ScaiiPackets");
+        }
+    } else if let OwnedMessage::Close(dat) = msg {
+        panic!("Client closed connection: {:?}", dat);
+    } else {
+        // 1008 = Policy Violation
+        client
+            .send_message(&message::Message::close_because(
+                1008,
+                "Incorrect message type,\
+                 expected binary that resolves to a MultiMessage",
+            ))
+            .expect("Could not send error closure");
+
+        panic!("Client failed to send valid response");
+    }
+}
 fn receive_and_decode_proto(client: &mut Client<TcpStream>) -> ScaiiPacket {
     use scaii_defs::protos::MultiMessage;
     use prost::Message;
@@ -359,28 +410,8 @@ fn server_startup(client: &mut Client<TcpStream>) {
 
     let viz_init = make_viz_init(true);
     encode_and_send_proto(client, &viz_init).expect("Could not send VizInit message");
-    let _echoed_viz_init = receive_and_decode_proto(client);
+    let _echoed_viz_init = receive_and_decode_empty_message(client);
     println!("received echoed VizInit ScaiiPacket");
-}
-
-fn packet_from_entity_list(entities: Vec<protos::Entity>) -> ScaiiPacket {
-    use scaii_defs::protos;
-    use scaii_defs::protos::{endpoint, scaii_packet};
-
-    ScaiiPacket {
-        src: protos::Endpoint {
-            endpoint: Some(endpoint::Endpoint::Backend(protos::BackendEndpoint {})),
-        },
-        dest: protos::Endpoint {
-            endpoint: Some(endpoint::Endpoint::Module(protos::ModuleEndpoint {
-                name: "viz".to_string(),
-            })),
-        },
-
-        specific_msg: Some(scaii_packet::SpecificMsg::Viz(
-            protos::Viz { entities: entities },
-        )),
-    }
 }
 
 fn first_delta(
@@ -390,7 +421,9 @@ fn first_delta(
 ) -> HashMap<usize, IdEntity> {
     let protos = entities.iter().map(|e| e.to_proto()).collect();
     println!("Sending first volley of entities to initialize list");
-    encode_and_send_proto(client, &packet_from_entity_list(protos))
+    let scaii_pkt = scaii_defs::protos::packet_from_entity_list(protos);
+    encode_and_send_proto(client, &scaii_pkt)
+    //encode_and_send_proto(client, &packet_from_entity_list(protos))
         .expect("Could not send initial entity list");
 
     let response = receive_and_decode_proto(client);
@@ -458,6 +491,8 @@ fn update_entities<R: Rng>(entity_map: &mut HashMap<usize, IdEntity>, rng: &mut 
         },
         specific_msg: Some(scaii_packet::SpecificMsg::Viz(protos::Viz {
             entities: entity_protos,
+            chart: None,
+            step: None,
         })),
     }
 }

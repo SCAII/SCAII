@@ -1,4 +1,4 @@
-use scaii_defs::{Agent, Backend, Module};
+use scaii_defs::{Agent, Backend, Module, Recorder, Replay};
 use scaii_defs::protos::{ModuleEndpoint, MultiMessage, ScaiiPacket};
 use scaii_defs::protos::endpoint::Endpoint;
 
@@ -32,6 +32,8 @@ pub struct Router {
     backend: Option<Box<Backend>>,
     agent: Option<Box<Agent>>,
     modules: HashMap<String, Box<Module>>,
+    replay: Option<Box<Replay>>,
+    recorder: Option<Box<Recorder>>,
 }
 
 impl Router {
@@ -42,6 +44,8 @@ impl Router {
             backend: None,
             agent: None,
             modules: HashMap::new(),
+            replay: None,
+            recorder: None,
         }
     }
 
@@ -52,6 +56,8 @@ impl Router {
             backend: Some(backend),
             agent: None,
             modules: HashMap::new(),
+            replay: None,
+            recorder: None,
         }
     }
 
@@ -62,6 +68,8 @@ impl Router {
             backend: None,
             agent: Some(agent),
             modules: HashMap::new(),
+            replay: None,
+            recorder: None
         }
     }
 
@@ -143,6 +151,26 @@ impl Router {
                 } else if res.is_none() {
                     return Err(Box::new(NoSuchEndpointError { end: dest.clone() }));
                 }
+
+                Ok(None)
+            }
+            Endpoint::Replay(_) => {
+                let res = self.replay.as_mut().and_then(|v| Some(v.process_msg(msg)));
+                if let Some(Err(err)) = res {
+                    return Err(err);
+                } else if res.is_none() {
+                    return Err(Box::new(NoSuchEndpointError { end: dest.clone() }));
+                };
+
+                Ok(None)
+            }
+            Endpoint::Recorder(_) => {
+                let res = self.recorder.as_mut().and_then(|v| Some(v.process_msg(msg)));
+                if let Some(Err(err)) = res {
+                    return Err(err);
+                } else if res.is_none() {
+                    return Err(Box::new(NoSuchEndpointError { end: dest.clone() }));
+                };
 
                 Ok(None)
             }
@@ -230,6 +258,8 @@ impl Router {
             Endpoint::Core(_) => true,
             Endpoint::Backend(_) => self.backend.is_some(),
             Endpoint::Agent(_) => self.agent.is_some(),
+            Endpoint::Replay(_) => self.replay.is_some(),
+            Endpoint::Recorder(_) => self.recorder.is_some(),
             Endpoint::Module(ModuleEndpoint { ref name }) => self.modules.get(name).is_some(),
         }
     }
@@ -252,6 +282,32 @@ impl Router {
         use std::mem;
         mem::replace(&mut self.backend, Some(backend))
     }
+
+    /// Registers a new replayer, returning the old one if one existed.
+    #[allow(dead_code)]
+    pub fn register_replay(&mut self, replay: Box<Replay>) -> Option<Box<Replay>> {
+        use std::mem;
+        mem::replace(&mut self.replay, Some(replay))
+    }
+
+    #[allow(dead_code, borrowed_box)]
+    pub fn replay(&self) -> Option<&Box<Replay>> {
+        self.replay.as_ref()
+    }
+
+
+    /// Registers a new recorder, returning the old one if one existed.
+    #[allow(dead_code)]
+    pub fn register_recorder(&mut self, recorder: Box<Recorder>) -> Option<Box<Recorder>> {
+        use std::mem;
+        mem::replace(&mut self.recorder, Some(recorder))
+    }
+
+    #[allow(dead_code, borrowed_box)]
+    pub fn recorder(&self) -> Option<&Box<Recorder>> {
+        self.recorder.as_ref()
+    }
+
 
     /// Returns a reference to the registered agent (if any).
     #[allow(dead_code, borrowed_box)]
