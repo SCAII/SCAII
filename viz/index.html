@@ -75,23 +75,25 @@
     margin: 2px;
 }
 
+#scaii-zoom-controls {
+    display: flex;
+	flex-direction: row;
+	background-color: lightyellow;
+    width: 400px;
+    height: 20px;
+    margin: 2px;
+}
+
 #explanations-interface-title {
 	background-color: lightgrey;
-    width: 600px;
+    width: 400px;
     height: 20px;
     margin: 0px;
 }
-#explanations-selector {
-	/*display: flex;*/
-	background-color: #555555;
-    width: 600px;
-    height: 100px;
-    margin: 0px;
-}
-#explanations-interface {
+#scaii-gameboard-zoom {
 	background-color: #C0C0C0;
-    width: 600px;
-    height: 300px;
+    width: 400px;
+    height: 400px;
     margin: 0px;
 }
 #game-progress {
@@ -127,8 +129,8 @@
 			</div>
 			<div id="scaii-explanations">
 				<div id="explanations-interface-title"></div>
-				<div id="explanations-selector"></div>
-				<div id="explanations-interface"></div>
+				<div id="scaii-gameboard-zoom"></div>
+				<div id="scaii-zoom-controls"></div>
 			</div>
 		</div>
 		<script src="js/scaiiViz.js"></script>

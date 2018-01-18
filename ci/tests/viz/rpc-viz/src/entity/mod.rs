@@ -123,14 +123,16 @@ impl SpecificShape {
         use SpecificShape::*;
         match (self, other) {
             (&Triangle { base: b1 }, &Triangle { base: b2 }) => (b1 - b2).abs() < thresh,
-            (&Rect {
-                 width: w1,
-                 height: h1,
-             },
-             &Rect {
-                 width: w2,
-                 height: h2,
-             }) => (w1 - w2).abs() < thresh && (h1 - h2).abs() < thresh,
+            (
+                &Rect {
+                    width: w1,
+                    height: h1,
+                },
+                &Rect {
+                    width: w2,
+                    height: h2,
+                },
+            ) => (w1 - w2).abs() < thresh && (h1 - h2).abs() < thresh,
             _ => false,
         }
     }
@@ -141,6 +143,7 @@ pub struct Shape {
     pub color: Color,
     pub relative_pos: Pos,
     pub shape: SpecificShape,
+    pub rotation: f64,
 }
 
 impl Shape {
@@ -151,6 +154,7 @@ impl Shape {
             id: 0,
             color: Some(self.color.to_proto()),
             relative_pos: Some(self.relative_pos.to_proto()),
+            rotation: self.rotation,
             rect: if let SpecificShape::Rect {
                 ref width,
                 ref height,
@@ -164,7 +168,9 @@ impl Shape {
                 None
             },
             triangle: if let SpecificShape::Triangle { ref base } = self.shape {
-                Some(protos::Triangle { base_len: Some(*base) })
+                Some(protos::Triangle {
+                    base_len: Some(*base),
+                })
             } else {
                 None
             },
@@ -177,25 +183,28 @@ impl Shape {
             Err(format!("Shape's id is not 0. Got: {}", shape.id))?;
         }
         Ok(Shape {
-            color: Color::from_proto(shape.color.as_ref().ok_or_else::<Box<Error>, _>(
-                || From::from("Shape lacks color field"),
-            )?)?,
-            relative_pos: Pos::from_proto(
-                shape.relative_pos.as_ref().ok_or_else::<Box<Error>, _>(
-                    || {
-                        From::from("Shape lacks relative_pos field")
-                    },
-                )?,
+            color: Color::from_proto(
+                shape
+                    .color
+                    .as_ref()
+                    .ok_or_else::<Box<Error>, _>(|| From::from("Shape lacks color field"))?,
             )?,
+            relative_pos: Pos::from_proto(
+                shape
+                    .relative_pos
+                    .as_ref()
+                    .ok_or_else::<Box<Error>, _>(|| From::from("Shape lacks relative_pos field"))?,
+            )?,
+            rotation: shape.rotation,
             shape: {
                 if shape.rect.is_some() && shape.triangle.is_some() {
                     Err("Shape has both rect and triangle set")?;
                 }
 
                 if let Some(protos::Rect {
-                                width: Some(ref width),
-                                height: Some(ref height),
-                            }) = shape.rect
+                    width: Some(ref width),
+                    height: Some(ref height),
+                }) = shape.rect
                 {
                     SpecificShape::Rect {
                         width: *width,
@@ -206,8 +215,9 @@ impl Shape {
                         "Shape has malformed or missing rect fields: {:?}",
                         shape.rect
                     ))?;
-                } else if let Some(protos::Triangle { base_len: Some(ref base_len) }) =
-                    shape.triangle
+                } else if let Some(protos::Triangle {
+                    base_len: Some(ref base_len),
+                }) = shape.triangle
                 {
                     SpecificShape::Triangle { base: *base_len }
                 } else if let Some(protos::Triangle { .. }) = shape.triangle {
@@ -228,8 +238,8 @@ impl Shape {
     }
 
     pub fn fuzzy_eq(&self, other: &Self, thresh: f64) -> bool {
-        self.color == other.color && self.relative_pos.fuzzy_eq(&other.relative_pos, thresh) &&
-            self.shape.fuzzy_eq(&other.shape, thresh)
+        self.color == other.color && self.relative_pos.fuzzy_eq(&other.relative_pos, thresh)
+            && self.shape.fuzzy_eq(&other.shape, thresh)
     }
 }
 
@@ -238,8 +248,11 @@ impl Rand for Shape {
         Shape {
             color: Color::rand(rng),
             relative_pos: Pos { x: 0.0, y: 0.0 },
+            rotation: rng.gen_range(0.0, 6.0),
             shape: if rng.gen::<bool>() {
-                SpecificShape::Triangle { base: rng.gen_range(0.0, 5.0) }
+                SpecificShape::Triangle {
+                    base: rng.gen_range(0.0, 5.0),
+                }
             } else {
                 SpecificShape::Rect {
                     width: rng.gen_range(0.0, 5.0),
@@ -266,12 +279,10 @@ impl Pos {
 
     pub fn from_proto(pos: &protos::Pos) -> Result<Self, Box<Error>> {
         Ok(Pos {
-            x: pos.x.ok_or_else::<Box<Error>, _>(
-                || From::from("Position lacks x field"),
-            )?,
-            y: pos.y.ok_or_else::<Box<Error>, _>(
-                || From::from("Position lacks y field"),
-            )?,
+            x: pos.x
+                .ok_or_else::<Box<Error>, _>(|| From::from("Position lacks x field"))?,
+            y: pos.y
+                .ok_or_else::<Box<Error>, _>(|| From::from("Position lacks y field"))?,
         })
     }
 
@@ -337,9 +348,12 @@ impl IdEntity {
         Ok(IdEntity {
             id: entity.id as usize,
             entity: Entity {
-                pos: Pos::from_proto(entity.pos.as_ref().ok_or_else::<Box<Error>, _>(
-                    || From::from("Entity lacks pos field"),
-                )?)?,
+                pos: Pos::from_proto(
+                    entity
+                        .pos
+                        .as_ref()
+                        .ok_or_else::<Box<Error>, _>(|| From::from("Entity lacks pos field"))?,
+                )?,
                 shape: {
                     if entity.shapes.len() != 1 {
                         Err("Entity's shape field is not exactly 1")?;
@@ -387,24 +401,24 @@ impl IdEntity {
             ),
             ChangeShape(rng.gen::<Shape>().shape),
             match self.entity.shape.shape {
-                SpecificShape::Rect { .. } => {
-                    match rng.gen_range(0, 3) {
-                        0 => AlterRect {
-                            width: Some(rng.gen_range(-4.0, 4.0)),
-                            height: Some(rng.gen_range(-4.0, 4.0)),
-                        },
-                        1 => AlterRect {
-                            width: Some(rng.gen_range(-4.0, 4.0)),
-                            height: None,
-                        },
-                        2 => AlterRect {
-                            width: None,
-                            height: Some(rng.gen_range(-4.0, 4.0)),
-                        },
-                        _ => unreachable!(),
-                    }
-                }
-                SpecificShape::Triangle { .. } => AlterTriangle { base: rng.gen_range(-4.0, 4.0) },
+                SpecificShape::Rect { .. } => match rng.gen_range(0, 3) {
+                    0 => AlterRect {
+                        width: Some(rng.gen_range(-4.0, 4.0)),
+                        height: Some(rng.gen_range(-4.0, 4.0)),
+                    },
+                    1 => AlterRect {
+                        width: Some(rng.gen_range(-4.0, 4.0)),
+                        height: None,
+                    },
+                    2 => AlterRect {
+                        width: None,
+                        height: Some(rng.gen_range(-4.0, 4.0)),
+                    },
+                    _ => unreachable!(),
+                },
+                SpecificShape::Triangle { .. } => AlterTriangle {
+                    base: rng.gen_range(-4.0, 4.0),
+                },
             },
         ];
 
@@ -492,6 +506,7 @@ impl EntityUpdate {
                 let shape_proto = protos::Shape {
                     id: 0,
                     relative_pos: None,
+                    rotation: shape.rotation,
                     color: Some(shape.color.to_proto()),
                     rect: None,
                     triangle: None,
@@ -510,6 +525,7 @@ impl EntityUpdate {
                 let shape_proto = protos::Shape {
                     id: 0,
                     relative_pos: None,
+                    rotation: entity.entity.shape.rotation,
                     color: None,
                     rect: if let SpecificShape::Rect { width, height } = specific_shape {
                         Some(protos::Rect {
@@ -520,7 +536,9 @@ impl EntityUpdate {
                         None
                     },
                     triangle: if let SpecificShape::Triangle { base } = specific_shape {
-                        Some(protos::Triangle { base_len: Some(base) })
+                        Some(protos::Triangle {
+                            base_len: Some(base),
+                        })
                     } else {
                         None
                     },
@@ -560,6 +578,7 @@ impl EntityUpdate {
                     triangle: None,
                     color: None,
                     relative_pos: None,
+                    rotation: entity.entity.shape.rotation,
                 };
 
                 *e_width = new_width.unwrap_or(*e_width);
@@ -574,6 +593,11 @@ impl EntityUpdate {
             }
             AlterTriangle { base } => {
                 let entity = entities.get_mut(&key).unwrap();
+                let mut rotate: f64 = 0.0;
+                {
+                    let shape = &mut entity.entity.shape;
+                    rotate = shape.rotation;
+                }
                 let e_base =
                     if let SpecificShape::Triangle { ref mut base } = entity.entity.shape.shape {
                         base
@@ -583,7 +607,10 @@ impl EntityUpdate {
 
                 let new_base = *e_base + base;
 
-                let triangle_proto = protos::Triangle { base_len: Some(new_base) };
+                let triangle_proto = protos::Triangle {
+                    base_len: Some(new_base),
+                };
+
                 let shape_proto = protos::Shape {
                     id: 0,
                     delete: false,
@@ -591,6 +618,7 @@ impl EntityUpdate {
                     triangle: Some(triangle_proto),
                     color: None,
                     relative_pos: None,
+                    rotation: rotate,
                 };
 
                 *e_base = new_base;
