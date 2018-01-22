@@ -37,7 +37,6 @@ fn main() {
     println!("SCAII installer will now configure the system...");
     let scaii_root = get_scaii_root();
     verify_presence_of_scaii_defs_dir(&scaii_root);
-    //check_for_git();  // not needing git and if so, will use git library
     //
     //  protoc (Google Protocol Buffers compiler)
     //
@@ -339,18 +338,6 @@ fn ensure_protoc_installed() -> Result<PathBuf, Box<Error>> {
                 Err(Box::new(InstallError::new(&format!("Problem creating .scaii dir for installing dependencies: {}", error.description()))))
             }
         }
-    }
-}
-
-fn check_for_git() {
-    let git_installed = verify_program_installed("git", "--version", "git version");
-    if !git_installed{
-        println!("running 'git --version' produces an answer that doesn't start with 'git version', so it looks like git is not installed.");
-        println!("Please install git and then retry.");
-        process::exit(0);
-    }
-    else {
-        println!("git detected...");
     }
 }
 
