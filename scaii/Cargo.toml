@@ -1,0 +1,8 @@
+[package]
+name = "scaii"
+version = "0.1.0"
+authors = ["Jed Irvine <jedirv@gmail.com>"]
+
+[dependencies]
+zip = "0.3.0"
+curl = "0.4.8"
