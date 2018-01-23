@@ -35,8 +35,15 @@ impl Error for InstallError {
 #[allow(unused_assignments)]
 fn main() {
     println!("SCAII installer will now configure the system...");
-    let scaii_root = get_scaii_root();
-    verify_presence_of_scaii_defs_dir(&scaii_root);
+    let mut scaii_root = get_scaii_root();
+    match scaii_root {
+        Err(error) => {
+            println!("This does not seem to be a valid SCAII installation. {:?}", error.description());
+            process::exit(0);
+        },
+        Ok(_) => ()
+    }
+    let scaii_root :PathBuf = scaii_root.unwrap();
     //
     //  protoc (Google Protocol Buffers compiler)
     //
@@ -75,11 +82,9 @@ fn main() {
     }
 }
 
-fn ensure_google_closure_lib_installed(scaii_root : &String) ->  Result<(), Box<Error>> {
+fn ensure_google_closure_lib_installed(scaii_root : &PathBuf) ->  Result<(), Box<Error>> {
     //\SCAII\viz\js\closure-library\closure\bin
-    let mut scaii_root_pbuf = PathBuf::new();
-    scaii_root_pbuf.push(scaii_root);
-    let mut closure_bin_dir = scaii_root_pbuf.clone();
+    let mut closure_bin_dir = scaii_root.clone();
     closure_bin_dir.push("viz");
     closure_bin_dir.push("js");
     closure_bin_dir.push("closure-library");
@@ -89,7 +94,7 @@ fn ensure_google_closure_lib_installed(scaii_root : &String) ->  Result<(), Box<
     }
     else {
         println!("It appears google closure library is not installed - will try to install it.");
-        let mut closure_install_dir = scaii_root_pbuf.clone();
+        let mut closure_install_dir = scaii_root.clone();
         closure_install_dir.push("viz");
         closure_install_dir.push("js");
         
@@ -155,9 +160,10 @@ fn install_google_closure_library(mut closure_install_dir : PathBuf, url : Strin
         }
     }
 }
-fn build_javascript_protobufs(scaii_root: &String, protoc_executable_path: &PathBuf) -> Result<(), Box<Error>> {
+
+fn build_javascript_protobufs(scaii_root: &PathBuf, protoc_executable_path: &PathBuf) -> Result<(), Box<Error>> {
     // change directory to <scaii_root>/viz/js
-    let mut path_buf : PathBuf = PathBuf::from(scaii_root);
+    let mut path_buf = scaii_root.clone();
     path_buf.push("viz");
     path_buf.push("js");
     env::set_current_dir(&path_buf)?;
@@ -202,9 +208,7 @@ fn ensure_dot_scaii_dir_exists() -> Result<PathBuf, Box<Error>> {
     match home_dir {
         None => {
             // put .scaii undeneath SCAII_ROOT instead since homeDir could not be determined
-            let scaii_root = get_scaii_root();
-            let mut scaii_root_pathbuf = PathBuf::new();
-            scaii_root_pathbuf.push(scaii_root);
+            let mut scaii_root_pathbuf = get_scaii_root()?;
             scaii_root_pathbuf.push(".scaii");
             p_buf = scaii_root_pathbuf;
         }
@@ -317,49 +321,19 @@ fn unzip_file(parent : &PathBuf, zip_file : fs::File) -> Result<(), Box<Error>> 
 }
 
 fn ensure_protoc_installed() -> Result<PathBuf, Box<Error>> {
-    let protoc_installed = verify_program_installed("protoc", "--version", "libprotoc 3.");
-    // if !protoc_installed {
-    if protoc_installed {
-        println!("protoc detected...");
-        let mut path_buf = PathBuf::new();
-        path_buf.push("protoc");
-        Ok(path_buf)
-    }
-    else {
-        println!("It appears protoc is not installed - will try to install it.");
-        let scaii_dir_result = ensure_dot_scaii_dir_exists();
-        match scaii_dir_result {
-            Ok(scaii_dir_pbuf) => {
-                let filename = get_protoc_download_filename();
-                let url = format!("https://github.com/google/protobuf/releases/download/v3.4.0/{}", &filename);
-                install_protoc(scaii_dir_pbuf, url, filename)
-            },
-            Err(error) => {
-                Err(Box::new(InstallError::new(&format!("Problem creating .scaii dir for installing dependencies: {}", error.description()))))
-            }
-        }
-    }
-}
-
-fn verify_program_installed(command: &str, arg: &str, success_prefix: &str) -> bool {
-    let mut vec : Vec<String> = Vec::new();
-    vec.push(String::from(arg));
-    let command_string = String::from(command);
-    let result = run_command(&command_string, vec);
-    match result {
-        Ok(return_string) => {
-            if return_string.starts_with(success_prefix){
-                true
-            }
-            else{
-                false
-            }
+    // always install it into .scaii dir
+    println!("Installing protoc compiler...");
+    let scaii_dir_result = ensure_dot_scaii_dir_exists();
+    match scaii_dir_result {
+        Ok(scaii_dir_pbuf) => {
+            let filename = get_protoc_download_filename();
+            let url = format!("https://github.com/google/protobuf/releases/download/v3.4.0/{}", &filename);
+            install_protoc(scaii_dir_pbuf, url, filename)
         },
-        Err(_) => {
-            false
+        Err(error) => {
+            Err(Box::new(InstallError::new(&format!("Problem creating .scaii dir for installing dependencies: {}", error.description()))))
         }
     }
-    
 }
 
 fn run_command_windows(command: &String, args: Vec<String>) -> Result<String, Box<Error>> {
@@ -448,30 +422,23 @@ fn run_command(command: &String, args: Vec<String>) -> Result<String, Box<Error>
     }
 }
 
-fn verify_presence_of_scaii_defs_dir(scaii_root: &String) {
-    let mut scaii_defs_pathbuf = PathBuf::from(scaii_root);
-    scaii_defs_pathbuf.push("scaii_defs");
-    let scaii_defs_path = scaii_defs_pathbuf.as_path();
-    if !scaii_defs_path.exists(){
-        println!("Installer cannot find directory called scaii_defs underneath the directory specified in SCAII_ROOT.");
-        println!("Make sure SCAII_ROOT points to the parent directory of scaii_defs");
-        process::exit(0);
-    }
-}
+fn get_scaii_root() -> Result<PathBuf, Box<Error>> {
+    //look at current dir, see if peer directories are as expected, if so use parent.
+    let mut parent_dir: PathBuf = env::current_dir()?;
+    // find parent
+    parent_dir.pop();
 
-fn get_scaii_root() -> String {
-    // needs to return "file:///C:/Users/Jed%20Irvine/exact/SCAII/viz/index.html" 
-    // i.e. based on {SCAII_ROOT}/viz/index.html
-    match std::env::var("SCAII_ROOT") {
-        Ok(root) => {
-            root
-        },
-        Err(_) => {
-            println!("Installer could not determine environment variable SCAII_ROOT.");
-            println!("Please set the environment variable SCAII_ROOT to the top directory of the SCAII installation");
-            process::exit(0);
-        },
+    let mut core_dir = parent_dir.clone();
+    core_dir.push("core");
+    if !core_dir.exists() {
+        return Err(Box::new(InstallError::new("core directory could not be found, coult not verify SCAII_ROOT")));
     }
+    let mut common_protos_dir = parent_dir.clone();
+    common_protos_dir.push("common_protos");
+    if !common_protos_dir.exists() {
+        return Err(Box::new(InstallError::new("common_protos directory could not be found, coult not verify SCAII_ROOT")));
+    }
+    Ok(parent_dir)
 }
 
 fn ensure_dir_exists(path_buf: &PathBuf) -> Result<(), Box<Error>> {
