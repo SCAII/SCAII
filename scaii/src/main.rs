@@ -170,13 +170,14 @@ fn build_javascript_protobufs(scaii_root: &PathBuf, protoc_executable_path: &Pat
     println!("Current dir is {:?}",env::current_dir());
     //protoc --proto_path="./../../common_protos" --js_out=library=vizProto,binary:. ./../../common_protos/*.proto
     let command = format!("{}", protoc_executable_path.to_str().unwrap());
+    //let command = String::from("protoc");
     println!("COMMAND WAS {:?}", command);
     let mut args : Vec<String> = Vec::new();
 
     args.push(String::from("--proto_path=./../../common_protos"));
     args.push(String::from("--js_out=library=vizProto,binary:."));
-    //args.push(String::from("./../../common_protos/*.proto"));
     args.push(String::from("./../../common_protos/*.proto"));
+    //args.push(String::from("./../../common_protos/cfg.proto"));
     //args.push(String::from("./../../common_protos"));
     let protoc_invocation_result = run_command(&command, args)?;
     if protoc_invocation_result == "" {
@@ -268,7 +269,7 @@ fn set_execute_permission(path_buf : &PathBuf) -> Result<(),Box<Error>>{
         let mut args : Vec<String> = Vec::new();
 
         args.push(String::from("744"));
-        args.push(format!("{:?}",path_buf));
+        args.push(String::from(path_buf.as_path().to_str().unwrap()));
         let result_string = run_command(&command, args)?;
         let _empty_string = String::from("");
         match result_string.as_str() {
@@ -422,12 +423,17 @@ fn run_command_unix(command: &String, args: Vec<String>) -> Result<String, Box<E
     }
 }
 
-fn run_command_mac(command: &String, _args: Vec<String>) -> Result<String, Box<Error>> {
-    let mut c = Command::new("sh");
-    let c = c.arg("-c");
-    // for mac, command plus the args come across in the command value - if we split it
-    // up like we do on windows in command and arg, it doesn't work foe some reasoin ("open file:///...") 
-    let c = c.arg(command);
+fn run_command_mac(command: &String, args: Vec<String>) -> Result<String, Box<Error>> {
+    // note - using the sh -c approach on Mac caused the chmod command to fail.  Leaving them out 
+    // let it succeed, so left it that way assuming all commands would be similar.
+    //let mut c = Command::new("sh");
+    //let c = c.arg("-c");
+    //let c = c.arg(command);
+    let mut c = Command::new(command);
+    for arg in args.iter() {
+        c.arg(arg);
+    }
+    println!("...in dir...{:?}", env::current_dir());
     println!("...running command {:?}", c);
     let output = c.output().expect(&String::as_str(
         &format!("failed to launch command {}", command),
