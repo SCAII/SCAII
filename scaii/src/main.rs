@@ -84,12 +84,12 @@ fn main() {
 
 fn ensure_google_closure_lib_installed(scaii_root : &PathBuf) ->  Result<(), Box<Error>> {
     //\SCAII\viz\js\closure-library\closure\bin
-    let mut closure_bin_dir = scaii_root.clone();
-    closure_bin_dir.push("viz");
-    closure_bin_dir.push("js");
-    closure_bin_dir.push("closure-library");
-    if closure_bin_dir.as_path().exists() {
-        println!("closure library already installed.");
+    let mut closure_dir = scaii_root.clone();
+    closure_dir.push("viz");
+    closure_dir.push("js");
+    closure_dir.push("closure-library");
+    if closure_dir.as_path().exists() {
+        println!("closure library already installed at {:?}.", closure_dir);
         Ok(())
     }
     else {
@@ -259,6 +259,24 @@ fn download_using_curl(url : &String, target_path: &PathBuf) ->  Result<(), Box<
     Ok(())
 }
 
+fn set_execute_permission(path_buf : &PathBuf) -> Result<(),Box<Error>>{
+    if cfg!(target_os = "windows") {
+        Ok(())
+    } 
+    else {
+        let command = String::from("chmod");
+        let mut args : Vec<String> = Vec::new();
+
+        args.push(String::from("744"));
+        args.push(format!("{:?}",path_buf));
+        let result_string = run_command(&command, args)?;
+        let _empty_string = String::from("");
+        match result_string.as_str() {
+            "" => Ok(()),
+            ref x => Err(Box::new(InstallError::new(&format!("couldnot set execute permission on {:?} : {}", path_buf, x ))))
+        }
+    }
+}
 fn install_protoc(mut dot_scaii_dir : PathBuf, url : String, filename : String) -> Result<PathBuf, Box<Error>> {
     dot_scaii_dir.push("protoc");
     let mut protoc_dir = dot_scaii_dir; // for clarity
@@ -282,7 +300,16 @@ fn install_protoc(mut dot_scaii_dir : PathBuf, url : String, filename : String) 
                 let executable_name = get_protoc_executable_name();
                 protoc_dir.push(executable_name);
                 if protoc_dir.exists() {
-                    Ok(protoc_dir)
+                    let permission_result = set_execute_permission(&protoc_dir);
+                    match permission_result {
+                        Ok(_) => {
+                            Ok(protoc_dir)
+                        },
+                        Err(_) => {
+                            Err(Box::new(InstallError::new(&format!("Error - could not set execute permissions on {:?}.",protoc_dir))))
+                        }
+                    }
+                    
                 }
                 else {
                     Err(Box::new(InstallError::new(&format!("{:?} does not exist after unzipping protoc bundle.",protoc_dir))))
