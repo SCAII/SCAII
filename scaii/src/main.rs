@@ -35,7 +35,7 @@ impl Error for InstallError {
 #[allow(unused_assignments)]
 fn main() {
     println!("SCAII installer will now configure the system...");
-    let mut scaii_root = get_scaii_root();
+    let scaii_root = get_scaii_root();
     match scaii_root {
         Err(error) => {
             println!("This does not seem to be a valid SCAII installation. {:?}", error.description());
@@ -89,7 +89,7 @@ fn ensure_google_closure_lib_installed(scaii_root : &PathBuf) ->  Result<(), Box
     closure_bin_dir.push("js");
     closure_bin_dir.push("closure-library");
     if closure_bin_dir.as_path().exists() {
-        println!("closure_dir detected...");
+        println!("closure library already installed.");
         Ok(())
     }
     else {
@@ -279,7 +279,8 @@ fn install_protoc(mut dot_scaii_dir : PathBuf, url : String, filename : String) 
                 let f = fs::File::open(protoc_zip_path)?;
                 unzip_file(&protoc_dir,f)?;
                 protoc_dir.push("bin");
-                protoc_dir.push("protoc.exe");
+                let executable_name = get_protoc_executable_name();
+                protoc_dir.push(executable_name);
                 if protoc_dir.exists() {
                     Ok(protoc_dir)
                 }
@@ -295,6 +296,18 @@ fn install_protoc(mut dot_scaii_dir : PathBuf, url : String, filename : String) 
     }
 }
 
+fn get_protoc_executable_name() -> String {
+    if cfg!(target_os = "windows") {
+        String::from("protoc.exe")
+    } 
+    else if cfg!(target_os = "unix") {
+        String::from("protoc")
+    }
+    else {
+        // assume mac
+        String::from("protoc")
+    }
+}
 fn unzip_file(parent : &PathBuf, zip_file : fs::File) -> Result<(), Box<Error>> {
     use std::io::Read;
     use std::io::Write;
