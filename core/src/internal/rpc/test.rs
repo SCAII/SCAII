@@ -1,35 +1,17 @@
-use std::time;
 use websocket::message;
 use websocket::OwnedMessage;
-use scaii_defs::protos;
-use scaii_defs::protos::{BackendEndpoint, ChartActions, ChartInfo, ChartValueVector, Entity,
-                         ModuleEndpoint, MultiMessage, ScaiiPacket, Viz};
-use scaii_defs::protos::endpoint::Endpoint;
-use scaii_defs::protos::scaii_packet::SpecificMsg;
+use scaii_defs::protos::{BackendEndpoint, ModuleEndpoint, MultiMessage, ScaiiPacket};
 
 #[test]
 fn connect_attempt() {
     use std::sync::mpsc;
     use std::thread;
     use super::*;
-    use scaii_defs::protos::InitAs;
-    use scaii_defs::protos::ModuleInit;
     use scaii_defs::protos::scaii_packet;
     let (tx, rx) = mpsc::channel();
     // start a thread that starts listening on the port
     let handle = thread::spawn(move || {
         let config = super::get_rpc_config_for_viz(None, Vec::new());
-        // let config = RpcConfig {
-        //     ip: Some("127.0.0.1".to_string()),
-        //     port: Some(6112),
-        //     init_as: InitAs {
-        //         init_as: Some(protos::init_as::InitAs::Module(ModuleInit {
-        //             name: String::from("RpcPluginModule"),
-        //         })),
-        //     },
-        //     command: None,
-        //     command_args: Vec::new(),
-        // };
         let result = init_rpc(&config).expect("trying to init_rpc");
         match result {
             LoadedAs::Module(mut rpc_module, _) => {
