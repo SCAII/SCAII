@@ -451,6 +451,7 @@ pub enum EntityUpdate {
 }
 
 impl EntityUpdate {
+    #[allow(unused_assignments)]
     pub fn apply_and_make_proto<R: Rng>(
         entities: &mut HashMap<usize, IdEntity>,
         key: usize,
