@@ -284,7 +284,8 @@ fn verify_key_frame(replay_action:ReplayAction, replay_vec : &mut Vec<ReplayActi
                     Ok(protos::Action {
                         discrete_actions: i32vec,
                         continuous_actions: empty_vec,
-                        alternate_actions: None,}) => {
+                        alternate_actions: None,
+                        explanation: None,}) => {
                             if !(i32vec.len() == 1 && i32vec[0] == 1 as i32) {
                                 assert!(false, "ERROR = expected protos action to be discrete 1 , got {:?}", i32vec);
                             }
@@ -529,7 +530,8 @@ impl MockRts {
                 action: Some(protos::Action {
                     discrete_actions: actions,
                     continuous_actions: Vec::new(),
-                    alternate_actions: None,}),
+                    alternate_actions: None,
+                    explanation: None,}),
                 is_decision_point: true,
             })),
         }

@@ -175,6 +175,8 @@ impl Shape {
                 None
             },
             delete: false,
+            tag: None,
+            gradient_color: None,
         }
     }
 
@@ -512,6 +514,8 @@ impl EntityUpdate {
                     rect: None,
                     triangle: None,
                     delete: false,
+                    tag: None,
+                    gradient_color: None,
                 };
                 protos::Entity {
                     id: key as u64,
@@ -544,6 +548,8 @@ impl EntityUpdate {
                         None
                     },
                     delete: false,
+                    tag: None,
+                    gradient_color: None,
                 };
 
                 protos::Entity {
@@ -580,6 +586,8 @@ impl EntityUpdate {
                     color: None,
                     relative_pos: None,
                     rotation: entity.entity.shape.rotation,
+                    tag: None,
+                    gradient_color: None,
                 };
 
                 *e_width = new_width.unwrap_or(*e_width);
@@ -620,6 +628,8 @@ impl EntityUpdate {
                     color: None,
                     relative_pos: None,
                     rotation: rotate,
+                    tag: None,
+                    gradient_color: None,
                 };
 
                 *e_base = new_base;

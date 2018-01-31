@@ -750,6 +750,8 @@ fn create_rectangle_entity_at(x: &f64, y: &f64, orient: &f64) -> Entity {
                 }),
                 triangle: None,
                 delete: false,
+                tag: None,
+                gradient_color: None,
             },
         ],
         delete: false,
@@ -782,6 +784,8 @@ fn create_triangle_entity_at(x: &f64, y: &f64, orient: &f64) -> Entity {
                     base_len: Some(10.0),
                 }),
                 delete: false,
+                tag: None,
+                gradient_color: None,
             },
         ],
         delete: false,
@@ -879,6 +883,7 @@ fn get_test_mode_replay_info(step_count: u32, interval: u32) -> Result<Vec<Repla
                 discrete_actions: d_actions,
                 continuous_actions: Vec::new(),
                 alternate_actions:None,
+                explanation: None,
             };
             let mut serialized_protos_action_bytes : Vec<u8> = Vec::new();
             let protos_action_encode_result = protos_action.encode(&mut serialized_protos_action_bytes);

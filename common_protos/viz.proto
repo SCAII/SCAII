@@ -25,7 +25,15 @@ message ExplanationPoint {
     optional string title = 3; 
 	// longer string that could be shown in tooltip on mouseover  
 	// (if the particular explanation system in play can generate a meaningful summary) 
-    optional string description = 4;  
+    optional string description = 4;
+	repeated Layer layers = 5;
+}
+message Layer {
+       optional string name = 1;
+       repeated double cells = 2;
+       // to address the cell: row major order (row, row...)
+       optional uint32 width = 3;
+       optional uint32 length = 4;
 }
 // The packet containing what to draw. This is ALWAYS
 // a delta, so the first packet should contain all
@@ -134,12 +142,14 @@ message Shape {
 	// and may not be consistent between packets
 	optional Rect rect = 20;
 	optional Triangle triangle = 21;
+	optional string tag = 22;
+	optional Color gradient_color = 23;
 
 	// delete this shape from the entity
 	// if this ID is not registered, it is a
 	// no-op
 	//
-	// If this is ture, the other fields (except ID)
+	// If this is true, the other fields (except ID)
 	// are ignored
 	required bool delete = 40;
 
