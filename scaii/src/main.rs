@@ -377,7 +377,8 @@ fn ensure_protoc_installed() -> Result<PathBuf, Box<Error>> {
     }
 }
 
-fn run_command_windows(command: &String, args: Vec<String>) -> Result<String, Box<Error>> {
+#[cfg(target_os="windows")]
+fn run_command_platform(command: &String, args: Vec<String>) -> Result<String, Box<Error>> {
     let mut c = Command::new("cmd");
     let c = c.arg("/C");
     let c = c.arg(command);
@@ -400,7 +401,8 @@ fn run_command_windows(command: &String, args: Vec<String>) -> Result<String, Bo
     }
 }
 
-fn run_command_unix(command: &String, args: Vec<String>) -> Result<String, Box<Error>> {
+#[cfg(target_os="linux")]
+fn run_command_platform(command: &String, args: Vec<String>) -> Result<String, Box<Error>> {
     let mut c = Command::new("sh");
     let c = c.arg("-c");
     let c = c.arg(command);
@@ -423,7 +425,8 @@ fn run_command_unix(command: &String, args: Vec<String>) -> Result<String, Box<E
     }
 }
 
-fn run_command_mac(command: &String, args: Vec<String>) -> Result<String, Box<Error>> {
+#[cfg(target_os="macos")]
+fn run_command_platform(command: &String, args: Vec<String>) -> Result<String, Box<Error>> {
     // note - using the sh -c approach on Mac caused the chmod command to fail.  Leaving them out 
     // let it succeed, so left it that way assuming all commands would be similar.
     //let mut c = Command::new("sh");
@@ -456,16 +459,8 @@ fn run_command(command: &String, args: Vec<String>) -> Result<String, Box<Error>
     if command == "\"protoc\"" { // has extra quotes that I can't figure out how to prevent (from PathBug)
         final_command = &hard_coded_protoc_command;
     }
-    if cfg!(target_os = "windows") {
-        run_command_windows(final_command, args)
-    } 
-    else if cfg!(target_os = "unix") {
-        run_command_unix(final_command, args)
-    }
-    else {
-        // assume mac
-        run_command_mac(final_command, args)
-    }
+
+    run_command_platform(final_command,args)
 }
 
 fn get_scaii_root() -> Result<PathBuf, Box<Error>> {
