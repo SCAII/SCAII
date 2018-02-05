@@ -774,8 +774,8 @@ fn create_triangle_entity_at(x: &f64, y: &f64, orient: &f64) -> Entity {
                 }),
                 color: Some(protos::Color {
                     r: 0,
-                    b: 0,
-                    g: 255,
+                    b: 255,
+                    g: ,
                     a: 255,
                 }),
                 rotation: *orient,
