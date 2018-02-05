@@ -1,0 +1,4 @@
+[replay]
+browser_to_launch = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+url = "localhost"
+url_port = "8000"

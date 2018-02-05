@@ -12,7 +12,7 @@ use protos::cfg::WhichModule;
 use protos::user_command::UserCommandType;
 use protos::endpoint::Endpoint;
 use protos::scaii_packet::SpecificMsg;
-use scaii_core::Environment;
+use scaii_core::{Environment,ScaiiConfig};
 use scaii_core::{SerializedProtosSerializationResponse,SerializedProtosAction, SerializedProtosScaiiPacket,
                 SerializedProtosEndpoint,GameAction,ReplayAction,SerializationInfo,ReplayHeader};
 use scaii_defs::protos;
@@ -27,6 +27,7 @@ use std::fs::File;
 use std::path::{Path, PathBuf};
 use std::io::BufReader;
 use bincode::{deserialize_from, Infinite};
+use serde::Deserialize;
 
 #[derive(Debug)]
 struct ReplayError {
@@ -633,6 +634,12 @@ fn get_ui_html_filepath_for_windows() -> Result<String, Box<Error>> {
 
 #[allow(unused_assignments)]
 fn create_rpc_config_message() -> Result<ScaiiPacket, Box<Error>> {
+    //assert_eq!(value["foo"].as_str(), Some("bar"));
+    let mut scaii_config :ScaiiConfig = scaii_core::load_scaii_config();
+    let url     = scaii_config.get_replay_url();
+    let port    = scaii_config.get_replay_port();
+    let browser = scaii_config.get_replay_browser()?;
+    
     let mut comm : Option<String> = None;
     if cfg!(target_os = "windows") {
         let windows_command_string = get_chrome_command_for_windows();
