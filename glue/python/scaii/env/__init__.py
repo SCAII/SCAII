@@ -9,6 +9,9 @@ higher-level interface to the environment in question.
 
 import scaii.protos.scaii_pb2 as scaii_protos
 
+import scaii.env.state.State as State
+import scaii.env.action.Action as Action
+
 # pylint can't tell the metaclass programming the probuf compiler
 # uses generates certain members, so we need to disable it.
 
@@ -24,7 +27,7 @@ class ScaiiEnv():
     a provided wrapper instead to perform more advanced tasks.
     """
 
-    def __init__(self, mock_core=None):
+    def __init__(self, mock_core=None, state_type=State, action_type=Action):
         if mock_core is None:
             from scaii._internal_.glue import ScaiiCore as _ScaiiCore
             self.core = _ScaiiCore()
@@ -32,6 +35,8 @@ class ScaiiEnv():
             self.core = mock_core
         self._msg_buf = None
         self.next_msg = scaii_protos.MultiMessage()
+        self.state_type = state_type
+        self.action_type = action_type
 
     def __enter__(self):
         return ScaiiEnv()
@@ -74,7 +79,8 @@ class ScaiiEnv():
         You may assume the reward is 0.0
         """
         self._reset_packet()
-        return self.start()
+        self.state = self.start()
+        return self.state
 
     def reset_viz(self):
         packet = self.next_msg.packets.add()
@@ -82,29 +88,20 @@ class ScaiiEnv():
         packet.dest.module.name = 'viz'
         packet.viz_init.SetInParent()
 
-    def act(self, actions=None, continuous_actions=None):
+    def act(self, action):
         """
         Send an action to the underlying environment and returns
         the next state as a (reward,typed_reward,terminal,state) tuple.
         """
-        if actions is None and continuous_actions is None:
-            raise "Must have defined at least one action"
-
-        packet = self.next_msg.add()
-        packet.src.agent.SetInParent()
-        packet.dest.backend.SetInParent()
-
-        if actions is not None:
-            packet.action.discrete_actions[:] = actions
-
-        if continuous_actions is not None:
-            packet.actions.continuous_actions[:] = actions
+        action.to_proto(self.next_msg.add())
 
         self._send_recv_msg()
-        reward, typed_reward, terminal, state, _ = _decode_handle_msg(
-            self._msg_buf)
+        self.state = _decode_handle_msg(
+            self._msg_buf, self.state_handler)
+        return self.state
 
-        return reward, typed_reward, terminal, state
+    def new_action(self):
+        self.action_type()
 
     def load_backend(self, plugin_path):
         """
@@ -118,11 +115,12 @@ class ScaiiEnv():
         packet.config.core_cfg.plugin_type.rust_plugin.plugin_path = plugin_path
         packet.config.core_cfg.plugin_type.rust_plugin.init_as.backend.SetInParent()
 
-        self._decode_handle_msg(self.next_msg.SerializeToString())
+        _decode_handle_msg(
+            self.next_msg.SerializeToString(), self.state_handler)
 
     def load_rpc_module(self, name):
         """
-        Bootstraps an RPC module in Viz with the given name.
+        Bootstraps an RPC module in Core with the given name.
         """
         packet = self.next_msg.packets.add()
 
@@ -133,7 +131,7 @@ class ScaiiEnv():
         packet.config.core_cfg.plugin_type.rpc.ip = "127.0.0.1"
 
     def handle_messages(self):
-        _decode_handle_msg(self._msg_buf)
+        return _decode_handle_msg(self._msg_buf, self.state_handler)
 
 
 class ScaiiError(Exception):
@@ -151,7 +149,7 @@ class ScaiiError(Exception):
         Exception.__init__(self, self.message)
 
 
-def _decode_handle_msg(buf):
+def _decode_handle_msg(buf, state_handler):
     import numpy as np
     msg = scaii_protos.MultiMessage().FromString(bytes(buf))
 
@@ -177,4 +175,4 @@ def _decode_handle_msg(buf):
         else:
             raise "The Python glue only handles state and error messages"
 
-    return reward, typed_reward, terminal, state, secret_state
+    return state_handler(reward=reward, typed_reward=typed_reward, terminal=terminal, state=state, env_state=secret_state)
