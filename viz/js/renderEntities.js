@@ -229,7 +229,7 @@ function layoutEntityAtPosition(ctx, x, y, entity, zoom_factor, xOffset, yOffset
 	  highlightShape(ctx,shapeId,shapePositionMap);
 	  var colorRGBA = loadShapeColorAsRGBAString(shape);
 	  //drawTriangle(ctx, x, y, baseLen, orientation, colorRGBA);
-	  drawDiamond(ctx, absX, absY, finalBaseLen, orientation, 'red');
+	  drawDiamond(ctx, absX, absY, finalBaseLen, orientation, colorRGBA);
 	}
   }
 }
