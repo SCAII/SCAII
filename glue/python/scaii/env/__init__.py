@@ -7,10 +7,10 @@ submodules include environment-specific wrappers that provide a nicer,
 higher-level interface to the environment in question.
 """
 
-import scaii.protos.scaii_pb2 as scaii_protos
+from .state import State
+from .actions import Action
 
-import scaii.env.state.State as State
-import scaii.env.action.Action as Action
+import scaii.protos.scaii_pb2 as scaii_protos
 
 # pylint can't tell the metaclass programming the probuf compiler
 # uses generates certain members, so we need to disable it.
@@ -97,7 +97,7 @@ class ScaiiEnv():
 
         self._send_recv_msg()
         self.state = _decode_handle_msg(
-            self._msg_buf, self.state_handler)
+            self._msg_buf, self.state_type)
         return self.state
 
     def new_action(self):
@@ -115,8 +115,7 @@ class ScaiiEnv():
         packet.config.core_cfg.plugin_type.rust_plugin.plugin_path = plugin_path
         packet.config.core_cfg.plugin_type.rust_plugin.init_as.backend.SetInParent()
 
-        _decode_handle_msg(
-            self.next_msg.SerializeToString(), self.state_handler)
+        self._send_recv_msg()
 
     def load_rpc_module(self, name):
         """
@@ -131,7 +130,7 @@ class ScaiiEnv():
         packet.config.core_cfg.plugin_type.rpc.ip = "127.0.0.1"
 
     def handle_messages(self):
-        return _decode_handle_msg(self._msg_buf, self.state_handler)
+        return _decode_handle_msg(self._msg_buf, self.state_type)
 
 
 class ScaiiError(Exception):
@@ -149,7 +148,7 @@ class ScaiiError(Exception):
         Exception.__init__(self, self.message)
 
 
-def _decode_handle_msg(buf, state_handler):
+def _decode_handle_msg(buf, state_type):
     import numpy as np
     msg = scaii_protos.MultiMessage().FromString(bytes(buf))
 
@@ -173,6 +172,7 @@ def _decode_handle_msg(buf, state_handler):
             typed_reward = msg.state.typed_reward
             terminal = msg.state.terminal
         else:
+            print(msg)
             raise "The Python glue only handles state and error messages"
 
-    return state_handler(reward=reward, typed_reward=typed_reward, terminal=terminal, state=state, env_state=secret_state)
+    return state_type(reward=reward, typed_reward=typed_reward, terminal=terminal, state=state, env_state=secret_state)
