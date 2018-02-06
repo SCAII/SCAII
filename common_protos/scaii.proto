@@ -43,6 +43,7 @@ message ScaiiPacket {
 		RecorderConfig recorder_config = 15;
 		GameComplete game_complete = 16;
 		ReplaySessionConfig replay_session_config = 17;
+		Ack ack = 18;
 		Other other = 29;
 	}
 
@@ -52,6 +53,9 @@ message ScaiiPacket {
 	// The destination of this packet
 	required Endpoint dest = 30;
 }
+
+// An acknowledgement of receipt
+message Ack {}
 
 // An `Endpoint` simply represents the module
 // this message originated from or should be sent

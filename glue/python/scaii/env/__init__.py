@@ -79,7 +79,9 @@ class ScaiiEnv():
         You may assume the reward is 0.0
         """
         self._reset_packet()
-        self.state = self.start()
+        print(self.next_msg)
+        self._send_recv_msg()
+        self.state = _decode_handle_msg(self._msg_buf, self.state_type)
         return self.state
 
     def reset_viz(self):
