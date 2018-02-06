@@ -79,7 +79,6 @@ class ScaiiEnv():
         You may assume the reward is 0.0
         """
         self._reset_packet()
-        print(self.next_msg)
         self._send_recv_msg()
         self.state = _decode_handle_msg(self._msg_buf, self.state_type)
         return self.state
@@ -95,7 +94,7 @@ class ScaiiEnv():
         Send an action to the underlying environment and returns
         the next state as a (reward,typed_reward,terminal,state) tuple.
         """
-        action.to_proto(self.next_msg.add())
+        action.to_proto(self.next_msg.packets.add())
 
         self._send_recv_msg()
         self.state = _decode_handle_msg(
@@ -103,7 +102,7 @@ class ScaiiEnv():
         return self.state
 
     def new_action(self):
-        self.action_type()
+        return self.action_type()
 
     def load_backend(self, plugin_path):
         """
@@ -168,13 +167,18 @@ def _decode_handle_msg(buf, state_type):
             state = np.array(msg.state.features)
             # truthy
             if msg.state.feature_array_dims:
-                state.reshape(np.array(msg.state.feature_array_dims))
+                state = state.reshape(np.array(msg.state.feature_array_dims))
+                print(state.shape)
             secret_state = bytes(msg.state.expanded_state)
 
             typed_reward = msg.state.typed_reward
             terminal = msg.state.terminal
+        elif msg.WhichOneof('specific_msg') == 'ack':
+            pass
+            # print("received")
         else:
-            print(msg)
-            raise "The Python glue only handles state and error messages"
+            pass
+            # print(msg)
+            # raise "The Python glue only handles state and error messages"
 
     return state_type(reward=reward, typed_reward=typed_reward, terminal=terminal, state=state, env_state=secret_state)
