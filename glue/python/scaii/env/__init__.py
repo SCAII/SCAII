@@ -168,7 +168,7 @@ def _decode_handle_msg(buf, state_type):
             # truthy
             if msg.state.feature_array_dims:
                 state = state.reshape(np.array(msg.state.feature_array_dims))
-                print(state.shape)
+
             secret_state = bytes(msg.state.expanded_state)
 
             typed_reward = msg.state.typed_reward
