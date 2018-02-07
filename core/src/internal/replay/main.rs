@@ -36,12 +36,14 @@ use docopt::Docopt;
 
 mod test_util;
 use test_util::*;
+mod webserver;
+use webserver::launch_webserver;
 
 const USAGE: &'static str = "
 replay.
 
 Usage:
-  replay webserver <port>
+  replay webserver
   replay file [--filename <path-to-replay-file>]
   replay test [--data-hardcoded | --data-from-recorded-file]
   replay (-h | --help)
@@ -55,7 +57,6 @@ Options:
 #[derive(Debug, Deserialize)]
 struct Args {
     cmd_webserver: bool,
-    arg_port: String,
     //
     cmd_test: bool,
     flag_data_from_recorded_file: bool,
@@ -714,16 +715,13 @@ enum RunMode {
     Test,
 }
 
-fn launch_webserver_with_port(port : String) {
-
-}
 fn main() {
     let args: Args = Docopt::new(USAGE)
         .and_then(|d| d.deserialize())
         .unwrap_or_else(|e| e.exit());
     
     if args.cmd_webserver {
-        launch_webserver_with_port(args.arg_port)
+        launch_webserver()
     }
     else if args.cmd_test {
         if args.flag_data_from_recorded_file {
