@@ -6,7 +6,6 @@ use scaii_defs::{Module, Recorder};
 use scaii_defs::protos::{MultiMessage, RecorderStep, ScaiiPacket};
 use scaii_defs::protos::scaii_packet::SpecificMsg;
 use std::error::Error;
-use std::env;
 use std::fmt;
 use std::path::PathBuf;
 use std::fs;
@@ -15,6 +14,7 @@ use bincode::{serialize, Infinite};
 use std::io::prelude::*;
 use std::fs::File;
 use prost::Message;
+use util;
 
 #[cfg(test)]
 mod test;
@@ -276,19 +276,10 @@ pub fn get_default_replay_file_path() -> Result<PathBuf, Box<Error>> {
 }
 
 pub fn get_default_replay_dir() -> Result<PathBuf, Box<Error>> {
-    match env::var("SCAII_ROOT") {
-        Ok(root) => {
-            let mut path = PathBuf::from(root);
-            path.push("core");
-            path.push("replay_data");
-            Ok(path)
-        },
-        Err(e) => {
-            let error_message = e.description().clone();
-            let message = format!("RecorderManager could not determine environment variable SCAII_ROOT. {}", error_message);
-            Err(Box::new(RecorderError::new(message.as_str())))
-        },
-    }
+    let mut scaii_root = util::get_scaii_root()?;
+    scaii_root.push("core");
+    scaii_root.push("replay_data");
+    Ok(scaii_root)
 }
 
 fn ensure_dir_exists(path_buf: &PathBuf) -> Result<(), Box<Error>> {

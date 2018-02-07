@@ -19,6 +19,13 @@ test = true
 doc = true
 harness = true
 
+[[bin]]
+name = "replay_webserver"
+path = "src/internal/replay_webserver/main.rs"
+test = true
+doc = true
+harness = true
+
 [dependencies]
 libloading="0.4.1"
 prost = "0.2"
@@ -30,6 +37,7 @@ serde_derive="1"
 "bincode"= "0.9.2"
 url = "1.5.1"
 toml = "0.4.5"
+docopt = "0.8"
 
 # local deps
 scaii_defs = {version="0.2", path = "../scaii_defs"}
