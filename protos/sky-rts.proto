@@ -1,0 +1,120 @@
+syntax = "proto2";
+
+package scaii.rts;
+
+// A basic list of actions on a per-unit
+// basis.
+//
+// Attempts to control non-owned units
+// will yield an error
+//
+// Units should only have one action per
+// message. If an ID is listed multiple times,
+// the later one will take precedence.
+//
+// Not every unit needs an action, if one
+// is missing, it is assumed to "keep doing what
+// it's doing" (finish moving to a location,
+// wait for enemies to enter engagement radius,
+// etc).
+message ActionList {
+    repeated UnitAction actions = 1;
+    optional bool skip = 2;
+    optional string skip_lua = 3;
+}
+
+// A basic action issued to a unit
+message UnitAction {
+    required uint64 unit_id = 1;
+    oneof action {
+        MoveTo move_to = 2;
+        AttackUnit attack_unit = 3;
+    }
+}
+
+// The position of a unit, or the target
+// location to move to
+message Pos {
+    required double x = 1;
+    required double y = 2;
+}
+
+// Move to a specific position. If this
+// position is unreachable, the unit will
+// attempt to get as close as possible.
+//
+// If the unit does not have movement capabilities,
+// this will be ignored.
+message MoveTo {
+    required Pos pos = 1;
+}
+
+// Follows a given unit, attacking it until
+// it dies. 
+//
+// If the unit cannot move, this
+// simply specifies which unit in range to
+// attack. If the unit is out of range,
+// this is ignored.
+message AttackUnit {
+    required uint32 target_id = 1;
+}
+
+// A delta encoding of a state,
+// very similar to `scaii.common.Viz`
+message StateUpdate {
+    repeated Unit units = 1;
+    repeated UnitType unit_types = 2;
+}
+
+// Specifies the constants for a unit,
+// these are consistent across all units
+// with a given ID.
+message UnitType {
+    required uint64 unit_type_id = 1;
+    optional double max_hp = 2;
+    optional double movable = 3;
+    optional string tag = 4 [default=""];
+}
+
+// The current state of a given unit
+message Unit {
+    required uint32 id = 1;
+    optional uint64 owner_id = 2;
+    optional uint64 unit_type_id = 3;
+    optional DeltaPos pos = 4;
+    optional double hp = 5;
+    
+
+    required bool delete =  10;
+}
+
+// Like `Pos`, but with only as much info as is
+// needed.
+message DeltaPos {
+    optional double x = 1;
+    optional double y = 2;
+}
+
+// RTS-specific configuration
+message Config {
+    optional Scenario scenario = 1;
+    optional bool emit_viz = 2;
+    optional Seed random_seed = 3;
+}
+
+// The seed to use to initialize the
+// RTS' RNG.
+//
+// When no seed is given, it will be initialized
+// based on OS-specific methods of generating
+// randomness.
+message Seed {
+    repeated uint64 seed = 1;
+}
+
+// Which scenario we'll be playing
+message Scenario {
+    // Specifies the path to the lua file
+    required string path = 1;
+}

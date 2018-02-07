@@ -4,7 +4,43 @@ version = "0.1.0"
 authors = ["Zoe Juozapaitis <Jragonmiris@gmail.com>"]
 
 [lib]
-crate-type = ["dylib"]
+crate-type = ["dylib", "rlib"]
 
 [dependencies]
-scaii_defs = {git = "https://github.com/SCAII/SCAII", branch="dev"}
+scaii_defs = {git = "https://github.com/SCAII/SCAII", branch="glue"}
+rlua  = "0.9"
+serde = "1"
+serde_derive = "1"
+# My rand patch, change this when it gets merged into rand
+rand = { version="0.4", git = 'https://github.com/LinearZoetrope/rand', branch="serde", features=["serde-1"] }
+bincode = "0.9"
+# we need saveload. Fix this when specs hits 0.11
+specs = { version="0.10", features=["serde"], git="https://github.com/slide-rs/specs"}
+specs-derive = "0.1"
+shred = "0.5"
+shred-derive = "0.3"
+
+prost = "0.2"
+prost-derive = "0.2"
+bytes = "0.4.5"
+
+lazy_static = "1.0"
+ndarray = {version="0.11", features=["serde-1"]}
+
+nalgebra = {version="0.14", features=["serde-serialize"]}
+ncollide = "0.14"
+
+[build-dependencies]
+prost-build = "0.2"
+glob = "0.2.11"
+
+[dev-dependencies]
+websocket = "0.20"
+
+# We NEED to enable optimization for dev and test because without them the rasterization is embarassingly slow
+
+[profile.dev]
+opt-level = 3
+
+[profile.test]
+opt-level = 3
