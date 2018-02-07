@@ -22,15 +22,15 @@ struct ReplayConfig {
 }
 
 
-#[cfg(target_os="windows")]
+#[cfg(target_os = "windows")]
 fn default_browser() -> String {
     "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe".to_string()
 }
-#[cfg(target_os="macos")]
+#[cfg(target_os = "macos")]
 fn default_browser() -> String {
     "open".to_string(); // will open url in safari
 }
-#[cfg(target_os="linux")]
+#[cfg(target_os = "linux")]
 fn default_browser() -> String {
     "/usr/bin/chrome".to_string()
 }
@@ -67,11 +67,15 @@ pub fn load_scaii_config() -> ScaiiConfig {
     use std::fs::File;
     use std::io::prelude::*;
     // create the path to cfg.toml
-    let scaii_root_result  = util::get_scaii_root();
-    let mut config_file_pathbuf : PathBuf = PathBuf::new();
+    let scaii_root_result = util::get_scaii_root();
+    let mut config_file_pathbuf: PathBuf = PathBuf::new();
     match scaii_root_result {
-        Ok(root) => { config_file_pathbuf = root; }
-        Err(_)=> {  panic!("Could not determine SCAII root directory while loading config file"); }
+        Ok(root) => {
+            config_file_pathbuf = root;
+        }
+        Err(_) => {
+            panic!("Could not determine SCAII root directory while loading config file");
+        }
     }
     config_file_pathbuf.push("cfg.toml");
     // try loading the cfg.toml file
@@ -83,27 +87,38 @@ pub fn load_scaii_config() -> ScaiiConfig {
             let mut config_data = String::new();
             let read_result = config_file.read_to_string(&mut config_data);
             match read_result {
-                Ok(_) => { },
+                Ok(_) => {}
                 //Ok(_) => { return default_scaii_config ;},
                 Err(_) => {
-                    println!("Problem reading data from config file {:?}.  Will try default values.", config_file_pathbuf.as_path());
-                    return default_scaii_config ;
+                    println!(
+                        "Problem reading data from config file {:?}.  Will try default values.",
+                        config_file_pathbuf.as_path()
+                    );
+                    return default_scaii_config;
                 }
             }
             let scaii_config_parse_result = toml::from_str(&config_data);
-            
+
             match scaii_config_parse_result {
                 Ok(parsed_scaii_config) => {
                     return parsed_scaii_config;
                 }
                 Err(error) => {
-                    println!("Problem parsing data from config file {:?}.  Will try default values. {:?}", config_file_pathbuf.as_path(), error.description());
-                    return default_scaii_config ;
+                    println!(
+                        "Problem parsing data from config file {:?}.  Will try default values. {:?}",
+                        config_file_pathbuf.as_path(),
+                        error.description()
+                    );
+                    return default_scaii_config;
                 }
             }
         }
         Err(error) => {
-            println!("config file {:?} not found.  Will use default values. {:?}", config_file_pathbuf.as_path(),error);
+            println!(
+                "config file {:?} not found.  Will use default values. {:?}",
+                config_file_pathbuf.as_path(),
+                error
+            );
             default_scaii_config
         }
     }
@@ -111,42 +126,36 @@ pub fn load_scaii_config() -> ScaiiConfig {
 
 fn get_default_scaii_config() -> ScaiiConfig {
     ScaiiConfig {
-        replay : Some(ReplayConfig {
+        replay: Some(ReplayConfig {
             browser: default_browser(),
             url: default_url(),
             port: default_port(),
-        })
+        }),
     }
 }
 
 impl ScaiiConfig {
     pub fn get_replay_url(&mut self) -> String {
         match &self.replay {
-            &None => { default_url() },
-            &Some(ref replay) => {
-                replay.url.clone()
-            }
+            &None => default_url(),
+            &Some(ref replay) => replay.url.clone(),
         }
     }
 
     pub fn get_replay_port(&mut self) -> String {
         match &self.replay {
-            &None => { default_port() },
-            &Some(ref replay) => {
-                replay.port.clone()
-            }
+            &None => default_port(),
+            &Some(ref replay) => replay.port.clone(),
         }
     }
 
     pub fn get_replay_browser(&mut self) -> String {
         match &self.replay {
-            &None => { default_browser() },
-            &Some(ref replay) => {
-                replay.browser.clone()
-            }
+            &None => default_browser(),
+            &Some(ref replay) => replay.browser.clone(),
         }
     }
-    
+
     pub fn get_full_replay_http_url(&mut self) -> String {
         let url = self.get_replay_url();
         let port = self.get_replay_port();

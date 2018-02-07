@@ -11,9 +11,7 @@ pub struct ScaiiError {
 
 impl ScaiiError {
     pub fn new(msg: &str) -> ScaiiError {
-        ScaiiError {
-            details: msg.to_string(),
-        }
+        ScaiiError { details: msg.to_string() }
     }
 }
 

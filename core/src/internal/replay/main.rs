@@ -8,17 +8,17 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
-use std::process;
 use prost::Message;
-use protos::{scaii_packet, AgentEndpoint, CoreEndpoint,
-             MultiMessage, ScaiiPacket, BackendEndpoint, ModuleEndpoint, ReplayEndpoint, RecorderConfig,
-             ReplayStep, ReplaySessionConfig};
+use protos::{scaii_packet, AgentEndpoint, CoreEndpoint, BackendInit, MultiMessage, ScaiiPacket,
+             BackendEndpoint, ModuleEndpoint, ReplayEndpoint, RecorderConfig, ReplayStep,
+             ReplaySessionConfig, RustFfiConfig};
 use protos::cfg::WhichModule;
 use protos::user_command::UserCommandType;
 use protos::endpoint::Endpoint;
 use protos::scaii_packet::SpecificMsg;
-use scaii_core::{Environment,ScaiiConfig};
-use scaii_core::{SerializedProtosSerializationResponse, SerializedProtosScaiiPacket,GameAction,ReplayAction,ReplayHeader};
+use scaii_core::{Environment, ScaiiConfig};
+use scaii_core::{SerializedProtosSerializationResponse, SerializedProtosScaiiPacket, GameAction,
+                 ReplayAction, ReplayHeader};
 use scaii_defs::protos;
 use scaii_defs::{Module, Replay};
 use std::error::Error;
@@ -44,7 +44,7 @@ replay.
 
 Usage:
   replay webserver
-  replay file [--filename <path-to-replay-file>]
+  replay file [--filename <path-to-replay-file>] [--backend <path-to-backend>]
   replay test [--data-hardcoded | --data-from-recorded-file]
   replay (-h | --help)
 
@@ -65,24 +65,26 @@ struct Args {
     cmd_file: bool,
     flag_filename: bool,
     arg_path_to_replay_file: String,
+    flag_backend: bool,
+    arg_path_to_backend: String,
 }
 
 
 
 #[derive(Debug)]
 struct ReplayError {
-    details: String
+    details: String,
 }
 
 impl ReplayError {
     fn new(msg: &str) -> ReplayError {
-        ReplayError{details: msg.to_string()}
+        ReplayError { details: msg.to_string() }
     }
 }
 
 impl fmt::Display for ReplayError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f,"{}",self.details)
+        write!(f, "{}", self.details)
     }
 }
 
@@ -106,14 +108,14 @@ struct ReplayMessageQueue {
     incoming_messages: Vec<protos::ScaiiPacket>,
 }
 
-impl  Module for ReplayMessageQueue  {
-    fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>>{
-         self.incoming_messages.push(msg.clone());
-         Ok(())
+impl Module for ReplayMessageQueue {
+    fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>> {
+        self.incoming_messages.push(msg.clone());
+        Ok(())
     }
 
     /// return empty messages
-    fn get_messages(&mut self) -> MultiMessage{
+    fn get_messages(&mut self) -> MultiMessage {
         let pkts: Vec<ScaiiPacket> = Vec::new();
         MultiMessage { packets: pkts }
     }
@@ -123,7 +125,7 @@ impl Replay for ReplayMessageQueue {}
 
 
 struct ReplayManager {
-    incoming_message_queue:Rc<RefCell<ReplayMessageQueue>>, // going to go in router
+    incoming_message_queue: Rc<RefCell<ReplayMessageQueue>>, // going to go in router
     step_delay: Arc<Mutex<u64>>,
     poll_delay: Arc<Mutex<u64>>,
     shutdown_received: bool,
@@ -133,7 +135,7 @@ struct ReplayManager {
     test_mode: bool,
 }
 
-impl ReplayManager  {
+impl ReplayManager {
     fn start(&mut self) -> Result<(), Box<Error>> {
         // startup viz via rpc
         let mm = wrap_packet_in_multi_message(create_rpc_config_message()?);
@@ -150,70 +152,86 @@ impl ReplayManager  {
         self.run_and_poll()
     }
 
-    fn create_replay_session_config_message(&mut self, steps : i64) -> ScaiiPacket {
+    fn create_replay_session_config_message(&mut self, steps: i64) -> ScaiiPacket {
         ScaiiPacket {
-            src: protos::Endpoint {
-                endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-            },
-            dest: protos::Endpoint {
-                endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-            },
-            specific_msg: Some(SpecificMsg::ReplaySessionConfig( ReplaySessionConfig { step_count: steps})),
+            src: protos::Endpoint { endpoint: Some(Endpoint::Replay(ReplayEndpoint {})) },
+            dest: protos::Endpoint { endpoint: Some(Endpoint::Backend(BackendEndpoint {})) },
+            specific_msg: Some(SpecificMsg::ReplaySessionConfig(
+                ReplaySessionConfig { step_count: steps },
+            )),
         }
     }
 
     fn configure_as_per_header(&mut self, header: ReplayAction) -> Result<(), Box<Error>> {
         match header {
-            ReplayAction::Header(ReplayHeader { configs: SerializedProtosScaiiPacket { data:  u8_vec, }, }) => {
+            ReplayAction::Header(ReplayHeader {
+                                     configs: SerializedProtosScaiiPacket { data: u8_vec },
+                                 }) => {
                 let pkt = ScaiiPacket::decode(u8_vec)?;
                 match pkt.specific_msg {
-                    Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig { pkts: pkt_vec,})) => {
+                    Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig {
+                                                                       pkts: pkt_vec,
+                                                                   })) => {
                         for pkt in &pkt_vec {
-                            let pkt_to_send= pkt.clone();
+                            let pkt_to_send = pkt.clone();
                             let mm = wrap_packet_in_multi_message(pkt_to_send);
                             self.env.route_messages(&mm);
                             self.env.update();
-                            println!("==========================================sent config============");
+                            println!(
+                                "==========================================sent config============"
+                            );
                         }
                         Ok(())
                     }
-                    _ => Err(Box::new(ReplayError::new(&format!("replay action header malformed - should contain RecorderConfig ScaiiPacket {:?}", pkt)[..])))
+                    _ => Err(Box::new(ReplayError::new(
+                        &format!(
+                            "replay action header malformed - should contain RecorderConfig ScaiiPacket {:?}",
+                            pkt
+                        )
+                            [..],
+                    ))),
                 }
             }
             _ => {
-                Err(Box::new(ReplayError::new(&format!("replay action header malformed - should be ReplayAction::Header(ReplayHeader)... {:?}", header)[..])))
+                Err(Box::new(ReplayError::new(
+                    &format!(
+                        "replay action header malformed - should be ReplayAction::Header(ReplayHeader)... {:?}",
+                        header
+                    )
+                        [..],
+                )))
             }
         }
     }
 
-    fn notify_viz_that_jump_completed(&mut self)  -> Result<Vec<ScaiiPacket>, Box<Error>> {
-        let pkt : ScaiiPacket = ScaiiPacket {
-            src: protos::Endpoint {
-                endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-            },
+    fn notify_viz_that_jump_completed(&mut self) -> Result<Vec<ScaiiPacket>, Box<Error>> {
+        let pkt: ScaiiPacket = ScaiiPacket {
+            src: protos::Endpoint { endpoint: Some(Endpoint::Replay(ReplayEndpoint {})) },
             dest: protos::Endpoint {
-                endpoint: Some(Endpoint::Module(ModuleEndpoint {
-                    name: "RpcPluginModule".to_string(),
-                })),
+                endpoint: Some(Endpoint::Module(
+                    ModuleEndpoint { name: "RpcPluginModule".to_string() },
+                )),
             },
-            specific_msg: Some(scaii_packet::SpecificMsg::UserCommand(protos::UserCommand {
-                command_type: protos::user_command::UserCommandType::JumpCompleted as i32,
-                args: Vec::new(),
-            })),
+            specific_msg: Some(scaii_packet::SpecificMsg::UserCommand(
+                protos::UserCommand {
+                    command_type: protos::user_command::UserCommandType::JumpCompleted as i32,
+                    args: Vec::new(),
+                },
+            )),
         };
         let result = self.send_pkt_to_viz(pkt)?;
         Ok(result)
     }
 
     fn send_pkt_to_viz(&mut self, pkt: ScaiiPacket) -> Result<Vec<ScaiiPacket>, Box<Error>> {
-        let mut to_send : Vec<protos::ScaiiPacket> = Vec::new();
+        let mut to_send: Vec<protos::ScaiiPacket> = Vec::new();
         to_send.push(pkt);
         let mm = MultiMessage { packets: to_send };
         self.env.route_messages(&mm);
         self.env.update();
-        let scaii_pkts : Vec<protos::ScaiiPacket> = {
-            let queue  = &mut *self.incoming_message_queue.borrow_mut();
-            let result : Vec<protos::ScaiiPacket> = queue.incoming_messages.drain(..).collect();
+        let scaii_pkts: Vec<protos::ScaiiPacket> = {
+            let queue = &mut *self.incoming_message_queue.borrow_mut();
+            let result: Vec<protos::ScaiiPacket> = queue.incoming_messages.drain(..).collect();
             //println!("====================got result packets {} ", result.len());
             result
         };
@@ -221,20 +239,19 @@ impl ReplayManager  {
     }
 
     fn poll_viz(&mut self) -> Result<Vec<ScaiiPacket>, Box<Error>> {
-        let pkt : ScaiiPacket = ScaiiPacket {
-            src: protos::Endpoint {
-                endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-            },
+        let pkt: ScaiiPacket = ScaiiPacket {
+            src: protos::Endpoint { endpoint: Some(Endpoint::Replay(ReplayEndpoint {})) },
             dest: protos::Endpoint {
-                endpoint: Some(Endpoint::Module(ModuleEndpoint {
-                    name: "RpcPluginModule".to_string(),
-                })),
+                endpoint: Some(Endpoint::Module(
+                    ModuleEndpoint { name: "RpcPluginModule".to_string() },
+                )),
             },
-            specific_msg: Some(scaii_packet::SpecificMsg::UserCommand(protos::UserCommand {
-                command_type: protos::user_command::UserCommandType::PollForCommands as i32,
-                args: Vec::new(),
-            })),
-
+            specific_msg: Some(scaii_packet::SpecificMsg::UserCommand(
+                protos::UserCommand {
+                    command_type: protos::user_command::UserCommandType::PollForCommands as i32,
+                    args: Vec::new(),
+                },
+            )),
         };
         let result = self.send_pkt_to_viz(pkt)?;
         Ok(result)
@@ -244,22 +261,27 @@ impl ReplayManager  {
         self.step_position <= self.replay_data.len() as u64 - 1
     }
 
-    fn wrap_response_in_scaii_pkt(&mut self, ser_response : protos::SerializationResponse) -> ScaiiPacket {
+    fn wrap_response_in_scaii_pkt(
+        &mut self,
+        ser_response: protos::SerializationResponse,
+    ) -> ScaiiPacket {
         ScaiiPacket {
-            src: protos::Endpoint {
-                endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-            },
-            dest: protos::Endpoint {
-                endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-            },
-            specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::SerResp(ser_response)),
+            src: protos::Endpoint { endpoint: Some(Endpoint::Replay(ReplayEndpoint {})) },
+            dest: protos::Endpoint { endpoint: Some(Endpoint::Backend(BackendEndpoint {})) },
+            specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::SerResp(
+                ser_response,
+            )),
         }
     }
 
-    fn convert_action_info_to_action_pkt(&mut self, action : GameAction) -> Result<ScaiiPacket, Box<Error>> {
+    fn convert_action_info_to_action_pkt(
+        &mut self,
+        action: GameAction,
+    ) -> Result<ScaiiPacket, Box<Error>> {
         match action {
             GameAction::DecisionPoint(serialized_protos_action) => {
-                let protos_action_decode_result = protos::Action::decode(serialized_protos_action.data);
+                let protos_action_decode_result =
+                    protos::Action::decode(serialized_protos_action.data);
                 match protos_action_decode_result {
                     Ok(protos_action) => {
                         Ok(ScaiiPacket {
@@ -269,45 +291,52 @@ impl ReplayManager  {
                             dest: protos::Endpoint {
                                 endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
                             },
-                            specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::Action(protos_action)),
+                            specific_msg: Some(
+                                scaii_defs::protos::scaii_packet::SpecificMsg::Action(
+                                    protos_action,
+                                ),
+                            ),
                         })
-                    },
-                    Err(err) => { Err(Box::new(err)) }
+                    }
+                    Err(err) => Err(Box::new(err)),
                 }
             }
             GameAction::Step => {
                 Ok(ScaiiPacket {
-                    src: protos::Endpoint {
-                        endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-                    },
+                    src: protos::Endpoint { endpoint: Some(Endpoint::Replay(ReplayEndpoint {})) },
                     dest: protos::Endpoint {
                         endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
                     },
-                    specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::ReplayStep(ReplayStep{})),
+                    specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::ReplayStep(
+                        ReplayStep {},
+                    )),
                 })
             }
         }
 
     }
 
-    fn deploy_replay_directives_to_backend(&mut self, mm: &MultiMessage) ->Result<Vec<protos::ScaiiPacket>, Box<Error>> {
+    fn deploy_replay_directives_to_backend(
+        &mut self,
+        mm: &MultiMessage,
+    ) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
         self.env.route_messages(mm);
         self.env.update();
-        let scaii_pkts : Vec<protos::ScaiiPacket> = {
-            let queue  = &mut *self.incoming_message_queue.borrow_mut();
-            let result : Vec<protos::ScaiiPacket> = queue.incoming_messages.drain(..).collect();
+        let scaii_pkts: Vec<protos::ScaiiPacket> = {
+            let queue = &mut *self.incoming_message_queue.borrow_mut();
+            let result: Vec<protos::ScaiiPacket> = queue.incoming_messages.drain(..).collect();
             result
         };
         Ok(scaii_pkts)
     }
 
     fn send_replay_action_to_backend(&mut self) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
-        let empty_vec : Vec<protos::ScaiiPacket> = Vec::new();
-        let replay_action : ReplayAction = self.replay_data[self.step_position as usize].clone();
+        let empty_vec: Vec<protos::ScaiiPacket> = Vec::new();
+        let replay_action: ReplayAction = self.replay_data[self.step_position as usize].clone();
         match replay_action {
             ReplayAction::Delta(action) => {
                 println!("REPLAY found delta...");
-                let action_pkt : ScaiiPacket = self.convert_action_info_to_action_pkt(action)?;
+                let action_pkt: ScaiiPacket = self.convert_action_info_to_action_pkt(action)?;
                 let mut pkts: Vec<ScaiiPacket> = Vec::new();
                 pkts.push(action_pkt);
                 let mm = MultiMessage { packets: pkts };
@@ -316,12 +345,16 @@ impl ReplayManager  {
             }
             ReplayAction::Keyframe(serialization_info, action) => {
                 println!("REPLAY found keyframe...");
-                let ser_proto_ser_resp : SerializedProtosSerializationResponse = serialization_info.data;
-                let ser_response_decode_result = protos::SerializationResponse::decode(ser_proto_ser_resp.data);
+                let ser_proto_ser_resp: SerializedProtosSerializationResponse = serialization_info
+                    .data;
+                let ser_response_decode_result =
+                    protos::SerializationResponse::decode(ser_proto_ser_resp.data);
                 match ser_response_decode_result {
                     Ok(ser_response) => {
-                        let ser_response_pkt : ScaiiPacket = self.wrap_response_in_scaii_pkt(ser_response);
-                        let action_pkt : ScaiiPacket = self.convert_action_info_to_action_pkt(action)?;
+                        let ser_response_pkt: ScaiiPacket =
+                            self.wrap_response_in_scaii_pkt(ser_response);
+                        let action_pkt: ScaiiPacket =
+                            self.convert_action_info_to_action_pkt(action)?;
                         let mut pkts: Vec<ScaiiPacket> = Vec::new();
                         pkts.push(ser_response_pkt);
                         pkts.push(action_pkt);
@@ -329,30 +362,32 @@ impl ReplayManager  {
                         let scaii_pkts = self.deploy_replay_directives_to_backend(&mm)?;
                         Ok(scaii_pkts)
                     }
-                    Err(err) => {
-                        Err(Box::new(err))
-                    }
+                    Err(err) => Err(Box::new(err)),
                 }
 
             }
-            ReplayAction::Header(_) => {
-                Ok(empty_vec)
-            }
+            ReplayAction::Header(_) => Ok(empty_vec),
         }
     }
 
-    fn send_test_mode_jump_to_message(&mut self, target_step : &String) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
-        let target : String = String::from("MockRts");
-        let command : String = String::from("jumpTo");
-        let mut args_list : Vec<String> = Vec::new();
+    fn send_test_mode_jump_to_message(
+        &mut self,
+        target_step: &String,
+    ) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
+        let target: String = String::from("MockRts");
+        let command: String = String::from("jumpTo");
+        let mut args_list: Vec<String> = Vec::new();
         args_list.push(target);
         args_list.push(command);
         args_list.push(target_step.clone());
-        let pkt : ScaiiPacket = self.create_test_control_message(args_list);
+        let pkt: ScaiiPacket = self.create_test_control_message(args_list);
         self.send_packet_to_backend(pkt)
     }
 
-    fn send_packet_to_backend(&mut self, pkt: ScaiiPacket)-> Result<Vec<protos::ScaiiPacket>, Box<Error>>{
+    fn send_packet_to_backend(
+        &mut self,
+        pkt: ScaiiPacket,
+    ) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
         let mut pkts: Vec<ScaiiPacket> = Vec::new();
         pkts.push(pkt);
         let mm = MultiMessage { packets: pkts };
@@ -360,113 +395,144 @@ impl ReplayManager  {
         Ok(scaii_pkts)
     }
 
-    fn create_test_control_message(&mut self, args_list : Vec<String>) -> ScaiiPacket {
+    fn create_test_control_message(&mut self, args_list: Vec<String>) -> ScaiiPacket {
         ScaiiPacket {
-            src: protos::Endpoint {
-                endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-            },
-            dest: protos::Endpoint {
-                 endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-            },
-            specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::TestControl(protos::TestControl{args: args_list,})),
+            src: protos::Endpoint { endpoint: Some(Endpoint::Replay(ReplayEndpoint {})) },
+            dest: protos::Endpoint { endpoint: Some(Endpoint::Backend(BackendEndpoint {})) },
+            specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::TestControl(
+                protos::TestControl { args: args_list },
+            )),
         }
     }
 
-    fn send_test_mode_rewind_hint_message(&mut self) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
-        let target : String = String::from("MockRts");
-        let command : String = String::from("rewind");
-        let mut args_list : Vec<String> = Vec::new();
+    fn send_test_mode_rewind_hint_message(
+        &mut self,
+    ) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
+        let target: String = String::from("MockRts");
+        let command: String = String::from("rewind");
+        let mut args_list: Vec<String> = Vec::new();
         args_list.push(target);
         args_list.push(command);
-        let pkt : ScaiiPacket = self.create_test_control_message(args_list);
+        let pkt: ScaiiPacket = self.create_test_control_message(args_list);
         self.send_packet_to_backend(pkt)
     }
 
-    fn send_test_mode_jump_to_hint_message(&mut self, target_index: u64) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
-        let target : String = String::from("MockRts");
-        let command : String = String::from("jump");
-        let index: String = format!("{}",target_index);
-        let mut args_list : Vec<String> = Vec::new();
+    fn send_test_mode_jump_to_hint_message(
+        &mut self,
+        target_index: u64,
+    ) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
+        let target: String = String::from("MockRts");
+        let command: String = String::from("jump");
+        let index: String = format!("{}", target_index);
+        let mut args_list: Vec<String> = Vec::new();
         args_list.push(target);
         args_list.push(command);
         args_list.push(index);
-        let pkt : ScaiiPacket = self.create_test_control_message(args_list);
+        let pkt: ScaiiPacket = self.create_test_control_message(args_list);
         self.send_packet_to_backend(pkt)
     }
 
-    fn execute_run_step(&mut self) -> Result<GameState, Box<Error>>{
+    fn execute_run_step(&mut self) -> Result<GameState, Box<Error>> {
         let mut game_state: GameState = GameState::Running;
         if self.has_more_steps() {
-            let scaii_pkts =  self.send_replay_action_to_backend()?;
+            let scaii_pkts = self.send_replay_action_to_backend()?;
             self.step_position += 1;
             for scaii_pkt in &scaii_pkts {
-                if scaii_defs::protos::is_error_pkt(scaii_pkt){
+                if scaii_defs::protos::is_error_pkt(scaii_pkt) {
                     // Error would have already been shown to user at UI
-                    println!("REPLAY ERROR received as result of run_step {:?}", scaii_pkt);
-                }
-                else {
-                    println!("REPLAY unexpected pkt received after sending ReplayAction {:?}", scaii_pkt);
+                    println!(
+                        "REPLAY ERROR received as result of run_step {:?}",
+                        scaii_pkt
+                    );
+                } else {
+                    println!(
+                        "REPLAY unexpected pkt received after sending ReplayAction {:?}",
+                        scaii_pkt
+                    );
                 }
             }
-        }
-        else {
+        } else {
             // game will automatically pause at end, switch to polling mode
             game_state = GameState::Paused;
         }
         Ok(game_state)
     }
 
-    fn execute_poll_step(&mut self, mut game_state : GameState) -> Result<GameState, Box<Error>> {
+    fn execute_poll_step(&mut self, mut game_state: GameState) -> Result<GameState, Box<Error>> {
         let scaii_pkts: Vec<ScaiiPacket> = self.poll_viz()?;
         for scaii_pkt in &scaii_pkts {
-            if scaii_defs::protos::is_user_command_pkt(scaii_pkt){
-                let user_command_args : Vec<String> = scaii_defs::protos::get_user_command_args(scaii_pkt);
+            if scaii_defs::protos::is_user_command_pkt(scaii_pkt) {
+                let user_command_args: Vec<String> =
+                    scaii_defs::protos::get_user_command_args(scaii_pkt);
                 // we would get args here when they are relevant
                 let user_command_type = scaii_defs::protos::get_user_command_type(scaii_pkt)?;
                 match user_command_type {
-                    UserCommandType::None => { println!("================RECEIVED UserCommandType::None================");},
-                    UserCommandType::Explain => {println!("================RECEIVED UserCommandType::Explain================");},
+                    UserCommandType::None => {
+                        println!("================RECEIVED UserCommandType::None================");
+                    }
+                    UserCommandType::Explain => {
+                        println!(
+                            "================RECEIVED UserCommandType::Explain================"
+                        );
+                    }
                     UserCommandType::Pause => {
                         println!("================RECEIVED UserCommandType::Pause================");
                         game_state = GameState::Paused;
-                    },
-                    UserCommandType::Resume => { game_state = GameState::Running; println!("================RECEIVED UserCommandType::Resume================"); },
+                    }
+                    UserCommandType::Resume => {
+                        game_state = GameState::Running;
+                        println!(
+                            "================RECEIVED UserCommandType::Resume================"
+                        );
+                    }
                     UserCommandType::Rewind => {
-                        println!("================RECEIVED UserCommandType::Rewind================");
+                        println!(
+                            "================RECEIVED UserCommandType::Rewind================"
+                        );
                         self.step_position = 0;
                         if self.test_mode {
-                            let _pkts :Vec<ScaiiPacket> = self.send_test_mode_rewind_hint_message()?;
+                            let _pkts: Vec<ScaiiPacket> =
+                                self.send_test_mode_rewind_hint_message()?;
                         }
                         game_state = GameState::RewoundAndNeedingToSendInitialKeyframe;
-                    },
-                    UserCommandType::PollForCommands => {println!("================RECEIVED UserCommandType::PollForCommands================");},
+                    }
+                    UserCommandType::PollForCommands => {
+                        println!(
+                            "================RECEIVED UserCommandType::PollForCommands================"
+                        );
+                    }
                     UserCommandType::JumpToStep => {
-                        println!("================RECEIVED UserCommandType::JumpToStep================");
+                        println!(
+                            "================RECEIVED UserCommandType::JumpToStep================"
+                        );
                         println!("args : {:?}", user_command_args);
                         let jump_target: &String = &user_command_args[0];
                         game_state = self.handle_jump_request(jump_target)?;
-                    },
-                    UserCommandType::JumpCompleted => {}, // sent to viz, not received from viz
+                    }
+                    UserCommandType::JumpCompleted => {} // sent to viz, not received from viz
                     UserCommandType::SetSpeed => {
-                        println!("================RECEIVED UserCommandType::SetSpeed================");
+                        println!(
+                            "================RECEIVED UserCommandType::SetSpeed================"
+                        );
                         let speed: &String = &user_command_args[0];
 
                         self.adjust_replay_speed(speed)?;
-                    },
+                    } 
                 }
-            }
-            else if scaii_defs::protos::is_error_pkt(scaii_pkt){
+            } else if scaii_defs::protos::is_error_pkt(scaii_pkt) {
                 // Error would have already been shown to user at UI
-            }
-            else {
-                println!("REPLAY unexpected pkt received by Viz polling {:?}", scaii_pkt);
+            } else {
+                println!(
+                    "REPLAY unexpected pkt received by Viz polling {:?}",
+                    scaii_pkt
+                );
             }
         }
         wait(*self.poll_delay.lock().unwrap());
         Ok(game_state)
     }
 
-    fn adjust_replay_speed(&mut self, speed_string : &str) -> Result<(), Box<Error>> {
+    fn adjust_replay_speed(&mut self, speed_string: &str) -> Result<(), Box<Error>> {
         let speed = speed_string.parse::<u64>()?;
         // speed = 0  => 2001 ms or one ~ every 2 seconds
         // speed = 90 => 201 ms or ~ 5/sec,
@@ -480,45 +546,55 @@ impl ReplayManager  {
         Ok(())
     }
 
-    fn handle_jump_request(&mut self, jump_target: &String) ->  Result<GameState, Box<Error>> {
+    fn handle_jump_request(&mut self, jump_target: &String) -> Result<GameState, Box<Error>> {
         let result = jump_target.parse::<u32>();
         match result {
             Ok(jump_target_int) => {
                 if jump_target_int > self.replay_data.len() as u32 {
-                    return Err(Box::new(ReplayError::new(&format!("Jump target {} not in range of step count {}", jump_target_int,self.replay_data.len()))));
+                    return Err(Box::new(ReplayError::new(&format!(
+                        "Jump target {} not in range of step count {}",
+                        jump_target_int,
+                        self.replay_data.len()
+                    ))));
                 }
                 self.step_position = u64::from(jump_target_int);
                 if self.test_mode {
-                    let _pkts :Vec<ScaiiPacket> = self.send_test_mode_jump_to_message(jump_target)?;
+                    let _pkts: Vec<ScaiiPacket> = self.send_test_mode_jump_to_message(jump_target)?;
                 }
             }
             Err(_) => {
-                Box::new(ReplayError::new(&format!("Jump target {} not valid number.", jump_target)));
+                Box::new(ReplayError::new(
+                    &format!("Jump target {} not valid number.", jump_target),
+                ));
             }
         }
 
         Ok(GameState::JumpedAndNeedingToDoFollowupNavigation)
     }
 
-    fn get_keyframe_index_prior_to_current_step_position(&mut self) -> Result<u64, Box<Error>>{
-        let mut cur_index : u64 = self.step_position;
-        let mut seeking : bool = true;
+    fn get_keyframe_index_prior_to_current_step_position(&mut self) -> Result<u64, Box<Error>> {
+        let mut cur_index: u64 = self.step_position;
+        let mut seeking: bool = true;
         while seeking {
             let cur_replay_action = &self.replay_data[cur_index as usize];
             match *cur_replay_action {
-                ReplayAction::Header(_) => { } // has been removed from list by now - no need to take into account},
-                ReplayAction::Delta(_) => { cur_index -= 1; },
-                ReplayAction::Keyframe(_,_) => { seeking = false; },
+                ReplayAction::Header(_) => {} // has been removed from list by now - no need to take into account},
+                ReplayAction::Delta(_) => {
+                    cur_index -= 1;
+                }
+                ReplayAction::Keyframe(_, _) => {
+                    seeking = false;
+                }
             }
         }
         Ok(cur_index)
     }
 
-    fn run_and_poll(&mut self) -> Result<(), Box<Error>>{
-        let mut game_state : GameState = GameState::Running;
+    fn run_and_poll(&mut self) -> Result<(), Box<Error>> {
+        let mut game_state: GameState = GameState::Running;
         let (tx_step, rx) = mpsc::channel();
         let (tx_step_ack, rx_step_ack) = mpsc::channel();
-        let (tx_poll_ack, rx_poll_ack)= mpsc::channel();
+        let (tx_poll_ack, rx_poll_ack) = mpsc::channel();
         let tx_poll = mpsc::Sender::clone(&tx_step);
         let arc_poll_delay = Arc::clone(&self.poll_delay);
         // start poll nudge  thread
@@ -557,15 +633,15 @@ impl ReplayManager  {
                             //snudge_count = snudge_count + 1;
                             game_state = self.handle_step_nudge(game_state)?;
                             tx_step_ack.send(String::from("ack")).unwrap();
-                        },
+                        }
                         "poll_nudge" => {
                             //println!("main loop got poll_nudge {}", pnudge_count);
                             //pnudge_count = pnudge_count + 1;
                             game_state = self.execute_poll_step(game_state)?;
                             tx_poll_ack.send(String::from("ack")).unwrap();
 
-                        },
-                        _ => {},
+                        }
+                        _ => {}
                     }
                 }
                 Err(receive_error) => return Err(Box::new(receive_error)),
@@ -581,28 +657,32 @@ impl ReplayManager  {
         match game_state {
             GameState::Running => {
                 game_state = self.execute_run_step()?;
-            },
-            GameState::Paused=> {
+            }
+            GameState::Paused => {
                 // do nothing
-            },
+            }
             GameState::RewoundAndNeedingToSendInitialKeyframe => {
-                let _ignored_game_state : GameState = self.execute_run_step()?;
+                let _ignored_game_state: GameState = self.execute_run_step()?;
                 game_state = GameState::Paused; // after rewind, we assume they don't want it to start playing
-            },
+            }
             GameState::JumpedAndNeedingToDoFollowupNavigation => {
-                let backup_target : u64 = self.get_keyframe_index_prior_to_current_step_position()?;
-                let forward_target : u64 = self.step_position;
+                let backup_target: u64 = self.get_keyframe_index_prior_to_current_step_position()?;
+                let forward_target: u64 = self.step_position;
                 self.keyframe_to_later_step(backup_target, forward_target)?;
                 game_state = GameState::Paused;
-            },
+            }
         }
         Ok(game_state)
     }
 
     // this should happen atomically - in between pollings, so no game_state change should be occurring so we can ignore
-    fn keyframe_to_later_step(&mut self, keyframe_index: u64, target_index: u64) -> Result<(), Box<Error>>{
+    fn keyframe_to_later_step(
+        &mut self,
+        keyframe_index: u64,
+        target_index: u64,
+    ) -> Result<(), Box<Error>> {
         if self.test_mode {
-            let _pkts :Vec<ScaiiPacket> = self.send_test_mode_jump_to_hint_message(keyframe_index)?;
+            let _pkts: Vec<ScaiiPacket> = self.send_test_mode_jump_to_hint_message(keyframe_index)?;
         }
         self.step_position = keyframe_index;
         while self.step_position <= target_index {
@@ -613,7 +693,7 @@ impl ReplayManager  {
     }
 }
 
-fn wait(milliseconds : u64) {
+fn wait(milliseconds: u64) {
     let delay = time::Duration::from_millis(milliseconds);
     thread::sleep(delay);
 }
@@ -624,7 +704,7 @@ fn wrap_packet_in_multi_message(pkt: ScaiiPacket) -> MultiMessage {
     MultiMessage { packets: pkts }
 }
 
-fn get_mac_browser_launch_command(scaii_config : &mut ScaiiConfig) -> Result<String, Box<Error>> {
+fn get_mac_browser_launch_command(scaii_config: &mut ScaiiConfig) -> Result<String, Box<Error>> {
     let browser = scaii_config.get_replay_browser();
     let full_url = scaii_config.get_full_replay_http_url();
     Ok(format!("{} {}", browser, full_url))
@@ -632,17 +712,15 @@ fn get_mac_browser_launch_command(scaii_config : &mut ScaiiConfig) -> Result<Str
 
 #[allow(unused_assignments)]
 fn create_rpc_config_message() -> Result<ScaiiPacket, Box<Error>> {
-    let mut scaii_config :ScaiiConfig = scaii_core::load_scaii_config();
-    
-    let mut comm : Option<String> = None;
+    let mut scaii_config: ScaiiConfig = scaii_core::load_scaii_config();
+
+    let mut comm: Option<String> = None;
     if cfg!(target_os = "windows") {
         let windows_command_string = scaii_config.get_replay_browser();
         comm = Some(windows_command_string);
-    }
-    else if cfg!(target_os = "unix") {
+    } else if cfg!(target_os = "unix") {
         panic!("rpc config message for unix not yet implemented!");
-    }
-    else {
+    } else {
         // mac
         let mac_command_string = get_mac_browser_launch_command(&mut scaii_config)?;
         comm = Some(mac_command_string);
@@ -655,23 +733,17 @@ fn create_rpc_config_message() -> Result<ScaiiPacket, Box<Error>> {
     if cfg!(target_os = "windows") {
         let target_url = scaii_config.get_full_replay_http_url();
         vec.push(target_url);
-    }
-    else if cfg!(target_os = "unix") {
+    } else if cfg!(target_os = "unix") {
         // will panic earlier in function if we are on unix
-    }
-    else {
+    } else {
         // mac adds no arguments - its all in command (workaround to browser launching issue on mac)
     }
 
     let rpc_config = scaii_core::get_rpc_config_for_viz(comm, vec);
 
     Ok(ScaiiPacket {
-        src: protos::Endpoint {
-            endpoint: Some(Endpoint::Agent(AgentEndpoint {})),
-        },
-        dest: protos::Endpoint {
-            endpoint: Some(Endpoint::Core(CoreEndpoint {})),
-        },
+        src: protos::Endpoint { endpoint: Some(Endpoint::Agent(AgentEndpoint {})) },
+        dest: protos::Endpoint { endpoint: Some(Endpoint::Core(CoreEndpoint {})) },
         specific_msg: Some(SpecificMsg::Config(protos::Cfg {
             which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
                 plugin_type: protos::PluginType {
@@ -682,14 +754,18 @@ fn create_rpc_config_message() -> Result<ScaiiPacket, Box<Error>> {
     })
 }
 
-fn load_replay_file(path: &Path)  -> Result<Vec<ReplayAction>, Box<Error>> {
+fn load_replay_file(path: &Path) -> Result<Vec<ReplayAction>, Box<Error>> {
     //use super::ReplayAction;
     println!("loading replay file...");
     let replay_file = File::open(path).expect("file not found");
-    let mut replay_vec : Vec<ReplayAction> = Vec::new();
+    let mut replay_vec: Vec<ReplayAction> = Vec::new();
     let mut reader = BufReader::new(replay_file);
 
-    while let Ok(action) = deserialize_from::<BufReader<File>,ReplayAction,Infinite>(&mut reader, Infinite) {
+    while let Ok(action) = deserialize_from::<BufReader<File>, ReplayAction, Infinite>(
+        &mut reader,
+        Infinite,
+    )
+    {
         println!("action deserialized as {:?}", action);
         replay_vec.push(action);
     }
@@ -700,13 +776,11 @@ fn load_replay_info_from_default_replay_path() -> Result<Vec<ReplayAction>, Box<
     let path = scaii_core::get_default_replay_file_path()?;
     load_replay_info_from_replay_file_path(path)
 }
-fn load_replay_info_from_replay_file_path(path : PathBuf) -> Result<Vec<ReplayAction>, Box<Error>> {
+fn load_replay_info_from_replay_file_path(path: PathBuf) -> Result<Vec<ReplayAction>, Box<Error>> {
     let load_result = load_replay_file(&path);
     match load_result {
-        Ok(replay_vec) => {
-            Ok(replay_vec)
-        }
-        Err(err) => Err(err)
+        Ok(replay_vec) => Ok(replay_vec),
+        Err(err) => Err(err),
     }
 }
 #[allow(dead_code)]
@@ -719,66 +793,106 @@ fn main() {
     let args: Args = Docopt::new(USAGE)
         .and_then(|d| d.deserialize())
         .unwrap_or_else(|e| e.exit());
-    
+
     if args.cmd_webserver {
         launch_webserver()
-    }
-    else if args.cmd_test {
+    } else if args.cmd_test {
         if args.flag_data_from_recorded_file {
-            let replay_info : Vec<ReplayAction> = load_replay_info_from_default_replay_path().expect("Error - problem generating test replay_info");
-            run_replay(RunMode::Test, replay_info);
-        }
-        else { 
+            let replay_info: Vec<ReplayAction> =
+                load_replay_info_from_default_replay_path().expect(
+                    "Error - problem generating test replay_info",
+                );
+            run_replay(RunMode::Test, replay_info, args);
+        } else {
             // must be flag_data_hardcoded
-            let step_count : u32 = 300;
-            let interval : u32 = 5;
-            let replay_info = concoct_replay_info(step_count,interval).expect("Error - problem generating test replay_info");
-            run_replay(RunMode::Test, replay_info);
+            let step_count: u32 = 300;
+            let interval: u32 = 5;
+            let replay_info = concoct_replay_info(step_count, interval).expect(
+                "Error - problem generating test replay_info",
+            );
+            run_replay(RunMode::Test, replay_info, args);
         }
-    }
-    else if args.cmd_file {
+    } else if args.cmd_file {
         if args.flag_filename {
-            let replay_file_path_string = args.arg_path_to_replay_file;
-            let path = Path::new(&replay_file_path_string);
-            if !path.exists() {
-                println!("Replay file specified does not exist {}", replay_file_path_string);
-                process::exit(0);
-            }
-            let replay_info : Vec<ReplayAction> = load_replay_info_from_replay_file_path(path.to_path_buf()).expect("Error - problem generating test replay_info");
-            run_replay(RunMode::Live, replay_info);
+            let replay_info: Vec<ReplayAction> = {
+                let path = Path::new(&args.arg_path_to_replay_file);
+                if !path.exists() {
+                    panic!(
+                        "Replay file specified does not exist {}",
+                        args.arg_path_to_replay_file
+                    );
+
+                }
+                load_replay_info_from_replay_file_path(path.to_path_buf())
+                    .expect("Error - problem generating test replay_info")
+            };
+
+            run_replay(RunMode::Live, replay_info, args);
         }
-    }
-    else {
-        println!("Unrecognized command mode for replay: {:?}", args);
+    } else {
+        panic!("Unrecognized command mode for replay: {:?}", args);
     }
 }
 
 #[allow(unused_assignments)]
-fn run_replay(run_mode : RunMode, replay_info: Vec<ReplayAction>){
+fn run_replay(run_mode: RunMode, replay_info: Vec<ReplayAction>, args: Args) {
     let mut mode_is_test = true;
-    let mut environment : Environment = Environment::new();
-    
-    match run_mode{
+    let mut environment: Environment = Environment::new();
+
+    match run_mode {
         RunMode::Test => {
             configure_and_register_mock_rts(&mut environment);
         }
         RunMode::Live => {
             mode_is_test = false;
-            println!("Live run mode not yet implemented...");
-            return;
+            if args.flag_backend {
+                let path = args.arg_path_to_backend;
+                let register_result = register_real_backend(&mut environment, &path);
+                match register_result {
+                    Ok(()) => {}
+                    Err(error) => {
+                        println!(
+                            "ERROR - could not register backend: {} ... {:?}",
+                            path,
+                            error
+                        );
+                    }
+                }
+            } else {
+                // try default rts backend
+                let default_backend_result = get_default_backend();
+                match default_backend_result {
+                    Ok(ref path) => {
+                        let register_result = register_real_backend(&mut environment, &path);
+                        match register_result {
+                            Ok(()) => {}
+                            Err(error) => {
+                                println!("ERROR - could not register default backend: {:?}", error);
+                            }
+                        }
+                    }
+                    Err(err) => {
+                        panic!(
+                            "ERROR - could not locate default backend: {}  Aborting.",
+                            err
+                        );
+                    }
+                }
+            }
+
         }
     }
 
-    let replay_message_queue = ReplayMessageQueue {
-        incoming_messages: Vec::new(),
-    };
+    let replay_message_queue = ReplayMessageQueue { incoming_messages: Vec::new() };
     let rc_replay_message_queue = Rc::new(RefCell::new(replay_message_queue));
     {
-        environment.router_mut().register_replay(Box::new(Rc::clone(&rc_replay_message_queue)));
+        environment.router_mut().register_replay(Box::new(
+            Rc::clone(&rc_replay_message_queue),
+        ));
         debug_assert!(environment.router().replay().is_some());
     }
-    let mut replay_manager =  ReplayManager {
-        incoming_message_queue:rc_replay_message_queue,
+    let mut replay_manager = ReplayManager {
+        incoming_message_queue: rc_replay_message_queue,
         step_delay: Arc::new(Mutex::new(201)),
         poll_delay: Arc::new(Mutex::new(50)),
         shutdown_received: false,
@@ -789,7 +903,7 @@ fn run_replay(run_mode : RunMode, replay_info: Vec<ReplayAction>){
     };
     let result = replay_manager.start();
     match result {
-        Ok(_) => {},
+        Ok(_) => {}
         Err(e) => {
             println!("Replay Error {:?}", e);
             return;
@@ -797,7 +911,7 @@ fn run_replay(run_mode : RunMode, replay_info: Vec<ReplayAction>){
     }
 }
 
-fn configure_and_register_mock_rts(env: &mut Environment){
+fn configure_and_register_mock_rts(env: &mut Environment) {
     let rts = MockRts {
         viz_sequence: Vec::new(),
         outbound_messages: Vec::new(),
@@ -811,3 +925,75 @@ fn configure_and_register_mock_rts(env: &mut Environment){
     }
 }
 
+#[cfg(target_os = "macos")]
+fn get_default_backend() -> Result<String, Box<Error>> {
+    Err(Box::new(ReplayError::new(
+        &format!("macos replay not yet implemented"),
+    )))
+}
+#[cfg(target_os = "windows")]
+fn get_default_backend() -> Result<String, Box<Error>> {
+    //$HOME/.scaii/backends/bin/sky_rts.dll
+    use std::env;
+
+    let mut path_option = env::home_dir();
+    match path_option {
+        None => {
+            Err(Box::new(ReplayError::new(&format!(
+                "ERROR - Could not find default backend because could not determine home directory."
+            ))))
+        }
+        Some(ref mut path_buf) => {
+            path_buf.push(".scaii".to_string());
+            path_buf.push("backends".to_string());
+            path_buf.push("bin".to_string());
+            path_buf.push("sky_rts.dll".to_string());
+            Ok(path_buf.to_str().unwrap().to_string())
+        }
+    }
+
+}
+#[cfg(target_os = "linux")]
+fn get_default_backend() -> Result<String, Box<Error>> {
+    Err(Box::new(ReplayError::new(
+        &format!("linux replay not yet implemented"),
+    )))
+}
+
+fn register_real_backend(env: &mut Environment, path_string: &str) -> Result<(), Box<Error>> {
+    let path = Path::new(path_string);
+    if !path.exists() {
+        return Err(Box::new(ReplayError::new(
+            &format!("specified backend does not exist {}", path_string),
+        )));
+    }
+    let rust_ffi_config_pkt = create_rust_ffi_config_message(path_string)?;
+    let mm = wrap_packet_in_multi_message(rust_ffi_config_pkt);
+    env.route_messages(&mm);
+    env.update();
+    Ok(())
+}
+
+fn get_rust_ffi_config_for_path(path: &str) -> RustFfiConfig {
+    RustFfiConfig {
+        plugin_path: path.to_string(),
+        init_as: protos::InitAs { init_as: Some(protos::init_as::InitAs::Backend(BackendInit {})) },
+    }
+}
+
+fn create_rust_ffi_config_message(backend_path: &str) -> Result<ScaiiPacket, Box<Error>> {
+    use scaii_defs::protos::plugin_type::PluginType;
+
+    let rust_ffi_config = get_rust_ffi_config_for_path(backend_path);
+    Ok(ScaiiPacket {
+        src: protos::Endpoint { endpoint: Some(Endpoint::Agent(AgentEndpoint {})) },
+        dest: protos::Endpoint { endpoint: Some(Endpoint::Core(CoreEndpoint {})) },
+        specific_msg: Some(SpecificMsg::Config(protos::Cfg {
+            which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
+                plugin_type: protos::PluginType {
+                    plugin_type: Some(PluginType::RustPlugin(rust_ffi_config)),
+                },
+            })),
+        })),
+    })
+}

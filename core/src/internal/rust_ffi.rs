@@ -17,16 +17,15 @@ pub fn init_ffi(args: RustFfiConfig) -> Result<LoadedAs, Box<Error>> {
         let plugin_path = args.plugin_path.clone();
 
         //rclib = rust-call lib
-        let lib = lib_map
-            .entry(plugin_path.clone())
-            .or_insert(Library::new(&plugin_path)?);
+        let lib = lib_map.entry(plugin_path.clone()).or_insert(Library::new(
+            &plugin_path,
+        )?);
 
-        match args.clone()
-            .init_as
-            .init_as
-            .ok_or_else::<Box<Error>, _>(|| {
+        match args.clone().init_as.init_as.ok_or_else::<Box<Error>, _>(
+            || {
                 From::from(format!("Malformed InitAs field in RustFfi {:?}", args))
-            })? {
+            },
+        )? {
             InitAs::Backend(_) => {
                 let lib = unsafe { lib.get::<fn() -> Box<Backend>>(b"new_backend\0")? };
                 Ok(LoadedAs::Backend(Box::new(RustDynamicBackend {
@@ -137,9 +136,7 @@ fn load_destroy() {
     use scaii_defs::protos::init_as;
 
     let args = RustFfiConfig {
-        init_as: InitAs {
-            init_as: Some(init_as::InitAs::Backend(BackendInit {})),
-        },
+        init_as: InitAs { init_as: Some(init_as::InitAs::Backend(BackendInit {})) },
         plugin_path: "../../sky-rts/backend/target/debug/backend.dll".to_string(),
     };
 

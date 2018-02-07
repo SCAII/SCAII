@@ -32,10 +32,11 @@ pub use scaii_config::*;
 // Don't publicly expose our internal structure to FFI
 pub(crate) mod internal;
 //...but expose ReplayAction so Replay can access it in Recorder (Replay is a binary so different crate)
-pub use internal::recorder::{GameAction, get_default_replay_file_path, ReplayAction, ReplayHeader, SerializedProtosAction, 
-                SerializedProtosEndpoint, SerializedProtosScaiiPacket,
-                SerializedProtosSerializationResponse, SerializationInfo};
-pub use internal::rpc::get_rpc_config_for_viz; 
+pub use internal::recorder::{GameAction, get_default_replay_file_path, ReplayAction, ReplayHeader,
+                             SerializedProtosAction, SerializedProtosEndpoint,
+                             SerializedProtosScaiiPacket, SerializedProtosSerializationResponse,
+                             SerializationInfo};
+pub use internal::rpc::get_rpc_config_for_viz;
 
 /// The Environment created by this library.
 #[derive(Default)]
@@ -47,16 +48,12 @@ const FATAL_OWNER_ERROR: &'static str = "FATAL CORE ERROR: Cannot forward messag
 
 impl Environment {
     pub fn new() -> Self {
-        Environment {
-            router: Router::new(),
-        }
+        Environment { router: Router::new() }
     }
 
     pub fn agent_owned() -> (Self, Rc<RefCell<PublisherAgent>>) {
         let agent = Rc::new(RefCell::new(PublisherAgent::new()));
-        let me = Environment {
-            router: Router::from_agent(Box::new(Rc::clone(&agent))),
-        };
+        let me = Environment { router: Router::from_agent(Box::new(Rc::clone(&agent))) };
 
         (me, agent)
     }
@@ -114,12 +111,12 @@ impl Environment {
                         );
                     }
                 }
-                SpecificMsg::Config(Cfg {
-                    which_module: Some(_),
-                }) => self.handle_errors_possible_failure(
-                    &packet,
-                    "Core only handles correctly formed CoreCfg config messages.",
-                ),
+                SpecificMsg::Config(Cfg { which_module: Some(_) }) => {
+                    self.handle_errors_possible_failure(
+                        &packet,
+                        "Core only handles correctly formed CoreCfg config messages.",
+                    )
+                }
                 _ => {
                     self.handle_errors_possible_failure(&packet, "Message type not suited for Core")
                 }
@@ -136,41 +133,45 @@ impl Environment {
         use internal::LoadedAs;
 
         match *plugin_type {
-            RustPlugin(ref cfg) => match rust_ffi::init_ffi(cfg.clone())? {
-                LoadedAs::Backend(backend) => {
-                    let prev = self.router.register_backend(backend);
-                    if prev.is_some() {
-                        Err("Backend previously registered, overwriting".to_string())?
-                    } else {
-                        Ok(())
+            RustPlugin(ref cfg) => {
+                match rust_ffi::init_ffi(cfg.clone())? {
+                    LoadedAs::Backend(backend) => {
+                        let prev = self.router.register_backend(backend);
+                        if prev.is_some() {
+                            Err("Backend previously registered, overwriting".to_string())?
+                        } else {
+                            Ok(())
+                        }
+                    }
+                    LoadedAs::Module(module, name) => {
+                        let prev = self.router.register_module(name.clone(), module);
+                        if prev.is_some() {
+                            Err(format!(
+                                "Module {} previously registered, overwriting",
+                                name
+                            ))?
+                        } else {
+                            Ok(())
+                        }
                     }
                 }
-                LoadedAs::Module(module, name) => {
-                    let prev = self.router.register_module(name.clone(), module);
-                    if prev.is_some() {
-                        Err(format!(
-                            "Module {} previously registered, overwriting",
-                            name
-                        ))?
-                    } else {
-                        Ok(())
+            }
+            Rpc(ref cfg) => {
+                match rpc::init_rpc(cfg)? {
+                    LoadedAs::Backend(_) => unimplemented!(),
+                    LoadedAs::Module(module, name) => {
+                        let prev = self.router.register_module(name.clone(), module);
+                        if prev.is_some() {
+                            Err(format!(
+                                "Module {} previously registered, overwriting",
+                                name
+                            ))?
+                        } else {
+                            Ok(())
+                        }
                     }
                 }
-            },
-            Rpc(ref cfg) => match rpc::init_rpc(cfg)? {
-                LoadedAs::Backend(_) => unimplemented!(),
-                LoadedAs::Module(module, name) => {
-                    let prev = self.router.register_module(name.clone(), module);
-                    if prev.is_some() {
-                        Err(format!(
-                            "Module {} previously registered, overwriting",
-                            name
-                        ))?
-                    } else {
-                        Ok(())
-                    }
-                }
-            },
+            }
         }
     }
 
@@ -182,8 +183,11 @@ impl Environment {
         use scaii_defs::protos::CoreEndpoint;
 
         let error_src = packet.src.endpoint.as_ref().unwrap();
-        let res = self.router
-            .send_error(descrip, error_src, &Endpoint::Core(CoreEndpoint {}));
+        let res = self.router.send_error(
+            descrip,
+            error_src,
+            &Endpoint::Core(CoreEndpoint {}),
+        );
 
         if let Err(err) = res {
             self.router
@@ -212,12 +216,8 @@ impl Environment {
         use scaii_defs::protos::endpoint;
         use scaii_defs::protos;
 
-        let dest = protos::Endpoint {
-            endpoint: Some(endpoint::Endpoint::Agent(AgentEndpoint {})),
-        };
+        let dest = protos::Endpoint { endpoint: Some(endpoint::Endpoint::Agent(AgentEndpoint {})) };
         packet.dest = dest;
         self.router.route_to(packet).expect(FATAL_OWNER_ERROR);
     }
 }
-
-

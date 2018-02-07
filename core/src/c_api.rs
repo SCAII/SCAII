@@ -53,12 +53,7 @@ impl CContext {
         self.next_msg = match self.next_msg {
             None => Some(next_msg),
             Some(ref mut curr_msg) => {
-                let curr_msg = mem::replace(
-                    curr_msg,
-                    MultiMessage {
-                        packets: Vec::new(),
-                    },
-                );
+                let curr_msg = mem::replace(curr_msg, MultiMessage { packets: Vec::new() });
                 let msgs = vec![curr_msg, next_msg];
                 protos::merge_multi_messages(msgs)
             }
