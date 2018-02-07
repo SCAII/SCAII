@@ -19,13 +19,6 @@ test = true
 doc = true
 harness = true
 
-[[bin]]
-name = "replay_webserver"
-path = "src/internal/replay_webserver/main.rs"
-test = true
-doc = true
-harness = true
-
 [dependencies]
 libloading="0.4.1"
 prost = "0.2"
