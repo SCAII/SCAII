@@ -170,7 +170,7 @@ impl ReplayManager  {
         let mm = MultiMessage { packets: to_send };
         self.env.route_messages(&mm);
         self.env.update();
-        let scaii_pkts : Vec<protos::ScaiiPacket> = { 
+        let scaii_pkts : Vec<protos::ScaiiPacket> = {
             let queue  = &mut *self.incoming_message_queue.borrow_mut();
             let result : Vec<protos::ScaiiPacket> = queue.incoming_messages.drain(..).collect();
             //println!("====================got result packets {} ", result.len());
@@ -246,13 +246,13 @@ impl ReplayManager  {
                 })
             }
         }
-        
+
     }
 
     fn deploy_replay_directives_to_backend(&mut self, mm: &MultiMessage) ->Result<Vec<protos::ScaiiPacket>, Box<Error>> {
         self.env.route_messages(mm);
         self.env.update();
-        let scaii_pkts : Vec<protos::ScaiiPacket> = { 
+        let scaii_pkts : Vec<protos::ScaiiPacket> = {
             let queue  = &mut *self.incoming_message_queue.borrow_mut();
             let result : Vec<protos::ScaiiPacket> = queue.incoming_messages.drain(..).collect();
             result
@@ -292,7 +292,7 @@ impl ReplayManager  {
                         Err(Box::new(err))
                     }
                 }
-                
+
             }
             ReplayAction::Header(_) => {
                 Ok(empty_vec)
@@ -312,7 +312,7 @@ impl ReplayManager  {
     }
 
     fn send_packet_to_backend(&mut self, pkt: ScaiiPacket)-> Result<Vec<protos::ScaiiPacket>, Box<Error>>{
-        let mut pkts: Vec<ScaiiPacket> = Vec::new();    
+        let mut pkts: Vec<ScaiiPacket> = Vec::new();
         pkts.push(pkt);
         let mm = MultiMessage { packets: pkts };
         let scaii_pkts = self.deploy_replay_directives_to_backend(&mm)?;
@@ -374,7 +374,7 @@ impl ReplayManager  {
         }
         Ok(game_state)
     }
-   
+
     fn execute_poll_step(&mut self, mut game_state : GameState) -> Result<GameState, Box<Error>> {
         let scaii_pkts: Vec<ScaiiPacket> = self.poll_viz()?;
         for scaii_pkt in &scaii_pkts {
@@ -385,13 +385,13 @@ impl ReplayManager  {
                 match user_command_type {
                     UserCommandType::None => { println!("================RECEIVED UserCommandType::None================");},
                     UserCommandType::Explain => {println!("================RECEIVED UserCommandType::Explain================");},
-                    UserCommandType::Pause => { 
+                    UserCommandType::Pause => {
                         println!("================RECEIVED UserCommandType::Pause================");
-                        game_state = GameState::Paused; 
+                        game_state = GameState::Paused;
                     },
                     UserCommandType::Resume => { game_state = GameState::Running; println!("================RECEIVED UserCommandType::Resume================"); },
                     UserCommandType::Rewind => {
-                        println!("================RECEIVED UserCommandType::Rewind================"); 
+                        println!("================RECEIVED UserCommandType::Rewind================");
                         self.step_position = 0;
                         if self.test_mode {
                             let _pkts :Vec<ScaiiPacket> = self.send_test_mode_rewind_hint_message()?;
@@ -409,9 +409,9 @@ impl ReplayManager  {
                     UserCommandType::SetSpeed => {
                         println!("================RECEIVED UserCommandType::SetSpeed================");
                         let speed: &String = &user_command_args[0];
-                        
+
                         self.adjust_replay_speed(speed)?;
-                    }, 
+                    },
                 }
             }
             else if scaii_defs::protos::is_error_pkt(scaii_pkt){
@@ -424,7 +424,7 @@ impl ReplayManager  {
         wait(*self.poll_delay.lock().unwrap());
         Ok(game_state)
     }
-    
+
     fn adjust_replay_speed(&mut self, speed_string : &str) -> Result<(), Box<Error>> {
         let speed = speed_string.parse::<u64>()?;
         // speed = 0  => 2001 ms or one ~ every 2 seconds
@@ -455,7 +455,7 @@ impl ReplayManager  {
                 Box::new(ReplayError::new(&format!("Jump target {} not valid number.", jump_target)));
             }
         }
-        
+
         Ok(GameState::JumpedAndNeedingToDoFollowupNavigation)
     }
 
@@ -520,12 +520,12 @@ impl ReplayManager  {
                         "poll_nudge" => {
                             //println!("main loop got poll_nudge {}", pnudge_count);
                             //pnudge_count = pnudge_count + 1;
-                            game_state = self.execute_poll_step(game_state)?; 
+                            game_state = self.execute_poll_step(game_state)?;
                             tx_poll_ack.send(String::from("ack")).unwrap();
-                             
+
                         },
                         _ => {},
-                    } 
+                    }
                 }
                 Err(receive_error) => return Err(Box::new(receive_error)),
             }
@@ -584,7 +584,7 @@ fn wrap_packet_in_multi_message(pkt: ScaiiPacket) -> MultiMessage {
 }
 
 fn get_viz_index_dot_html_filepath() -> Result<String, Box<Error>> {
-    // needs to return "file:///C:/Users/Jed%20Irvine/exact/SCAII/viz/index.html" 
+    // needs to return "file:///C:/Users/Jed%20Irvine/exact/SCAII/viz/index.html"
     // i.e. based on {SCAII_ROOT}/viz/index.html
     match std::env::var("SCAII_ROOT") {
         Ok(root) => {
@@ -605,7 +605,7 @@ fn get_viz_index_dot_html_filepath() -> Result<String, Box<Error>> {
                     Err(Box::new(ReplayError::new(message.as_str())))
                 }
             }
-            
+
         },
         Err(e) => {
             let error_message = e.description().clone();
@@ -646,7 +646,7 @@ fn create_rpc_config_message() -> Result<ScaiiPacket, Box<Error>> {
         let mac_command_string = get_default_browser_command_for_mac()?;
         comm = Some(mac_command_string);
     }
-    
+
     //
     // Add arguments on windows
     //
@@ -661,7 +661,7 @@ fn create_rpc_config_message() -> Result<ScaiiPacket, Box<Error>> {
     else {
         // mac adds no arguments - its all in command (workaround to browser launching issue on mac)
     }
-    
+
     let rpc_config = scaii_core::get_rpc_config_for_viz(comm, vec);
 
     Ok(ScaiiPacket {
@@ -775,7 +775,7 @@ fn create_triangle_entity_at(x: &f64, y: &f64, orient: &f64) -> Entity {
                 color: Some(protos::Color {
                     r: 0,
                     b: 255,
-                    g: ,
+                    g: 255,
                     a: 255,
                 }),
                 rotation: *orient,
@@ -812,7 +812,7 @@ fn get_test_mode_replay_header() -> Result<ReplayHeader, Box<Error>> {
             Err(Box::new(err))
         }
     }
-    
+
 }
 
 fn create_cfg_pkt() -> ScaiiPacket {
@@ -899,7 +899,7 @@ fn get_test_mode_replay_info(step_count: u32, interval: u32) -> Result<Vec<Repla
                     return Err(Box::new(err));
                 }
             }
-            
+
         }
         else {
             let delta_2 = ReplayAction::Delta(GameAction::Step);
@@ -970,7 +970,7 @@ fn main() {
             return;
         }
     }
-    
+
     let replay_message_queue = ReplayMessageQueue {
         incoming_messages: Vec::new(),
     };
@@ -990,7 +990,7 @@ fn main() {
         test_mode: false,
     };
     match run_mode {
-        RunMode::TestUsingDataFromFileGeneratedByRecorder | 
+        RunMode::TestUsingDataFromFileGeneratedByRecorder |
         RunMode::TestUsingDataGeneratedLocally => replay_manager.test_mode = true,
         RunMode::Live =>                                     replay_manager.test_mode = false,
     }
@@ -1012,10 +1012,10 @@ fn configure_and_register_mock_rts(env: &mut Environment){
         step_count: 0,
         sent_viz_init: false,
     };
-    
+
     {
         env.router_mut().register_backend(Box::new(rts));
-    } 
+    }
 }
 
 
@@ -1129,7 +1129,7 @@ impl Module for MockRts {
                                     Box::new(ReplayError::new(&format!("Jump target {} not valid number.", jump_target)));
                                 },
                             };
-                            
+
                         },
                         _ => {}
                     };
@@ -1139,7 +1139,7 @@ impl Module for MockRts {
                 println!("MOCKRTS process_message called with unknown");
             },
         }
-        
+
         Ok(())
     }
 
@@ -1152,4 +1152,3 @@ impl Module for MockRts {
         )
     }
 }
-
