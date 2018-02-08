@@ -28,12 +28,22 @@ impl<'a, 'b> Rts<'a, 'b> {
     pub fn new() -> Self {
         use self::systems::{AttackSystem, CleanupSystem, CollisionSystem, InputSystem, MoveSystem,
                             RenderSystem, StateBuildSystem};
+        use std::sync::Arc;
+        use rayon::Configuration;
 
         let mut world = World::new();
         components::register_world_components(&mut world);
         resources::register_world_resources(&mut world);
 
+        let pool = Arc::new(
+            Configuration::new()
+                .num_threads(1)
+                .build()
+                .expect("Could not create thread pool"),
+        );
+
         let simulation_builder: Dispatcher = DispatcherBuilder::new()
+            .with_pool(pool.clone())
             .add(InputSystem::new(), "input", &[])
             .add(MoveSystem::new(), "movement", &["input"])
             .add(CollisionSystem, "collision", &["movement"])
@@ -41,6 +51,7 @@ impl<'a, 'b> Rts<'a, 'b> {
             .build();
 
         let output_builder = DispatcherBuilder::new()
+            .with_pool(pool)
             .add(RenderSystem {}, "render", &[])
             .add(CleanupSystem, "cleanup", &["render"])
             .add(StateBuildSystem::new(), "state", &["cleanup"])

@@ -9,6 +9,7 @@ extern crate prost;
 #[macro_use]
 extern crate prost_derive;
 extern crate rand;
+extern crate rayon;
 extern crate rlua;
 extern crate scaii_defs;
 extern crate serde;
