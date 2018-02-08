@@ -7,8 +7,8 @@ submodules include environment-specific wrappers that provide a nicer,
 higher-level interface to the environment in question.
 """
 
-from .state import State
-from .actions import Action
+from scaii.env.state import State
+from scaii.env.actions import Action
 
 import scaii.protos.scaii_pb2 as scaii_protos
 
