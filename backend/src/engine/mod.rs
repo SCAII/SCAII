@@ -110,6 +110,8 @@ impl<'a, 'b> Rts<'a, 'b> {
 
         *self.world.write_resource::<SkyCollisionWorld>() =
             SkyCollisionWorld::new(COLLISION_MARGIN);
+        self.world.write_resource::<Skip>().0 = false;
+        self.world.write_resource::<Skip>().1 = None;
 
         self.world.delete_all();
         // Do a fast reseed so it doesn't start looping the RNG state
