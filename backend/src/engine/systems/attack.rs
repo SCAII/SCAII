@@ -1,4 +1,4 @@
-use specs::{Entities, Fetch, ReadStorage, System, WriteStorage};
+use specs::prelude::*;
 use engine::components::{Attack, Death, Hp, UnitTypeTag};
 use engine::resources::{DeltaT, UnitTypeMap};
 
@@ -20,8 +20,6 @@ impl<'a> System<'a> for AttackSystem {
     type SystemData = AttackSystemData<'a>;
 
     fn run(&mut self, mut sys_data: Self::SystemData) {
-        use specs::Join;
-
         let delta_t = sys_data.delta_t.0;
 
         let mut dead_target = vec![];

@@ -4,7 +4,8 @@ use std::fmt;
 
 use super::Pos;
 
-use specs::{Entity, HashMapStorage, NullStorage, VecStorage};
+use specs::prelude::*;
+use specs::storage::{HashMapStorage, NullStorage};
 use specs::saveload::{Marker, SaveLoadComponent};
 
 #[derive(Copy, Clone, Default, Component, PartialEq, Serialize, Deserialize)]

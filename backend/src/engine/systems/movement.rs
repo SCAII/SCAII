@@ -1,4 +1,4 @@
-use specs::{Entities, Entity, Fetch, ReadStorage, System, WriteStorage};
+use specs::prelude::*;
 use engine::components::{Move, MoveBehavior, MoveTarget, MovedFlag, Pos, Speed};
 use engine::DeltaT;
 
@@ -31,8 +31,6 @@ impl<'a> System<'a> for MoveSystem {
     type SystemData = MoveSystemData<'a>;
 
     fn run(&mut self, mut sys_data: Self::SystemData) {
-        use specs::Join;
-
         let targets = &mut self.target_cache;
 
         for (pos, moves, speed, id) in (

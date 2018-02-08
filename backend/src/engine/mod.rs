@@ -6,7 +6,7 @@ use self::resources::*;
 
 use scaii_defs::protos::{Action, MultiMessage};
 
-use specs::{Dispatcher, World};
+use specs::prelude::*;
 
 use self::components::FactionId;
 use self::systems::lua::LuaSystem;
@@ -26,7 +26,6 @@ pub struct Rts<'a, 'b> {
 
 impl<'a, 'b> Rts<'a, 'b> {
     pub fn new() -> Self {
-        use specs::DispatcherBuilder;
         use self::systems::{AttackSystem, CleanupSystem, CollisionSystem, InputSystem, MoveSystem,
                             RenderSystem, StateBuildSystem};
 
@@ -192,7 +191,6 @@ impl<'a, 'b> Rts<'a, 'b> {
     pub fn update(&mut self) -> MultiMessage {
         use scaii_defs::protos;
         use scaii_defs::protos::ScaiiPacket;
-        use specs::RunNow;
 
         if self.world.read_resource::<Terminal>().0 {
             return Default::default();

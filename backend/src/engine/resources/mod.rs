@@ -5,7 +5,7 @@ use super::components::{AttackSensor, CollisionHandle, Color, Hp, Pos, Shape};
 
 use scaii_defs::protos::{Action, State, Viz};
 
-use specs::{Entity, World, WriteStorage};
+use specs::prelude::*;
 
 pub mod collision;
 

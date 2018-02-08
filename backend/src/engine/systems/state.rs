@@ -1,4 +1,4 @@
-use specs::{Fetch, FetchMut, ReadStorage, System};
+use specs::prelude::*;
 use engine::components::{FactionId, Hp, UnitTypeTag};
 use engine::resources::{Reward, RtsState, Skip, SkyCollisionWorld, Terminal, UnitTypeMap,
                         STATE_SCALE, STATE_SIZE};

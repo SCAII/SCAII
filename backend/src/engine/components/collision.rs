@@ -1,5 +1,5 @@
 use ncollide::world::CollisionObjectHandle;
-use specs::VecStorage;
+use specs::prelude::*;
 
 #[derive(Debug, Clone, Copy, Component, PartialEq, Eq)]
 #[component(VecStorage)]

@@ -1,4 +1,5 @@
-use specs::{Entities, FetchMut, Index, ReadStorage, System, WriteStorage};
+use specs::prelude::*;
+use specs::world::Index;
 use engine::components::{Movable, Move};
 use engine::resources::Skip;
 use engine::ActionInput;

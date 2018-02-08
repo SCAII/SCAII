@@ -1,7 +1,7 @@
 use rlua::{Lua, Table};
 use scaii_defs::protos::Error as ScaiiError;
 
-use specs::{Fetch, FetchMut, ReadStorage, System, World};
+use specs::prelude::*;
 
 use std::error::Error;
 use std::path::Path;
@@ -35,7 +35,6 @@ impl<'a> System<'a> for LuaSystem {
     type SystemData = LuaSystemData<'a>;
 
     fn run(&mut self, mut sys_data: Self::SystemData) {
-        use specs::Join;
         use self::userdata::{UserDataReadWorld, UserDataUnit, UserDataWorld};
 
         sys_data.reward.0.clear();

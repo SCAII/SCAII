@@ -1,7 +1,8 @@
 use nalgebra::Point2;
 
-use specs::{Component, Entity, FlaggedStorage, HashMapStorage, NullStorage, VecStorage, World};
+use specs::storage::{HashMapStorage, NullStorage};
 use specs::saveload::{Marker, SaveLoadComponent};
+use specs::prelude::*;
 
 use std::ops::{Deref, DerefMut};
 use std::fmt::Debug;

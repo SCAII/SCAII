@@ -1,4 +1,4 @@
-use specs::{Entity, FetchMut, ReadStorage, System, WriteStorage};
+use specs::prelude::*;
 use engine::resources::SkyCollisionWorld;
 use engine::components::{Attack, AttackSensor, CollisionHandle, FactionId, Move, MovedFlag, Pos};
 
@@ -21,7 +21,6 @@ impl<'a> System<'a> for CollisionSystem {
     type SystemData = CollisionSystemData<'a>;
 
     fn run(&mut self, mut sys_data: Self::SystemData) {
-        use specs::Join;
         use nalgebra::{Isometry2, Vector2};
         use nalgebra;
         use engine::resources::COLLISION_SCALE;

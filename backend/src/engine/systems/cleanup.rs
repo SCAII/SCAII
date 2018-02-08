@@ -1,4 +1,4 @@
-use specs::{Entities, FetchMut, ReadStorage, System, WriteStorage};
+use specs::prelude::*;
 use engine::components::{AttackSensor, CollisionHandle, Death, MovedFlag};
 use engine::resources::SkyCollisionWorld;
 
@@ -19,7 +19,6 @@ impl<'a> System<'a> for CleanupSystem {
     type SystemData = CleanupSystemData<'a>;
 
     fn run(&mut self, mut sys_data: Self::SystemData) {
-        use specs::Join;
         sys_data.moved.clear();
 
         for (id, col_handle, atk_radius, _) in (

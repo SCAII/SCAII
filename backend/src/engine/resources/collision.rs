@@ -1,6 +1,6 @@
 use nalgebra::{Isometry2, Point2};
 use ncollide::world::CollisionWorld;
-use specs::Entity;
+use specs::prelude::*;
 
 #[derive(Debug)]
 pub struct ColliderData {

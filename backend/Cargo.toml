@@ -16,7 +16,7 @@ rand = { version="0.4", git = 'https://github.com/LinearZoetrope/rand', branch="
 bincode = "0.9"
 # we need saveload. Fix this when specs hits 0.11
 specs = { version="0.10", features=["serde"], git="https://github.com/slide-rs/specs"}
-specs-derive = "0.1"
+specs-derive = { git="https://github.com/slide-rs/specs" }
 shred = "0.5"
 shred-derive = "0.3"
 

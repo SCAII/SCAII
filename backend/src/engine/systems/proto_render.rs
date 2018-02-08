@@ -1,4 +1,4 @@
-use specs::{Entities, Fetch, FetchMut, Join, ReadStorage, System};
+use specs::prelude::*;
 use engine::components::{Color, Death, MovedFlag, Pos, Shape};
 use engine::{NeedsKeyInfo, Render};
 use engine::resources::Skip;

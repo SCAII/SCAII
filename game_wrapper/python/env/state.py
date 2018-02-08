@@ -21,13 +21,16 @@ class SkyState(State):
 
         # Normalize HP
         self.state[:, :, 0] = state[:, :, 1] / 500.0
+        self.hps = np.unique(state[:, :, 0])
 
         unit_ids = state[:, :, 2].astype(np.int)
+        self.id_types = [0, 1, 2, 3]
 
         self.state[:, :, 1:4] = np.equal.outer(unit_ids, [0, 1, 2, 3]).astype(np.float)[
             :, :, 1:]
 
         faction_ids = state[:, :, 3].astype(np.int)
+        self.factions = np.unique(faction_ids)
         self.state[:, :, 4:] = np.equal.outer(
             faction_ids, np.unique(faction_ids)).astype(np.float)[:, :, 1:]
 
