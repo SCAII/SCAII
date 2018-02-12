@@ -102,10 +102,5 @@ venv/
 # mypy
 .mypy_cache/
 
-
-#### Rust stuff
-# Since this is a workspace we want to ignore the master Cargo.lock
-Cargo.lock 
-
 #### General IDE stuff
 **/.vscode
