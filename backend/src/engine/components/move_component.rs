@@ -6,7 +6,10 @@ use super::Pos;
 
 use specs::prelude::*;
 use specs::storage::{HashMapStorage, NullStorage};
-use specs::saveload::{Marker, SaveLoadComponent};
+use specs::saveload::SaveLoadComponent;
+use specs::error::NoError;
+
+use serde::{Deserialize, Serialize};
 
 #[derive(Copy, Clone, Default, Component, PartialEq, Serialize, Deserialize)]
 #[storage(VecStorage)]
@@ -56,39 +59,41 @@ impl Move {
 }
 
 #[derive(Clone, PartialEq, Serialize, Deserialize)]
-pub enum MarkedMoveTarget<M: Marker> {
+pub enum MarkedMoveTarget<M> {
     Ground(Pos),
-    Unit(#[serde(bound = "M: Marker")] M),
+    Unit(M),
 }
 
 #[derive(Clone, PartialEq, Serialize, Deserialize)]
-pub struct MoveData<M: Marker> {
+pub struct MoveData<M> {
     pub behavior: MoveBehavior,
-    #[serde(bound = "M: Marker")]
     pub target: MarkedMoveTarget<M>,
 }
 
-#[derive(Copy, Clone, Eq, PartialEq, Debug)]
-pub enum NoTargetError<M: Marker> {
+#[derive(Debug)]
+pub enum NoTargetError<M: Debug> {
     Entity(Entity),
     Marker(M),
 }
 
-impl<M: Marker + Debug> Display for NoTargetError<M> {
+impl<M: Debug> Display for NoTargetError<M> {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         write!(formatter, "Target not found: {:?}", self)
     }
 }
 
-impl<M: Marker + Debug> Error for NoTargetError<M> {
+impl<M: Debug> Error for NoTargetError<M> {
     fn description(&self) -> &str {
         "Could not find target when (de)serializing"
     }
 }
 
-impl<M: Marker + Debug> SaveLoadComponent<M> for Move {
+impl<M: Debug + Serialize> SaveLoadComponent<M> for Move
+where
+    for<'de> M: Deserialize<'de>,
+{
     type Data = MoveData<M>;
-    type Error = NoTargetError<M>;
+    type Error = NoError;
 
     fn save<F>(&self, mut ids: F) -> Result<MoveData<M>, Self::Error>
     where
@@ -98,9 +103,7 @@ impl<M: Marker + Debug> SaveLoadComponent<M> for Move {
             behavior: self.behavior,
             target: match self.target {
                 MoveTarget::Ground(pos) => MarkedMoveTarget::Ground(pos),
-                MoveTarget::Unit(entity) => {
-                    MarkedMoveTarget::Unit(ids(entity).ok_or_else(|| NoTargetError::Entity(entity))?)
-                }
+                MoveTarget::Unit(entity) => MarkedMoveTarget::Unit(ids(entity).unwrap()),
             },
         })
     }
@@ -113,9 +116,7 @@ impl<M: Marker + Debug> SaveLoadComponent<M> for Move {
             behavior: data.behavior,
             target: match data.target {
                 MarkedMoveTarget::Ground(pos) => MoveTarget::Ground(pos),
-                MarkedMoveTarget::Unit(mark) => {
-                    MoveTarget::Unit(ids(mark).ok_or_else(|| NoTargetError::Marker(mark))?)
-                }
+                MarkedMoveTarget::Unit(mark) => MoveTarget::Unit(ids(mark).unwrap()),
             },
         })
     }

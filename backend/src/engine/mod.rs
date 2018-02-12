@@ -10,18 +10,19 @@ use specs::prelude::*;
 
 use self::components::FactionId;
 use self::systems::lua::LuaSystem;
-
-use std::path::PathBuf;
+use self::systems::serde::{DeserializeSystem, SerializeSystem};
 
 pub struct Rts<'a, 'b> {
     world: World,
-    pub lua_path: Option<PathBuf>,
     pub initialized: bool,
     pub render: bool,
 
     sim_systems: Dispatcher<'a, 'b>,
     lua_sys: LuaSystem,
     out_systems: Dispatcher<'a, 'b>,
+
+    ser_system: SerializeSystem,
+    de_system: DeserializeSystem,
 }
 
 impl<'a, 'b> Rts<'a, 'b> {
@@ -62,11 +63,12 @@ impl<'a, 'b> Rts<'a, 'b> {
         Rts {
             world,
             lua_sys,
-            lua_path: None,
             initialized: false,
             render: false,
             sim_systems: simulation_builder,
             out_systems: output_builder,
+            ser_system: SerializeSystem,
+            de_system: DeserializeSystem,
         }
     }
 
@@ -82,12 +84,30 @@ impl<'a, 'b> Rts<'a, 'b> {
         util::diverge(rng);
     }
 
+    pub fn set_lua_path(&mut self, path: &str) {
+        self.world.write_resource::<LuaPath>().0 =
+            Some(format!(".scaii/backends/sky-rts/maps/{}.lua", path));
+    }
+
     fn init(&mut self) {
+        use engine::resources::LuaPath;
+        use std::env;
+        use std::path::PathBuf;
+
+        let lua_path = self.world
+            .read_resource::<LuaPath>()
+            .0
+            .as_ref()
+            .and_then(|v| {
+                Some(PathBuf::from(format!(
+                    "{}/{}",
+                    env::var("HOME").unwrap(),
+                    &v
+                )))
+            });
+
         self.lua_sys
-            .init(
-                &mut self.world,
-                self.lua_path.as_ref().expect("No Lua file loaded"),
-            )
+            .init(&mut self.world, lua_path.expect("No Lua file loaded"))
             .expect("Could not load Lua file");
 
         self.lua_sys
@@ -258,6 +278,26 @@ impl<'a, 'b> Rts<'a, 'b> {
     pub fn action_input(&mut self, action: Action) {
         self.world.write_resource::<ActionInput>().0 = Some(action);
     }
+
+    pub fn serialize(&mut self) -> Vec<u8> {
+        use engine::resources::SerializeBytes;
+
+        self.ser_system.run_now(&self.world.res);
+
+        self.world.read_resource::<SerializeBytes>().0.clone()
+    }
+
+    pub fn deserialize(&mut self, buf: Vec<u8>) {
+        self.world.write_resource::<SerializeBytes>().0 = buf;
+
+        self.de_system.run_now(&self.world.res);
+
+        self.init();
+
+        self.redo_collision();
+    }
+
+    fn redo_collision(&mut self) {}
 }
 
 #[cfg(test)]

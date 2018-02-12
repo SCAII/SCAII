@@ -60,6 +60,8 @@ pub(super) fn register_world_resources(world: &mut World) {
     }));
     world.add_resource(Reward::default());
     world.add_resource(Skip(false, None));
+    world.add_resource(SerializeBytes::default());
+    world.add_resource(LuaPath(None));
 }
 
 #[derive(Default, Debug, Clone, PartialEq)]
@@ -282,3 +284,9 @@ pub struct UnitTypeMap {
     pub typ_ids: HashMap<String, usize>,
     pub tag_map: HashMap<String, UnitType>,
 }
+
+#[derive(Clone, Debug, PartialEq, Eq, Default)]
+pub struct SerializeBytes(pub Vec<u8>);
+
+#[derive(Clone, PartialEq, Eq, Serialize, Deserialize, Debug)]
+pub struct LuaPath(pub Option<String>);

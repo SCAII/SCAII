@@ -13,7 +13,8 @@ serde = "1"
 serde_derive = "1"
 # My rand patch, change this when it gets merged into rand
 rand = { version="0.4", git = 'https://github.com/LinearZoetrope/rand', branch="serde", features=["serde-1"] }
-bincode = "0.9"
+# replace when bincode hits 1.0
+bincode = {version="0.9"}
 # we need saveload. Fix this when specs hits 0.11
 specs = { version="0.10", features=["serde"], git="https://github.com/slide-rs/specs"}
 specs-derive = { git="https://github.com/slide-rs/specs" }

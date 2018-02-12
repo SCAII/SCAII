@@ -1,8 +1,9 @@
 use nalgebra::Point2;
 
 use specs::storage::{HashMapStorage, NullStorage};
-use specs::saveload::{Marker, SaveLoadComponent};
+use specs::saveload::SaveLoadComponent;
 use specs::prelude::*;
+use specs::error::NoError;
 
 use std::ops::{Deref, DerefMut};
 use std::fmt::Debug;
@@ -12,6 +13,8 @@ use scaii_defs::protos::Shape as ScaiiShape;
 use scaii_defs::protos::Rect as ScaiiRect;
 use scaii_defs::protos::Triangle as ScaiiTriangle;
 use scaii_defs::protos::Color as ScaiiColor;
+
+use serde::{Deserialize, Serialize};
 
 // `move` is a reserved keyword, so we need to
 // extend the name a little. Other submods should probably
@@ -176,20 +179,20 @@ pub struct Attack {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct AttackData<M: Marker + Debug>(#[serde(bound = "M: Marker")] pub M, pub f64);
+pub struct AttackData<M: Debug>(pub M, pub f64);
 
-impl<M: Marker + Debug> SaveLoadComponent<M> for Attack {
+impl<M: Debug + Serialize> SaveLoadComponent<M> for Attack
+where
+    for<'de> M: Deserialize<'de>,
+{
     type Data = AttackData<M>;
-    type Error = NoTargetError<M>;
+    type Error = NoError;
 
     fn save<F>(&self, mut ids: F) -> Result<AttackData<M>, Self::Error>
     where
         F: FnMut(Entity) -> Option<M>,
     {
-        Ok(AttackData(
-            ids(self.target).ok_or_else(|| NoTargetError::Entity(self.target))?,
-            self.time_since_last,
-        ))
+        Ok(AttackData(ids(self.target).unwrap(), self.time_since_last))
     }
 
     fn load<F>(data: AttackData<M>, mut ids: F) -> Result<Self, Self::Error>
@@ -197,7 +200,7 @@ impl<M: Marker + Debug> SaveLoadComponent<M> for Attack {
         F: FnMut(M) -> Option<Entity>,
     {
         Ok(Attack {
-            target: ids(data.0).ok_or_else(|| NoTargetError::Marker(data.0))?,
+            target: ids(data.0).unwrap(),
             time_since_last: data.1,
         })
     }

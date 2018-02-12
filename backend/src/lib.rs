@@ -30,7 +30,8 @@ pub mod error;
 use engine::Rts;
 
 use scaii_defs::{Backend, BackendSupported, Module, SerializationStyle};
-use scaii_defs::protos::{BackendCfg, MultiMessage, ScaiiPacket};
+use scaii_defs::protos::{BackendCfg, Endpoint, MultiMessage, ScaiiPacket, SerializationRequest};
+use scaii_defs::protos::SerializationResponse as SerResp;
 
 use std::error::Error;
 
@@ -51,9 +52,6 @@ impl<'a, 'b> Context<'a, 'b> {
     fn configure(&mut self, cfg: &BackendCfg) -> Result<(), Box<Error>> {
         use protos::{Config, Scenario};
         use prost::Message;
-        use std::env;
-
-        use std::path::PathBuf;
 
         if let Some(ref bytes) = cfg.cfg_msg {
             let cfg = Config::decode(&*bytes)?;
@@ -62,11 +60,7 @@ impl<'a, 'b> Context<'a, 'b> {
 
             match cfg.scenario {
                 Some(Scenario { ref path }) => {
-                    self.rts.lua_path = Some(PathBuf::from(format!(
-                        "{}/.scaii/backends/sky-rts/maps/{}.lua",
-                        env::var("HOME")?,
-                        path
-                    )));
+                    self.rts.set_lua_path(path);
 
                     Ok(())
                 }
@@ -76,6 +70,37 @@ impl<'a, 'b> Context<'a, 'b> {
             Ok(())
         }
     }
+
+    fn handle_ser(&mut self, req: &SerializationRequest, src: &Endpoint) -> Result<(), Box<Error>> {
+        use scaii_defs::protos::SerializationFormat as Format;
+        use scaii_defs::protos::scaii_packet::SpecificMsg;
+        use scaii_defs::protos::endpoint::Endpoint as End;
+        use scaii_defs::protos::BackendEndpoint;
+
+        let serialized = match req.format() {
+            Format::Diverging => self.serialize_diverging(None)?,
+            Format::Nondiverging => self.serialize(None)?,
+        };
+
+        let resp = SerResp {
+            serialized,
+            format: req.format() as i32,
+        };
+
+        let packet = ScaiiPacket {
+            dest: src.clone(),
+            src: Endpoint {
+                endpoint: Some(End::Backend(BackendEndpoint {})),
+            },
+            specific_msg: Some(SpecificMsg::SerResp(resp)),
+        };
+
+        self.awaiting_msgs.push(MultiMessage {
+            packets: vec![packet],
+        });
+
+        Ok(())
+    }
 }
 
 impl<'a, 'b> Module for Context<'a, 'b> {
@@ -84,6 +109,8 @@ impl<'a, 'b> Module for Context<'a, 'b> {
         use scaii_defs::protos::Cfg;
         use scaii_defs::protos::cfg::WhichModule;
         use util;
+
+        let src = &packet.src;
 
         match packet.specific_msg {
             Some(SpecificMsg::Config(Cfg {
@@ -111,6 +138,7 @@ impl<'a, 'b> Module for Context<'a, 'b> {
                 self.awaiting_msgs.push(mm);
                 Ok(())
             }
+            Some(SpecificMsg::SerReq(ref req)) => self.handle_ser(req, src),
             _ => Err(From::from(format!(
                 "Invalid payload received in backend: {:?}",
                 packet
@@ -130,20 +158,25 @@ impl<'a, 'b> Backend for Context<'a, 'b> {
     }
 
     fn serialize(&mut self, _into: Option<Vec<u8>>) -> Result<Vec<u8>, Box<Error>> {
-        unimplemented!()
+        Ok(self.rts.serialize())
     }
 
-    fn deserialize(&mut self, _buf: &[u8]) -> Result<(), Box<Error>> {
-        unimplemented!()
+    fn deserialize(&mut self, buf: &[u8]) -> Result<(), Box<Error>> {
+        self.rts.deserialize(buf.to_vec());
+
+        Ok(())
     }
 
-    fn serialize_diverging(&mut self, _into: Option<Vec<u8>>) -> Result<Vec<u8>, Box<Error>> {
-        unimplemented!()
-    }
-
-    fn deserialize_diverging(&mut self, _buf: &[u8]) -> Result<(), Box<Error>> {
+    fn serialize_diverging(&mut self, into: Option<Vec<u8>>) -> Result<Vec<u8>, Box<Error>> {
+        let out = self.serialize(into);
         self.diverge();
-        unimplemented!()
+        out
+    }
+
+    fn deserialize_diverging(&mut self, buf: &[u8]) -> Result<(), Box<Error>> {
+        let out = self.deserialize(buf);
+        self.diverge();
+        out
     }
 }
 
