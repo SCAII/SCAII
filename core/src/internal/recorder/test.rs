@@ -2,9 +2,11 @@ use super::*;
 use super::super::super::Environment;
 use scaii_defs::protos;
 use scaii_defs::{Agent, Backend, BackendSupported, Module, SerializationStyle};
-use scaii_defs::protos::{scaii_packet, AgentCfg, AgentEndpoint, cfg, Cfg, GameComplete,
+use scaii_defs::protos::{scaii_packet, AgentCfg, AgentEndpoint, BackendCfg, cfg, Cfg, 
+                         CoreEndpoint, GameComplete, ReplayEndpoint, BackendInit, 
                          MultiMessage, ScaiiPacket, BackendEndpoint, RecorderConfig,
-                         RecorderEndpoint, SerializationResponse};
+                         RecorderEndpoint, SerializationResponse, RustFfiConfig};
+use scaii_defs::protos::cfg::WhichModule;
 use scaii_defs::protos::endpoint::Endpoint;
 use scaii_defs::protos::scaii_packet::SpecificMsg;
 use std::error::Error;
@@ -43,10 +45,9 @@ impl Agent for RecorderTesterMessageQueue {}
 
 
 impl RecorderTester {
-    fn run(&mut self, env: Environment) -> Result<(), Box<Error>> {
-        self.env = env;
+    fn run(&mut self) -> Result<(), Box<Error>> {
+        //self.env = env;
         let step_count: u32 = 2;
-
         self.configure_and_register_mock_rts(step_count);
         let mut recorder_manager = RecorderManager::new();
         let _result = recorder_manager.init()?;
@@ -58,6 +59,7 @@ impl RecorderTester {
             );
             debug_assert!(self.env.router().recorder().is_some());
         }
+        
         let cfg_pkt = self.create_cfg_pkt();
         let _result = self.send_packet(cfg_pkt)?;
         let total: u32 = step_count * 4;
@@ -124,17 +126,24 @@ impl RecorderTester {
 
     fn create_cfg_pkt(&mut self) -> ScaiiPacket {
         let mut vec: Vec<ScaiiPacket> = Vec::new();
+        let rust_ffi_conf_pkt = create_test_rust_ffi_config_message();
+        vec.push(rust_ffi_conf_pkt);
+
         let cfg = Cfg {
-            which_module: Some(cfg::WhichModule::AgentCfg(
-                AgentCfg { cfg_msg: Some(Vec::new()) },
+            which_module: Some(cfg::WhichModule::BackendCfg(
+                BackendCfg { 
+                    cfg_msg: Some(Vec::new()) ,
+                    is_replay_mode: false,
+                    },
             )),
         };
         let cfg_packet = ScaiiPacket {
-            src: protos::Endpoint { endpoint: Some(Endpoint::Agent(AgentEndpoint {})) },
+            // have to make src ReplayEndpoint because no Agent is registered during test
+            src: protos::Endpoint { endpoint: Some(Endpoint::Replay(ReplayEndpoint {})) },
             dest: protos::Endpoint { endpoint: Some(Endpoint::Backend(BackendEndpoint {})) },
             specific_msg: Some(scaii_packet::SpecificMsg::Config(cfg)),
         };
-        vec.push(cfg_packet);
+        //vec.push(cfg_packet);
         ScaiiPacket {
             src: protos::Endpoint { endpoint: Some(Endpoint::Agent(AgentEndpoint {})) },
             dest: protos::Endpoint { endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})) },
@@ -163,7 +172,6 @@ impl RecorderTester {
 #[test]
 fn test_recorder() {
     use super::super::super::Environment;
-    let environment_unused: Environment = Environment::new();
     let recorder_tester_message_queue =
         RecorderTesterMessageQueue { incoming_messages: Vec::new() };
     let mut environment: Environment = Environment::new();
@@ -178,9 +186,9 @@ fn test_recorder() {
     }
     let mut recorder_tester = RecorderTester {
         incoming_message_queue: rc_recorder_tester_message_queue,
-        env: environment_unused,
+        env: environment,
     };
-    let result = recorder_tester.run(environment);
+    let result = recorder_tester.run();
     match result {
         Ok(()) => {}
         Err(e) => {
@@ -218,7 +226,7 @@ fn spec_msg_is_recorder_config(pkt: &ScaiiPacket) -> bool {
     false
 }
 
-fn cfg_payload_is_agentcfg(pkt: &ScaiiPacket) -> bool {
+fn cfg_payload_is_backendcfg(pkt: &ScaiiPacket) -> bool {
     match pkt.specific_msg {
         Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig { pkts: ref pkt_vec })) => {
             if pkt_vec.len() != 1 {
@@ -226,7 +234,7 @@ fn cfg_payload_is_agentcfg(pkt: &ScaiiPacket) -> bool {
             }
             let contained_pkt = &pkt_vec[0];
             match contained_pkt.specific_msg {
-                Some(scaii_packet::SpecificMsg::Config(Cfg { which_module: Some(cfg::WhichModule::AgentCfg(AgentCfg { cfg_msg: Some(_),})),})) => true,
+                Some(scaii_packet::SpecificMsg::Config(Cfg { which_module: Some(cfg::WhichModule::BackendCfg(BackendCfg { cfg_msg: Some(_),is_replay_mode:false})),})) => true,
                 _ => false,
             }
         }
@@ -343,11 +351,6 @@ fn verify_persisted_file(path: &Path) -> Result<(), Box<Error>> {
                         "Expected specific message to be recorder config {:?}",
                         &pkt
                     );
-                    assert!(
-                        cfg_payload_is_agentcfg(&pkt),
-                        "Expected AgentCfg {:?}",
-                        &pkt
-                    );
                 }
                 _ => {
                     assert!(
@@ -404,12 +407,6 @@ fn verify_persisted_file(path: &Path) -> Result<(), Box<Error>> {
     //action deserialized as Delta(Step)
     verify_game_action_step(&replay_action_6);
     replay_vec.push(replay_action_6.unwrap());
-
-    //while let Ok(action) = deserialize_from::<BufReader<File>,ReplayAction,Infinite>(&mut reader, Infinite) {
-    //    println!("action deserialized as {:?}", action);
-    //    replay_vec.push(action);
-    //}
-
 
     assert!(
         replay_vec.len() == 6,
@@ -578,5 +575,31 @@ impl MockRts {
                 is_decision_point: true,
             })),
         }
+    }
+}
+
+
+fn get_rust_ffi_config_for_path(path: &str) -> RustFfiConfig {
+    RustFfiConfig {
+        plugin_path: path.to_string(),
+        init_as: protos::InitAs { init_as: Some(protos::init_as::InitAs::Backend(BackendInit {})) },
+    }
+}
+
+fn create_test_rust_ffi_config_message() -> ScaiiPacket {
+    use scaii_defs::protos::plugin_type::PluginType;
+    let backend_path = "C:\\some\\test\\backend.dll";
+    let rust_ffi_config = get_rust_ffi_config_for_path(backend_path);
+    ScaiiPacket {
+        // have to make src ReplayEndpoint because no Agent is registered during test
+        src: protos::Endpoint { endpoint: Some(Endpoint::Replay(ReplayEndpoint {})) },
+        dest: protos::Endpoint { endpoint: Some(Endpoint::Core(CoreEndpoint {})) },
+        specific_msg: Some(SpecificMsg::Config(Cfg {
+            which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
+                plugin_type: protos::PluginType {
+                    plugin_type: Some(PluginType::RustPlugin(rust_ffi_config)),
+                },
+            })),
+        })),
     }
 }

@@ -9,8 +9,8 @@ extern crate serde;
 extern crate serde_derive;
 
 use prost::Message;
-use protos::{scaii_packet, AgentEndpoint, CoreEndpoint, BackendInit, MultiMessage, ScaiiPacket,
-             BackendEndpoint, ModuleEndpoint, ReplayEndpoint, RecorderConfig, ReplayStep,
+use protos::{scaii_packet, Cfg, CoreEndpoint, BackendInit, MultiMessage, ScaiiPacket,
+             BackendEndpoint, ModuleEndpoint, plugin_type, PluginType, ReplayEndpoint, RecorderConfig, ReplayStep,
              ReplaySessionConfig, RustFfiConfig};
 use protos::cfg::WhichModule;
 use protos::user_command::UserCommandType;
@@ -133,6 +133,7 @@ struct ReplayManager {
     replay_data: Vec<ReplayAction>,
     step_position: u64,
     test_mode: bool,
+    args: Args,
 }
 
 impl ReplayManager {
@@ -162,6 +163,76 @@ impl ReplayManager {
         }
     }
 
+    fn adjust_cfg_packets(&mut self, cfg_pkts : Vec<ScaiiPacket>) -> Result<Vec<ScaiiPacket>, Box<Error>> {
+        let mut temp_vec : Vec<ScaiiPacket> = Vec::new();
+        let mut result_vec : Vec<ScaiiPacket> = Vec::new();
+        let mut rust_ffi_config_pkt : Option<ScaiiPacket> = None;
+        let mut backend_config_pkt : Option<ScaiiPacket> = None;
+        for pkt in cfg_pkts {
+            match pkt.specific_msg {
+                Some(SpecificMsg::Config(Cfg {
+                    which_module: Some(WhichModule::BackendCfg(protos::BackendCfg {..}))})) => {
+                    backend_config_pkt = Some(pkt);
+                },
+                Some(SpecificMsg::Config(Cfg {
+                    which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
+                        plugin_type: PluginType {
+                            plugin_type: Some(plugin_type::PluginType::RustPlugin(RustFfiConfig {..}))
+                        }}))})) => {
+                    rust_ffi_config_pkt = Some(pkt);
+                },
+                _ => {
+                    temp_vec.push(pkt);
+                }
+            }
+        }
+        if self.args.flag_backend {
+            // override the specified backend
+            if rust_ffi_config_pkt != None {
+                println!("WARNING - Overriding which backend to load...");
+                let plugin_path =  get_plugin_path_from_rust_ffi_config(&rust_ffi_config_pkt.unwrap())?;
+                println!("...was        : {}",plugin_path);
+            }
+            rust_ffi_config_pkt = Some(create_rust_ffi_config_message(&self.args.arg_path_to_backend)?);
+            println!("...backend is now: {}", self.args.arg_path_to_backend);
+        }
+        //if no backend instance specified yet, use the default 
+        if rust_ffi_config_pkt == None {
+            let default_backend_path = get_default_backend()?;
+            rust_ffi_config_pkt = Some(create_rust_ffi_config_message(&default_backend_path)?);
+            println!("...using default backend: {}", default_backend_path);
+        }
+        
+        if backend_config_pkt == None {
+            println!("...generating default backend config...");
+            backend_config_pkt = Some(create_default_replay_backend_config());
+        }
+        else {
+            // need to change replay_mode to true
+            println!("...setting replay_mode to true on backend config...");
+            set_replay_mode_on_backend_config(&mut backend_config_pkt);
+            
+        }
+        println!("backend config packet final form is: {:?}", backend_config_pkt);
+        println!("rust_ffi_config packet final form is: {:?}", rust_ffi_config_pkt);
+        result_vec.push(rust_ffi_config_pkt.unwrap());
+        result_vec.push(backend_config_pkt.unwrap());
+        for pkt in temp_vec {
+            result_vec.push(pkt);
+        }
+        Ok(result_vec)
+    }
+
+    fn emit_cfg_packets(&mut self, cfg_pkts : Vec<ScaiiPacket>) -> Result<(), Box<Error>> {
+        for pkt in &cfg_pkts {
+            let pkt_to_send = pkt.clone();
+            let mm = wrap_packet_in_multi_message(pkt_to_send);
+            self.env.route_messages(&mm);
+            self.env.update();
+        }
+        Ok(())
+    }
+
     fn configure_as_per_header(&mut self, header: ReplayAction) -> Result<(), Box<Error>> {
         match header {
             ReplayAction::Header(ReplayHeader {
@@ -172,16 +243,8 @@ impl ReplayManager {
                     Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig {
                                                                        pkts: pkt_vec,
                                                                    })) => {
-                        for pkt in &pkt_vec {
-                            let pkt_to_send = pkt.clone();
-                            let mm = wrap_packet_in_multi_message(pkt_to_send);
-                            self.env.route_messages(&mm);
-                            self.env.update();
-                            println!(
-                                "==========================================sent config============"
-                            );
-                        }
-                        Ok(())
+                        let adjusted_cfg_pkts = self.adjust_cfg_packets(pkt_vec)?;
+                        self.emit_cfg_packets(adjusted_cfg_pkts)
                     }
                     _ => Err(Box::new(ReplayError::new(
                         &format!(
@@ -335,7 +398,7 @@ impl ReplayManager {
         let replay_action: ReplayAction = self.replay_data[self.step_position as usize].clone();
         match replay_action {
             ReplayAction::Delta(action) => {
-                println!("REPLAY found delta...");
+                //println!("REPLAY found delta...");
                 let action_pkt: ScaiiPacket = self.convert_action_info_to_action_pkt(action)?;
                 let mut pkts: Vec<ScaiiPacket> = Vec::new();
                 pkts.push(action_pkt);
@@ -344,7 +407,7 @@ impl ReplayManager {
                 Ok(scaii_pkts)
             }
             ReplayAction::Keyframe(serialization_info, action) => {
-                println!("REPLAY found keyframe...");
+                //println!("REPLAY found keyframe...");
                 let ser_proto_ser_resp: SerializedProtosSerializationResponse = serialization_info
                     .data;
                 let ser_response_decode_result =
@@ -742,9 +805,9 @@ fn create_rpc_config_message() -> Result<ScaiiPacket, Box<Error>> {
     let rpc_config = scaii_core::get_rpc_config_for_viz(comm, vec);
 
     Ok(ScaiiPacket {
-        src: protos::Endpoint { endpoint: Some(Endpoint::Agent(AgentEndpoint {})) },
+        src: protos::Endpoint { endpoint: Some(Endpoint::Replay(ReplayEndpoint {})) },
         dest: protos::Endpoint { endpoint: Some(Endpoint::Core(CoreEndpoint {})) },
-        specific_msg: Some(SpecificMsg::Config(protos::Cfg {
+        specific_msg: Some(SpecificMsg::Config(Cfg {
             which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
                 plugin_type: protos::PluginType {
                     plugin_type: Some(protos::plugin_type::PluginType::Rpc(rpc_config)),
@@ -756,7 +819,7 @@ fn create_rpc_config_message() -> Result<ScaiiPacket, Box<Error>> {
 
 fn load_replay_file(path: &Path) -> Result<Vec<ReplayAction>, Box<Error>> {
     //use super::ReplayAction;
-    println!("loading replay file...");
+    println!("loading replay file {:?}", path);
     let replay_file = File::open(path).expect("file not found");
     let mut replay_vec: Vec<ReplayAction> = Vec::new();
     let mut reader = BufReader::new(replay_file);
@@ -766,7 +829,6 @@ fn load_replay_file(path: &Path) -> Result<Vec<ReplayAction>, Box<Error>> {
         Infinite,
     )
     {
-        println!("action deserialized as {:?}", action);
         replay_vec.push(action);
     }
     Ok(replay_vec)
@@ -793,17 +855,19 @@ fn main() {
     let args: Args = Docopt::new(USAGE)
         .and_then(|d| d.deserialize())
         .unwrap_or_else(|e| e.exit());
-
     if args.cmd_webserver {
         launch_webserver()
     } else if args.cmd_test {
+        println!("Running Replay in test mode...");
         if args.flag_data_from_recorded_file {
+            println!("..loading replay data from default path...");
             let replay_info: Vec<ReplayAction> =
                 load_replay_info_from_default_replay_path().expect(
                     "Error - problem generating test replay_info",
                 );
             run_replay(RunMode::Test, replay_info, args);
         } else {
+            println!("...loading hardcoded replay data...");
             // must be flag_data_hardcoded
             let step_count: u32 = 300;
             let interval: u32 = 5;
@@ -813,20 +877,27 @@ fn main() {
             run_replay(RunMode::Test, replay_info, args);
         }
     } else if args.cmd_file {
+        println!("Running replay in live mode...");
         if args.flag_filename {
+            println!("...replay filepath overridden as {}", &args.arg_path_to_replay_file);
             let replay_info: Vec<ReplayAction> = {
                 let path = Path::new(&args.arg_path_to_replay_file);
                 if !path.exists() {
-                    panic!(
-                        "Replay file specified does not exist {}",
-                        args.arg_path_to_replay_file
-                    );
-
+                    panic!("ERROR - specified replay path does not exist {:?}", path);
                 }
+                //println!("calling load_replay_info_from_replay_file_path...");
                 load_replay_info_from_replay_file_path(path.to_path_buf())
                     .expect("Error - problem generating test replay_info")
             };
-
+            run_replay(RunMode::Live, replay_info, args);
+        }
+        else {
+            println!("...replay file will be loaded from default location...");
+            let replay_info: Vec<ReplayAction> = {
+                //println!("calling load_replay_info_from_default_replay_path...");
+                load_replay_info_from_default_replay_path()
+                .expect("Error - problem generating replay_info from default file")
+            };
             run_replay(RunMode::Live, replay_info, args);
         }
     } else {
@@ -845,41 +916,6 @@ fn run_replay(run_mode: RunMode, replay_info: Vec<ReplayAction>, args: Args) {
         }
         RunMode::Live => {
             mode_is_test = false;
-            if args.flag_backend {
-                let path = args.arg_path_to_backend;
-                let register_result = register_real_backend(&mut environment, &path);
-                match register_result {
-                    Ok(()) => {}
-                    Err(error) => {
-                        println!(
-                            "ERROR - could not register backend: {} ... {:?}",
-                            path,
-                            error
-                        );
-                    }
-                }
-            } else {
-                // try default rts backend
-                let default_backend_result = get_default_backend();
-                match default_backend_result {
-                    Ok(ref path) => {
-                        let register_result = register_real_backend(&mut environment, &path);
-                        match register_result {
-                            Ok(()) => {}
-                            Err(error) => {
-                                println!("ERROR - could not register default backend: {:?}", error);
-                            }
-                        }
-                    }
-                    Err(err) => {
-                        panic!(
-                            "ERROR - could not locate default backend: {}  Aborting.",
-                            err
-                        );
-                    }
-                }
-            }
-
         }
     }
 
@@ -900,6 +936,7 @@ fn run_replay(run_mode: RunMode, replay_info: Vec<ReplayAction>, args: Args) {
         replay_data: replay_info,
         step_position: 0,
         test_mode: mode_is_test,
+        args: args,
     };
     let result = replay_manager.start();
     match result {
@@ -927,9 +964,24 @@ fn configure_and_register_mock_rts(env: &mut Environment) {
 
 #[cfg(target_os = "macos")]
 fn get_default_backend() -> Result<String, Box<Error>> {
-    Err(Box::new(ReplayError::new(
-        &format!("macos replay not yet implemented"),
-    )))
+     //$HOME/.scaii/backends/bin/sky_rts.dll
+    use std::env;
+
+    let mut path_option = env::home_dir();
+    match path_option {
+        None => {
+            Err(Box::new(ReplayError::new(&format!(
+                "ERROR - Could not find default backend because could not determine home directory."
+            ))))
+        }
+        Some(ref mut path_buf) => {
+            path_buf.push(".scaii".to_string());
+            path_buf.push("backends".to_string());
+            path_buf.push("bin".to_string());
+            path_buf.push("sky-rts".to_string());
+            Ok(path_buf.to_str().unwrap().to_string())
+        }
+    }
 }
 #[cfg(target_os = "windows")]
 fn get_default_backend() -> Result<String, Box<Error>> {
@@ -947,7 +999,7 @@ fn get_default_backend() -> Result<String, Box<Error>> {
             path_buf.push(".scaii".to_string());
             path_buf.push("backends".to_string());
             path_buf.push("bin".to_string());
-            path_buf.push("sky_rts.dll".to_string());
+            path_buf.push("sky-rts.dll".to_string());
             Ok(path_buf.to_str().unwrap().to_string())
         }
     }
@@ -960,20 +1012,6 @@ fn get_default_backend() -> Result<String, Box<Error>> {
     )))
 }
 
-fn register_real_backend(env: &mut Environment, path_string: &str) -> Result<(), Box<Error>> {
-    let path = Path::new(path_string);
-    if !path.exists() {
-        return Err(Box::new(ReplayError::new(
-            &format!("specified backend does not exist {}", path_string),
-        )));
-    }
-    let rust_ffi_config_pkt = create_rust_ffi_config_message(path_string)?;
-    let mm = wrap_packet_in_multi_message(rust_ffi_config_pkt);
-    env.route_messages(&mm);
-    env.update();
-    Ok(())
-}
-
 fn get_rust_ffi_config_for_path(path: &str) -> RustFfiConfig {
     RustFfiConfig {
         plugin_path: path.to_string(),
@@ -983,12 +1021,17 @@ fn get_rust_ffi_config_for_path(path: &str) -> RustFfiConfig {
 
 fn create_rust_ffi_config_message(backend_path: &str) -> Result<ScaiiPacket, Box<Error>> {
     use scaii_defs::protos::plugin_type::PluginType;
-
+    let path = Path::new(backend_path);
+    if !path.exists() {
+        return Err(Box::new(ReplayError::new(
+            &format!("specified backend does not exist {}", backend_path),
+        )));
+    }
     let rust_ffi_config = get_rust_ffi_config_for_path(backend_path);
     Ok(ScaiiPacket {
-        src: protos::Endpoint { endpoint: Some(Endpoint::Agent(AgentEndpoint {})) },
+        src: protos::Endpoint { endpoint: Some(Endpoint::Replay(ReplayEndpoint {})) },
         dest: protos::Endpoint { endpoint: Some(Endpoint::Core(CoreEndpoint {})) },
-        specific_msg: Some(SpecificMsg::Config(protos::Cfg {
+        specific_msg: Some(SpecificMsg::Config(Cfg {
             which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
                 plugin_type: protos::PluginType {
                     plugin_type: Some(PluginType::RustPlugin(rust_ffi_config)),
@@ -996,4 +1039,47 @@ fn create_rust_ffi_config_message(backend_path: &str) -> Result<ScaiiPacket, Box
             })),
         })),
     })
+}
+
+fn get_plugin_path_from_rust_ffi_config(pkt : &ScaiiPacket) -> Result<String, Box<Error>> {
+    match pkt.specific_msg {
+        Some(SpecificMsg::Config(protos::Cfg {
+                    which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
+                        plugin_type: PluginType {
+                            plugin_type: Some(plugin_type::PluginType::RustPlugin(ref rust_ffi_config))
+                        }
+                    }))})) => { 
+                        Ok(rust_ffi_config.plugin_path.clone())
+                    },
+        _ => {
+            Err(Box::new(ReplayError::new(
+            &format!("ERROR - no plugin_path was found in supposedRustFfiConfig pkt {:?}", pkt),
+        )))},
+    }
+}
+
+fn create_default_replay_backend_config() -> ScaiiPacket {
+    let vec : Vec<u8> = Vec::new();
+    ScaiiPacket {
+        src: protos::Endpoint { endpoint: Some(Endpoint::Replay(ReplayEndpoint {})) },
+        dest: protos::Endpoint { endpoint: Some(Endpoint::Backend(BackendEndpoint {})) },
+        specific_msg: Some(SpecificMsg::Config(protos::Cfg {
+                which_module: Some(WhichModule::BackendCfg(protos::BackendCfg {
+                    cfg_msg: Some(vec),
+                    is_replay_mode: true,
+                }))
+        }))
+    }
+}
+
+fn set_replay_mode_on_backend_config(packet_option : &mut Option<ScaiiPacket>) {
+    if let &mut Some(ScaiiPacket {
+        specific_msg: Some(SpecificMsg::Config(protos::Cfg {
+                which_module: Some(WhichModule::BackendCfg(protos::BackendCfg {
+                    ref mut is_replay_mode,
+                       ..
+                }))
+        })), ..}) = packet_option {
+      *is_replay_mode = true;
+     }
 }
