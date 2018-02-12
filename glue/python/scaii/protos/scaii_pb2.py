@@ -14,8 +14,8 @@ from google.protobuf import descriptor_pb2
 _sym_db = _symbol_database.Default()
 
 
-import scaii.env.protos.cfg_pb2 as cfg__pb2
-import scaii.env.protos.viz_pb2 as viz__pb2
+import scaii.protos.cfg_pb2 as cfg__pb2
+import scaii.protos.viz_pb2 as viz__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
