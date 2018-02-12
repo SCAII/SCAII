@@ -81,32 +81,32 @@ impl DerefMut for Pos {
 }
 
 #[derive(Component, Copy, Clone, PartialEq, Serialize, Deserialize)]
-#[component(VecStorage)]
+#[storage(VecStorage)]
 pub struct Heading(f64);
 
 #[derive(Default, Component, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[component(NullStorage)]
+#[storage(NullStorage)]
 pub struct MovedFlag;
 
 #[derive(Default, Component, Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]
-#[component(VecStorage)]
+#[storage(VecStorage)]
 pub struct Hp {
     pub max_hp: f64,
     pub curr_hp: f64,
 }
 
 #[derive(Default, Component, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[component(NullStorage)]
+#[storage(NullStorage)]
 pub struct HpChangeFlag;
 
 #[derive(Default, Component, Copy, Clone, PartialEq, Serialize, Deserialize)]
-#[component(VecStorage)]
+#[storage(VecStorage)]
 pub struct Damage {
     pub damage: f64,
 }
 
 #[derive(Default, Component, Copy, Clone, PartialEq, Eq, Serialize, Debug, Deserialize)]
-#[component(VecStorage)]
+#[storage(VecStorage)]
 pub struct Color {
     pub r: u8,
     pub g: u8,
@@ -127,7 +127,7 @@ impl Color {
 }
 
 #[derive(Component, Copy, Clone, Debug, PartialEq, Serialize, Deserialize)]
-#[component(VecStorage)]
+#[storage(VecStorage)]
 pub enum Shape {
     Triangle { base_len: f64 },
     Rect { width: f64, height: f64 },
@@ -161,15 +161,15 @@ impl Shape {
 
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug, Serialize,
          Deserialize, Component)]
-#[component(VecStorage)]
+#[storage(VecStorage)]
 pub struct FactionId(pub usize);
 
 #[derive(Clone, Eq, PartialEq, Hash, Default, Debug, Serialize, Deserialize, Component)]
-#[component(VecStorage)]
+#[storage(VecStorage)]
 pub struct UnitTypeTag(pub String);
 
 #[derive(Clone, PartialEq, Debug, Component)]
-#[component(HashMapStorage)]
+#[storage(HashMapStorage)]
 pub struct Attack {
     pub target: Entity,
     pub time_since_last: f64,
@@ -204,7 +204,7 @@ impl<M: Marker + Debug> SaveLoadComponent<M> for Attack {
 }
 
 #[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Component)]
-#[component(HashMapStorage)]
+#[storage(HashMapStorage)]
 pub struct Death {
     pub killer: Entity,
 }

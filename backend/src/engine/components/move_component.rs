@@ -9,16 +9,16 @@ use specs::storage::{HashMapStorage, NullStorage};
 use specs::saveload::{Marker, SaveLoadComponent};
 
 #[derive(Copy, Clone, Default, Component, PartialEq, Serialize, Deserialize)]
-#[component(VecStorage)]
+#[storage(VecStorage)]
 pub struct Speed(pub f64);
 
 #[derive(Copy, Clone, Default, Component, PartialEq, Serialize, Deserialize)]
-#[component(NullStorage)]
+#[storage(NullStorage)]
 pub struct Movable;
 
 // Opposite of movable for entities with a shape that can't be moved
 #[derive(Copy, Clone, Default, Component, PartialEq, Serialize, Deserialize)]
-#[component(NullStorage)]
+#[storage(NullStorage)]
 pub struct Static;
 
 #[derive(Copy, Clone, PartialEq, Serialize, Deserialize)]
@@ -33,7 +33,7 @@ pub enum MoveTarget {
 }
 
 #[derive(Component, Copy, Clone, PartialEq)]
-#[component(HashMapStorage)]
+#[storage(HashMapStorage)]
 pub struct Move {
     pub behavior: MoveBehavior,
     pub target: MoveTarget,
