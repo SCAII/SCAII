@@ -43,25 +43,6 @@ fn default_port() -> String {
     "8000".to_string()
 }
 
-// fn get_scaii_root() -> Result<PathBuf, Box<Error>> {
-//     use std::env;
-//     //look at current dir, see if peer directories are as expected, if so use parent.
-//     let mut parent_dir: PathBuf = env::current_dir()?;
-//     // find parent
-//     parent_dir.pop();
-
-//     let mut core_dir = parent_dir.clone();
-//     core_dir.push("core");
-//     if !core_dir.exists() {
-//         return Err(Box::new(util::ScaiiError::new("core directory could not be found, coult not verify SCAII_ROOT")));
-//     }
-//     let mut common_protos_dir = parent_dir.clone();
-//     common_protos_dir.push("common_protos");
-//     if !common_protos_dir.exists() {
-//         return Err(Box::new(ScaiiError::new("common_protos directory could not be found, coult not verify SCAII_ROOT")));
-//     }
-//     Ok(parent_dir)
-// }
 #[allow(unused_assignments)]
 pub fn load_scaii_config() -> ScaiiConfig {
     use std::fs::File;
