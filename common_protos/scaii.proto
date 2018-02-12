@@ -44,6 +44,9 @@ message ScaiiPacket {
 		GameComplete game_complete = 16;
 		ReplaySessionConfig replay_session_config = 17;
 		Ack ack = 18;
+		bool emit_viz = 19;
+		Record record = 20;
+		bool replay_mode = 21;
 		Other other = 29;
 	}
 
@@ -281,4 +284,14 @@ message GameComplete {}
 
 message ReplaySessionConfig {
 	required int64 step_count = 1;
+}
+
+// Configures a module (e.g. backend) to begin recording, logging how often 
+// it should emit serialized keyframes
+//
+// NOTE: Since the frontend is responsible for making serialization requests and
+//  forwarding packets to the recorder, `keyframe_interval` will be ignored unless the
+// backend has some facility meant to take control of the game for some time.
+message Record {
+	required uint32 keyframe_interval = 1;
 }

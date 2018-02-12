@@ -14,15 +14,15 @@ from google.protobuf import descriptor_pb2
 _sym_db = _symbol_database.Default()
 
 
-import scaii.protos.cfg_pb2 as cfg__pb2
-import scaii.protos.viz_pb2 as viz__pb2
+import scaii.env.protos.cfg_pb2 as cfg__pb2
+import scaii.env.protos.viz_pb2 as viz__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='scaii.proto',
   package='scaii.common',
   syntax='proto2',
-  serialized_pb=_b('\n\x0bscaii.proto\x12\x0cscaii.common\x1a\tcfg.proto\x1a\tviz.proto\":\n\x0cMultiMessage\x12*\n\x07packets\x18\x01 \x03(\x0b\x32\x19.scaii.common.ScaiiPacket\"\xcd\x07\n\x0bScaiiPacket\x12$\n\x05state\x18\x01 \x01(\x0b\x32\x13.scaii.common.StateH\x00\x12&\n\x06\x61\x63tion\x18\x02 \x01(\x0b\x32\x14.scaii.common.ActionH\x00\x12 \n\x03viz\x18\x03 \x01(\x0b\x32\x11.scaii.common.VizH\x00\x12\"\n\x03\x65rr\x18\x04 \x01(\x0b\x32\x13.scaii.common.ErrorH\x00\x12#\n\x06\x63onfig\x18\x05 \x01(\x0b\x32\x11.scaii.common.CfgH\x00\x12\x34\n\tsupported\x18\x06 \x01(\x0b\x32\x1f.scaii.common.SupportedBehaviorH\x00\x12\x35\n\x07ser_req\x18\x07 \x01(\x0b\x32\".scaii.common.SerializationRequestH\x00\x12\x37\n\x08ser_resp\x18\x08 \x01(\x0b\x32#.scaii.common.SerializationResponseH\x00\x12\x13\n\treset_env\x18\t \x01(\x08H\x00\x12)\n\x08viz_init\x18\n \x01(\x0b\x32\x15.scaii.common.VizInitH\x00\x12\x31\n\x0cuser_command\x18\x0b \x01(\x0b\x32\x19.scaii.common.UserCommandH\x00\x12/\n\x0breplay_step\x18\x0c \x01(\x0b\x32\x18.scaii.common.ReplayStepH\x00\x12\x31\n\x0ctest_control\x18\r \x01(\x0b\x32\x19.scaii.common.TestControlH\x00\x12\x33\n\rrecorder_step\x18\x0e \x01(\x0b\x32\x1a.scaii.common.RecorderStepH\x00\x12\x37\n\x0frecorder_config\x18\x0f \x01(\x0b\x32\x1c.scaii.common.RecorderConfigH\x00\x12\x33\n\rgame_complete\x18\x10 \x01(\x0b\x32\x1a.scaii.common.GameCompleteH\x00\x12\x42\n\x15replay_session_config\x18\x11 \x01(\x0b\x32!.scaii.common.ReplaySessionConfigH\x00\x12 \n\x03\x61\x63k\x18\x12 \x01(\x0b\x32\x11.scaii.common.AckH\x00\x12$\n\x05other\x18\x1d \x01(\x0b\x32\x13.scaii.common.OtherH\x00\x12#\n\x03src\x18\x1f \x02(\x0b\x32\x16.scaii.common.Endpoint\x12$\n\x04\x64\x65st\x18\x1e \x02(\x0b\x32\x16.scaii.common.EndpointB\x0e\n\x0cspecific_msg\"\x05\n\x03\x41\x63k\"\xb6\x02\n\x08\x45ndpoint\x12\x30\n\x07\x62\x61\x63kend\x18\x01 \x01(\x0b\x32\x1d.scaii.common.BackendEndpointH\x00\x12,\n\x05\x61gent\x18\x02 \x01(\x0b\x32\x1b.scaii.common.AgentEndpointH\x00\x12*\n\x04\x63ore\x18\x03 \x01(\x0b\x32\x1a.scaii.common.CoreEndpointH\x00\x12.\n\x06module\x18\x04 \x01(\x0b\x32\x1c.scaii.common.ModuleEndpointH\x00\x12.\n\x06replay\x18\x05 \x01(\x0b\x32\x1c.scaii.common.ReplayEndpointH\x00\x12\x32\n\x08recorder\x18\x06 \x01(\x0b\x32\x1e.scaii.common.RecorderEndpointH\x00\x42\n\n\x08\x65ndpoint\"\x0c\n\nReplayStep\"\x11\n\x0f\x42\x61\x63kendEndpoint\"\x0f\n\rAgentEndpoint\"\x0e\n\x0c\x43oreEndpoint\"\x1e\n\x0eModuleEndpoint\x12\x0c\n\x04name\x18\x01 \x02(\t\"\x10\n\x0eReplayEndpoint\"\x12\n\x10RecorderEndpoint\"\xdf\x01\n\x05State\x12\x10\n\x08\x66\x65\x61tures\x18\x01 \x03(\x01\x12\x1a\n\x12\x66\x65\x61ture_array_dims\x18\x02 \x03(\r\x12\x0e\n\x06reward\x18\x03 \x01(\x01\x12\x16\n\x0e\x65xpanded_state\x18\x04 \x01(\x0c\x12:\n\x0ctyped_reward\x18\x05 \x03(\x0b\x32$.scaii.common.State.TypedRewardEntry\x12\x10\n\x08terminal\x18\x06 \x02(\x08\x1a\x32\n\x10TypedRewardEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\"\x8e\x01\n\x06\x41\x63tion\x12\x18\n\x10\x64iscrete_actions\x18\x01 \x03(\x05\x12\x1a\n\x12\x63ontinuous_actions\x18\x02 \x03(\x01\x12\x19\n\x11\x61lternate_actions\x18\x03 \x01(\x0c\x12\x33\n\x0b\x65xplanation\x18\x04 \x01(\x0b\x32\x1e.scaii.common.ExplanationPoint\"F\n\x05\x45rror\x12\x13\n\x0b\x64\x65scription\x18\x01 \x02(\t\x12\x14\n\x05\x66\x61tal\x18\x02 \x01(\x08:\x05\x66\x61lse\x12\x12\n\nerror_info\x18\x03 \x01(\x0c\"\"\n\x05Other\x12\x0c\n\x04name\x18\x01 \x02(\t\x12\x0b\n\x03msg\x18\x02 \x01(\x0c\"I\n\x14SerializationRequest\x12\x31\n\x06\x66ormat\x18\x01 \x02(\x0e\x32!.scaii.common.SerializationFormat\"^\n\x15SerializationResponse\x12\x12\n\nserialized\x18\x01 \x02(\x0c\x12\x31\n\x06\x66ormat\x18\x02 \x02(\x0e\x32!.scaii.common.SerializationFormat\"\xf6\x01\n\x0bUserCommand\x12?\n\x0c\x63ommand_type\x18\x01 \x02(\x0e\x32).scaii.common.UserCommand.UserCommandType\x12\x0c\n\x04\x61rgs\x18\x02 \x03(\t\"\x97\x01\n\x0fUserCommandType\x12\x08\n\x04NONE\x10\x00\x12\x0b\n\x07\x45XPLAIN\x10\x01\x12\t\n\x05PAUSE\x10\x02\x12\n\n\x06RESUME\x10\x03\x12\n\n\x06REWIND\x10\x04\x12\x15\n\x11POLL_FOR_COMMANDS\x10\x05\x12\x10\n\x0cJUMP_TO_STEP\x10\x06\x12\x12\n\x0eJUMP_COMPLETED\x10\x07\x12\r\n\tSET_SPEED\x10\x08\"\x1b\n\x0bTestControl\x12\x0c\n\x04\x61rgs\x18\x01 \x03(\t\"O\n\x0cRecorderStep\x12$\n\x06\x61\x63tion\x18\x01 \x01(\x0b\x32\x14.scaii.common.Action\x12\x19\n\x11is_decision_point\x18\x02 \x02(\x08\"9\n\x0eRecorderConfig\x12\'\n\x04pkts\x18\x01 \x03(\x0b\x32\x19.scaii.common.ScaiiPacket\"\x0e\n\x0cGameComplete\")\n\x13ReplaySessionConfig\x12\x12\n\nstep_count\x18\x01 \x02(\x03*6\n\x13SerializationFormat\x12\r\n\tDIVERGING\x10\x00\x12\x10\n\x0cNONDIVERGING\x10\x01')
+  serialized_pb=_b('\n\x0bscaii.proto\x12\x0cscaii.common\x1a\tcfg.proto\x1a\tviz.proto\":\n\x0cMultiMessage\x12*\n\x07packets\x18\x01 \x03(\x0b\x32\x19.scaii.common.ScaiiPacket\"\xa0\x08\n\x0bScaiiPacket\x12$\n\x05state\x18\x01 \x01(\x0b\x32\x13.scaii.common.StateH\x00\x12&\n\x06\x61\x63tion\x18\x02 \x01(\x0b\x32\x14.scaii.common.ActionH\x00\x12 \n\x03viz\x18\x03 \x01(\x0b\x32\x11.scaii.common.VizH\x00\x12\"\n\x03\x65rr\x18\x04 \x01(\x0b\x32\x13.scaii.common.ErrorH\x00\x12#\n\x06\x63onfig\x18\x05 \x01(\x0b\x32\x11.scaii.common.CfgH\x00\x12\x34\n\tsupported\x18\x06 \x01(\x0b\x32\x1f.scaii.common.SupportedBehaviorH\x00\x12\x35\n\x07ser_req\x18\x07 \x01(\x0b\x32\".scaii.common.SerializationRequestH\x00\x12\x37\n\x08ser_resp\x18\x08 \x01(\x0b\x32#.scaii.common.SerializationResponseH\x00\x12\x13\n\treset_env\x18\t \x01(\x08H\x00\x12)\n\x08viz_init\x18\n \x01(\x0b\x32\x15.scaii.common.VizInitH\x00\x12\x31\n\x0cuser_command\x18\x0b \x01(\x0b\x32\x19.scaii.common.UserCommandH\x00\x12/\n\x0breplay_step\x18\x0c \x01(\x0b\x32\x18.scaii.common.ReplayStepH\x00\x12\x31\n\x0ctest_control\x18\r \x01(\x0b\x32\x19.scaii.common.TestControlH\x00\x12\x33\n\rrecorder_step\x18\x0e \x01(\x0b\x32\x1a.scaii.common.RecorderStepH\x00\x12\x37\n\x0frecorder_config\x18\x0f \x01(\x0b\x32\x1c.scaii.common.RecorderConfigH\x00\x12\x33\n\rgame_complete\x18\x10 \x01(\x0b\x32\x1a.scaii.common.GameCompleteH\x00\x12\x42\n\x15replay_session_config\x18\x11 \x01(\x0b\x32!.scaii.common.ReplaySessionConfigH\x00\x12 \n\x03\x61\x63k\x18\x12 \x01(\x0b\x32\x11.scaii.common.AckH\x00\x12\x12\n\x08\x65mit_viz\x18\x13 \x01(\x08H\x00\x12&\n\x06record\x18\x14 \x01(\x0b\x32\x14.scaii.common.RecordH\x00\x12\x15\n\x0breplay_mode\x18\x15 \x01(\x08H\x00\x12$\n\x05other\x18\x1d \x01(\x0b\x32\x13.scaii.common.OtherH\x00\x12#\n\x03src\x18\x1f \x02(\x0b\x32\x16.scaii.common.Endpoint\x12$\n\x04\x64\x65st\x18\x1e \x02(\x0b\x32\x16.scaii.common.EndpointB\x0e\n\x0cspecific_msg\"\x05\n\x03\x41\x63k\"\xb6\x02\n\x08\x45ndpoint\x12\x30\n\x07\x62\x61\x63kend\x18\x01 \x01(\x0b\x32\x1d.scaii.common.BackendEndpointH\x00\x12,\n\x05\x61gent\x18\x02 \x01(\x0b\x32\x1b.scaii.common.AgentEndpointH\x00\x12*\n\x04\x63ore\x18\x03 \x01(\x0b\x32\x1a.scaii.common.CoreEndpointH\x00\x12.\n\x06module\x18\x04 \x01(\x0b\x32\x1c.scaii.common.ModuleEndpointH\x00\x12.\n\x06replay\x18\x05 \x01(\x0b\x32\x1c.scaii.common.ReplayEndpointH\x00\x12\x32\n\x08recorder\x18\x06 \x01(\x0b\x32\x1e.scaii.common.RecorderEndpointH\x00\x42\n\n\x08\x65ndpoint\"\x0c\n\nReplayStep\"\x11\n\x0f\x42\x61\x63kendEndpoint\"\x0f\n\rAgentEndpoint\"\x0e\n\x0c\x43oreEndpoint\"\x1e\n\x0eModuleEndpoint\x12\x0c\n\x04name\x18\x01 \x02(\t\"\x10\n\x0eReplayEndpoint\"\x12\n\x10RecorderEndpoint\"\xdf\x01\n\x05State\x12\x10\n\x08\x66\x65\x61tures\x18\x01 \x03(\x01\x12\x1a\n\x12\x66\x65\x61ture_array_dims\x18\x02 \x03(\r\x12\x0e\n\x06reward\x18\x03 \x01(\x01\x12\x16\n\x0e\x65xpanded_state\x18\x04 \x01(\x0c\x12:\n\x0ctyped_reward\x18\x05 \x03(\x0b\x32$.scaii.common.State.TypedRewardEntry\x12\x10\n\x08terminal\x18\x06 \x02(\x08\x1a\x32\n\x10TypedRewardEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\"\x8e\x01\n\x06\x41\x63tion\x12\x18\n\x10\x64iscrete_actions\x18\x01 \x03(\x05\x12\x1a\n\x12\x63ontinuous_actions\x18\x02 \x03(\x01\x12\x19\n\x11\x61lternate_actions\x18\x03 \x01(\x0c\x12\x33\n\x0b\x65xplanation\x18\x04 \x01(\x0b\x32\x1e.scaii.common.ExplanationPoint\"F\n\x05\x45rror\x12\x13\n\x0b\x64\x65scription\x18\x01 \x02(\t\x12\x14\n\x05\x66\x61tal\x18\x02 \x01(\x08:\x05\x66\x61lse\x12\x12\n\nerror_info\x18\x03 \x01(\x0c\"\"\n\x05Other\x12\x0c\n\x04name\x18\x01 \x02(\t\x12\x0b\n\x03msg\x18\x02 \x01(\x0c\"I\n\x14SerializationRequest\x12\x31\n\x06\x66ormat\x18\x01 \x02(\x0e\x32!.scaii.common.SerializationFormat\"^\n\x15SerializationResponse\x12\x12\n\nserialized\x18\x01 \x02(\x0c\x12\x31\n\x06\x66ormat\x18\x02 \x02(\x0e\x32!.scaii.common.SerializationFormat\"\xf6\x01\n\x0bUserCommand\x12?\n\x0c\x63ommand_type\x18\x01 \x02(\x0e\x32).scaii.common.UserCommand.UserCommandType\x12\x0c\n\x04\x61rgs\x18\x02 \x03(\t\"\x97\x01\n\x0fUserCommandType\x12\x08\n\x04NONE\x10\x00\x12\x0b\n\x07\x45XPLAIN\x10\x01\x12\t\n\x05PAUSE\x10\x02\x12\n\n\x06RESUME\x10\x03\x12\n\n\x06REWIND\x10\x04\x12\x15\n\x11POLL_FOR_COMMANDS\x10\x05\x12\x10\n\x0cJUMP_TO_STEP\x10\x06\x12\x12\n\x0eJUMP_COMPLETED\x10\x07\x12\r\n\tSET_SPEED\x10\x08\"\x1b\n\x0bTestControl\x12\x0c\n\x04\x61rgs\x18\x01 \x03(\t\"O\n\x0cRecorderStep\x12$\n\x06\x61\x63tion\x18\x01 \x01(\x0b\x32\x14.scaii.common.Action\x12\x19\n\x11is_decision_point\x18\x02 \x02(\x08\"9\n\x0eRecorderConfig\x12\'\n\x04pkts\x18\x01 \x03(\x0b\x32\x19.scaii.common.ScaiiPacket\"\x0e\n\x0cGameComplete\")\n\x13ReplaySessionConfig\x12\x12\n\nstep_count\x18\x01 \x02(\x03\"#\n\x06Record\x12\x19\n\x11keyframe_interval\x18\x01 \x02(\r*6\n\x13SerializationFormat\x12\r\n\tDIVERGING\x10\x00\x12\x10\n\x0cNONDIVERGING\x10\x01')
   ,
   dependencies=[cfg__pb2.DESCRIPTOR,viz__pb2.DESCRIPTOR,])
 
@@ -43,8 +43,8 @@ _SERIALIZATIONFORMAT = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2670,
-  serialized_end=2724,
+  serialized_start=2790,
+  serialized_end=2844,
 )
 _sym_db.RegisterEnumDescriptor(_SERIALIZATIONFORMAT)
 
@@ -98,8 +98,8 @@ _USERCOMMAND_USERCOMMANDTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2289,
-  serialized_end=2440,
+  serialized_start=2372,
+  serialized_end=2523,
 )
 _sym_db.RegisterEnumDescriptor(_USERCOMMAND_USERCOMMANDTYPE)
 
@@ -269,21 +269,42 @@ _SCAIIPACKET = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='other', full_name='scaii.common.ScaiiPacket.other', index=18,
+      name='emit_viz', full_name='scaii.common.ScaiiPacket.emit_viz', index=18,
+      number=19, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='record', full_name='scaii.common.ScaiiPacket.record', index=19,
+      number=20, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='replay_mode', full_name='scaii.common.ScaiiPacket.replay_mode', index=20,
+      number=21, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='other', full_name='scaii.common.ScaiiPacket.other', index=21,
       number=29, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='src', full_name='scaii.common.ScaiiPacket.src', index=19,
+      name='src', full_name='scaii.common.ScaiiPacket.src', index=22,
       number=31, type=11, cpp_type=10, label=2,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='dest', full_name='scaii.common.ScaiiPacket.dest', index=20,
+      name='dest', full_name='scaii.common.ScaiiPacket.dest', index=23,
       number=30, type=11, cpp_type=10, label=2,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -305,7 +326,7 @@ _SCAIIPACKET = _descriptor.Descriptor(
       index=0, containing_type=None, fields=[]),
   ],
   serialized_start=112,
-  serialized_end=1085,
+  serialized_end=1168,
 )
 
 
@@ -328,8 +349,8 @@ _ACK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1087,
-  serialized_end=1092,
+  serialized_start=1170,
+  serialized_end=1175,
 )
 
 
@@ -397,8 +418,8 @@ _ENDPOINT = _descriptor.Descriptor(
       name='endpoint', full_name='scaii.common.Endpoint.endpoint',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=1095,
-  serialized_end=1405,
+  serialized_start=1178,
+  serialized_end=1488,
 )
 
 
@@ -421,8 +442,8 @@ _REPLAYSTEP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1407,
-  serialized_end=1419,
+  serialized_start=1490,
+  serialized_end=1502,
 )
 
 
@@ -445,8 +466,8 @@ _BACKENDENDPOINT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1421,
-  serialized_end=1438,
+  serialized_start=1504,
+  serialized_end=1521,
 )
 
 
@@ -469,8 +490,8 @@ _AGENTENDPOINT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1440,
-  serialized_end=1455,
+  serialized_start=1523,
+  serialized_end=1538,
 )
 
 
@@ -493,8 +514,8 @@ _COREENDPOINT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1457,
-  serialized_end=1471,
+  serialized_start=1540,
+  serialized_end=1554,
 )
 
 
@@ -524,8 +545,8 @@ _MODULEENDPOINT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1473,
-  serialized_end=1503,
+  serialized_start=1556,
+  serialized_end=1586,
 )
 
 
@@ -548,8 +569,8 @@ _REPLAYENDPOINT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1505,
-  serialized_end=1521,
+  serialized_start=1588,
+  serialized_end=1604,
 )
 
 
@@ -572,8 +593,8 @@ _RECORDERENDPOINT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1523,
-  serialized_end=1541,
+  serialized_start=1606,
+  serialized_end=1624,
 )
 
 
@@ -610,8 +631,8 @@ _STATE_TYPEDREWARDENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1717,
-  serialized_end=1767,
+  serialized_start=1800,
+  serialized_end=1850,
 )
 
 _STATE = _descriptor.Descriptor(
@@ -675,8 +696,8 @@ _STATE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1544,
-  serialized_end=1767,
+  serialized_start=1627,
+  serialized_end=1850,
 )
 
 
@@ -727,8 +748,8 @@ _ACTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1770,
-  serialized_end=1912,
+  serialized_start=1853,
+  serialized_end=1995,
 )
 
 
@@ -772,8 +793,8 @@ _ERROR = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1914,
-  serialized_end=1984,
+  serialized_start=1997,
+  serialized_end=2067,
 )
 
 
@@ -810,8 +831,8 @@ _OTHER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1986,
-  serialized_end=2020,
+  serialized_start=2069,
+  serialized_end=2103,
 )
 
 
@@ -841,8 +862,8 @@ _SERIALIZATIONREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2022,
-  serialized_end=2095,
+  serialized_start=2105,
+  serialized_end=2178,
 )
 
 
@@ -879,8 +900,8 @@ _SERIALIZATIONRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2097,
-  serialized_end=2191,
+  serialized_start=2180,
+  serialized_end=2274,
 )
 
 
@@ -918,8 +939,8 @@ _USERCOMMAND = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2194,
-  serialized_end=2440,
+  serialized_start=2277,
+  serialized_end=2523,
 )
 
 
@@ -949,8 +970,8 @@ _TESTCONTROL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2442,
-  serialized_end=2469,
+  serialized_start=2525,
+  serialized_end=2552,
 )
 
 
@@ -987,8 +1008,8 @@ _RECORDERSTEP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2471,
-  serialized_end=2550,
+  serialized_start=2554,
+  serialized_end=2633,
 )
 
 
@@ -1018,8 +1039,8 @@ _RECORDERCONFIG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2552,
-  serialized_end=2609,
+  serialized_start=2635,
+  serialized_end=2692,
 )
 
 
@@ -1042,8 +1063,8 @@ _GAMECOMPLETE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2611,
-  serialized_end=2625,
+  serialized_start=2694,
+  serialized_end=2708,
 )
 
 
@@ -1073,8 +1094,39 @@ _REPLAYSESSIONCONFIG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2627,
-  serialized_end=2668,
+  serialized_start=2710,
+  serialized_end=2751,
+)
+
+
+_RECORD = _descriptor.Descriptor(
+  name='Record',
+  full_name='scaii.common.Record',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='keyframe_interval', full_name='scaii.common.Record.keyframe_interval', index=0,
+      number=1, type=13, cpp_type=3, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2753,
+  serialized_end=2788,
 )
 
 _MULTIMESSAGE.fields_by_name['packets'].message_type = _SCAIIPACKET
@@ -1095,6 +1147,7 @@ _SCAIIPACKET.fields_by_name['recorder_config'].message_type = _RECORDERCONFIG
 _SCAIIPACKET.fields_by_name['game_complete'].message_type = _GAMECOMPLETE
 _SCAIIPACKET.fields_by_name['replay_session_config'].message_type = _REPLAYSESSIONCONFIG
 _SCAIIPACKET.fields_by_name['ack'].message_type = _ACK
+_SCAIIPACKET.fields_by_name['record'].message_type = _RECORD
 _SCAIIPACKET.fields_by_name['other'].message_type = _OTHER
 _SCAIIPACKET.fields_by_name['src'].message_type = _ENDPOINT
 _SCAIIPACKET.fields_by_name['dest'].message_type = _ENDPOINT
@@ -1152,6 +1205,15 @@ _SCAIIPACKET.fields_by_name['replay_session_config'].containing_oneof = _SCAIIPA
 _SCAIIPACKET.oneofs_by_name['specific_msg'].fields.append(
   _SCAIIPACKET.fields_by_name['ack'])
 _SCAIIPACKET.fields_by_name['ack'].containing_oneof = _SCAIIPACKET.oneofs_by_name['specific_msg']
+_SCAIIPACKET.oneofs_by_name['specific_msg'].fields.append(
+  _SCAIIPACKET.fields_by_name['emit_viz'])
+_SCAIIPACKET.fields_by_name['emit_viz'].containing_oneof = _SCAIIPACKET.oneofs_by_name['specific_msg']
+_SCAIIPACKET.oneofs_by_name['specific_msg'].fields.append(
+  _SCAIIPACKET.fields_by_name['record'])
+_SCAIIPACKET.fields_by_name['record'].containing_oneof = _SCAIIPACKET.oneofs_by_name['specific_msg']
+_SCAIIPACKET.oneofs_by_name['specific_msg'].fields.append(
+  _SCAIIPACKET.fields_by_name['replay_mode'])
+_SCAIIPACKET.fields_by_name['replay_mode'].containing_oneof = _SCAIIPACKET.oneofs_by_name['specific_msg']
 _SCAIIPACKET.oneofs_by_name['specific_msg'].fields.append(
   _SCAIIPACKET.fields_by_name['other'])
 _SCAIIPACKET.fields_by_name['other'].containing_oneof = _SCAIIPACKET.oneofs_by_name['specific_msg']
@@ -1211,6 +1273,7 @@ DESCRIPTOR.message_types_by_name['RecorderStep'] = _RECORDERSTEP
 DESCRIPTOR.message_types_by_name['RecorderConfig'] = _RECORDERCONFIG
 DESCRIPTOR.message_types_by_name['GameComplete'] = _GAMECOMPLETE
 DESCRIPTOR.message_types_by_name['ReplaySessionConfig'] = _REPLAYSESSIONCONFIG
+DESCRIPTOR.message_types_by_name['Record'] = _RECORD
 DESCRIPTOR.enum_types_by_name['SerializationFormat'] = _SERIALIZATIONFORMAT
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -1382,6 +1445,13 @@ ReplaySessionConfig = _reflection.GeneratedProtocolMessageType('ReplaySessionCon
   # @@protoc_insertion_point(class_scope:scaii.common.ReplaySessionConfig)
   ))
 _sym_db.RegisterMessage(ReplaySessionConfig)
+
+Record = _reflection.GeneratedProtocolMessageType('Record', (_message.Message,), dict(
+  DESCRIPTOR = _RECORD,
+  __module__ = 'scaii_pb2'
+  # @@protoc_insertion_point(class_scope:scaii.common.Record)
+  ))
+_sym_db.RegisterMessage(Record)
 
 
 _STATE_TYPEDREWARDENTRY.has_options = True

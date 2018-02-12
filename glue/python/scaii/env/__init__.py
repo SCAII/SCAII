@@ -37,6 +37,8 @@ class ScaiiEnv():
         self.next_msg = scaii_protos.MultiMessage()
         self.state_type = state_type
         self.action_type = action_type
+        self.viz_initialized = False
+        self.recording = False
 
     def __enter__(self):
         return ScaiiEnv()
@@ -72,22 +74,54 @@ class ScaiiEnv():
         packet.dest.backend.SetInParent()
         packet.reset_env = True
 
-    def reset(self):
+    def reset(self, visualize=False, record=False, keyframe_interval=5):
         """
         Resets the backend to a new environment, returning the initial (state,terminal) tuple.
 
         You may assume the reward is 0.0
         """
+        if visualize and not self.viz_initialized:
+            print("Initializing the visualization module, please press\
+             \"connect\" on the SCAII visualization page now")
+            self.load_rpc_module("viz")
+
+
+        # need the reset packet first because backends probably want to clear things like
+        # viz flags on reset    
         self._reset_packet()
+
+        if visualize:
+            self.visualize_episode()
+
+        if record:
+            self.record_epsiode(keyframe_interval)
+
         self._send_recv_msg()
         self.state = _decode_handle_msg(self._msg_buf, self.state_type)
         return self.state
-
-    def reset_viz(self):
+    
+    def record_epsiode(self, keyframe_interval=5):
         packet = self.next_msg.packets.add()
         packet.src.agent.SetInParent()
-        packet.dest.module.name = 'viz'
-        packet.viz_init.SetInParent()
+        packet.dest.recorder.SetInParent()
+
+        packet.recorder_config.SetInParent()
+
+        packet = self.next_msg.packets.add()
+        packet.src.agent.SetInParent()
+        packet.dest.backend.SetInParent()
+
+        packet.record.keyframe_interval = keyframe_interval
+
+        self.recording = True
+        self.keyframe_interval = keyframe_interval
+
+    def visualize_episode(self):
+        packet = self.next_msg.packets.add()
+        packet.src.agent.SetInParent()
+        packet.dest.backend.SetInParent()
+        packet.emit_viz = True
+        
 
     def act(self, action):
         """
