@@ -100,7 +100,7 @@ fn acquire_target<'a>(
         if move_order.is_some() {
             let move_order = move_order.unwrap();
 
-            if move_order.is_attacking() && move_order.attack_target().unwrap() != other_id
+            if (move_order.is_attacking() && move_order.attack_target().unwrap() != other_id)
                 || !move_order.is_attacking()
             {
                 return;
@@ -118,7 +118,7 @@ fn acquire_target<'a>(
     }
 
     // Allows people to attack their own units, but only with an explicit order
-    if explicit_atk || faction1 == faction2 {
+    if explicit_atk || faction1 != faction2 {
         attack.insert(
             me,
             Attack {

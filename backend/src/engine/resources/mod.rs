@@ -15,12 +15,12 @@ pub use self::collision::*;
 pub const COLLISION_MARGIN: f64 = 0.02;
 // ncollide wants the average size of a collider to be "around" 1
 // we should probably set this as a resource from Lua in the future
-pub const COLLISION_SCALE: f64 = 30.0;
+pub const COLLISION_SCALE: f64 = 5.0;
 
 pub const MAX_FACTIONS: usize = 15;
 
-pub const STATE_SIZE: usize = 100;
-pub const STATE_SCALE: usize = 5;
+pub const STATE_SIZE: usize = 40;
+pub const STATE_SCALE: usize = 1;
 
 lazy_static! {
     pub static ref SENSOR_BLACKLIST: Vec<usize> = (MAX_FACTIONS..30).collect();

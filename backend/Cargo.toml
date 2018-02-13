@@ -39,11 +39,3 @@ glob = "0.2.11"
 
 [dev-dependencies]
 websocket = "0.20"
-
-# We NEED to enable optimization for dev and test because without them the rasterization is embarassingly slow
-
-[profile.dev]
-opt-level = 3
-
-[profile.test]
-opt-level = 3
