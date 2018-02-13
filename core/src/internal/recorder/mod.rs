@@ -304,7 +304,7 @@ impl Recorder for RecorderManager {}
 
 pub fn get_default_replay_file_path() -> Result<PathBuf, Box<Error>> {
     let mut replay_dir_path_buf = get_default_replay_dir()?;
-    replay_dir_path_buf.push("replay_data.txt");
+    replay_dir_path_buf.push("replay_data.sky");
     Ok(replay_dir_path_buf)
 }
 
