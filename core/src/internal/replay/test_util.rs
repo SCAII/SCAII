@@ -1,5 +1,5 @@
 use prost::Message;
-use protos::{scaii_packet, AgentEndpoint, AgentCfg, cfg, Cfg, Entity, RecorderConfig,
+use protos::{scaii_packet, BackendCfg, ReplayEndpoint, cfg, Cfg, Entity, RecorderConfig,
              RecorderEndpoint, MultiMessage, ScaiiPacket, BackendEndpoint, ModuleEndpoint,
              VizInit, Viz};
 use protos::endpoint::Endpoint;
@@ -49,7 +49,7 @@ impl MockRts {
 
     pub fn create_test_viz_init(&mut self, width: u32, height: u32) -> ScaiiPacket {
         ScaiiPacket {
-            src: protos::Endpoint { endpoint: Some(Endpoint::Agent(AgentEndpoint {})) },
+            src: protos::Endpoint { endpoint: Some(Endpoint::Replay(ReplayEndpoint {})) },
             dest: protos::Endpoint {
                 endpoint: Some(Endpoint::Module(
                     ModuleEndpoint { name: "RpcPluginModule".to_string() },
@@ -326,18 +326,18 @@ pub fn create_entity_at(x: &f64, y: &f64, shape: &str, orient: &f64) -> Entity {
 fn create_cfg_pkt() -> ScaiiPacket {
     let mut vec: Vec<ScaiiPacket> = Vec::new();
     let cfg = Cfg {
-        which_module: Some(cfg::WhichModule::AgentCfg(
-            AgentCfg { cfg_msg: Some(Vec::new()) },
+        which_module: Some(cfg::WhichModule::BackendCfg(
+            BackendCfg { cfg_msg: Some(Vec::new()), is_replay_mode: true },
         )),
     };
     let cfg_packet = ScaiiPacket {
-        src: protos::Endpoint { endpoint: Some(Endpoint::Agent(AgentEndpoint {})) },
+        src: protos::Endpoint { endpoint: Some(Endpoint::Replay(ReplayEndpoint {})) },
         dest: protos::Endpoint { endpoint: Some(Endpoint::Backend(BackendEndpoint {})) },
         specific_msg: Some(scaii_packet::SpecificMsg::Config(cfg)),
     };
     vec.push(cfg_packet);
     ScaiiPacket {
-        src: protos::Endpoint { endpoint: Some(Endpoint::Agent(AgentEndpoint {})) },
+        src: protos::Endpoint { endpoint: Some(Endpoint::Replay(ReplayEndpoint {})) },
         dest: protos::Endpoint { endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})) },
         specific_msg: Some(scaii_packet::SpecificMsg::RecorderConfig(
             RecorderConfig { pkts: vec },

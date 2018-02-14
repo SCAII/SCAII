@@ -1,5 +1,6 @@
 use super::*;
 use super::super::super::Environment;
+use super::super::super::util::*;
 use scaii_defs::protos;
 use scaii_defs::{Agent, Backend, BackendSupported, Module, SerializationStyle};
 use scaii_defs::protos::{scaii_packet, AgentCfg, AgentEndpoint, BackendCfg, cfg, Cfg, 
@@ -145,7 +146,7 @@ impl RecorderTester {
         };
         //vec.push(cfg_packet);
         ScaiiPacket {
-            src: protos::Endpoint { endpoint: Some(Endpoint::Agent(AgentEndpoint {})) },
+            src: protos::Endpoint { endpoint: Some(Endpoint::Replay(ReplayEndpoint {})) },
             dest: protos::Endpoint { endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})) },
             specific_msg: Some(scaii_packet::SpecificMsg::RecorderConfig(
                 RecorderConfig { pkts: vec },
@@ -178,11 +179,11 @@ fn test_recorder() {
     let rc_recorder_tester_message_queue = Rc::new(RefCell::new(recorder_tester_message_queue));
 
     {
-        environment.router_mut().register_agent(Box::new(
+        environment.router_mut().register_module("recorder_tester".to_string(), Box::new(
             rc_recorder_tester_message_queue
                 .clone(),
         ));
-        debug_assert!(environment.router().agent().is_some());
+        debug_assert!(environment.router().module("recorder_tester").is_some());
     }
     let mut recorder_tester = RecorderTester {
         incoming_message_queue: rc_recorder_tester_message_queue,
@@ -336,11 +337,11 @@ fn verify_persisted_file(path: &Path) -> Result<(), Box<Error>> {
                 ReplayAction::Header(replay_header) => {
                     let vec = replay_header.configs.data;
                     let pkt = ScaiiPacket::decode(vec)?;
-                    assert!(
-                        packet_source_is_agent(&pkt),
-                        "Expected packet source to be agent {:?}",
-                        &pkt
-                    );
+                    // assert!(
+                    //     packet_source_is_agent(&pkt),
+                    //     "Expected packet source to be agent {:?}",
+                    //     &pkt
+                    // );
                     assert!(
                         packet_dest_is_recorder(&pkt),
                         "Expected packet dest to be recorder {:?}",
@@ -588,18 +589,27 @@ fn get_rust_ffi_config_for_path(path: &str) -> RustFfiConfig {
 
 fn create_test_rust_ffi_config_message() -> ScaiiPacket {
     use scaii_defs::protos::plugin_type::PluginType;
-    let backend_path = "C:\\some\\test\\backend.dll";
-    let rust_ffi_config = get_rust_ffi_config_for_path(backend_path);
-    ScaiiPacket {
-        // have to make src ReplayEndpoint because no Agent is registered during test
-        src: protos::Endpoint { endpoint: Some(Endpoint::Replay(ReplayEndpoint {})) },
-        dest: protos::Endpoint { endpoint: Some(Endpoint::Core(CoreEndpoint {})) },
-        specific_msg: Some(SpecificMsg::Config(Cfg {
-            which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
-                plugin_type: protos::PluginType {
-                    plugin_type: Some(PluginType::RustPlugin(rust_ffi_config)),
-                },
-            })),
-        })),
+    let default_backend_result = util::get_default_backend();
+    match default_backend_result {
+        Ok(default_backend_path) => {
+            //let backend_path = "C:\\Users\\Jed Irvine\\.scaii\\backends\\bin\\sky-rts.dll";
+            let rust_ffi_config = get_rust_ffi_config_for_path(default_backend_path.as_ref());
+            ScaiiPacket {
+                // have to make src ReplayEndpoint because no Agent is registered during test
+                src: protos::Endpoint { endpoint: Some(Endpoint::Replay(ReplayEndpoint {})) },
+                dest: protos::Endpoint { endpoint: Some(Endpoint::Core(CoreEndpoint {})) },
+                specific_msg: Some(SpecificMsg::Config(Cfg {
+                    which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
+                        plugin_type: protos::PluginType {
+                            plugin_type: Some(PluginType::RustPlugin(rust_ffi_config)),
+                        },
+                    })),
+                })),
+            }
+        }
+        Err(err) => {
+            panic!("no default backend path defined for this platform.  Adjust core/util.rs");
+        }
     }
+    
 }
