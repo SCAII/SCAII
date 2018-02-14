@@ -77,7 +77,6 @@ message RpcConfig {
 // on that Backend's configuration.
 message BackendCfg {
 	optional bytes cfg_msg = 1;
-	required bool is_replay_mode = 2;
 }
 
 

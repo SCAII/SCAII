@@ -1,13 +1,12 @@
 /**
  * @fileoverview
  * @enhanceable
- * @suppress {messageConventions} JS Compiler reports an error if a variable or
- *     field starts with 'MSG_' and isn't a translatable message.
  * @public
  */
 // GENERATED CODE -- DO NOT EDIT!
 
 
+goog.provide('proto.scaii.common.Ack');
 goog.provide('proto.scaii.common.Action');
 goog.provide('proto.scaii.common.AgentCfg');
 goog.provide('proto.scaii.common.AgentEndpoint');
@@ -39,6 +38,7 @@ goog.provide('proto.scaii.common.MultiMessage');
 goog.provide('proto.scaii.common.Other');
 goog.provide('proto.scaii.common.PluginType');
 goog.provide('proto.scaii.common.Pos');
+goog.provide('proto.scaii.common.Record');
 goog.provide('proto.scaii.common.RecorderConfig');
 goog.provide('proto.scaii.common.RecorderEndpoint');
 goog.provide('proto.scaii.common.RecorderStep');
@@ -62,10 +62,9 @@ goog.provide('proto.scaii.common.UserCommand.UserCommandType');
 goog.provide('proto.scaii.common.Viz');
 goog.provide('proto.scaii.common.VizInit');
 
+goog.require('jspb.Message');
 goog.require('jspb.BinaryReader');
 goog.require('jspb.BinaryWriter');
-goog.require('jspb.Map');
-goog.require('jspb.Message');
 
 
 /**
@@ -138,7 +137,6 @@ proto.scaii.common.Cfg.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Cfg} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Cfg.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -212,26 +210,35 @@ proto.scaii.common.Cfg.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Cfg} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.Cfg.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.Cfg.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.Cfg.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.Cfg} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.Cfg.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.Cfg.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = message.getCoreCfg();
+  f = this.getCoreCfg();
   if (f != null) {
     writer.writeMessage(
       1,
@@ -239,7 +246,7 @@ proto.scaii.common.Cfg.serializeBinaryToWriter = function(message, writer) {
       proto.scaii.common.CoreCfg.serializeBinaryToWriter
     );
   }
-  f = message.getBackendCfg();
+  f = this.getBackendCfg();
   if (f != null) {
     writer.writeMessage(
       2,
@@ -247,7 +254,7 @@ proto.scaii.common.Cfg.serializeBinaryToWriter = function(message, writer) {
       proto.scaii.common.BackendCfg.serializeBinaryToWriter
     );
   }
-  f = message.getAgentCfg();
+  f = this.getAgentCfg();
   if (f != null) {
     writer.writeMessage(
       3,
@@ -255,7 +262,7 @@ proto.scaii.common.Cfg.serializeBinaryToWriter = function(message, writer) {
       proto.scaii.common.AgentCfg.serializeBinaryToWriter
     );
   }
-  f = message.getModuleCfg();
+  f = this.getModuleCfg();
   if (f != null) {
     writer.writeMessage(
       4,
@@ -455,7 +462,6 @@ proto.scaii.common.PluginType.prototype.toObject = function(opt_includeInstance)
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.PluginType} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.PluginType.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -517,26 +523,35 @@ proto.scaii.common.PluginType.deserializeBinaryFromReader = function(msg, reader
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.PluginType} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.PluginType.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.PluginType.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.PluginType.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.PluginType} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.PluginType.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.PluginType.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = message.getRustPlugin();
+  f = this.getRustPlugin();
   if (f != null) {
     writer.writeMessage(
       1,
@@ -544,7 +559,7 @@ proto.scaii.common.PluginType.serializeBinaryToWriter = function(message, writer
       proto.scaii.common.RustFFIConfig.serializeBinaryToWriter
     );
   }
-  f = message.getRpc();
+  f = this.getRpc();
   if (f != null) {
     writer.writeMessage(
       2,
@@ -658,7 +673,6 @@ proto.scaii.common.CoreCfg.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.CoreCfg} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.CoreCfg.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -714,26 +728,35 @@ proto.scaii.common.CoreCfg.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.CoreCfg} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.CoreCfg.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.CoreCfg.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.CoreCfg.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.CoreCfg} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.CoreCfg.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.CoreCfg.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = message.getPluginType();
+  f = this.getPluginType();
   if (f != null) {
     writer.writeMessage(
       1,
@@ -843,7 +866,6 @@ proto.scaii.common.InitAs.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.InitAs} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.InitAs.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -905,26 +927,35 @@ proto.scaii.common.InitAs.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.InitAs} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.InitAs.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.InitAs.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.InitAs.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.InitAs} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.InitAs.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.InitAs.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = message.getBackend();
+  f = this.getBackend();
   if (f != null) {
     writer.writeMessage(
       1,
@@ -932,7 +963,7 @@ proto.scaii.common.InitAs.serializeBinaryToWriter = function(message, writer) {
       proto.scaii.common.BackendInit.serializeBinaryToWriter
     );
   }
-  f = message.getModule();
+  f = this.getModule();
   if (f != null) {
     writer.writeMessage(
       2,
@@ -1046,7 +1077,6 @@ proto.scaii.common.BackendInit.prototype.toObject = function(opt_includeInstance
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.BackendInit} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.BackendInit.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -1097,24 +1127,33 @@ proto.scaii.common.BackendInit.deserializeBinaryFromReader = function(msg, reade
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.BackendInit} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.BackendInit.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.BackendInit.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.BackendInit.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.BackendInit} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.BackendInit.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.BackendInit.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
 };
 
@@ -1162,7 +1201,6 @@ proto.scaii.common.ModuleInit.prototype.toObject = function(opt_includeInstance)
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ModuleInit} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ModuleInit.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -1217,26 +1255,35 @@ proto.scaii.common.ModuleInit.deserializeBinaryFromReader = function(msg, reader
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.ModuleInit} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.ModuleInit.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.ModuleInit.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.ModuleInit.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.ModuleInit} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.ModuleInit.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.ModuleInit.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {string} */ (jspb.Message.getField(message, 1));
+  f = /** @type {string} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeString(
       1,
@@ -1318,7 +1365,6 @@ proto.scaii.common.RustFFIConfig.prototype.toObject = function(opt_includeInstan
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.RustFFIConfig} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.RustFFIConfig.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -1379,33 +1425,42 @@ proto.scaii.common.RustFFIConfig.deserializeBinaryFromReader = function(msg, rea
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.RustFFIConfig} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.RustFFIConfig.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.RustFFIConfig.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.RustFFIConfig.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.RustFFIConfig} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.RustFFIConfig.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.RustFFIConfig.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {string} */ (jspb.Message.getField(message, 1));
+  f = /** @type {string} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeString(
       1,
       f
     );
   }
-  f = message.getInitAs();
+  f = this.getInitAs();
   if (f != null) {
     writer.writeMessage(
       2,
@@ -1525,14 +1580,13 @@ proto.scaii.common.RpcConfig.prototype.toObject = function(opt_includeInstance) 
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.RpcConfig} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.RpcConfig.toObject = function(includeInstance, msg) {
   var f, obj = {
     ip: jspb.Message.getFieldWithDefault(msg, 1, "127.0.0.1"),
     port: jspb.Message.getFieldWithDefault(msg, 2, 6112),
     command: jspb.Message.getField(msg, 3),
-    commandArgsList: jspb.Message.getRepeatedField(msg, 4),
+    commandArgsList: jspb.Message.getField(msg, 4),
     initAs: (f = msg.getInitAs()) && proto.scaii.common.InitAs.toObject(includeInstance, f)
   };
 
@@ -1601,54 +1655,63 @@ proto.scaii.common.RpcConfig.deserializeBinaryFromReader = function(msg, reader)
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.RpcConfig} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.RpcConfig.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.RpcConfig.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.RpcConfig.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.RpcConfig} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.RpcConfig.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.RpcConfig.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {string} */ (jspb.Message.getField(message, 1));
+  f = /** @type {string} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeString(
       1,
       f
     );
   }
-  f = /** @type {number} */ (jspb.Message.getField(message, 2));
+  f = /** @type {number} */ (jspb.Message.getField(this, 2));
   if (f != null) {
     writer.writeUint32(
       2,
       f
     );
   }
-  f = /** @type {string} */ (jspb.Message.getField(message, 3));
+  f = /** @type {string} */ (jspb.Message.getField(this, 3));
   if (f != null) {
     writer.writeString(
       3,
       f
     );
   }
-  f = message.getCommandArgsList();
+  f = this.getCommandArgsList();
   if (f.length > 0) {
     writer.writeRepeatedString(
       4,
       f
     );
   }
-  f = message.getInitAs();
+  f = this.getInitAs();
   if (f != null) {
     writer.writeMessage(
       5,
@@ -1748,10 +1811,12 @@ proto.scaii.common.RpcConfig.prototype.hasCommand = function() {
 
 /**
  * repeated string command_args = 4;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<string>}
  */
 proto.scaii.common.RpcConfig.prototype.getCommandArgsList = function() {
-  return /** @type {!Array.<string>} */ (jspb.Message.getRepeatedField(this, 4));
+  return /** @type {!Array.<string>} */ (jspb.Message.getField(this, 4));
 };
 
 
@@ -1848,12 +1913,10 @@ proto.scaii.common.BackendCfg.prototype.toObject = function(opt_includeInstance)
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.BackendCfg} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.BackendCfg.toObject = function(includeInstance, msg) {
   var f, obj = {
-    cfgMsg: msg.getCfgMsg_asB64(),
-    isReplayMode: jspb.Message.getField(msg, 2)
+    cfgMsg: msg.getCfgMsg_asB64()
   };
 
   if (includeInstance) {
@@ -1894,10 +1957,6 @@ proto.scaii.common.BackendCfg.deserializeBinaryFromReader = function(msg, reader
       var value = /** @type {!Uint8Array} */ (reader.readBytes());
       msg.setCfgMsg(value);
       break;
-    case 2:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setIsReplayMode(value);
-      break;
     default:
       reader.skipField();
       break;
@@ -1908,36 +1967,38 @@ proto.scaii.common.BackendCfg.deserializeBinaryFromReader = function(msg, reader
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.BackendCfg} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.BackendCfg.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.BackendCfg.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.BackendCfg.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.BackendCfg} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.BackendCfg.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.BackendCfg.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {!(string|Uint8Array)} */ (jspb.Message.getField(message, 1));
+  f = /** @type {!(string|Uint8Array)} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeBytes(
       1,
-      f
-    );
-  }
-  f = /** @type {boolean} */ (jspb.Message.getField(message, 2));
-  if (f != null) {
-    writer.writeBool(
-      2,
       f
     );
   }
@@ -1997,37 +2058,6 @@ proto.scaii.common.BackendCfg.prototype.hasCfgMsg = function() {
 };
 
 
-/**
- * required bool is_replay_mode = 2;
- * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
- * You should avoid comparisons like {@code val === true/false} in those cases.
- * @return {boolean}
- */
-proto.scaii.common.BackendCfg.prototype.getIsReplayMode = function() {
-  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 2, false));
-};
-
-
-/** @param {boolean} value */
-proto.scaii.common.BackendCfg.prototype.setIsReplayMode = function(value) {
-  jspb.Message.setField(this, 2, value);
-};
-
-
-proto.scaii.common.BackendCfg.prototype.clearIsReplayMode = function() {
-  jspb.Message.setField(this, 2, undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {!boolean}
- */
-proto.scaii.common.BackendCfg.prototype.hasIsReplayMode = function() {
-  return jspb.Message.getField(this, 2) != null;
-};
-
-
 
 /**
  * Generated by JsPbCodeGenerator.
@@ -2071,7 +2101,6 @@ proto.scaii.common.AgentCfg.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.AgentCfg} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.AgentCfg.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -2126,26 +2155,35 @@ proto.scaii.common.AgentCfg.deserializeBinaryFromReader = function(msg, reader) 
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.AgentCfg} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.AgentCfg.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.AgentCfg.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.AgentCfg.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.AgentCfg} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.AgentCfg.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.AgentCfg.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {!(string|Uint8Array)} */ (jspb.Message.getField(message, 1));
+  f = /** @type {!(string|Uint8Array)} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeBytes(
       1,
@@ -2251,7 +2289,6 @@ proto.scaii.common.ModuleCfg.prototype.toObject = function(opt_includeInstance) 
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ModuleCfg} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ModuleCfg.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -2306,26 +2343,35 @@ proto.scaii.common.ModuleCfg.deserializeBinaryFromReader = function(msg, reader)
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.ModuleCfg} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.ModuleCfg.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.ModuleCfg.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.ModuleCfg.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.ModuleCfg} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.ModuleCfg.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.ModuleCfg.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {!(string|Uint8Array)} */ (jspb.Message.getField(message, 1));
+  f = /** @type {!(string|Uint8Array)} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeBytes(
       1,
@@ -2458,7 +2504,6 @@ proto.scaii.common.SupportedBehavior.prototype.toObject = function(opt_includeIn
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.SupportedBehavior} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.SupportedBehavior.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -2526,26 +2571,35 @@ proto.scaii.common.SupportedBehavior.deserializeBinaryFromReader = function(msg,
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.SupportedBehavior} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.SupportedBehavior.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.SupportedBehavior.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.SupportedBehavior.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.SupportedBehavior} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.SupportedBehavior.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.SupportedBehavior.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = message.getBackend();
+  f = this.getBackend();
   if (f != null) {
     writer.writeMessage(
       1,
@@ -2553,7 +2607,7 @@ proto.scaii.common.SupportedBehavior.serializeBinaryToWriter = function(message,
       proto.scaii.common.BackendSupported.serializeBinaryToWriter
     );
   }
-  f = message.getAgent();
+  f = this.getAgent();
   if (f != null) {
     writer.writeMessage(
       2,
@@ -2561,7 +2615,7 @@ proto.scaii.common.SupportedBehavior.serializeBinaryToWriter = function(message,
       proto.scaii.common.AgentSupported.serializeBinaryToWriter
     );
   }
-  f = message.getGenericModule();
+  f = this.getGenericModule();
   if (f != null) {
     writer.writeMessage(
       5,
@@ -2705,7 +2759,6 @@ proto.scaii.common.BackendSupported.prototype.toObject = function(opt_includeIns
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.BackendSupported} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.BackendSupported.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -2765,46 +2818,45 @@ proto.scaii.common.BackendSupported.deserializeBinaryFromReader = function(msg, 
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.BackendSupported} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.BackendSupported.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.BackendSupported.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.BackendSupported.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.BackendSupported} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.BackendSupported.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.BackendSupported.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {!proto.scaii.common.BackendSupported.SerializationSupport} */ (jspb.Message.getField(message, 1));
+  f = /** @type {!proto.scaii.common.BackendSupported.SerializationSupport} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeEnum(
       1,
       f
     );
   }
-  jspb.Message.serializeBinaryExtensions(message, writer,
+  jspb.Message.serializeBinaryExtensions(this, writer,
     proto.scaii.common.BackendSupported.extensionsBinary, proto.scaii.common.BackendSupported.prototype.getExtension);
 };
 
-
-/**
- * @enum {number}
- */
-proto.scaii.common.BackendSupported.SerializationSupport = {
-  NONE: 0,
-  DIVERGING_ONLY: 1,
-  NONDIVERGING_ONLY: 2,
-  FULL: 3
-};
 
 /**
  * required SerializationSupport serialization_support = 1;
@@ -2865,6 +2917,16 @@ proto.scaii.common.BackendSupported.extensions = {};
  */
 proto.scaii.common.BackendSupported.extensionsBinary = {};
 
+/**
+ * @enum {number}
+ */
+proto.scaii.common.BackendSupported.SerializationSupport = {
+  NONE: 0,
+  DIVERGING_ONLY: 1,
+  NONDIVERGING_ONLY: 2,
+  FULL: 3
+};
+
 
 /**
  * Generated by JsPbCodeGenerator.
@@ -2908,7 +2970,6 @@ proto.scaii.common.AgentSupported.prototype.toObject = function(opt_includeInsta
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.AgentSupported} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.AgentSupported.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -2964,26 +3025,35 @@ proto.scaii.common.AgentSupported.deserializeBinaryFromReader = function(msg, re
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.AgentSupported} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.AgentSupported.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.AgentSupported.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.AgentSupported.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.AgentSupported} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.AgentSupported.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.AgentSupported.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  jspb.Message.serializeBinaryExtensions(message, writer,
+  jspb.Message.serializeBinaryExtensions(this, writer,
     proto.scaii.common.AgentSupported.extensionsBinary, proto.scaii.common.AgentSupported.prototype.getExtension);
 };
 
@@ -3061,7 +3131,6 @@ proto.scaii.common.ModuleSupported.prototype.toObject = function(opt_includeInst
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ModuleSupported} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ModuleSupported.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -3117,26 +3186,35 @@ proto.scaii.common.ModuleSupported.deserializeBinaryFromReader = function(msg, r
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.ModuleSupported} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.ModuleSupported.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.ModuleSupported.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.ModuleSupported.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.ModuleSupported} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.ModuleSupported.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.ModuleSupported.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  jspb.Message.serializeBinaryExtensions(message, writer,
+  jspb.Message.serializeBinaryExtensions(this, writer,
     proto.scaii.common.ModuleSupported.extensionsBinary, proto.scaii.common.ModuleSupported.prototype.getExtension);
 };
 
@@ -3221,7 +3299,6 @@ proto.scaii.common.VizInit.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.VizInit} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.VizInit.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -3298,54 +3375,63 @@ proto.scaii.common.VizInit.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.VizInit} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.VizInit.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.VizInit.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.VizInit.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.VizInit} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.VizInit.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.VizInit.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {boolean} */ (jspb.Message.getField(message, 1));
+  f = /** @type {boolean} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeBool(
       1,
       f
     );
   }
-  f = /** @type {number} */ (jspb.Message.getField(message, 2));
+  f = /** @type {number} */ (jspb.Message.getField(this, 2));
   if (f != null) {
     writer.writeUint32(
       2,
       f
     );
   }
-  f = /** @type {number} */ (jspb.Message.getField(message, 3));
+  f = /** @type {number} */ (jspb.Message.getField(this, 3));
   if (f != null) {
     writer.writeUint32(
       3,
       f
     );
   }
-  f = /** @type {number} */ (jspb.Message.getField(message, 4));
+  f = /** @type {number} */ (jspb.Message.getField(this, 4));
   if (f != null) {
     writer.writeUint32(
       4,
       f
     );
   }
-  f = message.getExplanationsList();
+  f = this.getExplanationsList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
       5,
@@ -3476,6 +3562,8 @@ proto.scaii.common.VizInit.prototype.hasGameboardHeight = function() {
 
 /**
  * repeated ExplanationPoint explanations = 5;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<!proto.scaii.common.ExplanationPoint>}
  */
 proto.scaii.common.VizInit.prototype.getExplanationsList = function() {
@@ -3555,7 +3643,6 @@ proto.scaii.common.ExplanationPoint.prototype.toObject = function(opt_includeIns
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ExplanationPoint} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ExplanationPoint.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -3632,54 +3719,63 @@ proto.scaii.common.ExplanationPoint.deserializeBinaryFromReader = function(msg, 
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.ExplanationPoint} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.ExplanationPoint.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.ExplanationPoint.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.ExplanationPoint.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.ExplanationPoint} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.ExplanationPoint.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.ExplanationPoint.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {number} */ (jspb.Message.getField(message, 1));
+  f = /** @type {number} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeUint32(
       1,
       f
     );
   }
-  f = /** @type {number} */ (jspb.Message.getField(message, 2));
+  f = /** @type {number} */ (jspb.Message.getField(this, 2));
   if (f != null) {
     writer.writeUint32(
       2,
       f
     );
   }
-  f = /** @type {string} */ (jspb.Message.getField(message, 3));
+  f = /** @type {string} */ (jspb.Message.getField(this, 3));
   if (f != null) {
     writer.writeString(
       3,
       f
     );
   }
-  f = /** @type {string} */ (jspb.Message.getField(message, 4));
+  f = /** @type {string} */ (jspb.Message.getField(this, 4));
   if (f != null) {
     writer.writeString(
       4,
       f
     );
   }
-  f = message.getLayersList();
+  f = this.getLayersList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
       5,
@@ -3808,6 +3904,8 @@ proto.scaii.common.ExplanationPoint.prototype.hasDescription = function() {
 
 /**
  * repeated Layer layers = 5;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<!proto.scaii.common.Layer>}
  */
 proto.scaii.common.ExplanationPoint.prototype.getLayersList = function() {
@@ -3887,7 +3985,6 @@ proto.scaii.common.Layer.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Layer} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Layer.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -3957,47 +4054,56 @@ proto.scaii.common.Layer.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Layer} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.Layer.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.Layer.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.Layer.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.Layer} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.Layer.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.Layer.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {string} */ (jspb.Message.getField(message, 1));
+  f = /** @type {string} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeString(
       1,
       f
     );
   }
-  f = message.getCellsList();
+  f = this.getCellsList();
   if (f.length > 0) {
     writer.writeRepeatedDouble(
       2,
       f
     );
   }
-  f = /** @type {number} */ (jspb.Message.getField(message, 3));
+  f = /** @type {number} */ (jspb.Message.getField(this, 3));
   if (f != null) {
     writer.writeUint32(
       3,
       f
     );
   }
-  f = /** @type {number} */ (jspb.Message.getField(message, 4));
+  f = /** @type {number} */ (jspb.Message.getField(this, 4));
   if (f != null) {
     writer.writeUint32(
       4,
@@ -4038,6 +4144,8 @@ proto.scaii.common.Layer.prototype.hasName = function() {
 
 /**
  * repeated double cells = 2;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<number>}
  */
 proto.scaii.common.Layer.prototype.getCellsList = function() {
@@ -4173,7 +4281,6 @@ proto.scaii.common.Viz.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Viz} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Viz.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -4241,26 +4348,35 @@ proto.scaii.common.Viz.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Viz} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.Viz.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.Viz.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.Viz.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.Viz} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.Viz.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.Viz.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = message.getEntitiesList();
+  f = this.getEntitiesList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
       1,
@@ -4268,7 +4384,7 @@ proto.scaii.common.Viz.serializeBinaryToWriter = function(message, writer) {
       proto.scaii.common.Entity.serializeBinaryToWriter
     );
   }
-  f = message.getChart();
+  f = this.getChart();
   if (f != null) {
     writer.writeMessage(
       2,
@@ -4276,7 +4392,7 @@ proto.scaii.common.Viz.serializeBinaryToWriter = function(message, writer) {
       proto.scaii.common.ChartInfo.serializeBinaryToWriter
     );
   }
-  f = /** @type {number} */ (jspb.Message.getField(message, 3));
+  f = /** @type {number} */ (jspb.Message.getField(this, 3));
   if (f != null) {
     writer.writeUint32(
       3,
@@ -4288,6 +4404,8 @@ proto.scaii.common.Viz.serializeBinaryToWriter = function(message, writer) {
 
 /**
  * repeated Entity entities = 1;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<!proto.scaii.common.Entity>}
  */
 proto.scaii.common.Viz.prototype.getEntitiesList = function() {
@@ -4426,7 +4544,6 @@ proto.scaii.common.ChartInfo.prototype.toObject = function(opt_includeInstance) 
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ChartInfo} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ChartInfo.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -4504,47 +4621,56 @@ proto.scaii.common.ChartInfo.deserializeBinaryFromReader = function(msg, reader)
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.ChartInfo} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.ChartInfo.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.ChartInfo.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.ChartInfo.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.ChartInfo} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.ChartInfo.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.ChartInfo.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {string} */ (jspb.Message.getField(message, 1));
+  f = /** @type {string} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeString(
       1,
       f
     );
   }
-  f = /** @type {string} */ (jspb.Message.getField(message, 2));
+  f = /** @type {string} */ (jspb.Message.getField(this, 2));
   if (f != null) {
     writer.writeString(
       2,
       f
     );
   }
-  f = /** @type {string} */ (jspb.Message.getField(message, 3));
+  f = /** @type {string} */ (jspb.Message.getField(this, 3));
   if (f != null) {
     writer.writeString(
       3,
       f
     );
   }
-  f = message.getActions();
+  f = this.getActions();
   if (f != null) {
     writer.writeMessage(
       4,
@@ -4552,7 +4678,7 @@ proto.scaii.common.ChartInfo.serializeBinaryToWriter = function(message, writer)
       proto.scaii.common.ChartActions.serializeBinaryToWriter
     );
   }
-  f = message.getValueVectorsList();
+  f = this.getValueVectorsList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
       5,
@@ -4682,6 +4808,8 @@ proto.scaii.common.ChartInfo.prototype.hasActions = function() {
 
 /**
  * repeated ChartValueVector value_vectors = 5;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<!proto.scaii.common.ChartValueVector>}
  */
 proto.scaii.common.ChartInfo.prototype.getValueVectorsList = function() {
@@ -4761,12 +4889,11 @@ proto.scaii.common.ChartActions.prototype.toObject = function(opt_includeInstanc
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ChartActions} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ChartActions.toObject = function(includeInstance, msg) {
   var f, obj = {
     actionsLabel: jspb.Message.getField(msg, 1),
-    actionNamesList: jspb.Message.getRepeatedField(msg, 2)
+    actionNamesList: jspb.Message.getField(msg, 2)
   };
 
   if (includeInstance) {
@@ -4821,33 +4948,42 @@ proto.scaii.common.ChartActions.deserializeBinaryFromReader = function(msg, read
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.ChartActions} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.ChartActions.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.ChartActions.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.ChartActions.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.ChartActions} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.ChartActions.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.ChartActions.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {string} */ (jspb.Message.getField(message, 1));
+  f = /** @type {string} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeString(
       1,
       f
     );
   }
-  f = message.getActionNamesList();
+  f = this.getActionNamesList();
   if (f.length > 0) {
     writer.writeRepeatedString(
       2,
@@ -4888,10 +5024,12 @@ proto.scaii.common.ChartActions.prototype.hasActionsLabel = function() {
 
 /**
  * repeated string action_names = 2;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<string>}
  */
 proto.scaii.common.ChartActions.prototype.getActionNamesList = function() {
-  return /** @type {!Array.<string>} */ (jspb.Message.getRepeatedField(this, 2));
+  return /** @type {!Array.<string>} */ (jspb.Message.getField(this, 2));
 };
 
 
@@ -4965,7 +5103,6 @@ proto.scaii.common.ChartValueVector.prototype.toObject = function(opt_includeIns
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ChartValueVector} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ChartValueVector.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -5025,33 +5162,42 @@ proto.scaii.common.ChartValueVector.deserializeBinaryFromReader = function(msg, 
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.ChartValueVector} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.ChartValueVector.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.ChartValueVector.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.ChartValueVector.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.ChartValueVector} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.ChartValueVector.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.ChartValueVector.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {string} */ (jspb.Message.getField(message, 1));
+  f = /** @type {string} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeString(
       1,
       f
     );
   }
-  f = message.getActionValuesList();
+  f = this.getActionValuesList();
   if (f.length > 0) {
     writer.writeRepeatedDouble(
       2,
@@ -5092,6 +5238,8 @@ proto.scaii.common.ChartValueVector.prototype.hasLabel = function() {
 
 /**
  * repeated double action_values = 2;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<number>}
  */
 proto.scaii.common.ChartValueVector.prototype.getActionValuesList = function() {
@@ -5169,7 +5317,6 @@ proto.scaii.common.Entity.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Entity} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Entity.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -5242,33 +5389,42 @@ proto.scaii.common.Entity.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Entity} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.Entity.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.Entity.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.Entity.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.Entity} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.Entity.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.Entity.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {number} */ (jspb.Message.getField(message, 1));
+  f = /** @type {number} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeUint64(
       1,
       f
     );
   }
-  f = message.getPos();
+  f = this.getPos();
   if (f != null) {
     writer.writeMessage(
       2,
@@ -5276,7 +5432,7 @@ proto.scaii.common.Entity.serializeBinaryToWriter = function(message, writer) {
       proto.scaii.common.Pos.serializeBinaryToWriter
     );
   }
-  f = message.getShapesList();
+  f = this.getShapesList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
       3,
@@ -5284,7 +5440,7 @@ proto.scaii.common.Entity.serializeBinaryToWriter = function(message, writer) {
       proto.scaii.common.Shape.serializeBinaryToWriter
     );
   }
-  f = /** @type {boolean} */ (jspb.Message.getField(message, 4));
+  f = /** @type {boolean} */ (jspb.Message.getField(this, 4));
   if (f != null) {
     writer.writeBool(
       4,
@@ -5355,6 +5511,8 @@ proto.scaii.common.Entity.prototype.hasPos = function() {
 
 /**
  * repeated Shape shapes = 3;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<!proto.scaii.common.Shape>}
  */
 proto.scaii.common.Entity.prototype.getShapesList = function() {
@@ -5458,7 +5616,6 @@ proto.scaii.common.Pos.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Pos} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Pos.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -5518,33 +5675,42 @@ proto.scaii.common.Pos.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Pos} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.Pos.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.Pos.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.Pos.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.Pos} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.Pos.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.Pos.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {number} */ (jspb.Message.getField(message, 1));
+  f = /** @type {number} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeDouble(
       1,
       f
     );
   }
-  f = /** @type {number} */ (jspb.Message.getField(message, 2));
+  f = /** @type {number} */ (jspb.Message.getField(this, 2));
   if (f != null) {
     writer.writeDouble(
       2,
@@ -5655,7 +5821,6 @@ proto.scaii.common.Color.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Color} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Color.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -5725,47 +5890,56 @@ proto.scaii.common.Color.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Color} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.Color.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.Color.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.Color.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.Color} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.Color.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.Color.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {number} */ (jspb.Message.getField(message, 1));
+  f = /** @type {number} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeUint32(
       1,
       f
     );
   }
-  f = /** @type {number} */ (jspb.Message.getField(message, 2));
+  f = /** @type {number} */ (jspb.Message.getField(this, 2));
   if (f != null) {
     writer.writeUint32(
       2,
       f
     );
   }
-  f = /** @type {number} */ (jspb.Message.getField(message, 3));
+  f = /** @type {number} */ (jspb.Message.getField(this, 3));
   if (f != null) {
     writer.writeUint32(
       3,
       f
     );
   }
-  f = /** @type {number} */ (jspb.Message.getField(message, 4));
+  f = /** @type {number} */ (jspb.Message.getField(this, 4));
   if (f != null) {
     writer.writeUint32(
       4,
@@ -5934,7 +6108,6 @@ proto.scaii.common.Triangle.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Triangle} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Triangle.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -5989,26 +6162,35 @@ proto.scaii.common.Triangle.deserializeBinaryFromReader = function(msg, reader) 
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Triangle} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.Triangle.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.Triangle.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.Triangle.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.Triangle} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.Triangle.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.Triangle.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {number} */ (jspb.Message.getField(message, 1));
+  f = /** @type {number} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeDouble(
       1,
@@ -6090,7 +6272,6 @@ proto.scaii.common.Rect.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Rect} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Rect.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -6150,33 +6331,42 @@ proto.scaii.common.Rect.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Rect} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.Rect.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.Rect.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.Rect.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.Rect} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.Rect.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.Rect.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {number} */ (jspb.Message.getField(message, 1));
+  f = /** @type {number} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeDouble(
       1,
       f
     );
   }
-  f = /** @type {number} */ (jspb.Message.getField(message, 2));
+  f = /** @type {number} */ (jspb.Message.getField(this, 2));
   if (f != null) {
     writer.writeDouble(
       2,
@@ -6287,7 +6477,6 @@ proto.scaii.common.Shape.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Shape} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Shape.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -6387,33 +6576,42 @@ proto.scaii.common.Shape.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Shape} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.Shape.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.Shape.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.Shape.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.Shape} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.Shape.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.Shape.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {number} */ (jspb.Message.getField(message, 1));
+  f = /** @type {number} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeUint64(
       1,
       f
     );
   }
-  f = message.getRelativePos();
+  f = this.getRelativePos();
   if (f != null) {
     writer.writeMessage(
       2,
@@ -6421,7 +6619,7 @@ proto.scaii.common.Shape.serializeBinaryToWriter = function(message, writer) {
       proto.scaii.common.Pos.serializeBinaryToWriter
     );
   }
-  f = message.getColor();
+  f = this.getColor();
   if (f != null) {
     writer.writeMessage(
       3,
@@ -6429,14 +6627,14 @@ proto.scaii.common.Shape.serializeBinaryToWriter = function(message, writer) {
       proto.scaii.common.Color.serializeBinaryToWriter
     );
   }
-  f = /** @type {number} */ (jspb.Message.getField(message, 4));
+  f = /** @type {number} */ (jspb.Message.getField(this, 4));
   if (f != null) {
     writer.writeDouble(
       4,
       f
     );
   }
-  f = message.getRect();
+  f = this.getRect();
   if (f != null) {
     writer.writeMessage(
       20,
@@ -6444,7 +6642,7 @@ proto.scaii.common.Shape.serializeBinaryToWriter = function(message, writer) {
       proto.scaii.common.Rect.serializeBinaryToWriter
     );
   }
-  f = message.getTriangle();
+  f = this.getTriangle();
   if (f != null) {
     writer.writeMessage(
       21,
@@ -6452,14 +6650,14 @@ proto.scaii.common.Shape.serializeBinaryToWriter = function(message, writer) {
       proto.scaii.common.Triangle.serializeBinaryToWriter
     );
   }
-  f = /** @type {string} */ (jspb.Message.getField(message, 22));
+  f = /** @type {string} */ (jspb.Message.getField(this, 22));
   if (f != null) {
     writer.writeString(
       22,
       f
     );
   }
-  f = message.getGradientColor();
+  f = this.getGradientColor();
   if (f != null) {
     writer.writeMessage(
       23,
@@ -6467,7 +6665,7 @@ proto.scaii.common.Shape.serializeBinaryToWriter = function(message, writer) {
       proto.scaii.common.Color.serializeBinaryToWriter
     );
   }
-  f = /** @type {boolean} */ (jspb.Message.getField(message, 40));
+  f = /** @type {boolean} */ (jspb.Message.getField(this, 40));
   if (f != null) {
     writer.writeBool(
       40,
@@ -6795,7 +6993,6 @@ proto.scaii.common.MultiMessage.prototype.toObject = function(opt_includeInstanc
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.MultiMessage} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.MultiMessage.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -6852,26 +7049,35 @@ proto.scaii.common.MultiMessage.deserializeBinaryFromReader = function(msg, read
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.MultiMessage} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.MultiMessage.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.MultiMessage.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.MultiMessage.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.MultiMessage} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.MultiMessage.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.MultiMessage.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = message.getPacketsList();
+  f = this.getPacketsList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
       1,
@@ -6884,6 +7090,8 @@ proto.scaii.common.MultiMessage.serializeBinaryToWriter = function(message, writ
 
 /**
  * repeated ScaiiPacket packets = 1;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<!proto.scaii.common.ScaiiPacket>}
  */
 proto.scaii.common.MultiMessage.prototype.getPacketsList = function() {
@@ -6939,7 +7147,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.scaii.common.ScaiiPacket.oneofGroups_ = [[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,29]];
+proto.scaii.common.ScaiiPacket.oneofGroups_ = [[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,29]];
 
 /**
  * @enum {number}
@@ -6963,6 +7171,10 @@ proto.scaii.common.ScaiiPacket.SpecificMsgCase = {
   RECORDER_CONFIG: 15,
   GAME_COMPLETE: 16,
   REPLAY_SESSION_CONFIG: 17,
+  ACK: 18,
+  EMIT_VIZ: 19,
+  RECORD: 20,
+  REPLAY_MODE: 21,
   OTHER: 29
 };
 
@@ -6998,7 +7210,6 @@ proto.scaii.common.ScaiiPacket.prototype.toObject = function(opt_includeInstance
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ScaiiPacket} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ScaiiPacket.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -7019,6 +7230,10 @@ proto.scaii.common.ScaiiPacket.toObject = function(includeInstance, msg) {
     recorderConfig: (f = msg.getRecorderConfig()) && proto.scaii.common.RecorderConfig.toObject(includeInstance, f),
     gameComplete: (f = msg.getGameComplete()) && proto.scaii.common.GameComplete.toObject(includeInstance, f),
     replaySessionConfig: (f = msg.getReplaySessionConfig()) && proto.scaii.common.ReplaySessionConfig.toObject(includeInstance, f),
+    ack: (f = msg.getAck()) && proto.scaii.common.Ack.toObject(includeInstance, f),
+    emitViz: jspb.Message.getField(msg, 19),
+    record: (f = msg.getRecord()) && proto.scaii.common.Record.toObject(includeInstance, f),
+    replayMode: jspb.Message.getField(msg, 21),
     other: (f = msg.getOther()) && proto.scaii.common.Other.toObject(includeInstance, f),
     src: (f = msg.getSrc()) && proto.scaii.common.Endpoint.toObject(includeInstance, f),
     dest: (f = msg.getDest()) && proto.scaii.common.Endpoint.toObject(includeInstance, f)
@@ -7142,6 +7357,24 @@ proto.scaii.common.ScaiiPacket.deserializeBinaryFromReader = function(msg, reade
       reader.readMessage(value,proto.scaii.common.ReplaySessionConfig.deserializeBinaryFromReader);
       msg.setReplaySessionConfig(value);
       break;
+    case 18:
+      var value = new proto.scaii.common.Ack;
+      reader.readMessage(value,proto.scaii.common.Ack.deserializeBinaryFromReader);
+      msg.setAck(value);
+      break;
+    case 19:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setEmitViz(value);
+      break;
+    case 20:
+      var value = new proto.scaii.common.Record;
+      reader.readMessage(value,proto.scaii.common.Record.deserializeBinaryFromReader);
+      msg.setRecord(value);
+      break;
+    case 21:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setReplayMode(value);
+      break;
     case 29:
       var value = new proto.scaii.common.Other;
       reader.readMessage(value,proto.scaii.common.Other.deserializeBinaryFromReader);
@@ -7167,26 +7400,35 @@ proto.scaii.common.ScaiiPacket.deserializeBinaryFromReader = function(msg, reade
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.ScaiiPacket} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.ScaiiPacket.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.ScaiiPacket.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.ScaiiPacket} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.ScaiiPacket.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = message.getState();
+  f = this.getState();
   if (f != null) {
     writer.writeMessage(
       1,
@@ -7194,7 +7436,7 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       proto.scaii.common.State.serializeBinaryToWriter
     );
   }
-  f = message.getAction();
+  f = this.getAction();
   if (f != null) {
     writer.writeMessage(
       2,
@@ -7202,7 +7444,7 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       proto.scaii.common.Action.serializeBinaryToWriter
     );
   }
-  f = message.getViz();
+  f = this.getViz();
   if (f != null) {
     writer.writeMessage(
       3,
@@ -7210,7 +7452,7 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       proto.scaii.common.Viz.serializeBinaryToWriter
     );
   }
-  f = message.getErr();
+  f = this.getErr();
   if (f != null) {
     writer.writeMessage(
       4,
@@ -7218,7 +7460,7 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       proto.scaii.common.Error.serializeBinaryToWriter
     );
   }
-  f = message.getConfig();
+  f = this.getConfig();
   if (f != null) {
     writer.writeMessage(
       5,
@@ -7226,7 +7468,7 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       proto.scaii.common.Cfg.serializeBinaryToWriter
     );
   }
-  f = message.getSupported();
+  f = this.getSupported();
   if (f != null) {
     writer.writeMessage(
       6,
@@ -7234,7 +7476,7 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       proto.scaii.common.SupportedBehavior.serializeBinaryToWriter
     );
   }
-  f = message.getSerReq();
+  f = this.getSerReq();
   if (f != null) {
     writer.writeMessage(
       7,
@@ -7242,7 +7484,7 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       proto.scaii.common.SerializationRequest.serializeBinaryToWriter
     );
   }
-  f = message.getSerResp();
+  f = this.getSerResp();
   if (f != null) {
     writer.writeMessage(
       8,
@@ -7250,14 +7492,14 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       proto.scaii.common.SerializationResponse.serializeBinaryToWriter
     );
   }
-  f = /** @type {boolean} */ (jspb.Message.getField(message, 9));
+  f = /** @type {boolean} */ (jspb.Message.getField(this, 9));
   if (f != null) {
     writer.writeBool(
       9,
       f
     );
   }
-  f = message.getVizInit();
+  f = this.getVizInit();
   if (f != null) {
     writer.writeMessage(
       10,
@@ -7265,7 +7507,7 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       proto.scaii.common.VizInit.serializeBinaryToWriter
     );
   }
-  f = message.getUserCommand();
+  f = this.getUserCommand();
   if (f != null) {
     writer.writeMessage(
       11,
@@ -7273,7 +7515,7 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       proto.scaii.common.UserCommand.serializeBinaryToWriter
     );
   }
-  f = message.getReplayStep();
+  f = this.getReplayStep();
   if (f != null) {
     writer.writeMessage(
       12,
@@ -7281,7 +7523,7 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       proto.scaii.common.ReplayStep.serializeBinaryToWriter
     );
   }
-  f = message.getTestControl();
+  f = this.getTestControl();
   if (f != null) {
     writer.writeMessage(
       13,
@@ -7289,7 +7531,7 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       proto.scaii.common.TestControl.serializeBinaryToWriter
     );
   }
-  f = message.getRecorderStep();
+  f = this.getRecorderStep();
   if (f != null) {
     writer.writeMessage(
       14,
@@ -7297,7 +7539,7 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       proto.scaii.common.RecorderStep.serializeBinaryToWriter
     );
   }
-  f = message.getRecorderConfig();
+  f = this.getRecorderConfig();
   if (f != null) {
     writer.writeMessage(
       15,
@@ -7305,7 +7547,7 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       proto.scaii.common.RecorderConfig.serializeBinaryToWriter
     );
   }
-  f = message.getGameComplete();
+  f = this.getGameComplete();
   if (f != null) {
     writer.writeMessage(
       16,
@@ -7313,7 +7555,7 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       proto.scaii.common.GameComplete.serializeBinaryToWriter
     );
   }
-  f = message.getReplaySessionConfig();
+  f = this.getReplaySessionConfig();
   if (f != null) {
     writer.writeMessage(
       17,
@@ -7321,7 +7563,37 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       proto.scaii.common.ReplaySessionConfig.serializeBinaryToWriter
     );
   }
-  f = message.getOther();
+  f = this.getAck();
+  if (f != null) {
+    writer.writeMessage(
+      18,
+      f,
+      proto.scaii.common.Ack.serializeBinaryToWriter
+    );
+  }
+  f = /** @type {boolean} */ (jspb.Message.getField(this, 19));
+  if (f != null) {
+    writer.writeBool(
+      19,
+      f
+    );
+  }
+  f = this.getRecord();
+  if (f != null) {
+    writer.writeMessage(
+      20,
+      f,
+      proto.scaii.common.Record.serializeBinaryToWriter
+    );
+  }
+  f = /** @type {boolean} */ (jspb.Message.getField(this, 21));
+  if (f != null) {
+    writer.writeBool(
+      21,
+      f
+    );
+  }
+  f = this.getOther();
   if (f != null) {
     writer.writeMessage(
       29,
@@ -7329,7 +7601,7 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       proto.scaii.common.Other.serializeBinaryToWriter
     );
   }
-  f = message.getSrc();
+  f = this.getSrc();
   if (f != null) {
     writer.writeMessage(
       31,
@@ -7337,7 +7609,7 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       proto.scaii.common.Endpoint.serializeBinaryToWriter
     );
   }
-  f = message.getDest();
+  f = this.getDest();
   if (f != null) {
     writer.writeMessage(
       30,
@@ -7860,6 +8132,128 @@ proto.scaii.common.ScaiiPacket.prototype.hasReplaySessionConfig = function() {
 
 
 /**
+ * optional Ack ack = 18;
+ * @return {?proto.scaii.common.Ack}
+ */
+proto.scaii.common.ScaiiPacket.prototype.getAck = function() {
+  return /** @type{?proto.scaii.common.Ack} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.Ack, 18));
+};
+
+
+/** @param {?proto.scaii.common.Ack|undefined} value */
+proto.scaii.common.ScaiiPacket.prototype.setAck = function(value) {
+  jspb.Message.setOneofWrapperField(this, 18, proto.scaii.common.ScaiiPacket.oneofGroups_[0], value);
+};
+
+
+proto.scaii.common.ScaiiPacket.prototype.clearAck = function() {
+  this.setAck(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.ScaiiPacket.prototype.hasAck = function() {
+  return jspb.Message.getField(this, 18) != null;
+};
+
+
+/**
+ * optional bool emit_viz = 19;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.scaii.common.ScaiiPacket.prototype.getEmitViz = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 19, false));
+};
+
+
+/** @param {boolean} value */
+proto.scaii.common.ScaiiPacket.prototype.setEmitViz = function(value) {
+  jspb.Message.setOneofField(this, 19, proto.scaii.common.ScaiiPacket.oneofGroups_[0], value);
+};
+
+
+proto.scaii.common.ScaiiPacket.prototype.clearEmitViz = function() {
+  jspb.Message.setOneofField(this, 19, proto.scaii.common.ScaiiPacket.oneofGroups_[0], undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.ScaiiPacket.prototype.hasEmitViz = function() {
+  return jspb.Message.getField(this, 19) != null;
+};
+
+
+/**
+ * optional Record record = 20;
+ * @return {?proto.scaii.common.Record}
+ */
+proto.scaii.common.ScaiiPacket.prototype.getRecord = function() {
+  return /** @type{?proto.scaii.common.Record} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.Record, 20));
+};
+
+
+/** @param {?proto.scaii.common.Record|undefined} value */
+proto.scaii.common.ScaiiPacket.prototype.setRecord = function(value) {
+  jspb.Message.setOneofWrapperField(this, 20, proto.scaii.common.ScaiiPacket.oneofGroups_[0], value);
+};
+
+
+proto.scaii.common.ScaiiPacket.prototype.clearRecord = function() {
+  this.setRecord(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.ScaiiPacket.prototype.hasRecord = function() {
+  return jspb.Message.getField(this, 20) != null;
+};
+
+
+/**
+ * optional bool replay_mode = 21;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.scaii.common.ScaiiPacket.prototype.getReplayMode = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 21, false));
+};
+
+
+/** @param {boolean} value */
+proto.scaii.common.ScaiiPacket.prototype.setReplayMode = function(value) {
+  jspb.Message.setOneofField(this, 21, proto.scaii.common.ScaiiPacket.oneofGroups_[0], value);
+};
+
+
+proto.scaii.common.ScaiiPacket.prototype.clearReplayMode = function() {
+  jspb.Message.setOneofField(this, 21, proto.scaii.common.ScaiiPacket.oneofGroups_[0], undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.ScaiiPacket.prototype.hasReplayMode = function() {
+  return jspb.Message.getField(this, 21) != null;
+};
+
+
+/**
  * optional Other other = 29;
  * @return {?proto.scaii.common.Other}
  */
@@ -7960,6 +8354,130 @@ proto.scaii.common.ScaiiPacket.prototype.hasDest = function() {
  * @extends {jspb.Message}
  * @constructor
  */
+proto.scaii.common.Ack = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.scaii.common.Ack, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.Ack.displayName = 'proto.scaii.common.Ack';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.Ack.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.Ack.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.Ack} msg The msg instance to transform.
+ * @return {!Object}
+ */
+proto.scaii.common.Ack.toObject = function(includeInstance, msg) {
+  var f, obj = {
+
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.Ack}
+ */
+proto.scaii.common.Ack.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.Ack;
+  return proto.scaii.common.Ack.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.Ack} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.Ack}
+ */
+proto.scaii.common.Ack.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Ack} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.Ack.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.Ack.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  this.serializeBinaryToWriter(writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.Ack.prototype.serializeBinaryToWriter = function (writer) {
+  var f = undefined;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
 proto.scaii.common.Endpoint = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, proto.scaii.common.Endpoint.oneofGroups_);
 };
@@ -8022,7 +8540,6 @@ proto.scaii.common.Endpoint.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Endpoint} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Endpoint.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -8108,26 +8625,35 @@ proto.scaii.common.Endpoint.deserializeBinaryFromReader = function(msg, reader) 
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Endpoint} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.Endpoint.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.Endpoint.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.Endpoint.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.Endpoint} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.Endpoint.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.Endpoint.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = message.getBackend();
+  f = this.getBackend();
   if (f != null) {
     writer.writeMessage(
       1,
@@ -8135,7 +8661,7 @@ proto.scaii.common.Endpoint.serializeBinaryToWriter = function(message, writer) 
       proto.scaii.common.BackendEndpoint.serializeBinaryToWriter
     );
   }
-  f = message.getAgent();
+  f = this.getAgent();
   if (f != null) {
     writer.writeMessage(
       2,
@@ -8143,7 +8669,7 @@ proto.scaii.common.Endpoint.serializeBinaryToWriter = function(message, writer) 
       proto.scaii.common.AgentEndpoint.serializeBinaryToWriter
     );
   }
-  f = message.getCore();
+  f = this.getCore();
   if (f != null) {
     writer.writeMessage(
       3,
@@ -8151,7 +8677,7 @@ proto.scaii.common.Endpoint.serializeBinaryToWriter = function(message, writer) 
       proto.scaii.common.CoreEndpoint.serializeBinaryToWriter
     );
   }
-  f = message.getModule();
+  f = this.getModule();
   if (f != null) {
     writer.writeMessage(
       4,
@@ -8159,7 +8685,7 @@ proto.scaii.common.Endpoint.serializeBinaryToWriter = function(message, writer) 
       proto.scaii.common.ModuleEndpoint.serializeBinaryToWriter
     );
   }
-  f = message.getReplay();
+  f = this.getReplay();
   if (f != null) {
     writer.writeMessage(
       5,
@@ -8167,7 +8693,7 @@ proto.scaii.common.Endpoint.serializeBinaryToWriter = function(message, writer) 
       proto.scaii.common.ReplayEndpoint.serializeBinaryToWriter
     );
   }
-  f = message.getRecorder();
+  f = this.getRecorder();
   if (f != null) {
     writer.writeMessage(
       6,
@@ -8401,7 +8927,6 @@ proto.scaii.common.ReplayStep.prototype.toObject = function(opt_includeInstance)
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ReplayStep} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ReplayStep.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -8452,24 +8977,33 @@ proto.scaii.common.ReplayStep.deserializeBinaryFromReader = function(msg, reader
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.ReplayStep} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.ReplayStep.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.ReplayStep.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.ReplayStep.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.ReplayStep} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.ReplayStep.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.ReplayStep.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
 };
 
@@ -8517,7 +9051,6 @@ proto.scaii.common.BackendEndpoint.prototype.toObject = function(opt_includeInst
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.BackendEndpoint} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.BackendEndpoint.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -8568,24 +9101,33 @@ proto.scaii.common.BackendEndpoint.deserializeBinaryFromReader = function(msg, r
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.BackendEndpoint} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.BackendEndpoint.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.BackendEndpoint.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.BackendEndpoint.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.BackendEndpoint} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.BackendEndpoint.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.BackendEndpoint.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
 };
 
@@ -8633,7 +9175,6 @@ proto.scaii.common.AgentEndpoint.prototype.toObject = function(opt_includeInstan
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.AgentEndpoint} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.AgentEndpoint.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -8684,24 +9225,33 @@ proto.scaii.common.AgentEndpoint.deserializeBinaryFromReader = function(msg, rea
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.AgentEndpoint} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.AgentEndpoint.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.AgentEndpoint.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.AgentEndpoint.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.AgentEndpoint} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.AgentEndpoint.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.AgentEndpoint.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
 };
 
@@ -8749,7 +9299,6 @@ proto.scaii.common.CoreEndpoint.prototype.toObject = function(opt_includeInstanc
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.CoreEndpoint} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.CoreEndpoint.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -8800,24 +9349,33 @@ proto.scaii.common.CoreEndpoint.deserializeBinaryFromReader = function(msg, read
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.CoreEndpoint} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.CoreEndpoint.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.CoreEndpoint.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.CoreEndpoint.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.CoreEndpoint} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.CoreEndpoint.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.CoreEndpoint.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
 };
 
@@ -8865,7 +9423,6 @@ proto.scaii.common.ModuleEndpoint.prototype.toObject = function(opt_includeInsta
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ModuleEndpoint} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ModuleEndpoint.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -8920,26 +9477,35 @@ proto.scaii.common.ModuleEndpoint.deserializeBinaryFromReader = function(msg, re
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.ModuleEndpoint} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.ModuleEndpoint.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.ModuleEndpoint.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.ModuleEndpoint.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.ModuleEndpoint} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.ModuleEndpoint.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.ModuleEndpoint.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {string} */ (jspb.Message.getField(message, 1));
+  f = /** @type {string} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeString(
       1,
@@ -9021,7 +9587,6 @@ proto.scaii.common.ReplayEndpoint.prototype.toObject = function(opt_includeInsta
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ReplayEndpoint} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ReplayEndpoint.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -9072,24 +9637,33 @@ proto.scaii.common.ReplayEndpoint.deserializeBinaryFromReader = function(msg, re
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.ReplayEndpoint} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.ReplayEndpoint.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.ReplayEndpoint.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.ReplayEndpoint.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.ReplayEndpoint} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.ReplayEndpoint.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.ReplayEndpoint.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
 };
 
@@ -9137,7 +9711,6 @@ proto.scaii.common.RecorderEndpoint.prototype.toObject = function(opt_includeIns
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.RecorderEndpoint} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.RecorderEndpoint.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -9188,24 +9761,33 @@ proto.scaii.common.RecorderEndpoint.deserializeBinaryFromReader = function(msg, 
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.RecorderEndpoint} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.RecorderEndpoint.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.RecorderEndpoint.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.RecorderEndpoint.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.RecorderEndpoint} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.RecorderEndpoint.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.RecorderEndpoint.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
 };
 
@@ -9260,15 +9842,14 @@ proto.scaii.common.State.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.State} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.State.toObject = function(includeInstance, msg) {
   var f, obj = {
     featuresList: jspb.Message.getRepeatedFloatingPointField(msg, 1),
-    featureArrayDimsList: jspb.Message.getRepeatedField(msg, 2),
+    featureArrayDimsList: jspb.Message.getField(msg, 2),
     reward: jspb.Message.getOptionalFloatingPointField(msg, 3),
     expandedState: msg.getExpandedState_asB64(),
-    typedRewardMap: (f = msg.getTypedRewardMap()) ? f.toObject(includeInstance, undefined) : [],
+    typedRewardMap: (f = msg.getTypedRewardMap()) ? f.toArray() : [],
     terminal: jspb.Message.getField(msg, 6)
   };
 
@@ -9342,58 +9923,67 @@ proto.scaii.common.State.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.State} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.State.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.State.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.State.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.State} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.State.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.State.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = message.getFeaturesList();
+  f = this.getFeaturesList();
   if (f.length > 0) {
     writer.writeRepeatedDouble(
       1,
       f
     );
   }
-  f = message.getFeatureArrayDimsList();
+  f = this.getFeatureArrayDimsList();
   if (f.length > 0) {
     writer.writeRepeatedUint32(
       2,
       f
     );
   }
-  f = /** @type {number} */ (jspb.Message.getField(message, 3));
+  f = /** @type {number} */ (jspb.Message.getField(this, 3));
   if (f != null) {
     writer.writeDouble(
       3,
       f
     );
   }
-  f = /** @type {!(string|Uint8Array)} */ (jspb.Message.getField(message, 4));
+  f = /** @type {!(string|Uint8Array)} */ (jspb.Message.getField(this, 4));
   if (f != null) {
     writer.writeBytes(
       4,
       f
     );
   }
-  f = message.getTypedRewardMap(true);
+  f = this.getTypedRewardMap(true);
   if (f && f.getLength() > 0) {
     f.serializeBinary(5, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeDouble);
   }
-  f = /** @type {boolean} */ (jspb.Message.getField(message, 6));
+  f = /** @type {boolean} */ (jspb.Message.getField(this, 6));
   if (f != null) {
     writer.writeBool(
       6,
@@ -9405,6 +9995,8 @@ proto.scaii.common.State.serializeBinaryToWriter = function(message, writer) {
 
 /**
  * repeated double features = 1;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<number>}
  */
 proto.scaii.common.State.prototype.getFeaturesList = function() {
@@ -9434,10 +10026,12 @@ proto.scaii.common.State.prototype.clearFeaturesList = function() {
 
 /**
  * repeated uint32 feature_array_dims = 2;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<number>}
  */
 proto.scaii.common.State.prototype.getFeatureArrayDimsList = function() {
-  return /** @type {!Array.<number>} */ (jspb.Message.getRepeatedField(this, 2));
+  return /** @type {!Array.<number>} */ (jspb.Message.getField(this, 2));
 };
 
 
@@ -9642,11 +10236,10 @@ proto.scaii.common.Action.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Action} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Action.toObject = function(includeInstance, msg) {
   var f, obj = {
-    discreteActionsList: jspb.Message.getRepeatedField(msg, 1),
+    discreteActionsList: jspb.Message.getField(msg, 1),
     continuousActionsList: jspb.Message.getRepeatedFloatingPointField(msg, 2),
     alternateActions: msg.getAlternateActions_asB64(),
     explanation: (f = msg.getExplanation()) && proto.scaii.common.ExplanationPoint.toObject(includeInstance, f)
@@ -9713,47 +10306,56 @@ proto.scaii.common.Action.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Action} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.Action.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.Action.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.Action.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.Action} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.Action.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.Action.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = message.getDiscreteActionsList();
+  f = this.getDiscreteActionsList();
   if (f.length > 0) {
     writer.writeRepeatedInt32(
       1,
       f
     );
   }
-  f = message.getContinuousActionsList();
+  f = this.getContinuousActionsList();
   if (f.length > 0) {
     writer.writeRepeatedDouble(
       2,
       f
     );
   }
-  f = /** @type {!(string|Uint8Array)} */ (jspb.Message.getField(message, 3));
+  f = /** @type {!(string|Uint8Array)} */ (jspb.Message.getField(this, 3));
   if (f != null) {
     writer.writeBytes(
       3,
       f
     );
   }
-  f = message.getExplanation();
+  f = this.getExplanation();
   if (f != null) {
     writer.writeMessage(
       4,
@@ -9766,10 +10368,12 @@ proto.scaii.common.Action.serializeBinaryToWriter = function(message, writer) {
 
 /**
  * repeated int32 discrete_actions = 1;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<number>}
  */
 proto.scaii.common.Action.prototype.getDiscreteActionsList = function() {
-  return /** @type {!Array.<number>} */ (jspb.Message.getRepeatedField(this, 1));
+  return /** @type {!Array.<number>} */ (jspb.Message.getField(this, 1));
 };
 
 
@@ -9795,6 +10399,8 @@ proto.scaii.common.Action.prototype.clearDiscreteActionsList = function() {
 
 /**
  * repeated double continuous_actions = 2;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<number>}
  */
 proto.scaii.common.Action.prototype.getContinuousActionsList = function() {
@@ -9948,7 +10554,6 @@ proto.scaii.common.Error.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Error} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Error.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -10013,40 +10618,49 @@ proto.scaii.common.Error.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Error} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.Error.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.Error.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.Error.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.Error} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.Error.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.Error.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {string} */ (jspb.Message.getField(message, 1));
+  f = /** @type {string} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeString(
       1,
       f
     );
   }
-  f = /** @type {boolean} */ (jspb.Message.getField(message, 2));
+  f = /** @type {boolean} */ (jspb.Message.getField(this, 2));
   if (f != null) {
     writer.writeBool(
       2,
       f
     );
   }
-  f = /** @type {!(string|Uint8Array)} */ (jspb.Message.getField(message, 3));
+  f = /** @type {!(string|Uint8Array)} */ (jspb.Message.getField(this, 3));
   if (f != null) {
     writer.writeBytes(
       3,
@@ -10212,7 +10826,6 @@ proto.scaii.common.Other.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Other} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Other.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -10272,33 +10885,42 @@ proto.scaii.common.Other.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Other} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.Other.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.Other.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.Other.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.Other} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.Other.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.Other.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {string} */ (jspb.Message.getField(message, 1));
+  f = /** @type {string} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeString(
       1,
       f
     );
   }
-  f = /** @type {!(string|Uint8Array)} */ (jspb.Message.getField(message, 2));
+  f = /** @type {!(string|Uint8Array)} */ (jspb.Message.getField(this, 2));
   if (f != null) {
     writer.writeBytes(
       2,
@@ -10433,7 +11055,6 @@ proto.scaii.common.SerializationRequest.prototype.toObject = function(opt_includ
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.SerializationRequest} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.SerializationRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -10488,26 +11109,35 @@ proto.scaii.common.SerializationRequest.deserializeBinaryFromReader = function(m
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.SerializationRequest} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.SerializationRequest.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.SerializationRequest.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.SerializationRequest.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.SerializationRequest} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.SerializationRequest.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.SerializationRequest.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {!proto.scaii.common.SerializationFormat} */ (jspb.Message.getField(message, 1));
+  f = /** @type {!proto.scaii.common.SerializationFormat} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeEnum(
       1,
@@ -10589,7 +11219,6 @@ proto.scaii.common.SerializationResponse.prototype.toObject = function(opt_inclu
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.SerializationResponse} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.SerializationResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -10649,33 +11278,42 @@ proto.scaii.common.SerializationResponse.deserializeBinaryFromReader = function(
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.SerializationResponse} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.SerializationResponse.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.SerializationResponse.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.SerializationResponse.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.SerializationResponse} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.SerializationResponse.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.SerializationResponse.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {!(string|Uint8Array)} */ (jspb.Message.getField(message, 1));
+  f = /** @type {!(string|Uint8Array)} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeBytes(
       1,
       f
     );
   }
-  f = /** @type {!proto.scaii.common.SerializationFormat} */ (jspb.Message.getField(message, 2));
+  f = /** @type {!proto.scaii.common.SerializationFormat} */ (jspb.Message.getField(this, 2));
   if (f != null) {
     writer.writeEnum(
       2,
@@ -10817,12 +11455,11 @@ proto.scaii.common.UserCommand.prototype.toObject = function(opt_includeInstance
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.UserCommand} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.UserCommand.toObject = function(includeInstance, msg) {
   var f, obj = {
     commandType: jspb.Message.getField(msg, 1),
-    argsList: jspb.Message.getRepeatedField(msg, 2)
+    argsList: jspb.Message.getField(msg, 2)
   };
 
   if (includeInstance) {
@@ -10877,33 +11514,42 @@ proto.scaii.common.UserCommand.deserializeBinaryFromReader = function(msg, reade
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.UserCommand} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.UserCommand.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.UserCommand.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.UserCommand.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.UserCommand} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.UserCommand.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.UserCommand.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {!proto.scaii.common.UserCommand.UserCommandType} */ (jspb.Message.getField(message, 1));
+  f = /** @type {!proto.scaii.common.UserCommand.UserCommandType} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeEnum(
       1,
       f
     );
   }
-  f = message.getArgsList();
+  f = this.getArgsList();
   if (f.length > 0) {
     writer.writeRepeatedString(
       2,
@@ -10912,21 +11558,6 @@ proto.scaii.common.UserCommand.serializeBinaryToWriter = function(message, write
   }
 };
 
-
-/**
- * @enum {number}
- */
-proto.scaii.common.UserCommand.UserCommandType = {
-  NONE: 0,
-  EXPLAIN: 1,
-  PAUSE: 2,
-  RESUME: 3,
-  REWIND: 4,
-  POLL_FOR_COMMANDS: 5,
-  JUMP_TO_STEP: 6,
-  JUMP_COMPLETED: 7,
-  SET_SPEED: 8
-};
 
 /**
  * required UserCommandType command_type = 1;
@@ -10959,10 +11590,12 @@ proto.scaii.common.UserCommand.prototype.hasCommandType = function() {
 
 /**
  * repeated string args = 2;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<string>}
  */
 proto.scaii.common.UserCommand.prototype.getArgsList = function() {
-  return /** @type {!Array.<string>} */ (jspb.Message.getRepeatedField(this, 2));
+  return /** @type {!Array.<string>} */ (jspb.Message.getField(this, 2));
 };
 
 
@@ -10985,6 +11618,21 @@ proto.scaii.common.UserCommand.prototype.clearArgsList = function() {
   this.setArgsList([]);
 };
 
+
+/**
+ * @enum {number}
+ */
+proto.scaii.common.UserCommand.UserCommandType = {
+  NONE: 0,
+  EXPLAIN: 1,
+  PAUSE: 2,
+  RESUME: 3,
+  REWIND: 4,
+  POLL_FOR_COMMANDS: 5,
+  JUMP_TO_STEP: 6,
+  JUMP_COMPLETED: 7,
+  SET_SPEED: 8
+};
 
 
 /**
@@ -11036,11 +11684,10 @@ proto.scaii.common.TestControl.prototype.toObject = function(opt_includeInstance
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.TestControl} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.TestControl.toObject = function(includeInstance, msg) {
   var f, obj = {
-    argsList: jspb.Message.getRepeatedField(msg, 1)
+    argsList: jspb.Message.getField(msg, 1)
   };
 
   if (includeInstance) {
@@ -11091,26 +11738,35 @@ proto.scaii.common.TestControl.deserializeBinaryFromReader = function(msg, reade
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.TestControl} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.TestControl.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.TestControl.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.TestControl.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.TestControl} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.TestControl.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.TestControl.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = message.getArgsList();
+  f = this.getArgsList();
   if (f.length > 0) {
     writer.writeRepeatedString(
       1,
@@ -11122,10 +11778,12 @@ proto.scaii.common.TestControl.serializeBinaryToWriter = function(message, write
 
 /**
  * repeated string args = 1;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<string>}
  */
 proto.scaii.common.TestControl.prototype.getArgsList = function() {
-  return /** @type {!Array.<string>} */ (jspb.Message.getRepeatedField(this, 1));
+  return /** @type {!Array.<string>} */ (jspb.Message.getField(this, 1));
 };
 
 
@@ -11192,7 +11850,6 @@ proto.scaii.common.RecorderStep.prototype.toObject = function(opt_includeInstanc
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.RecorderStep} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.RecorderStep.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -11253,26 +11910,35 @@ proto.scaii.common.RecorderStep.deserializeBinaryFromReader = function(msg, read
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.RecorderStep} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.RecorderStep.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.RecorderStep.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.RecorderStep.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.RecorderStep} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.RecorderStep.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.RecorderStep.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = message.getAction();
+  f = this.getAction();
   if (f != null) {
     writer.writeMessage(
       1,
@@ -11280,7 +11946,7 @@ proto.scaii.common.RecorderStep.serializeBinaryToWriter = function(message, writ
       proto.scaii.common.Action.serializeBinaryToWriter
     );
   }
-  f = /** @type {boolean} */ (jspb.Message.getField(message, 2));
+  f = /** @type {boolean} */ (jspb.Message.getField(this, 2));
   if (f != null) {
     writer.writeBool(
       2,
@@ -11401,7 +12067,6 @@ proto.scaii.common.RecorderConfig.prototype.toObject = function(opt_includeInsta
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.RecorderConfig} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.RecorderConfig.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -11458,26 +12123,35 @@ proto.scaii.common.RecorderConfig.deserializeBinaryFromReader = function(msg, re
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.RecorderConfig} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.RecorderConfig.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.RecorderConfig.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.RecorderConfig.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.RecorderConfig} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.RecorderConfig.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.RecorderConfig.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = message.getPktsList();
+  f = this.getPktsList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
       1,
@@ -11490,6 +12164,8 @@ proto.scaii.common.RecorderConfig.serializeBinaryToWriter = function(message, wr
 
 /**
  * repeated ScaiiPacket pkts = 1;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<!proto.scaii.common.ScaiiPacket>}
  */
 proto.scaii.common.RecorderConfig.prototype.getPktsList = function() {
@@ -11562,7 +12238,6 @@ proto.scaii.common.GameComplete.prototype.toObject = function(opt_includeInstanc
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.GameComplete} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.GameComplete.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -11613,24 +12288,33 @@ proto.scaii.common.GameComplete.deserializeBinaryFromReader = function(msg, read
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.GameComplete} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.GameComplete.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.GameComplete.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.GameComplete.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.GameComplete} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.GameComplete.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.GameComplete.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
 };
 
@@ -11678,7 +12362,6 @@ proto.scaii.common.ReplaySessionConfig.prototype.toObject = function(opt_include
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ReplaySessionConfig} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ReplaySessionConfig.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -11733,26 +12416,35 @@ proto.scaii.common.ReplaySessionConfig.deserializeBinaryFromReader = function(ms
 
 
 /**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.ReplaySessionConfig} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.ReplaySessionConfig.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.scaii.common.ReplaySessionConfig.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.scaii.common.ReplaySessionConfig.serializeBinaryToWriter(this, writer);
+  this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.ReplaySessionConfig} message
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.scaii.common.ReplaySessionConfig.serializeBinaryToWriter = function(message, writer) {
+proto.scaii.common.ReplaySessionConfig.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = /** @type {number} */ (jspb.Message.getField(message, 1));
+  f = /** @type {number} */ (jspb.Message.getField(this, 1));
   if (f != null) {
     writer.writeInt64(
       1,
@@ -11787,6 +12479,170 @@ proto.scaii.common.ReplaySessionConfig.prototype.clearStepCount = function() {
  * @return {!boolean}
  */
 proto.scaii.common.ReplaySessionConfig.prototype.hasStepCount = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.scaii.common.Record = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.scaii.common.Record, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.Record.displayName = 'proto.scaii.common.Record';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.Record.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.Record.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.Record} msg The msg instance to transform.
+ * @return {!Object}
+ */
+proto.scaii.common.Record.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    keyframeInterval: jspb.Message.getField(msg, 1)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.Record}
+ */
+proto.scaii.common.Record.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.Record;
+  return proto.scaii.common.Record.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.Record} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.Record}
+ */
+proto.scaii.common.Record.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setKeyframeInterval(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Record} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.Record.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.Record.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  this.serializeBinaryToWriter(writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.scaii.common.Record.prototype.serializeBinaryToWriter = function (writer) {
+  var f = undefined;
+  f = /** @type {number} */ (jspb.Message.getField(this, 1));
+  if (f != null) {
+    writer.writeUint32(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * required uint32 keyframe_interval = 1;
+ * @return {number}
+ */
+proto.scaii.common.Record.prototype.getKeyframeInterval = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/** @param {number} value */
+proto.scaii.common.Record.prototype.setKeyframeInterval = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+proto.scaii.common.Record.prototype.clearKeyframeInterval = function() {
+  jspb.Message.setField(this, 1, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Record.prototype.hasKeyframeInterval = function() {
   return jspb.Message.getField(this, 1) != null;
 };
 

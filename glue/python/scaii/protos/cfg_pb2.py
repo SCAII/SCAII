@@ -19,8 +19,9 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='cfg.proto',
   package='scaii.common',
   syntax='proto2',
-  serialized_pb=_b('\n\tcfg.proto\x12\x0cscaii.common\"\xcd\x01\n\x03\x43\x66g\x12)\n\x08\x63ore_cfg\x18\x01 \x01(\x0b\x32\x15.scaii.common.CoreCfgH\x00\x12/\n\x0b\x62\x61\x63kend_cfg\x18\x02 \x01(\x0b\x32\x18.scaii.common.BackendCfgH\x00\x12+\n\tagent_cfg\x18\x03 \x01(\x0b\x32\x16.scaii.common.AgentCfgH\x00\x12-\n\nmodule_cfg\x18\x04 \x01(\x0b\x32\x17.scaii.common.ModuleCfgH\x00\x42\x0e\n\x0cwhich_module\"w\n\nPluginType\x12\x32\n\x0brust_plugin\x18\x01 \x01(\x0b\x32\x1b.scaii.common.RustFFIConfigH\x00\x12&\n\x03rpc\x18\x02 \x01(\x0b\x32\x17.scaii.common.RpcConfigH\x00\x42\r\n\x0bplugin_type\"8\n\x07\x43oreCfg\x12-\n\x0bplugin_type\x18\x01 \x02(\x0b\x32\x18.scaii.common.PluginType\"m\n\x06InitAs\x12,\n\x07\x62\x61\x63kend\x18\x01 \x01(\x0b\x32\x19.scaii.common.BackendInitH\x00\x12*\n\x06module\x18\x02 \x01(\x0b\x32\x18.scaii.common.ModuleInitH\x00\x42\t\n\x07init_as\"\r\n\x0b\x42\x61\x63kendInit\"\x1a\n\nModuleInit\x12\x0c\n\x04name\x18\x01 \x02(\t\"K\n\rRustFFIConfig\x12\x13\n\x0bplugin_path\x18\x01 \x02(\t\x12%\n\x07init_as\x18\x02 \x02(\x0b\x32\x14.scaii.common.InitAs\"\x84\x01\n\tRpcConfig\x12\x15\n\x02ip\x18\x01 \x01(\t:\t127.0.0.1\x12\x12\n\x04port\x18\x02 \x01(\r:\x04\x36\x31\x31\x32\x12\x0f\n\x07\x63ommand\x18\x03 \x01(\t\x12\x14\n\x0c\x63ommand_args\x18\x04 \x03(\t\x12%\n\x07init_as\x18\x05 \x02(\x0b\x32\x14.scaii.common.InitAs\"5\n\nBackendCfg\x12\x0f\n\x07\x63\x66g_msg\x18\x01 \x01(\x0c\x12\x16\n\x0eis_replay_mode\x18\x02 \x02(\x08\"\x1b\n\x08\x41gentCfg\x12\x0f\n\x07\x63\x66g_msg\x18\x01 \x01(\x0c\"\x1c\n\tModuleCfg\x12\x0f\n\x07\x63\x66g_msg\x18\x01 \x01(\x0c\"\xbe\x01\n\x11SupportedBehavior\x12\x31\n\x07\x62\x61\x63kend\x18\x01 \x01(\x0b\x32\x1e.scaii.common.BackendSupportedH\x00\x12-\n\x05\x61gent\x18\x02 \x01(\x0b\x32\x1c.scaii.common.AgentSupportedH\x00\x12\x37\n\x0egeneric_module\x18\x05 \x01(\x0b\x32\x1d.scaii.common.ModuleSupportedH\x00\x42\x0e\n\x0cwhich_module\"\xc7\x01\n\x10\x42\x61\x63kendSupported\x12R\n\x15serialization_support\x18\x01 \x02(\x0e\x32\x33.scaii.common.BackendSupported.SerializationSupport\"U\n\x14SerializationSupport\x12\x08\n\x04NONE\x10\x00\x12\x12\n\x0e\x44IVERGING_ONLY\x10\x01\x12\x15\n\x11NONDIVERGING_ONLY\x10\x02\x12\x08\n\x04\x46ULL\x10\x03*\x08\x08\x64\x10\x80\x80\x80\x80\x02\"\x1a\n\x0e\x41gentSupported*\x08\x08\x64\x10\x80\x80\x80\x80\x02\"\x1b\n\x0fModuleSupported*\x08\x08\x64\x10\x80\x80\x80\x80\x02')
+  serialized_pb=_b('\n\tcfg.proto\x12\x0cscaii.common\"\xcd\x01\n\x03\x43\x66g\x12)\n\x08\x63ore_cfg\x18\x01 \x01(\x0b\x32\x15.scaii.common.CoreCfgH\x00\x12/\n\x0b\x62\x61\x63kend_cfg\x18\x02 \x01(\x0b\x32\x18.scaii.common.BackendCfgH\x00\x12+\n\tagent_cfg\x18\x03 \x01(\x0b\x32\x16.scaii.common.AgentCfgH\x00\x12-\n\nmodule_cfg\x18\x04 \x01(\x0b\x32\x17.scaii.common.ModuleCfgH\x00\x42\x0e\n\x0cwhich_module\"w\n\nPluginType\x12\x32\n\x0brust_plugin\x18\x01 \x01(\x0b\x32\x1b.scaii.common.RustFFIConfigH\x00\x12&\n\x03rpc\x18\x02 \x01(\x0b\x32\x17.scaii.common.RpcConfigH\x00\x42\r\n\x0bplugin_type\"8\n\x07\x43oreCfg\x12-\n\x0bplugin_type\x18\x01 \x02(\x0b\x32\x18.scaii.common.PluginType\"m\n\x06InitAs\x12,\n\x07\x62\x61\x63kend\x18\x01 \x01(\x0b\x32\x19.scaii.common.BackendInitH\x00\x12*\n\x06module\x18\x02 \x01(\x0b\x32\x18.scaii.common.ModuleInitH\x00\x42\t\n\x07init_as\"\r\n\x0b\x42\x61\x63kendInit\"\x1a\n\nModuleInit\x12\x0c\n\x04name\x18\x01 \x02(\t\"K\n\rRustFFIConfig\x12\x13\n\x0bplugin_path\x18\x01 \x02(\t\x12%\n\x07init_as\x18\x02 \x02(\x0b\x32\x14.scaii.common.InitAs\"\x84\x01\n\tRpcConfig\x12\x15\n\x02ip\x18\x01 \x01(\t:\t127.0.0.1\x12\x12\n\x04port\x18\x02 \x01(\r:\x04\x36\x31\x31\x32\x12\x0f\n\x07\x63ommand\x18\x03 \x01(\t\x12\x14\n\x0c\x63ommand_args\x18\x04 \x03(\t\x12%\n\x07init_as\x18\x05 \x02(\x0b\x32\x14.scaii.common.InitAs\"\x1d\n\nBackendCfg\x12\x0f\n\x07\x63\x66g_msg\x18\x01 \x01(\x0c\"\x1b\n\x08\x41gentCfg\x12\x0f\n\x07\x63\x66g_msg\x18\x01 \x01(\x0c\"\x1c\n\tModuleCfg\x12\x0f\n\x07\x63\x66g_msg\x18\x01 \x01(\x0c\"\xbe\x01\n\x11SupportedBehavior\x12\x31\n\x07\x62\x61\x63kend\x18\x01 \x01(\x0b\x32\x1e.scaii.common.BackendSupportedH\x00\x12-\n\x05\x61gent\x18\x02 \x01(\x0b\x32\x1c.scaii.common.AgentSupportedH\x00\x12\x37\n\x0egeneric_module\x18\x05 \x01(\x0b\x32\x1d.scaii.common.ModuleSupportedH\x00\x42\x0e\n\x0cwhich_module\"\xc7\x01\n\x10\x42\x61\x63kendSupported\x12R\n\x15serialization_support\x18\x01 \x02(\x0e\x32\x33.scaii.common.BackendSupported.SerializationSupport\"U\n\x14SerializationSupport\x12\x08\n\x04NONE\x10\x00\x12\x12\n\x0e\x44IVERGING_ONLY\x10\x01\x12\x15\n\x11NONDIVERGING_ONLY\x10\x02\x12\x08\n\x04\x46ULL\x10\x03*\x08\x08\x64\x10\x80\x80\x80\x80\x02\"\x1a\n\x0e\x41gentSupported*\x08\x08\x64\x10\x80\x80\x80\x80\x02\"\x1b\n\x0fModuleSupported*\x08\x08\x64\x10\x80\x80\x80\x80\x02')
 )
+_sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 
 
@@ -49,8 +50,8 @@ _BACKENDSUPPORTED_SERIALIZATIONSUPPORT = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=1192,
-  serialized_end=1277,
+  serialized_start=1168,
+  serialized_end=1253,
 )
 _sym_db.RegisterEnumDescriptor(_BACKENDSUPPORTED_SERIALIZATIONSUPPORT)
 
@@ -389,13 +390,6 @@ _BACKENDCFG = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
-    _descriptor.FieldDescriptor(
-      name='is_replay_mode', full_name='scaii.common.BackendCfg.is_replay_mode', index=1,
-      number=2, type=8, cpp_type=7, label=2,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
   ],
   extensions=[
   ],
@@ -409,7 +403,7 @@ _BACKENDCFG = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=780,
-  serialized_end=833,
+  serialized_end=809,
 )
 
 
@@ -439,8 +433,8 @@ _AGENTCFG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=835,
-  serialized_end=862,
+  serialized_start=811,
+  serialized_end=838,
 )
 
 
@@ -470,8 +464,8 @@ _MODULECFG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=864,
-  serialized_end=892,
+  serialized_start=840,
+  serialized_end=868,
 )
 
 
@@ -518,8 +512,8 @@ _SUPPORTEDBEHAVIOR = _descriptor.Descriptor(
       name='which_module', full_name='scaii.common.SupportedBehavior.which_module',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=895,
-  serialized_end=1085,
+  serialized_start=871,
+  serialized_end=1061,
 )
 
 
@@ -550,8 +544,8 @@ _BACKENDSUPPORTED = _descriptor.Descriptor(
   extension_ranges=[(100, 536870912), ],
   oneofs=[
   ],
-  serialized_start=1088,
-  serialized_end=1287,
+  serialized_start=1064,
+  serialized_end=1263,
 )
 
 
@@ -574,8 +568,8 @@ _AGENTSUPPORTED = _descriptor.Descriptor(
   extension_ranges=[(100, 536870912), ],
   oneofs=[
   ],
-  serialized_start=1289,
-  serialized_end=1315,
+  serialized_start=1265,
+  serialized_end=1291,
 )
 
 
@@ -598,8 +592,8 @@ _MODULESUPPORTED = _descriptor.Descriptor(
   extension_ranges=[(100, 536870912), ],
   oneofs=[
   ],
-  serialized_start=1317,
-  serialized_end=1344,
+  serialized_start=1293,
+  serialized_end=1320,
 )
 
 _CFG.fields_by_name['core_cfg'].message_type = _CORECFG
@@ -666,7 +660,6 @@ DESCRIPTOR.message_types_by_name['SupportedBehavior'] = _SUPPORTEDBEHAVIOR
 DESCRIPTOR.message_types_by_name['BackendSupported'] = _BACKENDSUPPORTED
 DESCRIPTOR.message_types_by_name['AgentSupported'] = _AGENTSUPPORTED
 DESCRIPTOR.message_types_by_name['ModuleSupported'] = _MODULESUPPORTED
-_sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 Cfg = _reflection.GeneratedProtocolMessageType('Cfg', (_message.Message,), dict(
   DESCRIPTOR = _CFG,
