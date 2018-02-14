@@ -129,8 +129,6 @@ impl<'a, 'b> Module for Context<'a, 'b> {
                 self.rts.action_input(action.clone());
                 let mut mm = self.rts.update();
 
-                self.rts.action_input(Default::default());
-
                 while self.rts.skip() {
                     mm = self.rts.update();
                 }
