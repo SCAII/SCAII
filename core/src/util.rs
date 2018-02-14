@@ -86,13 +86,13 @@ fn run_command_platform(
         }
         match result {
             Ok(output_string) => Ok(output_string),
-            Err(_utf8_convert_error) => Err(Box::new(InstallError::new(
+            Err(_utf8_convert_error) => Err(Box::new(ScaiiError::new(
                 "problem converting command result from utf8",
             ))),
         }
     } else {
         Err(Box::new(
-            InstallError::new(&String::from_utf8_lossy(&output.stderr)),
+            ScaiiError::new(&String::from_utf8_lossy(&output.stderr)),
         ))
     }
 }
@@ -124,7 +124,7 @@ fn run_command_platform(
         }
         match result {
             Ok(output_string) => Ok(output_string),
-            Err(_utf8_convert_error) => Err(Box::new(InstallError::new(
+            Err(_utf8_convert_error) => Err(Box::new(ScaiiError::new(
                 "problem converting command result from utf8",
             ))),
         }

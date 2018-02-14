@@ -1076,22 +1076,22 @@ fn create_rust_ffi_config_message(backend_path: &str) -> Result<ScaiiPacket, Box
     })
 }
 
-fn get_plugin_path_from_rust_ffi_config(pkt : &ScaiiPacket) -> Result<String, Box<Error>> {
-    match pkt.specific_msg {
-        Some(SpecificMsg::Config(protos::Cfg {
-                    which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
-                        plugin_type: PluginType {
-                            plugin_type: Some(plugin_type::PluginType::RustPlugin(ref rust_ffi_config))
-                        }
-                    }))})) => { 
-                        Ok(rust_ffi_config.plugin_path.clone())
-                    },
-        _ => {
-            Err(Box::new(ReplayError::new(
-            &format!("ERROR - no plugin_path was found in supposedRustFfiConfig pkt {:?}", pkt),
-        )))},
-    }
-}
+// fn get_plugin_path_from_rust_ffi_config(pkt : &ScaiiPacket) -> Result<String, Box<Error>> {
+//     match pkt.specific_msg {
+//         Some(SpecificMsg::Config(protos::Cfg {
+//                     which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
+//                         plugin_type: PluginType {
+//                             plugin_type: Some(plugin_type::PluginType::RustPlugin(ref rust_ffi_config))
+//                         }
+//                     }))})) => { 
+//                         Ok(rust_ffi_config.plugin_path.clone())
+//                     },
+//         _ => {
+//             Err(Box::new(ReplayError::new(
+//             &format!("ERROR - no plugin_path was found in supposedRustFfiConfig pkt {:?}", pkt),
+//         )))},
+//     }
+// }
 
 fn create_default_replay_backend_config() -> ScaiiPacket {
     let vec : Vec<u8> = Vec::new();
