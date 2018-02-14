@@ -46,6 +46,19 @@ impl BackendSupported {
             },
         }
     }
+
+    pub fn to_proto(&self) -> protos::BackendSupported {
+        use protos::backend_supported::SerializationSupport as Support;
+        use SerializationStyle as Ser;
+        protos::BackendSupported {
+            serialization_support: match self.serialization {
+                Ser::None => Support::None,
+                Ser::DivergingOnly => Support::DivergingOnly,
+                Ser::NondivergingOnly => Support::NondivergingOnly,
+                Ser::Full => Support::Full,
+            } as i32,
+        }
+    }
 }
 
 /// Indicates that the optional functionality requested is not
@@ -171,7 +184,6 @@ impl<T: Module> Module for Rc<RefCell<T>> {
 }
 
 impl<T: Replay> Replay for Rc<RefCell<T>> {}
-
 
 impl<T: Recorder> Recorder for Rc<RefCell<T>> {}
 

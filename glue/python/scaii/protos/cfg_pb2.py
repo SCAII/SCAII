@@ -19,9 +19,8 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='cfg.proto',
   package='scaii.common',
   syntax='proto2',
-  serialized_pb=_b('\n\tcfg.proto\x12\x0cscaii.common\"\xcd\x01\n\x03\x43\x66g\x12)\n\x08\x63ore_cfg\x18\x01 \x01(\x0b\x32\x15.scaii.common.CoreCfgH\x00\x12/\n\x0b\x62\x61\x63kend_cfg\x18\x02 \x01(\x0b\x32\x18.scaii.common.BackendCfgH\x00\x12+\n\tagent_cfg\x18\x03 \x01(\x0b\x32\x16.scaii.common.AgentCfgH\x00\x12-\n\nmodule_cfg\x18\x04 \x01(\x0b\x32\x17.scaii.common.ModuleCfgH\x00\x42\x0e\n\x0cwhich_module\"w\n\nPluginType\x12\x32\n\x0brust_plugin\x18\x01 \x01(\x0b\x32\x1b.scaii.common.RustFFIConfigH\x00\x12&\n\x03rpc\x18\x02 \x01(\x0b\x32\x17.scaii.common.RpcConfigH\x00\x42\r\n\x0bplugin_type\"8\n\x07\x43oreCfg\x12-\n\x0bplugin_type\x18\x01 \x02(\x0b\x32\x18.scaii.common.PluginType\"m\n\x06InitAs\x12,\n\x07\x62\x61\x63kend\x18\x01 \x01(\x0b\x32\x19.scaii.common.BackendInitH\x00\x12*\n\x06module\x18\x02 \x01(\x0b\x32\x18.scaii.common.ModuleInitH\x00\x42\t\n\x07init_as\"\r\n\x0b\x42\x61\x63kendInit\"\x1a\n\nModuleInit\x12\x0c\n\x04name\x18\x01 \x02(\t\"K\n\rRustFFIConfig\x12\x13\n\x0bplugin_path\x18\x01 \x02(\t\x12%\n\x07init_as\x18\x02 \x02(\x0b\x32\x14.scaii.common.InitAs\"\x84\x01\n\tRpcConfig\x12\x15\n\x02ip\x18\x01 \x01(\t:\t127.0.0.1\x12\x12\n\x04port\x18\x02 \x01(\r:\x04\x36\x31\x31\x32\x12\x0f\n\x07\x63ommand\x18\x03 \x01(\t\x12\x14\n\x0c\x63ommand_args\x18\x04 \x03(\t\x12%\n\x07init_as\x18\x05 \x02(\x0b\x32\x14.scaii.common.InitAs\"\x1d\n\nBackendCfg\x12\x0f\n\x07\x63\x66g_msg\x18\x01 \x01(\x0c\"\x1b\n\x08\x41gentCfg\x12\x0f\n\x07\x63\x66g_msg\x18\x01 \x01(\x0c\"\x1c\n\tModuleCfg\x12\x0f\n\x07\x63\x66g_msg\x18\x01 \x01(\x0c\"\xbe\x01\n\x11SupportedBehavior\x12\x31\n\x07\x62\x61\x63kend\x18\x01 \x01(\x0b\x32\x1e.scaii.common.BackendSupportedH\x00\x12-\n\x05\x61gent\x18\x02 \x01(\x0b\x32\x1c.scaii.common.AgentSupportedH\x00\x12\x37\n\x0egeneric_module\x18\x05 \x01(\x0b\x32\x1d.scaii.common.ModuleSupportedH\x00\x42\x0e\n\x0cwhich_module\"\xc7\x01\n\x10\x42\x61\x63kendSupported\x12R\n\x15serialization_support\x18\x01 \x02(\x0e\x32\x33.scaii.common.BackendSupported.SerializationSupport\"U\n\x14SerializationSupport\x12\x08\n\x04NONE\x10\x00\x12\x12\n\x0e\x44IVERGING_ONLY\x10\x01\x12\x15\n\x11NONDIVERGING_ONLY\x10\x02\x12\x08\n\x04\x46ULL\x10\x03*\x08\x08\x64\x10\x80\x80\x80\x80\x02\"\x1a\n\x0e\x41gentSupported*\x08\x08\x64\x10\x80\x80\x80\x80\x02\"\x1b\n\x0fModuleSupported*\x08\x08\x64\x10\x80\x80\x80\x80\x02')
+  serialized_pb=_b('\n\tcfg.proto\x12\x0cscaii.common\"\xcd\x01\n\x03\x43\x66g\x12)\n\x08\x63ore_cfg\x18\x01 \x01(\x0b\x32\x15.scaii.common.CoreCfgH\x00\x12/\n\x0b\x62\x61\x63kend_cfg\x18\x02 \x01(\x0b\x32\x18.scaii.common.BackendCfgH\x00\x12+\n\tagent_cfg\x18\x03 \x01(\x0b\x32\x16.scaii.common.AgentCfgH\x00\x12-\n\nmodule_cfg\x18\x04 \x01(\x0b\x32\x17.scaii.common.ModuleCfgH\x00\x42\x0e\n\x0cwhich_module\"w\n\nPluginType\x12\x32\n\x0brust_plugin\x18\x01 \x01(\x0b\x32\x1b.scaii.common.RustFFIConfigH\x00\x12&\n\x03rpc\x18\x02 \x01(\x0b\x32\x17.scaii.common.RpcConfigH\x00\x42\r\n\x0bplugin_type\"8\n\x07\x43oreCfg\x12-\n\x0bplugin_type\x18\x01 \x02(\x0b\x32\x18.scaii.common.PluginType\"m\n\x06InitAs\x12,\n\x07\x62\x61\x63kend\x18\x01 \x01(\x0b\x32\x19.scaii.common.BackendInitH\x00\x12*\n\x06module\x18\x02 \x01(\x0b\x32\x18.scaii.common.ModuleInitH\x00\x42\t\n\x07init_as\"\r\n\x0b\x42\x61\x63kendInit\"\x1a\n\nModuleInit\x12\x0c\n\x04name\x18\x01 \x02(\t\"K\n\rRustFFIConfig\x12\x13\n\x0bplugin_path\x18\x01 \x02(\t\x12%\n\x07init_as\x18\x02 \x02(\x0b\x32\x14.scaii.common.InitAs\"\x84\x01\n\tRpcConfig\x12\x15\n\x02ip\x18\x01 \x01(\t:\t127.0.0.1\x12\x12\n\x04port\x18\x02 \x01(\r:\x04\x36\x31\x31\x32\x12\x0f\n\x07\x63ommand\x18\x03 \x01(\t\x12\x14\n\x0c\x63ommand_args\x18\x04 \x03(\t\x12%\n\x07init_as\x18\x05 \x02(\x0b\x32\x14.scaii.common.InitAs\"\x1d\n\nBackendCfg\x12\x0f\n\x07\x63\x66g_msg\x18\x01 \x01(\x0c\"\x1b\n\x08\x41gentCfg\x12\x0f\n\x07\x63\x66g_msg\x18\x01 \x01(\x0c\"\x1c\n\tModuleCfg\x12\x0f\n\x07\x63\x66g_msg\x18\x01 \x01(\x0c\"\xbe\x01\n\x11SupportedBehavior\x12\x31\n\x07\x62\x61\x63kend\x18\x01 \x01(\x0b\x32\x1e.scaii.common.BackendSupportedH\x00\x12-\n\x05\x61gent\x18\x02 \x01(\x0b\x32\x1c.scaii.common.AgentSupportedH\x00\x12\x37\n\x0egeneric_module\x18\x05 \x01(\x0b\x32\x1d.scaii.common.ModuleSupportedH\x00\x42\x0e\n\x0cwhich_module\"\xc7\x01\n\x10\x42\x61\x63kendSupported\x12R\n\x15serialization_support\x18\x01 \x02(\x0e\x32\x33.scaii.common.BackendSupported.SerializationSupport\"U\n\x14SerializationSupport\x12\x08\n\x04NONE\x10\x00\x12\x12\n\x0e\x44IVERGING_ONLY\x10\x01\x12\x15\n\x11NONDIVERGING_ONLY\x10\x02\x12\x08\n\x04\x46ULL\x10\x03*\x08\x08\x64\x10\x80\x80\x80\x80\x02\"\x1a\n\x0e\x41gentSupported*\x08\x08\x64\x10\x80\x80\x80\x80\x02\"\x1b\n\x0fModuleSupported*\x08\x08\x64\x10\x80\x80\x80\x80\x02\"\xef\x02\n\x0e\x45nvDescription\x12\x43\n\x0creward_types\x18\x01 \x03(\x0b\x32-.scaii.common.EnvDescription.RewardTypesEntry\x12\\\n\x19possible_discrete_actions\x18\x02 \x03(\x0b\x32\x39.scaii.common.EnvDescription.PossibleDiscreteActionsEntry\x12\x13\n\x0b\x61\x63tion_desc\x18\x03 \x01(\t\x12\x31\n\tsupported\x18\x04 \x02(\x0b\x32\x1e.scaii.common.BackendSupported\x1a\x32\n\x10RewardTypesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x08:\x02\x38\x01\x1a>\n\x1cPossibleDiscreteActionsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01')
 )
-_sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 
 
@@ -69,28 +68,28 @@ _CFG = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='backend_cfg', full_name='scaii.common.Cfg.backend_cfg', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='agent_cfg', full_name='scaii.common.Cfg.agent_cfg', index=2,
       number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='module_cfg', full_name='scaii.common.Cfg.module_cfg', index=3,
       number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -124,14 +123,14 @@ _PLUGINTYPE = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='rpc', full_name='scaii.common.PluginType.rpc', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -165,7 +164,7 @@ _CORECFG = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -196,14 +195,14 @@ _INITAS = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='module', full_name='scaii.common.InitAs.module', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -261,7 +260,7 @@ _MODULEINIT = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -292,14 +291,14 @@ _RUSTFFICONFIG = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='init_as', full_name='scaii.common.RustFFIConfig.init_as', index=1,
       number=2, type=11, cpp_type=10, label=2,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -330,35 +329,35 @@ _RPCCONFIG = _descriptor.Descriptor(
       has_default_value=True, default_value=_b("127.0.0.1").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='port', full_name='scaii.common.RpcConfig.port', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=True, default_value=6112,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='command', full_name='scaii.common.RpcConfig.command', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='command_args', full_name='scaii.common.RpcConfig.command_args', index=3,
       number=4, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='init_as', full_name='scaii.common.RpcConfig.init_as', index=4,
       number=5, type=11, cpp_type=10, label=2,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -389,7 +388,7 @@ _BACKENDCFG = _descriptor.Descriptor(
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -420,7 +419,7 @@ _AGENTCFG = _descriptor.Descriptor(
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -451,7 +450,7 @@ _MODULECFG = _descriptor.Descriptor(
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -482,21 +481,21 @@ _SUPPORTEDBEHAVIOR = _descriptor.Descriptor(
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='agent', full_name='scaii.common.SupportedBehavior.agent', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='generic_module', full_name='scaii.common.SupportedBehavior.generic_module', index=2,
       number=5, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -530,7 +529,7 @@ _BACKENDSUPPORTED = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -596,6 +595,132 @@ _MODULESUPPORTED = _descriptor.Descriptor(
   serialized_end=1320,
 )
 
+
+_ENVDESCRIPTION_REWARDTYPESENTRY = _descriptor.Descriptor(
+  name='RewardTypesEntry',
+  full_name='scaii.common.EnvDescription.RewardTypesEntry',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='key', full_name='scaii.common.EnvDescription.RewardTypesEntry.key', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='value', full_name='scaii.common.EnvDescription.RewardTypesEntry.value', index=1,
+      number=2, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=_descriptor._ParseOptions(descriptor_pb2.MessageOptions(), _b('8\001')),
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1576,
+  serialized_end=1626,
+)
+
+_ENVDESCRIPTION_POSSIBLEDISCRETEACTIONSENTRY = _descriptor.Descriptor(
+  name='PossibleDiscreteActionsEntry',
+  full_name='scaii.common.EnvDescription.PossibleDiscreteActionsEntry',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='key', full_name='scaii.common.EnvDescription.PossibleDiscreteActionsEntry.key', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='value', full_name='scaii.common.EnvDescription.PossibleDiscreteActionsEntry.value', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=_descriptor._ParseOptions(descriptor_pb2.MessageOptions(), _b('8\001')),
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1628,
+  serialized_end=1690,
+)
+
+_ENVDESCRIPTION = _descriptor.Descriptor(
+  name='EnvDescription',
+  full_name='scaii.common.EnvDescription',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='reward_types', full_name='scaii.common.EnvDescription.reward_types', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='possible_discrete_actions', full_name='scaii.common.EnvDescription.possible_discrete_actions', index=1,
+      number=2, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='action_desc', full_name='scaii.common.EnvDescription.action_desc', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='supported', full_name='scaii.common.EnvDescription.supported', index=3,
+      number=4, type=11, cpp_type=10, label=2,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[_ENVDESCRIPTION_REWARDTYPESENTRY, _ENVDESCRIPTION_POSSIBLEDISCRETEACTIONSENTRY, ],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1323,
+  serialized_end=1690,
+)
+
 _CFG.fields_by_name['core_cfg'].message_type = _CORECFG
 _CFG.fields_by_name['backend_cfg'].message_type = _BACKENDCFG
 _CFG.fields_by_name['agent_cfg'].message_type = _AGENTCFG
@@ -645,6 +770,11 @@ _SUPPORTEDBEHAVIOR.oneofs_by_name['which_module'].fields.append(
 _SUPPORTEDBEHAVIOR.fields_by_name['generic_module'].containing_oneof = _SUPPORTEDBEHAVIOR.oneofs_by_name['which_module']
 _BACKENDSUPPORTED.fields_by_name['serialization_support'].enum_type = _BACKENDSUPPORTED_SERIALIZATIONSUPPORT
 _BACKENDSUPPORTED_SERIALIZATIONSUPPORT.containing_type = _BACKENDSUPPORTED
+_ENVDESCRIPTION_REWARDTYPESENTRY.containing_type = _ENVDESCRIPTION
+_ENVDESCRIPTION_POSSIBLEDISCRETEACTIONSENTRY.containing_type = _ENVDESCRIPTION
+_ENVDESCRIPTION.fields_by_name['reward_types'].message_type = _ENVDESCRIPTION_REWARDTYPESENTRY
+_ENVDESCRIPTION.fields_by_name['possible_discrete_actions'].message_type = _ENVDESCRIPTION_POSSIBLEDISCRETEACTIONSENTRY
+_ENVDESCRIPTION.fields_by_name['supported'].message_type = _BACKENDSUPPORTED
 DESCRIPTOR.message_types_by_name['Cfg'] = _CFG
 DESCRIPTOR.message_types_by_name['PluginType'] = _PLUGINTYPE
 DESCRIPTOR.message_types_by_name['CoreCfg'] = _CORECFG
@@ -660,6 +790,8 @@ DESCRIPTOR.message_types_by_name['SupportedBehavior'] = _SUPPORTEDBEHAVIOR
 DESCRIPTOR.message_types_by_name['BackendSupported'] = _BACKENDSUPPORTED
 DESCRIPTOR.message_types_by_name['AgentSupported'] = _AGENTSUPPORTED
 DESCRIPTOR.message_types_by_name['ModuleSupported'] = _MODULESUPPORTED
+DESCRIPTOR.message_types_by_name['EnvDescription'] = _ENVDESCRIPTION
+_sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 Cfg = _reflection.GeneratedProtocolMessageType('Cfg', (_message.Message,), dict(
   DESCRIPTOR = _CFG,
@@ -766,5 +898,32 @@ ModuleSupported = _reflection.GeneratedProtocolMessageType('ModuleSupported', (_
   ))
 _sym_db.RegisterMessage(ModuleSupported)
 
+EnvDescription = _reflection.GeneratedProtocolMessageType('EnvDescription', (_message.Message,), dict(
 
+  RewardTypesEntry = _reflection.GeneratedProtocolMessageType('RewardTypesEntry', (_message.Message,), dict(
+    DESCRIPTOR = _ENVDESCRIPTION_REWARDTYPESENTRY,
+    __module__ = 'cfg_pb2'
+    # @@protoc_insertion_point(class_scope:scaii.common.EnvDescription.RewardTypesEntry)
+    ))
+  ,
+
+  PossibleDiscreteActionsEntry = _reflection.GeneratedProtocolMessageType('PossibleDiscreteActionsEntry', (_message.Message,), dict(
+    DESCRIPTOR = _ENVDESCRIPTION_POSSIBLEDISCRETEACTIONSENTRY,
+    __module__ = 'cfg_pb2'
+    # @@protoc_insertion_point(class_scope:scaii.common.EnvDescription.PossibleDiscreteActionsEntry)
+    ))
+  ,
+  DESCRIPTOR = _ENVDESCRIPTION,
+  __module__ = 'cfg_pb2'
+  # @@protoc_insertion_point(class_scope:scaii.common.EnvDescription)
+  ))
+_sym_db.RegisterMessage(EnvDescription)
+_sym_db.RegisterMessage(EnvDescription.RewardTypesEntry)
+_sym_db.RegisterMessage(EnvDescription.PossibleDiscreteActionsEntry)
+
+
+_ENVDESCRIPTION_REWARDTYPESENTRY.has_options = True
+_ENVDESCRIPTION_REWARDTYPESENTRY._options = _descriptor._ParseOptions(descriptor_pb2.MessageOptions(), _b('8\001'))
+_ENVDESCRIPTION_POSSIBLEDISCRETEACTIONSENTRY.has_options = True
+_ENVDESCRIPTION_POSSIBLEDISCRETEACTIONSENTRY._options = _descriptor._ParseOptions(descriptor_pb2.MessageOptions(), _b('8\001'))
 # @@protoc_insertion_point(module_scope)

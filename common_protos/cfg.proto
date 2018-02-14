@@ -138,3 +138,14 @@ message AgentSupported {
 message ModuleSupported {
 	extensions 100 to max;
 }
+
+// Describes the environment with things like actions,
+// etc
+message EnvDescription {
+	// This is actually a hashset, the bool is 
+	// dummy
+	map<string,bool> reward_types = 1;
+	map<string,int32> possible_discrete_actions = 2;
+	optional string action_desc = 3;
+	required BackendSupported supported = 4;
+}
