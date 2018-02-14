@@ -15,13 +15,13 @@ pub mod resources;
 
 use self::resources::*;
 
-use scaii_defs::protos::{Action, MultiMessage};
+use scaii_defs::protos::{Action, MultiMessage, ScaiiPacket};
 
 use specs::prelude::*;
 
 use self::components::FactionId;
 use self::systems::lua::LuaSystem;
-use self::systems::serde::{DeserializeSystem, SerializeSystem};
+use self::systems::serde::{DeserializeSystem, RedoCollisionSys, SerializeSystem};
 
 /// This contains the `specs` system and world context
 /// for running an RTS game, as well as a few flags controlling
@@ -37,6 +37,11 @@ pub struct Rts<'a, 'b> {
 
     ser_system: SerializeSystem,
     de_system: DeserializeSystem,
+    redo_col_sys: RedoCollisionSys,
+
+    frames_since_keyframe: usize,
+    keyframe_interval: Option<usize>,
+    last_action: Action,
 }
 
 impl<'a, 'b> Rts<'a, 'b> {
@@ -84,7 +89,16 @@ impl<'a, 'b> Rts<'a, 'b> {
             out_systems: output_builder,
             ser_system: SerializeSystem,
             de_system: DeserializeSystem,
+            redo_col_sys: RedoCollisionSys,
+            frames_since_keyframe: 0,
+            keyframe_interval: None,
+            last_action: Default::default(),
         }
+    }
+
+    pub fn replay_mode(&mut self, mode: bool) {
+        use engine::resources::ReplayMode;
+        self.world.write_resource::<ReplayMode>().0 = mode;
     }
 
     /// Causes the random number state to diverge
@@ -160,6 +174,7 @@ impl<'a, 'b> Rts<'a, 'b> {
             SkyCollisionWorld::new(COLLISION_MARGIN);
         self.world.write_resource::<Skip>().0 = false;
         self.world.write_resource::<Skip>().1 = None;
+        self.last_action = Default::default();
 
         self.world.delete_all();
         // Do a fast reseed so it doesn't start looping the RNG state
@@ -183,7 +198,7 @@ impl<'a, 'b> Rts<'a, 'b> {
         self.out_systems.dispatch_seq(&self.world.res);
 
         let mut mm = MultiMessage {
-            packets: Vec::with_capacity(2),
+            packets: Vec::with_capacity(4),
         };
 
         if self.render {
@@ -251,6 +266,64 @@ impl<'a, 'b> Rts<'a, 'b> {
         self.world.read_resource::<Skip>().0
     }
 
+    fn record(&mut self) -> Vec<ScaiiPacket> {
+        use scaii_defs::protos;
+        use scaii_defs::protos::{RecorderStep, SerializationFormat};
+        use scaii_defs::protos::SerializationResponse as SerResp;
+
+        if let Some(_) = self.keyframe_interval {
+            let mut out = Vec::with_capacity(2);
+            if self.frames_since_keyframe == 0 {
+                out.push(ScaiiPacket {
+                    src: protos::Endpoint {
+                        endpoint: Some(protos::endpoint::Endpoint::Backend(
+                            protos::BackendEndpoint {},
+                        )),
+                    },
+                    dest: protos::Endpoint {
+                        endpoint: Some(protos::endpoint::Endpoint::Recorder(
+                            protos::RecorderEndpoint {},
+                        )),
+                    },
+                    specific_msg: Some(protos::scaii_packet::SpecificMsg::SerResp(SerResp {
+                        serialized: self.serialize(),
+                        format: SerializationFormat::Nondiverging as i32,
+                    })),
+                });
+            }
+
+            out.push(ScaiiPacket {
+                src: protos::Endpoint {
+                    endpoint: Some(protos::endpoint::Endpoint::Backend(
+                        protos::BackendEndpoint {},
+                    )),
+                },
+                dest: protos::Endpoint {
+                    endpoint: Some(protos::endpoint::Endpoint::Recorder(
+                        protos::RecorderEndpoint {},
+                    )),
+                },
+                specific_msg: Some(protos::scaii_packet::SpecificMsg::RecorderStep(
+                    RecorderStep {
+                        action: Some(self.last_action.clone()),
+                        ..Default::default()
+                    },
+                )),
+            });
+
+            self.frames_since_keyframe =
+                (self.frames_since_keyframe + 1) % self.keyframe_interval.unwrap();
+            out
+        } else {
+            vec![]
+        }
+    }
+
+    pub fn start_recording(&mut self, keyframe_interval: usize) {
+        self.keyframe_interval = Some(keyframe_interval);
+        self.frames_since_keyframe = 0;
+    }
+
     /// Performs a single update step of the RTS, if any action
     /// if performed `action_update` should be called first.
     pub fn update(&mut self) -> MultiMessage {
@@ -261,17 +334,34 @@ impl<'a, 'b> Rts<'a, 'b> {
             return Default::default();
         }
 
+        let mut mm = MultiMessage {
+            packets: Vec::with_capacity(4),
+        };
+
+        // Only record if skipping;
+        // Need to do before update because
+        // we need to serialize the state this action
+        // will bring us to.
+        //
+        // NOTE: Since skipping isn't processed
+        // until the input system runs, this is
+        // safe from duplicating the first packet
+        // of a newly begun skip
+        if self.skip() {
+            let mut packets = self.record();
+            mm.packets.append(&mut packets);
+        }
+
         self.sim_systems.dispatch_seq(&self.world.res);
         self.lua_sys.run_now(&self.world.res);
         self.out_systems.dispatch_seq(&self.world.res);
 
         self.world.maintain();
 
-        if self.world.read_resource::<Skip>().0 {
-            return Default::default();
+        if self.skip() {
+            return mm;
         }
 
-        let mut packets = vec![];
         if self.render {
             let render_packet = ScaiiPacket {
                 src: protos::Endpoint {
@@ -289,7 +379,7 @@ impl<'a, 'b> Rts<'a, 'b> {
                 )),
             };
 
-            packets.push(render_packet);
+            mm.packets.push(render_packet);
         }
 
         let state_packet = ScaiiPacket {
@@ -306,14 +396,15 @@ impl<'a, 'b> Rts<'a, 'b> {
             )),
         };
 
-        packets.push(state_packet);
+        mm.packets.push(state_packet);
 
-        MultiMessage { packets: packets }
+        mm
     }
 
     /// Sets the input to the given `Action` packet.
     pub fn action_input(&mut self, action: Action) {
-        self.world.write_resource::<ActionInput>().0 = Some(action);
+        self.world.write_resource::<ActionInput>().0 = Some(action.clone());
+        self.last_action = action;
     }
 
     /// Serializes the world into raw bytes
@@ -332,14 +423,12 @@ impl<'a, 'b> Rts<'a, 'b> {
         self.world.write_resource::<SerializeBytes>().0 = buf;
 
         self.de_system.run_now(&self.world.res);
+        self.redo_col_sys.run_now(&self.world.res);
+
+        self.world.write_resource::<NeedsKeyInfo>().0 = true;
 
         self.init();
-
-        self.redo_collision();
     }
-
-    /// Redoes the collision after deserialization
-    fn redo_collision(&mut self) {}
 
     /// Sets whether to emit visualization messages.
     pub fn set_render(&mut self, render: bool) {

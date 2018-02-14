@@ -60,6 +60,7 @@ pub(super) fn register_world_resources(world: &mut World) {
     world.add_resource(Skip(false, None));
     world.add_resource(SerializeBytes::default());
     world.add_resource(LuaPath(None));
+    world.add_resource(ReplayMode(false));
 }
 
 #[derive(Default, Debug, Clone, PartialEq)]
@@ -173,13 +174,20 @@ impl UnitType {
             }
         }.build();
 
-        let col_storage = world.write::<CollisionHandle>();
+        let mut col_storage = world.write::<CollisionHandle>();
 
-        let atk_storage = world.write::<AttackSensor>();
+        let mut atk_storage = world.write::<AttackSensor>();
 
         let c_world = &mut *world.write_resource();
 
-        self.register_collision(entity, pos, faction, col_storage, atk_storage, c_world)
+        self.register_collision(
+            entity,
+            pos,
+            faction,
+            &mut col_storage,
+            &mut atk_storage,
+            c_world,
+        )
     }
 
     /// Registers a unit with the collision system based on its unit type
@@ -189,8 +197,8 @@ impl UnitType {
         entity: Entity,
         pos: Pos,
         faction: usize,
-        mut col_storage: WriteStorage<CollisionHandle>,
-        mut atk_storage: WriteStorage<AttackSensor>,
+        col_storage: &mut WriteStorage<CollisionHandle>,
+        atk_storage: &mut WriteStorage<AttackSensor>,
         c_world: &mut SkyCollisionWorld,
     ) {
         use ncollide::shape::{Ball, Cuboid, Cylinder, ShapeHandle};
@@ -288,3 +296,6 @@ pub struct SerializeBytes(pub Vec<u8>);
 
 #[derive(Clone, PartialEq, Eq, Serialize, Deserialize, Debug)]
 pub struct LuaPath(pub Option<String>);
+
+#[derive(Copy, Clone, Eq, PartialEq, Default)]
+pub struct ReplayMode(pub bool);

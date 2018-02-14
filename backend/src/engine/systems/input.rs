@@ -1,7 +1,7 @@
 use specs::prelude::*;
 use specs::world::Index;
 use engine::components::{Movable, Move};
-use engine::resources::Skip;
+use engine::resources::{ReplayMode, Skip};
 use engine::ActionInput;
 
 use scaii_defs::protos::Action as ScaiiAction;
@@ -11,6 +11,7 @@ pub struct InputSystemData<'a> {
     movable: ReadStorage<'a, Movable>,
     input: FetchMut<'a, ActionInput>,
     ids: Entities<'a>,
+    is_replay: Fetch<'a, ReplayMode>,
 
     skip: FetchMut<'a, Skip>,
     moves: WriteStorage<'a, Move>,
@@ -36,7 +37,10 @@ impl<'a> System<'a> for InputSystem {
 
         let actions = if actions.is_some() {
             let (actions, skip, skip_lua) = to_action_list(actions.unwrap());
-            *sys_data.skip = Skip(skip, skip_lua);
+            // ignore skipping for replays
+            if sys_data.is_replay.0 {
+                *sys_data.skip = Skip(skip, skip_lua);
+            }
             actions
         } else {
             return;
