@@ -34,9 +34,13 @@ impl<'a> System<'a> for InputSystem {
 
         let actions = mem::replace(&mut sys_data.input.0, None);
 
-        let (actions, skip, skip_lua) = to_action_list(actions.unwrap_or(Default::default()));
-
-        *sys_data.skip = Skip(skip, skip_lua);
+        let actions = if actions.is_some() {
+            let (actions, skip, skip_lua) = to_action_list(actions.unwrap());
+            *sys_data.skip = Skip(skip, skip_lua);
+            actions
+        } else {
+            return;
+        };
 
         for action in actions {
             let entity = sys_data.ids.entity(action.unit_id);
