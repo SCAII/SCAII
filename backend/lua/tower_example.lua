@@ -57,7 +57,9 @@ function sky_init()
             body="triangle",
             base_len=2.0,
         },
+        kill_reward=0,
         death_penalty=-100,
+        death_type="agent_death",
         damage_recv_penalty=0,
         damage_deal_reward=0,
         speed=40.0,
@@ -76,6 +78,8 @@ function sky_init()
         },
         can_move=false,
         kill_reward=150,
+        kill_type="enemy_kill",
+        death_type="friendly_kill",
         damage_recv_penalty=0,
         damage_deal_reward=0,
         attack_range=0.3,
@@ -93,6 +97,8 @@ function sky_init()
         },
         can_move=false,
         kill_reward=1000,
+        kill_type="enemy_kill",
+        death_type="friendly_kill",
         damage_recv_penalty=0,
         damage_deal_reward=0,
         attack_range=0.3,
@@ -105,6 +111,7 @@ function sky_init()
         factions=factions,
         victory_reward=0,
         failure_penalty=0,
+        reward_types={"agent_death","friendly_kill","enemy_kill"},
     }
 end
 

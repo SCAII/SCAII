@@ -2,6 +2,8 @@ use rlua::{UserData, UserDataMethods};
 
 use engine::components::FactionId;
 
+use std::collections::HashMap;
+
 use rand::Rng;
 
 pub struct UserDataRng<R: Rng + 'static> {
@@ -20,15 +22,21 @@ impl<R: Rng + 'static> UserData for UserDataRng<R> {
     }
 }
 
-#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug)]
+#[derive(Clone, PartialEq, Default, Debug)]
 pub struct UserDataWorld {
     pub victory: Option<FactionId>,
+    pub rewards: HashMap<String, f64>,
 }
 
 impl UserData for UserDataWorld {
     fn add_methods(methods: &mut UserDataMethods<Self>) {
         methods.add_method_mut("victory", |_, this, faction: usize| {
             this.victory = Some(FactionId(faction));
+            Ok(())
+        });
+
+        methods.add_method_mut("emit_reward", |_, this, (reward, r_type): (f64, String)| {
+            *this.rewards.entry(r_type).or_insert(0.0) += reward;
             Ok(())
         });
     }

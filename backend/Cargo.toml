@@ -7,7 +7,7 @@ authors = ["Zoe Juozapaitis <Jragonmiris@gmail.com>"]
 crate-type = ["dylib", "rlib"]
 
 [dependencies]
-scaii_defs = {version="0.3", git = "https://github.com/SCAII/SCAII", branch="dev"}
+scaii_defs = {version="0.5", git = "https://github.com/SCAII/SCAII", branch="reward_types"}
 rlua  = "0.9"
 serde = "1"
 serde_derive = "1"

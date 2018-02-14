@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use super::FactionId;
 use super::components::{AttackSensor, CollisionHandle, Color, Hp, Pos, Shape};
@@ -60,6 +60,7 @@ pub(super) fn register_world_resources(world: &mut World) {
     world.add_resource(Skip(false, None));
     world.add_resource(SerializeBytes::default());
     world.add_resource(LuaPath(None));
+    world.add_resource(RewardTypes::default());
 }
 
 #[derive(Default, Debug, Clone, PartialEq)]
@@ -117,6 +118,11 @@ pub struct UnitType {
     pub attack_range: f64,
     pub attack_damage: f64,
     pub attack_delay: f64,
+
+    pub death_type: String,
+    pub dmg_recv_type: String,
+    pub dmg_deal_type: String,
+    pub kill_type: String,
 }
 
 impl Default for UnitType {
@@ -130,6 +136,10 @@ impl Default for UnitType {
             death_penalty: 0.0,
             damage_deal_reward: None,
             damage_recv_penalty: None,
+            death_type: "death".to_string(),
+            dmg_recv_type: "dmg_recvd".to_string(),
+            dmg_deal_type: "dmg_dealt".to_string(),
+            kill_type: "kill".to_string(),
             speed: 20.0,
             attack_range: 10.0,
             attack_delay: 1.0,
@@ -288,3 +298,20 @@ pub struct SerializeBytes(pub Vec<u8>);
 
 #[derive(Clone, PartialEq, Eq, Serialize, Deserialize, Debug)]
 pub struct LuaPath(pub Option<String>);
+
+#[derive(Clone, PartialEq, Eq, Serialize, Deserialize, Debug)]
+pub struct RewardTypes(pub HashSet<String>);
+
+impl Default for RewardTypes {
+    fn default() -> Self {
+        let mut map = HashSet::new();
+        map.insert("death".to_string());
+        map.insert("kill".to_string());
+        map.insert("dmg_dealt".to_string());
+        map.insert("dmg_recvd".to_string());
+        map.insert("victory".to_string());
+        map.insert("defeat".to_string());
+
+        RewardTypes(map)
+    }
+}

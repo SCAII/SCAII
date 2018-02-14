@@ -29,6 +29,7 @@ fn seed() -> [u64; SEED_SIZE] {
 
 /// Create an acknowledgement message
 /// to ping back the Agent.
+#[allow(dead_code)]
 pub fn ack_msg() -> MultiMessage {
     use scaii_defs::protos::{Ack, ScaiiPacket};
     use scaii_defs::protos;

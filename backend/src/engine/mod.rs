@@ -115,10 +115,21 @@ impl<'a, 'b> Rts<'a, 'b> {
     ///
     /// This loads Lua and well as running the scenario's `init`
     /// function, seeding things like unit types and settings.
-    fn init(&mut self) {
+    pub fn init(&mut self) -> MultiMessage {
         use engine::resources::LuaPath;
+        use SUPPORTED;
+
         use std::env;
         use std::path::PathBuf;
+
+        use scaii_defs::protos;
+        use scaii_defs::protos::{EnvDescription, ScaiiPacket};
+
+        if self.initialized {
+            panic!("Double initialize in RTS");
+        }
+
+        self.initialized = true;
 
         let lua_path = self.world
             .read_resource::<LuaPath>()
@@ -139,6 +150,33 @@ impl<'a, 'b> Rts<'a, 'b> {
         self.lua_sys
             .load_scenario(&mut self.world)
             .expect("Could not initialize scenario");
+
+        let scaii_packet = ScaiiPacket {
+            src: protos::Endpoint {
+                endpoint: Some(protos::endpoint::Endpoint::Backend(
+                    protos::BackendEndpoint {},
+                )),
+            },
+            dest: protos::Endpoint {
+                endpoint: Some(protos::endpoint::Endpoint::Agent(protos::AgentEndpoint {})),
+            },
+
+            specific_msg: Some(protos::scaii_packet::SpecificMsg::EnvDesc(EnvDescription {
+                reward_types: self.world
+                    .read_resource::<RewardTypes>()
+                    .0
+                    .iter()
+                    .map(|v| (v.clone(), true))
+                    .collect(),
+                supported: SUPPORTED.to_proto(),
+                action_desc: Some("MoveList -- unit ID, command, and target ".to_string()),
+                ..Default::default()
+            })),
+        };
+
+        MultiMessage {
+            packets: vec![scaii_packet],
+        }
     }
 
     /// Resets the game to a clean state, running the scenario
@@ -153,7 +191,6 @@ impl<'a, 'b> Rts<'a, 'b> {
 
         if !self.initialized {
             self.init();
-            self.initialized = true;
         }
 
         *self.world.write_resource::<SkyCollisionWorld>() =
