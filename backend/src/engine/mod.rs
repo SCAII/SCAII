@@ -235,6 +235,10 @@ impl<'a, 'b> Rts<'a, 'b> {
 
         self.world.maintain();
 
+        if self.world.read_resource::<Skip>().0 {
+            return Default::default();
+        }
+
         let mut packets = vec![];
         if self.render {
             let render_packet = ScaiiPacket {
