@@ -84,6 +84,7 @@ class ScaiiEnv():
             print("Initializing the visualization module, please press\
              \"connect\" on the SCAII visualization page now")
             self.load_rpc_module("viz")
+            self.viz_initialized = True
 
 
         # need the reset packet first because backends probably want to clear things like
