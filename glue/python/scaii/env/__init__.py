@@ -12,6 +12,8 @@ from scaii.env.actions import Action
 
 import scaii.protos.scaii_pb2 as scaii_protos
 
+from scaii.env.error import *
+
 # pylint can't tell the metaclass programming the probuf compiler
 # uses generates certain members, so we need to disable it.
 
@@ -33,12 +35,25 @@ class ScaiiEnv():
             self.core = _ScaiiCore()
         else:
             self.core = mock_core
+
+        from scaii.protos.scaii_pb2 import ScaiiPacket
+
         self._msg_buf = None
         self.next_msg = scaii_protos.MultiMessage()
         self.state_type = state_type
         self.action_type = action_type
         self.viz_initialized = False
         self.recording = False
+        self.cfg_msg = ScaiiPacket()
+        self.backend_cfg = None
+        self.frames_since_keyframe = 0
+        self.keyframe_interval = None
+
+        self.initialized = False
+        self._reward_types = None
+        self._actions = None
+        self._action_desc = "No description"
+        self._can_record = False
 
     def __enter__(self):
         return ScaiiEnv()
@@ -74,39 +89,143 @@ class ScaiiEnv():
         packet.dest.backend.SetInParent()
         packet.reset_env = True
 
-    def reset(self, visualize=False, record=False, keyframe_interval=5):
-        """
-        Resets the backend to a new environment, returning the initial (state,terminal) tuple.
+    def _check_init(self):
+        if not self.initialized:
+            self._send_recv_msg()
+            assert(len(self._decode_handle_msg()) == 0)
+            if not self.initialized:
+                raise UninitializedEnvError()
 
-        You may assume the reward is 0.0
+    def actions(self):
         """
+        Returns a map of action name (string)->action number (int)
+        for this environment's discrete actions (if any).
+
+        Throws an exception if the environment isn't initialized.
+
+        May be overridden by extenders definine their own action
+        set.
+        """
+        self._check_init()
+
+        return self._actions
+
+    def action_desc(self):
+        """
+        Returns a short description about how to use
+        an environment's action space
+        """
+        self._check_init()
+
+        return self._action_desc
+
+    def reward_types(self):
+        """
+        Yields a `set` of the possible reward types
+        """
+        self._check_init()
+
+        return self._reward_types
+
+    def can_record(self):
+        """
+        Determines if the loaded backend can record games
+        """
+        self._check_init()
+
+        return self._can_record
+
+    def reset(self, visualize=False, record=False, keyframe_interval=5, overwrite_replay=False,
+              replay_file_path=None):
+        """
+        Resets the backend to a new episode, returning your environment's
+        initial state object.
+
+        Parameters:
+        ===========
+        visualize: bool
+            Sets whether or not to set the backend to emit visualization packets
+            to a registered viz module, also initialized the viz module for you
+            if it isn't already. [default: False]
+
+        record: bool
+            Whether to record the current game and place it in a replay file.
+            [default: False]
+
+        keyframe_interval: int
+            How frequently the backend should serialize its entire state for
+            the replay.
+
+            Set to 1 if you want every frame to be a keyframe. 
+
+            Ignored if `record` is `False`. [default: 5]
+
+        overwrite_replay: bool
+            Whether to overwrite replay files in the given location. If `False`,
+            the recorder will automatically "one-up" the file name (i.e. foo.replay,
+            foo.replay_1, foo.replay_2). 
+
+            If `True`, this will silently overwrite the file instead of one-upping.
+
+            Ignored if `record` is `False`. [default: False]
+
+        replay_file_path: string
+            Sets the path to put replay files in. This may be an absolute path, or relative
+            to the execution directory (i.e. "./results/file.replay"). Make sure to set
+            the path to the desired replay file name, not a directory. If no path is given,
+            this defaults to `$HOME/.scaii/replays/replay.scr`.
+
+            Ignored if `record` is `False`. [default: None]
+        """
+        self._check_init()
+
+        # pylint: disable=locally-disabled, E1601
         if visualize and not self.viz_initialized:
-            print("Initializing the visualization module, please press\
-             \"connect\" on the SCAII visualization page now")
+            print("Initializing the visualization module, please press \
+            \"connect\" on the SCAII visualization (viz) page now")
             self.load_rpc_module("viz")
             self.viz_initialized = True
 
+        self.frames_since_keyframe = 0
 
         # need the reset packet first because backends probably want to clear things like
-        # viz flags on reset    
+        # viz flags on reset
         self._reset_packet()
 
         if visualize:
-            self.visualize_episode()
+            self._visualize_episode()
 
         if record:
-            self.record_epsiode(keyframe_interval)
+            self._record_episode(keyframe_interval=keyframe_interval,
+                                 overwrite=overwrite_replay,
+                                 file_path=replay_file_path
+                                 )
+        else:
+            self.recording = False
 
         self._send_recv_msg()
-        self.state = _decode_handle_msg(self._msg_buf, self.state_type)
+        self.state = self._decode_handle_msg()["state"]
         return self.state
-    
-    def record_epsiode(self, keyframe_interval=5):
+
+    def _record_episode(self, keyframe_interval=5, overwrite=False, file_path=None):
+        """
+        Records the current episode.
+        """
+        if not self.can_record():
+            raise UnsupportedBehaviorError("record",
+                                           "Backend does not support nondiverging serialization")
+
         packet = self.next_msg.packets.add()
         packet.src.agent.SetInParent()
         packet.dest.recorder.SetInParent()
 
-        packet.recorder_config.SetInParent()
+        packet.recorder_config.pkts.add().CopyFrom(self.cfg_msg)
+        if self.backend_cfg is not None:
+            packet.recorder_config.pkts.add().CopyFrom(self.backend_cfg)
+
+        packet.recorder_config.overwrite = overwrite
+        if file_path is not None:
+            packet.recorder_config.file_path = file_path
 
         packet = self.next_msg.packets.add()
         packet.src.agent.SetInParent()
@@ -117,32 +236,104 @@ class ScaiiEnv():
         self.recording = True
         self.keyframe_interval = keyframe_interval
 
-    def visualize_episode(self):
+    def _visualize_episode(self):
         packet = self.next_msg.packets.add()
         packet.src.agent.SetInParent()
         packet.dest.backend.SetInParent()
         packet.emit_viz = True
-        
+
+        return packet
 
     def act(self, action):
         """
         Send an action to the underlying environment and returns
-        the next state as a (reward,typed_reward,terminal,state) tuple.
+        your environment's resulting state object.
+
+        Also will record actions if the environment is set to
+        do so.
+
+        Parameters:
+        ===========
+        actions: Action
+            The action to take, as returned by env.new_action().
         """
-        action.to_proto(self.next_msg.packets.add())
+        from scaii.protos.scaii_pb2 import ScaiiPacket
+
+        action_packet = ScaiiPacket()
+        action.to_proto(action_packet)
+        if self.recording:
+            is_keyframe = self._check_keyframe()
+
+        self.next_msg.packets.add().CopyFrom(action_packet)
 
         self._send_recv_msg()
-        self.state = _decode_handle_msg(
-            self._msg_buf, self.state_type)
+        resp = self._decode_handle_msg()
+
+        if self.recording:
+            # dict.get will return None if the key is not
+            # available
+            self._record_step(action_packet, resp.get("ser_resp"), is_keyframe)
+
+        if "state" not in resp:
+            raise NoStateError()
+        self.state = resp["state"]
         return self.state
 
+    def _record_step(self, action_packet, ser_resp, is_keyframe):
+        """
+        One step of the recording, automatically handles keyframes
+        """
+        if ser_resp is None and is_keyframe:
+            raise NoKeyframeError()
+        elif ser_resp is not None:
+            key_packet = self.next_msg.packets.add()
+            key_packet.CopyFrom(ser_resp)
+            key_packet.dest.recorder.SetInParent()
+        recorder_action = self.next_msg.packets.add()
+        recorder_action.CopyFrom(action_packet)
+        recorder_action.dest.recorder.SetInParent()
+
+        self._send_recv_msg()
+        resp = self._decode_handle_msg()
+        if len(resp) > 0:
+            raise TooManyMessagesError(0, len(resp), resp)
+
+    def _check_keyframe(self):
+        """
+        Determines if the current action step should be a keyframe.
+        """
+        from scaii.protos.scaii_pb2 import SerializationFormat
+
+        is_keyframe = False
+
+        if self.frames_since_keyframe == 0:
+            ser_req = self.next_msg.packets().add()
+            ser_req.src.agent.SetInParent()
+            ser_req.dest.agent.SetInParent()
+
+            ser_req.specific_msg.ser_req.format = SerializationFormat.NONDIVERGING
+            is_keyframe = True
+
+        self.frames_since_keyframe = (
+            self.frames_since_keyframe + 1) % self.keyframe_interval
+
+        return is_keyframe
+
     def new_action(self):
+        """
+        Returns a new instance of your environment's Action.
+        """
         return self.action_type()
 
     def load_backend(self, plugin_path):
         """
         Loads the given backend as a plugin, this will throw an exception if there
         is an error loading it.
+
+        Parameters:
+        ===========
+        plugin_path: string
+            The path to the plugin to be loaded.
         """
         packet = self.next_msg.packets.add()
 
@@ -151,11 +342,18 @@ class ScaiiEnv():
         packet.config.core_cfg.plugin_type.rust_plugin.plugin_path = plugin_path
         packet.config.core_cfg.plugin_type.rust_plugin.init_as.backend.SetInParent()
 
+        self.cfg_msg.CopyFrom(packet)
+
         self._send_recv_msg()
 
     def load_rpc_module(self, name):
         """
         Bootstraps an RPC module in Core with the given name.
+
+        Paramters:
+        ==========
+        name: string
+            The name that will be given to this module internally
         """
         packet = self.next_msg.packets.add()
 
@@ -166,54 +364,71 @@ class ScaiiEnv():
         packet.config.core_cfg.plugin_type.rpc.ip = "127.0.0.1"
 
     def handle_messages(self):
-        return _decode_handle_msg(self._msg_buf, self.state_type)
+        """
+        Checks the environment for waiting messages and processes this,
+        this should almost never be called except for debugging purposes.
+        """
+        return self._decode_handle_msg()
 
+    def _decode_handle_msg(self):
+        """
+        Decodes incoming messages and parses them into a usable format.
 
-class ScaiiError(Exception):
-    """
-    An exception raised from receiving a Scaii Error packet.
+        Throws an exception if the messages are ill-formatted or unexpected.
+        """
+        import numpy as np
+        msg = scaii_protos.MultiMessage().FromString(bytes(self._msg_buf))
 
-    It contains the packet itself so you may reraise with a more specific
-    error message in a wrapper that extends ``ScaiiEnv``.
-    """
+        out = dict([])
 
-    def __init__(self, message, packet):
-        self.message = message
-        self.packet = packet
+        for msg in msg.packets:
+            if msg.WhichOneof('specific_msg') == 'err':
+                raise ScaiiError(msg.err.description, msg)
+            elif msg.WhichOneof('specific_msg') == 'state':
+                if "state" in out:
+                    raise MultipleStatesError(msg)
+                reward = msg.state.reward
+                state = np.array(msg.state.features)
+                # truthy
+                if msg.state.feature_array_dims:
+                    state = state.reshape(
+                        np.array(msg.state.feature_array_dims))
 
-        Exception.__init__(self, self.message)
+                secret_state = bytes(msg.state.expanded_state)
 
+                typed_reward = msg.state.typed_reward
+                terminal = msg.state.terminal
 
-def _decode_handle_msg(buf, state_type):
-    import numpy as np
-    msg = scaii_protos.MultiMessage().FromString(bytes(buf))
+                out["state"] = self.state_type(reward=reward,
+                                               typed_reward=typed_reward,
+                                               terminal=terminal,
+                                               state=state,
+                                               env_state=secret_state
+                                               )
+            elif msg.WhichOneof('specific_msg') == 'ack':
+                pass
+            elif msg.WhichOneof('specific_msg') == 'ser_resp':
+                if "ser_resp" in out:
+                    raise MultipleSerRespError(msg)
+                out["ser_resp"] = msg
+            elif msg.WhichOneof('specific_msg') == 'env_desc':
+                from scaii.protos.cfg_pb2 import BackendSupported
+                self.initialized = True
+                self._reward_types = set(msg.env_desc.reward_types.keys())
+                self._actions = msg.env_desc.possible_discrete_actions
 
-    reward = None
-    typed_reward = None
-    state = None
-    secret_state = None
-    terminal = None
+                if msg.env_desc.action_desc:
+                    self._action_desc = msg.env_desc.action_desc
+                else:
+                    self._action_desc = "No description"
 
-    for msg in msg.packets:
-        if msg.WhichOneof('specific_msg') == 'err':
-            raise ScaiiError(msg.err.description, msg)
-        elif msg.WhichOneof('specific_msg') == 'state':
-            reward = msg.state.reward
-            state = np.array(msg.state.features)
-            # truthy
-            if msg.state.feature_array_dims:
-                state = state.reshape(np.array(msg.state.feature_array_dims))
+                support = msg.env_desc.supported.serialization_support
+                full_ser = BackendSupported.SerializationSupport.Value('FULL')
+                nondiv_ser = BackendSupported.SerializationSupport.Value(
+                    'NONDIVERGING_ONLY')
+                self._can_record = (
+                    support == full_ser or support == nondiv_ser)
+            else:
+                raise UnrecognizedPacketError(msg)
 
-            secret_state = bytes(msg.state.expanded_state)
-
-            typed_reward = msg.state.typed_reward
-            terminal = msg.state.terminal
-        elif msg.WhichOneof('specific_msg') == 'ack':
-            pass
-            # print("received")
-        else:
-            pass
-            # print(msg)
-            # raise "The Python glue only handles state and error messages"
-
-    return state_type(reward=reward, typed_reward=typed_reward, terminal=terminal, state=state, env_state=secret_state)
+        return out

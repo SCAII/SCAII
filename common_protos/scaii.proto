@@ -47,6 +47,7 @@ message ScaiiPacket {
 		bool emit_viz = 19;
 		Record record = 20;
 		bool replay_mode = 21;
+		EnvDescription env_desc = 22;
 		Other other = 29;
 	}
 
