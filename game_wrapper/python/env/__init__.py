@@ -39,5 +39,4 @@ class SkyRtsEnv(ScaiiEnv):
         packet.src.agent.SetInParent()
         packet.dest.backend.SetInParent()
 
-        packet.config.backend_cfg.is_replay_mode = False
         packet.config.backend_cfg.cfg_msg = cfg.SerializeToString()

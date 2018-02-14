@@ -99,8 +99,6 @@ message DeltaPos {
 // RTS-specific configuration
 message Config {
     optional Scenario scenario = 1;
-    optional bool emit_viz = 2;
-    optional Seed random_seed = 3;
 }
 
 // The seed to use to initialize the

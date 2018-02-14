@@ -1,3 +1,14 @@
+// Copyright 2017-2018 The SCAII Developers.
+//
+// Licensed under the 3-Clause BSD license
+// <BSD-3-Clause or https://opensource.org/licenses/BSD-3-Clause>
+// This file may not be copied, modified, or distributed
+// except according to those terms.
+//! Contains the top-level RTS definition.
+//!
+//! This provides high-level to the RTS, including
+//! initializing, updating, and configuring it.
+
 pub mod components;
 pub mod systems;
 pub mod resources;
@@ -12,6 +23,9 @@ use self::components::FactionId;
 use self::systems::lua::LuaSystem;
 use self::systems::serde::{DeserializeSystem, SerializeSystem};
 
+/// This contains the `specs` system and world context
+/// for running an RTS game, as well as a few flags controlling
+/// program flow.
 pub struct Rts<'a, 'b> {
     world: World,
     pub initialized: bool,
@@ -26,6 +40,7 @@ pub struct Rts<'a, 'b> {
 }
 
 impl<'a, 'b> Rts<'a, 'b> {
+    /// Initializes a new RTS with all systems, components, and resources.
     pub fn new() -> Self {
         use self::systems::{AttackSystem, CleanupSystem, CollisionSystem, InputSystem, MoveSystem,
                             RenderSystem, StateBuildSystem};
@@ -84,11 +99,22 @@ impl<'a, 'b> Rts<'a, 'b> {
         util::diverge(rng);
     }
 
+    /// Changes the path to the scenario file. This function
+    /// assumes the file is in `$HOME/.scaii/backends/sky-rts/maps` and ends
+    /// in `.lua`, do not provide those parts of the path.
+    ///
+    /// So, for instance, if you have a scenario called `my_scenario.lua`
+    /// in `$HOME/.scaii/backends/sky-rts/maps/foo/`, pass in simply
+    /// `foo/my_scenario`.
     pub fn set_lua_path(&mut self, path: &str) {
         self.world.write_resource::<LuaPath>().0 =
             Some(format!(".scaii/backends/sky-rts/maps/{}.lua", path));
     }
 
+    /// Initializes the scenario so that games can be reset.
+    ///
+    /// This loads Lua and well as running the scenario's `init`
+    /// function, seeding things like unit types and settings.
     fn init(&mut self) {
         use engine::resources::LuaPath;
         use std::env;
@@ -115,6 +141,8 @@ impl<'a, 'b> Rts<'a, 'b> {
             .expect("Could not initialize scenario");
     }
 
+    /// Resets the game to a clean state, running the scenario
+    /// Lua's `reset` function, populating initial entities.
     pub fn reset(&mut self) -> MultiMessage {
         use rand::Isaac64Rng;
         use util;
@@ -216,11 +244,15 @@ impl<'a, 'b> Rts<'a, 'b> {
         mm
     }
 
+    /// Checks whether the RTS is currently skipping rendering
+    /// state messages, and should spin instead or returning.
     pub fn skip(&self) -> bool {
         use self::resources::Skip;
         self.world.read_resource::<Skip>().0
     }
 
+    /// Performs a single update step of the RTS, if any action
+    /// if performed `action_update` should be called first.
     pub fn update(&mut self) -> MultiMessage {
         use scaii_defs::protos;
         use scaii_defs::protos::ScaiiPacket;
@@ -279,10 +311,12 @@ impl<'a, 'b> Rts<'a, 'b> {
         MultiMessage { packets: packets }
     }
 
+    /// Sets the input to the given `Action` packet.
     pub fn action_input(&mut self, action: Action) {
         self.world.write_resource::<ActionInput>().0 = Some(action);
     }
 
+    /// Serializes the world into raw bytes
     pub fn serialize(&mut self) -> Vec<u8> {
         use engine::resources::SerializeBytes;
 
@@ -291,6 +325,9 @@ impl<'a, 'b> Rts<'a, 'b> {
         self.world.read_resource::<SerializeBytes>().0.clone()
     }
 
+    /// Deserializes the world from raw bytes, as well as
+    /// recalculating anything like collision that cannot be
+    /// serialized.
     pub fn deserialize(&mut self, buf: Vec<u8>) {
         self.world.write_resource::<SerializeBytes>().0 = buf;
 
@@ -301,11 +338,13 @@ impl<'a, 'b> Rts<'a, 'b> {
         self.redo_collision();
     }
 
+    /// Redoes the collision after deserialization
     fn redo_collision(&mut self) {}
 
+    /// Sets whether to emit visualization messages.
     pub fn set_render(&mut self, render: bool) {
         self.render = render;
-    } 
+    }
 }
 
 #[cfg(test)]

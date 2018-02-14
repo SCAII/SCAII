@@ -1,6 +1,4 @@
-use std::error::Error;
-use std::fmt::{Debug, Display};
-use std::fmt;
+use std::fmt::Debug;
 
 use super::Pos;
 
@@ -68,24 +66,6 @@ pub enum MarkedMoveTarget<M> {
 pub struct MoveData<M> {
     pub behavior: MoveBehavior,
     pub target: MarkedMoveTarget<M>,
-}
-
-#[derive(Debug)]
-pub enum NoTargetError<M: Debug> {
-    Entity(Entity),
-    Marker(M),
-}
-
-impl<M: Debug> Display for NoTargetError<M> {
-    fn fmt(&self, formatter: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        write!(formatter, "Target not found: {:?}", self)
-    }
-}
-
-impl<M: Debug> Error for NoTargetError<M> {
-    fn description(&self) -> &str {
-        "Could not find target when (de)serializing"
-    }
 }
 
 impl<M: Debug + Serialize> SaveLoadComponent<M> for Move

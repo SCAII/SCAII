@@ -93,14 +93,20 @@ impl<'a> System<'a> for LuaSystem {
     }
 }
 impl LuaSystem {
+    /// Creates a new `LuaSystem` with a new context.
     pub fn new() -> Self {
         LuaSystem { lua: Lua::new() }
     }
 
+    /// Creates a new Lua system from the given context
+    #[allow(dead_code)]
     pub fn from_lua(lua: Lua) -> Self {
         LuaSystem { lua: lua }
     }
 
+    /// Executes a Lua script in the current Lua context, loading any
+    /// functions. Returns an error if Lua fails.
+    #[allow(dead_code)]
     pub fn add_lua(&mut self, src: &str) -> Result<(), ScaiiError> {
         self.lua
             .exec::<()>(src, Some("Loading Scenario Script File"))
@@ -113,6 +119,9 @@ impl LuaSystem {
             })
     }
 
+    /// Resets the raw pointer the the engine RNG that the Lua
+    /// environment may use as arguments to user-functions.
+    #[allow(dead_code)]
     pub fn reset_rng_ptr(&mut self, world: &mut World) {
         use self::userdata::UserDataRng;
         use rand::Isaac64Rng;
