@@ -138,6 +138,10 @@ impl<'a, 'b> Module for Context<'a, 'b> {
                 self.awaiting_msgs.push(mm);
                 Ok(())
             }
+            Some(SpecificMsg::EmitViz(ref render)) => {
+                self.rts.set_render(*render);
+                Ok(())
+            }
             Some(SpecificMsg::SerReq(ref req)) => self.handle_ser(req, src),
             _ => Err(From::from(format!(
                 "Invalid payload received in backend: {:?}",

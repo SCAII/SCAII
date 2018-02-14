@@ -302,6 +302,10 @@ impl<'a, 'b> Rts<'a, 'b> {
     }
 
     fn redo_collision(&mut self) {}
+
+    pub fn set_render(&mut self, render: bool) {
+        self.render = render;
+    } 
 }
 
 #[cfg(test)]
