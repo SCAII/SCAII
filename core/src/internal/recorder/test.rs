@@ -145,6 +145,9 @@ impl RecorderTester {
             },
             specific_msg: Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig {
                 pkts: vec,
+                overwrite: true,
+                //filepath: Some(String::from("C:\\Users\\Jed Irvine\\exact\\SCAII\\replay.sky")),
+                filepath: None,
             })),
         }
     }
@@ -213,9 +216,7 @@ fn packet_dest_is_recorder(pkt : &ScaiiPacket) -> bool {
 }
 
 fn spec_msg_is_recorder_config(pkt : &ScaiiPacket) -> bool {
-    if let Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig {
-                pkts: _,
-            })) = pkt.specific_msg {
+    if let Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig { .. })) = pkt.specific_msg {
         return true;
     }
     false
@@ -223,7 +224,7 @@ fn spec_msg_is_recorder_config(pkt : &ScaiiPacket) -> bool {
 
 fn cfg_payload_is_agentcfg(pkt : &ScaiiPacket) -> bool {
     match pkt.specific_msg {
-        Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig { pkts: ref pkt_vec,})) => {
+        Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig { pkts: ref pkt_vec, overwrite : _, filepath: _})) => {
             if pkt_vec.len() != 1 {
                 return false;
             }
