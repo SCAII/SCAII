@@ -287,16 +287,26 @@ impl Recorder for RecorderManager {}
 
 pub fn get_default_replay_file_path() -> Result<PathBuf, Box<Error>> {
     let mut replay_dir_path_buf = get_default_replay_dir()?;
-    replay_dir_path_buf.push("replay_data.sky");
+    replay_dir_path_buf.push("replay.scr");
     Ok(replay_dir_path_buf)
 }
 
 pub fn get_default_replay_dir() -> Result<PathBuf, Box<Error>> {
-    let mut dir = get_scaii_root()?;
-    dir.push("core");
-    dir.push("replay_data");
+    let mut dir = get_home_dir()?;
+    dir.push(".scaii");
+    dir.push("replays");
     ensure_dir_exists(&dir)?;
     Ok(dir)
+}
+
+fn get_home_dir() -> Result<PathBuf, Box<Error>> {
+    let result : Option<PathBuf> = env::home_dir();
+    match result {
+        Some(pathbuf) => { Ok(pathbuf) },
+        None => {
+            Err(Box::new(RecorderError::new("could not determine user's home directory")))
+        }
+    }
 }
 
 fn ensure_dir_exists(path_buf: &PathBuf) -> Result<(), Box<Error>> {
