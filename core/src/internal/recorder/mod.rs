@@ -3,7 +3,7 @@
 
 use scaii_defs::protos;
 use scaii_defs::{Module, Recorder};
-use scaii_defs::protos::{MultiMessage, RecorderStep, ScaiiPacket};
+use scaii_defs::protos::{MultiMessage, RecorderStep, ScaiiPacket, RecorderConfig};
 use scaii_defs::protos::scaii_packet::SpecificMsg;
 use std::error::Error;
 use std::env;
@@ -154,12 +154,13 @@ impl RecorderManager  {
         let ser_protos_src_endpoint = self.get_serialized_protos_endpoint(src_endpoint)?;
         let specific_msg = &pkt.specific_msg;
         match *specific_msg {
-            Some(SpecificMsg::RecorderConfig(_)) => {
+            Some(SpecificMsg::RecorderConfig(RecorderConfig{pkts: _, overwrite: ref ow, filepath: ref path})) => {
                 self.is_recording = true;
+                println!("  overwrite is set to {} , filepath is set to {:?} ", ow, path);
                 let ser_protos_scaii_pkt = self.get_serialized_protos_scaii_packet(pkt)?;
                 let replay_header = ReplayHeader { configs: ser_protos_scaii_pkt,};
                 let replay_action = ReplayAction::Header(replay_header);
-                self.start_recording(&replay_action)?; 
+                self.start_recording(path, ow, &replay_action)?; 
             },
             Some(SpecificMsg::SerResp(ref ser_resp)) => {
                 if self.is_recording {
@@ -195,8 +196,23 @@ impl RecorderManager  {
         self.writable_file = None;  
     }
 
-    fn start_recording(&mut self, header_replay_action : &ReplayAction) -> Result<(), Box<Error>> {
-        println!("recording header.");
+    fn get_one_up_path(&mut self, filepath : &String) -> String {
+        filepath.clone()
+    }
+    fn start_recording(&mut self, filepath_option : &Option<String>, overwrite: &bool, header_replay_action : &ReplayAction) -> Result<(), Box<Error>> {
+        match filepath_option {
+            &None => {},
+            &Some(ref path) => {
+                if *overwrite {
+                    let pathbuf_option : Option<PathBuf> = Some(PathBuf::from(path));
+                    self.file_path = pathbuf_option;
+                }
+                else {
+                    let pathbuf_option : Option<PathBuf> = Some(PathBuf::from(self.get_one_up_path(path)));
+                    self.file_path = pathbuf_option;
+                }
+            }
+        }
         if self.file_path == None {
             return Err(Box::new(RecorderError::new("RecorderManager.file_path not specified prior to start of recording.")));
         } 
@@ -271,24 +287,16 @@ impl Recorder for RecorderManager {}
 
 pub fn get_default_replay_file_path() -> Result<PathBuf, Box<Error>> {
     let mut replay_dir_path_buf = get_default_replay_dir()?;
-    replay_dir_path_buf.push("replay_data.txt");
+    replay_dir_path_buf.push("replay_data.sky");
     Ok(replay_dir_path_buf)
 }
 
 pub fn get_default_replay_dir() -> Result<PathBuf, Box<Error>> {
-    match env::var("SCAII_ROOT") {
-        Ok(root) => {
-            let mut path = PathBuf::from(root);
-            path.push("core");
-            path.push("replay_data");
-            Ok(path)
-        },
-        Err(e) => {
-            let error_message = e.description().clone();
-            let message = format!("RecorderManager could not determine environment variable SCAII_ROOT. {}", error_message);
-            Err(Box::new(RecorderError::new(message.as_str())))
-        },
-    }
+    let mut dir = get_scaii_root()?;
+    dir.push("core");
+    dir.push("replay_data");
+    ensure_dir_exists(&dir)?;
+    Ok(dir)
 }
 
 fn ensure_dir_exists(path_buf: &PathBuf) -> Result<(), Box<Error>> {
@@ -296,4 +304,43 @@ fn ensure_dir_exists(path_buf: &PathBuf) -> Result<(), Box<Error>> {
         fs::create_dir_all(path_buf.as_path())?;
     }
     Ok(())
+}
+pub fn get_scaii_root() -> Result<PathBuf, Box<Error>> {
+    //look upwardfrom current dir until find valid parent.
+    let current_dir = env::current_dir()?;
+    let mut candidate_dir: PathBuf = current_dir.clone();
+    let mut seeking = true;
+    while seeking {
+        let is_dir_scaii_root = is_dir_scaii_root(&candidate_dir);
+        if is_dir_scaii_root {
+            seeking = false;
+        } else {
+            let candidate_clone = candidate_dir.clone();
+            let parent_search_result = candidate_clone.parent();
+            match parent_search_result {
+                Some(parent_path) => {
+                    candidate_dir = parent_path.clone().to_path_buf();
+                }
+                None => {
+                    return Err(Box::new(RecorderError::new(&format!(
+                        "cannot find scaii_root above current directory {:?}",
+                        current_dir
+                    ))));
+                }
+            }
+        }
+    }
+    Ok(candidate_dir)
+}
+
+fn is_dir_scaii_root(dir: &PathBuf) -> bool {
+    let mut candidate_dir = dir.clone();
+    candidate_dir.push("core");
+    let core_dir_exists = candidate_dir.exists();
+
+    let mut candidate_dir = dir.clone();
+    candidate_dir.push("common_protos");
+    let common_protos_dir_exists = candidate_dir.exists();
+
+    core_dir_exists && common_protos_dir_exists
 }
