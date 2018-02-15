@@ -14,7 +14,12 @@ class TowerAction(MoveList):
             self.state.id_list[0], "attack", self.state.id_list[quadrant])
 
     def actions(self):
-        return [1, 2, 3, 4]
+        return {
+            'bottom_right': 1,
+            'top_right': 2,
+            'bottom_left': 3,
+            'top_left': 4,
+        }
 
     def to_proto(self, packet, skip=True):
         super().to_proto(packet, skip, skip_lua=None)
