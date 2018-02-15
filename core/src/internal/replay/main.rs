@@ -126,7 +126,7 @@ impl ReplayManager  {
             ReplayAction::Header(ReplayHeader { configs: SerializedProtosScaiiPacket { data:  u8_vec, }, }) => {
                 let pkt = ScaiiPacket::decode(u8_vec)?;
                 match pkt.specific_msg {
-                    Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig { pkts: pkt_vec,})) => {
+                    Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig { pkts: pkt_vec, overwrite: _, filepath: _})) => {
                         for pkt in &pkt_vec {
                             let pkt_to_send= pkt.clone();
                             let mm = wrap_packet_in_multi_message(pkt_to_send);
@@ -836,7 +836,7 @@ fn create_cfg_pkt() -> ScaiiPacket {
             endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})),
         },
         specific_msg: Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig {
-            pkts: vec,
+            pkts: vec, overwrite: true, filepath: None,
         })),
     }
 }
