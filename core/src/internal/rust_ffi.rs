@@ -7,6 +7,7 @@ use std::ops::{Deref, DerefMut};
 use super::LoadedAs;
 
 pub fn init_ffi(args: RustFfiConfig) -> Result<LoadedAs, Box<Error>> {
+    use std::env;
     use libloading::Library;
     use scaii_defs::protos::init_as::InitAs;
     use scaii_defs::protos::ModuleInit;
@@ -14,12 +15,16 @@ pub fn init_ffi(args: RustFfiConfig) -> Result<LoadedAs, Box<Error>> {
     let mu = &::internal::OPEN_LIBS;
     {
         let mut lib_map = mu.lock()?;
-        let plugin_path = args.plugin_path.clone();
+        let plugin_path = format!(
+            "{}/.scaii/{}",
+            env::var("HOME").expect("No home dir?"),
+            args.plugin_path,
+        );
 
         //rclib = rust-call lib
         let lib = lib_map
             .entry(plugin_path.clone())
-            .or_insert(Library::new(&plugin_path)?);
+            .or_insert(Library::new(&plugin_path).expect("Invalid library path"));
 
         match args.clone()
             .init_as
