@@ -17,7 +17,9 @@ pub fn init_ffi(args: RustFfiConfig) -> Result<LoadedAs, Box<Error>> {
         let mut lib_map = mu.lock()?;
         let plugin_path = format!(
             "{}/.scaii/{}",
-            env::var("HOME").expect("No home dir?"),
+            env::home_dir()
+                .expect("Could not find home directory")
+                .to_string_lossy(),
             args.plugin_path,
         );
 
