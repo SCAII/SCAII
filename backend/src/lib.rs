@@ -195,7 +195,8 @@ impl<'a, 'b> Module for Context<'a, 'b> {
                 which_module: Some(WhichModule::BackendCfg(ref backend_cfg)),
             })) => {
                 let out = self.configure(backend_cfg);
-                self.awaiting_msgs.push(util::ack_msg());
+                let mm = self.rts.init();
+                self.awaiting_msgs.push(mm);
                 out
             }
             Some(SpecificMsg::ResetEnv(true)) => {

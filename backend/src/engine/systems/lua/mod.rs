@@ -8,7 +8,7 @@ use std::path::Path;
 use std::fmt::Debug;
 
 use engine::components::{Death, FactionId, UnitTypeTag};
-use engine::resources::{Reward, Skip, Terminal, UnitTypeMap};
+use engine::resources::{Reward, RewardTypes, Skip, Terminal, UnitTypeMap};
 
 pub(crate) mod userdata;
 
@@ -19,6 +19,7 @@ pub struct LuaSystemData<'a> {
     tag: ReadStorage<'a, UnitTypeTag>,
 
     unit_type: Fetch<'a, UnitTypeMap>,
+    r_types: Fetch<'a, RewardTypes>,
 
     skip: FetchMut<'a, Skip>,
     reward: FetchMut<'a, Reward>,
@@ -39,7 +40,7 @@ impl<'a> System<'a> for LuaSystem {
 
         sys_data.reward.0.clear();
 
-        let world = UserDataWorld { victory: None };
+        let world = UserDataWorld::default();
         self.lua.globals().set("__sky_world", world).unwrap();
 
         for (faction, tag, death) in (&sys_data.faction, &sys_data.tag, &sys_data.death).join() {
@@ -64,17 +65,30 @@ impl<'a> System<'a> for LuaSystem {
 
             let u_type = sys_data.unit_type.tag_map.get(&tag.0).unwrap();
 
-            if killer_faction.0 != 0 || friendly_kill {
-                *sys_data.reward.0.entry("death".to_string()).or_insert(0.0) +=
-                    u_type.death_penalty;
-            } else {
-                *sys_data.reward.0.entry("kill".to_string()).or_insert(0.0) += u_type.kill_reward;
+            if (killer_faction.0 != 0 || friendly_kill) && u_type.death_penalty != 0.0 {
+                *sys_data
+                    .reward
+                    .0
+                    .entry(u_type.death_type.clone())
+                    .or_insert(0.0) += u_type.death_penalty;
+            } else if u_type.kill_reward != 0.0 {
+                *sys_data
+                    .reward
+                    .0
+                    .entry(u_type.kill_type.clone())
+                    .or_insert(0.0) += u_type.kill_reward;
             }
         }
 
         let world: UserDataWorld = self.lua.globals().get("__sky_world").unwrap();
         if world.victory.is_some() {
             sys_data.terminal.0 = true;
+        }
+
+        let r_types = &sys_data.r_types.0;
+        for (r_type, reward) in world.rewards {
+            assert!(r_types.contains(&r_type));
+            *sys_data.reward.0.entry(r_type).or_insert(0.0) += reward;
         }
 
         if sys_data.skip.0 {
@@ -202,10 +216,23 @@ impl LuaSystem {
 
     pub fn load_scenario(&mut self, world: &mut World) -> Result<(), Box<Error>> {
         use engine::components::{FactionId, Shape};
-        use engine::resources::{Player, UnitType, UnitTypeMap, PLAYER_COLORS};
+        use engine::resources::{Player, RewardTypes, UnitType, UnitTypeMap, PLAYER_COLORS};
+        use std::collections::HashSet;
 
         let table: Table = self.lua
             .eval("sky_init()", Some("Initializing in sky_init from Lua"))?;
+
+        let r_types = if table.contains_key("reward_types")? {
+            let reward_types: Table = table.get("reward_types")?;
+            let mut r_types = HashSet::new();
+            for r_type in reward_types.sequence_values::<String>() {
+                r_types.insert(r_type?);
+            }
+
+            r_types
+        } else {
+            RewardTypes::default().0
+        };
 
         let factions: usize = if table.contains_key("factions")? {
             table.get("factions").unwrap()
@@ -322,9 +349,95 @@ impl LuaSystem {
                     }
                 }
 
+                if concrete.kill_reward != 0.0 {
+                    concrete.kill_type = if unit_type.contains_key("kill_type")? {
+                        let typ: String = unit_type.get("kill_type")?;
+                        if !r_types.contains(&typ) {
+                            panic!(
+                                "Got reward type \"{}\" but only recognize {:?}",
+                                typ, r_types
+                            );
+                        }
+                        typ
+                    } else {
+                        if !r_types.contains(&concrete.kill_type) {
+                            panic!(
+                                "Got default reward type \"{}\" but expected one of {:?}",
+                                concrete.kill_type, r_types
+                            );
+                        }
+                        concrete.kill_type
+                    };
+                }
+
+                if concrete.death_penalty != 0.0 {
+                    concrete.death_type = if unit_type.contains_key("death_type")? {
+                        let typ: String = unit_type.get("death_type")?;
+                        if !r_types.contains(&typ) {
+                            panic!(
+                                "Got reward type \"{}\" but only recognize {:?}",
+                                typ, r_types
+                            );
+                        }
+                        typ
+                    } else {
+                        if !r_types.contains(&concrete.death_type) {
+                            panic!(
+                                "Got default reward type \"{}\" but expected one of {:?}",
+                                concrete.death_type, r_types
+                            );
+                        }
+                        concrete.death_type
+                    };
+                }
+
+                if concrete.damage_recv_penalty != Some(0.0) {
+                    concrete.dmg_recv_type = if unit_type.contains_key("dmg_recv_type")? {
+                        let typ: String = unit_type.get("dmg_recv_type")?;
+                        if !r_types.contains(&typ) {
+                            panic!(
+                                "Got reward type \"{}\" but only recognize {:?}",
+                                typ, r_types
+                            );
+                        }
+                        typ
+                    } else {
+                        if !r_types.contains(&concrete.dmg_recv_type) {
+                            panic!(
+                                "Got default reward type \"{}\" but expected one of {:?}",
+                                concrete.dmg_recv_type, r_types
+                            );
+                        }
+                        concrete.dmg_recv_type
+                    };
+                }
+
+                if concrete.damage_deal_reward != Some(0.0) {
+                    concrete.dmg_deal_type = if unit_type.contains_key("dmg_deal_type")? {
+                        let typ: String = unit_type.get("dmg_deal_type")?;
+                        if !r_types.contains(&typ) {
+                            panic!(
+                                "Got reward type \"{}\" but only recognize {:?}",
+                                typ, r_types
+                            );
+                        }
+                        typ
+                    } else {
+                        if !r_types.contains(&concrete.dmg_deal_type) {
+                            panic!(
+                                "Got default reward type \"{}\" but expected one of {:?}",
+                                concrete.dmg_deal_type, r_types
+                            );
+                        }
+                        concrete.dmg_deal_type
+                    };
+                }
+
                 u_type_map.typ_ids.insert(concrete.tag.clone(), i);
                 u_type_map.tag_map.insert(concrete.tag.clone(), concrete);
             }
+
+            world.write_resource::<RewardTypes>().0 = r_types;
         }
 
         Ok(())
