@@ -39,3 +39,6 @@ class SkyRtsEnv(ScaiiEnv):
         packet.dest.backend.SetInParent()
 
         packet.config.backend_cfg.cfg_msg = cfg.SerializeToString()
+
+        self.backend_cfg = ScaiiPacket()
+        self.backend_cfg.CopyFrom(packet)

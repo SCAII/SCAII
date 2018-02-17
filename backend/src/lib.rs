@@ -170,6 +170,14 @@ impl<'a, 'b> Context<'a, 'b> {
 
         Ok(())
     }
+
+    fn handle_de(&mut self, resp: &SerResp) -> Result<(), Box<Error>> {
+        use scaii_defs::protos::SerializationFormat as Format;
+        match resp.format() {
+            Format::Nondiverging => self.deserialize(&resp.serialized),
+            Format::Diverging => self.deserialize_diverging(&resp.serialized),
+        }
+    }
 }
 
 impl<'a, 'b> Module for Context<'a, 'b> {
@@ -177,6 +185,8 @@ impl<'a, 'b> Module for Context<'a, 'b> {
         use scaii_defs::protos::scaii_packet::SpecificMsg;
         use scaii_defs::protos::Cfg;
         use scaii_defs::protos::cfg::WhichModule;
+        use scaii_defs::protos::Record;
+        use util;
 
         let src = &packet.src;
 
@@ -197,12 +207,18 @@ impl<'a, 'b> Module for Context<'a, 'b> {
             Some(SpecificMsg::Action(ref action)) => {
                 self.rts.action_input(action.clone());
                 let mut mm = self.rts.update();
+                if mm.packets.len() > 0 {
+                    self.awaiting_msgs.push(mm);
+                }
 
                 while self.rts.skip() {
                     mm = self.rts.update();
+                    // For recording
+                    if mm.packets.len() > 0 {
+                        self.awaiting_msgs.push(mm);
+                    }
                 }
 
-                self.awaiting_msgs.push(mm);
                 Ok(())
             }
             Some(SpecificMsg::EmitViz(ref render)) => {
@@ -210,6 +226,16 @@ impl<'a, 'b> Module for Context<'a, 'b> {
                 Ok(())
             }
             Some(SpecificMsg::SerReq(ref req)) => self.handle_ser(req, src),
+            Some(SpecificMsg::Record(Record { keyframe_interval })) => {
+                self.rts.start_recording(keyframe_interval as usize);
+                self.awaiting_msgs.push(util::ack_msg());
+                Ok(())
+            }
+            Some(SpecificMsg::ReplayMode(true)) => {
+                self.rts.replay_mode(true);
+                Ok(())
+            }
+            Some(SpecificMsg::SerResp(ref resp)) => self.handle_de(resp),
             _ => Err(From::from(format!(
                 "Invalid payload received in backend: {:?}",
                 packet
