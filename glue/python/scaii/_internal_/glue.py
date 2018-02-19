@@ -45,7 +45,7 @@ try:
         SCAII_CORE = windll.LoadLibrary('scaii_core')
     elif platform.system().lower() == 'darwin':
         from ctypes import cdll
-        SCAII_CORE = cdll.LoadLibrary('scaii_core.dylib')
+        SCAII_CORE = cdll.LoadLibrary('libscaii_core.dylib')
     elif platform.system().lower() == 'linux':
         from ctypes import cdll
         SCAII_CORE = cdll.LoadLibrary('libscaii_core.so')
