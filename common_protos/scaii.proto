@@ -279,6 +279,8 @@ message RecorderStep {
 // message to trigger recorder
 message RecorderConfig {
 	repeated ScaiiPacket pkts = 1;
+	required bool overwrite = 2;
+	optional string filepath = 3;
 }
 
 message GameComplete {}
