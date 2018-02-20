@@ -30,6 +30,7 @@ class SkyRtsEnv(ScaiiEnv):
 
     def load_scenario(self, path):
         from ..protos.sky_rts_pb2 import Config
+        from scaii.protos.scaii_pb2 import ScaiiPacket
 
         cfg = Config()
         cfg.scenario.path = path
