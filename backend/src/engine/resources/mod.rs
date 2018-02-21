@@ -154,7 +154,7 @@ impl UnitType {
     /// position and faction.
     ///
     /// This also initializes anything it needs such as colliders in the collision system.
-    pub fn build_entity(&self, world: &mut World, pos: Pos, faction: usize) {
+    pub fn build_entity(&self, world: &mut World, pos: Pos, curr_hp: Option<f64>, faction: usize) {
         use specs::saveload::U64Marker;
 
         use engine::components::{AttackSensor, CollisionHandle, Movable, Speed, Static,
@@ -173,7 +173,7 @@ impl UnitType {
                 .with(UnitTypeTag(self.tag.clone()))
                 .with(Hp {
                     max_hp: self.max_hp,
-                    curr_hp: self.max_hp,
+                    curr_hp: curr_hp.unwrap_or(self.max_hp),
                 })
                 .marked::<U64Marker>();
 

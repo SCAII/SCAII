@@ -196,6 +196,8 @@ impl LuaSystem {
             let pos_table: Table = unit.get("pos")?;
             let pos = Pos::new(pos_table.get("x")?, pos_table.get("y")?);
 
+            let curr_hp: Option<f64> = pos_table.get("hp")?;
+
             let faction: usize = unit.get("faction")?;
 
             let template = {
@@ -208,7 +210,7 @@ impl LuaSystem {
                     .clone()
             };
 
-            template.build_entity(world, pos, faction);
+            template.build_entity(world, pos, curr_hp, faction);
         }
 
         Ok(())
