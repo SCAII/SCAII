@@ -38,7 +38,7 @@ impl<'a> System<'a> for InputSystem {
         let actions = if actions.is_some() {
             let (actions, skip, skip_lua) = to_action_list(actions.unwrap());
             // ignore skipping for replays
-            if sys_data.is_replay.0 {
+            if !sys_data.is_replay.0 {
                 *sys_data.skip = Skip(skip, skip_lua);
             }
             actions
