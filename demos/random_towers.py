@@ -13,12 +13,12 @@ for i in range(0, 2):
 
     print("acting")
     act = env.new_action()
-    act.attack_quadrant(2)
+    act.attack_tower(2)
 
     s = env.act(act)
 
     while not s.is_terminal():
-        raise Exception("Should not get in loop")
+        # raise Exception("Should not get in loop")
         noop = env.new_action()
         s = env.act(noop)
 
