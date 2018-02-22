@@ -40,36 +40,45 @@ impl Router {
     /// Initializes an empty Router.
     #[allow(dead_code)]
     pub fn new() -> Self {
+        use internal::recorder::RecorderManager;
         Router {
             backend: None,
             agent: None,
             modules: HashMap::new(),
             replay: None,
-            recorder: None,
+            recorder: Some(Box::new(RecorderManager::new().expect(
+                "Could not determine default replay directory when constructing recorder",
+            ))),
         }
     }
 
     /// Initializes a Router with the specificed Backend instance.
     #[allow(dead_code)]
     pub fn from_backend(backend: Box<Backend>) -> Self {
+        use internal::recorder::RecorderManager;
         Router {
             backend: Some(backend),
             agent: None,
             modules: HashMap::new(),
             replay: None,
-            recorder: None,
+            recorder: Some(Box::new(RecorderManager::new().expect(
+                "Could not determine default replay directory when constructing recorder",
+            ))),
         }
     }
 
     /// /// Initializes a Router with the specificed Agent instance.
     #[allow(dead_code)]
     pub fn from_agent(agent: Box<Agent>) -> Self {
+        use internal::recorder::RecorderManager;
         Router {
             backend: None,
             agent: Some(agent),
             modules: HashMap::new(),
             replay: None,
-            recorder: None
+            recorder: Some(Box::new(RecorderManager::new().expect(
+                "Could not determine default replay directory when constructing recorder",
+            ))),
         }
     }
 
@@ -120,6 +129,8 @@ impl Router {
     /// target errors on receiving the message.
     pub fn route_to(&mut self, msg: &ScaiiPacket) -> Result<Option<ScaiiPacket>, Box<Error>> {
         let dest = msg.dest.endpoint.as_ref().expect("Malformed dest field");
+        println!("received packet {:?}", msg);
+        println!("");
         match *dest {
             Endpoint::Backend(_) => {
                 let res = self.backend.as_mut().and_then(|v| Some(v.process_msg(msg)));
@@ -165,13 +176,15 @@ impl Router {
                 Ok(None)
             }
             Endpoint::Recorder(_) => {
-                let res = self.recorder.as_mut().and_then(|v| Some(v.process_msg(msg)));
+                let res = self.recorder
+                    .as_mut()
+                    .and_then(|v| Some(v.process_msg(msg)));
                 if let Some(Err(err)) = res {
                     return Err(err);
                 } else if res.is_none() {
                     return Err(Box::new(NoSuchEndpointError { end: dest.clone() }));
                 };
-
+                println!("....registered recorder");
                 Ok(None)
             }
         }
@@ -295,7 +308,6 @@ impl Router {
         self.replay.as_ref()
     }
 
-
     /// Registers a new recorder, returning the old one if one existed.
     #[allow(dead_code)]
     pub fn register_recorder(&mut self, recorder: Box<Recorder>) -> Option<Box<Recorder>> {
@@ -307,7 +319,6 @@ impl Router {
     pub fn recorder(&self) -> Option<&Box<Recorder>> {
         self.recorder.as_ref()
     }
-
 
     /// Returns a reference to the registered agent (if any).
     #[allow(dead_code, borrowed_box)]

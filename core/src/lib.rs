@@ -1,6 +1,7 @@
 // For clippy
 #![allow(unknown_lints)]
 
+extern crate bincode;
 #[macro_use]
 extern crate lazy_static;
 extern crate libc;
@@ -9,7 +10,6 @@ extern crate prost;
 extern crate scaii_defs;
 #[macro_use]
 extern crate serde_derive;
-extern crate bincode;
 extern crate websocket;
 use scaii_defs::protos::{AgentEndpoint, MultiMessage, ScaiiPacket};
 use std::error::Error;
@@ -23,13 +23,12 @@ mod c_api;
 #[cfg(feature = "c_api")]
 pub use c_api::*;
 
-
 // Don't publicly expose our internal structure to FFI
 pub(crate) mod internal;
 //...but expose ReplayAction so Replay can access it in Recorder (Replay is a binary so different crate)
-pub use internal::recorder::{GameAction, get_default_replay_file_path, ReplayAction, ReplayHeader, SerializedProtosAction, 
-                SerializedProtosEndpoint, SerializedProtosScaiiPacket,
-                SerializedProtosSerializationResponse, SerializationInfo};
+pub use internal::recorder::{get_default_replay_file_path, GameAction, ReplayAction, ReplayHeader,
+                             SerializationInfo, SerializedProtosAction, SerializedProtosEndpoint,
+                             SerializedProtosScaiiPacket, SerializedProtosSerializationResponse};
 pub use internal::rpc::get_rpc_config_for_viz;
 
 /// The Environment created by this library.
@@ -42,9 +41,10 @@ const FATAL_OWNER_ERROR: &'static str = "FATAL CORE ERROR: Cannot forward messag
 
 impl Environment {
     pub fn new() -> Self {
-        Environment {
+        let env = Environment {
             router: Router::new(),
-        }
+        };
+        env
     }
 
     pub fn agent_owned() -> (Self, Rc<RefCell<PublisherAgent>>) {
@@ -92,14 +92,12 @@ impl Environment {
                 SpecificMsg::Err(_) => self.forward_err_to_owner(&mut packet.clone()),
                 SpecificMsg::Config(Cfg {
                     which_module:
-                        Some(
-                            WhichModule::CoreCfg(CoreCfg {
-                                plugin_type:
-                                    PluginType {
-                                        plugin_type: Some(ref mut plugin_type),
-                                    },
-                            }),
-                        ),
+                        Some(WhichModule::CoreCfg(CoreCfg {
+                            plugin_type:
+                                PluginType {
+                                    plugin_type: Some(ref mut plugin_type),
+                                },
+                        })),
                 }) => {
                     let res = self.load_cfg(plugin_type);
                     if let Err(err) = res {
@@ -186,16 +184,14 @@ impl Environment {
                     &format!(
                         "{};\n\
                          The module who made this mistake no longer exists: {}",
-                        descrip,
-                        err
+                        descrip, err
                     ),
                     error_src,
                     &Endpoint::Core(CoreEndpoint {}),
                 )
                 .expect(&format!(
                     "{}:\n\t(Original Error): {}",
-                    FATAL_OWNER_ERROR,
-                    err
+                    FATAL_OWNER_ERROR, err
                 ));
             return;
         }

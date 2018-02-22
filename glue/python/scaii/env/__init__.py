@@ -307,7 +307,7 @@ class ScaiiEnv():
         is_keyframe = False
 
         if self.frames_since_keyframe == 0:
-            ser_req = self.next_msg.packets().add()
+            ser_req = self.next_msg.packets.add()
             ser_req.src.agent.SetInParent()
             ser_req.dest.agent.SetInParent()
 

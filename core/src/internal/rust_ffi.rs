@@ -22,7 +22,7 @@ pub fn init_ffi(args: RustFfiConfig) -> Result<LoadedAs, Box<Error>> {
                 .to_string_lossy(),
             args.plugin_path,
         );
-
+        println!("plugin_path is {}", plugin_path);
         //rclib = rust-call lib
         let lib = lib_map
             .entry(plugin_path.clone())
