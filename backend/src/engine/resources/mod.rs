@@ -43,6 +43,8 @@ pub(super) fn register_world_resources(world: &mut World) {
     world.add_resource(rng);
     world.add_resource(Episode(0));
     world.add_resource(Terminal(false));
+    world.add_resource(Step(0));
+    world.add_resource(MaxStep(None));
     world.add_resource(DeltaT(SIXTY_FPS));
     world.add_resource(Render::default());
     world.add_resource(NeedsKeyInfo(true));
@@ -70,6 +72,12 @@ pub struct RtsState(pub State);
 /// The current episode, only meaningful for sequential runs.
 #[derive(Copy, Clone, PartialEq, Eq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub struct Episode(pub usize);
+
+#[derive(Copy, Clone, PartialEq, Eq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+pub struct Step(pub usize);
+
+#[derive(Copy, Clone, PartialEq, Eq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+pub struct MaxStep(pub Option<usize>);
 
 /// Is this the final frame of the scenario?
 #[derive(Copy, Clone, PartialEq, Eq, Ord, PartialOrd, Hash, Serialize, Deserialize)]

@@ -36,7 +36,8 @@ pub(super) fn register_world_components(world: &mut World) {
     world.register::<Static>();
     world.register::<MovedFlag>();
     world.register::<Hp>();
-    world.register::<Damage>();
+    world.register::<DealtDamage>();
+    world.register::<HpChange>();
     world.register::<Shape>();
     world.register::<Color>();
     world.register::<Speed>();
@@ -98,15 +99,13 @@ pub struct Hp {
     pub curr_hp: f64,
 }
 
-#[derive(Default, Component, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[storage(NullStorage)]
-pub struct HpChangeFlag;
+#[derive(Default, Component, Copy, Clone, PartialEq, Serialize, Deserialize)]
+#[storage(HashMapStorage)]
+pub struct HpChange(pub f64);
 
 #[derive(Default, Component, Copy, Clone, PartialEq, Serialize, Deserialize)]
-#[storage(VecStorage)]
-pub struct Damage {
-    pub damage: f64,
-}
+#[storage(HashMapStorage)]
+pub struct DealtDamage(pub f64);
 
 #[derive(Default, Component, Copy, Clone, PartialEq, Eq, Serialize, Debug, Deserialize)]
 #[storage(VecStorage)]

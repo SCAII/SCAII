@@ -1,11 +1,13 @@
 use specs::prelude::*;
-use engine::components::{AttackSensor, CollisionHandle, Death, MovedFlag};
+use engine::components::{AttackSensor, CollisionHandle, DealtDamage, Death, HpChange, MovedFlag};
 use engine::resources::SkyCollisionWorld;
 
 #[derive(SystemData)]
 pub struct CleanupSystemData<'a> {
     death: WriteStorage<'a, Death>,
     moved: WriteStorage<'a, MovedFlag>,
+    dealt_dmg: WriteStorage<'a, DealtDamage>,
+    hp_change: WriteStorage<'a, HpChange>,
     entities: Entities<'a>,
     collision_sys: FetchMut<'a, SkyCollisionWorld>,
 
@@ -20,6 +22,8 @@ impl<'a> System<'a> for CleanupSystem {
 
     fn run(&mut self, mut sys_data: Self::SystemData) {
         sys_data.moved.clear();
+        sys_data.dealt_dmg.clear();
+        sys_data.hp_change.clear();
 
         for (id, col_handle, atk_radius, _) in (
             &*sys_data.entities,

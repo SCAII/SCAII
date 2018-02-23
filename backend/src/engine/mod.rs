@@ -222,6 +222,7 @@ impl<'a, 'b> Rts<'a, 'b> {
 
             self.world.write_resource::<Episode>().0 += 1;
             self.world.write_resource::<Terminal>().0 = false;
+            self.world.write_resource::<Step>().0 = 0;
         }
 
         self.lua_sys
@@ -392,6 +393,8 @@ impl<'a, 'b> Rts<'a, 'b> {
         self.sim_systems.dispatch_seq(&self.world.res);
         self.lua_sys.run_now(&self.world.res);
         self.out_systems.dispatch_seq(&self.world.res);
+
+        self.world.write_resource::<Step>().0 += 1;
 
         self.world.maintain();
 

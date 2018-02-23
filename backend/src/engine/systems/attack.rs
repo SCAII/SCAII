@@ -1,5 +1,5 @@
 use specs::prelude::*;
-use engine::components::{Attack, Death, Hp, UnitTypeTag};
+use engine::components::{Attack, DealtDamage, Death, Hp, HpChange, UnitTypeTag};
 use engine::resources::{DeltaT, UnitTypeMap};
 
 #[derive(SystemData)]
@@ -7,6 +7,8 @@ pub struct AttackSystemData<'a> {
     attack: WriteStorage<'a, Attack>,
     hp: WriteStorage<'a, Hp>,
     death: WriteStorage<'a, Death>,
+    damage: WriteStorage<'a, DealtDamage>,
+    hp_change: WriteStorage<'a, HpChange>,
 
     delta_t: Fetch<'a, DeltaT>,
     unit_type_map: Fetch<'a, UnitTypeMap>,
@@ -39,6 +41,16 @@ impl<'a> System<'a> for AttackSystem {
                 let tar_hp = sys_data.hp.get_mut(atk.target).unwrap();
 
                 tar_hp.curr_hp -= unit_type.attack_damage;
+
+                sys_data
+                    .hp_change
+                    .entry(atk.target)
+                    .unwrap()
+                    .or_insert(HpChange(0.0))
+                    .0 -= unit_type.attack_damage;
+
+                sys_data.damage.entry(id).unwrap().or_insert(DealtDamage(0.0)).0 +=
+                    unit_type.attack_damage;
 
                 if tar_hp.curr_hp <= 0.0 {
                     sys_data.death.insert(atk.target, Death { killer: id });

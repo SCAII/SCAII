@@ -9,7 +9,7 @@ function gen_tower(rng,x,out)
     end
     tower = {
         pos = {x=x, y=20},
-        hp = rng:rand_double(10.0, max_hp),
+        hp = rng:rand_double(30.0, max_hp),
         faction = 1,
         unit_type = types[tower_type],
     }
@@ -64,7 +64,7 @@ function sky_init()
             height=3.0,
         },
         can_move=false,
-        kill_reward=150,
+        kill_reward=50,
         death_penalty=0,
         kill_type="bonus",
         damage_recv_penalty=0,
@@ -84,7 +84,7 @@ function sky_init()
         },
         can_move=false,
         death_penalty=0,
-        kill_reward=1000,
+        kill_reward=70,
         kill_type="bonus",
         damage_recv_penalty=0,
         damage_deal_reward=0,
@@ -99,6 +99,7 @@ function sky_init()
         victory_reward=0,
         failure_penalty=0,
         reward_types={"agent_death","bonus","took_damage","dealt_damage"},
+        max_steps=70,
     }
 end
 

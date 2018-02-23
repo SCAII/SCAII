@@ -7,8 +7,8 @@ use std::error::Error;
 use std::path::Path;
 use std::fmt::Debug;
 
-use engine::components::{Death, FactionId, UnitTypeTag};
-use engine::resources::{Reward, RewardTypes, Skip, Terminal, UnitTypeMap};
+use engine::components::{DealtDamage, Death, FactionId, HpChange, UnitTypeTag};
+use engine::resources::{MaxStep, Reward, RewardTypes, Skip, Step, Terminal, UnitTypeMap};
 
 pub(crate) mod userdata;
 
@@ -17,7 +17,11 @@ pub struct LuaSystemData<'a> {
     death: ReadStorage<'a, Death>,
     faction: ReadStorage<'a, FactionId>,
     tag: ReadStorage<'a, UnitTypeTag>,
+    dmg_dealt: ReadStorage<'a, DealtDamage>,
+    hp_change: ReadStorage<'a, HpChange>,
 
+    step: Fetch<'a, Step>,
+    max_step: Fetch<'a, MaxStep>,
     unit_type: Fetch<'a, UnitTypeMap>,
     r_types: Fetch<'a, RewardTypes>,
 
@@ -37,8 +41,6 @@ impl<'a> System<'a> for LuaSystem {
 
     fn run(&mut self, mut sys_data: Self::SystemData) {
         use self::userdata::{UserDataReadWorld, UserDataUnit, UserDataWorld};
-
-        sys_data.reward.0.clear();
 
         let world = UserDataWorld::default();
         self.lua.globals().set("__sky_world", world).unwrap();
@@ -80,6 +82,48 @@ impl<'a> System<'a> for LuaSystem {
             }
         }
 
+        for (dmg_dealt, tag, _) in (&sys_data.dmg_dealt, &sys_data.tag, &sys_data.faction)
+            .join()
+            .filter(|&(_, _, faction)| faction.0 == 0)
+        {
+            let u_type = sys_data.unit_type.tag_map.get(&tag.0).unwrap();
+
+            if u_type.damage_deal_reward.is_none() {
+                *sys_data
+                    .reward
+                    .0
+                    .entry(u_type.dmg_deal_type.clone())
+                    .or_insert(0.0) += dmg_dealt.0
+            } else if u_type.damage_deal_reward.unwrap() != 0.0 {
+                *sys_data
+                    .reward
+                    .0
+                    .entry(u_type.dmg_deal_type.clone())
+                    .or_insert(0.0) += u_type.damage_deal_reward.unwrap();
+            }
+        }
+
+        for (hp_change, tag, _) in (&sys_data.hp_change, &sys_data.tag, &sys_data.faction)
+            .join()
+            .filter(|&(_, _, faction)| faction.0 == 0)
+        {
+            let u_type = sys_data.unit_type.tag_map.get(&tag.0).unwrap();
+
+            if u_type.damage_recv_penalty.is_none() {
+                *sys_data
+                    .reward
+                    .0
+                    .entry(u_type.dmg_recv_type.clone())
+                    .or_insert(0.0) += hp_change.0
+            } else if u_type.damage_recv_penalty.unwrap() != 0.0 {
+                *sys_data
+                    .reward
+                    .0
+                    .entry(u_type.dmg_recv_type.clone())
+                    .or_insert(0.0) += u_type.damage_recv_penalty.unwrap();
+            }
+        }
+
         let world: UserDataWorld = self.lua.globals().get("__sky_world").unwrap();
         if world.victory.is_some() {
             sys_data.terminal.0 = true;
@@ -89,6 +133,15 @@ impl<'a> System<'a> for LuaSystem {
         for (r_type, reward) in world.rewards {
             assert!(r_types.contains(&r_type));
             *sys_data.reward.0.entry(r_type).or_insert(0.0) += reward;
+        }
+
+        if sys_data
+            .max_step
+            .0
+            .map(|v| sys_data.step.0 >= v)
+            .unwrap_or(false)
+        {
+            sys_data.terminal.0 = true;
         }
 
         if sys_data.skip.0 {
@@ -196,7 +249,7 @@ impl LuaSystem {
             let pos_table: Table = unit.get("pos")?;
             let pos = Pos::new(pos_table.get("x")?, pos_table.get("y")?);
 
-            let curr_hp: Option<f64> = pos_table.get("hp")?;
+            let curr_hp: Option<f64> = unit.get("hp")?;
 
             let faction: usize = unit.get("faction")?;
 
@@ -218,7 +271,7 @@ impl LuaSystem {
 
     pub fn load_scenario(&mut self, world: &mut World) -> Result<(), Box<Error>> {
         use engine::components::{FactionId, Shape};
-        use engine::resources::{Player, RewardTypes, UnitType, UnitTypeMap, PLAYER_COLORS};
+        use engine::resources::{MaxStep, Player, RewardTypes, UnitType, UnitTypeMap, PLAYER_COLORS};
         use std::collections::HashSet;
 
         let table: Table = self.lua
@@ -251,6 +304,8 @@ impl LuaSystem {
                 })
             }
         }
+
+        world.write_resource::<MaxStep>().0 = table.get("max_steps")?;
 
         {
             let unit_types: Table = table.get("unit_types")?;
