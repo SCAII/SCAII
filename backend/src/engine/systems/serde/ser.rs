@@ -48,6 +48,7 @@ impl<'a> System<'a> for SerializeSystem {
     fn run(&mut self, mut world: Self::SystemData) {
         use bincode;
         use bincode::Infinite;
+        use bincode::Bounded;
         use super::SerTarget;
 
         let out = &mut world.out.0;
@@ -56,7 +57,7 @@ impl<'a> System<'a> for SerializeSystem {
 
         let mut tar = vec![];
 
-        bincode::serialize_into(&mut tar, &world.ser, Infinite).unwrap();
+        bincode::serialize_into(&mut tar, &world.ser, Bounded(10_000_000)).unwrap();
 
         let tar = SerTarget {
             components: tar,
