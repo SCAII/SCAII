@@ -1,5 +1,4 @@
 extern crate bincode;
-extern crate docopt;
 extern crate prost;
 extern crate scaii_core;
 extern crate scaii_defs;
@@ -31,8 +30,6 @@ use std::fs::File;
 use std::path::{Path, PathBuf};
 use std::io::BufReader;
 use bincode::{deserialize_from, Infinite};
-//use serde::Deserialize;
-//use docopt::Docopt;
 use std::env;
 use scaii_core::util;
 
