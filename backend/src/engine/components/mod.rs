@@ -48,6 +48,7 @@ pub(super) fn register_world_components(world: &mut World) {
     world.register::<UnitTypeTag>();
     world.register::<Attack>();
     world.register::<Death>();
+    world.register::<HpChangeFlag>();
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Serialize, Deserialize)]

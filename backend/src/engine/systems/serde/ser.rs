@@ -22,6 +22,7 @@ pub struct SerializeSystemData<'a> {
             Movable,
             Static,
             Move,
+            Movable,
             Pos,
             MovedFlag,
             Hp,

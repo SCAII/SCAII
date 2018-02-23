@@ -24,6 +24,7 @@ pub struct DeserializeSystemData<'a> {
             Move,
             Pos,
             MovedFlag,
+            Movable,
             Hp,
             Color,
             Shape,
