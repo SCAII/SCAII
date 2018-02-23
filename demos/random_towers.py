@@ -18,7 +18,7 @@ for i in range(0, 2):
     s = env.act(act)
 
     while not s.is_terminal():
-        # raise Exception("Should not get in loop")
+        raise Exception("Should not get in loop")
         noop = env.new_action()
         s = env.act(noop)
 
