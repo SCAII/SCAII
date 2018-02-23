@@ -66,9 +66,9 @@ fn launch_far_end(command: &str, args: &[String]) -> Child {
         }
         println!("command struct is {:?}", c);
         c.spawn().expect(String::as_str(
-            &format!("failed to launch command {}", command)))
-    } 
-    else if cfg!(target_os = "unix") {
+            &format!("failed to launch command {}", command),
+        ))
+    } else if cfg!(target_os = "unix") {
         let mut c = Command::new("sh");
         let c = c.arg("-c");
         let c = c.arg(command);
@@ -76,17 +76,18 @@ fn launch_far_end(command: &str, args: &[String]) -> Child {
             c.arg(arg);
         }
         c.spawn().expect(String::as_str(
-            &format!("failed to launch command {}", command)))
-    }
-    else {
+            &format!("failed to launch command {}", command),
+        ))
+    } else {
         // assume mac
         let mut c = Command::new("sh");
         let c = c.arg("-c");
         // for mac, command plus the args come across in the command value - if we split it
-        // up like we do on windows in command and arg, it doesn't work foe some reasoin ("open file:///...") 
+        // up like we do on windows in command and arg, it doesn't work foe some reasoin ("open file:///...")
         let c = c.arg(command);
         c.spawn().expect(String::as_str(
-            &format!("failed to launch command {}", command)))
+            &format!("failed to launch command {}", command),
+        ))
     }
 }
 
@@ -156,11 +157,8 @@ impl Rpc {
     }
     pub fn get_messages(&mut self) -> MultiMessage {
         use scaii_defs::protos;
-        protos::merge_multi_messages(self.messages_from_socket_client.drain(..).collect()).unwrap_or(
-            MultiMessage {
-                packets: Vec::new(),
-            },
-        )
+        protos::merge_multi_messages(self.messages_from_socket_client.drain(..).collect())
+            .unwrap_or(MultiMessage { packets: Vec::new() })
     }
 }
 
@@ -233,13 +231,13 @@ fn connect(settings: &RpcConfig) -> Result<Client<TcpStream>, Box<Error>> {
         Ok(connection) => connection,
     };
 
-    connection
-        .tcp_stream()
-        .set_read_timeout(Some(Duration::new(500, 0)))?;
+    connection.tcp_stream().set_read_timeout(
+        Some(Duration::new(500, 0)),
+    )?;
 
-    connection
-        .tcp_stream()
-        .set_write_timeout(Some(Duration::new(500, 0)))?;
+    connection.tcp_stream().set_write_timeout(
+        Some(Duration::new(500, 0)),
+    )?;
 
     match connection.accept() {
         Ok(conn) => Ok(conn),
@@ -250,14 +248,14 @@ fn connect(settings: &RpcConfig) -> Result<Client<TcpStream>, Box<Error>> {
     }
 }
 
-pub fn get_rpc_config_for_viz(comm : Option<String>, args_vec : Vec<String>) -> protos::RpcConfig {
+pub fn get_rpc_config_for_viz(comm: Option<String>, args_vec: Vec<String>) -> protos::RpcConfig {
     protos::RpcConfig {
         ip: Some("127.0.0.1".to_string()),
         port: Some(6112),
         init_as: protos::InitAs {
-            init_as: Some(protos::init_as::InitAs::Module(ModuleInit {
-                name: String::from("RpcPluginModule"),
-            })),
+            init_as: Some(protos::init_as::InitAs::Module(
+                ModuleInit { name: String::from("RpcPluginModule") },
+            )),
         },
         command: comm,
         command_args: args_vec,

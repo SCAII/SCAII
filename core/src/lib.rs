@@ -8,6 +8,7 @@ extern crate libc;
 extern crate libloading;
 extern crate prost;
 extern crate scaii_defs;
+extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 extern crate websocket;
@@ -22,6 +23,11 @@ use std::cell::RefCell;
 mod c_api;
 #[cfg(feature = "c_api")]
 pub use c_api::*;
+
+pub mod util;
+pub use util::*;
+pub mod scaii_config;
+pub use scaii_config::*;
 
 // Don't publicly expose our internal structure to FFI
 pub(crate) mod internal;
@@ -41,10 +47,9 @@ const FATAL_OWNER_ERROR: &'static str = "FATAL CORE ERROR: Cannot forward messag
 
 impl Environment {
     pub fn new() -> Self {
-        let env = Environment {
+        Environment {
             router: Router::new(),
-        };
-        env
+        }
     }
 
     pub fn agent_owned() -> (Self, Rc<RefCell<PublisherAgent>>) {

@@ -1,10 +1,13 @@
 use super::*;
 use super::super::super::Environment;
+use super::super::super::util::*;
 use scaii_defs::protos;
 use scaii_defs::{Agent, Backend, BackendSupported, Module, SerializationStyle};
-use scaii_defs::protos::{cfg, scaii_packet, AgentCfg, AgentEndpoint, BackendEndpoint, Cfg,
-                         GameComplete, MultiMessage, RecorderConfig, RecorderEndpoint,
-                         ScaiiPacket, SerializationResponse};
+use scaii_defs::protos::{scaii_packet, AgentCfg, AgentEndpoint, BackendCfg, cfg, Cfg, 
+                         CoreEndpoint, GameComplete, ReplayEndpoint, BackendInit, 
+                         MultiMessage, ScaiiPacket, BackendEndpoint, RecorderConfig,
+                         RecorderEndpoint, SerializationResponse, RustFfiConfig};
+use scaii_defs::protos::cfg::WhichModule;
 use scaii_defs::protos::endpoint::Endpoint;
 use scaii_defs::protos::scaii_packet::SpecificMsg;
 use std::error::Error;
@@ -38,13 +41,13 @@ struct RecorderTester {
 }
 impl Agent for RecorderTesterMessageQueue {}
 
-impl RecorderTester {
-    fn run(&mut self, env: Environment) -> Result<(), Box<Error>> {
-        self.env = env;
-        let step_count: u32 = 2;
 
+impl RecorderTester {
+    fn run(&mut self) -> Result<(), Box<Error>> {
+        //self.env = env;
+        let step_count: u32 = 2;
         self.configure_and_register_mock_rts(step_count);
-        let mut recorder_manager = RecorderManager::new()?;
+        let mut recorder_manager = RecorderManager::new();
         let _result = recorder_manager.init()?;
 
         let rc_recorder_manager = Rc::new(RefCell::new(recorder_manager));
@@ -54,6 +57,7 @@ impl RecorderTester {
                 .register_recorder(Box::new(rc_recorder_manager.clone()));
             debug_assert!(self.env.router().recorder().is_some());
         }
+        
         let cfg_pkt = self.create_cfg_pkt();
         let _result = self.send_packet(cfg_pkt)?;
         let total: u32 = step_count * 4;
@@ -71,12 +75,8 @@ impl RecorderTester {
 
     fn create_game_complete_packet(&mut self) -> ScaiiPacket {
         ScaiiPacket {
-            src: protos::Endpoint {
-                endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-            },
-            dest: protos::Endpoint {
-                endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})),
-            },
+            src: protos::Endpoint { endpoint: Some(Endpoint::Backend(BackendEndpoint {})) },
+            dest: protos::Endpoint { endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})) },
             specific_msg: Some(scaii_packet::SpecificMsg::GameComplete(GameComplete {})),
         }
     }
@@ -127,24 +127,27 @@ impl RecorderTester {
 
     fn create_cfg_pkt(&mut self) -> ScaiiPacket {
         let mut vec: Vec<ScaiiPacket> = Vec::new();
+        let rust_ffi_conf_pkt = create_test_rust_ffi_config_message();
+        vec.push(rust_ffi_conf_pkt);
+
         let cfg = Cfg {
-            which_module: Some(cfg::WhichModule::AgentCfg(AgentCfg {
-                cfg_msg: Some(Vec::new()),
-            })),
+            which_module: Some(cfg::WhichModule::BackendCfg(
+                BackendCfg { 
+                    cfg_msg: Some(Vec::new()) ,
+                    is_replay_mode: false,
+                    },
+            )),
         };
         let cfg_packet = ScaiiPacket {
-            src: protos::Endpoint {
-                endpoint: Some(Endpoint::Agent(AgentEndpoint {})),
-            },
-            dest: protos::Endpoint {
-                endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-            },
+            // have to make src ReplayEndpoint because no Agent is registered during test
+            src: protos::Endpoint { endpoint: Some(Endpoint::Replay(ReplayEndpoint {})) },
+            dest: protos::Endpoint { endpoint: Some(Endpoint::Backend(BackendEndpoint {})) },
             specific_msg: Some(scaii_packet::SpecificMsg::Config(cfg)),
         };
-        vec.push(cfg_packet);
+        //vec.push(cfg_packet);
         ScaiiPacket {
             src: protos::Endpoint {
-                endpoint: Some(Endpoint::Agent(AgentEndpoint {})),
+                endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
             },
             dest: protos::Endpoint {
                 endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})),
@@ -176,24 +179,34 @@ impl RecorderTester {
 #[test]
 fn test_recorder() {
     use super::super::super::Environment;
-    let environment_unused: Environment = Environment::new();
-    let recorder_tester_message_queue = RecorderTesterMessageQueue {
-        incoming_messages: Vec::new(),
-    };
+    let recorder_tester_message_queue =
+        RecorderTesterMessageQueue { incoming_messages: Vec::new() };
     let mut environment: Environment = Environment::new();
     let rc_recorder_tester_message_queue = Rc::new(RefCell::new(recorder_tester_message_queue));
 
     {
-        environment
-            .router_mut()
-            .register_agent(Box::new(rc_recorder_tester_message_queue.clone()));
-        debug_assert!(environment.router().agent().is_some());
+// <<<<<<< HEAD
+//         environment
+//             .router_mut()
+//             .register_agent(Box::new(rc_recorder_tester_message_queue.clone()));
+//         debug_assert!(environment.router().agent().is_some());
+//     }
+//     let mut recorder_tester = RecorderTester {
+//         incoming_message_queue: rc_recorder_tester_message_queue,
+//         env: environment_unused,
+// =======
+        environment.router_mut().register_module("recorder_tester".to_string(), Box::new(
+            rc_recorder_tester_message_queue
+                .clone(),
+        ));
+        debug_assert!(environment.router().module("recorder_tester").is_some());
     }
     let mut recorder_tester = RecorderTester {
         incoming_message_queue: rc_recorder_tester_message_queue,
-        env: environment_unused,
+        env: environment,
+//>>>>>>> origin/webserver
     };
-    let result = recorder_tester.run(environment);
+    let result = recorder_tester.run();
     match result {
         Ok(()) => {}
         Err(e) => {
@@ -230,7 +243,20 @@ fn spec_msg_is_recorder_config(pkt: &ScaiiPacket) -> bool {
     false
 }
 
-fn cfg_payload_is_agentcfg(pkt: &ScaiiPacket) -> bool {
+// <<<<<<< HEAD
+// fn cfg_payload_is_agentcfg(pkt: &ScaiiPacket) -> bool {
+//     match pkt.specific_msg {
+//         Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig {
+//             pkts: ref pkt_vec,
+//             overwrite: _,
+//             filepath: _,
+//         })) => {
+// =======
+// fn cfg_payload_is_backendcfg(pkt: &ScaiiPacket) -> bool {
+//     match pkt.specific_msg {
+//         Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig { pkts: ref pkt_vec })) => {
+// >>>>>>> origin/webserver
+fn cfg_payload_is_backendcfg(pkt: &ScaiiPacket) -> bool {
     match pkt.specific_msg {
         Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig {
             pkts: ref pkt_vec,
@@ -242,9 +268,7 @@ fn cfg_payload_is_agentcfg(pkt: &ScaiiPacket) -> bool {
             }
             let contained_pkt = &pkt_vec[0];
             match contained_pkt.specific_msg {
-                Some(scaii_packet::SpecificMsg::Config(Cfg {
-                    which_module: Some(cfg::WhichModule::AgentCfg(AgentCfg { cfg_msg: Some(_) })),
-                })) => true,
+                Some(scaii_packet::SpecificMsg::Config(Cfg { which_module: Some(cfg::WhichModule::BackendCfg(BackendCfg { cfg_msg: Some(_),is_replay_mode:false})),})) => true,
                 _ => false,
             }
         }
@@ -264,7 +288,7 @@ fn verify_game_action_step(replay_action_result: &Result<ReplayAction, Box<Error
                 );
                 false
             }
-        },
+        }
         &Err(ref e) => {
             assert!(false, "ERROR = {}", e.description().clone());
             false
@@ -372,30 +396,34 @@ fn verify_persisted_file(path: &Path) -> Result<(), Box<Error>> {
     // deser cfg scaiiPacket
     // header Ok(Header(ReplayHeader { configs: SerializedProtosScaiiPacket { data: [122, 6, 10, 4, 26, 2, 10, 0, 242, 1, 2, 50, 0, 250, 1, 2, 18, 0] } }))
     match replay_action_0 {
-        Ok(header) => match header {
-            ReplayAction::Header(replay_header) => {
-                let vec = replay_header.configs.data;
-                let pkt = ScaiiPacket::decode(vec)?;
-                assert!(
-                    packet_source_is_agent(&pkt),
-                    "Expected packet source to be agent {:?}",
-                    &pkt
-                );
-                assert!(
-                    packet_dest_is_recorder(&pkt),
-                    "Expected packet dest to be recorder {:?}",
-                    &pkt
-                );
-                assert!(
-                    spec_msg_is_recorder_config(&pkt),
-                    "Expected specific message to be recorder config {:?}",
-                    &pkt
-                );
-                assert!(
-                    cfg_payload_is_agentcfg(&pkt),
-                    "Expected AgentCfg {:?}",
-                    &pkt
-                );
+        Ok(header) => {
+            match header {
+                ReplayAction::Header(replay_header) => {
+                    let vec = replay_header.configs.data;
+                    let pkt = ScaiiPacket::decode(vec)?;
+                    // assert!(
+                    //     packet_source_is_agent(&pkt),
+                    //     "Expected packet source to be agent {:?}",
+                    //     &pkt
+                    // );
+                    assert!(
+                        packet_dest_is_recorder(&pkt),
+                        "Expected packet dest to be recorder {:?}",
+                        &pkt
+                    );
+                    assert!(
+                        spec_msg_is_recorder_config(&pkt),
+                        "Expected specific message to be recorder config {:?}",
+                        &pkt
+                    );
+                }
+                _ => {
+                    assert!(
+                        false,
+                        "ERROR = expected ReplayAction::Header, got {:?}",
+                        header
+                    )
+                }
             }
             _ => assert!(
                 false,
@@ -585,12 +613,8 @@ impl MockRts {
 
     fn create_step_pkt(&mut self) -> ScaiiPacket {
         ScaiiPacket {
-            src: protos::Endpoint {
-                endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-            },
-            dest: protos::Endpoint {
-                endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})),
-            },
+            src: protos::Endpoint { endpoint: Some(Endpoint::Backend(BackendEndpoint {})) },
+            dest: protos::Endpoint { endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})) },
             specific_msg: Some(scaii_packet::SpecificMsg::RecorderStep(RecorderStep {
                 action: None,
                 is_decision_point: false,
@@ -604,12 +628,8 @@ impl MockRts {
         ser_vec.push(8 as u8);
         ser_vec.push(9 as u8);
         ScaiiPacket {
-            src: protos::Endpoint {
-                endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-            },
-            dest: protos::Endpoint {
-                endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})),
-            },
+            src: protos::Endpoint { endpoint: Some(Endpoint::Backend(BackendEndpoint {})) },
+            dest: protos::Endpoint { endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})) },
             specific_msg: Some(scaii_packet::SpecificMsg::SerResp(SerializationResponse {
                 serialized: ser_vec,
                 format: 1 as i32,
@@ -621,12 +641,8 @@ impl MockRts {
         let mut actions: Vec<i32> = Vec::new();
         actions.push(1);
         ScaiiPacket {
-            src: protos::Endpoint {
-                endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-            },
-            dest: protos::Endpoint {
-                endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})),
-            },
+            src: protos::Endpoint { endpoint: Some(Endpoint::Backend(BackendEndpoint {})) },
+            dest: protos::Endpoint { endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})) },
             specific_msg: Some(scaii_packet::SpecificMsg::RecorderStep(RecorderStep {
                 action: Some(protos::Action {
                     discrete_actions: actions,
@@ -638,4 +654,39 @@ impl MockRts {
             })),
         }
     }
+}
+
+
+fn get_rust_ffi_config_for_path(path: &str) -> RustFfiConfig {
+    RustFfiConfig {
+        plugin_path: path.to_string(),
+        init_as: protos::InitAs { init_as: Some(protos::init_as::InitAs::Backend(BackendInit {})) },
+    }
+}
+
+fn create_test_rust_ffi_config_message() -> ScaiiPacket {
+    use scaii_defs::protos::plugin_type::PluginType;
+    let default_backend_result = util::get_default_backend();
+    match default_backend_result {
+        Ok(default_backend_path) => {
+            //let backend_path = "C:\\Users\\Jed Irvine\\.scaii\\backends\\bin\\sky-rts.dll";
+            let rust_ffi_config = get_rust_ffi_config_for_path(default_backend_path.as_ref());
+            ScaiiPacket {
+                // have to make src ReplayEndpoint because no Agent is registered during test
+                src: protos::Endpoint { endpoint: Some(Endpoint::Replay(ReplayEndpoint {})) },
+                dest: protos::Endpoint { endpoint: Some(Endpoint::Core(CoreEndpoint {})) },
+                specific_msg: Some(SpecificMsg::Config(Cfg {
+                    which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
+                        plugin_type: protos::PluginType {
+                            plugin_type: Some(PluginType::RustPlugin(rust_ffi_config)),
+                        },
+                    })),
+                })),
+            }
+        }
+        Err(err) => {
+            panic!("no default backend path defined for this platform.  Adjust core/util.rs");
+        }
+    }
+    
 }

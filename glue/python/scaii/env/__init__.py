@@ -311,7 +311,7 @@ class ScaiiEnv():
             ser_req.src.agent.SetInParent()
             ser_req.dest.agent.SetInParent()
 
-            ser_req.specific_msg.ser_req.format = SerializationFormat.NONDIVERGING
+            ser_req.ser_req.format = SerializationFormat.Value("NONDIVERGING")
             is_keyframe = True
 
         self.frames_since_keyframe = (

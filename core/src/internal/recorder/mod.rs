@@ -5,7 +5,6 @@ use scaii_defs::{Module, Recorder};
 use scaii_defs::protos::{MultiMessage, RecorderConfig, RecorderStep, ScaiiPacket};
 use scaii_defs::protos::scaii_packet::SpecificMsg;
 use std::error::Error;
-use std::env;
 use std::fmt;
 use std::path::PathBuf;
 use std::fs;
@@ -14,7 +13,6 @@ use bincode::{serialize, Infinite};
 use std::io::prelude::*;
 use std::fs::File;
 use prost::Message;
-
 #[cfg(test)]
 mod test;
 
@@ -196,7 +194,9 @@ impl RecorderManager {
                         data: ser_protos_ser_resp,
                     };
                     if let Some(SerializationInfo { .. }) = self.staged_ser_info {
-                        return Err(Box::new(RecorderError::new("Received consecutive SerializationInfo packets - expected RecorderStep in between.")));
+                        return Err(Box::new(RecorderError::new(
+                            "Received consecutive SerializationInfo packets - expected RecorderStep in between.",
+                        )));
                     }
                     self.staged_ser_info = Some(ser_info);
                 }
@@ -348,6 +348,7 @@ pub fn get_default_replay_dir() -> Result<PathBuf, Box<Error>> {
 }
 
 fn get_home_dir() -> Result<PathBuf, Box<Error>> {
+    use std::env;
     let result: Option<PathBuf> = env::home_dir();
     match result {
         Some(pathbuf) => Ok(pathbuf),
@@ -363,33 +364,34 @@ fn ensure_dir_exists(path_buf: &PathBuf) -> Result<(), Box<Error>> {
     }
     Ok(())
 }
-pub fn get_scaii_root() -> Result<PathBuf, Box<Error>> {
-    //look upwardfrom current dir until find valid parent.
-    let current_dir = env::current_dir()?;
-    let mut candidate_dir: PathBuf = current_dir.clone();
-    let mut seeking = true;
-    while seeking {
-        let is_dir_scaii_root = is_dir_scaii_root(&candidate_dir);
-        if is_dir_scaii_root {
-            seeking = false;
-        } else {
-            let candidate_clone = candidate_dir.clone();
-            let parent_search_result = candidate_clone.parent();
-            match parent_search_result {
-                Some(parent_path) => {
-                    candidate_dir = parent_path.clone().to_path_buf();
-                }
-                None => {
-                    return Err(Box::new(RecorderError::new(&format!(
-                        "cannot find scaii_root above current directory {:?}",
-                        current_dir
-                    ))));
-                }
-            }
-        }
-    }
-    Ok(candidate_dir)
-}
+// pub fn get_scaii_root() -> Result<PathBuf, Box<Error>> {
+//     //look upwardfrom current dir until find valid parent.
+//     use std::env;
+//     let current_dir = env::current_dir()?;
+//     let mut candidate_dir: PathBuf = current_dir.clone();
+//     let mut seeking = true;
+//     while seeking {
+//         let is_dir_scaii_root = is_dir_scaii_root(&candidate_dir);
+//         if is_dir_scaii_root {
+//             seeking = false;
+//         } else {
+//             let candidate_clone = candidate_dir.clone();
+//             let parent_search_result = candidate_clone.parent();
+//             match parent_search_result {
+//                 Some(parent_path) => {
+//                     candidate_dir = parent_path.clone().to_path_buf();
+//                 }
+//                 None => {
+//                     return Err(Box::new(RecorderError::new(&format!(
+//                         "cannot find scaii_root above current directory {:?}",
+//                         current_dir
+//                     ))));
+//                 }
+//             }
+//         }
+//     }
+//     Ok(candidate_dir)
+// }
 
 fn is_dir_scaii_root(dir: &PathBuf) -> bool {
     let mut candidate_dir = dir.clone();
