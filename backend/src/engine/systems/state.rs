@@ -58,7 +58,7 @@ impl<'a> System<'a> for StateBuildSystem {
                     ((i * STATE_SCALE) as f64) / COLLISION_SCALE,
                     ((j * STATE_SCALE) as f64) / COLLISION_SCALE,
                 );
-                let mut intersection = c_world.interferences_with_point(&pt, &c_group);
+                let intersection = c_world.interferences_with_point(&pt, &c_group);
 
                 if let Some(collider) = intersection.filter(|v| !v.data().detector).next() {
                     let entity = collider.data().e;
