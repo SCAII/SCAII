@@ -214,7 +214,7 @@ class ScaiiEnv():
         if not terminal:
             return
 
-        packet = self.next_msg.packets().add()
+        packet = self.next_msg.packets.add()
         packet.src.agent.SetInParent()
         packet.dest.recorder.SetInParent()
         packet.game_complete.SetInParent()
