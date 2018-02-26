@@ -104,7 +104,7 @@ impl Router {
 
             if dest == src {
                 self.send_error(
-                    "Module attempted to send message to itself",
+                    &format!("Module attempted to send message to itself:\n\t{:?}", msg),
                     src,
                     &Endpoint::Core(CoreEndpoint {}),
                 ).unwrap();

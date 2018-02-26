@@ -205,7 +205,24 @@ class ScaiiEnv():
 
         self._send_recv_msg()
         self.state = self._decode_handle_msg()["state"]
+        if record:
+            self._game_complete(self.state.terminal)
+
         return self.state
+
+    def _game_complete(self, terminal):
+        if not terminal:
+            return
+
+        packet = self.next_msg.packets.add()
+        packet.src.agent.SetInParent()
+        packet.dest.recorder.SetInParent()
+        packet.game_complete.SetInParent()
+
+        self._send_recv_msg()
+        resp = self._decode_handle_msg()
+        if len(resp) > 0:
+            raise TooManyMessagesError(0, len(resp), resp)
 
     def _record_episode(self, keyframe_interval=5, overwrite=False, file_path=None):
         """
@@ -277,6 +294,9 @@ class ScaiiEnv():
         if "state" not in resp:
             raise NoStateError()
         self.state = resp["state"]
+        if self.recording:
+            self._game_complete(self.state.terminal)
+
         return self.state
 
     def _record_step(self, action_packet, ser_resp, is_keyframe):
@@ -289,8 +309,11 @@ class ScaiiEnv():
             key_packet = self.next_msg.packets.add()
             key_packet.CopyFrom(ser_resp)
             key_packet.dest.recorder.SetInParent()
+
         recorder_action = self.next_msg.packets.add()
-        recorder_action.CopyFrom(action_packet)
+        recorder_action.recorder_step.action.CopyFrom(action_packet.action)
+        recorder_action.recorder_step.is_decision_point = True
+        recorder_action.src.agent.SetInParent()
         recorder_action.dest.recorder.SetInParent()
 
         self._send_recv_msg()
@@ -309,7 +332,7 @@ class ScaiiEnv():
         if self.frames_since_keyframe == 0:
             ser_req = self.next_msg.packets.add()
             ser_req.src.agent.SetInParent()
-            ser_req.dest.agent.SetInParent()
+            ser_req.dest.backend.SetInParent()
 
             ser_req.ser_req.format = SerializationFormat.Value("NONDIVERGING")
             is_keyframe = True
