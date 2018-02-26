@@ -1,7 +1,7 @@
 use specs::prelude::*;
 use engine::components::{FactionId, Hp, UnitTypeTag};
-use engine::resources::{Reward, RtsState, Skip, SkyCollisionWorld, Terminal, UnitTypeMap,
-                        STATE_SCALE, STATE_SIZE};
+use engine::resources::{ReplayMode, Reward, RtsState, Skip, SkyCollisionWorld, Terminal,
+                        UnitTypeMap, STATE_SCALE, STATE_SIZE};
 use ndarray::Array3;
 
 #[derive(SystemData)]
@@ -13,6 +13,7 @@ pub struct StateBuildSystemData<'a> {
     unit_types: Fetch<'a, UnitTypeMap>,
     terminal: Fetch<'a, Terminal>,
     skip: Fetch<'a, Skip>,
+    replay_mode: Fetch<'a, ReplayMode>,
 
     state: FetchMut<'a, RtsState>,
     reward: FetchMut<'a, Reward>,
@@ -39,7 +40,7 @@ impl<'a> System<'a> for StateBuildSystem {
         use engine::resources::COLLISION_SCALE;
         use std::mem;
 
-        if sys_data.skip.0 {
+        if sys_data.skip.0 || sys_data.replay_mode.0 {
             return;
         }
 

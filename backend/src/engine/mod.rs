@@ -165,6 +165,10 @@ impl<'a, 'b> Rts<'a, 'b> {
             .load_scenario(&mut self.world)
             .expect("Could not initialize scenario");
 
+        if self.world.read_resource::<ReplayMode>().0 {
+            return Default::default();
+        }
+
         let scaii_packet = ScaiiPacket {
             src: protos::Endpoint {
                 endpoint: Some(protos::endpoint::Endpoint::Backend(
@@ -420,6 +424,10 @@ impl<'a, 'b> Rts<'a, 'b> {
             };
 
             mm.packets.push(render_packet);
+        }
+
+        if self.world.read_resource::<ReplayMode>().0 {
+            return mm;
         }
 
         let state_packet = ScaiiPacket {
