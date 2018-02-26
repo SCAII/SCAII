@@ -50,14 +50,14 @@ impl<'a, 'b> Rts<'a, 'b> {
         use self::systems::{AttackSystem, CleanupSystem, CollisionSystem, InputSystem, MoveSystem,
                             RenderSystem, StateBuildSystem};
         use std::sync::Arc;
-        use rayon::Configuration;
+        use rayon::ThreadPoolBuilder;
 
         let mut world = World::new();
         components::register_world_components(&mut world);
         resources::register_world_resources(&mut world);
 
         let pool = Arc::new(
-            Configuration::new()
+            ThreadPoolBuilder::new()
                 .num_threads(1)
                 .build()
                 .expect("Could not create thread pool"),
