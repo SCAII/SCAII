@@ -46,18 +46,20 @@ impl<'a> System<'a> for SerializeSystem {
     type SystemData = SerializeSystemData<'a>;
 
     fn run(&mut self, mut world: Self::SystemData) {
-        use bincode;
-        use bincode::Infinite;
-        use bincode::Bounded;
+        use serde_cbor::Serializer;
+        use serde::Serialize;
         use super::SerTarget;
 
         let out = &mut world.out.0;
 
         out.clear();
 
-        let mut tar = vec![];
-
-        bincode::serialize_into(&mut tar, &world.ser, Bounded(10_000_000)).unwrap();
+        let mut tar = Serializer::new(vec![]);
+        world
+            .ser
+            .serialize(&mut tar)
+            .expect("Could not serialize components");
+        let tar = tar.into_inner();
 
         let tar = SerTarget {
             components: tar,
@@ -65,6 +67,9 @@ impl<'a> System<'a> for SerializeSystem {
             rng: world.rng.clone(),
         };
 
-        bincode::serialize_into(out, &tar, Infinite).unwrap();
+        let mut out = Serializer::new(out);
+
+        tar.serialize(&mut out)
+            .expect("Could not serialize resources");
     }
 }

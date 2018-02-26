@@ -14,7 +14,7 @@ serde_derive = "1"
 
 rand = { version="0.4", features=["serde-1"] }
 
-bincode = {version="0.9"}
+serde_cbor  = "0.8"
 
 specs = { version="0.10", features=["serde"]}
 specs-derive = { git="https://github.com/slide-rs/specs" }

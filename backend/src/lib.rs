@@ -60,7 +60,6 @@
 //! `lua/tower_scenario.lua` file there for an example environment (which you can
 //! use via Python by instantiating the `TowerExample` class).
 
-extern crate bincode;
 extern crate bytes;
 #[macro_use]
 extern crate lazy_static;
@@ -75,6 +74,7 @@ extern crate rayon;
 extern crate rlua;
 extern crate scaii_defs;
 extern crate serde;
+extern crate serde_cbor;
 #[macro_use]
 extern crate serde_derive;
 extern crate shred;

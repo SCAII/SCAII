@@ -46,20 +46,20 @@ impl<'a> System<'a> for DeserializeSystem {
     type SystemData = DeserializeSystemData<'a>;
 
     fn run(&mut self, mut world: Self::SystemData) {
-        use bincode;
-        use bincode::Infinite;
-        use bincode::Deserializer;
-        use bincode::read_types::SliceReader;
         use super::SerTarget;
+        use serde::Deserialize;
         use serde::de::DeserializeSeed;
+        use serde_cbor::Deserializer;
+        use serde_cbor::de::SliceRead;
 
-        let tar: SerTarget = bincode::deserialize(&world.decode.0).unwrap();
+        let mut de = Deserializer::new(SliceRead::new(&world.decode.0));
 
-        let reader = SliceReader::new(&tar.components);
+        let tar = SerTarget::deserialize(&mut de).unwrap();
+        de.end().unwrap();
 
-        let mut deserializer = Deserializer::new(reader, Infinite);
-
-        world.de.deserialize(&mut deserializer).unwrap();
+        let mut de = Deserializer::new(SliceRead::new(&tar.components));
+        world.de.deserialize(&mut de).unwrap();
+        de.end().unwrap();
 
         *world.lua_path = tar.lua_path;
         *world.rng = tar.rng;
