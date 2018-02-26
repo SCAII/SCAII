@@ -205,7 +205,24 @@ class ScaiiEnv():
 
         self._send_recv_msg()
         self.state = self._decode_handle_msg()["state"]
+        if record:
+            self._game_complete(self.state.terminal)
+
         return self.state
+
+    def _game_complete(self, terminal):
+        if not terminal:
+            return
+
+        packet = self.next_msg.packets().add()
+        packet.src.agent.SetInParent()
+        packet.dest.recorder.SetInParent()
+        packet.game_complete.SetInParent()
+
+        self._send_recv_msg()
+        resp = self._decode_handle_msg()
+        if len(resp) > 0:
+            raise TooManyMessagesError(0, len(resp), resp)
 
     def _record_episode(self, keyframe_interval=5, overwrite=False, file_path=None):
         """
@@ -277,6 +294,9 @@ class ScaiiEnv():
         if "state" not in resp:
             raise NoStateError()
         self.state = resp["state"]
+        if self.recording:
+            self._game_complete(self.state.terminal)
+
         return self.state
 
     def _record_step(self, action_packet, ser_resp, is_keyframe):
