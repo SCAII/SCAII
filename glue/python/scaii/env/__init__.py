@@ -329,7 +329,7 @@ class ScaiiEnv():
         if self.frames_since_keyframe == 0:
             ser_req = self.next_msg.packets.add()
             ser_req.src.agent.SetInParent()
-            ser_req.dest.agent.SetInParent()
+            ser_req.dest.backend.SetInParent()
 
             ser_req.ser_req.format = SerializationFormat.Value("NONDIVERGING")
             is_keyframe = True
