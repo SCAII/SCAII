@@ -309,8 +309,11 @@ class ScaiiEnv():
             key_packet = self.next_msg.packets.add()
             key_packet.CopyFrom(ser_resp)
             key_packet.dest.recorder.SetInParent()
+
         recorder_action = self.next_msg.packets.add()
-        recorder_action.CopyFrom(action_packet)
+        recorder_action.recorder_step.action.CopyFrom(action_packet.action)
+        recorder_action.recorder_step.is_decision_point = True
+        recorder_action.src.agent.SetInParent()
         recorder_action.dest.recorder.SetInParent()
 
         self._send_recv_msg()
