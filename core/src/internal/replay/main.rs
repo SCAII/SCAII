@@ -175,6 +175,7 @@ impl ReplayManager {
         let mut result_vec: Vec<ScaiiPacket> = Vec::new();
         let mut rust_ffi_config_pkt: Option<ScaiiPacket> = None;
         let mut backend_config_pkt: Option<ScaiiPacket> = None;
+
         for pkt in cfg_pkts {
             match pkt.specific_msg {
                 Some(SpecificMsg::Config(Cfg {
@@ -237,6 +238,12 @@ impl ReplayManager {
             rust_ffi_config_pkt
         );
         result_vec.push(rust_ffi_config_pkt.unwrap());
+        // next send replay_mode == true signal
+        let replay_mode_pkt = get_replay_mode_pkt();
+        result_vec.push(replay_mode_pkt);
+        // then send emit_viz directive
+        let emit_viz_pkt = get_emit_viz_pkt();
+        result_vec.push(emit_viz_pkt);
         result_vec.push(backend_config_pkt.unwrap());
         for pkt in temp_vec {
             result_vec.push(pkt);
@@ -424,6 +431,7 @@ impl ReplayManager {
             ReplayAction::Delta(action) => {
                 //println!("REPLAY found delta...");
                 let action_pkt: ScaiiPacket = self.convert_action_info_to_action_pkt(action)?;
+                println!("%%%%%%%%%%%%%   Replay sending action_pkt  %%%%%%%%%%%%");
                 let mut pkts: Vec<ScaiiPacket> = Vec::new();
                 pkts.push(action_pkt);
                 let mm = MultiMessage { packets: pkts };
@@ -442,6 +450,7 @@ impl ReplayManager {
                             self.wrap_response_in_scaii_pkt(ser_response);
                         let action_pkt: ScaiiPacket =
                             self.convert_action_info_to_action_pkt(action)?;
+                        println!("%%%%%%%%%%%%%   Replay sending action_pkt with ser_response  %%%%%%%%%%%%%%");
                         let mut pkts: Vec<ScaiiPacket> = Vec::new();
                         pkts.push(ser_response_pkt);
                         pkts.push(action_pkt);
@@ -1161,5 +1170,29 @@ fn set_replay_mode_on_backend_config(packet_option: &mut Option<ScaiiPacket>) {
     }) = packet_option
     {
         *is_replay_mode = true;
+    }
+}
+
+fn get_replay_mode_pkt() -> ScaiiPacket {
+    ScaiiPacket {
+        src: protos::Endpoint {
+            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+        },
+        dest: protos::Endpoint {
+            endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
+        },
+        specific_msg: Some(SpecificMsg::ReplayMode(true)),
+    }
+}
+
+fn get_emit_viz_pkt() -> ScaiiPacket {
+    ScaiiPacket {
+        src: protos::Endpoint {
+            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+        },
+        dest: protos::Endpoint {
+            endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
+        },
+        specific_msg: Some(SpecificMsg::EmitViz(true)),
     }
 }
