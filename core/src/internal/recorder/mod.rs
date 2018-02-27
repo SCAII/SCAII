@@ -259,7 +259,7 @@ impl RecorderManager {
     }
 
     fn persist_replay_action(&mut self, replay_action: &ReplayAction) -> Result<(), Box<Error>> {
-        println!("persisting replayAction {:?}", replay_action);
+        //println!("persisting replayAction {:?}", replay_action);
         match self.writable_file {
             None => {
                 return Err(Box::new(RecorderError::new(
@@ -284,18 +284,36 @@ impl RecorderManager {
         &mut self,
         rec_step: &RecorderStep,
     ) -> Result<GameAction, Box<Error>> {
-        if rec_step.is_decision_point {
-            if rec_step.action == None {
-                return Err(Box::new(RecorderError::new(
-                    "Malformed RecordStep: no action present but is_decision_point was true.",
-                )));
+        match &rec_step.action {
+            &Some(ref action) => match &action.explanation {
+                &Some(_) => {
+                    println!("=============== WAS STEP WITH DECISION POINT ===========");
+                    let serialized_protos_action =
+                        self.get_serialized_protos_action(&rec_step.action.clone().unwrap())?;
+                    Ok(GameAction::DecisionPoint(serialized_protos_action))
+                }
+                &None => {
+                    println!("=============== WAS JUST STEP ===========");
+                    Ok(GameAction::Step)
+                }
+            },
+            &None => {
+                println!("=============== WAS JUST STEP BECAUSE ACTION MISSING  ===========");
+                Ok(GameAction::Step)
             }
-            let serialized_protos_action =
-                self.get_serialized_protos_action(&rec_step.action.clone().unwrap())?;
-            Ok(GameAction::DecisionPoint(serialized_protos_action))
-        } else {
-            Ok(GameAction::Step)
         }
+        // if rec_step.is_decision_point {
+        //     if rec_step.action == None {
+        //         return Err(Box::new(RecorderError::new(
+        //             "Malformed RecordStep: no action present but is_decision_point was true.",
+        //         )));
+        //     }
+        //     let serialized_protos_action =
+        //         self.get_serialized_protos_action(&rec_step.action.clone().unwrap())?;
+        //     Ok(GameAction::DecisionPoint(serialized_protos_action))
+        // } else {
+        //     Ok(GameAction::Step)
+        // }
     }
 
     fn save_keyframe(&mut self, rec_step: &RecorderStep) -> Result<(), Box<Error>> {
@@ -320,7 +338,7 @@ impl RecorderManager {
 
 impl Module for RecorderManager {
     fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>> {
-        println!("recorderManager handling packet");
+        //println!("recorderManager handling packet");
         self.handle_pkt(msg)
     }
 
