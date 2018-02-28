@@ -143,15 +143,12 @@ impl ReplayManager {
         self.env.update();
         // pull off header and configure
         let header: ReplayAction = self.replay_data.remove(0);
-        self.configure_as_per_header(header)?;
+
         let steps = self.replay_data.len() as i64;
         let explanation_points = get_explanation_points(&self.replay_data);
-        let mm = wrap_packet_in_multi_message(self.create_replay_session_config_message(
-            steps,
-            explanation_points,
-        ));
-        self.env.route_messages(&mm);
-        self.env.update();
+        let replay_session_cfg_pkt_for_ui =
+            self.create_replay_session_config_message(steps, explanation_points);
+        self.configure_as_per_header(header, replay_session_cfg_pkt_for_ui)?;
 
         self.run_and_poll()
     }
@@ -180,6 +177,7 @@ impl ReplayManager {
     fn adjust_cfg_packets(
         &mut self,
         cfg_pkts: Vec<ScaiiPacket>,
+        replay_session_cfg_pkt_for_ui: ScaiiPacket,
     ) -> Result<Vec<ScaiiPacket>, Box<Error>> {
         println!("ARGS is {:?}", self.args);
         let mut temp_vec: Vec<ScaiiPacket> = Vec::new();
@@ -252,6 +250,8 @@ impl ReplayManager {
         // next send replay_mode == true signal
         let replay_mode_pkt = get_replay_mode_pkt();
         result_vec.push(replay_mode_pkt);
+        // then send ReplaySessionConfig pkt to UI
+        result_vec.push(replay_session_cfg_pkt_for_ui);
         // then send emit_viz directive
         let emit_viz_pkt = get_emit_viz_pkt();
         result_vec.push(emit_viz_pkt);
@@ -272,7 +272,11 @@ impl ReplayManager {
         Ok(())
     }
 
-    fn configure_as_per_header(&mut self, header: ReplayAction) -> Result<(), Box<Error>> {
+    fn configure_as_per_header(
+        &mut self,
+        header: ReplayAction,
+        replay_session_cfg_pkt_for_ui: ScaiiPacket,
+    ) -> Result<(), Box<Error>> {
         match header {
             ReplayAction::Header(ReplayHeader {
                                      configs: SerializedProtosScaiiPacket { data: u8_vec },
@@ -282,7 +286,7 @@ impl ReplayManager {
                     Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig {
                                                 pkts: pkt_vec, overwrite: _, filepath: _
                                                                    })) => {
-                        let adjusted_cfg_pkts = self.adjust_cfg_packets(pkt_vec)?;
+                        let adjusted_cfg_pkts = self.adjust_cfg_packets(pkt_vec, replay_session_cfg_pkt_for_ui)?;
                         self.emit_cfg_packets(adjusted_cfg_pkts)
                     }
                     _ => Err(Box::new(ReplayError::new(
