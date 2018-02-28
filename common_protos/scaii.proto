@@ -287,6 +287,8 @@ message GameComplete {}
 
 message ReplaySessionConfig {
 	required int64 step_count = 1;
+	repeated ExplanationPoint explanations = 2;
+
 }
 
 // Configures a module (e.g. backend) to begin recording, logging how often 

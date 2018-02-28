@@ -9,8 +9,8 @@ extern crate url;
 
 use prost::Message;
 use protos::{plugin_type, scaii_packet, BackendEndpoint, BackendInit, Cfg, CoreEndpoint,
-             ModuleEndpoint, MultiMessage, PluginType, RecorderConfig, ReplayEndpoint,
-             ReplaySessionConfig, ReplayStep, RustFfiConfig, ScaiiPacket};
+             ExplanationPoint, ModuleEndpoint, MultiMessage, PluginType, RecorderConfig,
+             ReplayEndpoint, ReplaySessionConfig, ReplayStep, RustFfiConfig, ScaiiPacket};
 use protos::cfg::WhichModule;
 use protos::user_command::UserCommandType;
 use protos::endpoint::Endpoint;
@@ -145,23 +145,34 @@ impl ReplayManager {
         let header: ReplayAction = self.replay_data.remove(0);
         self.configure_as_per_header(header)?;
         let steps = self.replay_data.len() as i64;
-        let mm = wrap_packet_in_multi_message(self.create_replay_session_config_message(steps));
+        let explanation_points = get_explanation_points(&self.replay_data);
+        let mm = wrap_packet_in_multi_message(self.create_replay_session_config_message(
+            steps,
+            explanation_points,
+        ));
         self.env.route_messages(&mm);
         self.env.update();
 
         self.run_and_poll()
     }
 
-    fn create_replay_session_config_message(&mut self, steps: i64) -> ScaiiPacket {
+    fn create_replay_session_config_message(
+        &mut self,
+        steps: i64,
+        vec: Vec<ExplanationPoint>,
+    ) -> ScaiiPacket {
         ScaiiPacket {
             src: protos::Endpoint {
                 endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
             },
             dest: protos::Endpoint {
-                endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
+                endpoint: Some(Endpoint::Module(ModuleEndpoint {
+                    name: "RpcPluginModule".to_string(),
+                })),
             },
             specific_msg: Some(SpecificMsg::ReplaySessionConfig(ReplaySessionConfig {
                 step_count: steps,
+                explanations: vec,
             })),
         }
     }
@@ -1195,4 +1206,10 @@ fn get_emit_viz_pkt() -> ScaiiPacket {
         },
         specific_msg: Some(SpecificMsg::EmitViz(true)),
     }
+}
+
+fn get_explanation_points(replay_data: &Vec<ReplayAction>) -> Vec<ExplanationPoint> {
+    let result: Vec<ExplanationPoint> = Vec::new();
+    println!("REMINDER - NOT MINING EXPLANATION POINTS YET");
+    result
 }

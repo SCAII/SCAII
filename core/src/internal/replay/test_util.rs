@@ -1,7 +1,7 @@
 use prost::Message;
-use protos::{cfg, scaii_packet, BackendCfg, BackendEndpoint, Cfg, Entity, ModuleEndpoint,
-             MultiMessage, RecorderConfig, RecorderEndpoint, ReplayEndpoint, ScaiiPacket, Viz,
-             VizInit};
+use protos::{cfg, scaii_packet, BackendCfg, BackendEndpoint, Cfg, Entity, ExplanationPoint,
+             ModuleEndpoint, MultiMessage, RecorderConfig, RecorderEndpoint, ReplayEndpoint,
+             ScaiiPacket, Viz, VizInit};
 use protos::endpoint::Endpoint;
 use scaii_core::{GameAction, ReplayAction, ReplayHeader, SerializationInfo,
                  SerializedProtosAction, SerializedProtosEndpoint, SerializedProtosScaiiPacket,
@@ -59,7 +59,7 @@ impl MockRts {
             },
             specific_msg: Some(scaii_packet::SpecificMsg::VizInit(VizInit {
                 test_mode: Some(false),
-                step_count: Some(self.step_count),
+                step_count: Some(self.step_count as i64),
                 gameboard_width: Some(width),
                 gameboard_height: Some(height),
                 explanations: Vec::new(),
@@ -78,6 +78,7 @@ impl Backend for MockRts {
 
 impl Module for MockRts {
     fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>> {
+        let empty_vec: Vec<ExplanationPoint> = Vec::new();
         let specific_msg = &msg.specific_msg;
         match *specific_msg {
             Some(scaii_packet::SpecificMsg::SerResp(protos::SerializationResponse { .. })) => {
@@ -89,6 +90,7 @@ impl Module for MockRts {
             }
             Some(scaii_packet::SpecificMsg::ReplaySessionConfig(protos::ReplaySessionConfig {
                 step_count: steps,
+                explanations: _,
             })) => {
                 self.step_count = steps as u32;
                 self.init_entity_sequence();

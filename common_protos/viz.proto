@@ -11,10 +11,10 @@ package scaii.common;
 // non-test mode (which means it will send back an RpcAck)
 message VizInit {
 	optional bool test_mode = 1;
-    optional uint32 step_count = 2;
+	optional int64 step_count = 2;
     optional uint32 gameboard_width = 3;
     optional uint32 gameboard_height = 4;
-    repeated ExplanationPoint explanations = 5;
+	repeated ExplanationPoint explanations = 5;
 }
 message ExplanationPoint {
 	// which step in the game this explanation corresponds to

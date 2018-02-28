@@ -1,6 +1,6 @@
 [package]
 name = "scaii_defs"
-version = "0.5.0"
+version = "0.6.0"
 authors = ["Zoe Juozapaitis <Jragonmiris@gmail.com>"]
 build = "build.rs"
 
