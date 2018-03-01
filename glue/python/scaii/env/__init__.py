@@ -278,18 +278,20 @@ class ScaiiEnv():
 
         action_packet = ScaiiPacket()
         action.to_proto(action_packet)
+        # Need to record before sending to backend
+        # due to skipping
         if self.recording:
             is_keyframe = self._check_keyframe()
+            self._send_recv_msg()
+            resp = self._decode_handle_msg()
+            # dict.get will return None if the key is not
+            # available
+            self._record_step(action_packet, resp.get("ser_resp"), is_keyframe)
 
         self.next_msg.packets.add().CopyFrom(action_packet)
 
         self._send_recv_msg()
         resp = self._decode_handle_msg()
-
-        if self.recording:
-            # dict.get will return None if the key is not
-            # available
-            self._record_step(action_packet, resp.get("ser_resp"), is_keyframe)
 
         if "state" not in resp:
             raise NoStateError()
