@@ -184,7 +184,6 @@ impl Router {
                 } else if res.is_none() {
                     return Err(Box::new(NoSuchEndpointError { end: dest.clone() }));
                 };
-                println!("....registered recorder");
                 Ok(None)
             }
         }
