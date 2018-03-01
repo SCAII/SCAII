@@ -4,7 +4,7 @@ use protos::{cfg, scaii_packet, BackendCfg, BackendEndpoint, Cfg, Entity, Explan
              ScaiiPacket, Viz, VizInit};
 use protos::endpoint::Endpoint;
 use scaii_core::{ActionWrapper, ReplayAction, ReplayHeader, SerializationInfo,
-                 SerializedProtosAction, SerializedProtosEndpoint, SerializedProtosScaiiPacket,
+                 SerializedProtosEndpoint, SerializedProtosScaiiPacket,
                  SerializedProtosSerializationResponse};
 use scaii_defs::protos;
 use protos::scaii_packet::SpecificMsg;
@@ -78,7 +78,6 @@ impl Backend for MockRts {
 
 impl Module for MockRts {
     fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>> {
-        let empty_vec: Vec<ExplanationPoint> = Vec::new();
         let specific_msg = &msg.specific_msg;
         println!(" GGGGGGOT MMMMMMMESSAGE");
         match *specific_msg {

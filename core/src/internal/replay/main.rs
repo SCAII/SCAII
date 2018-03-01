@@ -535,8 +535,12 @@ impl ReplayManager {
                             self.convert_action_wrapper_to_action_pkt(action_wrapper)?;
                         println!("ACTION PACKET WILL BE {:?}", action_pkt);
                         println!("%%%%%%%%%%%%%   Replay sending action_pkt with ser_response  %%%%%%%%%%%%%%");
+                        // Zoe wants RTS to recieve these two in distinct multi-messages
                         let mut pkts: Vec<ScaiiPacket> = Vec::new();
                         pkts.push(ser_response_pkt);
+                        let mm = MultiMessage { packets: pkts };
+                        let _scaii_pkts = self.deploy_replay_directives_to_backend(&mm)?;
+                        let mut pkts: Vec<ScaiiPacket> = Vec::new();
                         pkts.push(action_pkt);
                         let mm = MultiMessage { packets: pkts };
                         let scaii_pkts = self.deploy_replay_directives_to_backend(&mm)?;
@@ -1281,7 +1285,7 @@ fn get_emit_viz_pkt() -> ScaiiPacket {
     }
 }
 
-fn get_explanation_points(replay_data: &Vec<ReplayAction>) -> Vec<ExplanationPoint> {
+fn get_explanation_points(_replay_data: &Vec<ReplayAction>) -> Vec<ExplanationPoint> {
     let result: Vec<ExplanationPoint> = Vec::new();
     // for replay_action in replay_data {
     //     match
