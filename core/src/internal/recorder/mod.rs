@@ -2,7 +2,7 @@
 
 use scaii_defs::protos;
 use scaii_defs::{Module, Recorder};
-use scaii_defs::protos::{MultiMessage, RecorderConfig, RecorderStep, ScaiiPacket};
+use scaii_defs::protos::{ExplanationPoint, MultiMessage, RecorderConfig, RecorderStep, ScaiiPacket};
 use scaii_defs::protos::scaii_packet::SpecificMsg;
 use std::error::Error;
 use std::fmt;
@@ -65,19 +65,31 @@ pub struct SerializedProtosEndpoint {
 //
 //  structs supporting ReplayAction
 //
-
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
-pub enum GameAction {
-    DecisionPoint(SerializedProtosAction),
-    Step,
+pub struct ActionWrapper {
+    pub has_explanation: bool,
+    pub step: u32,
+    pub title: String,
+    pub serialized_action: Vec<u8>,
 }
+// #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
+// pub enum GameAction {
+//     DecisionPoint(SerializedProtosAction),
+//     Step,   <<<< should be Step(SerializedProtosAction)  ???
+// }
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 pub enum ReplayAction {
     Header(ReplayHeader),
-    Delta(GameAction),
-    Keyframe(SerializationInfo, GameAction),
+    Delta(ActionWrapper),
+    Keyframe(SerializationInfo, ActionWrapper),
 }
+// #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
+// pub enum ReplayActionOld {
+//     Header(ReplayHeader),
+//     Delta(GameAction),
+//     Keyframe(SerializationInfo, GameAction),
+// }
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 pub struct SerializationInfo {
@@ -201,17 +213,36 @@ impl RecorderManager {
                     self.staged_ser_info = Some(ser_info);
                 }
             }
+
             Some(SpecificMsg::RecorderStep(ref rec_step)) => {
                 if self.is_recording {
-                    if let Some(SerializationInfo { .. }) = self.staged_ser_info {
-                        self.save_keyframe(rec_step)?;
-                    } else {
-                        let game_action = self.get_game_action_for_protos_action(rec_step)?;
-                        let replay_action = ReplayAction::Delta(game_action);
-                        self.persist_replay_action(&replay_action)?;
+                    let action_wrapper_result = get_action_wrapper_for_recorder_step(rec_step);
+                    match action_wrapper_result {
+                        Ok(action_wrapper) => {
+                            if let Some(SerializationInfo { .. }) = self.staged_ser_info {
+                                self.save_keyframe(action_wrapper)?;
+                            } else {
+                                let replay_action = ReplayAction::Delta(action_wrapper);
+                                self.persist_replay_action(&replay_action)?;
+                            }
+                        }
+                        Err(_) => {
+                            println!("WARNING - skipping RecorderStep {:?}", rec_step);
+                        }
                     }
                 }
             }
+            // Some(SpecificMsg::RecorderStep(ref rec_step)) => {
+            //     if self.is_recording {
+            //         if let Some(SerializationInfo { .. }) = self.staged_ser_info {
+            //             self.save_keyframe(rec_step)?;
+            //         } else {
+            //             let game_action = self.get_game_action_for_protos_action(rec_step)?;
+            //             let replay_action = ReplayAction::Delta(game_action);
+            //             self.persist_replay_action(&replay_action)?;
+            //         }
+            //     }
+            // }
             Some(SpecificMsg::GameComplete(_)) => {
                 self.stop_recording();
             }
@@ -280,60 +311,73 @@ impl RecorderManager {
         Ok(())
     }
 
-    fn get_game_action_for_protos_action(
-        &mut self,
-        rec_step: &RecorderStep,
-    ) -> Result<GameAction, Box<Error>> {
-        match &rec_step.action {
-            &Some(ref action) => match &action.explanation {
-                &Some(_) => {
-                    println!("=============== WAS STEP WITH DECISION POINT ===========");
-                    let serialized_protos_action =
-                        self.get_serialized_protos_action(&rec_step.action.clone().unwrap())?;
-                    Ok(GameAction::DecisionPoint(serialized_protos_action))
-                }
-                &None => {
-                    println!("=============== WAS JUST STEP ===========");
-                    Ok(GameAction::Step)
-                }
-            },
-            &None => {
-                println!("=============== WAS JUST STEP BECAUSE ACTION MISSING  ===========");
-                Ok(GameAction::Step)
-            }
-        }
-        // if rec_step.is_decision_point {
-        //     if rec_step.action == None {
-        //         return Err(Box::new(RecorderError::new(
-        //             "Malformed RecordStep: no action present but is_decision_point was true.",
-        //         )));
-        //     }
-        //     let serialized_protos_action =
-        //         self.get_serialized_protos_action(&rec_step.action.clone().unwrap())?;
-        //     Ok(GameAction::DecisionPoint(serialized_protos_action))
-        // } else {
-        //     Ok(GameAction::Step)
-        // }
-    }
+    // fn get_game_action_for_protos_action(
+    //     &mut self,
+    //     rec_step: &RecorderStep,
+    // ) -> Result<GameAction, Box<Error>> {
+    //     match &rec_step.action {
+    //         &Some(ref action) => match &action.explanation {
+    //             &Some(_) => {
+    //                 println!("=============== WAS STEP WITH DECISION POINT ===========");
+    //                 let serialized_protos_action =
+    //                     self.get_serialized_protos_action(&rec_step.action.clone().unwrap())?;
+    //                 Ok(GameAction::DecisionPoint(serialized_protos_action))
+    //             }
+    //             &None => {
+    //                 println!("=============== WAS JUST STEP ===========");
+    //                 Ok(GameAction::Step)
+    //             }
+    //         },
+    //         &None => {
+    //             println!("=============== WAS JUST STEP BECAUSE ACTION MISSING  ===========");
+    //             Ok(GameAction::Step)
+    //         }
+    //     }
+    //     // if rec_step.is_decision_point {
+    //     //     if rec_step.action == None {
+    //     //         return Err(Box::new(RecorderError::new(
+    //     //             "Malformed RecordStep: no action present but is_decision_point was true.",
+    //     //         )));
+    //     //     }
+    //     //     let serialized_protos_action =
+    //     //         self.get_serialized_protos_action(&rec_step.action.clone().unwrap())?;
+    //     //     Ok(GameAction::DecisionPoint(serialized_protos_action))
+    //     // } else {
+    //     //     Ok(GameAction::Step)
+    //     // }
+    // }
 
-    fn save_keyframe(&mut self, rec_step: &RecorderStep) -> Result<(), Box<Error>> {
-        if rec_step.action == None {
-            return Err(Box::new(RecorderError::new(
-                "Cannot create keyFrame to store - action missing.",
-            )));
-        }
-        let game_action = self.get_game_action_for_protos_action(rec_step)?;
+    fn save_keyframe(&mut self, action_wrapper: ActionWrapper) -> Result<(), Box<Error>> {
         let ser_info = self.staged_ser_info.clone();
         if ser_info == None {
             return Err(Box::new(RecorderError::new(
                 "Cannot create keyFrame to store - ser_info missing.",
             )));
         }
-        let replay_action = ReplayAction::Keyframe(ser_info.clone().unwrap(), game_action);
+        let replay_action = ReplayAction::Keyframe(ser_info.clone().unwrap(), action_wrapper);
         self.persist_replay_action(&replay_action)?;
         self.staged_ser_info = None;
         Ok(())
     }
+
+    //     fn save_keyframe_old(&mut self, rec_step: &RecorderStep) -> Result<(), Box<Error>> {
+    //         if rec_step.action == None {
+    //             return Err(Box::new(RecorderError::new(
+    //                 "Cannot create keyFrame to store - action missing.",
+    //             )));
+    //         }
+    //         let game_action = self.get_game_action_for_protos_action(rec_step)?;
+    //         let ser_info = self.staged_ser_info.clone();
+    //         if ser_info == None {
+    //             return Err(Box::new(RecorderError::new(
+    //                 "Cannot create keyFrame to store - ser_info missing.",
+    //             )));
+    //         }
+    //         let replay_action = ReplayAction::Keyframe(ser_info.clone().unwrap(), game_action);
+    //         self.persist_replay_action(&replay_action)?;
+    //         self.staged_ser_info = None;
+    //         Ok(())
+    //     }
 }
 
 impl Module for RecorderManager {
@@ -421,4 +465,53 @@ fn is_dir_scaii_root(dir: &PathBuf) -> bool {
     let common_protos_dir_exists = candidate_dir.exists();
 
     core_dir_exists && common_protos_dir_exists
+}
+
+fn get_action_wrapper_for_recorder_step(
+    rec_step: &RecorderStep,
+) -> Result<ActionWrapper, Box<Error>> {
+    match rec_step.action {
+        Some(ref action) => {
+            let action_data: Vec<u8> = get_serialized_action(action)?;
+            match action.explanation {
+                Some(ref expl) => Ok(ActionWrapper {
+                    has_explanation: true,
+                    step: get_step_value(expl),
+                    title: get_title_value(expl),
+                    serialized_action: action_data,
+                }),
+                None => Ok(ActionWrapper {
+                    has_explanation: false,
+                    step: 0,
+                    title: "".to_string(),
+                    serialized_action: action_data,
+                }),
+            }
+        }
+        None => Err(Box::new(RecorderError::new("no action in RecorderStep"))),
+    }
+}
+fn get_title_value(explanation: &ExplanationPoint) -> String {
+    match explanation.title {
+        Some(ref title) => title.clone(),
+        None => "".to_string(),
+    }
+}
+fn get_step_value(explanation: &ExplanationPoint) -> u32 {
+    match explanation.step {
+        Some(ref step) => step.clone(),
+        None => 0,
+    }
+}
+// struct ActionWrapper {
+//     has_explanation: bool,
+//     step : i32,
+//     title : String,
+//     serialized_action : Vec<u8>,
+// }
+
+fn get_serialized_action(action: &protos::Action) -> Result<Vec<u8>, Box<Error>> {
+    let mut action_data: Vec<u8> = Vec::new();
+    action.encode(&mut action_data)?;
+    Ok(action_data)
 }

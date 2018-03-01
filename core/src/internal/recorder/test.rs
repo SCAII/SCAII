@@ -562,8 +562,8 @@ impl MockRts {
         for _i in 0..self.iteration_count {
             result.push(String::from("serialize"));
             result.push(String::from("action"));
-            result.push(String::from("step"));
-            result.push(String::from("step"));
+            result.push(String::from("action"));
+            result.push(String::from("action"));
         }
         println!("sequence is this long: {}", result.len());
         self.step_count = result.len() as u32;
@@ -575,9 +575,6 @@ impl MockRts {
             let recorder_step = self.recorder_steps[self.step_position as usize].clone();
             println!("STEP clue string serviced: {}", recorder_step);
             match &recorder_step[..] {
-                "step" => {
-                    self.send_step();
-                }
                 "serialize" => {
                     self.send_serialize();
                 }
@@ -590,14 +587,6 @@ impl MockRts {
             println!("MockRTS.step_position now {}", self.step_position);
         }
         ()
-    }
-
-    fn send_step(&mut self) {
-        println!("MockRTS sending step pkt...");
-        let scaii_packet = self.create_step_pkt();
-        self.outbound_messages.push(MultiMessage {
-            packets: vec![scaii_packet],
-        });
     }
 
     fn send_serialize(&mut self) {
@@ -614,21 +603,6 @@ impl MockRts {
         self.outbound_messages.push(MultiMessage {
             packets: vec![scaii_packet],
         });
-    }
-
-    fn create_step_pkt(&mut self) -> ScaiiPacket {
-        ScaiiPacket {
-            src: protos::Endpoint {
-                endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-            },
-            dest: protos::Endpoint {
-                endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})),
-            },
-            specific_msg: Some(scaii_packet::SpecificMsg::RecorderStep(RecorderStep {
-                action: None,
-                is_decision_point: false,
-            })),
-        }
     }
 
     fn create_serialize_pkt(&mut self) -> ScaiiPacket {

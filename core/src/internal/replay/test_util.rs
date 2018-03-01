@@ -3,7 +3,7 @@ use protos::{cfg, scaii_packet, BackendCfg, BackendEndpoint, Cfg, Entity, Explan
              ModuleEndpoint, MultiMessage, RecorderConfig, RecorderEndpoint, ReplayEndpoint,
              ScaiiPacket, Viz, VizInit};
 use protos::endpoint::Endpoint;
-use scaii_core::{GameAction, ReplayAction, ReplayHeader, SerializationInfo,
+use scaii_core::{ActionWrapper, ReplayAction, ReplayHeader, SerializationInfo,
                  SerializedProtosAction, SerializedProtosEndpoint, SerializedProtosScaiiPacket,
                  SerializedProtosSerializationResponse};
 use scaii_defs::protos;
@@ -80,8 +80,10 @@ impl Module for MockRts {
     fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>> {
         let empty_vec: Vec<ExplanationPoint> = Vec::new();
         let specific_msg = &msg.specific_msg;
+        println!(" GGGGGGOT MMMMMMMESSAGE");
         match *specific_msg {
             Some(scaii_packet::SpecificMsg::SerResp(protos::SerializationResponse { .. })) => {
+                println!("MOCKRTS got serRespons!");
                 if !self.sent_viz_init {
                     println!("MOCKRTS sending viz init!");
                     self.send_viz_init();
@@ -102,6 +104,7 @@ impl Module for MockRts {
                 }
             }
             Some(scaii_packet::SpecificMsg::Action(protos::Action { .. })) => {
+                println!("MOCKRTS got action Action!");
                 if self.step_position < self.step_count {
                     println!("MOCKRTS step due to agent Action!");
                     self.step();
@@ -110,6 +113,7 @@ impl Module for MockRts {
             Some(scaii_packet::SpecificMsg::TestControl(protos::TestControl {
                 args: ref command_args,
             })) => {
+                println!("MOCKRTS got test control packet!");
                 let target: &String = &command_args[0];
                 if target == &String::from("MockRts") {
                     let command: &String = &command_args[1];
@@ -166,9 +170,9 @@ pub fn concoct_replay_info(
 
     for number in 0..step_count {
         if number % interval == 0 {
-            let key_frame = get_test_mode_key_frame();
+            let key_frame = get_test_mode_key_frame(number)?;
             result.push(key_frame);
-        } else if number % interval == 1 {
+        } else {
             let mut d_actions: Vec<i32> = Vec::new();
             d_actions.push(3);
             let protos_action = protos::Action {
@@ -182,26 +186,24 @@ pub fn concoct_replay_info(
                 protos_action.encode(&mut serialized_protos_action_bytes);
             match protos_action_encode_result {
                 Ok(_) => {
-                    let serialized_protos_action = SerializedProtosAction {
-                        data: serialized_protos_action_bytes,
-                    };
-                    let delta_1 =
-                        ReplayAction::Delta(GameAction::DecisionPoint(serialized_protos_action));
+                    let delta_1 = ReplayAction::Delta(ActionWrapper {
+                        has_explanation: false,
+                        step: number,
+                        title: "".to_string(),
+                        serialized_action: serialized_protos_action_bytes,
+                    });
                     result.push(delta_1);
                 }
                 Err(err) => {
                     return Err(Box::new(err));
                 }
             }
-        } else {
-            let delta_2 = ReplayAction::Delta(GameAction::Step);
-            result.push(delta_2);
         }
     }
     Ok(result)
 }
 
-pub fn get_test_mode_key_frame() -> ReplayAction {
+pub fn get_test_mode_key_frame(number: u32) -> Result<ReplayAction, Box<Error>> {
     let protos_ser_response = protos::SerializationResponse {
         serialized: Vec::new(),
         format: 1,
@@ -219,8 +221,31 @@ pub fn get_test_mode_key_frame() -> ReplayAction {
         source: serialized_protos_endpoint,
         data: serialized_protos_ser_response,
     };
-    let action = GameAction::Step;
-    ReplayAction::Keyframe(ser_info, action)
+
+    let mut d_actions: Vec<i32> = Vec::new();
+    d_actions.push(3);
+    let protos_action = protos::Action {
+        discrete_actions: d_actions,
+        continuous_actions: Vec::new(),
+        alternate_actions: None,
+        explanation: None,
+    };
+    let mut serialized_protos_action_bytes: Vec<u8> = Vec::new();
+    let protos_action_encode_result = protos_action.encode(&mut serialized_protos_action_bytes);
+    match protos_action_encode_result {
+        Ok(_) => {
+            let action_wrapper = ActionWrapper {
+                has_explanation: false,
+                step: number,
+                title: "".to_string(),
+                serialized_action: serialized_protos_action_bytes,
+            };
+            return Ok(ReplayAction::Keyframe(ser_info, action_wrapper));
+        }
+        Err(err) => {
+            return Err(Box::new(err));
+        }
+    }
 }
 
 pub fn get_test_mode_replay_header() -> Result<ReplayHeader, Box<Error>> {
