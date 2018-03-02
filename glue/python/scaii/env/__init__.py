@@ -261,7 +261,7 @@ class ScaiiEnv():
 
         return packet
 
-    def act(self, action):
+    def act(self, action, explanation=None):
         """
         Send an action to the underlying environment and returns
         your environment's resulting state object.
@@ -286,7 +286,8 @@ class ScaiiEnv():
             resp = self._decode_handle_msg()
             # dict.get will return None if the key is not
             # available
-            self._record_step(action_packet, resp.get("ser_resp"), is_keyframe)
+            self._record_step(action_packet, resp.get(
+                "ser_resp"), is_keyframe, explanation=explanation)
 
         self.next_msg.packets.add().CopyFrom(action_packet)
 
@@ -301,7 +302,7 @@ class ScaiiEnv():
 
         return self.state
 
-    def _record_step(self, action_packet, ser_resp, is_keyframe):
+    def _record_step(self, action_packet, ser_resp, is_keyframe, explanation=None):
         """
         One step of the recording, automatically handles keyframes
         """
@@ -315,6 +316,8 @@ class ScaiiEnv():
         recorder_action = self.next_msg.packets.add()
         recorder_action.recorder_step.action.CopyFrom(action_packet.action)
         recorder_action.recorder_step.is_decision_point = True
+        if explanation is not None:
+            explanation.to_proto(recorder_action)
         recorder_action.src.agent.SetInParent()
         recorder_action.dest.recorder.SetInParent()
 

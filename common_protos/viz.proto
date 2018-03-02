@@ -33,7 +33,7 @@ message Layer {
        repeated double cells = 2;
        // to address the cell: row major order (row, row...)
        optional uint32 width = 3;
-       optional uint32 length = 4;
+       optional uint32 height = 4;
 }
 // The packet containing what to draw. This is ALWAYS
 // a delta, so the first packet should contain all

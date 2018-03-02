@@ -1951,10 +1951,10 @@ proto.scaii.common.BackendCfg.serializeBinaryToWriter = function(message, writer
 
 /**
  * optional bytes cfg_msg = 1;
- * @return {!(string|Uint8Array)}
+ * @return {string}
  */
 proto.scaii.common.BackendCfg.prototype.getCfgMsg = function() {
-  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
@@ -2162,10 +2162,10 @@ proto.scaii.common.AgentCfg.serializeBinaryToWriter = function(message, writer) 
 
 /**
  * optional bytes cfg_msg = 1;
- * @return {!(string|Uint8Array)}
+ * @return {string}
  */
 proto.scaii.common.AgentCfg.prototype.getCfgMsg = function() {
-  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
@@ -2342,10 +2342,10 @@ proto.scaii.common.ModuleCfg.serializeBinaryToWriter = function(message, writer)
 
 /**
  * optional bytes cfg_msg = 1;
- * @return {!(string|Uint8Array)}
+ * @return {string}
  */
 proto.scaii.common.ModuleCfg.prototype.getCfgMsg = function() {
-  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
@@ -4157,7 +4157,7 @@ proto.scaii.common.Layer.toObject = function(includeInstance, msg) {
     name: jspb.Message.getField(msg, 1),
     cellsList: jspb.Message.getRepeatedFloatingPointField(msg, 2),
     width: jspb.Message.getField(msg, 3),
-    length: jspb.Message.getField(msg, 4)
+    height: jspb.Message.getField(msg, 4)
   };
 
   if (includeInstance) {
@@ -4208,7 +4208,7 @@ proto.scaii.common.Layer.deserializeBinaryFromReader = function(msg, reader) {
       break;
     case 4:
       var value = /** @type {number} */ (reader.readUint32());
-      msg.setLength(value);
+      msg.setHeight(value);
       break;
     default:
       reader.skipField();
@@ -4358,21 +4358,21 @@ proto.scaii.common.Layer.prototype.hasWidth = function() {
 
 
 /**
- * optional uint32 length = 4;
+ * optional uint32 height = 4;
  * @return {number}
  */
-proto.scaii.common.Layer.prototype.getLength = function() {
+proto.scaii.common.Layer.prototype.getHeight = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
 };
 
 
 /** @param {number} value */
-proto.scaii.common.Layer.prototype.setLength = function(value) {
+proto.scaii.common.Layer.prototype.setHeight = function(value) {
   jspb.Message.setField(this, 4, value);
 };
 
 
-proto.scaii.common.Layer.prototype.clearLength = function() {
+proto.scaii.common.Layer.prototype.clearHeight = function() {
   jspb.Message.setField(this, 4, undefined);
 };
 
@@ -4381,7 +4381,7 @@ proto.scaii.common.Layer.prototype.clearLength = function() {
  * Returns whether this field is set.
  * @return {!boolean}
  */
-proto.scaii.common.Layer.prototype.hasLength = function() {
+proto.scaii.common.Layer.prototype.hasHeight = function() {
   return jspb.Message.getField(this, 4) != null;
 };
 
@@ -10099,10 +10099,10 @@ proto.scaii.common.State.prototype.hasReward = function() {
 
 /**
  * optional bytes expanded_state = 4;
- * @return {!(string|Uint8Array)}
+ * @return {string}
  */
 proto.scaii.common.State.prototype.getExpandedState = function() {
-  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
 };
 
 
@@ -10256,7 +10256,7 @@ proto.scaii.common.Action.toObject = function(includeInstance, msg) {
     discreteActionsList: jspb.Message.getRepeatedField(msg, 1),
     continuousActionsList: jspb.Message.getRepeatedFloatingPointField(msg, 2),
     alternateActions: msg.getAlternateActions_asB64(),
-    explanation: (f = msg.getExplanation()) && proto.scaii.common.ExplanationPoint.toObject(includeInstance, f)
+    explanationPoint: (f = msg.getExplanationPoint()) && proto.scaii.common.ExplanationPoint.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -10308,7 +10308,7 @@ proto.scaii.common.Action.deserializeBinaryFromReader = function(msg, reader) {
     case 4:
       var value = new proto.scaii.common.ExplanationPoint;
       reader.readMessage(value,proto.scaii.common.ExplanationPoint.deserializeBinaryFromReader);
-      msg.setExplanation(value);
+      msg.setExplanationPoint(value);
       break;
     default:
       reader.skipField();
@@ -10360,7 +10360,7 @@ proto.scaii.common.Action.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getExplanation();
+  f = message.getExplanationPoint();
   if (f != null) {
     writer.writeMessage(
       4,
@@ -10431,10 +10431,10 @@ proto.scaii.common.Action.prototype.clearContinuousActionsList = function() {
 
 /**
  * optional bytes alternate_actions = 3;
- * @return {!(string|Uint8Array)}
+ * @return {string}
  */
 proto.scaii.common.Action.prototype.getAlternateActions = function() {
-  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
@@ -10483,23 +10483,23 @@ proto.scaii.common.Action.prototype.hasAlternateActions = function() {
 
 
 /**
- * optional ExplanationPoint explanation = 4;
+ * optional ExplanationPoint explanation_point = 4;
  * @return {?proto.scaii.common.ExplanationPoint}
  */
-proto.scaii.common.Action.prototype.getExplanation = function() {
+proto.scaii.common.Action.prototype.getExplanationPoint = function() {
   return /** @type{?proto.scaii.common.ExplanationPoint} */ (
     jspb.Message.getWrapperField(this, proto.scaii.common.ExplanationPoint, 4));
 };
 
 
 /** @param {?proto.scaii.common.ExplanationPoint|undefined} value */
-proto.scaii.common.Action.prototype.setExplanation = function(value) {
+proto.scaii.common.Action.prototype.setExplanationPoint = function(value) {
   jspb.Message.setWrapperField(this, 4, value);
 };
 
 
-proto.scaii.common.Action.prototype.clearExplanation = function() {
-  this.setExplanation(undefined);
+proto.scaii.common.Action.prototype.clearExplanationPoint = function() {
+  this.setExplanationPoint(undefined);
 };
 
 
@@ -10507,7 +10507,7 @@ proto.scaii.common.Action.prototype.clearExplanation = function() {
  * Returns whether this field is set.
  * @return {!boolean}
  */
-proto.scaii.common.Action.prototype.hasExplanation = function() {
+proto.scaii.common.Action.prototype.hasExplanationPoint = function() {
   return jspb.Message.getField(this, 4) != null;
 };
 
@@ -10725,10 +10725,10 @@ proto.scaii.common.Error.prototype.hasFatal = function() {
 
 /**
  * optional bytes error_info = 3;
- * @return {!(string|Uint8Array)}
+ * @return {string}
  */
 proto.scaii.common.Error.prototype.getErrorInfo = function() {
-  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
@@ -10946,10 +10946,10 @@ proto.scaii.common.Other.prototype.hasName = function() {
 
 /**
  * optional bytes msg = 2;
- * @return {!(string|Uint8Array)}
+ * @return {string}
  */
 proto.scaii.common.Other.prototype.getMsg = function() {
-  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
@@ -11294,10 +11294,10 @@ proto.scaii.common.SerializationResponse.serializeBinaryToWriter = function(mess
 
 /**
  * required bytes serialized = 1;
- * @return {!(string|Uint8Array)}
+ * @return {string}
  */
 proto.scaii.common.SerializationResponse.prototype.getSerialized = function() {
-  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
@@ -11804,7 +11804,8 @@ proto.scaii.common.RecorderStep.prototype.toObject = function(opt_includeInstanc
 proto.scaii.common.RecorderStep.toObject = function(includeInstance, msg) {
   var f, obj = {
     action: (f = msg.getAction()) && proto.scaii.common.Action.toObject(includeInstance, f),
-    isDecisionPoint: jspb.Message.getField(msg, 2)
+    isDecisionPoint: jspb.Message.getField(msg, 2),
+    explanation: (f = msg.getExplanation()) && proto.scaii.common.ExplanationPoint.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -11850,6 +11851,11 @@ proto.scaii.common.RecorderStep.deserializeBinaryFromReader = function(msg, read
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setIsDecisionPoint(value);
       break;
+    case 3:
+      var value = new proto.scaii.common.ExplanationPoint;
+      reader.readMessage(value,proto.scaii.common.ExplanationPoint.deserializeBinaryFromReader);
+      msg.setExplanation(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -11892,6 +11898,14 @@ proto.scaii.common.RecorderStep.serializeBinaryToWriter = function(message, writ
     writer.writeBool(
       2,
       f
+    );
+  }
+  f = message.getExplanation();
+  if (f != null) {
+    writer.writeMessage(
+      3,
+      f,
+      proto.scaii.common.ExplanationPoint.serializeBinaryToWriter
     );
   }
 };
@@ -11955,6 +11969,36 @@ proto.scaii.common.RecorderStep.prototype.clearIsDecisionPoint = function() {
  */
 proto.scaii.common.RecorderStep.prototype.hasIsDecisionPoint = function() {
   return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional ExplanationPoint explanation = 3;
+ * @return {?proto.scaii.common.ExplanationPoint}
+ */
+proto.scaii.common.RecorderStep.prototype.getExplanation = function() {
+  return /** @type{?proto.scaii.common.ExplanationPoint} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.ExplanationPoint, 3));
+};
+
+
+/** @param {?proto.scaii.common.ExplanationPoint|undefined} value */
+proto.scaii.common.RecorderStep.prototype.setExplanation = function(value) {
+  jspb.Message.setWrapperField(this, 3, value);
+};
+
+
+proto.scaii.common.RecorderStep.prototype.clearExplanation = function() {
+  this.setExplanation(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.RecorderStep.prototype.hasExplanation = function() {
+  return jspb.Message.getField(this, 3) != null;
 };
 
 

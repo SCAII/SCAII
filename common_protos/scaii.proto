@@ -176,7 +176,7 @@ message Action {
 	repeated double continuous_actions = 2;
 	
 	optional bytes alternate_actions = 3;
-	optional ExplanationPoint explanation = 4;
+	optional ExplanationPoint  explanation_point = 4;
 }
 
 // A basic error message providing a string describing what went wrong.
@@ -274,8 +274,9 @@ message TestControl {
 // Sent from backend to recorder each frame to denote a new
 // step in the recording
 message RecorderStep {
-     optional Action action = 1;
-     required bool is_decision_point = 2;
+    optional Action action = 1;
+    required bool is_decision_point = 2;
+	optional ExplanationPoint explanation = 3;
 }
 
 // message to trigger recorder
