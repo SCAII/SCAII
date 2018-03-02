@@ -186,10 +186,7 @@ impl RecorderManager {
                 filepath: ref path,
             })) => {
                 self.is_recording = true;
-                println!(
-                    "  overwrite is set to {} , filepath is set to {:?} ",
-                    ow, path
-                );
+
                 let ser_protos_scaii_pkt = self.get_serialized_protos_scaii_packet(pkt)?;
                 let replay_header = ReplayHeader {
                     configs: ser_protos_scaii_pkt,
@@ -290,7 +287,6 @@ impl RecorderManager {
     }
 
     fn persist_replay_action(&mut self, replay_action: &ReplayAction) -> Result<(), Box<Error>> {
-        //println!("persisting replayAction {:?}", replay_action);
         match self.writable_file {
             None => {
                 return Err(Box::new(RecorderError::new(
@@ -311,42 +307,6 @@ impl RecorderManager {
         Ok(())
     }
 
-    // fn get_game_action_for_protos_action(
-    //     &mut self,
-    //     rec_step: &RecorderStep,
-    // ) -> Result<GameAction, Box<Error>> {
-    //     match &rec_step.action {
-    //         &Some(ref action) => match &action.explanation {
-    //             &Some(_) => {
-    //                 println!("=============== WAS STEP WITH DECISION POINT ===========");
-    //                 let serialized_protos_action =
-    //                     self.get_serialized_protos_action(&rec_step.action.clone().unwrap())?;
-    //                 Ok(GameAction::DecisionPoint(serialized_protos_action))
-    //             }
-    //             &None => {
-    //                 println!("=============== WAS JUST STEP ===========");
-    //                 Ok(GameAction::Step)
-    //             }
-    //         },
-    //         &None => {
-    //             println!("=============== WAS JUST STEP BECAUSE ACTION MISSING  ===========");
-    //             Ok(GameAction::Step)
-    //         }
-    //     }
-    //     // if rec_step.is_decision_point {
-    //     //     if rec_step.action == None {
-    //     //         return Err(Box::new(RecorderError::new(
-    //     //             "Malformed RecordStep: no action present but is_decision_point was true.",
-    //     //         )));
-    //     //     }
-    //     //     let serialized_protos_action =
-    //     //         self.get_serialized_protos_action(&rec_step.action.clone().unwrap())?;
-    //     //     Ok(GameAction::DecisionPoint(serialized_protos_action))
-    //     // } else {
-    //     //     Ok(GameAction::Step)
-    //     // }
-    // }
-
     fn save_keyframe(&mut self, action_wrapper: ActionWrapper) -> Result<(), Box<Error>> {
         let ser_info = self.staged_ser_info.clone();
         if ser_info == None {
@@ -359,30 +319,10 @@ impl RecorderManager {
         self.staged_ser_info = None;
         Ok(())
     }
-
-    //     fn save_keyframe_old(&mut self, rec_step: &RecorderStep) -> Result<(), Box<Error>> {
-    //         if rec_step.action == None {
-    //             return Err(Box::new(RecorderError::new(
-    //                 "Cannot create keyFrame to store - action missing.",
-    //             )));
-    //         }
-    //         let game_action = self.get_game_action_for_protos_action(rec_step)?;
-    //         let ser_info = self.staged_ser_info.clone();
-    //         if ser_info == None {
-    //             return Err(Box::new(RecorderError::new(
-    //                 "Cannot create keyFrame to store - ser_info missing.",
-    //             )));
-    //         }
-    //         let replay_action = ReplayAction::Keyframe(ser_info.clone().unwrap(), game_action);
-    //         self.persist_replay_action(&replay_action)?;
-    //         self.staged_ser_info = None;
-    //         Ok(())
-    //     }
 }
 
 impl Module for RecorderManager {
     fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>> {
-        //println!("recorderManager handling packet");
         self.handle_pkt(msg)
     }
 

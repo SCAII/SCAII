@@ -15,22 +15,19 @@ fn connect_attempt() {
         let result = init_rpc(&config).expect("trying to init_rpc");
         match result {
             LoadedAs::Module(mut rpc_module, _) => {
-                println!("RPCModule here");
                 // we'll get here after the wakeup connectioncomes in
                 let dummy_scaii_pkt = get_dummy_scaii_pkt();
                 // send the message
                 rpc_module.process_msg(&dummy_scaii_pkt).unwrap();
                 let mut multi_message = rpc_module.get_messages();
                 let pkt = multi_message.packets.pop().unwrap();
-                if pkt.specific_msg ==
-                    Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {
-                        test_mode: Some(false),
-                        step_count: Some(100),
-                        gameboard_width: Some(400),
-                        gameboard_height: Some(400),
-                        explanations: Vec::new(),
-                    }))
-                {
+                if pkt.specific_msg == Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {
+                    test_mode: Some(false),
+                    step_count: Some(100),
+                    gameboard_width: Some(400),
+                    gameboard_height: Some(400),
+                    explanations: Vec::new(),
+                })) {
                     tx.send(String::from("success")).unwrap();
                 } else {
                     tx.send(String::from("fail")).unwrap();
@@ -47,11 +44,9 @@ fn connect_attempt() {
         .unwrap()
         .connect_insecure()
         .unwrap();
-    println!("connected via Client::bind");
-    let msg = client.recv_message().expect(
-        "Could not receive ping message from local client",
-    );
-    println!("msg received was {:?} ", msg);
+    let msg = client
+        .recv_message()
+        .expect("Could not receive ping message from local client");
     let scaii_packet = decode_scaii_packet(msg);
     let mut pkt_vec: Vec<ScaiiPacket> = Vec::new();
     pkt_vec.push(scaii_packet);
@@ -59,7 +54,6 @@ fn connect_attempt() {
 
     let buf = encode_multi_message(&multi_message);
     client.send_message(&message::Message::binary(buf)).unwrap();
-    println!("sent echo message from far client");
     let payload = rx.recv().unwrap();
     assert!(payload == String::from("success"));
     handle.join().unwrap();
@@ -69,11 +63,13 @@ fn get_dummy_scaii_pkt() -> ScaiiPacket {
     use scaii_defs::protos;
     use scaii_defs::protos::{endpoint, scaii_packet};
     ScaiiPacket {
-        src: protos::Endpoint { endpoint: Some(endpoint::Endpoint::Backend(BackendEndpoint {})) },
+        src: protos::Endpoint {
+            endpoint: Some(endpoint::Endpoint::Backend(BackendEndpoint {})),
+        },
         dest: protos::Endpoint {
-            endpoint: Some(endpoint::Endpoint::Module(
-                ModuleEndpoint { name: "viz".to_string() },
-            )),
+            endpoint: Some(endpoint::Endpoint::Module(ModuleEndpoint {
+                name: "viz".to_string(),
+            })),
         },
         specific_msg: Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {
             test_mode: Some(false),
@@ -91,9 +87,9 @@ fn encode_multi_message(
     use prost::Message;
     let mut buf: Vec<u8> = Vec::new();
     //packet.encode(&mut buf).expect(
-    multi_message.encode(&mut buf).expect(
-        "Could not encode SCAII packet (server error)",
-    );
+    multi_message
+        .encode(&mut buf)
+        .expect("Could not encode SCAII packet (server error)");
     buf
 }
 

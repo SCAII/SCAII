@@ -179,7 +179,6 @@ impl ReplayManager {
         cfg_pkts: Vec<ScaiiPacket>,
         replay_session_cfg_pkt_for_ui: ScaiiPacket,
     ) -> Result<Vec<ScaiiPacket>, Box<Error>> {
-        println!("ARGS is {:?}", self.args);
         let mut temp_vec: Vec<ScaiiPacket> = Vec::new();
         let mut result_vec: Vec<ScaiiPacket> = Vec::new();
         let mut rust_ffi_config_pkt: Option<ScaiiPacket> = None;
@@ -211,42 +210,19 @@ impl ReplayManager {
                 }
             }
         }
-        // disable this for now
-        // if self.args.flag_backend {
-        //     // override the specified backend
-        //     if rust_ffi_config_pkt != None {
-        //         println!("WARNING - Overriding which backend to load...");
-        //         let plugin_path =  get_plugin_path_from_rust_ffi_config(&rust_ffi_config_pkt.unwrap())?;
-        //         println!("...was        : {}",plugin_path);
-        //     }
-        //     println!("...backend will be: {}", self.args.arg_path_to_backend);
-        //     rust_ffi_config_pkt = Some(create_rust_ffi_config_message(&self.args.arg_path_to_backend)?);
-        //     println!("...backend is now: {}", self.args.arg_path_to_backend);
-        // }
-        //if no backend instance specified yet, use the default
-        // commenting out as this breaks test
+
         if rust_ffi_config_pkt == None && !self.test_mode {
             let default_backend_path = util::get_default_backend()?;
             rust_ffi_config_pkt = Some(create_rust_ffi_config_message(&default_backend_path)?);
-            println!("...using default backend: {}", default_backend_path);
         }
 
         if backend_config_pkt == None {
-            println!("...generating default backend config...");
             backend_config_pkt = Some(create_default_replay_backend_config());
         } else {
             // need to change replay_mode to true
-            println!("...setting replay_mode to true on backend config...");
             set_replay_mode_on_backend_config(&mut backend_config_pkt);
         }
-        println!(
-            "backend config packet final form is: {:?}",
-            backend_config_pkt
-        );
-        println!(
-            "rust_ffi_config packet final form is: {:?}",
-            rust_ffi_config_pkt
-        );
+
         if !self.test_mode {
             result_vec.push(rust_ffi_config_pkt.unwrap());
         }
@@ -344,7 +320,6 @@ impl ReplayManager {
         let scaii_pkts: Vec<protos::ScaiiPacket> = {
             let queue = &mut *self.incoming_message_queue.borrow_mut();
             let result: Vec<protos::ScaiiPacket> = queue.incoming_messages.drain(..).collect();
-            //println!("====================got result packets {} ", result.len());
             result
         };
         Ok(scaii_pkts)
@@ -465,56 +440,13 @@ impl ReplayManager {
         Ok(scaii_pkts)
     }
 
-    // fn send_replay_action_to_backend_OLD(&mut self) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
-    //     let empty_vec: Vec<protos::ScaiiPacket> = Vec::new();
-    //     let replay_action: ReplayAction = self.replay_data[self.step_position as usize].clone();
-    //     match replay_action {
-    //         ReplayAction::Delta(action) => {
-    //             //println!("REPLAY found delta...");
-    //             let action_pkt: ScaiiPacket = self.convert_action_info_to_action_pkt(action)?;
-    //             println!("%%%%%%%%%%%%%   Replay sending action_pkt  %%%%%%%%%%%%");
-    //             let mut pkts: Vec<ScaiiPacket> = Vec::new();
-    //             pkts.push(action_pkt);
-    //             let mm = MultiMessage { packets: pkts };
-    //             let scaii_pkts = self.deploy_replay_directives_to_backend(&mm)?;
-    //             Ok(scaii_pkts)
-    //         }
-    //         ReplayAction::Keyframe(serialization_info, action) => {
-    //             //println!("REPLAY found keyframe...");
-    //             let ser_proto_ser_resp: SerializedProtosSerializationResponse =
-    //                 serialization_info.data;
-    //             let ser_response_decode_result =
-    //                 protos::SerializationResponse::decode(ser_proto_ser_resp.data);
-    //             match ser_response_decode_result {
-    //                 Ok(ser_response) => {
-    //                     let ser_response_pkt: ScaiiPacket =
-    //                         self.wrap_response_in_scaii_pkt(ser_response);
-    //                     let action_pkt: ScaiiPacket =
-    //                         self.convert_action_info_to_action_pkt(action)?;
-    //                     println!("%%%%%%%%%%%%%   Replay sending action_pkt with ser_response  %%%%%%%%%%%%%%");
-    //                     let mut pkts: Vec<ScaiiPacket> = Vec::new();
-    //                     pkts.push(ser_response_pkt);
-    //                     pkts.push(action_pkt);
-    //                     let mm = MultiMessage { packets: pkts };
-    //                     let scaii_pkts = self.deploy_replay_directives_to_backend(&mm)?;
-    //                     Ok(scaii_pkts)
-    //                 }
-    //                 Err(err) => Err(Box::new(err)),
-    //             }
-    //         }
-    //         ReplayAction::Header(_) => Ok(empty_vec),
-    //     }
-    // }
-
     fn send_replay_action_to_backend(&mut self) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
         let empty_vec: Vec<protos::ScaiiPacket> = Vec::new();
         let replay_action: ReplayAction = self.replay_data[self.step_position as usize].clone();
         match replay_action {
             ReplayAction::Delta(action_wrapper) => {
-                //println!("REPLAY found delta...");
                 let action_pkt: ScaiiPacket =
                     self.convert_action_wrapper_to_action_pkt(action_wrapper)?;
-                println!("%%%%%%%%%%%%%   Replay sending action_pkt  %%%%%%%%%%%%");
                 let mut pkts: Vec<ScaiiPacket> = Vec::new();
                 pkts.push(action_pkt);
                 let mm = MultiMessage { packets: pkts };
@@ -522,7 +454,6 @@ impl ReplayManager {
                 Ok(scaii_pkts)
             }
             ReplayAction::Keyframe(serialization_info, action_wrapper) => {
-                //println!("REPLAY found keyframe...");
                 let ser_proto_ser_resp: SerializedProtosSerializationResponse =
                     serialization_info.data;
                 let ser_response_decode_result =
@@ -533,8 +464,6 @@ impl ReplayManager {
                             self.wrap_response_in_scaii_pkt(ser_response);
                         let action_pkt: ScaiiPacket =
                             self.convert_action_wrapper_to_action_pkt(action_wrapper)?;
-                        println!("ACTION PACKET WILL BE {:?}", action_pkt);
-                        println!("%%%%%%%%%%%%%   Replay sending action_pkt with ser_response  %%%%%%%%%%%%%%");
                         // Zoe wants RTS to recieve these two in distinct multi-messages
                         let mut pkts: Vec<ScaiiPacket> = Vec::new();
                         pkts.push(ser_response_pkt);
@@ -789,7 +718,6 @@ impl ReplayManager {
         let poll_nudge_handle = thread::spawn(move || {
             //let mut i: u64 = 0;
             loop {
-                //println!("poll loop sending nudge {}", i);
                 //i = i + 1;
                 tx_poll.send(String::from("poll_nudge")).unwrap();
                 let _ack = rx_poll_ack.recv().unwrap();
@@ -802,7 +730,6 @@ impl ReplayManager {
         let step_nudge_handle = thread::spawn(move || {
             //let mut i: u64 = 0;
             loop {
-                //println!("step loop sending nudge {}", i);
                 //i = i + 1;
                 tx_step.send(String::from("step_nudge")).unwrap();
                 let _ack = rx_step_ack.recv().unwrap();
@@ -817,13 +744,11 @@ impl ReplayManager {
                 Ok(nudge) => {
                     match nudge.as_ref() {
                         "step_nudge" => {
-                            //println!("main loop got step_nudge {}", snudge_count);
                             //snudge_count = snudge_count + 1;
                             game_state = self.handle_step_nudge(game_state)?;
                             tx_step_ack.send(String::from("ack")).unwrap();
                         }
                         "poll_nudge" => {
-                            //println!("main loop got poll_nudge {}", pnudge_count);
                             //pnudge_count = pnudge_count + 1;
                             game_state = self.execute_poll_step(game_state)?;
                             tx_poll_ack.send(String::from("ack")).unwrap();
@@ -947,7 +872,6 @@ fn create_rpc_config_message() -> Result<ScaiiPacket, Box<Error>> {
 
 fn load_replay_file(path: &Path) -> Result<Vec<ReplayAction>, Box<Error>> {
     //use super::ReplayAction;
-    println!("loading replay file {:?}", path);
     let replay_file = File::open(path).expect("file not found");
     let mut replay_vec: Vec<ReplayAction> = Vec::new();
     let mut reader = BufReader::new(replay_file);
@@ -1060,7 +984,6 @@ fn parse_args(arguments: Vec<String>) -> Args {
 
 fn main() {
     let arguments: Vec<String> = env::args().collect();
-    println!("{:?}", arguments);
     let args: Args = parse_args(arguments);
     // let args: Args = Docopt::new(USAGE)
     //     .and_then(|d| d.deserialize())
@@ -1084,26 +1007,18 @@ fn main() {
             run_replay(RunMode::Test, replay_info, args);
         }
     } else if args.cmd_file {
-        println!("Running replay in live mode...");
         if args.flag_filename {
-            println!(
-                "...replay filepath overridden as {}",
-                &args.arg_path_to_replay_file
-            );
             let replay_info: Vec<ReplayAction> = {
                 let path = Path::new(&args.arg_path_to_replay_file);
                 if !path.exists() {
                     panic!("ERROR - specified replay path does not exist {:?}", path);
                 }
-                //println!("calling load_replay_info_from_replay_file_path...");
                 load_replay_info_from_replay_file_path(path.to_path_buf())
                     .expect("Error - problem generating test replay_info")
             };
             run_replay(RunMode::Live, replay_info, args);
         } else {
-            println!("...replay file will be loaded from default location...");
             let replay_info: Vec<ReplayAction> = {
-                //println!("calling load_replay_info_from_default_replay_path...");
                 load_replay_info_from_default_replay_path()
                     .expect("Error - problem generating replay_info from default file")
             };

@@ -129,8 +129,6 @@ impl Router {
     /// target errors on receiving the message.
     pub fn route_to(&mut self, msg: &ScaiiPacket) -> Result<Option<ScaiiPacket>, Box<Error>> {
         let dest = msg.dest.endpoint.as_ref().expect("Malformed dest field");
-        println!("received packet {:?}", msg);
-        println!("");
         match *dest {
             Endpoint::Backend(_) => {
                 let res = self.backend.as_mut().and_then(|v| Some(v.process_msg(msg)));
