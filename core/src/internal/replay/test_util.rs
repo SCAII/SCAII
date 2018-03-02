@@ -4,7 +4,7 @@ use protos::{cfg, scaii_packet, BackendCfg, BackendEndpoint, Cfg, Entity, Explan
              ScaiiPacket, Viz, VizInit};
 use protos::endpoint::Endpoint;
 use scaii_core::{ActionWrapper, ReplayAction, ReplayHeader, SerializationInfo,
-                 SerializedProtosAction, SerializedProtosEndpoint, SerializedProtosScaiiPacket,
+                 SerializedProtosEndpoint, SerializedProtosScaiiPacket,
                  SerializedProtosSerializationResponse};
 use scaii_defs::protos;
 use protos::scaii_packet::SpecificMsg;
@@ -78,7 +78,6 @@ impl Backend for MockRts {
 
 impl Module for MockRts {
     fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>> {
-        let empty_vec: Vec<ExplanationPoint> = Vec::new();
         let specific_msg = &msg.specific_msg;
         println!(" GGGGGGOT MMMMMMMESSAGE");
         match *specific_msg {
@@ -94,6 +93,7 @@ impl Module for MockRts {
                 step_count: steps,
                 explanations: _,
             })) => {
+                println!("got replaySessionConfig");
                 self.step_count = steps as u32;
                 self.init_entity_sequence();
             }
@@ -165,7 +165,7 @@ pub fn concoct_replay_info(
 ) -> Result<Vec<ReplayAction>, Box<Error>> {
     let mut result: Vec<ReplayAction> = Vec::new();
     // add Header
-    let replay_header = get_test_mode_replay_header()?;
+    let replay_header = get_test_mode_replay_header(step_count)?;
     result.push(ReplayAction::Header(replay_header));
 
     for number in 0..step_count {
@@ -248,8 +248,8 @@ pub fn get_test_mode_key_frame(number: u32) -> Result<ReplayAction, Box<Error>> 
     }
 }
 
-pub fn get_test_mode_replay_header() -> Result<ReplayHeader, Box<Error>> {
-    let config_packet = create_cfg_pkt();
+pub fn get_test_mode_replay_header(step_count: u32) -> Result<ReplayHeader, Box<Error>> {
+    let config_packet = create_cfg_pkt(step_count);
     let mut data_vec: Vec<u8> = Vec::new();
     let result = config_packet.encode(&mut data_vec);
     match result {
@@ -355,7 +355,7 @@ pub fn create_entity_at(x: &f64, y: &f64, shape: &str, orient: &f64) -> Entity {
     }
 }
 
-fn create_cfg_pkt() -> ScaiiPacket {
+fn create_cfg_pkt(step_count: u32) -> ScaiiPacket {
     let mut vec: Vec<ScaiiPacket> = Vec::new();
     let cfg = Cfg {
         which_module: Some(cfg::WhichModule::BackendCfg(BackendCfg {
@@ -373,6 +373,23 @@ fn create_cfg_pkt() -> ScaiiPacket {
         specific_msg: Some(scaii_packet::SpecificMsg::Config(cfg)),
     };
     vec.push(cfg_packet);
+    let expl_vec: Vec<ExplanationPoint> = Vec::new();
+    let replay_session_config_packet = ScaiiPacket {
+        src: protos::Endpoint {
+            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+        },
+        dest: protos::Endpoint {
+            endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
+        },
+        specific_msg: Some(scaii_packet::SpecificMsg::ReplaySessionConfig(
+            protos::ReplaySessionConfig {
+                step_count: step_count as i64,
+                explanations: expl_vec,
+            },
+        )),
+    };
+
+    vec.push(replay_session_config_packet);
     ScaiiPacket {
         src: protos::Endpoint {
             endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
