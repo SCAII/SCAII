@@ -3,7 +3,7 @@ use std::fmt::Debug;
 use super::Pos;
 
 use specs::prelude::*;
-use specs::storage::{HashMapStorage, NullStorage};
+use specs::storage::HashMapStorage;
 use specs::saveload::SaveLoadComponent;
 use specs::error::NoError;
 
@@ -14,13 +14,13 @@ use serde::{Deserialize, Serialize};
 pub struct Speed(pub f64);
 
 #[derive(Copy, Clone, Default, Component, PartialEq, Serialize, Deserialize)]
-#[storage(NullStorage)]
-pub struct Movable;
+#[storage(HashMapStorage)]
+pub struct Movable(pub usize);
 
 // Opposite of movable for entities with a shape that can't be moved
 #[derive(Copy, Clone, Default, Component, PartialEq, Serialize, Deserialize)]
-#[storage(NullStorage)]
-pub struct Static;
+#[storage(HashMapStorage)]
+pub struct Static(pub usize);
 
 #[derive(Copy, Clone, PartialEq, Serialize, Deserialize)]
 pub enum MoveBehavior {

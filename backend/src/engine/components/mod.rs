@@ -1,6 +1,6 @@
 use nalgebra::Point2;
 
-use specs::storage::{HashMapStorage, NullStorage};
+use specs::storage::HashMapStorage;
 use specs::saveload::SaveLoadComponent;
 use specs::prelude::*;
 use specs::error::NoError;
@@ -89,8 +89,8 @@ impl DerefMut for Pos {
 pub struct Heading(f64);
 
 #[derive(Default, Component, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[storage(NullStorage)]
-pub struct MovedFlag;
+#[storage(HashMapStorage)]
+pub struct MovedFlag(pub usize);
 
 #[derive(Default, Component, Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]
 #[storage(VecStorage)]

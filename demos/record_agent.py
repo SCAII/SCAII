@@ -6,7 +6,7 @@ print("Possible reward types:", env.reward_types())
 print("Possible actions:", env.actions())
 print("Action description", env.action_desc())
 
-for i in range(0, 2):
+for i in range(0, 1):
     print("episode", i)
 
     s = env.reset(record=True)

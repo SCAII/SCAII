@@ -44,5 +44,7 @@ impl<'a> System<'a> for RedoCollisionSys {
                 c_world,
             );
         }
+
+        c_world.update();
     }
 }

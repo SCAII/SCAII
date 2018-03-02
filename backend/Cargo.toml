@@ -7,7 +7,7 @@ authors = ["Zoe Juozapaitis <Jragonmiris@gmail.com>"]
 crate-type = ["dylib", "rlib"]
 
 [dependencies]
-scaii_defs = {version="0.5", git = "https://github.com/SCAII/SCAII", branch="dev"}
+scaii_defs = {version="0.6", git = "https://github.com/SCAII/SCAII", branch="integ"}
 rlua  = "0.9"
 serde = "1"
 serde_derive = "1"
@@ -41,5 +41,5 @@ glob = "0.2.11"
 websocket = "0.20"
 
 [patch.crates-io]
-rand = {version="0.4", git = 'https://github.com/rust-lang-nursery/rand', features=["serde-1"]}
+rand = {version="0.4", git = 'https://github.com/rust-lang-nursery/rand', features=["serde-1"], rev="1591eadd954"}
 specs = { version="0.10", features=["serde"], git="https://github.com/LinearZoetrope/specs"}
