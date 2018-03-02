@@ -65,9 +65,10 @@ fn launch_far_end(command: &str, args: &[String]) -> Child {
             c.arg(arg);
         }
         println!("command struct is {:?}", c);
-        c.spawn().expect(String::as_str(
-            &format!("failed to launch command {}", command),
-        ))
+        c.spawn().expect(String::as_str(&format!(
+            "failed to launch command {}",
+            command
+        )))
     } else if cfg!(target_os = "unix") {
         let mut c = Command::new("sh");
         let c = c.arg("-c");
@@ -75,9 +76,10 @@ fn launch_far_end(command: &str, args: &[String]) -> Child {
         for arg in args.iter() {
             c.arg(arg);
         }
-        c.spawn().expect(String::as_str(
-            &format!("failed to launch command {}", command),
-        ))
+        c.spawn().expect(String::as_str(&format!(
+            "failed to launch command {}",
+            command
+        )))
     } else {
         // assume mac
         let mut c = Command::new("sh");
@@ -85,9 +87,10 @@ fn launch_far_end(command: &str, args: &[String]) -> Child {
         // for mac, command plus the args come across in the command value - if we split it
         // up like we do on windows in command and arg, it doesn't work foe some reasoin ("open file:///...")
         let c = c.arg(command);
-        c.spawn().expect(String::as_str(
-            &format!("failed to launch command {}", command),
-        ))
+        c.spawn().expect(String::as_str(&format!(
+            "failed to launch command {}",
+            command
+        )))
     }
 }
 
@@ -96,7 +99,6 @@ struct Rpc {
     messages_from_socket_client: Vec<MultiMessage>,
     owner: Endpoint,
 }
-
 
 impl Rpc {
     pub fn send_message(&mut self, msg: &ScaiiPacket) {
@@ -143,8 +145,7 @@ impl Rpc {
                         error_info: None,
                         description: format!(
                             "Could not communicate with RPC plugin: {:?}.\n Err: {}",
-                            self.owner,
-                            e
+                            self.owner, e
                         ),
                     })),
                 };
@@ -158,7 +159,9 @@ impl Rpc {
     pub fn get_messages(&mut self) -> MultiMessage {
         use scaii_defs::protos;
         protos::merge_multi_messages(self.messages_from_socket_client.drain(..).collect())
-            .unwrap_or(MultiMessage { packets: Vec::new() })
+            .unwrap_or(MultiMessage {
+                packets: Vec::new(),
+            })
     }
 }
 
@@ -176,7 +179,6 @@ impl Module for RpcModule {
     }
 }
 
-
 fn receive_and_decode_proto(client: &mut Client<TcpStream>) -> Result<MultiMessage, Box<Error>> {
     use scaii_defs::protos::MultiMessage;
     use prost::Message;
@@ -192,7 +194,6 @@ fn receive_and_decode_proto(client: &mut Client<TcpStream>) -> Result<MultiMessa
     }
 }
 
-
 fn encode_and_send_proto(
     client: &mut Client<TcpStream>,
     packet: &ScaiiPacket,
@@ -205,7 +206,6 @@ fn encode_and_send_proto(
     client.send_message(&message::Message::binary(buf))?;
     Ok(())
 }
-
 
 fn connect(settings: &RpcConfig) -> Result<Client<TcpStream>, Box<Error>> {
     use websocket::sync::Server;
@@ -231,13 +231,13 @@ fn connect(settings: &RpcConfig) -> Result<Client<TcpStream>, Box<Error>> {
         Ok(connection) => connection,
     };
 
-    connection.tcp_stream().set_read_timeout(
-        Some(Duration::new(500, 0)),
-    )?;
+    connection
+        .tcp_stream()
+        .set_read_timeout(Some(Duration::new(500, 0)))?;
 
-    connection.tcp_stream().set_write_timeout(
-        Some(Duration::new(500, 0)),
-    )?;
+    connection
+        .tcp_stream()
+        .set_write_timeout(Some(Duration::new(500, 0)))?;
 
     match connection.accept() {
         Ok(conn) => Ok(conn),
@@ -253,9 +253,9 @@ pub fn get_rpc_config_for_viz(comm: Option<String>, args_vec: Vec<String>) -> pr
         ip: Some("127.0.0.1".to_string()),
         port: Some(6112),
         init_as: protos::InitAs {
-            init_as: Some(protos::init_as::InitAs::Module(
-                ModuleInit { name: String::from("RpcPluginModule") },
-            )),
+            init_as: Some(protos::init_as::InitAs::Module(ModuleInit {
+                name: String::from("viz"),
+            })),
         },
         command: comm,
         command_args: args_vec,

@@ -104,7 +104,10 @@ impl Module for MockRts {
                 }
             }
             Some(scaii_packet::SpecificMsg::Action(protos::Action { .. })) => {
-                println!("MOCKRTS got action Action!");
+                println!(
+                    "MOCKRTS got action Action! step_position is {}, step_count is {}",
+                    self.step_position, self.step_count
+                );
                 if self.step_position < self.step_count {
                     println!("MOCKRTS step due to agent Action!");
                     self.step();
