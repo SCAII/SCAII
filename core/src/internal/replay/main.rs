@@ -164,7 +164,7 @@ impl ReplayManager {
             },
             dest: protos::Endpoint {
                 endpoint: Some(Endpoint::Module(ModuleEndpoint {
-                    name: "RpcPluginModule".to_string(),
+                    name: "viz".to_string(),
                 })),
             },
             specific_msg: Some(SpecificMsg::ReplaySessionConfig(ReplaySessionConfig {
@@ -321,7 +321,7 @@ impl ReplayManager {
             },
             dest: protos::Endpoint {
                 endpoint: Some(Endpoint::Module(ModuleEndpoint {
-                    name: "RpcPluginModule".to_string(),
+                    name: "viz".to_string(),
                 })),
             },
             specific_msg: Some(scaii_packet::SpecificMsg::UserCommand(
@@ -357,7 +357,7 @@ impl ReplayManager {
             },
             dest: protos::Endpoint {
                 endpoint: Some(Endpoint::Module(ModuleEndpoint {
-                    name: "RpcPluginModule".to_string(),
+                    name: "viz".to_string(),
                 })),
             },
             specific_msg: Some(scaii_packet::SpecificMsg::UserCommand(

@@ -54,7 +54,7 @@ impl MockRts {
             },
             dest: protos::Endpoint {
                 endpoint: Some(Endpoint::Module(ModuleEndpoint {
-                    name: "RpcPluginModule".to_string(),
+                    name: "viz".to_string(),
                 })),
             },
             specific_msg: Some(scaii_packet::SpecificMsg::VizInit(VizInit {
@@ -416,7 +416,7 @@ fn wrap_entities_in_viz_packet(step: u32, entity1: Entity, entity2: Entity) -> S
         dest: protos::Endpoint {
             endpoint: Some(Endpoint::Module(ModuleEndpoint {
                 //name: "viz".to_string(),
-                name: "RpcPluginModule".to_string(),
+                name: "viz".to_string(),
             })),
         },
         specific_msg: Some(SpecificMsg::Viz(Viz {

@@ -254,7 +254,7 @@ pub fn get_rpc_config_for_viz(comm: Option<String>, args_vec: Vec<String>) -> pr
         port: Some(6112),
         init_as: protos::InitAs {
             init_as: Some(protos::init_as::InitAs::Module(
-                ModuleInit { name: String::from("RpcPluginModule") },
+                ModuleInit { name: String::from("viz") },
             )),
         },
         command: comm,
