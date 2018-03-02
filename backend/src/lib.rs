@@ -259,7 +259,8 @@ impl<'a, 'b> Backend for Context<'a, 'b> {
     }
 
     fn deserialize(&mut self, buf: &[u8]) -> Result<(), Box<Error>> {
-        self.rts.deserialize(buf.to_vec());
+        let mm = self.rts.deserialize(buf.to_vec());
+        self.awaiting_msgs.push(mm);
 
         Ok(())
     }
@@ -271,9 +272,9 @@ impl<'a, 'b> Backend for Context<'a, 'b> {
     }
 
     fn deserialize_diverging(&mut self, buf: &[u8]) -> Result<(), Box<Error>> {
-        let out = self.deserialize(buf);
+        self.deserialize(buf)?;
         self.diverge();
-        out
+        Ok(())
     }
 }
 

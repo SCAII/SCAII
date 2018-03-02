@@ -8,31 +8,9 @@ use rand::Isaac64Rng;
 
 use engine::resources::{LuaPath, SerializeBytes};
 
-use engine::components::{Attack, Color, FactionId, Hp, Movable, Move,
-                         MovedFlag, Pos, Shape, Speed, Static, UnitTypeTag};
-
 #[derive(SystemData)]
 pub struct DeserializeSystemData<'a> {
-    de: WorldDeserialize<
-        'a,
-        U64Marker,
-        NoError,
-        (
-            Speed,
-            Movable,
-            Static,
-            Move,
-            Pos,
-            MovedFlag,
-            Movable,
-            Hp,
-            Color,
-            Shape,
-            FactionId,
-            Attack,
-            UnitTypeTag,
-        ),
-    >,
+    de: WorldDeserialize<'a, U64Marker, NoError, super::SerComponents>,
 
     rng: FetchMut<'a, Isaac64Rng>,
     lua_path: FetchMut<'a, LuaPath>,

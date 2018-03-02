@@ -40,7 +40,7 @@ impl<'a> System<'a> for MoveSystem {
             &*sys_data.ids,
         ).join()
         {
-            sys_data.moved.insert(id, MovedFlag);
+            sys_data.moved.insert(id, MovedFlag(0));
 
             match *moves {
                 // For borrow reasons, we need to defer targeted moves until later

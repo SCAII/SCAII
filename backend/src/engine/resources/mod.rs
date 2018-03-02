@@ -186,9 +186,9 @@ impl UnitType {
                 .marked::<U64Marker>();
 
             if self.movable {
-                entity.with(Movable).with(Speed(self.speed))
+                entity.with(Movable(0)).with(Speed(self.speed))
             } else {
-                entity.with(Static)
+                entity.with(Static(0))
             }
         }.build();
 

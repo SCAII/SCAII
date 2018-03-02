@@ -41,5 +41,5 @@ glob = "0.2.11"
 websocket = "0.20"
 
 [patch.crates-io]
-rand = {version="0.4", git = 'https://github.com/rust-lang-nursery/rand', features=["serde-1"]}
+rand = {version="0.4", git = 'https://github.com/rust-lang-nursery/rand', features=["serde-1"], rev="1591eadd954"}
 specs = { version="0.10", features=["serde"], git="https://github.com/LinearZoetrope/specs"}
