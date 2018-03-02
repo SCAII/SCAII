@@ -9,7 +9,7 @@ fn main() {
     // Make our protobuf file a reason to recompile
     // (See http://doc.crates.io/build-script.html for more info
     // on outputs)
-    for entry in glob("../common_protos/*.rs").expect("Could not parse glob pattern") {
+    for entry in glob("../common_protos/*.proto").expect("Could not parse glob pattern") {
         if let Ok(path) = entry {
             println!("cargo:rerun-if-changed={}", path.display());
         }
