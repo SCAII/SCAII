@@ -149,7 +149,7 @@ impl RecorderTester {
             },
             specific_msg: Some(scaii_packet::SpecificMsg::Config(cfg)),
         };
-        //vec.push(cfg_packet);
+        vec.push(cfg_packet);
         ScaiiPacket {
             src: protos::Endpoint {
                 endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
@@ -191,16 +191,6 @@ fn test_recorder() {
     let rc_recorder_tester_message_queue = Rc::new(RefCell::new(recorder_tester_message_queue));
 
     {
-        // <<<<<<< HEAD
-        //         environment
-        //             .router_mut()
-        //             .register_agent(Box::new(rc_recorder_tester_message_queue.clone()));
-        //         debug_assert!(environment.router().agent().is_some());
-        //     }
-        //     let mut recorder_tester = RecorderTester {
-        //         incoming_message_queue: rc_recorder_tester_message_queue,
-        //         env: environment_unused,
-        // =======
         environment.router_mut().register_module(
             "recorder_tester".to_string(),
             Box::new(rc_recorder_tester_message_queue.clone()),
@@ -210,7 +200,6 @@ fn test_recorder() {
     let mut recorder_tester = RecorderTester {
         incoming_message_queue: rc_recorder_tester_message_queue,
         env: environment,
-        //>>>>>>> origin/webserver
     };
     let result = recorder_tester.run();
     match result {
@@ -220,12 +209,6 @@ fn test_recorder() {
         }
     }
 }
-
-//pub enum ReplayAction {
-//    Header(ReplayHeader),
-//    Delta(GameAction),
-//    Keyframe(SerializationInfo,GameAction),
-//}
 
 fn packet_source_is_agent(pkt: &ScaiiPacket) -> bool {
     if let Some(Endpoint::Agent(AgentEndpoint {})) = pkt.src.endpoint {
@@ -249,19 +232,6 @@ fn spec_msg_is_recorder_config(pkt: &ScaiiPacket) -> bool {
     false
 }
 
-// <<<<<<< HEAD
-// fn cfg_payload_is_agentcfg(pkt: &ScaiiPacket) -> bool {
-//     match pkt.specific_msg {
-//         Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig {
-//             pkts: ref pkt_vec,
-//             overwrite: _,
-//             filepath: _,
-//         })) => {
-// =======
-// fn cfg_payload_is_backendcfg(pkt: &ScaiiPacket) -> bool {
-//     match pkt.specific_msg {
-//         Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig { pkts: ref pkt_vec })) => {
-// >>>>>>> origin/webserver
 fn cfg_payload_is_backendcfg(pkt: &ScaiiPacket) -> bool {
     match pkt.specific_msg {
         Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig {
@@ -291,15 +261,8 @@ fn cfg_payload_is_backendcfg(pkt: &ScaiiPacket) -> bool {
 fn verify_game_action_step(replay_action_result: &Result<ReplayAction, Box<ErrorKind>>) -> bool {
     match replay_action_result {
         &Ok(ref replay_action) => match replay_action {
-            &ReplayAction::Delta(GameAction::Step) => true,
-            _ => {
-                assert!(
-                    false,
-                    "ERROR = expected Delta(GameAction::Step), got {:?}",
-                    replay_action
-                );
-                false
-            }
+            &ReplayAction::Delta(_) => true,
+            _ => false,
         },
         &Err(ref e) => {
             assert!(false, "ERROR = {}", e.description().clone());
@@ -318,7 +281,12 @@ fn verify_key_frame(replay_action: ReplayAction, replay_vec: &mut Vec<ReplayActi
                         data: ref spsr_data,
                     },
             },
-            GameAction::DecisionPoint(SerializedProtosAction { data: ref spa_data }),
+            ActionWrapper {
+                has_explanation: ref has_explanation_value,
+                step: _,
+                title: _,
+                serialized_action: ref action_data_vec,
+            },
         ) => {
             let endpoint = protos::Endpoint::decode(spe_data);
             match endpoint {
@@ -353,7 +321,8 @@ fn verify_key_frame(replay_action: ReplayAction, replay_vec: &mut Vec<ReplayActi
                     ser_response
                 ),
             }
-            let protos_action = protos::Action::decode(spa_data);
+            assert!(has_explanation_value == &false);
+            let protos_action = protos::Action::decode(action_data_vec);
             match protos_action {
                 Ok(protos::Action {
                     discrete_actions: i32vec,
@@ -442,8 +411,6 @@ fn verify_persisted_file(path: &Path) -> Result<(), Box<Error>> {
     }
     let replay_action_1 =
         deserialize_from::<BufReader<File>, ReplayAction, Infinite>(&mut reader, Infinite);
-    // deser SerializedProtosSerializationResponse
-    // deser SerializedProtosAction
     let _result = verify_key_frame(replay_action_1.unwrap().clone(), &mut replay_vec);
 
     let replay_action_2 =
@@ -599,7 +566,7 @@ impl MockRts {
 
     fn send_action(&mut self) {
         println!("Mock RTS sending action pkt...");
-        let scaii_packet = self.create_action_pkt();
+        let scaii_packet = self.create_record_step_action_pkt();
         self.outbound_messages.push(MultiMessage {
             packets: vec![scaii_packet],
         });
@@ -624,7 +591,7 @@ impl MockRts {
         }
     }
 
-    fn create_action_pkt(&mut self) -> ScaiiPacket {
+    fn create_record_step_action_pkt(&mut self) -> ScaiiPacket {
         let mut actions: Vec<i32> = Vec::new();
         actions.push(1);
         ScaiiPacket {
