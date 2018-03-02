@@ -16,6 +16,7 @@ goog.require('proto.scaii.common.CoreEndpoint');
 goog.require('proto.scaii.common.Endpoint');
 goog.require('proto.scaii.common.Entity');
 goog.require('proto.scaii.common.Error');
+goog.require('proto.scaii.common.ExplanationPoint');
 goog.require('proto.scaii.common.InitAs');
 goog.require('proto.scaii.common.ModuleCfg');
 goog.require('proto.scaii.common.ModuleEndpoint');
@@ -149,6 +150,13 @@ function adjustZoomBoxPosition(x,y){
   
 }
 
+function handleReplaySessionConfig(rsc) {
+  if (rsc.hasStepCount()) {
+    maxStep = rsc.getStepCount() - 1;
+  }
+  explanations = rsc.getExplanationsList();
+  console.log("explanation count is " + explanations.length);
+}
 function handleVizInit(vizInit) {
   clearGameBoards();
   //gameboard_ctx.fillText("Received VizInit!", 10, 50);
@@ -156,9 +164,6 @@ function handleVizInit(vizInit) {
     if (vizInit.getTestMode()) {
       testingMode = true;
     }
-  }
-  if (vizInit.hasStepCount()) {
-    maxStep = vizInit.getStepCount() - 1;
   }
   if (vizInit.hasGameboardWidth()) {
     gameboardWidth = vizInit.getGameboardWidth();
@@ -174,7 +179,6 @@ function handleVizInit(vizInit) {
 	gameboard_canvas.height = gameboardHeight;
   }
   gameboard_zoom_canvas.height = gameboard_canvas.height;
-  explanations = vizInit.getExplanationsList();
   //renderTimeline(maxStep);
 }
 function handleViz(vizData){
@@ -516,7 +520,13 @@ var connect = function (dots, attemptCount) {
 	  sessionState = "inProgress";
       var s = message.data;
       var sPacket = proto.scaii.common.ScaiiPacket.deserializeBinary(s);
-      if (sPacket.hasVizInit()) {
+	  if (sPacket.hasReplaySessionConfig()) {
+		var config = sPacket.getReplaySessionConfig();
+		handleReplaySessionConfig(config);
+	    var mm = new proto.scaii.common.MultiMessage;
+	    dealer.send(mm.serializeBinary());
+	  }
+      else if (sPacket.hasVizInit()) {
         var vizInit = sPacket.getVizInit();
         handleVizInit(vizInit);
 		controlsManager.gameStarted();

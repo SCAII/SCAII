@@ -13,44 +13,42 @@ use scaii_core::scaii_config;
 pub fn launch_webserver() {
     let python3_command_result = get_python3_command();
     match python3_command_result {
-        Some(python_command) => {
-            match python_command.as_ref() {
-                "python" => {
-                    let cd_result = change_to_viz_dir();
-                    match cd_result {
-                        Ok(_) => {
-                            launch_webserver_using_command("python");
-                        }
-                        Err(error) => {
-                            println!(
-                                "failed to cd into viz directory to launch webserver... {:?}",
-                                error.description()
-                            );
-                            process::exit(0);
-                        }
+        Some(python_command) => match python_command.as_ref() {
+            "python" => {
+                let cd_result = change_to_viz_dir();
+                match cd_result {
+                    Ok(_) => {
+                        launch_webserver_using_command("python");
                     }
-                }
-                "python3" => {
-                    let cd_result = change_to_viz_dir();
-                    match cd_result {
-                        Ok(_) => {
-                            launch_webserver_using_command("python3");
-                        }
-                        Err(error) => {
-                            println!(
-                                "failed to cd into viz directory to launch webserver... {:?}",
-                                error.description()
-                            );
-                            process::exit(0);
-                        }
+                    Err(error) => {
+                        println!(
+                            "failed to cd into viz directory to launch webserver... {:?}",
+                            error.description()
+                        );
+                        process::exit(0);
                     }
-                }
-                _ => {
-                    println!("ERROR - Python3 is required to run SCAII.");
-                    process::exit(0);
                 }
             }
-        }
+            "python3" => {
+                let cd_result = change_to_viz_dir();
+                match cd_result {
+                    Ok(_) => {
+                        launch_webserver_using_command("python3");
+                    }
+                    Err(error) => {
+                        println!(
+                            "failed to cd into viz directory to launch webserver... {:?}",
+                            error.description()
+                        );
+                        process::exit(0);
+                    }
+                }
+            }
+            _ => {
+                println!("ERROR - Python3 is required to run SCAII.");
+                process::exit(0);
+            }
+        },
         _ => {
             println!("ERROR - Python3 is required to run SCAII.");
             process::exit(0);
@@ -71,12 +69,10 @@ fn get_python3_command() -> Option<String> {
 fn is_python3_invoked_as_python() -> bool {
     let version_option = get_python_version("python".to_string());
     match version_option {
-        Some(version) => {
-            match version.as_ref() {
-                "3" => true,
-                _ => false,
-            }
-        }
+        Some(version) => match version.as_ref() {
+            "3" => true,
+            _ => false,
+        },
         _ => false,
     }
 }
@@ -84,12 +80,10 @@ fn is_python3_invoked_as_python() -> bool {
 fn is_python3_invoked_as_python3() -> bool {
     let version_option = get_python_version("python3".to_string());
     match version_option {
-        Some(version) => {
-            match version.as_ref() {
-                "3" => true,
-                _ => false,
-            }
-        }
+        Some(version) => match version.as_ref() {
+            "3" => true,
+            _ => false,
+        },
         _ => false,
     }
 }
@@ -100,7 +94,6 @@ fn get_python_version(python_command: String) -> Option<String> {
     match command_result {
         Ok(result_string) => {
             if result_string.starts_with("Python 3") {
-                println!("python 3 detected");
                 Some("3".to_string())
             } else {
                 println!("no python3 detected");
@@ -115,7 +108,6 @@ fn change_to_viz_dir() -> Result<(), Box<Error>> {
     let mut root = util::get_scaii_root()?;
     root.push("viz");
     if env::set_current_dir(&root.as_path()).is_ok() {
-        println!("current dir is now {:?}", env::current_dir()?);
         Ok(())
     } else {
         Err(Box::new(ScaiiError::new(&format!(

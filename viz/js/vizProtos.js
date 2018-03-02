@@ -1855,7 +1855,8 @@ proto.scaii.common.BackendCfg.prototype.toObject = function(opt_includeInstance)
  */
 proto.scaii.common.BackendCfg.toObject = function(includeInstance, msg) {
   var f, obj = {
-    cfgMsg: msg.getCfgMsg_asB64()
+    cfgMsg: msg.getCfgMsg_asB64(),
+    isReplayMode: jspb.Message.getField(msg, 2)
   };
 
   if (includeInstance) {
@@ -1896,6 +1897,10 @@ proto.scaii.common.BackendCfg.deserializeBinaryFromReader = function(msg, reader
       var value = /** @type {!Uint8Array} */ (reader.readBytes());
       msg.setCfgMsg(value);
       break;
+    case 2:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIsReplayMode(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1929,6 +1934,13 @@ proto.scaii.common.BackendCfg.serializeBinaryToWriter = function(message, writer
   if (f != null) {
     writer.writeBytes(
       1,
+      f
+    );
+  }
+  f = /** @type {boolean} */ (jspb.Message.getField(message, 2));
+  if (f != null) {
+    writer.writeBool(
+      2,
       f
     );
   }
@@ -1985,6 +1997,37 @@ proto.scaii.common.BackendCfg.prototype.clearCfgMsg = function() {
  */
 proto.scaii.common.BackendCfg.prototype.hasCfgMsg = function() {
   return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * required bool is_replay_mode = 2;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.scaii.common.BackendCfg.prototype.getIsReplayMode = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 2, false));
+};
+
+
+/** @param {boolean} value */
+proto.scaii.common.BackendCfg.prototype.setIsReplayMode = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+proto.scaii.common.BackendCfg.prototype.clearIsReplayMode = function() {
+  jspb.Message.setField(this, 2, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.BackendCfg.prototype.hasIsReplayMode = function() {
+  return jspb.Message.getField(this, 2) != null;
 };
 
 
@@ -3490,7 +3533,7 @@ proto.scaii.common.VizInit.deserializeBinaryFromReader = function(msg, reader) {
       msg.setTestMode(value);
       break;
     case 2:
-      var value = /** @type {number} */ (reader.readUint32());
+      var value = /** @type {number} */ (reader.readInt64());
       msg.setStepCount(value);
       break;
     case 3:
@@ -3544,7 +3587,7 @@ proto.scaii.common.VizInit.serializeBinaryToWriter = function(message, writer) {
   }
   f = /** @type {number} */ (jspb.Message.getField(message, 2));
   if (f != null) {
-    writer.writeUint32(
+    writer.writeInt64(
       2,
       f
     );
@@ -3606,7 +3649,7 @@ proto.scaii.common.VizInit.prototype.hasTestMode = function() {
 
 
 /**
- * optional uint32 step_count = 2;
+ * optional int64 step_count = 2;
  * @return {number}
  */
 proto.scaii.common.VizInit.prototype.getStepCount = function() {
@@ -11963,7 +12006,9 @@ proto.scaii.common.RecorderConfig.prototype.toObject = function(opt_includeInsta
 proto.scaii.common.RecorderConfig.toObject = function(includeInstance, msg) {
   var f, obj = {
     pktsList: jspb.Message.toObjectList(msg.getPktsList(),
-    proto.scaii.common.ScaiiPacket.toObject, includeInstance)
+    proto.scaii.common.ScaiiPacket.toObject, includeInstance),
+    overwrite: jspb.Message.getField(msg, 2),
+    filepath: jspb.Message.getField(msg, 3)
   };
 
   if (includeInstance) {
@@ -12005,6 +12050,14 @@ proto.scaii.common.RecorderConfig.deserializeBinaryFromReader = function(msg, re
       reader.readMessage(value,proto.scaii.common.ScaiiPacket.deserializeBinaryFromReader);
       msg.addPkts(value);
       break;
+    case 2:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setOverwrite(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setFilepath(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -12042,6 +12095,20 @@ proto.scaii.common.RecorderConfig.serializeBinaryToWriter = function(message, wr
       proto.scaii.common.ScaiiPacket.serializeBinaryToWriter
     );
   }
+  f = /** @type {boolean} */ (jspb.Message.getField(message, 2));
+  if (f != null) {
+    writer.writeBool(
+      2,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 3));
+  if (f != null) {
+    writer.writeString(
+      3,
+      f
+    );
+  }
 };
 
 
@@ -12073,6 +12140,66 @@ proto.scaii.common.RecorderConfig.prototype.addPkts = function(opt_value, opt_in
 
 proto.scaii.common.RecorderConfig.prototype.clearPktsList = function() {
   this.setPktsList([]);
+};
+
+
+/**
+ * required bool overwrite = 2;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.scaii.common.RecorderConfig.prototype.getOverwrite = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 2, false));
+};
+
+
+/** @param {boolean} value */
+proto.scaii.common.RecorderConfig.prototype.setOverwrite = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+proto.scaii.common.RecorderConfig.prototype.clearOverwrite = function() {
+  jspb.Message.setField(this, 2, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.RecorderConfig.prototype.hasOverwrite = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional string filepath = 3;
+ * @return {string}
+ */
+proto.scaii.common.RecorderConfig.prototype.getFilepath = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.RecorderConfig.prototype.setFilepath = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+proto.scaii.common.RecorderConfig.prototype.clearFilepath = function() {
+  jspb.Message.setField(this, 3, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.RecorderConfig.prototype.hasFilepath = function() {
+  return jspb.Message.getField(this, 3) != null;
 };
 
 
@@ -12204,12 +12331,19 @@ proto.scaii.common.GameComplete.serializeBinaryToWriter = function(message, writ
  * @constructor
  */
 proto.scaii.common.ReplaySessionConfig = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.scaii.common.ReplaySessionConfig.repeatedFields_, null);
 };
 goog.inherits(proto.scaii.common.ReplaySessionConfig, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   proto.scaii.common.ReplaySessionConfig.displayName = 'proto.scaii.common.ReplaySessionConfig';
 }
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.scaii.common.ReplaySessionConfig.repeatedFields_ = [2];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -12239,7 +12373,9 @@ proto.scaii.common.ReplaySessionConfig.prototype.toObject = function(opt_include
  */
 proto.scaii.common.ReplaySessionConfig.toObject = function(includeInstance, msg) {
   var f, obj = {
-    stepCount: jspb.Message.getField(msg, 1)
+    stepCount: jspb.Message.getField(msg, 1),
+    explanationsList: jspb.Message.toObjectList(msg.getExplanationsList(),
+    proto.scaii.common.ExplanationPoint.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -12280,6 +12416,11 @@ proto.scaii.common.ReplaySessionConfig.deserializeBinaryFromReader = function(ms
       var value = /** @type {number} */ (reader.readInt64());
       msg.setStepCount(value);
       break;
+    case 2:
+      var value = new proto.scaii.common.ExplanationPoint;
+      reader.readMessage(value,proto.scaii.common.ExplanationPoint.deserializeBinaryFromReader);
+      msg.addExplanations(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -12316,6 +12457,14 @@ proto.scaii.common.ReplaySessionConfig.serializeBinaryToWriter = function(messag
       f
     );
   }
+  f = message.getExplanationsList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      2,
+      f,
+      proto.scaii.common.ExplanationPoint.serializeBinaryToWriter
+    );
+  }
 };
 
 
@@ -12345,6 +12494,37 @@ proto.scaii.common.ReplaySessionConfig.prototype.clearStepCount = function() {
  */
 proto.scaii.common.ReplaySessionConfig.prototype.hasStepCount = function() {
   return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * repeated ExplanationPoint explanations = 2;
+ * @return {!Array.<!proto.scaii.common.ExplanationPoint>}
+ */
+proto.scaii.common.ReplaySessionConfig.prototype.getExplanationsList = function() {
+  return /** @type{!Array.<!proto.scaii.common.ExplanationPoint>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.scaii.common.ExplanationPoint, 2));
+};
+
+
+/** @param {!Array.<!proto.scaii.common.ExplanationPoint>} value */
+proto.scaii.common.ReplaySessionConfig.prototype.setExplanationsList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 2, value);
+};
+
+
+/**
+ * @param {!proto.scaii.common.ExplanationPoint=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.scaii.common.ExplanationPoint}
+ */
+proto.scaii.common.ReplaySessionConfig.prototype.addExplanations = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 2, opt_value, proto.scaii.common.ExplanationPoint, opt_index);
+};
+
+
+proto.scaii.common.ReplaySessionConfig.prototype.clearExplanationsList = function() {
+  this.setExplanationsList([]);
 };
 
 

@@ -11,7 +11,9 @@ pub struct ScaiiError {
 
 impl ScaiiError {
     pub fn new(msg: &str) -> ScaiiError {
-        ScaiiError { details: msg.to_string() }
+        ScaiiError {
+            details: msg.to_string(),
+        }
     }
 }
 
@@ -39,13 +41,11 @@ fn run_command_platform(
     for arg in args.iter() {
         c.arg(arg);
     }
-    println!("...running command {:?}", c);
-    let output = c.output().expect(&String::as_str(
-        &format!("failed to launch command {}", command),
-    ));
+    let output = c.output().expect(&String::as_str(&format!(
+        "failed to launch command {}",
+        command
+    )));
     if output.status.success() {
-        //println!("output.stdout {:?}", output.stdout);
-        //println!("output.stderr {:?}", output.stderr);
         let mut result = String::from_utf8(output.stdout);
         if where_to_read_output == "stderr" {
             result = String::from_utf8(output.stderr);
@@ -57,9 +57,9 @@ fn run_command_platform(
             ))),
         }
     } else {
-        Err(Box::new(
-            ScaiiError::new(&String::from_utf8_lossy(&output.stderr)),
-        ))
+        Err(Box::new(ScaiiError::new(&String::from_utf8_lossy(
+            &output.stderr,
+        ))))
     }
 }
 
@@ -75,10 +75,10 @@ fn run_command_platform(
     for arg in args.iter() {
         c.arg(arg);
     }
-    println!("...running command {:?}", c);
-    let output = c.output().expect(&String::as_str(
-        &format!("failed to launch command {}", command),
-    ));
+    let output = c.output().expect(&String::as_str(&format!(
+        "failed to launch command {}",
+        command
+    )));
     if output.status.success() {
         let mut result = String::from_utf8(output.stdout);
         if where_to_read_output == "stderr" {
@@ -91,9 +91,9 @@ fn run_command_platform(
             ))),
         }
     } else {
-        Err(Box::new(
-            ScaiiError::new(&String::from_utf8_lossy(&output.stderr)),
-        ))
+        Err(Box::new(ScaiiError::new(&String::from_utf8_lossy(
+            &output.stderr,
+        ))))
     }
 }
 
@@ -112,11 +112,10 @@ fn run_command_platform(
     for arg in args.iter() {
         c.arg(arg);
     }
-    println!("...in dir...{:?}", env::current_dir());
-    println!("...running command {:?}", c);
-    let output = c.output().expect(&String::as_str(
-        &format!("failed to launch command {}", command),
-    ));
+    let output = c.output().expect(&String::as_str(&format!(
+        "failed to launch command {}",
+        command
+    )));
     if output.status.success() {
         let mut result = String::from_utf8(output.stdout);
         if where_to_read_output == "stderr" {
@@ -129,9 +128,9 @@ fn run_command_platform(
             ))),
         }
     } else {
-        Err(Box::new(
-            ScaiiError::new(&String::from_utf8_lossy(&output.stderr)),
-        ))
+        Err(Box::new(ScaiiError::new(&String::from_utf8_lossy(
+            &output.stderr,
+        ))))
     }
 }
 
@@ -198,20 +197,16 @@ fn is_dir_scaii_root(dir: &PathBuf) -> bool {
     core_dir_exists && common_protos_dir_exists
 }
 
-
-
 #[cfg(target_os = "macos")]
 pub fn get_default_backend() -> Result<String, Box<Error>> {
-     //$HOME/.scaii/backends/bin/sky_rts.dll
+    //$HOME/.scaii/backends/bin/sky_rts.dll
     use std::env;
 
     let mut path_option = env::home_dir();
     match path_option {
-        None => {
-            Err(Box::new(ScaiiError::new(&format!(
-                "ERROR - Could not find default backend because could not determine home directory."
-            ))))
-        }
+        None => Err(Box::new(ScaiiError::new(&format!(
+            "ERROR - Could not find default backend because could not determine home directory."
+        )))),
         Some(ref mut path_buf) => {
             path_buf.push(".scaii".to_string());
             path_buf.push("backends".to_string());
@@ -228,11 +223,9 @@ pub fn get_default_backend() -> Result<String, Box<Error>> {
 
     let mut path_option = env::home_dir();
     match path_option {
-        None => {
-            Err(Box::new(ScaiiError::new(&format!(
-                "ERROR - Could not find default backend because could not determine home directory."
-            ))))
-        }
+        None => Err(Box::new(ScaiiError::new(&format!(
+            "ERROR - Could not find default backend because could not determine home directory."
+        )))),
         Some(ref mut path_buf) => {
             path_buf.push(".scaii".to_string());
             path_buf.push("backends".to_string());
@@ -244,7 +237,7 @@ pub fn get_default_backend() -> Result<String, Box<Error>> {
 }
 #[cfg(target_os = "linux")]
 pub fn get_default_backend() -> Result<String, Box<Error>> {
-    Err(Box::new(ScaiiError::new(
-        &format!("linux replay not yet implemented"),
-    )))
+    Err(Box::new(ScaiiError::new(&format!(
+        "linux replay not yet implemented"
+    ))))
 }
