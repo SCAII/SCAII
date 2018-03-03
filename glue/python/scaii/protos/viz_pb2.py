@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='viz.proto',
   package='scaii.common',
   syntax='proto2',
-  serialized_pb=_b('\n\tviz.proto\x12\x0cscaii.common\"\x99\x01\n\x07VizInit\x12\x11\n\ttest_mode\x18\x01 \x01(\x08\x12\x12\n\nstep_count\x18\x02 \x01(\x03\x12\x17\n\x0fgameboard_width\x18\x03 \x01(\r\x12\x18\n\x10gameboard_height\x18\x04 \x01(\r\x12\x34\n\x0c\x65xplanations\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ExplanationPoint\"u\n\x10\x45xplanationPoint\x12\x0c\n\x04step\x18\x01 \x01(\r\x12\n\n\x02id\x18\x02 \x01(\r\x12\r\n\x05title\x18\x03 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x04 \x01(\t\x12#\n\x06layers\x18\x05 \x03(\x0b\x32\x13.scaii.common.Layer\"C\n\x05Layer\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05\x63\x65lls\x18\x02 \x03(\x01\x12\r\n\x05width\x18\x03 \x01(\r\x12\x0e\n\x06length\x18\x04 \x01(\r\"c\n\x03Viz\x12&\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\x14.scaii.common.Entity\x12&\n\x05\x63hart\x18\x02 \x01(\x0b\x32\x17.scaii.common.ChartInfo\x12\x0c\n\x04step\x18\x03 \x01(\r\"\xb0\x01\n\tChartInfo\x12\x13\n\x0b\x63hart_title\x18\x01 \x01(\t\x12\x14\n\x0ch_axis_title\x18\x02 \x01(\t\x12\x14\n\x0cv_axis_title\x18\x03 \x01(\t\x12+\n\x07\x61\x63tions\x18\x04 \x01(\x0b\x32\x1a.scaii.common.ChartActions\x12\x35\n\rvalue_vectors\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ChartValueVector\";\n\x0c\x43hartActions\x12\x15\n\ractions_label\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63tion_names\x18\x02 \x03(\t\"8\n\x10\x43hartValueVector\x12\r\n\x05label\x18\x01 \x01(\t\x12\x15\n\raction_values\x18\x02 \x03(\x01\"i\n\x06\x45ntity\x12\n\n\x02id\x18\x01 \x02(\x04\x12\x1e\n\x03pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12#\n\x06shapes\x18\x03 \x03(\x0b\x32\x13.scaii.common.Shape\x12\x0e\n\x06\x64\x65lete\x18\x04 \x02(\x08\"\x1b\n\x03Pos\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\"3\n\x05\x43olor\x12\t\n\x01r\x18\x01 \x02(\r\x12\t\n\x01g\x18\x02 \x02(\r\x12\t\n\x01\x62\x18\x03 \x02(\r\x12\t\n\x01\x61\x18\x04 \x02(\r\"\x1c\n\x08Triangle\x12\x10\n\x08\x62\x61se_len\x18\x01 \x01(\x01\"%\n\x04Rect\x12\r\n\x05width\x18\x01 \x01(\x01\x12\x0e\n\x06height\x18\x02 \x01(\x01\"\x88\x02\n\x05Shape\x12\n\n\x02id\x18\x01 \x02(\x04\x12\'\n\x0crelative_pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12\"\n\x05\x63olor\x18\x03 \x01(\x0b\x32\x13.scaii.common.Color\x12\x10\n\x08rotation\x18\x04 \x02(\x01\x12 \n\x04rect\x18\x14 \x01(\x0b\x32\x12.scaii.common.Rect\x12(\n\x08triangle\x18\x15 \x01(\x0b\x32\x16.scaii.common.Triangle\x12\x0b\n\x03tag\x18\x16 \x01(\t\x12+\n\x0egradient_color\x18\x17 \x01(\x0b\x32\x13.scaii.common.Color\x12\x0e\n\x06\x64\x65lete\x18( \x02(\x08')
+  serialized_pb=_b('\n\tviz.proto\x12\x0cscaii.common\"\x99\x01\n\x07VizInit\x12\x11\n\ttest_mode\x18\x01 \x01(\x08\x12\x12\n\nstep_count\x18\x02 \x01(\x03\x12\x17\n\x0fgameboard_width\x18\x03 \x01(\r\x12\x18\n\x10gameboard_height\x18\x04 \x01(\r\x12\x34\n\x0c\x65xplanations\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ExplanationPoint\"u\n\x10\x45xplanationPoint\x12\x0c\n\x04step\x18\x01 \x01(\r\x12\n\n\x02id\x18\x02 \x01(\r\x12\r\n\x05title\x18\x03 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x04 \x01(\t\x12#\n\x06layers\x18\x05 \x03(\x0b\x32\x13.scaii.common.Layer\"C\n\x05Layer\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05\x63\x65lls\x18\x02 \x03(\x01\x12\r\n\x05width\x18\x03 \x01(\r\x12\x0e\n\x06length\x18\x04 \x01(\r\"-\n\x03Viz\x12&\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\x14.scaii.common.Entity\"\xb0\x01\n\tChartInfo\x12\x13\n\x0b\x63hart_title\x18\x01 \x01(\t\x12\x14\n\x0ch_axis_title\x18\x02 \x01(\t\x12\x14\n\x0cv_axis_title\x18\x03 \x01(\t\x12+\n\x07\x61\x63tions\x18\x04 \x01(\x0b\x32\x1a.scaii.common.ChartActions\x12\x35\n\rvalue_vectors\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ChartValueVector\";\n\x0c\x43hartActions\x12\x15\n\ractions_label\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63tion_names\x18\x02 \x03(\t\"8\n\x10\x43hartValueVector\x12\r\n\x05label\x18\x01 \x01(\t\x12\x15\n\raction_values\x18\x02 \x03(\x01\"i\n\x06\x45ntity\x12\n\n\x02id\x18\x01 \x02(\x04\x12\x1e\n\x03pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12#\n\x06shapes\x18\x03 \x03(\x0b\x32\x13.scaii.common.Shape\x12\x0e\n\x06\x64\x65lete\x18\x04 \x02(\x08\"\x1b\n\x03Pos\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\"3\n\x05\x43olor\x12\t\n\x01r\x18\x01 \x02(\r\x12\t\n\x01g\x18\x02 \x02(\r\x12\t\n\x01\x62\x18\x03 \x02(\r\x12\t\n\x01\x61\x18\x04 \x02(\r\"\x1c\n\x08Triangle\x12\x10\n\x08\x62\x61se_len\x18\x01 \x01(\x01\"%\n\x04Rect\x12\r\n\x05width\x18\x01 \x01(\x01\x12\x0e\n\x06height\x18\x02 \x01(\x01\"\x88\x02\n\x05Shape\x12\n\n\x02id\x18\x01 \x02(\x04\x12\'\n\x0crelative_pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12\"\n\x05\x63olor\x18\x03 \x01(\x0b\x32\x13.scaii.common.Color\x12\x10\n\x08rotation\x18\x04 \x02(\x01\x12 \n\x04rect\x18\x14 \x01(\x0b\x32\x12.scaii.common.Rect\x12(\n\x08triangle\x18\x15 \x01(\x0b\x32\x16.scaii.common.Triangle\x12\x0b\n\x03tag\x18\x16 \x01(\t\x12+\n\x0egradient_color\x18\x17 \x01(\x0b\x32\x13.scaii.common.Color\x12\x0e\n\x06\x64\x65lete\x18( \x02(\x08')
 )
 
 
@@ -209,20 +209,6 @@ _VIZ = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
-    _descriptor.FieldDescriptor(
-      name='chart', full_name='scaii.common.Viz.chart', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='step', full_name='scaii.common.Viz.step', index=2,
-      number=3, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
   ],
   extensions=[
   ],
@@ -236,7 +222,7 @@ _VIZ = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=371,
-  serialized_end=470,
+  serialized_end=416,
 )
 
 
@@ -294,8 +280,8 @@ _CHARTINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=473,
-  serialized_end=649,
+  serialized_start=419,
+  serialized_end=595,
 )
 
 
@@ -332,8 +318,8 @@ _CHARTACTIONS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=651,
-  serialized_end=710,
+  serialized_start=597,
+  serialized_end=656,
 )
 
 
@@ -370,8 +356,8 @@ _CHARTVALUEVECTOR = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=712,
-  serialized_end=768,
+  serialized_start=658,
+  serialized_end=714,
 )
 
 
@@ -422,8 +408,8 @@ _ENTITY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=770,
-  serialized_end=875,
+  serialized_start=716,
+  serialized_end=821,
 )
 
 
@@ -460,8 +446,8 @@ _POS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=877,
-  serialized_end=904,
+  serialized_start=823,
+  serialized_end=850,
 )
 
 
@@ -512,8 +498,8 @@ _COLOR = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=906,
-  serialized_end=957,
+  serialized_start=852,
+  serialized_end=903,
 )
 
 
@@ -543,8 +529,8 @@ _TRIANGLE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=959,
-  serialized_end=987,
+  serialized_start=905,
+  serialized_end=933,
 )
 
 
@@ -581,8 +567,8 @@ _RECT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=989,
-  serialized_end=1026,
+  serialized_start=935,
+  serialized_end=972,
 )
 
 
@@ -668,14 +654,13 @@ _SHAPE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1029,
-  serialized_end=1293,
+  serialized_start=975,
+  serialized_end=1239,
 )
 
 _VIZINIT.fields_by_name['explanations'].message_type = _EXPLANATIONPOINT
 _EXPLANATIONPOINT.fields_by_name['layers'].message_type = _LAYER
 _VIZ.fields_by_name['entities'].message_type = _ENTITY
-_VIZ.fields_by_name['chart'].message_type = _CHARTINFO
 _CHARTINFO.fields_by_name['actions'].message_type = _CHARTACTIONS
 _CHARTINFO.fields_by_name['value_vectors'].message_type = _CHARTVALUEVECTOR
 _ENTITY.fields_by_name['pos'].message_type = _POS

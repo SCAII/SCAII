@@ -48,6 +48,8 @@ message ScaiiPacket {
 		Record record = 20;
 		bool replay_mode = 21;
 		EnvDescription env_desc = 22;
+		ExplanationDetails expl_details = 23;
+		ReplayControl replay_control = 24;
 		Other other = 29;
 	}
 
@@ -287,8 +289,9 @@ message GameComplete {}
 
 message ReplaySessionConfig {
 	required int64 step_count = 1;
-	repeated ExplanationPoint explanations = 2;
-
+	repeated uint32 explanation_steps = 2;
+	repeated string explanation_titles= 3;
+	repeated string chart_titles= 4;
 }
 
 // Configures a module (e.g. backend) to begin recording, logging how often 
@@ -299,4 +302,23 @@ message ReplaySessionConfig {
 // backend has some facility meant to take control of the game for some time.
 message Record {
 	required uint32 keyframe_interval = 1;
+}
+
+//
+// Replay will, upon request, forward ExplanationDetails for a particular step
+// the UI knows which steps have that information from ReplaySessionConfig's info
+//
+message ExplanationDetails {
+	optional uint32 step = 1;
+    optional ExplanationPoint expl_point = 2;
+	optional ChartInfo chart = 3;
+}
+
+//
+//  ReplayControl is a messaging channel for Replay to send control info out.
+//  ex. Replay needs to tell Viz to reset it's position so it will send a command 
+//  "set_step_position 23"
+//
+message ReplayControl {
+	repeated string command = 1;
 }

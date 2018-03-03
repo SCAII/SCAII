@@ -29,6 +29,7 @@ goog.provide('proto.scaii.common.Endpoint');
 goog.provide('proto.scaii.common.Entity');
 goog.provide('proto.scaii.common.EnvDescription');
 goog.provide('proto.scaii.common.Error');
+goog.provide('proto.scaii.common.ExplanationDetails');
 goog.provide('proto.scaii.common.ExplanationPoint');
 goog.provide('proto.scaii.common.GameComplete');
 goog.provide('proto.scaii.common.InitAs');
@@ -46,6 +47,7 @@ goog.provide('proto.scaii.common.RecorderConfig');
 goog.provide('proto.scaii.common.RecorderEndpoint');
 goog.provide('proto.scaii.common.RecorderStep');
 goog.provide('proto.scaii.common.Rect');
+goog.provide('proto.scaii.common.ReplayControl');
 goog.provide('proto.scaii.common.ReplayEndpoint');
 goog.provide('proto.scaii.common.ReplaySessionConfig');
 goog.provide('proto.scaii.common.ReplayStep');
@@ -4439,9 +4441,7 @@ proto.scaii.common.Viz.prototype.toObject = function(opt_includeInstance) {
 proto.scaii.common.Viz.toObject = function(includeInstance, msg) {
   var f, obj = {
     entitiesList: jspb.Message.toObjectList(msg.getEntitiesList(),
-    proto.scaii.common.Entity.toObject, includeInstance),
-    chart: (f = msg.getChart()) && proto.scaii.common.ChartInfo.toObject(includeInstance, f),
-    step: jspb.Message.getField(msg, 3)
+    proto.scaii.common.Entity.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -4483,15 +4483,6 @@ proto.scaii.common.Viz.deserializeBinaryFromReader = function(msg, reader) {
       reader.readMessage(value,proto.scaii.common.Entity.deserializeBinaryFromReader);
       msg.addEntities(value);
       break;
-    case 2:
-      var value = new proto.scaii.common.ChartInfo;
-      reader.readMessage(value,proto.scaii.common.ChartInfo.deserializeBinaryFromReader);
-      msg.setChart(value);
-      break;
-    case 3:
-      var value = /** @type {number} */ (reader.readUint32());
-      msg.setStep(value);
-      break;
     default:
       reader.skipField();
       break;
@@ -4529,21 +4520,6 @@ proto.scaii.common.Viz.serializeBinaryToWriter = function(message, writer) {
       proto.scaii.common.Entity.serializeBinaryToWriter
     );
   }
-  f = message.getChart();
-  if (f != null) {
-    writer.writeMessage(
-      2,
-      f,
-      proto.scaii.common.ChartInfo.serializeBinaryToWriter
-    );
-  }
-  f = /** @type {number} */ (jspb.Message.getField(message, 3));
-  if (f != null) {
-    writer.writeUint32(
-      3,
-      f
-    );
-  }
 };
 
 
@@ -4575,65 +4551,6 @@ proto.scaii.common.Viz.prototype.addEntities = function(opt_value, opt_index) {
 
 proto.scaii.common.Viz.prototype.clearEntitiesList = function() {
   this.setEntitiesList([]);
-};
-
-
-/**
- * optional ChartInfo chart = 2;
- * @return {?proto.scaii.common.ChartInfo}
- */
-proto.scaii.common.Viz.prototype.getChart = function() {
-  return /** @type{?proto.scaii.common.ChartInfo} */ (
-    jspb.Message.getWrapperField(this, proto.scaii.common.ChartInfo, 2));
-};
-
-
-/** @param {?proto.scaii.common.ChartInfo|undefined} value */
-proto.scaii.common.Viz.prototype.setChart = function(value) {
-  jspb.Message.setWrapperField(this, 2, value);
-};
-
-
-proto.scaii.common.Viz.prototype.clearChart = function() {
-  this.setChart(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {!boolean}
- */
-proto.scaii.common.Viz.prototype.hasChart = function() {
-  return jspb.Message.getField(this, 2) != null;
-};
-
-
-/**
- * optional uint32 step = 3;
- * @return {number}
- */
-proto.scaii.common.Viz.prototype.getStep = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
-};
-
-
-/** @param {number} value */
-proto.scaii.common.Viz.prototype.setStep = function(value) {
-  jspb.Message.setField(this, 3, value);
-};
-
-
-proto.scaii.common.Viz.prototype.clearStep = function() {
-  jspb.Message.setField(this, 3, undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {!boolean}
- */
-proto.scaii.common.Viz.prototype.hasStep = function() {
-  return jspb.Message.getField(this, 3) != null;
 };
 
 
@@ -7200,7 +7117,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.scaii.common.ScaiiPacket.oneofGroups_ = [[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,29]];
+proto.scaii.common.ScaiiPacket.oneofGroups_ = [[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,29]];
 
 /**
  * @enum {number}
@@ -7229,6 +7146,8 @@ proto.scaii.common.ScaiiPacket.SpecificMsgCase = {
   RECORD: 20,
   REPLAY_MODE: 21,
   ENV_DESC: 22,
+  EXPL_DETAILS: 23,
+  REPLAY_CONTROL: 24,
   OTHER: 29
 };
 
@@ -7290,6 +7209,8 @@ proto.scaii.common.ScaiiPacket.toObject = function(includeInstance, msg) {
     record: (f = msg.getRecord()) && proto.scaii.common.Record.toObject(includeInstance, f),
     replayMode: jspb.Message.getField(msg, 21),
     envDesc: (f = msg.getEnvDesc()) && proto.scaii.common.EnvDescription.toObject(includeInstance, f),
+    explDetails: (f = msg.getExplDetails()) && proto.scaii.common.ExplanationDetails.toObject(includeInstance, f),
+    replayControl: (f = msg.getReplayControl()) && proto.scaii.common.ReplayControl.toObject(includeInstance, f),
     other: (f = msg.getOther()) && proto.scaii.common.Other.toObject(includeInstance, f),
     src: (f = msg.getSrc()) && proto.scaii.common.Endpoint.toObject(includeInstance, f),
     dest: (f = msg.getDest()) && proto.scaii.common.Endpoint.toObject(includeInstance, f)
@@ -7435,6 +7356,16 @@ proto.scaii.common.ScaiiPacket.deserializeBinaryFromReader = function(msg, reade
       var value = new proto.scaii.common.EnvDescription;
       reader.readMessage(value,proto.scaii.common.EnvDescription.deserializeBinaryFromReader);
       msg.setEnvDesc(value);
+      break;
+    case 23:
+      var value = new proto.scaii.common.ExplanationDetails;
+      reader.readMessage(value,proto.scaii.common.ExplanationDetails.deserializeBinaryFromReader);
+      msg.setExplDetails(value);
+      break;
+    case 24:
+      var value = new proto.scaii.common.ReplayControl;
+      reader.readMessage(value,proto.scaii.common.ReplayControl.deserializeBinaryFromReader);
+      msg.setReplayControl(value);
       break;
     case 29:
       var value = new proto.scaii.common.Other;
@@ -7651,6 +7582,22 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       22,
       f,
       proto.scaii.common.EnvDescription.serializeBinaryToWriter
+    );
+  }
+  f = message.getExplDetails();
+  if (f != null) {
+    writer.writeMessage(
+      23,
+      f,
+      proto.scaii.common.ExplanationDetails.serializeBinaryToWriter
+    );
+  }
+  f = message.getReplayControl();
+  if (f != null) {
+    writer.writeMessage(
+      24,
+      f,
+      proto.scaii.common.ReplayControl.serializeBinaryToWriter
     );
   }
   f = message.getOther();
@@ -8340,6 +8287,66 @@ proto.scaii.common.ScaiiPacket.prototype.clearEnvDesc = function() {
  */
 proto.scaii.common.ScaiiPacket.prototype.hasEnvDesc = function() {
   return jspb.Message.getField(this, 22) != null;
+};
+
+
+/**
+ * optional ExplanationDetails expl_details = 23;
+ * @return {?proto.scaii.common.ExplanationDetails}
+ */
+proto.scaii.common.ScaiiPacket.prototype.getExplDetails = function() {
+  return /** @type{?proto.scaii.common.ExplanationDetails} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.ExplanationDetails, 23));
+};
+
+
+/** @param {?proto.scaii.common.ExplanationDetails|undefined} value */
+proto.scaii.common.ScaiiPacket.prototype.setExplDetails = function(value) {
+  jspb.Message.setOneofWrapperField(this, 23, proto.scaii.common.ScaiiPacket.oneofGroups_[0], value);
+};
+
+
+proto.scaii.common.ScaiiPacket.prototype.clearExplDetails = function() {
+  this.setExplDetails(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.ScaiiPacket.prototype.hasExplDetails = function() {
+  return jspb.Message.getField(this, 23) != null;
+};
+
+
+/**
+ * optional ReplayControl replay_control = 24;
+ * @return {?proto.scaii.common.ReplayControl}
+ */
+proto.scaii.common.ScaiiPacket.prototype.getReplayControl = function() {
+  return /** @type{?proto.scaii.common.ReplayControl} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.ReplayControl, 24));
+};
+
+
+/** @param {?proto.scaii.common.ReplayControl|undefined} value */
+proto.scaii.common.ScaiiPacket.prototype.setReplayControl = function(value) {
+  jspb.Message.setOneofWrapperField(this, 24, proto.scaii.common.ScaiiPacket.oneofGroups_[0], value);
+};
+
+
+proto.scaii.common.ScaiiPacket.prototype.clearReplayControl = function() {
+  this.setReplayControl(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.ScaiiPacket.prototype.hasReplayControl = function() {
+  return jspb.Message.getField(this, 24) != null;
 };
 
 
@@ -12342,7 +12349,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<number>}
  * @const
  */
-proto.scaii.common.ReplaySessionConfig.repeatedFields_ = [2];
+proto.scaii.common.ReplaySessionConfig.repeatedFields_ = [2,3,4];
 
 
 
@@ -12374,8 +12381,9 @@ proto.scaii.common.ReplaySessionConfig.prototype.toObject = function(opt_include
 proto.scaii.common.ReplaySessionConfig.toObject = function(includeInstance, msg) {
   var f, obj = {
     stepCount: jspb.Message.getField(msg, 1),
-    explanationsList: jspb.Message.toObjectList(msg.getExplanationsList(),
-    proto.scaii.common.ExplanationPoint.toObject, includeInstance)
+    explanationStepsList: jspb.Message.getRepeatedField(msg, 2),
+    explanationTitlesList: jspb.Message.getRepeatedField(msg, 3),
+    chartTitlesList: jspb.Message.getRepeatedField(msg, 4)
   };
 
   if (includeInstance) {
@@ -12417,9 +12425,16 @@ proto.scaii.common.ReplaySessionConfig.deserializeBinaryFromReader = function(ms
       msg.setStepCount(value);
       break;
     case 2:
-      var value = new proto.scaii.common.ExplanationPoint;
-      reader.readMessage(value,proto.scaii.common.ExplanationPoint.deserializeBinaryFromReader);
-      msg.addExplanations(value);
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.addExplanationSteps(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addExplanationTitles(value);
+      break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addChartTitles(value);
       break;
     default:
       reader.skipField();
@@ -12457,12 +12472,25 @@ proto.scaii.common.ReplaySessionConfig.serializeBinaryToWriter = function(messag
       f
     );
   }
-  f = message.getExplanationsList();
+  f = message.getExplanationStepsList();
   if (f.length > 0) {
-    writer.writeRepeatedMessage(
+    writer.writeRepeatedUint32(
       2,
-      f,
-      proto.scaii.common.ExplanationPoint.serializeBinaryToWriter
+      f
+    );
+  }
+  f = message.getExplanationTitlesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      3,
+      f
+    );
+  }
+  f = message.getChartTitlesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      4,
+      f
     );
   }
 };
@@ -12498,33 +12526,89 @@ proto.scaii.common.ReplaySessionConfig.prototype.hasStepCount = function() {
 
 
 /**
- * repeated ExplanationPoint explanations = 2;
- * @return {!Array.<!proto.scaii.common.ExplanationPoint>}
+ * repeated uint32 explanation_steps = 2;
+ * @return {!Array.<number>}
  */
-proto.scaii.common.ReplaySessionConfig.prototype.getExplanationsList = function() {
-  return /** @type{!Array.<!proto.scaii.common.ExplanationPoint>} */ (
-    jspb.Message.getRepeatedWrapperField(this, proto.scaii.common.ExplanationPoint, 2));
+proto.scaii.common.ReplaySessionConfig.prototype.getExplanationStepsList = function() {
+  return /** @type {!Array.<number>} */ (jspb.Message.getRepeatedField(this, 2));
 };
 
 
-/** @param {!Array.<!proto.scaii.common.ExplanationPoint>} value */
-proto.scaii.common.ReplaySessionConfig.prototype.setExplanationsList = function(value) {
-  jspb.Message.setRepeatedWrapperField(this, 2, value);
+/** @param {!Array.<number>} value */
+proto.scaii.common.ReplaySessionConfig.prototype.setExplanationStepsList = function(value) {
+  jspb.Message.setField(this, 2, value || []);
 };
 
 
 /**
- * @param {!proto.scaii.common.ExplanationPoint=} opt_value
+ * @param {!number} value
  * @param {number=} opt_index
- * @return {!proto.scaii.common.ExplanationPoint}
  */
-proto.scaii.common.ReplaySessionConfig.prototype.addExplanations = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 2, opt_value, proto.scaii.common.ExplanationPoint, opt_index);
+proto.scaii.common.ReplaySessionConfig.prototype.addExplanationSteps = function(value, opt_index) {
+  jspb.Message.addToRepeatedField(this, 2, value, opt_index);
 };
 
 
-proto.scaii.common.ReplaySessionConfig.prototype.clearExplanationsList = function() {
-  this.setExplanationsList([]);
+proto.scaii.common.ReplaySessionConfig.prototype.clearExplanationStepsList = function() {
+  this.setExplanationStepsList([]);
+};
+
+
+/**
+ * repeated string explanation_titles = 3;
+ * @return {!Array.<string>}
+ */
+proto.scaii.common.ReplaySessionConfig.prototype.getExplanationTitlesList = function() {
+  return /** @type {!Array.<string>} */ (jspb.Message.getRepeatedField(this, 3));
+};
+
+
+/** @param {!Array.<string>} value */
+proto.scaii.common.ReplaySessionConfig.prototype.setExplanationTitlesList = function(value) {
+  jspb.Message.setField(this, 3, value || []);
+};
+
+
+/**
+ * @param {!string} value
+ * @param {number=} opt_index
+ */
+proto.scaii.common.ReplaySessionConfig.prototype.addExplanationTitles = function(value, opt_index) {
+  jspb.Message.addToRepeatedField(this, 3, value, opt_index);
+};
+
+
+proto.scaii.common.ReplaySessionConfig.prototype.clearExplanationTitlesList = function() {
+  this.setExplanationTitlesList([]);
+};
+
+
+/**
+ * repeated string chart_titles = 4;
+ * @return {!Array.<string>}
+ */
+proto.scaii.common.ReplaySessionConfig.prototype.getChartTitlesList = function() {
+  return /** @type {!Array.<string>} */ (jspb.Message.getRepeatedField(this, 4));
+};
+
+
+/** @param {!Array.<string>} value */
+proto.scaii.common.ReplaySessionConfig.prototype.setChartTitlesList = function(value) {
+  jspb.Message.setField(this, 4, value || []);
+};
+
+
+/**
+ * @param {!string} value
+ * @param {number=} opt_index
+ */
+proto.scaii.common.ReplaySessionConfig.prototype.addChartTitles = function(value, opt_index) {
+  jspb.Message.addToRepeatedField(this, 4, value, opt_index);
+};
+
+
+proto.scaii.common.ReplaySessionConfig.prototype.clearChartTitlesList = function() {
+  this.setChartTitlesList([]);
 };
 
 
@@ -12681,6 +12765,413 @@ proto.scaii.common.Record.prototype.clearKeyframeInterval = function() {
  */
 proto.scaii.common.Record.prototype.hasKeyframeInterval = function() {
   return jspb.Message.getField(this, 1) != null;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.scaii.common.ExplanationDetails = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.scaii.common.ExplanationDetails, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.ExplanationDetails.displayName = 'proto.scaii.common.ExplanationDetails';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.ExplanationDetails.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.ExplanationDetails.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.ExplanationDetails} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.ExplanationDetails.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    step: jspb.Message.getField(msg, 1),
+    explPoint: (f = msg.getExplPoint()) && proto.scaii.common.ExplanationPoint.toObject(includeInstance, f),
+    chart: (f = msg.getChart()) && proto.scaii.common.ChartInfo.toObject(includeInstance, f)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.ExplanationDetails}
+ */
+proto.scaii.common.ExplanationDetails.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.ExplanationDetails;
+  return proto.scaii.common.ExplanationDetails.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.ExplanationDetails} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.ExplanationDetails}
+ */
+proto.scaii.common.ExplanationDetails.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setStep(value);
+      break;
+    case 2:
+      var value = new proto.scaii.common.ExplanationPoint;
+      reader.readMessage(value,proto.scaii.common.ExplanationPoint.deserializeBinaryFromReader);
+      msg.setExplPoint(value);
+      break;
+    case 3:
+      var value = new proto.scaii.common.ChartInfo;
+      reader.readMessage(value,proto.scaii.common.ChartInfo.deserializeBinaryFromReader);
+      msg.setChart(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.ExplanationDetails.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.scaii.common.ExplanationDetails.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.ExplanationDetails} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.ExplanationDetails.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = /** @type {number} */ (jspb.Message.getField(message, 1));
+  if (f != null) {
+    writer.writeUint32(
+      1,
+      f
+    );
+  }
+  f = message.getExplPoint();
+  if (f != null) {
+    writer.writeMessage(
+      2,
+      f,
+      proto.scaii.common.ExplanationPoint.serializeBinaryToWriter
+    );
+  }
+  f = message.getChart();
+  if (f != null) {
+    writer.writeMessage(
+      3,
+      f,
+      proto.scaii.common.ChartInfo.serializeBinaryToWriter
+    );
+  }
+};
+
+
+/**
+ * optional uint32 step = 1;
+ * @return {number}
+ */
+proto.scaii.common.ExplanationDetails.prototype.getStep = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/** @param {number} value */
+proto.scaii.common.ExplanationDetails.prototype.setStep = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+proto.scaii.common.ExplanationDetails.prototype.clearStep = function() {
+  jspb.Message.setField(this, 1, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.ExplanationDetails.prototype.hasStep = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * optional ExplanationPoint expl_point = 2;
+ * @return {?proto.scaii.common.ExplanationPoint}
+ */
+proto.scaii.common.ExplanationDetails.prototype.getExplPoint = function() {
+  return /** @type{?proto.scaii.common.ExplanationPoint} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.ExplanationPoint, 2));
+};
+
+
+/** @param {?proto.scaii.common.ExplanationPoint|undefined} value */
+proto.scaii.common.ExplanationDetails.prototype.setExplPoint = function(value) {
+  jspb.Message.setWrapperField(this, 2, value);
+};
+
+
+proto.scaii.common.ExplanationDetails.prototype.clearExplPoint = function() {
+  this.setExplPoint(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.ExplanationDetails.prototype.hasExplPoint = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional ChartInfo chart = 3;
+ * @return {?proto.scaii.common.ChartInfo}
+ */
+proto.scaii.common.ExplanationDetails.prototype.getChart = function() {
+  return /** @type{?proto.scaii.common.ChartInfo} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.ChartInfo, 3));
+};
+
+
+/** @param {?proto.scaii.common.ChartInfo|undefined} value */
+proto.scaii.common.ExplanationDetails.prototype.setChart = function(value) {
+  jspb.Message.setWrapperField(this, 3, value);
+};
+
+
+proto.scaii.common.ExplanationDetails.prototype.clearChart = function() {
+  this.setChart(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.ExplanationDetails.prototype.hasChart = function() {
+  return jspb.Message.getField(this, 3) != null;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.scaii.common.ReplayControl = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.scaii.common.ReplayControl.repeatedFields_, null);
+};
+goog.inherits(proto.scaii.common.ReplayControl, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.ReplayControl.displayName = 'proto.scaii.common.ReplayControl';
+}
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.scaii.common.ReplayControl.repeatedFields_ = [1];
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.ReplayControl.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.ReplayControl.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.ReplayControl} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.ReplayControl.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    commandList: jspb.Message.getRepeatedField(msg, 1)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.ReplayControl}
+ */
+proto.scaii.common.ReplayControl.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.ReplayControl;
+  return proto.scaii.common.ReplayControl.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.ReplayControl} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.ReplayControl}
+ */
+proto.scaii.common.ReplayControl.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addCommand(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.ReplayControl.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.scaii.common.ReplayControl.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.ReplayControl} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.ReplayControl.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getCommandList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * repeated string command = 1;
+ * @return {!Array.<string>}
+ */
+proto.scaii.common.ReplayControl.prototype.getCommandList = function() {
+  return /** @type {!Array.<string>} */ (jspb.Message.getRepeatedField(this, 1));
+};
+
+
+/** @param {!Array.<string>} value */
+proto.scaii.common.ReplayControl.prototype.setCommandList = function(value) {
+  jspb.Message.setField(this, 1, value || []);
+};
+
+
+/**
+ * @param {!string} value
+ * @param {number=} opt_index
+ */
+proto.scaii.common.ReplayControl.prototype.addCommand = function(value, opt_index) {
+  jspb.Message.addToRepeatedField(this, 1, value, opt_index);
+};
+
+
+proto.scaii.common.ReplayControl.prototype.clearCommandList = function() {
+  this.setCommandList([]);
 };
 
 

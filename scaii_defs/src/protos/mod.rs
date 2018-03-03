@@ -42,27 +42,21 @@ pub fn packet_from_entity_list(entities: Vec<Entity>) -> ScaiiPacket {
             })),
         },
 
-        specific_msg: Some(scaii_packet::SpecificMsg::Viz(Viz {
-            entities: entities,
-            chart: None,
-            step: None,
-        })),
+        specific_msg: Some(scaii_packet::SpecificMsg::Viz(Viz { entities: entities })),
     }
 }
 
 pub fn get_user_command_args(scaii_pkt: &ScaiiPacket) -> Vec<String> {
-    let mut result : Vec<String> = Vec::new();
+    let mut result: Vec<String> = Vec::new();
     let specific_msg = &scaii_pkt.specific_msg;
     match specific_msg {
-        &Some(
-            scaii_packet::SpecificMsg::UserCommand(protos::UserCommand {
-                command_type: _,
-                args: ref args_list,
-            }),
-        ) => {
+        &Some(scaii_packet::SpecificMsg::UserCommand(protos::UserCommand {
+            command_type: _,
+            args: ref args_list,
+        })) => {
             result = args_list.clone();
-        },
-        _ => {},
+        }
+        _ => {}
     };
     result
 }
@@ -70,12 +64,10 @@ pub fn get_user_command_args(scaii_pkt: &ScaiiPacket) -> Vec<String> {
 pub fn is_user_command_pkt(scaii_pkt: &ScaiiPacket) -> bool {
     let specific_msg = &scaii_pkt.specific_msg;
     match specific_msg {
-        &Some(
-            scaii_packet::SpecificMsg::UserCommand(protos::UserCommand {
-                command_type: _,
-                args: _,
-            }),
-        ) => true,
+        &Some(scaii_packet::SpecificMsg::UserCommand(protos::UserCommand {
+            command_type: _,
+            args: _,
+        })) => true,
         _ => false,
     }
 }
@@ -83,13 +75,11 @@ pub fn is_user_command_pkt(scaii_pkt: &ScaiiPacket) -> bool {
 pub fn is_error_pkt(scaii_pkt: &ScaiiPacket) -> bool {
     let specific_msg = &scaii_pkt.specific_msg;
     match specific_msg {
-        &Some(
-            scaii_packet::SpecificMsg::Err(protos::Error {
-                description: _,
-                fatal: _,
-                error_info: _,
-            }),
-        ) => true,
+        &Some(scaii_packet::SpecificMsg::Err(protos::Error {
+            description: _,
+            fatal: _,
+            error_info: _,
+        })) => true,
         _ => false,
     }
 }
@@ -100,12 +90,10 @@ pub fn get_user_command_type(
     let specific_msg = &scaii_pkt.specific_msg;
 
     match specific_msg {
-        &Some(
-            scaii_packet::SpecificMsg::UserCommand(protos::UserCommand {
-                command_type: x,
-                args: _,
-            }),
-        ) => match x {
+        &Some(scaii_packet::SpecificMsg::UserCommand(protos::UserCommand {
+            command_type: x,
+            args: _,
+        })) => match x {
             0 => Ok(UserCommandType::None),
             1 => Ok(UserCommandType::Explain),
             2 => Ok(UserCommandType::Pause),

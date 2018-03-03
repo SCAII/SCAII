@@ -199,8 +199,7 @@ fn verify_scaii_packet(
             .expect("Could not send error closure");
         panic!(
             "Client sent packet with malformed src field, got {:?}, expected {:?}",
-            packet.src,
-            expected_src
+            packet.src, expected_src
         );
     }
 
@@ -213,8 +212,7 @@ fn verify_scaii_packet(
             .expect("Could not send error closure");
         panic!(
             "Client sent packet with malformed dest field, got {:?}, expected {:?}",
-            packet.dest,
-            expected_dest
+            packet.dest, expected_dest
         );
     }
 
@@ -227,8 +225,7 @@ fn verify_scaii_packet(
                 Err(err) => {
                     let err_msg = format!(
                         "Error decoding entities, expected FULL data: {}. (Note: got {:?})",
-                        err,
-                        entity
+                        err, entity
                     );
                     client
                         .send_message(&Message::close_because(
@@ -258,10 +255,7 @@ fn verify_scaii_packet(
                         "Entity with id {} does not match reference entity on server.\n\
                          Got: {:?}, Expected: {:?}\n\
                          (NOTE: Floating point tolerance is: {}",
-                        entity.id,
-                        entity,
-                        original,
-                        FUZZY_EQ_THRESH
+                        entity.id, entity, original, FUZZY_EQ_THRESH
                     );
 
                     client
@@ -491,8 +485,6 @@ fn update_entities<R: Rng>(entity_map: &mut HashMap<usize, IdEntity>, rng: &mut 
         },
         specific_msg: Some(scaii_packet::SpecificMsg::Viz(protos::Viz {
             entities: entity_protos,
-            chart: None,
-            step: None,
         })),
     }
 }

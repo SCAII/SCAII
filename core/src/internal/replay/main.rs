@@ -9,7 +9,7 @@ extern crate url;
 
 use prost::Message;
 use protos::{plugin_type, scaii_packet, BackendEndpoint, BackendInit, Cfg, CoreEndpoint,
-             ExplanationPoint, ModuleEndpoint, MultiMessage, PluginType, RecorderConfig,
+             ModuleEndpoint, MultiMessage, PluginType, RecorderConfig, ReplayControl,
              ReplayEndpoint, ReplaySessionConfig, RustFfiConfig, ScaiiPacket};
 use protos::cfg::WhichModule;
 use protos::user_command::UserCommandType;
@@ -143,35 +143,9 @@ impl ReplayManager {
         self.env.update();
         // pull off header and configure
         let header: ReplayAction = self.replay_data.remove(0);
-
-        let steps = self.replay_data.len() as i64;
-        let explanation_points = get_explanation_points(&self.replay_data);
-        let replay_session_cfg_pkt_for_ui =
-            self.create_replay_session_config_message(steps, explanation_points);
-        self.configure_as_per_header(header, replay_session_cfg_pkt_for_ui)?;
-
+        let replay_session_cfg = get_replay_configuration_message(&self.replay_data);
+        self.configure_as_per_header(header, replay_session_cfg)?;
         self.run_and_poll()
-    }
-
-    fn create_replay_session_config_message(
-        &mut self,
-        steps: i64,
-        vec: Vec<ExplanationPoint>,
-    ) -> ScaiiPacket {
-        ScaiiPacket {
-            src: protos::Endpoint {
-                endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-            },
-            dest: protos::Endpoint {
-                endpoint: Some(Endpoint::Module(ModuleEndpoint {
-                    name: "viz".to_string(),
-                })),
-            },
-            specific_msg: Some(SpecificMsg::ReplaySessionConfig(ReplaySessionConfig {
-                step_count: steps,
-                explanations: vec,
-            })),
-        }
     }
 
     fn adjust_cfg_packets(
@@ -389,43 +363,6 @@ impl ReplayManager {
         }
     }
 
-    // fn convert_action_info_to_action_pkt_OLD(
-    //         &mut self,
-    //         action: GameAction,
-    //     ) -> Result<ScaiiPacket, Box<Error>> {
-    //         match action {
-    //             GameAction::DecisionPoint(serialized_protos_action) => {
-    //                 let protos_action_decode_result =
-    //                     protos::Action::decode(serialized_protos_action.data);
-    //                 match protos_action_decode_result {
-    //                     Ok(protos_action) => Ok(ScaiiPacket {
-    //                         src: protos::Endpoint {
-    //                             endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-    //                         },
-    //                         dest: protos::Endpoint {
-    //                             endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-    //                         },
-    //                         specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::Action(
-    //                             protos_action,
-    //                         )),
-    //                     }),
-    //                     Err(err) => Err(Box::new(err)),
-    //                 }
-    //             }
-    //             GameAction::Step => Ok(ScaiiPacket {
-    //                 src: protos::Endpoint {
-    //                     endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-    //                 },
-    //                 dest: protos::Endpoint {
-    //                     endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-    //                 },
-    //                 specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::ReplayStep(
-    //                     ReplayStep {},
-    //                 )),
-    //             }),
-    //         }
-    //     }
-
     fn deploy_replay_directives_to_backend(
         &mut self,
         mm: &MultiMessage,
@@ -610,6 +547,7 @@ impl ReplayManager {
                             let _pkts: Vec<ScaiiPacket> =
                                 self.send_test_mode_rewind_hint_message()?;
                         }
+                        self.reset_ui_step_position("0".to_string())?;
                         game_state = GameState::RewoundAndNeedingToSendInitialKeyframe;
                     }
                     UserCommandType::PollForCommands => {
@@ -648,6 +586,27 @@ impl ReplayManager {
         Ok(game_state)
     }
 
+    fn reset_ui_step_position(&mut self, position: String) -> Result<(), Box<Error>> {
+        let mut command_vec: Vec<String> = Vec::new();
+        command_vec.push("set_step_position".to_string());
+        command_vec.push(position);
+        let pkt: ScaiiPacket = ScaiiPacket {
+            src: protos::Endpoint {
+                endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+            },
+            dest: protos::Endpoint {
+                endpoint: Some(Endpoint::Module(ModuleEndpoint {
+                    name: "viz".to_string(),
+                })),
+            },
+            specific_msg: Some(scaii_packet::SpecificMsg::ReplayControl(ReplayControl {
+                command: command_vec,
+            })),
+        };
+        let _ignored_respons_pkts = self.send_pkt_to_viz(pkt)?;
+        Ok(())
+    }
+
     fn adjust_replay_speed(&mut self, speed_string: &str) -> Result<(), Box<Error>> {
         let speed = speed_string.parse::<u64>()?;
         // speed = 0  => 2001 ms or one ~ every 2 seconds
@@ -674,6 +633,7 @@ impl ReplayManager {
                     ))));
                 }
                 self.step_position = u64::from(jump_target_int);
+                self.reset_ui_step_position(jump_target.clone())?;
                 if self.test_mode {
                     let _pkts: Vec<ScaiiPacket> = self.send_test_mode_jump_to_message(jump_target)?;
                 }
@@ -1200,11 +1160,38 @@ fn get_emit_viz_pkt() -> ScaiiPacket {
     }
 }
 
-fn get_explanation_points(_replay_data: &Vec<ReplayAction>) -> Vec<ExplanationPoint> {
-    let result: Vec<ExplanationPoint> = Vec::new();
-    // for replay_action in replay_data {
-    //     match
-    // }
-    println!("REMINDER - NOT MINING EXPLANATION POINTS YET");
-    result
+fn get_replay_configuration_message(replay_data: &Vec<ReplayAction>) -> ScaiiPacket {
+    let mut expl_titles: Vec<String> = Vec::new();
+    let mut chart_titles: Vec<String> = Vec::new();
+    let mut expl_steps: Vec<u32> = Vec::new();
+    let steps = replay_data.len() as i64;
+    expl_titles.push("actionA".to_string());
+    expl_steps.push(0);
+    chart_titles.push("chartA".to_string());
+    let spkt = create_replay_session_config_message(steps, expl_steps, expl_titles, chart_titles);
+    spkt
+}
+
+fn create_replay_session_config_message(
+    steps: i64,
+    expl_steps: Vec<u32>,
+    expl_titles: Vec<String>,
+    chart_titles: Vec<String>,
+) -> ScaiiPacket {
+    ScaiiPacket {
+        src: protos::Endpoint {
+            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+        },
+        dest: protos::Endpoint {
+            endpoint: Some(Endpoint::Module(ModuleEndpoint {
+                name: "viz".to_string(),
+            })),
+        },
+        specific_msg: Some(SpecificMsg::ReplaySessionConfig(ReplaySessionConfig {
+            step_count: steps,
+            explanation_steps: expl_steps,
+            explanation_titles: expl_titles,
+            chart_titles: chart_titles,
+        })),
+    }
 }

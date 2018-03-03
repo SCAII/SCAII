@@ -58,6 +58,7 @@ var maxStep = 0;
 var explanations = [];
 var userCommandScaiiPackets = [];
 var sessionState = "pending";
+var currentStep = 0;
 
 var spacingFactor = 1;
 var sizingFactor = 1;
@@ -150,6 +151,15 @@ function adjustZoomBoxPosition(x,y){
   
 }
 
+function handleReplayControl(replayControl) {
+	var command = replayControl.getCommandList();
+	if (command.length == 2){
+		if (command[0] == 'set_step_position'){
+			currentStep = parse_int(command[1]);
+			updateProgress(currentStep, maxStep);
+		}
+	}
+}
 function handleReplaySessionConfig(rsc) {
   if (rsc.hasStepCount()) {
     maxStep = rsc.getStepCount() - 1;
@@ -184,9 +194,6 @@ function handleVizInit(vizInit) {
 function handleViz(vizData){
   //console.log('received Viz...');
   entitiesList = vizData.getEntitiesList();
-  var step = vizData.getStep();
-  //console.log("step in vizData was " + step+ "maxStep is " + maxStep);
-  updateProgress(step, maxStep);
   
   handleEntities(entitiesList);
   if (step == maxStep){
@@ -196,6 +203,9 @@ function handleViz(vizData){
 	  var chartInfo = vizData.getChart();
 	  renderChartInfo(chartInfo, gameboardHeight);
   }
+  currentStep = currentStep + 1;
+  console.log("current_step is " + currentStep+ "maxStep is " + maxStep);
+  updateProgress(currentStep, maxStep);
 }
 function handleEntities(entitiesList) {
   
@@ -547,6 +557,12 @@ var connect = function (dots, attemptCount) {
 	    }
         dealer.send(mm.serializeBinary());
       }
+	  else if (sPacket.hasReplayControl()){
+		var replayControl = sPacket.getReplayControl();
+		handleReplayControl(replayControl);
+	    var mm = new proto.scaii.common.MultiMessage;
+	    dealer.send(mm.serializeBinary());
+	  }
       else if (sPacket.hasErr()) {
         console.log(sPacket.getErr().getDescription())
         mm = new proto.scaii.common.MultiMessage;

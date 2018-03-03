@@ -1,7 +1,7 @@
 use prost::Message;
-use protos::{cfg, scaii_packet, BackendCfg, BackendEndpoint, Cfg, Entity, ExplanationPoint,
-             ModuleEndpoint, MultiMessage, RecorderConfig, RecorderEndpoint, ReplayEndpoint,
-             ScaiiPacket, Viz, VizInit};
+use protos::{cfg, scaii_packet, BackendCfg, BackendEndpoint, Cfg, Entity, ModuleEndpoint,
+             MultiMessage, RecorderConfig, RecorderEndpoint, ReplayEndpoint, ScaiiPacket, Viz,
+             VizInit};
 use protos::endpoint::Endpoint;
 use scaii_core::{ActionWrapper, ReplayAction, ReplayHeader, SerializationInfo,
                  SerializedProtosEndpoint, SerializedProtosScaiiPacket,
@@ -23,10 +23,10 @@ impl MockRts {
     pub fn init_entity_sequence(&mut self) {
         let mut entities1 = generate_entity_sequence(self.step_count, "triangle", -30.0);
         let mut entities2 = generate_entity_sequence(self.step_count, "rectangle", 30.0);
-        for i in 0..self.step_count {
+        for _i in 0..self.step_count {
             let entity1 = entities1.remove(0);
             let entity2 = entities2.remove(0);
-            let viz: ScaiiPacket = wrap_entities_in_viz_packet(i, entity1, entity2);
+            let viz: ScaiiPacket = wrap_entities_in_viz_packet(entity1, entity2);
             self.viz_sequence.push(viz);
         }
     }
@@ -91,12 +91,15 @@ impl Module for MockRts {
             }
             Some(scaii_packet::SpecificMsg::ReplaySessionConfig(protos::ReplaySessionConfig {
                 step_count: steps,
-                explanations: _,
+                explanation_steps: _,
+                explanation_titles: _,
+                chart_titles: _,
             })) => {
                 println!("got replaySessionConfig");
                 self.step_count = steps as u32;
                 self.init_entity_sequence();
             }
+
             Some(scaii_packet::SpecificMsg::ReplayStep(protos::ReplayStep {})) => {
                 if self.step_position < self.step_count {
                     println!("MOCKRTS step due to replayStep!");
@@ -376,7 +379,9 @@ fn create_cfg_pkt(step_count: u32) -> ScaiiPacket {
         specific_msg: Some(scaii_packet::SpecificMsg::Config(cfg)),
     };
     vec.push(cfg_packet);
-    let expl_vec: Vec<ExplanationPoint> = Vec::new();
+    let explanation_steps: Vec<u32> = Vec::new();
+    let expl_titles: Vec<String> = Vec::new();
+    let chart_titles: Vec<String> = Vec::new();
     let replay_session_config_packet = ScaiiPacket {
         src: protos::Endpoint {
             endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
@@ -387,11 +392,12 @@ fn create_cfg_pkt(step_count: u32) -> ScaiiPacket {
         specific_msg: Some(scaii_packet::SpecificMsg::ReplaySessionConfig(
             protos::ReplaySessionConfig {
                 step_count: step_count as i64,
-                explanations: expl_vec,
+                explanation_steps: explanation_steps,
+                explanation_titles: expl_titles,
+                chart_titles: chart_titles,
             },
         )),
     };
-
     vec.push(replay_session_config_packet);
     ScaiiPacket {
         src: protos::Endpoint {
@@ -408,7 +414,7 @@ fn create_cfg_pkt(step_count: u32) -> ScaiiPacket {
     }
 }
 
-fn wrap_entities_in_viz_packet(step: u32, entity1: Entity, entity2: Entity) -> ScaiiPacket {
+fn wrap_entities_in_viz_packet(entity1: Entity, entity2: Entity) -> ScaiiPacket {
     let mut entities: Vec<Entity> = Vec::new();
     entities.push(entity1);
     entities.push(entity2);
@@ -422,10 +428,6 @@ fn wrap_entities_in_viz_packet(step: u32, entity1: Entity, entity2: Entity) -> S
                 name: "viz".to_string(),
             })),
         },
-        specific_msg: Some(SpecificMsg::Viz(Viz {
-            entities: entities,
-            chart: None,
-            step: Some(step),
-        })),
+        specific_msg: Some(SpecificMsg::Viz(Viz { entities: entities })),
     }
 }

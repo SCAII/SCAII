@@ -41,8 +41,6 @@ message Layer {
 // on what has changed since the last packet.
 message Viz {
 	repeated Entity entities = 1; 
-	optional ChartInfo chart = 2;
-	optional uint32 step = 3;
 }
 // chart info for Magesh data demo
 message ChartInfo {
