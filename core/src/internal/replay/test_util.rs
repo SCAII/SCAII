@@ -35,7 +35,7 @@ impl MockRts {
         let pkt_to_send = self.viz_sequence[self.step_position as usize].clone();
         self.step_position += 1;
         println!("MockRTS self.step_position now {}", self.step_position);
-        let mm = super::wrap_packet_in_multi_message(pkt_to_send);
+        let mm = super::replay_util::wrap_packet_in_multi_message(pkt_to_send);
         self.outbound_messages.push(mm);
         ()
     }

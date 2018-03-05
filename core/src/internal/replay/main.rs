@@ -8,14 +8,14 @@ extern crate serde_derive;
 extern crate url;
 
 use prost::Message;
-use protos::{plugin_type, scaii_packet, BackendEndpoint, BackendInit, Cfg, CoreEndpoint,
+use protos::{plugin_type, scaii_packet, BackendEndpoint, Cfg,
              ModuleEndpoint, MultiMessage, PluginType, RecorderConfig, ReplayControl,
-             ReplayEndpoint, ReplaySessionConfig, RustFfiConfig, ScaiiPacket};
+             ReplayEndpoint, RustFfiConfig, ScaiiPacket};
 use protos::cfg::WhichModule;
 use protos::user_command::UserCommandType;
 use protos::endpoint::Endpoint;
 use protos::scaii_packet::SpecificMsg;
-use scaii_core::{Environment, ScaiiConfig};
+use scaii_core::Environment;
 use scaii_core::{ActionWrapper, ReplayAction, ReplayHeader, SerializedProtosScaiiPacket,
                  SerializedProtosSerializationResponse};
 use scaii_defs::protos;
@@ -26,10 +26,7 @@ use std::rc::Rc;
 use std::cell::RefCell;
 use std::fmt;
 use std::sync::{mpsc, Arc, Mutex};
-use std::fs::File;
-use std::path::{Path, PathBuf};
-use std::io::BufReader;
-use bincode::{deserialize_from, Infinite};
+use std::path::Path;
 use std::env;
 use scaii_core::util;
 
@@ -37,6 +34,7 @@ mod test_util;
 use test_util::*;
 mod webserver;
 use webserver::launch_webserver;
+mod replay_util;
 
 const USAGE: &'static str = "
 replay.
@@ -100,6 +98,7 @@ enum GameState {
     Paused,
     RewoundAndNeedingToSendInitialKeyframe,
     JumpedAndNeedingToDoFollowupNavigation,
+    SingleStep,
 }
 
 /// Replay owns the environment, but we need this
@@ -138,12 +137,12 @@ struct ReplayManager {
 impl ReplayManager {
     fn start(&mut self) -> Result<(), Box<Error>> {
         // startup viz via rpc
-        let mm = wrap_packet_in_multi_message(create_rpc_config_message()?);
+        let mm = replay_util::wrap_packet_in_multi_message(replay_util::create_rpc_config_message()?);
         self.env.route_messages(&mm);
         self.env.update();
         // pull off header and configure
         let header: ReplayAction = self.replay_data.remove(0);
-        let replay_session_cfg = get_replay_configuration_message(&self.replay_data);
+        let replay_session_cfg = replay_util::get_replay_configuration_message(&self.replay_data);
         self.configure_as_per_header(header, replay_session_cfg)?;
         self.run_and_poll()
     }
@@ -187,14 +186,14 @@ impl ReplayManager {
 
         if rust_ffi_config_pkt == None && !self.test_mode {
             let default_backend_path = util::get_default_backend()?;
-            rust_ffi_config_pkt = Some(create_rust_ffi_config_message(&default_backend_path)?);
+            rust_ffi_config_pkt = Some(replay_util::create_rust_ffi_config_message(&default_backend_path)?);
         }
 
         if backend_config_pkt == None {
-            backend_config_pkt = Some(create_default_replay_backend_config());
+            backend_config_pkt = Some(replay_util::create_default_replay_backend_config());
         } else {
             // need to change replay_mode to true
-            set_replay_mode_on_backend_config(&mut backend_config_pkt);
+            replay_util::set_replay_mode_on_backend_config(&mut backend_config_pkt);
         }
 
         if !self.test_mode {
@@ -202,12 +201,12 @@ impl ReplayManager {
         }
 
         // next send replay_mode == true signal
-        let replay_mode_pkt = get_replay_mode_pkt();
+        let replay_mode_pkt = replay_util::get_replay_mode_pkt();
         result_vec.push(replay_mode_pkt);
         // then send ReplaySessionConfig pkt to UI
         result_vec.push(replay_session_cfg_pkt_for_ui);
         // then send emit_viz directive
-        let emit_viz_pkt = get_emit_viz_pkt();
+        let emit_viz_pkt = replay_util::get_emit_viz_pkt();
         result_vec.push(emit_viz_pkt);
         result_vec.push(backend_config_pkt.unwrap());
         for pkt in temp_vec {
@@ -219,7 +218,7 @@ impl ReplayManager {
     fn emit_cfg_packets(&mut self, cfg_pkts: Vec<ScaiiPacket>) -> Result<(), Box<Error>> {
         for pkt in &cfg_pkts {
             let pkt_to_send = pkt.clone();
-            let mm = wrap_packet_in_multi_message(pkt_to_send);
+            let mm = replay_util::wrap_packet_in_multi_message(pkt_to_send);
             self.env.route_messages(&mm);
             self.env.update();
         }
@@ -533,7 +532,8 @@ impl ReplayManager {
                         game_state = GameState::Paused;
                     }
                     UserCommandType::Resume => {
-                        game_state = GameState::Running;
+                        //game_state = GameState::Running;
+                        game_state = GameState::SingleStep;
                         println!(
                             "================RECEIVED UserCommandType::Resume================"
                         );
@@ -743,6 +743,10 @@ impl ReplayManager {
                 self.keyframe_to_later_step(backup_target, forward_target)?;
                 game_state = GameState::Paused;
             }
+            GameState::SingleStep => {
+                let _ignore_game_state = self.execute_run_step()?;
+                game_state = GameState::Paused;
+            }
         }
         Ok(game_state)
     }
@@ -770,91 +774,8 @@ fn wait(milliseconds: u64) {
     thread::sleep(delay);
 }
 
-fn wrap_packet_in_multi_message(pkt: ScaiiPacket) -> MultiMessage {
-    let mut pkts: Vec<ScaiiPacket> = Vec::new();
-    pkts.push(pkt);
-    MultiMessage { packets: pkts }
-}
 
-fn get_mac_browser_launch_command(scaii_config: &mut ScaiiConfig) -> Result<String, Box<Error>> {
-    let browser = scaii_config.get_replay_browser();
-    let full_url = scaii_config.get_full_replay_http_url();
-    Ok(format!("{} {}", browser, full_url))
-}
 
-#[allow(unused_assignments)]
-fn create_rpc_config_message() -> Result<ScaiiPacket, Box<Error>> {
-    let mut scaii_config: ScaiiConfig = scaii_core::load_scaii_config();
-
-    let mut comm: Option<String> = None;
-    if cfg!(target_os = "windows") {
-        let windows_command_string = scaii_config.get_replay_browser();
-        comm = Some(windows_command_string);
-    } else if cfg!(target_os = "unix") {
-        panic!("rpc config message for unix not yet implemented!");
-    } else {
-        // mac
-        let mac_command_string = get_mac_browser_launch_command(&mut scaii_config)?;
-        comm = Some(mac_command_string);
-    }
-
-    //
-    // Add arguments on windows,but not mac
-    //
-    let mut vec: Vec<String> = Vec::new();
-    if cfg!(target_os = "windows") {
-        let target_url = scaii_config.get_full_replay_http_url();
-        vec.push(target_url);
-    } else if cfg!(target_os = "unix") {
-        // will panic earlier in function if we are on unix
-    } else {
-        // mac adds no arguments - its all in command (workaround to browser launching issue on mac)
-    }
-
-    let rpc_config = scaii_core::get_rpc_config_for_viz(comm, vec);
-
-    Ok(ScaiiPacket {
-        src: protos::Endpoint {
-            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-        },
-        dest: protos::Endpoint {
-            endpoint: Some(Endpoint::Core(CoreEndpoint {})),
-        },
-        specific_msg: Some(SpecificMsg::Config(Cfg {
-            which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
-                plugin_type: protos::PluginType {
-                    plugin_type: Some(protos::plugin_type::PluginType::Rpc(rpc_config)),
-                },
-            })),
-        })),
-    })
-}
-
-fn load_replay_file(path: &Path) -> Result<Vec<ReplayAction>, Box<Error>> {
-    //use super::ReplayAction;
-    let replay_file = File::open(path).expect("file not found");
-    let mut replay_vec: Vec<ReplayAction> = Vec::new();
-    let mut reader = BufReader::new(replay_file);
-
-    while let Ok(action) =
-        deserialize_from::<BufReader<File>, ReplayAction, Infinite>(&mut reader, Infinite)
-    {
-        replay_vec.push(action);
-    }
-    Ok(replay_vec)
-}
-
-fn load_replay_info_from_default_replay_path() -> Result<Vec<ReplayAction>, Box<Error>> {
-    let path = scaii_core::get_default_replay_file_path()?;
-    load_replay_info_from_replay_file_path(path)
-}
-fn load_replay_info_from_replay_file_path(path: PathBuf) -> Result<Vec<ReplayAction>, Box<Error>> {
-    let load_result = load_replay_file(&path);
-    match load_result {
-        Ok(replay_vec) => Ok(replay_vec),
-        Err(err) => Err(err),
-    }
-}
 #[allow(dead_code)]
 enum RunMode {
     Live,
@@ -954,7 +875,7 @@ fn main() {
         println!("Running Replay in test mode...");
         if args.flag_data_from_recorded_file {
             println!("..loading replay data from default path...");
-            let replay_info: Vec<ReplayAction> = load_replay_info_from_default_replay_path()
+            let replay_info: Vec<ReplayAction> = replay_util::load_replay_info_from_default_replay_path()
                 .expect("Error - problem generating test replay_info");
             run_replay(RunMode::Test, replay_info, args);
         } else {
@@ -973,13 +894,14 @@ fn main() {
                 if !path.exists() {
                     panic!("ERROR - specified replay path does not exist {:?}", path);
                 }
-                load_replay_info_from_replay_file_path(path.to_path_buf())
+                //replay_util::load_replay_info_from_replay_file_path(path.to_path_buf())
+                replay_util::load_replay_file(&path.to_path_buf())
                     .expect("Error - problem generating test replay_info")
             };
             run_replay(RunMode::Live, replay_info, args);
         } else {
             let replay_info: Vec<ReplayAction> = {
-                load_replay_info_from_default_replay_path()
+                replay_util::load_replay_info_from_default_replay_path()
                     .expect("Error - problem generating replay_info from default file")
             };
             run_replay(RunMode::Live, replay_info, args);
@@ -1045,153 +967,5 @@ fn configure_and_register_mock_rts(env: &mut Environment) {
 
     {
         env.router_mut().register_backend(Box::new(rts));
-    }
-}
-
-fn get_rust_ffi_config_for_path(path: &str) -> RustFfiConfig {
-    RustFfiConfig {
-        plugin_path: path.to_string(),
-        init_as: protos::InitAs {
-            init_as: Some(protos::init_as::InitAs::Backend(BackendInit {})),
-        },
-    }
-}
-
-fn create_rust_ffi_config_message(backend_path: &str) -> Result<ScaiiPacket, Box<Error>> {
-    use scaii_defs::protos::plugin_type::PluginType;
-    let path = Path::new(backend_path);
-    if !path.exists() {
-        return Err(Box::new(ReplayError::new(&format!(
-            "specified backend does not exist {}",
-            backend_path
-        ))));
-    }
-    let rust_ffi_config = get_rust_ffi_config_for_path(backend_path);
-    Ok(ScaiiPacket {
-        src: protos::Endpoint {
-            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-        },
-        dest: protos::Endpoint {
-            endpoint: Some(Endpoint::Core(CoreEndpoint {})),
-        },
-        specific_msg: Some(SpecificMsg::Config(Cfg {
-            which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
-                plugin_type: protos::PluginType {
-                    plugin_type: Some(PluginType::RustPlugin(rust_ffi_config)),
-                },
-            })),
-        })),
-    })
-}
-
-// fn get_plugin_path_from_rust_ffi_config(pkt : &ScaiiPacket) -> Result<String, Box<Error>> {
-//     match pkt.specific_msg {
-//         Some(SpecificMsg::Config(protos::Cfg {
-//                     which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
-//                         plugin_type: PluginType {
-//                             plugin_type: Some(plugin_type::PluginType::RustPlugin(ref rust_ffi_config))
-//                         }
-//                     }))})) => {
-//                         Ok(rust_ffi_config.plugin_path.clone())
-//                     },
-//         _ => {
-//             Err(Box::new(ReplayError::new(
-//             &format!("ERROR - no plugin_path was found in supposedRustFfiConfig pkt {:?}", pkt),
-//         )))},
-//     }
-// }
-
-fn create_default_replay_backend_config() -> ScaiiPacket {
-    let vec: Vec<u8> = Vec::new();
-    ScaiiPacket {
-        src: protos::Endpoint {
-            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-        },
-        dest: protos::Endpoint {
-            endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-        },
-        specific_msg: Some(SpecificMsg::Config(protos::Cfg {
-            which_module: Some(WhichModule::BackendCfg(protos::BackendCfg {
-                cfg_msg: Some(vec),
-                is_replay_mode: true,
-            })),
-        })),
-    }
-}
-
-fn set_replay_mode_on_backend_config(packet_option: &mut Option<ScaiiPacket>) {
-    if let &mut Some(ScaiiPacket {
-        specific_msg:
-            Some(SpecificMsg::Config(protos::Cfg {
-                which_module:
-                    Some(WhichModule::BackendCfg(protos::BackendCfg {
-                        ref mut is_replay_mode,
-                        ..
-                    })),
-            })),
-        ..
-    }) = packet_option
-    {
-        *is_replay_mode = true;
-    }
-}
-
-fn get_replay_mode_pkt() -> ScaiiPacket {
-    ScaiiPacket {
-        src: protos::Endpoint {
-            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-        },
-        dest: protos::Endpoint {
-            endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-        },
-        specific_msg: Some(SpecificMsg::ReplayMode(true)),
-    }
-}
-
-fn get_emit_viz_pkt() -> ScaiiPacket {
-    ScaiiPacket {
-        src: protos::Endpoint {
-            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-        },
-        dest: protos::Endpoint {
-            endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-        },
-        specific_msg: Some(SpecificMsg::EmitViz(true)),
-    }
-}
-
-fn get_replay_configuration_message(replay_data: &Vec<ReplayAction>) -> ScaiiPacket {
-    let mut expl_titles: Vec<String> = Vec::new();
-    let mut chart_titles: Vec<String> = Vec::new();
-    let mut expl_steps: Vec<u32> = Vec::new();
-    let steps = replay_data.len() as i64;
-    expl_titles.push("actionA".to_string());
-    expl_steps.push(0);
-    chart_titles.push("chartA".to_string());
-    let spkt = create_replay_session_config_message(steps, expl_steps, expl_titles, chart_titles);
-    spkt
-}
-
-fn create_replay_session_config_message(
-    steps: i64,
-    expl_steps: Vec<u32>,
-    expl_titles: Vec<String>,
-    chart_titles: Vec<String>,
-) -> ScaiiPacket {
-    ScaiiPacket {
-        src: protos::Endpoint {
-            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-        },
-        dest: protos::Endpoint {
-            endpoint: Some(Endpoint::Module(ModuleEndpoint {
-                name: "viz".to_string(),
-            })),
-        },
-        specific_msg: Some(SpecificMsg::ReplaySessionConfig(ReplaySessionConfig {
-            step_count: steps,
-            explanation_steps: expl_steps,
-            explanation_titles: expl_titles,
-            chart_titles: chart_titles,
-        })),
     }
 }
