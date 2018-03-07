@@ -199,20 +199,20 @@ function handleVizInit(vizInit) {
 			testingMode = true;
 		}
 	}
-	if (vizInit.hasGameboardWidth()) {
-		gameboardWidth = vizInit.getGameboardWidth();
-		//console.log("gameboard width : " + gameboardWidth);
-		$("#scaii-gameboard").css("width", gameboardWidth);
-		gameboard_canvas.width = gameboardWidth;
-	}
-	gameboard_zoom_canvas.width = gameboard_canvas.width;
+	// if (vizInit.hasGameboardWidth()) {
+		// gameboardWidth = vizInit.getGameboardWidth();
+		console.log("gameboard width : " + gameboardWidth);
+		// $("#scaii-gameboard").css("width", gameboardWidth);
+		// gameboard_canvas.width = gameboardWidth;
+	// }
+	// gameboard_zoom_canvas.width = gameboard_canvas.width;
 
-	if (vizInit.hasGameboardHeight()) {
-		gameboardHeight = vizInit.getGameboardHeight();
-		$("#scaii-gameboard").css("height", gameboardHeight);
-		gameboard_canvas.height = gameboardHeight;
-	}
-	gameboard_zoom_canvas.height = gameboard_canvas.height;
+	// if (vizInit.hasGameboardHeight()) {
+		// gameboardHeight = vizInit.getGameboardHeight();
+		// $("#scaii-gameboard").css("height", gameboardHeight);
+		// gameboard_canvas.height = gameboardHeight;
+	// }
+	// gameboard_zoom_canvas.height = gameboard_canvas.height;
 	//renderTimeline(maxStep);
 }
 function handleViz(vizData) {
@@ -275,9 +275,10 @@ function handleEntities(entitiesList) {
 		}
 
 	}
-	renderState(gameboard_ctx, gameboard_canvas, masterEntities, 1, 0, 0, shapePositionMapForContext["game"]);
-	drawZoomBox(gameboard_ctx, gameboard_canvas, zoomBoxOriginX, zoomBoxOriginY, zoomFactor);
-	renderState(gameboard_zoom_ctx, gameboard_zoom_canvas, masterEntities, zoomFactor, zoomBoxOriginX, zoomBoxOriginY, shapePositionMapForContext["zoom"]);
+	renderState(gameboard_ctx, gameboard_canvas, masterEntities, 5, 0, 0, shapePositionMapForContext["game"]);
+	// disable zoom box for now
+	//drawZoomBox(gameboard_ctx, gameboard_canvas, zoomBoxOriginX, zoomBoxOriginY, zoomFactor);
+	//renderState(gameboard_zoom_ctx, gameboard_zoom_canvas, masterEntities, zoomFactor, zoomBoxOriginX, zoomBoxOriginY, shapePositionMapForContext["zoom"]);
 }
 
 function drawZoomBox(ctx, canvas, originX, originY, zoom) {
@@ -366,8 +367,8 @@ var initUI = function () {
 	configureSpeedSlider();
 	configureZoomSlider();
 	controlsManager.setControlsNotReady();
-	gameboard_canvas.width = 400;
-	gameboard_canvas.height = 400;
+	gameboard_canvas.width = 200;
+	gameboard_canvas.height = 200;
 	gameboard_zoom_canvas.width = gameboard_canvas.width;
 	gameboard_zoom_canvas.height = gameboard_canvas.height;
 	$("#scaii-gameboard").append(gameboard_canvas);
