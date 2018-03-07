@@ -58,7 +58,7 @@ var maxStep = 0;
 var explanations = [];
 var userCommandScaiiPackets = [];
 var sessionState = "pending";
-var currentStep = 0;
+var currentStep = -1;
 
 var spacingFactor = 1;
 var sizingFactor = 1;
@@ -151,12 +151,36 @@ function adjustZoomBoxPosition(x, y) {
 
 }
 
+function updateButtonsAsPerCurrentStep() {
+	if (currentStep == 0) {
+		controlsManager.expressResumeButton();
+		controlsManager.enablePauseResume();
+		controlsManager.disableRewind();
+	}
+	else if (currentStep == 1) {
+		controlsManager.expressResumeButton();
+		controlsManager.enablePauseResume();
+		controlsManager.disableRewind();
+	}
+	else if (currentStep == maxStep) {
+		controlsManager.expressPauseButton();
+		controlsManager.disablePauseResume();
+		controlsManager.enableRewind();
+	}
+	else {
+		controlsManager.expressPauseButton();
+		controlsManager.enablePauseResume();
+		controlsManager.enableRewind();
+	}
+}
 function handleReplayControl(replayControl) {
 	var command = replayControl.getCommandList();
 	if (command.length == 2) {
 		if (command[0] == 'set_step_position') {
 			currentStep = parseInt(command[1]);
+			console.log('replay control set step_position to ' + currentStep);
 			updateProgress(currentStep, maxStep);
+			updateButtonsAsPerCurrentStep();
 		}
 	}
 }
@@ -192,18 +216,21 @@ function handleVizInit(vizInit) {
 	//renderTimeline(maxStep);
 }
 function handleViz(vizData) {
-	//console.log('received Viz...');
+	console.log('received Viz...');
 	entitiesList = vizData.getEntitiesList();
 
 	handleEntities(entitiesList);
-	if (currentStep == maxStep) {
-		controlsManager.reachedEndOfGame();
-	}
+
 	//if (vizData.hasChart()) {
 	//	var chartInfo = vizData.getChart();
 	//	renderChartInfo(chartInfo, gameboardHeight);
 	//}
 	currentStep = currentStep + 1;
+
+	updateButtonsAsPerCurrentStep();
+	if (currentStep == maxStep) {
+		controlsManager.reachedEndOfGame();
+	}
 	console.log("current_step is " + currentStep + "maxStep is " + maxStep);
 	updateProgress(currentStep, maxStep);
 }
@@ -531,12 +558,14 @@ var connect = function (dots, attemptCount) {
 			var s = message.data;
 			var sPacket = proto.scaii.common.ScaiiPacket.deserializeBinary(s);
 			if (sPacket.hasReplaySessionConfig()) {
+				console.log("-----got replaySessionConfig");
 				var config = sPacket.getReplaySessionConfig();
 				handleReplaySessionConfig(config);
 				var mm = new proto.scaii.common.MultiMessage;
 				dealer.send(mm.serializeBinary());
 			}
 			else if (sPacket.hasVizInit()) {
+				console.log("-----got vizInit");
 				var vizInit = sPacket.getVizInit();
 				handleVizInit(vizInit);
 				controlsManager.gameStarted();
@@ -544,6 +573,7 @@ var connect = function (dots, attemptCount) {
 				dealer.send(mm.serializeBinary());
 			}
 			else if (sPacket.hasViz()) {
+				console.log("-----got Viz");
 				var viz = sPacket.getViz();
 				handleViz(viz);
 				// we're moving forward so rewind should be enabled
@@ -558,17 +588,20 @@ var connect = function (dots, attemptCount) {
 				dealer.send(mm.serializeBinary());
 			}
 			else if (sPacket.hasReplayControl()) {
+				console.log("-----got replayCOntrol");
 				var replayControl = sPacket.getReplayControl();
 				handleReplayControl(replayControl);
 				var mm = new proto.scaii.common.MultiMessage;
 				dealer.send(mm.serializeBinary());
 			}
 			else if (sPacket.hasErr()) {
+				console.log("-----got errorPkt");
 				console.log(sPacket.getErr().getDescription())
 				mm = new proto.scaii.common.MultiMessage;
 				dealer.send(mm.serializeBinary());
 			}
 			else if (sPacket.hasUserCommand()) {
+				console.log("-----got userCommand");
 				var userCommand = sPacket.getUserCommand();
 				var commandType = userCommand.getCommandType();
 				if (commandType == proto.scaii.common.UserCommand.UserCommandType.POLL_FOR_COMMANDS) {

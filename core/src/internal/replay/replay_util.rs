@@ -209,11 +209,23 @@ pub fn get_emit_viz_pkt() -> ScaiiPacket {
     }
 }
 
-pub fn get_replay_configuration_message(replay_data: &Vec<ReplayAction>) -> ScaiiPacket {
+pub fn get_reset_env_pkt() -> ScaiiPacket {
+    ScaiiPacket {
+        src: protos::Endpoint {
+            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+        },
+        dest: protos::Endpoint {
+            endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
+        },
+        specific_msg: Some(SpecificMsg::ResetEnv(true)),
+    }
+}
+
+pub fn get_replay_configuration_message(replay_data: &Vec<ReplayAction>, count : u32) -> ScaiiPacket {
     let mut expl_titles: Vec<String> = Vec::new();
     let mut chart_titles: Vec<String> = Vec::new();
     let mut expl_steps: Vec<u32> = Vec::new();
-    let steps = replay_data.len() as i64;
+    let steps = count as i64;
     expl_titles.push("actionA".to_string());
     expl_steps.push(0);
     chart_titles.push("chartA".to_string());
@@ -273,15 +285,15 @@ pub fn get_keframe_indices(replay_data : &Vec<ReplayAction>) -> Vec<u32> {
     result
 }
 
-pub fn get_keyframe_map(replay_data : Vec<ReplayAction>) -> Result<BTreeMap<u32, ScaiiPacket>, Box<Error>> {
+pub fn get_keyframe_map(replay_data : &Vec<ReplayAction>) -> Result<BTreeMap<u32, ScaiiPacket>, Box<Error>> {
     let mut result : BTreeMap<u32, ScaiiPacket> = BTreeMap::new();
     let mut count: u32 = 0;
     for replay_action in replay_data {
         match replay_action {
-            ReplayAction::Delta(_) => {},
-            ReplayAction::Keyframe(serialization_info,_) => {
+            &ReplayAction::Delta(_) => {},
+            &ReplayAction::Keyframe(ref serialization_info,_) => {
                 let ser_proto_ser_resp: SerializedProtosSerializationResponse =
-                    serialization_info.data;
+                    serialization_info.data.clone();
                 let ser_response_decode_result =
                     protos::SerializationResponse::decode(ser_proto_ser_resp.data);
                 match ser_response_decode_result {
@@ -302,7 +314,7 @@ pub fn get_keyframe_map(replay_data : Vec<ReplayAction>) -> Result<BTreeMap<u32,
                     }
                 }
             },
-            ReplayAction::Header(_) => {}
+            &ReplayAction::Header(_) => {}
         }
         count = count + 1;
     }
@@ -334,12 +346,10 @@ pub fn get_scaii_packets_for_replay_actions(replay_data : &Vec<ReplayAction>) ->
                             return Err(Box::new(err));
                         }
                     }
-                    
-                    
+                    stored_first_keyframe = true;
                 }
                 let spkt = convert_action_wrapper_to_action_pkt(action_wrapper.clone())?;
                 result.push(spkt);
-                stored_first_keyframe = true;
             },
             &ReplayAction::Header(_) => {}
         }

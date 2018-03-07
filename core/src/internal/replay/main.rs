@@ -10,7 +10,7 @@ extern crate url;
 use prost::Message;
 use protos::{plugin_type, scaii_packet, BackendEndpoint, Cfg,
              ModuleEndpoint, MultiMessage, PluginType, RecorderConfig, ReplayControl,
-             ReplayEndpoint, RustFfiConfig, ScaiiPacket, SerializationResponse};
+             ReplayEndpoint, RustFfiConfig, ScaiiPacket};
 use protos::cfg::WhichModule;
 use protos::user_command::UserCommandType;
 use protos::endpoint::Endpoint;
@@ -37,6 +37,7 @@ mod webserver;
 use webserver::launch_webserver;
 mod replay_util;
 mod replay_sequencer;
+use replay_sequencer::ReplaySequencer;
 
 #[cfg(test)]
 mod test;
@@ -101,8 +102,8 @@ impl Error for ReplayError {
 enum GameState {
     Running,
     Paused,
-    RewoundAndNeedingToSendInitialKeyframe,
-    JumpedAndNeedingToDoFollowupNavigation,
+    //RewoundAndNeedingToSendInitialKeyframe,
+    //JumpedAndNeedingToDoFollowupNavigation,
     SingleStep,
 }
 
@@ -134,9 +135,10 @@ struct ReplayManager {
     shutdown_received: bool,
     env: Environment,
     replay_actions: Vec<ReplayAction>,
-    keyframe_indices: Vec<u32>,
-    keyframe_map : BTreeMap<u32, ScaiiPacket>,
-    step_position: u64,
+    //keyframe_indices: Vec<u32>,
+    //keyframe_map : BTreeMap<u32, ScaiiPacket>,
+    //step_position: u64,
+    replay_sequencer: ReplaySequencer,
     header: ReplayAction,
     test_mode: bool,
     args: Args,
@@ -150,7 +152,9 @@ impl ReplayManager {
         self.env.update();
         // pull off header and configure
         let header: ReplayAction = self.header.clone();
-        let replay_session_cfg = replay_util::get_replay_configuration_message(&self.replay_actions);
+        let count = self.replay_sequencer.get_sequence_length();
+        let replay_session_cfg = replay_util::get_replay_configuration_message(&self.replay_actions, 
+            count);
         self.configure_as_per_header(header, replay_session_cfg)?;
         self.run_and_poll()
     }
@@ -327,26 +331,22 @@ impl ReplayManager {
         Ok(result)
     }
 
-    fn has_more_steps(&mut self) -> bool {
-        self.step_position <= self.replay_actions.len() as u64 - 1
-    }
-
-    fn wrap_response_in_scaii_pkt(
-        &mut self,
-        ser_response: protos::SerializationResponse,
-    ) -> ScaiiPacket {
-        ScaiiPacket {
-            src: protos::Endpoint {
-                endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-            },
-            dest: protos::Endpoint {
-                endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-            },
-            specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::SerResp(
-                ser_response,
-            )),
-        }
-    }
+    // fn wrap_response_in_scaii_pkt(
+    //     &mut self,
+    //     ser_response: protos::SerializationResponse,
+    // ) -> ScaiiPacket {
+    //     ScaiiPacket {
+    //         src: protos::Endpoint {
+    //             endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+    //         },
+    //         dest: protos::Endpoint {
+    //             endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
+    //         },
+    //         specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::SerResp(
+    //             ser_response,
+    //         )),
+    //     }
+    // }
 
     fn deploy_replay_directives_to_backend(
         &mut self,
@@ -362,52 +362,52 @@ impl ReplayManager {
         Ok(scaii_pkts)
     }
 
-    fn send_replay_action_to_backend(&mut self) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
-        let empty_vec: Vec<protos::ScaiiPacket> = Vec::new();
-        let replay_action: ReplayAction = self.replay_actions[self.step_position as usize].clone();
-        match replay_action {
-            ReplayAction::Delta(action_wrapper) => {
-                let action_pkt: ScaiiPacket =
-                    replay_util::convert_action_wrapper_to_action_pkt(action_wrapper)?;
-                let mut pkts: Vec<ScaiiPacket> = Vec::new();
-                pkts.push(action_pkt);
-                let mm = MultiMessage { packets: pkts };
-                let scaii_pkts = self.deploy_replay_directives_to_backend(&mm)?;
-                Ok(scaii_pkts)
-            }
-            ReplayAction::Keyframe(serialization_info, action_wrapper) => {
-                let ser_proto_ser_resp: SerializedProtosSerializationResponse =
-                    serialization_info.data;
-                let ser_response_decode_result =
-                    protos::SerializationResponse::decode(ser_proto_ser_resp.data);
-                match ser_response_decode_result {
-                    Ok(ser_response) => {
-                        let ser_response_pkt: ScaiiPacket =
-                            self.wrap_response_in_scaii_pkt(ser_response);
-                        let action_pkt: ScaiiPacket =
-                            replay_util::convert_action_wrapper_to_action_pkt(action_wrapper)?;
-                        // Zoe wants RTS to recieve these two in distinct multi-messages
-                        let mut pkts: Vec<ScaiiPacket> = Vec::new();
-                        pkts.push(ser_response_pkt);
-                        let mm = MultiMessage { packets: pkts };
-                        let _scaii_pkts = self.deploy_replay_directives_to_backend(&mm)?;
-                        let mut pkts: Vec<ScaiiPacket> = Vec::new();
-                        pkts.push(action_pkt);
-                        let mm = MultiMessage { packets: pkts };
-                        let scaii_pkts = self.deploy_replay_directives_to_backend(&mm)?;
-                        Ok(scaii_pkts)
-                    }
-                    Err(err) => Err(Box::new(err)),
-                }
-            }
-            ReplayAction::Header(_) => Ok(empty_vec),
-        }
-    }
+    // fn send_replay_action_to_backend(&mut self) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
+    //     let empty_vec: Vec<protos::ScaiiPacket> = Vec::new();
+    //     let replay_action: ReplayAction = self.replay_actions[self.step_position as usize].clone();
+    //     match replay_action {
+    //         ReplayAction::Delta(action_wrapper) => {
+    //             let action_pkt: ScaiiPacket =
+    //                 replay_util::convert_action_wrapper_to_action_pkt(action_wrapper)?;
+    //             let mut pkts: Vec<ScaiiPacket> = Vec::new();
+    //             pkts.push(action_pkt);
+    //             let mm = MultiMessage { packets: pkts };
+    //             let scaii_pkts = self.deploy_replay_directives_to_backend(&mm)?;
+    //             Ok(scaii_pkts)
+    //         }
+    //         ReplayAction::Keyframe(serialization_info, action_wrapper) => {
+    //             let ser_proto_ser_resp: SerializedProtosSerializationResponse =
+    //                 serialization_info.data;
+    //             let ser_response_decode_result =
+    //                 protos::SerializationResponse::decode(ser_proto_ser_resp.data);
+    //             match ser_response_decode_result {
+    //                 Ok(ser_response) => {
+    //                     let ser_response_pkt: ScaiiPacket =
+    //                         self.wrap_response_in_scaii_pkt(ser_response);
+    //                     let action_pkt: ScaiiPacket =
+    //                         replay_util::convert_action_wrapper_to_action_pkt(action_wrapper)?;
+    //                     // Zoe wants RTS to recieve these two in distinct multi-messages
+    //                     let mut pkts: Vec<ScaiiPacket> = Vec::new();
+    //                     pkts.push(ser_response_pkt);
+    //                     let mm = MultiMessage { packets: pkts };
+    //                     let _scaii_pkts = self.deploy_replay_directives_to_backend(&mm)?;
+    //                     let mut pkts: Vec<ScaiiPacket> = Vec::new();
+    //                     pkts.push(action_pkt);
+    //                     let mm = MultiMessage { packets: pkts };
+    //                     let scaii_pkts = self.deploy_replay_directives_to_backend(&mm)?;
+    //                     Ok(scaii_pkts)
+    //                 }
+    //                 Err(err) => Err(Box::new(err)),
+    //             }
+    //         }
+    //         ReplayAction::Header(_) => Ok(empty_vec),
+    //     }
+    // }
 
     fn send_test_mode_jump_to_message(
         &mut self,
         target_step: &String,
-    ) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
+    ) -> Result<(), Box<Error>> {
         let target: String = String::from("MockRts");
         let command: String = String::from("jumpTo");
         let mut args_list: Vec<String> = Vec::new();
@@ -415,18 +415,26 @@ impl ReplayManager {
         args_list.push(command);
         args_list.push(target_step.clone());
         let pkt: ScaiiPacket = self.create_test_control_message(args_list);
-        self.send_packet_to_backend(pkt)
+        self.send_pkt_to_backend(pkt)
     }
 
-    fn send_packet_to_backend(
+    fn send_pkt_to_backend(
         &mut self,
         pkt: ScaiiPacket,
-    ) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
+    ) -> Result<(), Box<Error>> {
         let mut pkts: Vec<ScaiiPacket> = Vec::new();
         pkts.push(pkt);
         let mm = MultiMessage { packets: pkts };
         let scaii_pkts = self.deploy_replay_directives_to_backend(&mm)?;
-        Ok(scaii_pkts)
+        for scaii_pkt in &scaii_pkts {
+            if scaii_defs::protos::is_error_pkt(scaii_pkt) {
+                // Error would have already been shown to user at UI
+                return Err(Box::new(ReplayError::new(&format!("Error response packet received from backend {:?}", scaii_pkt))));
+            } else {
+                return Err(Box::new(ReplayError::new(&format!("Unexpected response packet received from backend {:?}", scaii_pkt))));
+            }
+        }
+        Ok(())
     }
 
     fn create_test_control_message(&mut self, args_list: Vec<String>) -> ScaiiPacket {
@@ -445,20 +453,20 @@ impl ReplayManager {
 
     fn send_test_mode_rewind_hint_message(
         &mut self,
-    ) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
+    ) -> Result<(), Box<Error>> {
         let target: String = String::from("MockRts");
         let command: String = String::from("rewind");
         let mut args_list: Vec<String> = Vec::new();
         args_list.push(target);
         args_list.push(command);
         let pkt: ScaiiPacket = self.create_test_control_message(args_list);
-        self.send_packet_to_backend(pkt)
+        self.send_pkt_to_backend(pkt)
     }
 
     fn send_test_mode_jump_to_hint_message(
         &mut self,
         target_index: u64,
-    ) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
+    ) -> Result<(), Box<Error>> {
         let target: String = String::from("MockRts");
         let command: String = String::from("jump");
         let index: String = format!("{}", target_index);
@@ -467,28 +475,14 @@ impl ReplayManager {
         args_list.push(command);
         args_list.push(index);
         let pkt: ScaiiPacket = self.create_test_control_message(args_list);
-        self.send_packet_to_backend(pkt)
+        self.send_pkt_to_backend(pkt)
     }
 
     fn execute_run_step(&mut self) -> Result<GameState, Box<Error>> {
         let mut game_state: GameState = GameState::Running;
-        if self.has_more_steps() {
-            let scaii_pkts = self.send_replay_action_to_backend()?;
-            self.step_position += 1;
-            for scaii_pkt in &scaii_pkts {
-                if scaii_defs::protos::is_error_pkt(scaii_pkt) {
-                    // Error would have already been shown to user at UI
-                    println!(
-                        "REPLAY ERROR received as result of run_step {:?}",
-                        scaii_pkt
-                    );
-                } else {
-                    println!(
-                        "REPLAY unexpected pkt received after sending ReplayAction {:?}",
-                        scaii_pkt
-                    );
-                }
-            }
+        if self.replay_sequencer.has_next() {
+            let pkt = self.replay_sequencer.next();
+            self.send_pkt_to_backend(pkt)?;
         } else {
             // game will automatically pause at end, switch to polling mode
             game_state = GameState::Paused;
@@ -518,8 +512,8 @@ impl ReplayManager {
                         game_state = GameState::Paused;
                     }
                     UserCommandType::Resume => {
-                        //game_state = GameState::Running;
-                        game_state = GameState::SingleStep;
+                        game_state = GameState::Running;
+                        //game_state = GameState::SingleStep;
                         println!(
                             "================RECEIVED UserCommandType::Resume================"
                         );
@@ -528,13 +522,19 @@ impl ReplayManager {
                         println!(
                             "================RECEIVED UserCommandType::Rewind================"
                         );
-                        self.step_position = 0;
+                        
                         if self.test_mode {
-                            let _pkts: Vec<ScaiiPacket> =
-                                self.send_test_mode_rewind_hint_message()?;
+                            self.send_test_mode_rewind_hint_message()?;
                         }
-                        self.reset_ui_step_position("0".to_string())?;
-                        game_state = GameState::RewoundAndNeedingToSendInitialKeyframe;
+                        let pkt = replay_util::get_reset_env_pkt();
+                        self.send_pkt_to_backend(pkt);
+                        let pkt = self.replay_sequencer.rewind();
+                        println!("got rewind packet");
+                        self.send_pkt_to_backend(pkt)?;
+                        println!("sent rewind to backend");
+                        self.reset_ui_step_position("1".to_string())?;
+                        println!("sent UI to step position 1");
+                        //game_state = GameState::RewoundAndNeedingToSendInitialKeyframe;
                     }
                     UserCommandType::PollForCommands => {
                         println!(
@@ -547,6 +547,9 @@ impl ReplayManager {
                         );
                         println!("args : {:?}", user_command_args);
                         let jump_target: &String = &user_command_args[0];
+                        
+                        let pkt = replay_util::get_reset_env_pkt();
+                        self.send_pkt_to_backend(pkt);
                         game_state = self.handle_jump_request(jump_target)?;
                     }
                     UserCommandType::JumpCompleted => {} // sent to viz, not received from viz
@@ -605,23 +608,24 @@ impl ReplayManager {
         let mut num = self.step_delay.lock().unwrap();
         *num = msec_delay;
         Ok(())
-    }
+    }                   
 
     fn handle_jump_request(&mut self, jump_target: &String) -> Result<GameState, Box<Error>> {
         let result = jump_target.parse::<u32>();
         match result {
             Ok(jump_target_int) => {
-                if jump_target_int > self.replay_actions.len() as u32 {
-                    return Err(Box::new(ReplayError::new(&format!(
-                        "Jump target {} not in range of step count {}",
-                        jump_target_int,
-                        self.replay_actions.len()
-                    ))));
-                }
-                self.step_position = u64::from(jump_target_int);
-                self.reset_ui_step_position(jump_target.clone())?;
                 if self.test_mode {
-                    let _pkts: Vec<ScaiiPacket> = self.send_test_mode_jump_to_message(jump_target)?;
+                    let keyframe_index = self.replay_sequencer.get_prior_key_frame_index(jump_target_int);
+                    self.send_test_mode_jump_to_hint_message(keyframe_index as u64)?;
+                }
+                let pkts = self.replay_sequencer.jump_to(jump_target_int)?;
+                for pkt in pkts {
+                    self.send_pkt_to_backend(pkt)?;
+                }
+                self.reset_ui_step_position(jump_target.clone())?;
+                self.notify_viz_that_jump_completed()?;
+                if self.test_mode {
+                    self.send_test_mode_jump_to_message(jump_target)?;
                 }
             }
             Err(_) => {
@@ -632,26 +636,26 @@ impl ReplayManager {
             }
         }
 
-        Ok(GameState::JumpedAndNeedingToDoFollowupNavigation)
+        Ok(GameState::Paused)
     }
 
-    fn get_keyframe_index_prior_to_current_step_position(&mut self) -> Result<u64, Box<Error>> {
-        let mut cur_index: u64 = self.step_position;
-        let mut seeking: bool = true;
-        while seeking {
-            let cur_replay_action = &self.replay_actions[cur_index as usize];
-            match *cur_replay_action {
-                ReplayAction::Header(_) => {} // has been removed from list by now - no need to take into account},
-                ReplayAction::Delta(_) => {
-                    cur_index -= 1;
-                }
-                ReplayAction::Keyframe(_, _) => {
-                    seeking = false;
-                }
-            }
-        }
-        Ok(cur_index)
-    }
+    // fn get_keyframe_index_prior_to_current_step_position(&mut self) -> Result<u64, Box<Error>> {
+    //     let mut cur_index: u64 = self.step_position;
+    //     let mut seeking: bool = true;
+    //     while seeking {
+    //         let cur_replay_action = &self.replay_actions[cur_index as usize];
+    //         match *cur_replay_action {
+    //             ReplayAction::Header(_) => {} // has been removed from list by now - no need to take into account},
+    //             ReplayAction::Delta(_) => {
+    //                 cur_index -= 1;
+    //             }
+    //             ReplayAction::Keyframe(_, _) => {
+    //                 seeking = false;
+    //             }
+    //         }
+    //     }
+    //     Ok(cur_index)
+    // }
 
     fn run_and_poll(&mut self) -> Result<(), Box<Error>> {
         let mut game_state: GameState = GameState::Running;
@@ -714,21 +718,22 @@ impl ReplayManager {
     fn handle_step_nudge(&mut self, mut game_state: GameState) -> Result<GameState, Box<Error>> {
         match game_state {
             GameState::Running => {
+                println!("executing run step");
                 game_state = self.execute_run_step()?;
             }
             GameState::Paused => {
                 // do nothing
             }
-            GameState::RewoundAndNeedingToSendInitialKeyframe => {
-                let _ignored_game_state: GameState = self.execute_run_step()?;
-                game_state = GameState::Paused; // after rewind, we assume they don't want it to start playing
-            }
-            GameState::JumpedAndNeedingToDoFollowupNavigation => {
-                let backup_target: u64 = self.get_keyframe_index_prior_to_current_step_position()?;
-                let forward_target: u64 = self.step_position;
-                self.keyframe_to_later_step(backup_target, forward_target)?;
-                game_state = GameState::Paused;
-            }
+            // GameState::RewoundAndNeedingToSendInitialKeyframe => {
+            //     let _ignored_game_state: GameState = self.execute_run_step()?;
+            //     game_state = GameState::Paused; // after rewind, we assume they don't want it to start playing
+            // }
+            // GameState::JumpedAndNeedingToDoFollowupNavigation => {
+            //     let backup_target: u64 = self.get_keyframe_index_prior_to_current_step_position()?;
+            //     let forward_target: u64 = self.step_position;
+            //     self.keyframe_to_later_step(backup_target, forward_target)?;
+            //     game_state = GameState::Paused;
+            // }
             GameState::SingleStep => {
                 let _ignore_game_state = self.execute_run_step()?;
                 game_state = GameState::Paused;
@@ -738,21 +743,21 @@ impl ReplayManager {
     }
 
     // this should happen atomically - in between pollings, so no game_state change should be occurring so we can ignore
-    fn keyframe_to_later_step(
-        &mut self,
-        keyframe_index: u64,
-        target_index: u64,
-    ) -> Result<(), Box<Error>> {
-        if self.test_mode {
-            let _pkts: Vec<ScaiiPacket> = self.send_test_mode_jump_to_hint_message(keyframe_index)?;
-        }
-        self.step_position = keyframe_index;
-        while self.step_position <= target_index {
-            let _game_state = self.execute_run_step()?;
-        }
-        let _result = self.notify_viz_that_jump_completed()?;
-        Ok(())
-    }
+    // fn keyframe_to_later_step(
+    //     &mut self,
+    //     keyframe_index: u64,
+    //     target_index: u64,
+    // ) -> Result<(), Box<Error>> {
+    //     if self.test_mode {
+    //         let _pkts: Vec<ScaiiPacket> = self.send_test_mode_jump_to_hint_message(keyframe_index)?;
+    //     }
+    //     self.step_position = keyframe_index;
+    //     while self.step_position <= target_index {
+    //         let _game_state = self.execute_run_step()?;
+    //     }
+    //     let _result = self.notify_viz_that_jump_completed()?;
+    //     Ok(())
+    // }
 }
 
 fn wait(milliseconds: u64) {
@@ -922,22 +927,19 @@ fn run_replay(run_mode: RunMode, mut replay_info: Vec<ReplayAction>, args: Args)
         debug_assert!(environment.router().replay().is_some());
     }
     let header = replay_info.remove(0);
-    let keyframe_indices : Vec<u32> = replay_util::get_keframe_indices(&replay_info);
-    //let replay_actions : Vec<ReplayAction> = replay_util::get_replay_actions(&replay_info);
-    let replay_actions : Vec<ReplayAction> = Vec::new();
-    let keyframe_map_result =  replay_util::get_keyframe_map(replay_info);
-    match keyframe_map_result {
-        Ok(keyframe_map) => {
+    println!("replay_info is this long after header removed {}", replay_info.len());
+    let replay_sequencer_result = ReplaySequencer::new(&replay_info);
+    match replay_sequencer_result {
+        Ok(mut replay_sequencer) => {
+            println!("sequencer has this many {}", replay_sequencer.get_sequence_length());
             let mut replay_manager = ReplayManager {
                 incoming_message_queue: rc_replay_message_queue,
                 step_delay: Arc::new(Mutex::new(201)),
                 poll_delay: Arc::new(Mutex::new(50)),
                 shutdown_received: false,
                 env: environment,
-                replay_actions: replay_actions,
-                keyframe_indices: keyframe_indices,
-                keyframe_map : keyframe_map,
-                step_position: 0,
+                replay_actions: replay_info,
+                replay_sequencer: replay_sequencer,
                 header: header,
                 test_mode: mode_is_test,
                 args: args,
@@ -956,7 +958,7 @@ fn run_replay(run_mode: RunMode, mut replay_info: Vec<ReplayAction>, args: Args)
             return;
         }
     }
-    
+
 }
 
 fn configure_and_register_mock_rts(env: &mut Environment) {

@@ -5,6 +5,7 @@ use std::collections::BTreeMap;
 use std::error::Error;
 
 #[derive(Clone, PartialEq)]
+#[allow(dead_code)] // for tests
 pub enum SequenceState {
     NeedToSendFirstKeyFrame,
     ReadyForNextStep,
@@ -19,10 +20,10 @@ pub struct ReplaySequencer {
 }
 
 impl ReplaySequencer {
-    pub fn new(replay_info: Vec<ReplayAction>) -> Result<ReplaySequencer, Box<Error>> {
-        let keyframe_indices : Vec<u32> = replay_util::get_keframe_indices(&replay_info);
+    pub fn new(replay_info: &Vec<ReplayAction>) -> Result<ReplaySequencer, Box<Error>> {
+        let keyframe_indices : Vec<u32> = replay_util::get_keframe_indices(replay_info);
         println!("keyframe_indices : {:?}", keyframe_indices);
-        let scaii_pkts : Vec<ScaiiPacket> = replay_util::get_scaii_packets_for_replay_actions(&replay_info)?;
+        let scaii_pkts : Vec<ScaiiPacket> = replay_util::get_scaii_packets_for_replay_actions(replay_info)?;
         let keyframe_map =  replay_util::get_keyframe_map(replay_info)?;
         
         Ok(ReplaySequencer {
@@ -32,10 +33,12 @@ impl ReplaySequencer {
             keyframe_map : keyframe_map,
         })
     }
+    #[allow(dead_code)] // for tests
     pub fn get_sequence_length(&mut self) -> u32 {
         println!("len is {}", self.scaii_pkts.len());
         self.scaii_pkts.len() as u32
     }
+    #[allow(dead_code)] // for tests
     pub fn get_state(&mut self) -> SequenceState {
         if self.index == 0 {
             SequenceState::NeedToSendFirstKeyFrame
@@ -50,6 +53,7 @@ impl ReplaySequencer {
     pub fn has_next(&mut self) -> bool {
         self.index < self.scaii_pkts.len() as u32
     }
+    #[allow(dead_code)] // for tests
     pub fn get_current_index(&mut self) -> u32 {
         self.index
     }
@@ -68,12 +72,14 @@ impl ReplaySequencer {
         }
         
     }
+
     pub fn rewind(&mut self) -> ScaiiPacket{
         let zero_index : u32 = 0;
         let key_frame_pkt = self.keyframe_map.get(&zero_index).unwrap().clone();
         self.index = 1;
         key_frame_pkt
     }
+
     pub fn jump_to(&mut self, target : u32) -> Result<Vec<ScaiiPacket>, Box<Error>> {
         use super::ReplayError;
         let mut result : Vec<ScaiiPacket> = Vec::new();
@@ -107,7 +113,8 @@ impl ReplaySequencer {
         println!("self.index is now {}", self.index);
         Ok(result)
     }
-    fn get_prior_key_frame_index(&mut self, starting_point : u32) -> u32 {
+    
+    pub fn get_prior_key_frame_index(&mut self, starting_point : u32) -> u32 {
         let mut cur_index = self.keyframe_indices.len() as u32;
         println!("starting point is {}", starting_point);
         println!("seeking backwards from cur_index {}", cur_index);
