@@ -19,7 +19,7 @@ use scaii_core::Environment;
 use scaii_core::{ActionWrapper, ReplayAction, ReplayHeader, SerializedProtosScaiiPacket,
                  SerializedProtosSerializationResponse};
 use scaii_defs::protos;
-use scaii_defs::{Module, Replay};
+use scaii_defs::{Agent, Module, Replay};
 use std::error::Error;
 use std::{thread, time};
 use std::rc::Rc;
@@ -106,6 +106,27 @@ enum GameState {
     //JumpedAndNeedingToDoFollowupNavigation,
     SingleStep,
 }
+
+// need toregister dummy agent
+
+struct DummyAgentMessageQueue {
+    incoming_messages: Vec<protos::ScaiiPacket>,
+}
+
+impl Module for DummyAgentMessageQueue {
+    fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>> {
+        self.incoming_messages.push(msg.clone());
+        Ok(())
+    }
+
+    /// return empty messages
+    fn get_messages(&mut self) -> MultiMessage {
+        let pkts: Vec<ScaiiPacket> = Vec::new();
+        MultiMessage { packets: pkts }
+    }
+}
+
+impl Agent for DummyAgentMessageQueue {}
 
 /// Replay owns the environment, but we need this
 /// inside the environment (router) to collect messages
@@ -532,8 +553,8 @@ impl ReplayManager {
                         println!("got rewind packet");
                         self.send_pkt_to_backend(pkt)?;
                         println!("sent rewind to backend");
-                        self.reset_ui_step_position("1".to_string())?;
-                        println!("sent UI to step position 1");
+                        self.reset_ui_step_position("0".to_string())?;
+                        println!("sent UI to step position 0");
                         //game_state = GameState::RewoundAndNeedingToSendInitialKeyframe;
                     }
                     UserCommandType::PollForCommands => {
@@ -915,11 +936,21 @@ fn run_replay(run_mode: RunMode, mut replay_info: Vec<ReplayAction>, args: Args)
             mode_is_test = false;
         }
     }
+    let dummy_agent = DummyAgentMessageQueue {
+        incoming_messages: Vec::new(),
+    };
+    let rc_dummy_agent = Rc::new(RefCell::new(dummy_agent));
 
     let replay_message_queue = ReplayMessageQueue {
         incoming_messages: Vec::new(),
     };
     let rc_replay_message_queue = Rc::new(RefCell::new(replay_message_queue));
+    {
+        environment
+            .router_mut()
+            .register_agent(Box::new(Rc::clone(&rc_dummy_agent)));
+        debug_assert!(environment.router().agent().is_some());
+    }
     {
         environment
             .router_mut()
