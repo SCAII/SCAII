@@ -194,12 +194,14 @@ impl<'a, 'b> Module for Context<'a, 'b> {
             Some(SpecificMsg::Config(Cfg {
                 which_module: Some(WhichModule::BackendCfg(ref backend_cfg)),
             })) => {
+                println!("rts got Cfg");
                 let out = self.configure(backend_cfg);
                 let mm = self.rts.init();
                 self.awaiting_msgs.push(mm);
                 out
             }
             Some(SpecificMsg::ResetEnv(true)) => {
+                println!("rts got ResetEnv");
                 let mm = self.rts.reset();
                 self.awaiting_msgs.push(mm);
                 Ok(())
@@ -207,6 +209,7 @@ impl<'a, 'b> Module for Context<'a, 'b> {
             Some(SpecificMsg::Action(ref action)) => {
                 self.rts.action_input(action.clone());
                 let mut mm = self.rts.update();
+                println!("Action caused rts.update()");
                 if mm.packets.len() > 0 {
                     self.awaiting_msgs.push(mm);
                 }
