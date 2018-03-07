@@ -10,7 +10,7 @@ extern crate url;
 use prost::Message;
 use protos::{plugin_type, scaii_packet, BackendEndpoint, Cfg,
              ModuleEndpoint, MultiMessage, PluginType, RecorderConfig, ReplayControl,
-             ReplayEndpoint, RustFfiConfig, ScaiiPacket};
+             ReplayEndpoint, RustFfiConfig, ScaiiPacket, SerializationResponse};
 use protos::cfg::WhichModule;
 use protos::user_command::UserCommandType;
 use protos::endpoint::Endpoint;
@@ -29,12 +29,17 @@ use std::sync::{mpsc, Arc, Mutex};
 use std::path::Path;
 use std::env;
 use scaii_core::util;
+use std::collections::BTreeMap;
 
 mod test_util;
 use test_util::*;
 mod webserver;
 use webserver::launch_webserver;
 mod replay_util;
+mod replay_sequencer;
+
+#[cfg(test)]
+mod test;
 
 const USAGE: &'static str = "
 replay.
@@ -128,8 +133,11 @@ struct ReplayManager {
     poll_delay: Arc<Mutex<u64>>,
     shutdown_received: bool,
     env: Environment,
-    replay_data: Vec<ReplayAction>,
+    replay_actions: Vec<ReplayAction>,
+    keyframe_indices: Vec<u32>,
+    keyframe_map : BTreeMap<u32, ScaiiPacket>,
     step_position: u64,
+    header: ReplayAction,
     test_mode: bool,
     args: Args,
 }
@@ -141,8 +149,8 @@ impl ReplayManager {
         self.env.route_messages(&mm);
         self.env.update();
         // pull off header and configure
-        let header: ReplayAction = self.replay_data.remove(0);
-        let replay_session_cfg = replay_util::get_replay_configuration_message(&self.replay_data);
+        let header: ReplayAction = self.header.clone();
+        let replay_session_cfg = replay_util::get_replay_configuration_message(&self.replay_actions);
         self.configure_as_per_header(header, replay_session_cfg)?;
         self.run_and_poll()
     }
@@ -320,7 +328,7 @@ impl ReplayManager {
     }
 
     fn has_more_steps(&mut self) -> bool {
-        self.step_position <= self.replay_data.len() as u64 - 1
+        self.step_position <= self.replay_actions.len() as u64 - 1
     }
 
     fn wrap_response_in_scaii_pkt(
@@ -340,28 +348,6 @@ impl ReplayManager {
         }
     }
 
-    fn convert_action_wrapper_to_action_pkt(
-        &mut self,
-        action_wrapper: ActionWrapper,
-    ) -> Result<ScaiiPacket, Box<Error>> {
-        let data = action_wrapper.serialized_action;
-        let action_decode_result = protos::Action::decode(data);
-        match action_decode_result {
-            Ok(protos_action) => Ok(ScaiiPacket {
-                src: protos::Endpoint {
-                    endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-                },
-                dest: protos::Endpoint {
-                    endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-                },
-                specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::Action(
-                    protos_action,
-                )),
-            }),
-            Err(err) => Err(Box::new(err)),
-        }
-    }
-
     fn deploy_replay_directives_to_backend(
         &mut self,
         mm: &MultiMessage,
@@ -378,11 +364,11 @@ impl ReplayManager {
 
     fn send_replay_action_to_backend(&mut self) -> Result<Vec<protos::ScaiiPacket>, Box<Error>> {
         let empty_vec: Vec<protos::ScaiiPacket> = Vec::new();
-        let replay_action: ReplayAction = self.replay_data[self.step_position as usize].clone();
+        let replay_action: ReplayAction = self.replay_actions[self.step_position as usize].clone();
         match replay_action {
             ReplayAction::Delta(action_wrapper) => {
                 let action_pkt: ScaiiPacket =
-                    self.convert_action_wrapper_to_action_pkt(action_wrapper)?;
+                    replay_util::convert_action_wrapper_to_action_pkt(action_wrapper)?;
                 let mut pkts: Vec<ScaiiPacket> = Vec::new();
                 pkts.push(action_pkt);
                 let mm = MultiMessage { packets: pkts };
@@ -399,7 +385,7 @@ impl ReplayManager {
                         let ser_response_pkt: ScaiiPacket =
                             self.wrap_response_in_scaii_pkt(ser_response);
                         let action_pkt: ScaiiPacket =
-                            self.convert_action_wrapper_to_action_pkt(action_wrapper)?;
+                            replay_util::convert_action_wrapper_to_action_pkt(action_wrapper)?;
                         // Zoe wants RTS to recieve these two in distinct multi-messages
                         let mut pkts: Vec<ScaiiPacket> = Vec::new();
                         pkts.push(ser_response_pkt);
@@ -625,11 +611,11 @@ impl ReplayManager {
         let result = jump_target.parse::<u32>();
         match result {
             Ok(jump_target_int) => {
-                if jump_target_int > self.replay_data.len() as u32 {
+                if jump_target_int > self.replay_actions.len() as u32 {
                     return Err(Box::new(ReplayError::new(&format!(
                         "Jump target {} not in range of step count {}",
                         jump_target_int,
-                        self.replay_data.len()
+                        self.replay_actions.len()
                     ))));
                 }
                 self.step_position = u64::from(jump_target_int);
@@ -653,7 +639,7 @@ impl ReplayManager {
         let mut cur_index: u64 = self.step_position;
         let mut seeking: bool = true;
         while seeking {
-            let cur_replay_action = &self.replay_data[cur_index as usize];
+            let cur_replay_action = &self.replay_actions[cur_index as usize];
             match *cur_replay_action {
                 ReplayAction::Header(_) => {} // has been removed from list by now - no need to take into account},
                 ReplayAction::Delta(_) => {
@@ -912,7 +898,7 @@ fn main() {
 }
 
 #[allow(unused_assignments)]
-fn run_replay(run_mode: RunMode, replay_info: Vec<ReplayAction>, args: Args) {
+fn run_replay(run_mode: RunMode, mut replay_info: Vec<ReplayAction>, args: Args) {
     let mut mode_is_test = true;
     let mut environment: Environment = Environment::new();
 
@@ -935,25 +921,42 @@ fn run_replay(run_mode: RunMode, replay_info: Vec<ReplayAction>, args: Args) {
             .register_replay(Box::new(Rc::clone(&rc_replay_message_queue)));
         debug_assert!(environment.router().replay().is_some());
     }
-    let mut replay_manager = ReplayManager {
-        incoming_message_queue: rc_replay_message_queue,
-        step_delay: Arc::new(Mutex::new(201)),
-        poll_delay: Arc::new(Mutex::new(50)),
-        shutdown_received: false,
-        env: environment,
-        replay_data: replay_info,
-        step_position: 0,
-        test_mode: mode_is_test,
-        args: args,
-    };
-    let result = replay_manager.start();
-    match result {
-        Ok(_) => {}
-        Err(e) => {
-            println!("Replay Error {:?}", e);
+    let header = replay_info.remove(0);
+    let keyframe_indices : Vec<u32> = replay_util::get_keframe_indices(&replay_info);
+    //let replay_actions : Vec<ReplayAction> = replay_util::get_replay_actions(&replay_info);
+    let replay_actions : Vec<ReplayAction> = Vec::new();
+    let keyframe_map_result =  replay_util::get_keyframe_map(replay_info);
+    match keyframe_map_result {
+        Ok(keyframe_map) => {
+            let mut replay_manager = ReplayManager {
+                incoming_message_queue: rc_replay_message_queue,
+                step_delay: Arc::new(Mutex::new(201)),
+                poll_delay: Arc::new(Mutex::new(50)),
+                shutdown_received: false,
+                env: environment,
+                replay_actions: replay_actions,
+                keyframe_indices: keyframe_indices,
+                keyframe_map : keyframe_map,
+                step_position: 0,
+                header: header,
+                test_mode: mode_is_test,
+                args: args,
+            };
+            let result = replay_manager.start();
+            match result {
+                Ok(_) => {}
+                Err(e) => {
+                    println!("Replay Error {:?}", e);
+                    return;
+                }
+            }
+        }
+        Err(err) => {
+            println!("Replay Error {:?}", err);
             return;
         }
     }
+    
 }
 
 fn configure_and_register_mock_rts(env: &mut Environment) {

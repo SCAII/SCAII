@@ -1,7 +1,7 @@
 
 use protos::{BackendEndpoint, BackendInit, Cfg, CoreEndpoint,
-             ModuleEndpoint, MultiMessage,
-             ReplayEndpoint, ReplaySessionConfig, RustFfiConfig, ScaiiPacket};
+             ModuleEndpoint, MultiMessage, ReplayEndpoint, ReplaySessionConfig, 
+             RustFfiConfig, ScaiiPacket};
 use protos::cfg::WhichModule;
 use protos::endpoint::Endpoint;
 use protos::scaii_packet::SpecificMsg;
@@ -9,7 +9,7 @@ use scaii_core::{ReplayAction, ScaiiConfig};
 use scaii_defs::protos;
 use std::error::Error;
 use std::fs::File;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::io::BufReader;
 use bincode::{deserialize_from, Infinite};
 use super::*;
@@ -242,5 +242,146 @@ pub fn create_replay_session_config_message(
             explanation_titles: expl_titles,
             chart_titles: chart_titles,
         })),
+    }
+}
+
+// Delta(ActionWrapper),
+// Keyframe(SerializationInfo, ActionWrapper),
+    
+pub fn get_keframe_indices(replay_data : &Vec<ReplayAction>) -> Vec<u32> {
+    let mut result : Vec<u32> = Vec::new();
+    let mut index : u32 = 0;
+    for replay_action in replay_data {
+        match replay_action {
+            &ReplayAction::Delta(_) => {},
+            &ReplayAction::Keyframe(_,_) => {
+                if index == 0 {
+                    result.push(index);
+                }
+                else {
+                    // account for the fact that the first ser_response winds up being the first packet
+                    // in effect pushing all later indices up one
+                    result.push(index + 1);
+                }
+                
+                
+            },
+            &ReplayAction::Header(_) => {} // should not be in play, can ignore
+        }
+        index = index + 1;
+    }
+    result
+}
+
+pub fn get_keyframe_map(replay_data : Vec<ReplayAction>) -> Result<BTreeMap<u32, ScaiiPacket>, Box<Error>> {
+    let mut result : BTreeMap<u32, ScaiiPacket> = BTreeMap::new();
+    let mut count: u32 = 0;
+    for replay_action in replay_data {
+        match replay_action {
+            ReplayAction::Delta(_) => {},
+            ReplayAction::Keyframe(serialization_info,_) => {
+                let ser_proto_ser_resp: SerializedProtosSerializationResponse =
+                    serialization_info.data;
+                let ser_response_decode_result =
+                    protos::SerializationResponse::decode(ser_proto_ser_resp.data);
+                match ser_response_decode_result {
+                    Ok(ser_response) => {
+                        let spkt = wrap_response_in_scaii_pkt(ser_response);
+                        if count == 0 {
+                           
+                            result.insert(count, spkt);
+                        }
+                        else {
+                            // account for the fact that the first ser_response winds up being the first packet and
+                            // it's action winds up being the second.
+                            result.insert(count + 1, spkt);
+                        }
+                    }
+                    Err(err) => { 
+                        return Err(Box::new(err));
+                    }
+                }
+            },
+            ReplayAction::Header(_) => {}
+        }
+        count = count + 1;
+    }
+    Ok(result)
+}
+
+
+pub fn get_scaii_packets_for_replay_actions(replay_data : &Vec<ReplayAction>) ->  Result<Vec<ScaiiPacket>, Box<Error>> {
+    let mut result : Vec<ScaiiPacket> = Vec::new();
+    let mut stored_first_keyframe = false;
+    for replay_action in replay_data {
+        match replay_action {
+            &ReplayAction::Delta(ref action_wrapper) => {
+                let spkt = convert_action_wrapper_to_action_pkt(action_wrapper.clone())?;
+                result.push(spkt);
+            },
+            &ReplayAction::Keyframe(ref serialization_info,ref action_wrapper) => {
+                if !stored_first_keyframe {
+                    let ser_proto_ser_resp: SerializedProtosSerializationResponse =
+                        serialization_info.data.clone();
+                    let ser_response_decode_result =
+                        protos::SerializationResponse::decode(ser_proto_ser_resp.data);
+                    match ser_response_decode_result {
+                        Ok(ser_response) => {
+                            let spkt = wrap_response_in_scaii_pkt(ser_response);
+                            result.push(spkt);
+                        }
+                        Err(err) => { 
+                            return Err(Box::new(err));
+                        }
+                    }
+                    
+                    
+                }
+                let spkt = convert_action_wrapper_to_action_pkt(action_wrapper.clone())?;
+                result.push(spkt);
+                stored_first_keyframe = true;
+            },
+            &ReplayAction::Header(_) => {}
+        }
+    }
+    Ok(result)
+}
+
+
+pub fn wrap_response_in_scaii_pkt(
+    ser_response: protos::SerializationResponse,
+) -> ScaiiPacket {
+    ScaiiPacket {
+        src: protos::Endpoint {
+            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+        },
+        dest: protos::Endpoint {
+            endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
+        },
+        specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::SerResp(
+            ser_response,
+        )),
+    }
+}
+
+
+pub fn convert_action_wrapper_to_action_pkt(
+    action_wrapper: ActionWrapper,
+) -> Result<ScaiiPacket, Box<Error>> {
+    let data = action_wrapper.serialized_action;
+    let action_decode_result = protos::Action::decode(data);
+    match action_decode_result {
+        Ok(protos_action) => Ok(ScaiiPacket {
+            src: protos::Endpoint {
+                endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+            },
+            dest: protos::Endpoint {
+                endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
+            },
+            specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::Action(
+                protos_action,
+            )),
+        }),
+        Err(err) => Err(Box::new(err)),
     }
 }
