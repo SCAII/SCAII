@@ -30,19 +30,27 @@
 		
 #scaii-interface {
     display: flex;
-	flex-direction: row;
+	flex-direction: column;
     background-color: lightgrey;
 }
 
 #scaii-game {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     background-color: lightgrey;
     margin: 2px;
 }
+
+#context-panel {
+	display: flex;
+	flex-direction: column;
+    width: 400px;
+    background-color: lightgrey;
+}
+
 #scaii-explanations {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     background-color: lightgrey;
     margin: 2px;
 }
@@ -51,7 +59,14 @@
 	background-color: lightgrey;
     width: 400px;
     height: 20px;
-    margin: 0px;
+    margin: auto;
+}
+
+#scaii-acronym {
+	background-color: lightgrey;
+    width: 400px;
+    height: 20px;
+    margin: auto;
 }
 #scaii-gameboard {
 	background-color: lightgrey;
@@ -60,11 +75,13 @@
     margin: 0px;
 }
 #scaii-timeline {
-	text-align:center;
+    display: flex;
+    flex-direction: row;
+	/*text-align:center;*/
 	background-color: lightgrey;
     width: 400px;
     height: 20px;
-    margin: 0px;
+    margin: auto;
 }
 
 #scaii-game-controls {
@@ -73,13 +90,22 @@
 	background-color: lightgrey;
     width: 400px;
     height: 20px;
-    margin: 2px;
+    margin: auto;
+}
+
+#explanation-control {
+    display: flex;
+	flex-direction: row;
+	background-color: lightgrey;
+    width: 400px;
+    height: 20px;
+    margin: auto;
 }
 
 #scaii-zoom-controls {
     display: flex;
 	flex-direction: row;
-	background-color: lightyellow;
+	background-color: lightgrey;
     width: 400px;
     height: 20px;
     margin: 2px;
@@ -97,8 +123,36 @@
     height: 400px;
     margin: 0px;
 }
+.left-column-label {
+    width: 76px;
+    height: 30px;
+    margin: 0px;
+}
+.playback-button {
+	margin-right: 5px;
+	margin-left: 5px;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.control-panel {
+	width: 320px;
+    height: 30px;
+    margin: 0px;
+	padding-right: 4px;
+	background-color: lightgrey;
+}
+#playback {
+    display: flex;
+    flex-direction: row;
+	background-color: lightgrey;
+    width: 400px;
+    height: 40px;
+    margin: auto;
+}
 #game-progress {
-  width: 80%;
+  width: 100%;
   height: 15px;
   background-color: white;
   margin-top: 4px;
@@ -106,6 +160,9 @@
   /*margin-left:70px;
   margin-right: 70px;*/
   border: 1px solid #0063a6;
+}
+#speed-slider {
+  width: 100%;
 }
 /*
 #game-progress-value {
@@ -116,22 +173,36 @@
 </style>
 	</head>
 	<body>
-	  
-
 		<div id="scaii-interface">
-			
 			<div id="scaii-game">
-				<div id="scaii-interface-title"></div>
-				<div id="scaii-gameboard"></div>
-				<div id="scaii-timeline">
-					<progress id="game-progress" value="00" max="99"></progress>
+				<div id="context-panel">
+					<div id="scaii-acronym"></div>
+					<div id="scaii-interface-title"></div>
+					<div id="scaii-game-controls">
+						<div id="replay-speed-label" class="left-column-label"></div>
+						<div id="replay-speed-panel" class="control-panel"></div>
+					</div>
+					<div id="scaii-timeline">
+						<div id="progress-label" class="left-column-label"></div>
+						<div id="progress-panel" class="control-panel">
+							<progress id="game-progress" value="00" max="99"></progress>
+						</div>
+					</div>
+					<div id="explanation-control">
+						<div id="explanation-control-label" class="left-column-label"></div>
+						<div id="explanation-control-panel" class="control-panel"></div>
+					</div>
+					<div id="playback">
+						<div id="playback-label" class="left-column-label"></div>
+						<div id="playback-panel" class="control-panel"></div>
+					</div>
 				</div>
-				<div id="scaii-game-controls"></div>
+				<div id="scaii-gameboard"></div>
 			</div>
 			<div id="scaii-explanations">
 				<div id="explanations-interface-title"></div>
 				<div id="scaii-gameboard-zoom"></div>
-				<div id="scaii-zoom-controls"></div>
+				<!--<div id="scaii-zoom-controls"></div>-->
 			</div>
 		</div>
 		<script src="js/scaiiViz.js"></script>
