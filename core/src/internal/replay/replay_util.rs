@@ -221,14 +221,27 @@ pub fn get_reset_env_pkt() -> ScaiiPacket {
     }
 }
 
-pub fn get_replay_configuration_message(replay_data: &Vec<ReplayAction>, count : u32) -> ScaiiPacket {
+pub fn get_replay_configuration_message(replay_data: &Vec<ReplayAction>, count : u32, explanations_option : &Option<Explanations>) -> ScaiiPacket {
     let mut expl_titles: Vec<String> = Vec::new();
     let mut chart_titles: Vec<String> = Vec::new();
     let mut expl_steps: Vec<u32> = Vec::new();
+
+    match explanations_option {
+        &None => {},
+        &Some(ref explanations) => {
+            println!("...adding expl info to config message...");
+            for index in &explanations.step_indices {
+                expl_steps.push(index.clone());
+                let expl_point_option = &explanations.expl_map.get(index);
+                let title_option = &expl_point_option.unwrap().title;
+                let title = title_option.clone().unwrap();
+                println!("......step_index {} title{} ", index, title);
+                expl_titles.push(title);
+            }
+        }
+    }
+
     let steps = count as i64;
-    expl_titles.push("actionA".to_string());
-    expl_steps.push(0);
-    chart_titles.push("chartA".to_string());
     let spkt = create_replay_session_config_message(steps, expl_steps, expl_titles, chart_titles);
     spkt
 }

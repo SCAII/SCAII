@@ -1,9 +1,123 @@
 google.charts.load('current', {packages: ['corechart', 'bar']});
 google.charts.setOnLoadCallback(dummy);
 var chart;
+
+function getExplanationBox(left_x,right_x, upper_y, lower_y, step){
+	eBox = {};
+	eBox.left_x = left_x;
+	eBox.right_x = right_x;
+	eBox.upper_y = upper_y;
+	eBox.lower_y = lower_y;
+	eBox.step = step;
+	return eBox;
+}
+
+var configure_explanation = function(step_count, step, title){
+	var total_width = expl_ctrl_canvas.width;
+	var rect_width = total_width / step_count;
+	var left_x = rect_width * step;
+	var right_x = rect_width * (step + 1);
+	var upper_left_x = left_x;
+	var dist_from_line = 8
+	var upper_left_y = 14 - dist_from_line;
+	var ctx = expl_ctrl_ctx;
+	// (canvas height is 30, line is at y==14, so diamond height is
+	ctx.beginPath();
+	ctx.fillStyle = 'white';
+	ctx.lineWidth = 1;
+	ctx.strokeStyle = 'black';
+	var rect_height = dist_from_line + dist_from_line + 1;
+	ctx.rect(upper_left_x, upper_left_y, rect_width, rect_height);
+	ctx.stroke();
+	ctx.fill();
+	var eBox = getExplanationBox(left_x,right_x,upper_left_y, upper_left_y + rect_height, step);
+    explanationBoxMap[step] = eBox;
+}
+
+function getMatchingExplanationStep(ctx, x, y){
+	var matchingStep = undefined;
+	for (key in explanationBoxMap) {
+		var eBox = explanationBoxMap[key];
+		if (x > eBox.left_x && x < eBox.right_x && y > eBox.upper_y && y < eBox.lower_y) {
+			matchingStep = eBox.step;
+		}
+	}
+	return matchingStep;
+}
+
+
+
+var renderExplanationPoint = function(explPoint){
+	$("#explanation-maps").empty();
+	var title = explPoint.getTitle();
+	var description = explPoint.getDescription();
+	var expLayers = explPoint.getLayersList();
+	for (var i in expLayers) {
+		expLayer = expLayers[i];
+		console.log('found layer ' + expLayer.getName());
+		var name = expLayer.getName();
+		var cells = expLayer.getCellsList();
+		var width = expLayer.getWidth();
+		var height = expLayer.getHeight();
+		renderExplLayer(name, cells, width, height)
+	}
+}
+
+var renderExplLayer = function(name, cells, width, height) {
+	console.log('render layer ' + name);
+	var explCanvas = document.createElement("canvas");
+	var explCtx = explCanvas.getContext("2d");
+	// canvas size should be same a gameboardHeight
+	explCanvas.width  = gameboard_canvas.width;
+	explCanvas.height = gameboard_canvas.height;
+	// the div that will contain it should be a bit wider
+	// and tall enough to contain title text
+	var mapContainerDivHeight = explCanvas.height + 60;
+	
+	var mapContainerDiv = document.createElement("div");
+	$("#explanation-maps").append(mapContainerDiv);
+	var mapId = 'mapContainer_' + name;
+	mapContainerDiv.setAttribute("id", mapId);
+	var mapContainerDivSelector = "#" + mapId;
+	$(mapContainerDivSelector).css("display", "flex");
+	$(mapContainerDivSelector).css("flex-direction", "column");
+	$(mapContainerDivSelector).css("width", explCanvas.width+'px');
+	$(mapContainerDivSelector).css("height", mapContainerDivHeight+'px');
+	$(mapContainerDivSelector).css("margin-right", '4px');
+	
+	var mapTitleId = 'title_' + name;
+	var mapTitleDiv   = document.createElement("div");
+	$(mapContainerDivSelector).append(mapTitleDiv);
+	mapTitleDiv.setAttribute("id", mapTitleId);
+	var mapTitleDivSelector = "#" + mapTitleId;
+	$(mapTitleDivSelector).html(name);
+	configureMapTitle(mapTitleDivSelector);
+	
+	var mapId = 'map_' + name;
+	var mapDiv = document.createElement("div");
+	$(mapContainerDivSelector).append(mapDiv);
+	mapDiv.setAttribute("id", mapId);
+	var mapDivSelector = "#" + mapId;
+	$(mapDivSelector).css("width",explCanvas.width + 'px');
+	$(mapDivSelector).css("height",explCanvas.height + 'px');
+	$(mapDivSelector).css("background-color", "#123456");
+	$(mapDivSelector).append(explCanvas);
+}
+
+var configureMapTitle = function(mapTitleDivSelector){
+	$(mapTitleDivSelector).css("font-family", "Fira Sans");
+	$(mapTitleDivSelector).css("font-size", "12px");
+	$(mapTitleDivSelector).css("padding-left", "6px");
+	$(mapTitleDivSelector).css("padding-right", "6px");
+	$(mapTitleDivSelector).css("padding-top", "2px");
+	$(mapTitleDivSelector).css("padding-bottom", "2px");
+	$(mapTitleDivSelector).css("text-align", "center");
+	$(mapTitleDivSelector).css("height", "40px");
+}
 var dummy = function(){
 	
 }
+
 var drawBarChart = function(chartData, options) {
       var data = google.visualization.arrayToDataTable(chartData);
 	  if (chart == undefined){
@@ -11,6 +125,7 @@ var drawBarChart = function(chartData, options) {
 	  }
       chart.draw(data, options);
 }
+
 /*var redrawChart = function() {
 	console.log("trigger button clicked...");
         var data = google.visualization.arrayToDataTable([

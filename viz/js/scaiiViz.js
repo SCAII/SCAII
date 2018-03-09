@@ -70,6 +70,8 @@ var entitiesList = undefined;
 var shapePositionMapForContext = {};
 var primaryHighlightedShapeIds = [];
 var secondaryHighlightedShapeIds = [];
+var explanationBoxMap = {};
+var game_background_color = "#123456";
 
 // Create the gameboard canvas
 var gameboard_canvas = document.createElement("canvas");
@@ -80,6 +82,18 @@ var gameboard_zoom_ctx = gameboard_zoom_canvas.getContext("2d");
 
 var expl_ctrl_canvas = document.createElement("canvas");
 var expl_ctrl_ctx = expl_ctrl_canvas.getContext("2d");
+
+expl_ctrl_canvas.addEventListener('click', function (event) {
+	matchingStep = getMatchingExplanationStep(expl_ctrl_ctx, event.offsetX, event.offsetY);
+	console.log('clicked on step ' + matchingStep);
+	if (matchingStep != undefined) {
+		var userCommand = new proto.scaii.common.UserCommand;
+		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.EXPLAIN);
+		var args = ['' +matchingStep];
+		userCommand.setArgsList(args);
+		stageUserCommand(userCommand);
+	}
+});
 
 gameboard_canvas.addEventListener('click', function (event) {
 	if (event.shiftKey) {
@@ -189,12 +203,35 @@ function handleReplayControl(replayControl) {
 	}
 }
 function handleReplaySessionConfig(rsc) {
+	explanationBoxMap = {};
 	if (rsc.hasStepCount()) {
 		maxStep = rsc.getStepCount() - 1;
 	}
-	explanations = rsc.getExplanationStepsList();
-	console.log("explanation count is " + explanations.length);
+	var explanation_steps = rsc.getExplanationStepsList();
+	var explanation_titles = rsc.getExplanationTitlesList();
+	console.log("explanation count is " + explanation_steps.length);
+	var expl_count = explanation_steps.length;
+	var index = 0;
+	while (index < expl_count){
+		var step = explanation_steps[index];
+		var title = explanation_titles[index];
+		configure_explanation(rsc.getStepCount(), step, title);
+		index = index + 1;
+	}
 }
+
+function handleExplDetails(explDetails){
+	console.log('handling expl details');
+	if (explDetails.hasExplPoint()){
+		explanationPoint = explDetails.getExplPoint();
+		console.log('got expl point for step ' + explanationPoint.getStep());
+		renderExplanationPoint(explanationPoint);
+	}
+	else {
+		console.log("MISSING expl point!");
+	}
+}
+
 function handleVizInit(vizInit) {
 	clearGameBoards();
 	//gameboard_ctx.fillText("Received VizInit!", 10, 50);
@@ -430,12 +467,12 @@ var initUI = function () {
 	$("#scaii-gameboard").append(gameboard_canvas);
 	$("#scaii-gameboard").css("width", gameboard_canvas.width);
 	$("#scaii-gameboard").css("height", gameboard_canvas.height);
-	$("#scaii-gameboard").css("background-color", "#123456");
+	$("#scaii-gameboard").css("background-color", game_background_color);
 
 	$("#scaii-gameboard-zoom").append(gameboard_zoom_canvas);
 	$("#scaii-gameboard-zoom").css("width", gameboard_zoom_canvas.width);
 	$("#scaii-gameboard-zoom").css("height", gameboard_zoom_canvas.height);
-	$("#scaii-gameboard-zoom").css("background-color", "#123456");
+	$("#scaii-gameboard-zoom").css("background-color", game_background_color);
 
 	
 	configureLabelContainer("#scaii-acronym","20px",systemAcronym, "center");
@@ -534,6 +571,10 @@ var drawExplanationBarChart = function () {
 	drawBarChart(chartData, options);
 }
 
+var ack = function(dealer){
+	var mm = new proto.scaii.common.MultiMessage;
+	dealer.send(mm.serializeBinary());
+}
 
 var connect = function (dots, attemptCount) {
 	dealer = new WebSocket('ws://localhost:6112');
@@ -553,16 +594,14 @@ var connect = function (dots, attemptCount) {
 				console.log("-----got replaySessionConfig");
 				var config = sPacket.getReplaySessionConfig();
 				handleReplaySessionConfig(config);
-				var mm = new proto.scaii.common.MultiMessage;
-				dealer.send(mm.serializeBinary());
+				ack(dealer);
 			}
 			else if (sPacket.hasVizInit()) {
 				console.log("-----got vizInit");
 				var vizInit = sPacket.getVizInit();
 				handleVizInit(vizInit);
 				controlsManager.gameStarted();
-				var mm = new proto.scaii.common.MultiMessage;
-				dealer.send(mm.serializeBinary());
+				ack(dealer);
 			}
 			else if (sPacket.hasViz()) {
 				console.log("-----got Viz");
@@ -579,18 +618,22 @@ var connect = function (dots, attemptCount) {
 				}
 				dealer.send(mm.serializeBinary());
 			}
+			else if (sPacket.hasExplDetails()) {
+				console.log('has expl details');
+				var explDetails = sPacket.getExplDetails();
+				handleExplDetails(explDetails);
+				ack(dealer);
+			}
 			else if (sPacket.hasReplayControl()) {
 				console.log("-----got replayCOntrol");
 				var replayControl = sPacket.getReplayControl();
 				handleReplayControl(replayControl);
-				var mm = new proto.scaii.common.MultiMessage;
-				dealer.send(mm.serializeBinary());
+				ack(dealer);
 			}
 			else if (sPacket.hasErr()) {
 				console.log("-----got errorPkt");
 				console.log(sPacket.getErr().getDescription())
-				mm = new proto.scaii.common.MultiMessage;
-				dealer.send(mm.serializeBinary());
+				ack(dealer);
 			}
 			else if (sPacket.hasUserCommand()) {
 				console.log("-----got userCommand");
@@ -612,15 +655,13 @@ var connect = function (dots, attemptCount) {
 				}
 				else if (commandType == proto.scaii.common.UserCommand.UserCommandType.JUMP_COMPLETED) {
 					controlsManager.jumpCompleted();
-					mm = new proto.scaii.common.MultiMessage;
-					dealer.send(mm.serializeBinary());
+					ack(dealer);
 				}
 			}
 			else {
 				console.log(sPacket.toString())
 				console.log('unexpected message from system!');
-				mm = new proto.scaii.common.MultiMessage;
-				dealer.send(mm.serializeBinary());
+				ack(dealer);
 			}
 		}
 		catch (err) {

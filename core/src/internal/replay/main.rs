@@ -8,9 +8,9 @@ extern crate serde_derive;
 extern crate url;
 
 use prost::Message;
-use protos::{plugin_type, scaii_packet, BackendEndpoint, Cfg, ExplanationPoint, ExplanationPoints, Layer,
-             ModuleEndpoint, MultiMessage, PluginType, RecorderConfig, ReplayControl,
-             ReplayEndpoint, RustFfiConfig, ScaiiPacket};
+use protos::{plugin_type, scaii_packet, BackendEndpoint, Cfg, ExplanationDetails, ExplanationPoint, 
+             ExplanationPoints, Layer, ModuleEndpoint, MultiMessage, PluginType, RecorderConfig, 
+             ReplayControl, ReplayEndpoint, RustFfiConfig, ScaiiPacket};
 use protos::cfg::WhichModule;
 use protos::user_command::UserCommandType;
 use protos::endpoint::Endpoint;
@@ -158,7 +158,7 @@ struct ReplayManager {
     env: Environment,
     replay_actions: Vec<ReplayAction>,
     replay_sequencer: ReplaySequencer,
-    explanations: Option<Explanations>,
+    explanations_option: Option<Explanations>,
     header: ReplayAction,
     test_mode: bool,
     args: Args,
@@ -166,7 +166,7 @@ struct ReplayManager {
 
 impl ReplayManager {
     fn start(&mut self) -> Result<(), Box<Error>> {
-        match self.explanations {
+        match self.explanations_option {
             None => assert!(false),
             Some(_) => assert!(true),
         }
@@ -178,7 +178,7 @@ impl ReplayManager {
         let header: ReplayAction = self.header.clone();
         let count = self.replay_sequencer.get_sequence_length();
         let replay_session_cfg = replay_util::get_replay_configuration_message(&self.replay_actions, 
-            count);
+            count, &self.explanations_option);
         self.configure_as_per_header(header, replay_session_cfg)?;
         self.run_and_poll()
     }
@@ -530,6 +530,9 @@ impl ReplayManager {
                         println!(
                             "================RECEIVED UserCommandType::Explain================"
                         );
+                        let step: String = user_command_args[0].clone();
+                        println!("please explain action at step {}!",step);
+                        self.explain_action_at_step(step);
                     }
                     UserCommandType::Pause => {
                         println!("================RECEIVED UserCommandType::Pause================");
@@ -597,6 +600,40 @@ impl ReplayManager {
         }
         wait(*self.poll_delay.lock().unwrap());
         Ok(game_state)
+    }
+
+    fn explain_action_at_step(&mut self, step: String)  -> Result<(), Box<Error>> {
+        let step_int = step.parse::<u32>().unwrap();
+        println!("asked to explain step {}", step_int);
+        let mut expl_result : Option<ExplanationPoint> = None;
+        match self.explanations_option {
+            None => { expl_result = None },
+            Some(ref explanations) => {
+                if explanations.step_indices.contains(&step_int) {
+                    expl_result = explanations.expl_map.get(&step_int).cloned();
+                }
+                else {
+                    expl_result = None;
+                }
+            }
+        }
+        let pkt: ScaiiPacket = ScaiiPacket {
+            src: protos::Endpoint {
+                endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+            },
+            dest: protos::Endpoint {
+                endpoint: Some(Endpoint::Module(ModuleEndpoint {
+                    name: "viz".to_string(),
+                })),
+            },
+            specific_msg: Some(scaii_packet::SpecificMsg::ExplDetails(ExplanationDetails {
+	            step: Some(step_int),
+                expl_point: expl_result,
+                chart : None,
+            })),
+        };
+        let _ignored_respons_pkts = self.send_pkt_to_viz(pkt)?;
+        Ok(())
     }
 
     fn reset_ui_step_position(&mut self, position: String) -> Result<(), Box<Error>> {
@@ -994,7 +1031,7 @@ fn run_replay(run_mode: RunMode, mut replay_info: Vec<ReplayAction>, explanation
                 env: environment,
                 replay_actions: replay_info,
                 replay_sequencer: replay_sequencer,
-                explanations: explanations_option,
+                explanations_option: explanations_option,
                 header: header,
                 test_mode: mode_is_test,
                 args: args,

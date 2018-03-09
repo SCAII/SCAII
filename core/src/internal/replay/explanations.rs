@@ -4,8 +4,8 @@ use std::collections::BTreeMap;
 use std::error::Error;
 
 pub struct Explanations {
-    step_indices: Vec<u32>,
-    expl_map:  BTreeMap<u32, ExplanationPoint>,
+    pub step_indices: Vec<u32>,
+    pub expl_map:  BTreeMap<u32, ExplanationPoint>,
 }
 
 pub fn get_explanations_for_replay_file(mut path: PathBuf) -> Result<Option<Explanations>, Box<Error>> {
