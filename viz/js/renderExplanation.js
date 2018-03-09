@@ -12,7 +12,7 @@ function getExplanationBox(left_x,right_x, upper_y, lower_y, step){
 	return eBox;
 }
 
-var configureExplanation = function(step_count, step, title){
+var configureExplanation = function(step_count, step, title, selected){
 	var totalWidth = expl_ctrl_canvas.width;
 	var rectWidth = totalWidth / step_count;
 	var leftX = rectWidth * step;
@@ -22,7 +22,13 @@ var configureExplanation = function(step_count, step, title){
 	var upperLeftY = explanationControlYPosition - distFromLine;
 	var ctx = expl_ctrl_ctx;
 	ctx.beginPath();
-	ctx.fillStyle = 'blue';
+	if (selected){
+		ctx.fillStyle = 'yellow';
+	}
+	else {
+		ctx.fillStyle = 'blue';
+	}
+	
 	ctx.lineWidth = 1;
 	ctx.strokeStyle = 'black';
 	var leftVertexX = leftX;
@@ -46,6 +52,9 @@ var configureExplanation = function(step_count, step, title){
 	//ctx.rect(upper_left_x, upper_left_y, rect_width, rect_height);
 	var eBox = getExplanationBox(leftX,rightX,upperLeftY, upperLeftY + rectHeight, step);
     explanationBoxMap[step] = eBox;
+}
+var reflectSelectedStep = function(step){
+	
 }
 
 function getMatchingExplanationStep(ctx, x, y){

@@ -57,6 +57,39 @@ function drawRect(ctx, x, y, width, height, rotation_in_radians, colorRGBA) {
   //}
   var x2 = x + (height / 2);
   var y2 = y + (width / 2);
+  ctx.beginPath();
+
+  ctx.lineWidth = shape_outline_width;
+  ctx.strokeStyle = shape_outline_color;
+  if (use_shape_color_for_outline) {
+    ctx.strokeStyle = colorRGBA;
+  }
+  ctx.strokeRect(x1, y1, height, width);
+  ctx.fillStyle = colorRGBA;
+  //ctx.fillStyle = colorRGBA;
+  ctx.fillRect(x1, y1, height, width);
+  ctx.restore();
+}
+
+
+function drawRectWithGradient(ctx, x, y, width, height, rotation_in_radians, colorRGBA) {
+  ctx.save();
+  ctx.translate(x,y);
+  ctx.rotate(rotation_in_radians);
+  var x_orig = x;
+  var y_orig = y;
+  x = 0; 
+  y = 0;
+  var x1 = x - (height / 2);
+  //if (x1 < 0) {
+  //  x1 = 0;
+  //}
+  var y1 = y - (width / 2);
+  //if (y1 < 0) {
+  //  y1 = 0;
+  //}
+  var x2 = x + (height / 2);
+  var y2 = y + (width / 2);
 
   var gradient = ctx.createLinearGradient(x1, y_orig, x2, y_orig);
   gradient.addColorStop(0, colorRGBA);

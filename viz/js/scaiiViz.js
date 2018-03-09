@@ -85,8 +85,11 @@ var gameboard_zoom_ctx = gameboard_zoom_canvas.getContext("2d");
 var expl_ctrl_canvas = document.createElement("canvas");
 var expl_ctrl_ctx = expl_ctrl_canvas.getContext("2d");
 
+var replaySessionConfig;
+
 expl_ctrl_canvas.addEventListener('click', function (event) {
 	matchingStep = getMatchingExplanationStep(expl_ctrl_ctx, event.offsetX, event.offsetY);
+	reflectSelectedStep(matchingStep);
 	console.log('clicked on step ' + matchingStep);
 	if (matchingStep != undefined) {
 		var userCommand = new proto.scaii.common.UserCommand;
@@ -94,6 +97,13 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
 		var args = ['' +matchingStep];
 		userCommand.setArgsList(args);
 		stageUserCommand(userCommand);
+		//handleReplaySessionConfig(replaySessionConfig,matchingStep);
+		// var targetStepString = '' + matchingStep;
+		// var args = [targetStepString];
+		// var userCommand = new proto.scaii.common.UserCommand;
+		// userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+		// userCommand.setArgsList(args);
+		// stageUserCommand(userCommand);
 	}
 });
 
@@ -595,6 +605,8 @@ var connect = function (dots, attemptCount) {
 			if (sPacket.hasReplaySessionConfig()) {
 				console.log("-----got replaySessionConfig");
 				var config = sPacket.getReplaySessionConfig();
+				replaySessionConfig = config;
+				//var selectedStep = undefined;
 				handleReplaySessionConfig(config);
 				ack(dealer);
 			}
