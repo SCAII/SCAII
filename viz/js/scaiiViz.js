@@ -61,6 +61,7 @@ var userCommandScaiiPackets = [];
 var sessionState = "pending";
 var currentStep = -1;
 
+var gameScaleFactor = 5;
 var spacingFactor = 1;
 var sizingFactor = 1;
 var zoomFactor = 3;
@@ -72,6 +73,7 @@ var primaryHighlightedShapeIds = [];
 var secondaryHighlightedShapeIds = [];
 var explanationBoxMap = {};
 var game_background_color = "#123456";
+var explanationControlYPosition = 14;
 
 // Create the gameboard canvas
 var gameboard_canvas = document.createElement("canvas");
@@ -215,7 +217,7 @@ function handleReplaySessionConfig(rsc) {
 	while (index < expl_count){
 		var step = explanation_steps[index];
 		var title = explanation_titles[index];
-		configure_explanation(rsc.getStepCount(), step, title);
+		configureExplanation(rsc.getStepCount(), step, title);
 		index = index + 1;
 	}
 }
@@ -316,7 +318,7 @@ function handleEntities(entitiesList) {
 		}
 
 	}
-	renderState(gameboard_ctx, gameboard_canvas, masterEntities, 5, 0, 0, shapePositionMapForContext["game"]);
+	renderState(gameboard_ctx, gameboard_canvas, masterEntities, gameScaleFactor, 0, 0, shapePositionMapForContext["game"]);
 	// disable zoom box for now
 	//drawZoomBox(gameboard_ctx, gameboard_canvas, zoomBoxOriginX, zoomBoxOriginY, zoomFactor);
 	//renderState(gameboard_zoom_ctx, gameboard_zoom_canvas, masterEntities, zoomFactor, zoomBoxOriginX, zoomBoxOriginY, shapePositionMapForContext["zoom"]);
@@ -432,8 +434,8 @@ var configureExplanationControl = function() {
 	let ctx = expl_ctrl_ctx;
 	
 	ctx.beginPath();
-	ctx.moveTo(0,14);
-	ctx.lineTo(can_width,14);
+	ctx.moveTo(0,explanationControlYPosition);
+	ctx.lineTo(can_width,explanationControlYPosition);
 	ctx.stroke();
 
 	console.log("drawing explanation control");

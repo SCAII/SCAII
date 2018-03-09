@@ -12,25 +12,39 @@ function getExplanationBox(left_x,right_x, upper_y, lower_y, step){
 	return eBox;
 }
 
-var configure_explanation = function(step_count, step, title){
-	var total_width = expl_ctrl_canvas.width;
-	var rect_width = total_width / step_count;
-	var left_x = rect_width * step;
-	var right_x = rect_width * (step + 1);
-	var upper_left_x = left_x;
-	var dist_from_line = 8
-	var upper_left_y = 14 - dist_from_line;
+var configureExplanation = function(step_count, step, title){
+	var totalWidth = expl_ctrl_canvas.width;
+	var rectWidth = totalWidth / step_count;
+	var leftX = rectWidth * step;
+	var rightX = rectWidth * (step + 1);
+	var upperLeftX = leftX;
+	var distFromLine = 8
+	var upperLeftY = explanationControlYPosition - distFromLine;
 	var ctx = expl_ctrl_ctx;
-	// (canvas height is 30, line is at y==14, so diamond height is
 	ctx.beginPath();
-	ctx.fillStyle = 'white';
+	ctx.fillStyle = 'blue';
 	ctx.lineWidth = 1;
 	ctx.strokeStyle = 'black';
-	var rect_height = dist_from_line + dist_from_line + 1;
-	ctx.rect(upper_left_x, upper_left_y, rect_width, rect_height);
-	ctx.stroke();
+	var leftVertexX = leftX;
+	var leftVertexY = explanationControlYPosition;
+	var rightVertexX = rightX;
+	var rightVertexY = explanationControlYPosition;
+	var topVertexX = leftVertexX + (rightVertexX - leftVertexX)/2 ;
+	var topVertexY = explanationControlYPosition - distFromLine;
+	var bottomVertexX = topVertexX;
+	var bottomVertexY = explanationControlYPosition + distFromLine;
+	
+	ctx.moveTo(leftVertexX, leftVertexY);
+	ctx.lineTo(topVertexX,topVertexY);
+	ctx.lineTo(rightVertexX, rightVertexY);
+	ctx.lineTo(bottomVertexX, bottomVertexY);
+	ctx.lineTo(leftVertexX, leftVertexY);
+	ctx.closePath();
 	ctx.fill();
-	var eBox = getExplanationBox(left_x,right_x,upper_left_y, upper_left_y + rect_height, step);
+	
+	var rectHeight = distFromLine + distFromLine + 1;
+	//ctx.rect(upper_left_x, upper_left_y, rect_width, rect_height);
+	var eBox = getExplanationBox(leftX,rightX,upperLeftY, upperLeftY + rectHeight, step);
     explanationBoxMap[step] = eBox;
 }
 
@@ -70,9 +84,10 @@ var renderExplLayer = function(name, cells, width, height) {
 	// canvas size should be same a gameboardHeight
 	explCanvas.width  = gameboard_canvas.width;
 	explCanvas.height = gameboard_canvas.height;
+	renderSaliencyMap(explCanvas, explCtx, cells, width, height);
 	// the div that will contain it should be a bit wider
 	// and tall enough to contain title text
-	var mapContainerDivHeight = explCanvas.height + 60;
+	var mapContainerDivHeight = explCanvas.height + 30;
 	
 	var mapContainerDiv = document.createElement("div");
 	$("#explanation-maps").append(mapContainerDiv);
@@ -106,13 +121,39 @@ var renderExplLayer = function(name, cells, width, height) {
 
 var configureMapTitle = function(mapTitleDivSelector){
 	$(mapTitleDivSelector).css("font-family", "Fira Sans");
-	$(mapTitleDivSelector).css("font-size", "12px");
+	$(mapTitleDivSelector).css("font-size", "16px");
 	$(mapTitleDivSelector).css("padding-left", "6px");
 	$(mapTitleDivSelector).css("padding-right", "6px");
-	$(mapTitleDivSelector).css("padding-top", "2px");
+	$(mapTitleDivSelector).css("padding-top", "6px");
 	$(mapTitleDivSelector).css("padding-bottom", "2px");
 	$(mapTitleDivSelector).css("text-align", "center");
-	$(mapTitleDivSelector).css("height", "40px");
+	$(mapTitleDivSelector).css("height", "30px");
+
+}
+
+var renderSaliencyMap = function(canvas, ctx, cells, width, height){
+	for (var x= 0; x < width; x++){
+		for (var y = 0; y < height; y++){
+			var index = width * y + x;
+			var cellValue = cells[index];
+			if (cellValue != 0.0) {
+				ctx.fillStyle = getWhiteRGBAString(cellValue);
+				ctx.fillRect(x*gameScaleFactor, y*gameScaleFactor, gameScaleFactor, gameScaleFactor);
+				ctx.fill();
+			}
+		}
+	}
+}
+
+
+function getWhiteRGBAString(saliencyValue) {
+  color = {};
+  color['R'] = 255;
+  color['G'] = 255;
+  color['B'] = 255;
+  color['A'] = saliencyValue;
+  var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
+  return result;
 }
 var dummy = function(){
 	
