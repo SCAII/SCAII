@@ -51,7 +51,8 @@ goog.require('proto.scaii.common.VizInit');
 * of patent rights can be found in the PATENTS file in the same directory.
 */
 var userInputBlocked = false;
-var systemTitle = "SCAII - Small Configurable AI Interface";
+var systemAcronym = "SCAII";
+var systemTitle = "Small Configurable AI Interface";
 // VizInit defaults
 var testingMode = false;
 var maxStep = 0;
@@ -76,6 +77,9 @@ var gameboard_ctx = gameboard_canvas.getContext("2d");
 
 var gameboard_zoom_canvas = document.createElement("canvas");
 var gameboard_zoom_ctx = gameboard_zoom_canvas.getContext("2d");
+
+var expl_ctrl_canvas = document.createElement("canvas");
+var expl_ctrl_ctx = expl_ctrl_canvas.getContext("2d");
 
 gameboard_canvas.addEventListener('click', function (event) {
 	if (event.shiftKey) {
@@ -298,6 +302,9 @@ function clearGameBoard(ctx, canvas, shapePositionMapKey) {
 	shapePositionMapForContext[shapePositionMapKey] = {};
 }
 
+function clearExplanationControl(){
+	expl_ctrl_ctx.clearRect(0,0, expl_ctrl_canvas.width, expl_ctrl_canvas.height);
+}
 
 var draw_example_shapes = function () {
 	clearGameBoard(gameboard_ctx, gameboard_canvas, "game");
@@ -315,7 +322,7 @@ var main = function () {
 	var debug = true;
 	if (debug) {
 		var connectButton = document.createElement("BUTTON");
-		var connectText = document.createTextNode("Connect");
+		var connectText = document.createTextNode("Connect to Replay");
 		connectButton.setAttribute("class", "connectButton");
 		connectButton.setAttribute("id", "connectButton");
 		connectButton.appendChild(connectText);
@@ -323,10 +330,10 @@ var main = function () {
 			console.log("calling tryConnect");
 			tryConnect('.', 0);
 		};
-		$("#scaii-interface-title").append(connectButton);
+		$("#playback-panel").append(connectButton);
 		$("#connectButton").css("margin-left", "30px");
 		$("#connectButton").css("font-family", "Fira Sans");
-		$("#connectButton").css("font-size", "12px");
+		$("#connectButton").css("font-size", "14px");
 
 	} else {
 		tryConnect('.', 0);
@@ -363,9 +370,58 @@ var configureZoomSlider = function () {
 		handleEntities(entitiesList);
 	}
 }
+var configureLabelContainer = function(id, fontSize, textVal, textAlign) {
+	$(id).css("font-family", "Fira Sans");
+	$(id).css("font-size", fontSize);
+	$(id).css("padding-left", "0px");
+	$(id).css("padding-right", "4px");
+	$(id).css("padding-top", "2px");
+	$(id).css("text-align", textAlign);
+	$(id).html(textVal);
+}
+var subtractPixels = function(a,b){
+	var intA = a.replace("px", "");
+	var intB = b.replace("px", "");
+	return intA - intB;
+}
+var configureExplanationControl = function() {
+	var container_width = $(".control-panel").css("width");
+	var container_padding = $(".control-panel").css("padding-right");
+	var can_width = subtractPixels(container_width,container_padding);
+	
+	expl_ctrl_canvas.width = can_width;
+	expl_ctrl_canvas.height = 30;
+	$("#explanation-control-panel").append(expl_ctrl_canvas);
+	let ctx = expl_ctrl_ctx;
+	
+	ctx.beginPath();
+	ctx.moveTo(0,14);
+	ctx.lineTo(can_width,14);
+	ctx.stroke();
+
+	console.log("drawing explanation control");
+	// expl_ctrl_canvas.background = 'red';
+	// ctx.save();
+	// var x = 0;
+	// var y = 13;
+	
+	// var width = $("#replay-speed-panel").width();
+	// var height = 4;
+	
+	// ctx.beginPath();
+
+	// ctx.lineWidth = 1;
+	// ctx.strokeStyle = 'black';
+	// ctx.strokeRect(x, y, width, height);
+	// ctx.fillStyle = 'white'
+	//ctx.fillStyle = colorRGBA;
+	// ctx.fillRect(x, y, width, height);
+	ctx.restore();
+}
 var initUI = function () {
 	configureSpeedSlider();
 	configureZoomSlider();
+	configureExplanationControl();
 	controlsManager.setControlsNotReady();
 	gameboard_canvas.width = 200;
 	gameboard_canvas.height = 200;
@@ -381,95 +437,30 @@ var initUI = function () {
 	$("#scaii-gameboard-zoom").css("height", gameboard_zoom_canvas.height);
 	$("#scaii-gameboard-zoom").css("background-color", "#123456");
 
-	$("#scaii-interface-title").css("font-family", "Fira Sans");
-	$("#scaii-interface-title").css("font-size", "12px");
-	$("#scaii-interface-title").css("padding-left", "6px");
-	$("#scaii-interface-title").css("padding-top", "4px");
-	//$("#scaii-interface-title").css("text-align", "center");
-	$("#scaii-interface-title").html(systemTitle);
+	
+	configureLabelContainer("#scaii-acronym","20px",systemAcronym, "center");
+	configureLabelContainer("#scaii-interface-title","16px",systemTitle, "center");
+	configureLabelContainer("#replay-speed-label","14px","replay speed", "right");
+	configureLabelContainer("#progress-label","14px","progress", "right");
+	configureLabelContainer("#explanation-control-label","14px","explanations", "right");
+	configureLabelContainer("#playback-label","14px","", "right");
+	
+	$("#replay-speed-panel").append(speedSlider);
 
-	$("#explanations-interface-title").css("font-family", "Fira Sans");
-	$("#explanations-interface-title").css("font-size", "12px");
-	//$("#explanations-interface-title").css("padding-left", "6px");
-	$("#explanations-interface-title").css("padding-top", "4px");
-	//$("#explanations-interface-title").css("padding-bottom", "6px");
-	$("#explanations-interface-title").css("text-align", "center");
-	$("#explanations-interface-title").html("- Explanations -");
-
-	var speedSliderLabel = document.createElement("div");
-	$("#scaii-game-controls").append(speedSliderLabel);
-	speedSliderLabel.setAttribute("id", "speed-slider-label");
-	$("#speed-slider-label").html("replay speed");
-	$("#speed-slider-label").css("font-family", "Fira Sans");
-	$("#speed-slider-label").css("font-size", "12px");
-	$("#speed-slider-label").css("padding-left", "6px");
-	$("#speed-slider-label").css("padding-right", "4px");
-	$("#speed-slider-label").css("padding-top", "2px");
-
-	var blankSpacerLeft = document.createElement("div");
-	blankSpacerLeft.setAttribute("id", "controls-spacer-left");
-	var blankSpacerRight = document.createElement("div");
-	blankSpacerRight.setAttribute("id", "controls-spacer-right");
-
-	$("#scaii-game-controls").append(speedSlider);
-	$("#scaii-game-controls").append(blankSpacerLeft);
-	//$("#controls-spacer-left").html(" ");
-	//$("#speed-slider").css("flex-grow","50");
-
-	rewindButton.setAttribute("class", "controlButton");
+	rewindButton.setAttribute("class", "playbackButton");
 	rewindButton.innerHTML = '<img src="imgs/rewind.png", height="8px" width="10px"/>';
 	rewindButton.onclick = tryRewind;
-	$("#scaii-game-controls").append(rewindButton);
+	$("#playback-panel").append(rewindButton);
 
 	$("#scaii-game-controls").css("text-align", "center");
 
-	pauseResumeButton.setAttribute("class", "controlButton");
+	pauseResumeButton.setAttribute("class", "playbackButton");
 	pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="8px" width="10px"/>';
 
-	$("#scaii-game-controls").append(pauseResumeButton);
+	$("#playback-panel").append(pauseResumeButton);
 	pauseResumeButton.onclick = tryPause;
 
-	$("#scaii-game-controls").append(blankSpacerRight);
 
-	$("#controls-spacer-left").css("flex-grow", "1");
-	$("#controls-spacer-right").css("flex-grow", "1");
-
-
-	//$(".controlButton").css("font-family", "Arial");
-	//$(".controlButton").css("font-size", "10px");
-	$(".controlButton").css("margin-right", "5px");
-	$(".controlButton").css("margin-left", "5px");
-	$(".controlButton").css("padding-left", "2px");
-	$(".controlButton").css("padding-right", "2px");
-	$(".controlButton").css("padding-bottom", "0px");
-	$(".controlButton").css("padding-top", "0px");
-	//$(".controlButton").css("border-top", "1px");
-	//$(".controlButton").css("border-bottom", "1px");
-	//$(".controlButton").css("border-left", "1px");
-	//$(".controlButton").css("border-right", "1px");
-	/*
-	timeline_canvas.width = 400;
-	timeline_canvas.height = 20;
-	$("#scaii-timeline").append(timeline_canvas);
-	timeline_ctx.lineWidth = 1;
-	//timeline_ctx.strokeStyle = shape_outline_color;
-	timeline_ctx.beginPath();
-	timeline_ctx.moveTo(10, 10);
-	timeline_ctx.lineTo(390, 10);
-	timeline_ctx.stroke();
-	
-	var exp1 = {name:"attack knight", description:"attack the closest knight", step:5, type:"attack"};
-	var exp2 = {name:"retreat west", description:"running from group", step:20, type:"retreat"};
-	var exp3 = {name:"retreat north", description:"running from group", step:50, type:"retreat"};
-	var exp4 = {name:"attack knight", description:"attack the closest knight", step:75, type:"attack"};
-	var exp5 = {name:"attack dragon", description:"attack the closest dragon", step:80, type:"attack"};
-	var exp6 = {name:"retreat", description:"running from dragon", step:85, type:"retreat"};
-	var explanations = [exp1, exp2, exp3, exp4, exp5, exp6];
-	for (var i = 0; i < explanations.length; i++){
-		var exp = explanations[i];
-		drawExplanationBox(exp.step, exp.type);
-	}
-	*/
 
 	var zoomSliderLabel = document.createElement("div");
 	$("#scaii-zoom-controls").append(zoomSliderLabel);

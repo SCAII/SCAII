@@ -234,6 +234,15 @@ function layoutEntityAtPosition(ctx, x, y, entity, zoom_factor, xOffset, yOffset
   }
 }
 
+function getColorRGBA(r,g,b,a) {
+  color = {};
+  color['R'] = r;
+  color['G'] = g;
+  color['B'] = b;
+  color['A'] = a;
+  var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
+  return result;
+}
 function getBasicColorRGBA() {
   color = {};
   color['R'] = 200;
