@@ -16,6 +16,11 @@ message VizInit {
     optional uint32 gameboard_height = 4;
 	repeated ExplanationPoint explanations = 5;
 }
+
+message ExplanationPoints {
+	repeated ExplanationPoint explanation_points = 1;
+}
+
 message ExplanationPoint {
 	// which step in the game this explanation corresponds to
     optional uint32 step = 1;
@@ -28,6 +33,7 @@ message ExplanationPoint {
     optional string description = 4;
 	repeated Layer layers = 5;
 }
+
 message Layer {
        optional string name = 1;
        repeated double cells = 2;
@@ -35,6 +41,7 @@ message Layer {
        optional uint32 width = 3;
        optional uint32 height = 4;
 }
+
 // The packet containing what to draw. This is ALWAYS
 // a delta, so the first packet should contain all
 // information. Future packets need only contain information

@@ -1,9 +1,10 @@
 use prost::Message;
-use protos::{cfg, scaii_packet, BackendCfg, BackendEndpoint, Cfg, Entity, ModuleEndpoint,
+use protos::{cfg, scaii_packet, BackendCfg, BackendEndpoint, Cfg, Entity, 
+            ExplanationPoint, ExplanationPoints, Layer, ModuleEndpoint,
              MultiMessage, RecorderConfig, RecorderEndpoint, ReplayEndpoint, ScaiiPacket, Viz,
              VizInit};
 use protos::endpoint::Endpoint;
-use scaii_core::{ActionWrapper, ReplayAction, ReplayHeader, SerializationInfo,
+use scaii_core::{ActionWrapper, get_default_replay_dir, ReplayAction, ReplayHeader, SerializationInfo,
                  SerializedProtosEndpoint, SerializedProtosScaiiPacket,
                  SerializedProtosSerializationResponse};
 use scaii_defs::protos;
@@ -430,4 +431,117 @@ fn wrap_entities_in_viz_packet(entity1: Entity, entity2: Entity) -> ScaiiPacket 
         },
         specific_msg: Some(SpecificMsg::Viz(Viz { entities: entities })),
     }
+}
+
+pub fn generate_test_saliency_data() -> Result<(), Box<Error>> {
+    use super::ReplayError;
+    use std::fs::File;
+    use std::path::PathBuf;
+    use std::io::Write;
+    let l1: String = "layer1".to_string();
+    let l2: String = "layer2".to_string();
+    let l3: String = "layer3".to_string();
+    let l4: String = "layer4".to_string();
+    let l5: String = "layer5".to_string();
+    let l6: String = "layer6".to_string();
+
+    let mut layers : Vec<Layer> = Vec::new();
+    layers.push(get_layer(l1.clone(),Point{x:5, y:5},Point{x:5, y:20},Point{x:5, y:30},40,40));
+    layers.push(get_layer(l2.clone(),Point{x:15, y:5},Point{x:15, y:20},Point{x:15, y:30},40,40));
+    layers.push(get_layer(l3.clone(),Point{x:20, y:5},Point{x:20, y:20},Point{x:20, y:30},40,40));
+    layers.push(get_layer(l4.clone(),Point{x:25, y:5},Point{x:25, y:20},Point{x:25, y:30},40,40));
+    layers.push(get_layer(l5.clone(),Point{x:30, y:5},Point{x:30, y:20},Point{x:30, y:30},40,40));
+    layers.push(get_layer(l6.clone(),Point{x:35, y:5},Point{x:35, y:20},Point{x:35, y:30},40,40));
+    let ep1 = get_ep(1,0,"attack tower 1".to_string(), "unit 1 attacks tower 1".to_string(), layers);
+
+    let mut layers : Vec<Layer> = Vec::new();
+    layers.push(get_layer(l1.clone(),Point{x:5, y:15},Point{x:5, y:25},Point{x:5, y:35},40,40));
+    layers.push(get_layer(l2.clone(),Point{x:15, y:15},Point{x:15, y:25},Point{x:15, y:35},40,40));
+    layers.push(get_layer(l3.clone(),Point{x:20, y:15},Point{x:20, y:25},Point{x:20, y:35},40,40));
+    layers.push(get_layer(l4.clone(),Point{x:25, y:15},Point{x:25, y:25},Point{x:25, y:35},40,40));
+    layers.push(get_layer(l5.clone(),Point{x:30, y:15},Point{x:30, y:25},Point{x:30, y:35},40,40));
+    layers.push(get_layer(l6.clone(),Point{x:35, y:15},Point{x:35, y:25},Point{x:35, y:35},40,40));
+    let ep2 = get_ep(2,1, "retreat".to_string(), "unit 1 retreats".to_string(), layers);
+
+    let mut layers : Vec<Layer> = Vec::new();
+    layers.push(get_layer(l1.clone(),Point{x:5, y:20},Point{x:5, y:30},Point{x:5, y:39},40,40));
+    layers.push(get_layer(l2.clone(),Point{x:15, y:20},Point{x:15, y:30},Point{x:15, y:39},40,40));
+    layers.push(get_layer(l3.clone(),Point{x:20, y:20},Point{x:20, y:30},Point{x:20, y:39},40,40));
+    layers.push(get_layer(l4.clone(),Point{x:25, y:20},Point{x:25, y:30},Point{x:25, y:39},40,40));
+    layers.push(get_layer(l5.clone(),Point{x:30, y:20},Point{x:30, y:30},Point{x:30, y:39},40,40));
+    layers.push(get_layer(l6.clone(),Point{x:35, y:20},Point{x:35, y:30},Point{x:35, y:39},40,40));
+    let ep4 = get_ep(4,2, "attack tower 2".to_string(), "unit 1 attacks tower 2".to_string(), layers);
+
+    println!("ep1 is {:?}", ep1);
+    let mut vec : Vec<ExplanationPoint> = Vec::new();
+    vec.push(ep1);
+    vec.push(ep2);
+    vec.push(ep4);
+    let explanation_points = ExplanationPoints {
+        explanation_points: vec,
+    };
+
+    let replay_dir : PathBuf = get_default_replay_dir()?;
+    let mut saliency_file = replay_dir.clone();
+    saliency_file.push("replay.exp".to_string());
+    let mut f = File::create(&saliency_file).expect("could not write to saliency file");
+
+    let mut data: Vec<u8> = Vec::new();
+    explanation_points.encode(&mut data)?;
+    let data_size = data.len();
+    let write_result = f.write(&data);
+    if write_result.unwrap() != data_size {
+        return Err(Box::new(ReplayError::new("could not write test Explanation Points to file.",)));
+    }
+    Ok(())
+}
+
+fn get_ep(step: u32, id: u32, title: String, description: String, layers: Vec<Layer>) -> ExplanationPoint {
+    ExplanationPoint {
+        step:        Some(step),
+        id:          Some(id),
+        title:       Some(title),
+        description: Some(description),
+        layers:      layers,
+    }
+}
+
+struct Point {
+    x: u32,
+    y: u32,
+}
+
+fn get_layer(name : String, point1 : Point, point2: Point, point3: Point, width : u32, height: u32) -> Layer {
+    let cells = get_cells_for_points(point1, point2, point3, width, height);
+    Layer {
+        name: Some(name),
+        cells: cells,
+        width: Some(width),
+        height: Some(height),
+    }
+}
+
+fn is_match_for_point(point: &Point, x: &u32, y:&u32) -> bool{
+    point.x == *x && point.y == *y
+}
+
+fn get_cells_for_points(point1: Point, point2: Point, point3: Point, width : u32, height: u32) -> Vec<f64> {
+    let mut result : Vec<f64> = Vec::new();
+    for x in 0..width {
+        for y in 0..height {
+            if is_match_for_point(&point1, &x, &y) {
+                result.push(1.0);
+            }
+            else if is_match_for_point(&point2, &x, &y) {
+                result.push(0.8);
+            }
+            else if is_match_for_point(&point3, &x, &y) {
+                result.push(0.5)
+            }
+            else {
+                result.push(0.0);
+            }
+        }
+    }
+    result
 }

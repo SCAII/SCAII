@@ -8,15 +8,14 @@ extern crate serde_derive;
 extern crate url;
 
 use prost::Message;
-use protos::{plugin_type, scaii_packet, BackendEndpoint, Cfg,
+use protos::{plugin_type, scaii_packet, BackendEndpoint, Cfg, ExplanationPoint, ExplanationPoints, Layer,
              ModuleEndpoint, MultiMessage, PluginType, RecorderConfig, ReplayControl,
              ReplayEndpoint, RustFfiConfig, ScaiiPacket};
 use protos::cfg::WhichModule;
 use protos::user_command::UserCommandType;
 use protos::endpoint::Endpoint;
 use protos::scaii_packet::SpecificMsg;
-use scaii_core::Environment;
-use scaii_core::{ActionWrapper, ReplayAction, ReplayHeader, SerializedProtosScaiiPacket,
+use scaii_core::{ActionWrapper, Environment, ReplayAction, ReplayHeader, SerializedProtosScaiiPacket,
                  SerializedProtosSerializationResponse};
 use scaii_defs::protos;
 use scaii_defs::{Agent, Module, Replay};
@@ -38,6 +37,8 @@ use webserver::launch_webserver;
 mod replay_util;
 mod replay_sequencer;
 use replay_sequencer::ReplaySequencer;
+mod explanations;
+use explanations::Explanations;
 
 #[cfg(test)]
 mod test;
@@ -156,10 +157,8 @@ struct ReplayManager {
     shutdown_received: bool,
     env: Environment,
     replay_actions: Vec<ReplayAction>,
-    //keyframe_indices: Vec<u32>,
-    //keyframe_map : BTreeMap<u32, ScaiiPacket>,
-    //step_position: u64,
     replay_sequencer: ReplaySequencer,
+    explanations: Option<Explanations>,
     header: ReplayAction,
     test_mode: bool,
     args: Args,
@@ -167,6 +166,10 @@ struct ReplayManager {
 
 impl ReplayManager {
     fn start(&mut self) -> Result<(), Box<Error>> {
+        match self.explanations {
+            None => assert!(false),
+            Some(_) => assert!(true),
+        }
         // startup viz via rpc
         let mm = replay_util::wrap_packet_in_multi_message(replay_util::create_rpc_config_message()?);
         self.env.route_messages(&mm);
@@ -874,22 +877,35 @@ fn parse_args(arguments: Vec<String>) -> Args {
     }
     args
 }
-
 fn main() {
+    let result = try_main();
+    match result {
+        Ok(_) =>{},
+        Err(err) => {
+            println!("ERROR: {:?}", err);
+        }
+    }
+}
+fn try_main() -> Result<(), Box<Error>> {
+    use std::path::PathBuf;
+
+    //test_util::generate_test_saliency_data();
     let arguments: Vec<String> = env::args().collect();
     let args: Args = parse_args(arguments);
     // let args: Args = Docopt::new(USAGE)
     //     .and_then(|d| d.deserialize())
     //     .unwrap_or_else(|e| e.exit());
     if args.cmd_webserver {
-        launch_webserver()
+        launch_webserver();
+        return Ok(());
     } else if args.cmd_test {
         println!("Running Replay in test mode...");
         if args.flag_data_from_recorded_file {
             println!("..loading replay data from default path...");
             let replay_info: Vec<ReplayAction> = replay_util::load_replay_info_from_default_replay_path()
                 .expect("Error - problem generating test replay_info");
-            run_replay(RunMode::Test, replay_info, args);
+            run_replay(RunMode::Test, replay_info, Option::None, args);
+            return Ok(());
         } else {
             println!("...loading hardcoded replay data...");
             // must be flag_data_hardcoded
@@ -897,7 +913,8 @@ fn main() {
             let interval: u32 = 5;
             let replay_info = concoct_replay_info(step_count, interval)
                 .expect("Error - problem generating test replay_info");
-            run_replay(RunMode::Test, replay_info, args);
+            run_replay(RunMode::Test, replay_info, Option::None, args);
+            return Ok(());
         }
     } else if args.cmd_file {
         if args.flag_filename {
@@ -910,13 +927,19 @@ fn main() {
                 replay_util::load_replay_file(&path.to_path_buf())
                     .expect("Error - problem generating test replay_info")
             };
-            run_replay(RunMode::Live, replay_info, args);
+            let explanations_option = explanations::get_explanations_for_replay_file(PathBuf::from(args.arg_path_to_replay_file.clone()))?;
+            run_replay(RunMode::Live, replay_info, explanations_option, args);
+            return Ok(());
         } else {
             let replay_info: Vec<ReplayAction> = {
                 replay_util::load_replay_info_from_default_replay_path()
                     .expect("Error - problem generating replay_info from default file")
             };
-            run_replay(RunMode::Live, replay_info, args);
+            let default_replay_file_path = scaii_core::get_default_replay_file_path()?;
+            println!("using default replay file to find expl file!");
+            let explanations_option = explanations::get_explanations_for_replay_file(default_replay_file_path.clone())?;
+            run_replay(RunMode::Live, replay_info, explanations_option, args);
+            return Ok(());
         }
     } else {
         panic!("Unrecognized command mode for replay: {:?}", args);
@@ -924,7 +947,7 @@ fn main() {
 }
 
 #[allow(unused_assignments)]
-fn run_replay(run_mode: RunMode, mut replay_info: Vec<ReplayAction>, args: Args) {
+fn run_replay(run_mode: RunMode, mut replay_info: Vec<ReplayAction>, explanations_option: Option<Explanations>,args: Args) {
     let mut mode_is_test = true;
     let mut environment: Environment = Environment::new();
 
@@ -971,6 +994,7 @@ fn run_replay(run_mode: RunMode, mut replay_info: Vec<ReplayAction>, args: Args)
                 env: environment,
                 replay_actions: replay_info,
                 replay_sequencer: replay_sequencer,
+                explanations: explanations_option,
                 header: header,
                 test_mode: mode_is_test,
                 args: args,

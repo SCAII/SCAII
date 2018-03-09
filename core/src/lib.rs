@@ -32,7 +32,7 @@ pub use scaii_config::*;
 // Don't publicly expose our internal structure to FFI
 pub(crate) mod internal;
 //...but expose ReplayAction so Replay can access it in Recorder (Replay is a binary so different crate)
-pub use internal::recorder::{get_default_replay_file_path, ActionWrapper, ReplayAction,
+pub use internal::recorder::{get_default_replay_dir, get_default_replay_file_path, ActionWrapper, ReplayAction,
                              ReplayHeader, SerializationInfo, SerializedProtosAction,
                              SerializedProtosEndpoint, SerializedProtosScaiiPacket,
                              SerializedProtosSerializationResponse};
