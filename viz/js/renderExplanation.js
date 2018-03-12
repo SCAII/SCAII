@@ -53,9 +53,6 @@ var configureExplanation = function(step_count, step, title, selected){
 	var eBox = getExplanationBox(leftX,rightX,upperLeftY, upperLeftY + rectHeight, step);
     explanationBoxMap[step] = eBox;
 }
-var reflectSelectedStep = function(step){
-	
-}
 
 function getMatchingExplanationStep(ctx, x, y){
 	var matchingStep = undefined;
