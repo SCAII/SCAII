@@ -84,21 +84,30 @@ var gameboard_zoom_ctx = gameboard_zoom_canvas.getContext("2d");
 
 var expl_ctrl_canvas = document.createElement("canvas");
 var expl_ctrl_ctx = expl_ctrl_canvas.getContext("2d");
+expl_ctrl_ctx.imageSmoothingEnabled = false;
 
 var replaySessionConfig;
+var selectedExplanationStep = undefined;
 
 expl_ctrl_canvas.addEventListener('click', function (event) {
-	matchingStep = getMatchingExplanationStep(expl_ctrl_ctx, event.offsetX, event.offsetY);
-	reflectSelectedStep(matchingStep);
-	console.log('clicked on step ' + matchingStep);
-	if (matchingStep != undefined) {
+	var matchingStep = getMatchingExplanationStep(expl_ctrl_ctx, event.offsetX, event.offsetY);
+	console.log('clicked on step ' + selectedExplanationStep);	
+	if (matchingStep == selectedExplanationStep) {
+		selectedExplanationStep = undefined;
+		$("#explanation-maps").empty();
+	}
+	else {
+		selectedExplanationStep = matchingStep;
 		var userCommand = new proto.scaii.common.UserCommand;
 		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.EXPLAIN);
-		var args = ['' +matchingStep];
+		var args = ['' +selectedExplanationStep];
 		userCommand.setArgsList(args);
 		stageUserCommand(userCommand);
-		handleReplaySessionConfig(replaySessionConfig,matchingStep);
-		// var targetStepString = '' + matchingStep;
+	}	
+	
+	handleReplaySessionConfig(replaySessionConfig,selectedExplanationStep);
+	if (selectedExplanationStep != undefined){
+		// var targetStepString = '' + selectedExplanationStep;
 		// var args = [targetStepString];
 		// var userCommand = new proto.scaii.common.UserCommand;
 		// userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
