@@ -97,7 +97,7 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
 		var args = ['' +matchingStep];
 		userCommand.setArgsList(args);
 		stageUserCommand(userCommand);
-		//handleReplaySessionConfig(replaySessionConfig,matchingStep);
+		handleReplaySessionConfig(replaySessionConfig,matchingStep);
 		// var targetStepString = '' + matchingStep;
 		// var args = [targetStepString];
 		// var userCommand = new proto.scaii.common.UserCommand;
@@ -214,7 +214,7 @@ function handleReplayControl(replayControl) {
 		}
 	}
 }
-function handleReplaySessionConfig(rsc) {
+function handleReplaySessionConfig(rsc, selectedStep) {
 	explanationBoxMap = {};
 	if (rsc.hasStepCount()) {
 		maxStep = rsc.getStepCount() - 1;
@@ -226,8 +226,12 @@ function handleReplaySessionConfig(rsc) {
 	var index = 0;
 	while (index < expl_count){
 		var step = explanation_steps[index];
+		var selected = false;
+		if (selectedStep == step){
+			selected = true;
+		}
 		var title = explanation_titles[index];
-		configureExplanation(rsc.getStepCount(), step, title);
+		configureExplanation(rsc.getStepCount(), step, title, selected);
 		index = index + 1;
 	}
 }
@@ -607,7 +611,7 @@ var connect = function (dots, attemptCount) {
 				var config = sPacket.getReplaySessionConfig();
 				replaySessionConfig = config;
 				//var selectedStep = undefined;
-				handleReplaySessionConfig(config);
+				handleReplaySessionConfig(config,undefined);
 				ack(dealer);
 			}
 			else if (sPacket.hasVizInit()) {
