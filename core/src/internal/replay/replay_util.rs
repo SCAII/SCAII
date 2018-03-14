@@ -122,7 +122,17 @@ pub fn load_replay_file(path: &Path) -> Result<Vec<ReplayAction>, Box<Error>> {
     println!("");
     println!("-------------------   Here are the replay actions with numbers  --------------------");
     for replay_action in &replay_vec {
-        println!("{}   {:?}", count, replay_action);
+        match replay_action {
+            &ReplayAction::Header(_) => {
+                println!("loaded ReplayAction::Header   {}", count);
+            }
+            &ReplayAction::Delta(_) => {
+                println!("loaded ReplayAction::Delta    {}", count);
+            }
+            &ReplayAction::Keyframe(_,_) => {
+                println!("loaded ReplayAction::Keyframe {}", count);
+            }
+        }
         count = count + 1;
     }
     println!("");
@@ -278,8 +288,11 @@ pub fn get_keframe_indices(replay_data : &Vec<ReplayAction>) -> Vec<u32> {
     let mut index : u32 = 0;
     for replay_action in replay_data {
         match replay_action {
-            &ReplayAction::Delta(_) => {},
+            &ReplayAction::Delta(_) => {
+                println!("....get_keyframe_indices saw delta");
+            },
             &ReplayAction::Keyframe(_,_) => {
+                println!("....get_keyframe_indices saw keyframe");
                 if index == 0 {
                     result.push(index);
                 }
@@ -291,7 +304,9 @@ pub fn get_keframe_indices(replay_data : &Vec<ReplayAction>) -> Vec<u32> {
                 
                 
             },
-            &ReplayAction::Header(_) => {} // should not be in play, can ignore
+            &ReplayAction::Header(_) => {
+                println!("....get_keyframe_indices saw header");
+            } // should not be in play, can ignore
         }
         index = index + 1;
     }

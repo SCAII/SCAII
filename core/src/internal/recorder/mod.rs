@@ -15,6 +15,7 @@ use std::fs::File;
 use prost::Message;
 #[cfg(test)]
 mod test;
+mod test_util;
 
 #[derive(Debug)]
 struct RecorderError {
@@ -72,11 +73,6 @@ pub struct ActionWrapper {
     pub title: String,
     pub serialized_action: Vec<u8>,
 }
-// #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
-// pub enum GameAction {
-//     DecisionPoint(SerializedProtosAction),
-//     Step,   <<<< should be Step(SerializedProtosAction)  ???
-// }
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 pub enum ReplayAction {
@@ -84,13 +80,6 @@ pub enum ReplayAction {
     Delta(ActionWrapper),
     Keyframe(SerializationInfo, ActionWrapper),
 }
-// #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
-// pub enum ReplayActionOld {
-//     Header(ReplayHeader),
-//     Delta(GameAction),
-//     Keyframe(SerializationInfo, GameAction),
-// }
-
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 pub struct SerializationInfo {
     pub source: SerializedProtosEndpoint,
@@ -186,7 +175,7 @@ impl RecorderManager {
                 filepath: ref path,
             })) => {
                 self.is_recording = true;
-
+                println!("recorderConfig pkt : {:?}", pkt);
                 let ser_protos_scaii_pkt = self.get_serialized_protos_scaii_packet(pkt)?;
                 let replay_header = ReplayHeader {
                     configs: ser_protos_scaii_pkt,
@@ -220,6 +209,7 @@ impl RecorderManager {
                                 self.save_keyframe(action_wrapper)?;
                             } else {
                                 let replay_action = ReplayAction::Delta(action_wrapper);
+                                println!("...........persisting DELTA");
                                 self.persist_replay_action(&replay_action)?;
                             }
                         }
@@ -229,17 +219,6 @@ impl RecorderManager {
                     }
                 }
             }
-            // Some(SpecificMsg::RecorderStep(ref rec_step)) => {
-            //     if self.is_recording {
-            //         if let Some(SerializationInfo { .. }) = self.staged_ser_info {
-            //             self.save_keyframe(rec_step)?;
-            //         } else {
-            //             let game_action = self.get_game_action_for_protos_action(rec_step)?;
-            //             let replay_action = ReplayAction::Delta(game_action);
-            //             self.persist_replay_action(&replay_action)?;
-            //         }
-            //     }
-            // }
             Some(SpecificMsg::GameComplete(_)) => {
                 self.stop_recording();
             }
@@ -282,6 +261,7 @@ impl RecorderManager {
         let path = self.file_path.clone().unwrap();
         let f = File::create(&path).expect("could not write to replay file");
         self.writable_file = Some(f);
+        println!("...........persisting HEADER {:?}", header_replay_action);
         self.persist_replay_action(header_replay_action)?;
         Ok(())
     }
@@ -315,6 +295,7 @@ impl RecorderManager {
             )));
         }
         let replay_action = ReplayAction::Keyframe(ser_info.clone().unwrap(), action_wrapper);
+        println!(".............persisting KEYFRAME");
         self.persist_replay_action(&replay_action)?;
         self.staged_ser_info = None;
         Ok(())
@@ -366,34 +347,6 @@ fn ensure_dir_exists(path_buf: &PathBuf) -> Result<(), Box<Error>> {
     }
     Ok(())
 }
-// pub fn get_scaii_root() -> Result<PathBuf, Box<Error>> {
-//     //look upwardfrom current dir until find valid parent.
-//     use std::env;
-//     let current_dir = env::current_dir()?;
-//     let mut candidate_dir: PathBuf = current_dir.clone();
-//     let mut seeking = true;
-//     while seeking {
-//         let is_dir_scaii_root = is_dir_scaii_root(&candidate_dir);
-//         if is_dir_scaii_root {
-//             seeking = false;
-//         } else {
-//             let candidate_clone = candidate_dir.clone();
-//             let parent_search_result = candidate_clone.parent();
-//             match parent_search_result {
-//                 Some(parent_path) => {
-//                     candidate_dir = parent_path.clone().to_path_buf();
-//                 }
-//                 None => {
-//                     return Err(Box::new(RecorderError::new(&format!(
-//                         "cannot find scaii_root above current directory {:?}",
-//                         current_dir
-//                     ))));
-//                 }
-//             }
-//         }
-//     }
-//     Ok(candidate_dir)
-// }
 
 fn is_dir_scaii_root(dir: &PathBuf) -> bool {
     let mut candidate_dir = dir.clone();
@@ -443,12 +396,6 @@ fn get_step_value(explanation: &ExplanationPoint) -> u32 {
         None => 0,
     }
 }
-// struct ActionWrapper {
-//     has_explanation: bool,
-//     step : i32,
-//     title : String,
-//     serialized_action : Vec<u8>,
-// }
 
 fn get_serialized_action(action: &protos::Action) -> Result<Vec<u8>, Box<Error>> {
     let mut action_data: Vec<u8> = Vec::new();
