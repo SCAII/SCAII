@@ -69,12 +69,12 @@ fn run_command_platform(
     args: Vec<String>,
     where_to_read_output: &str,
 ) -> Result<String, Box<Error>> {
-    let mut c = Command::new("sh");
-    let c = c.arg("-c");
-    let c = c.arg(command);
+    use std::process::{Command, Stdio};
+    let mut c = Command::new(command);
     for arg in args.iter() {
         c.arg(arg);
     }
+    println!("...running command {:?}", c);
     let output = c.output().expect(&String::as_str(&format!(
         "failed to launch command {}",
         command

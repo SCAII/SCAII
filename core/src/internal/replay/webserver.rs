@@ -87,6 +87,8 @@ fn is_python3_invoked_as_python3() -> bool {
         _ => false,
     }
 }
+
+#[cfg(windows)]
 fn get_python_version(python_command: String) -> Option<String> {
     let mut args: Vec<String> = Vec::new();
     args.push("--version".to_string());
@@ -103,6 +105,25 @@ fn get_python_version(python_command: String) -> Option<String> {
         Err(_) => None,
     }
 }
+
+#[cfg(unix)]
+fn get_python_version(python_command: String) -> Option<String> {
+    let mut args: Vec<String> = Vec::new();
+    args.push("--version".to_string());
+    let command_result = util::run_command(&python_command, args); // This is the only line that 
+    match command_result {                                         // changes, potential area for 
+        Ok(result_string) => {                                     // consolidation during refactor.
+            if result_string.starts_with("Python 3") {
+                Some("3".to_string())
+            } else {
+                println!("no python3 detected");
+                None
+            }
+        }
+        Err(_) => None,
+    }
+}
+
 fn change_to_viz_dir() -> Result<(), Box<Error>> {
     //cd <SCAII_ROOT>\viz
     let mut root = util::get_scaii_root()?;
