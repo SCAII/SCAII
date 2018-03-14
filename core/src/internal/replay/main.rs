@@ -868,9 +868,25 @@ fn try_main() -> Result<(), Box<Error>> {
             let explanation_points : Vec<ExplanationPoint> = 
                 explanations::extract_explanations(replay_actions,&mut r_actions_sans_explanations)?;
             let mut explanations_option = explanations::map_explanations(explanation_points)?;
+            match explanations_option {
+                None => {
+                    println!("A. EXPLANATIONS_OPTION ....None");
+                }
+                Some(_) => {
+                    println!("A. EXPLANATION_OPTION .....Some");
+                }
+            }
             if explanations::is_empty(&explanations_option) {
                 println!("using default replay file to find expl file!{:?}",default_replay_file_path);
                 explanations_option = explanations::get_explanations_for_replay_file(default_replay_file_path.clone())?;
+            }
+            match explanations_option {
+                None => {
+                    println!("B. EXPLANATIONS_OPTION ....None");
+                }
+                Some(_) => {
+                    println!("B.EXPLANATION_OPTION .....Some");
+                }
             }
             run_replay(RunMode::Live, r_actions_sans_explanations, explanations_option, args);
             return Ok(());

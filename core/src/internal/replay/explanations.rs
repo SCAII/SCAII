@@ -14,14 +14,17 @@ pub struct Explanations {
 pub fn is_empty(explanations_option : &Option<Explanations>) -> bool {
     match explanations_option {
         &None => {
+            println!("is_empty()? FOUND NONE");
             true
         }
         &Some(ref explanations) => {
+            println!("is_empty()? FOUND SOME:{}", explanations.step_indices.len());
             explanations.step_indices.len() == 0
         }
     }
 }
 pub fn map_explanations(explanation_points: Vec<ExplanationPoint>) -> Result<Option<Explanations>, Box<Error>> {
+    println!("MAPPING EXPL POINTS recieved this many {}", explanation_points.len());
     let mut step_indices : Vec<u32> = Vec::new();
     let mut expl_map: BTreeMap<u32, ExplanationPoint> = BTreeMap::new();
     for expl_point in explanation_points {
@@ -68,9 +71,12 @@ fn extract_explanation_from_action_wrapper(action_wrapper : ActionWrapper, expla
     let action_decode_result = Action::decode(data);
     match action_decode_result {
         Ok(action) =>  {
-            match action.explanation {
-                None => {},
+            match action.explanation_point {
+                None => {
+                    println!("Explanation?  None");
+                },
                 Some(explanation_point) => {
+                    println!("Explanation?  YES");
                     explanation_points.push(explanation_point);
                 },
             }
@@ -79,7 +85,7 @@ fn extract_explanation_from_action_wrapper(action_wrapper : ActionWrapper, expla
                 discrete_actions : action.discrete_actions,
                 continuous_actions : action.continuous_actions,
                 alternate_actions : action.alternate_actions,
-                explanation : Option::None,
+                explanation_point : Option::None,
             };
             let mut new_action_data: Vec<u8> = Vec::new();
             new_action.encode(&mut new_action_data)?;

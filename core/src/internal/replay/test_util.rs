@@ -186,7 +186,7 @@ pub fn concoct_replay_info(
                 discrete_actions: d_actions,
                 continuous_actions: Vec::new(),
                 alternate_actions: None,
-                explanation: None,
+                explanation_point: None,
             };
             let mut serialized_protos_action_bytes: Vec<u8> = Vec::new();
             let protos_action_encode_result =
@@ -235,7 +235,7 @@ pub fn get_test_mode_key_frame(number: u32) -> Result<ReplayAction, Box<Error>> 
         discrete_actions: d_actions,
         continuous_actions: Vec::new(),
         alternate_actions: None,
-        explanation: None,
+        explanation_point: None,
     };
     let mut serialized_protos_action_bytes: Vec<u8> = Vec::new();
     let protos_action_encode_result = protos_action.encode(&mut serialized_protos_action_bytes);
