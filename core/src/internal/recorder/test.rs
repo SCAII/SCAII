@@ -59,7 +59,7 @@ impl RecorderTester {
 
         let cfg_pkt = self.create_cfg_pkt();
         let _result = self.send_packet(cfg_pkt)?;
-        let total: u32 = step_count * 4;
+        let total: u32 = step_count * 3 + 1 + 1; // (twice through the triplet plus one header, plus one because limit non-inclusive)
         for i in 0..total {
             println!("sending send_test_mode_step_hint_message {}", i);
             let _pkts: Vec<ScaiiPacket> = self.send_test_mode_step_hint_message()?;
@@ -184,6 +184,7 @@ impl RecorderTester {
 #[test]
 fn test_recorder() {
     use super::super::super::Environment;
+    //test_util::generate_test_saliency_file();
     let recorder_tester_message_queue = RecorderTesterMessageQueue {
         incoming_messages: Vec::new(),
     };
@@ -321,14 +322,14 @@ fn verify_key_frame(replay_action: ReplayAction, replay_vec: &mut Vec<ReplayActi
                     ser_response
                 ),
             }
-            assert!(has_explanation_value == &false);
+            assert!(has_explanation_value == &true);
             let protos_action = protos::Action::decode(action_data_vec);
             match protos_action {
                 Ok(protos::Action {
                     discrete_actions: i32vec,
                     continuous_actions: empty_vec,
                     alternate_actions: None,
-                    explanation: None,
+                    explanation: Some(_explanation_point),
                 }) => {
                     if !(i32vec.len() == 1 && i32vec[0] == 1 as i32) {
                         assert!(
@@ -357,8 +358,8 @@ fn verify_key_frame(replay_action: ReplayAction, replay_vec: &mut Vec<ReplayActi
         _ => {
             assert!(
                 false,
-                "ERROR = expected particular keyframe, got {:?}",
-                replay_action
+                "ERROR = expected particular keyframe, got Action"
+                //replay_action
             );
             false
         }
@@ -412,12 +413,16 @@ fn verify_persisted_file(path: &Path) -> Result<(), Box<Error>> {
     let replay_action_1 =
         deserialize_from::<BufReader<File>, ReplayAction, Infinite>(&mut reader, Infinite);
     let _result = verify_key_frame(replay_action_1.unwrap().clone(), &mut replay_vec);
+    //replay_vec.push();
 
+    println!(" SUCCESS on keyframe(and action 1");
     let replay_action_2 =
         deserialize_from::<BufReader<File>, ReplayAction, Infinite>(&mut reader, Infinite);
     // verify Delta(Step)
     //action deserialized as Delta(Step)
     verify_game_action_step(&replay_action_2);
+    println!(" SUCCESS on action 2");
+
     replay_vec.push(replay_action_2.unwrap());
 
     let replay_action_3 =
@@ -425,22 +430,26 @@ fn verify_persisted_file(path: &Path) -> Result<(), Box<Error>> {
     // verify Delta(Step)
     //action deserialized as Delta(Step)
     verify_game_action_step(&replay_action_3);
+    println!(" SUCCESS on action 3");
+
     replay_vec.push(replay_action_3.unwrap());
 
     let replay_action_4 =
         deserialize_from::<BufReader<File>, ReplayAction, Infinite>(&mut reader, Infinite);
+    
     // deser SerializedProtosSerializationResponse
     // deser SerializedProtosAction
     //action deserialized as Keyframe(SerializationInfo { source: SerializedProtosEndpoint { data: [10, 0] }, data: SerializedProtosSerializationResponse { data: [10, 3, 7, 8, 9, 16, 1] } }, DecisionPoint(SerializedProtosAction { data: [8, 1] }))
     let _result = verify_key_frame(replay_action_4.unwrap().clone(), &mut replay_vec);
-
-    //replay_vec.push(replay_action_4);
+    println!(" SUCCESS on keyframe(and action 4");
+    //replay_vec.push(replay_action_clone);
 
     let replay_action_5 =
         deserialize_from::<BufReader<File>, ReplayAction, Infinite>(&mut reader, Infinite);
     // verify Delta(Step)
     //action deserialized as Delta(Step)
     verify_game_action_step(&replay_action_5);
+    println!(" SUCCESS on action 5");
     replay_vec.push(replay_action_5.unwrap());
 
     let replay_action_6 =
@@ -448,6 +457,7 @@ fn verify_persisted_file(path: &Path) -> Result<(), Box<Error>> {
     // verify Delta(Step)
     //action deserialized as Delta(Step)
     verify_game_action_step(&replay_action_6);
+    println!(" SUCCESS on action 6");
     replay_vec.push(replay_action_6.unwrap());
 
     //while let Ok(action) = deserialize_from::<BufReader<File>,ReplayAction,Infinite>(&mut reader, Infinite) {
@@ -456,7 +466,7 @@ fn verify_persisted_file(path: &Path) -> Result<(), Box<Error>> {
     //}
 
     assert!(
-        replay_vec.len() == 6,
+        replay_vec.len() == 6, // omitted counting keyframes on purpose (long story)
         "reconstructed ReplayAction list length incorrect: {}",
         replay_vec.len()
     );
@@ -483,9 +493,12 @@ impl Module for MockRts {
                     let command: &String = &command_args[1];
                     match &command[..] {
                         "step" => {
+                            println!("\nMRTS received 'step' hint");
                             self.step();
                         }
-                        _ => {}
+                        _ => {
+                            println!("\nMRTS received {}", command);
+                        }
                     };
                 }
             }
@@ -532,26 +545,35 @@ impl MockRts {
             result.push(String::from("action"));
             result.push(String::from("action"));
         }
-        println!("sequence is this long: {}", result.len());
         self.step_count = result.len() as u32;
+        println!("\nMRTS step_count is : {}", self.step_count);
         result
     }
 
     fn step(&mut self) {
+        println!("\nMRTS.step() called with step_position {} and step_count {}",self.step_position,self.step_count);
         if self.step_position <= self.step_count {
+            println!("passed limit test");
             let recorder_step = self.recorder_steps[self.step_position as usize].clone();
             println!("STEP clue string serviced: {}", recorder_step);
             match &recorder_step[..] {
+                "header" => {
+                    self.send_header();
+                }
                 "serialize" => {
                     self.send_serialize();
                 }
                 "action" => {
-                    self.send_action();
+                    let step = self.step_position.clone();
+                    self.send_action(step);
                 }
                 _ => {}
             }
             self.step_position = self.step_position + 1;
             println!("MockRTS.step_position now {}", self.step_position);
+        }
+        else {
+            println!("\n\nFAILED limit test\n\n");
         }
         ()
     }
@@ -564,15 +586,39 @@ impl MockRts {
         });
     }
 
-    fn send_action(&mut self) {
+    fn send_header(&mut self) {
+        println!("MockRTS sending header pkt...");
+        let scaii_packet = self.create_header_pkt();
+        self.outbound_messages.push(MultiMessage {
+            packets: vec![scaii_packet],
+        });
+    }
+    fn send_action(&mut self, step_number : u32) {
         println!("Mock RTS sending action pkt...");
-        let scaii_packet = self.create_record_step_action_pkt();
+        let scaii_packet = self.create_record_step_action_pkt(step_number);
         self.outbound_messages.push(MultiMessage {
             packets: vec![scaii_packet],
         });
     }
 
-    fn create_serialize_pkt(&mut self) -> ScaiiPacket {
+    fn create_header_pkt(&mut self) -> ScaiiPacket {
+        let vec: Vec<ScaiiPacket> = Vec::new();
+        ScaiiPacket {
+            src: protos::Endpoint {
+                endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
+            },
+            dest: protos::Endpoint {
+                endpoint: Some(Endpoint::Recorder(RecorderEndpoint {})),
+            },
+            specific_msg: Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig {
+                pkts: vec,
+                overwrite: true,
+                filepath : Option::None,
+            })),
+        }
+    }
+
+ fn create_serialize_pkt(&mut self) -> ScaiiPacket {
         let mut ser_vec: Vec<u8> = Vec::new();
         ser_vec.push(7 as u8);
         ser_vec.push(8 as u8);
@@ -590,10 +636,14 @@ impl MockRts {
             })),
         }
     }
-
-    fn create_record_step_action_pkt(&mut self) -> ScaiiPacket {
+    fn create_record_step_action_pkt(&mut self, step_number: u32) -> ScaiiPacket {
+        use super::test_util::get_test_explanation_point;
         let mut actions: Vec<i32> = Vec::new();
         actions.push(1);
+        let y_delta: u32 = step_number * 4;
+        let action_name = format!("move_{}", step_number);
+        let action_description = format!("move_{} <some description>", step_number);
+        let explanation_point : ExplanationPoint = get_test_explanation_point(y_delta, action_name, action_description);
         ScaiiPacket {
             src: protos::Endpoint {
                 endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
@@ -606,7 +656,7 @@ impl MockRts {
                     discrete_actions: actions,
                     continuous_actions: Vec::new(),
                     alternate_actions: None,
-                    explanation: None,
+                    explanation: Some(explanation_point),
                 }),
                 is_decision_point: true,
                 explanation: None,
@@ -614,6 +664,7 @@ impl MockRts {
         }
     }
 }
+
 
 fn get_rust_ffi_config_for_path(path: &str) -> RustFfiConfig {
     RustFfiConfig {
@@ -653,3 +704,4 @@ fn create_test_rust_ffi_config_message() -> ScaiiPacket {
         }
     }
 }
+
