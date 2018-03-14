@@ -366,19 +366,25 @@ fn get_action_wrapper_for_recorder_step(
     match rec_step.action {
         Some(ref action) => {
             let action_data: Vec<u8> = get_serialized_action(action)?;
-            match action.explanation {
-                Some(ref expl) => Ok(ActionWrapper {
-                    has_explanation: true,
-                    step: get_step_value(expl),
-                    title: get_title_value(expl),
-                    serialized_action: action_data,
-                }),
-                None => Ok(ActionWrapper {
-                    has_explanation: false,
-                    step: 0,
-                    title: "".to_string(),
-                    serialized_action: action_data,
-                }),
+            match action.explanation_point {
+                Some(ref expl) => {
+                    println!("RECORDER: action has expl_point?  YES");
+                    Ok(ActionWrapper {
+                        has_explanation: true,
+                        step: get_step_value(expl),
+                        title: get_title_value(expl),
+                        serialized_action: action_data,
+                    })
+                },
+                None => {
+                    println!("RECORDER: action has expl_point?  NO");
+                    Ok(ActionWrapper {
+                        has_explanation: false,
+                        step: 0,
+                        title: "".to_string(),
+                        serialized_action: action_data,
+                    })
+                },
             }
         }
         None => Err(Box::new(RecorderError::new("no action in RecorderStep"))),
