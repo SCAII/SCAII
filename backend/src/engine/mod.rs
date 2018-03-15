@@ -150,11 +150,9 @@ impl<'a, 'b> Rts<'a, 'b> {
             .0
             .as_ref()
             .and_then(|v| {
-                Some(PathBuf::from(format!(
-                    "{}/{}",
-                    env::var("HOME").unwrap(),
-                    &v
-                )))
+                let mut path = env::home_dir().unwrap();
+                path.push(v);
+                Some(path)
             });
 
         self.lua_sys
