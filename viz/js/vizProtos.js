@@ -10256,7 +10256,7 @@ proto.scaii.common.Action.toObject = function(includeInstance, msg) {
     discreteActionsList: jspb.Message.getRepeatedField(msg, 1),
     continuousActionsList: jspb.Message.getRepeatedFloatingPointField(msg, 2),
     alternateActions: msg.getAlternateActions_asB64(),
-    explanationPoint: (f = msg.getExplanationPoint()) && proto.scaii.common.ExplanationPoint.toObject(includeInstance, f)
+    explanation: (f = msg.getExplanation()) && proto.scaii.common.ExplanationPoint.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -10308,7 +10308,7 @@ proto.scaii.common.Action.deserializeBinaryFromReader = function(msg, reader) {
     case 4:
       var value = new proto.scaii.common.ExplanationPoint;
       reader.readMessage(value,proto.scaii.common.ExplanationPoint.deserializeBinaryFromReader);
-      msg.setExplanationPoint(value);
+      msg.setExplanation(value);
       break;
     default:
       reader.skipField();
@@ -10360,7 +10360,7 @@ proto.scaii.common.Action.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getExplanationPoint();
+  f = message.getExplanation();
   if (f != null) {
     writer.writeMessage(
       4,
@@ -10483,23 +10483,23 @@ proto.scaii.common.Action.prototype.hasAlternateActions = function() {
 
 
 /**
- * optional ExplanationPoint explanation_point = 4;
+ * optional ExplanationPoint explanation = 4;
  * @return {?proto.scaii.common.ExplanationPoint}
  */
-proto.scaii.common.Action.prototype.getExplanationPoint = function() {
+proto.scaii.common.Action.prototype.getExplanation = function() {
   return /** @type{?proto.scaii.common.ExplanationPoint} */ (
     jspb.Message.getWrapperField(this, proto.scaii.common.ExplanationPoint, 4));
 };
 
 
 /** @param {?proto.scaii.common.ExplanationPoint|undefined} value */
-proto.scaii.common.Action.prototype.setExplanationPoint = function(value) {
+proto.scaii.common.Action.prototype.setExplanation = function(value) {
   jspb.Message.setWrapperField(this, 4, value);
 };
 
 
-proto.scaii.common.Action.prototype.clearExplanationPoint = function() {
-  this.setExplanationPoint(undefined);
+proto.scaii.common.Action.prototype.clearExplanation = function() {
+  this.setExplanation(undefined);
 };
 
 
@@ -10507,7 +10507,7 @@ proto.scaii.common.Action.prototype.clearExplanationPoint = function() {
  * Returns whether this field is set.
  * @return {!boolean}
  */
-proto.scaii.common.Action.prototype.hasExplanationPoint = function() {
+proto.scaii.common.Action.prototype.hasExplanation = function() {
   return jspb.Message.getField(this, 4) != null;
 };
 
