@@ -1,7 +1,6 @@
 use specs::prelude::*;
 use engine::resources::{SkyCollisionWorld, UnitTypeMap};
-use engine::components::{AttackSensor, CollisionHandle, FactionId, Pos,
-                         UnitTypeTag};
+use engine::components::{AttackSensor, CollisionHandle, FactionId, Pos, UnitTypeTag};
 
 #[derive(SystemData)]
 pub struct RedoCollisionSysData<'a> {
@@ -24,6 +23,7 @@ impl<'a> System<'a> for RedoCollisionSys {
 
     fn run(&mut self, mut sys_data: Self::SystemData) {
         let c_world = &mut *sys_data.col_world;
+        *c_world = SkyCollisionWorld::new(0.02);
         let type_map = &*sys_data.u_types;
 
         for (pos, tag, faction, id) in (
