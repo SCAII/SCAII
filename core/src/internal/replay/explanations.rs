@@ -71,7 +71,7 @@ fn extract_explanation_from_action_wrapper(action_wrapper : ActionWrapper, expla
     let action_decode_result = Action::decode(data);
     match action_decode_result {
         Ok(action) =>  {
-            match action.explanation_point {
+            match action.explanation {
                 None => {
                     println!("Explanation?  None");
                 },
@@ -85,7 +85,7 @@ fn extract_explanation_from_action_wrapper(action_wrapper : ActionWrapper, expla
                 discrete_actions : action.discrete_actions,
                 continuous_actions : action.continuous_actions,
                 alternate_actions : action.alternate_actions,
-                explanation_point : Option::None,
+                explanation : Option::None,
             };
             let mut new_action_data: Vec<u8> = Vec::new();
             new_action.encode(&mut new_action_data)?;
