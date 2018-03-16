@@ -71,6 +71,7 @@ fn extract_explanation_from_action_wrapper(action_wrapper : ActionWrapper, expla
     let action_decode_result = Action::decode(data);
     match action_decode_result {
         Ok(action) =>  {
+            println!("ACTION DECODED AS {:?}", action);
             match action.explanation {
                 None => {
                     println!("Explanation?  None");
@@ -143,7 +144,7 @@ pub fn get_explanations_for_explanations_file(path: PathBuf) -> Result<Option<Ex
             Ok(explanations_option)
         },
         Err(err) => {
-            return Err(Box::new(ReplayError::new(&format!("ERROR - failed to read explanations file {:?}", path))));
+            return Err(Box::new(ReplayError::new(&format!("ERROR - failed to read explanations file {:?} - {:?}", path, err.description()))));
         },
     }
 }
