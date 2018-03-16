@@ -137,19 +137,19 @@ impl Module for RustDynamicModule {
     }
 }
 
-#[test]
-fn load_destroy() {
-    use scaii_defs::protos::{BackendInit, InitAs};
-    use scaii_defs::protos::init_as;
+// #[test]
+// fn load_destroy() {
+//     use scaii_defs::protos::{BackendInit, InitAs};
+//     use scaii_defs::protos::init_as;
 
-    let args = RustFfiConfig {
-        init_as: InitAs {
-            init_as: Some(init_as::InitAs::Backend(BackendInit {})),
-        },
-        plugin_path: "../../sky-rts/backend/target/debug/backend.dll".to_string(),
-    };
+//     let args = RustFfiConfig {
+//         init_as: InitAs {
+//             init_as: Some(init_as::InitAs::Backend(BackendInit {})),
+//         },
+//         plugin_path: "../../../Sky-RTS/backend/target/debug/backend.dll".to_string(),
+//     };
 
-    init_ffi(args).unwrap();
+//     init_ffi(args).unwrap();
 
-    println!("Initialized")
-}
+//     println!("Initialized")
+// }
