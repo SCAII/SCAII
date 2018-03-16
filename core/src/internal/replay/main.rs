@@ -569,8 +569,8 @@ impl ReplayManager {
                         println!("args : {:?}", user_command_args);
                         let jump_target: &String = &user_command_args[0];
                         
-                        let pkt = replay_util::get_reset_env_pkt();
-                        self.send_pkt_to_backend(pkt);
+                        //let pkt = replay_util::get_reset_env_pkt();
+                        //self.send_pkt_to_backend(pkt);
                         game_state = self.handle_jump_request(jump_target)?;
                     }
                     UserCommandType::JumpCompleted => {} // sent to viz, not received from viz

@@ -609,6 +609,7 @@ impl MockRts {
                     explanation: None,
                 }),
                 is_decision_point: true,
+                explanation: None,
             })),
         }
     }
