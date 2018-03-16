@@ -164,7 +164,9 @@ struct ReplayManager {
 impl ReplayManager {
     fn start(&mut self) -> Result<(), Box<Error>> {
         match self.explanations_option {
-            None => assert!(false),
+            None => {
+                println!("WARNING - NO EXPLANATIONS PRESENT");
+            },
             Some(_) => assert!(true),
         }
         // startup viz via rpc

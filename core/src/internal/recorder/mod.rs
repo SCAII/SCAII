@@ -366,7 +366,7 @@ fn get_action_wrapper_for_recorder_step(
     match rec_step.action {
         Some(ref action) => {
             let action_data: Vec<u8> = get_serialized_action(action)?;
-            match action.explanation_point {
+            match action.explanation {
                 Some(ref expl) => {
                     println!("RECORDER: action has expl_point?  YES");
                     Ok(ActionWrapper {
