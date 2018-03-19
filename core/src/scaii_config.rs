@@ -28,7 +28,7 @@ fn default_browser() -> String {
 }
 #[cfg(target_os = "macos")]
 fn default_browser() -> String {
-    "open".to_string(); // will open url in safari
+    "open".to_string() // will open url in safari
 }
 #[cfg(target_os = "linux")]
 fn default_browser() -> String {
