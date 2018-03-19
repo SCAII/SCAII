@@ -16,7 +16,7 @@ class Explanation():
 
         for (name, idx) in zip(names, range(layers.shape[-1])):
             self.with_layer(name, np.squeeze(
-                layers[..., idx], axis=layers.shape[-1]))
+                layers[..., idx], axis=len(layers.shape)-1))
 
     def with_layer(self, name, layer):
         if layer.shape != self.layer_shape:
