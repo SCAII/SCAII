@@ -28,7 +28,13 @@ pub fn map_explanations(explanation_points: Vec<ExplanationPoint>) -> Result<Opt
     let mut step_indices : Vec<u32> = Vec::new();
     let mut expl_map: BTreeMap<u32, ExplanationPoint> = BTreeMap::new();
     for expl_point in explanation_points {
-        let step = expl_point.step.unwrap();
+        let mut step = expl_point.step.unwrap();
+        if step == 0 {
+            // step of 0 means the action with the explanation point was tied to the first keyframe.
+            // Since that keyframe now occupies index 0 and the associated Action occupies index
+            // 1, we need to bump this one up to match that first Action.
+            step = 1;
+        }
         step_indices.push(step.clone());
         expl_map.insert(step,expl_point.clone());
     }
@@ -40,15 +46,16 @@ pub fn map_explanations(explanation_points: Vec<ExplanationPoint>) -> Result<Opt
 
 pub fn extract_explanations(replay_actions: Vec<ReplayAction>, r_actions_sans_explanations: &mut Vec<ReplayAction>) -> Result<Vec<ExplanationPoint>, Box<Error>> {
     let mut explanation_points: Vec<ExplanationPoint> = Vec::new();
-    for replay_action in replay_actions {
+    for (index ,replay_action) in replay_actions.into_iter().enumerate() {
+        let step = index as u32;
         match replay_action {
             ReplayAction::Delta(action_wrapper) => {
-                let new_action_wrapper = extract_explanation_from_action_wrapper(action_wrapper, &mut explanation_points)?;
+                let new_action_wrapper = extract_explanation_from_action_wrapper(action_wrapper, &mut explanation_points, step)?;
                 let new_replay_action = ReplayAction::Delta(new_action_wrapper);
                 r_actions_sans_explanations.push(new_replay_action);
             }
             ReplayAction::Keyframe(ser_info, action_wrapper) => {
-                let new_action_wrapper = extract_explanation_from_action_wrapper(action_wrapper, &mut explanation_points)?;
+                let new_action_wrapper = extract_explanation_from_action_wrapper(action_wrapper, &mut explanation_points, step)?;
                 let new_replay_action = ReplayAction::Keyframe(ser_info, new_action_wrapper);
                 r_actions_sans_explanations.push(new_replay_action);
             }
@@ -66,7 +73,7 @@ fn get_serialized_action(action: &Action) -> Result<Vec<u8>, Box<Error>> {
     Ok(action_data)
 }
 
-fn extract_explanation_from_action_wrapper(action_wrapper : ActionWrapper, explanation_points : &mut Vec<ExplanationPoint>) -> Result<ActionWrapper, Box<Error>> {
+fn extract_explanation_from_action_wrapper(action_wrapper : ActionWrapper, explanation_points : &mut Vec<ExplanationPoint>, step : u32) -> Result<ActionWrapper, Box<Error>> {
     let data = action_wrapper.serialized_action;
     let action_decode_result = Action::decode(data);
     match action_decode_result {
@@ -76,8 +83,9 @@ fn extract_explanation_from_action_wrapper(action_wrapper : ActionWrapper, expla
                 None => {
                     println!("Explanation?  None");
                 },
-                Some(explanation_point) => {
+                Some(mut explanation_point) => {
                     println!("Explanation?  YES");
+                    explanation_point.step = Some(step);
                     explanation_points.push(explanation_point);
                 },
             }

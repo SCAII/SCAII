@@ -81,9 +81,43 @@ var renderExplanationPoint = function(explPoint){
 		var height = expLayer.getHeight();
 		renderExplLayer(name, cells, width, height)
 	}
+	var chartData = getBogusChartData();
+	var options = getBogusOptions();
+	drawBarChart(chartData, options);
+}
+
+var getBogusChartData = function() {
+	var chartData = [
+        ['Decision', 'r1', 'r2'],
+        ['unit victorious', 0.77, 0.4],
+        ['unit loses', -0.39, 0.6],
+        ['adversary flees', 0.2, 0.3]
+      ];  
+	 return chartData;
+}
+
+var getBogusOptions = function() {
+	var options = {
+		//legend: { position: "none" },
+        title: "chart title",
+        //chartArea: {width: '50%', left:70},
+        chartArea: {width: '50%', left:"15%"},
+        hAxis: {
+          title: "horiz title",
+          //minValue: 0
+        },
+        vAxis: {
+          title: "vert title"
+        },
+		'width':800,
+        'height':400
+      };
+	  return options;
 }
 
 var renderExplLayer = function(name, cells, width, height) {
+	var uiName = name;
+	name = name.replace(" ","");
 	console.log('render layer ' + name);
 	var explCanvas = document.createElement("canvas");
 	var explCtx = explCanvas.getContext("2d");
@@ -111,7 +145,7 @@ var renderExplLayer = function(name, cells, width, height) {
 	$(mapContainerDivSelector).append(mapTitleDiv);
 	mapTitleDiv.setAttribute("id", mapTitleId);
 	var mapTitleDivSelector = "#" + mapTitleId;
-	$(mapTitleDivSelector).html(name);
+	$(mapTitleDivSelector).html(uiName);
 	configureMapTitle(mapTitleDivSelector);
 	
 	var mapId = 'map_' + name;

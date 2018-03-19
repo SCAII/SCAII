@@ -114,8 +114,8 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 
 	manager.jumpCompleted = function () {
 		userInputBlocked = false;
-		this.expressResumeButton(); // pause automatically engaged in Replay when jump completed.
-		this.enablePauseResume();
+		//this.expressResumeButton(); // pause automatically engaged in Replay when jump completed.
+		//this.enablePauseResume();
 	}
 
 	//

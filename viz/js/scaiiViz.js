@@ -190,7 +190,7 @@ function adjustZoomBoxPosition(x, y) {
 
 }
 
-function updateButtonsAsPerCurrentStep() {
+function updateButtonsAfterJump() {
 	if (currentStep == 0) {
 		controlsManager.expressResumeButton();
 		controlsManager.enablePauseResume();
@@ -199,15 +199,15 @@ function updateButtonsAsPerCurrentStep() {
 	else if (currentStep == 1) {
 		controlsManager.expressResumeButton();
 		controlsManager.enablePauseResume();
-		controlsManager.disableRewind();
+		controlsManager.enableRewind();
 	}
 	else if (currentStep == maxStep) {
-		controlsManager.expressPauseButton();
+		controlsManager.expressResumeButton();
 		controlsManager.disablePauseResume();
 		controlsManager.enableRewind();
 	}
 	else {
-		controlsManager.expressPauseButton();
+		controlsManager.expressResumeButton();
 		controlsManager.enablePauseResume();
 		controlsManager.enableRewind();
 	}
@@ -219,7 +219,7 @@ function handleReplayControl(replayControl) {
 			currentStep = parseInt(command[1]);
 			console.log('replay control set step_position to ' + currentStep);
 			updateProgress(currentStep, maxStep);
-			updateButtonsAsPerCurrentStep();
+			updateButtonsAfterJump();
 		}
 	}
 }
@@ -293,7 +293,6 @@ function handleViz(vizData) {
 	//}
 	currentStep = currentStep + 1;
 
-	updateButtonsAsPerCurrentStep();
 	if (currentStep == maxStep) {
 		controlsManager.reachedEndOfGame();
 	}
@@ -663,10 +662,10 @@ var connect = function (dots, attemptCount) {
 				ack(dealer);
 			}
 			else if (sPacket.hasUserCommand()) {
-				console.log("-----got userCommand");
 				var userCommand = sPacket.getUserCommand();
 				var commandType = userCommand.getCommandType();
 				if (commandType == proto.scaii.common.UserCommand.UserCommandType.POLL_FOR_COMMANDS) {
+					console.log("-----got pollForCommands");
 					var mm;
 					if (userCommandScaiiPackets.length > 0) {
 						mm = buildResponseToReplay(userCommandScaiiPackets);
@@ -681,6 +680,7 @@ var connect = function (dots, attemptCount) {
 					userCommandScaiiPackets = [];
 				}
 				else if (commandType == proto.scaii.common.UserCommand.UserCommandType.JUMP_COMPLETED) {
+					console.log("-----got jump completed message");
 					controlsManager.jumpCompleted();
 					ack(dealer);
 				}
