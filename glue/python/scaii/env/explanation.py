@@ -15,8 +15,7 @@ class Explanation():
         assert(len(names) == layers.shape[-1])
 
         for (name, idx) in zip(names, range(layers.shape[-1])):
-            self.with_layer(name, np.squeeze(
-                layers[..., idx], axis=len(layers.shape)-1))
+            self.with_layer(name, layers[..., idx])
 
     def with_layer(self, name, layer):
         if layer.shape != self.layer_shape:
@@ -25,13 +24,13 @@ class Explanation():
         layer_proto = self._proto.layers.add()
         layer_proto.cells.extend(layer.reshape(-1))
         layer_proto.width = self.layer_shape[0]
-        layer_proto.length = self.layer_shape[1]
+        layer_proto.height = self.layer_shape[1]
         layer_proto.name = name
 
         return self
 
     def to_proto(self, packet):
-        packet.recorder_step.explanation.CopyFrom(self._proto)
+        packet.recorder_step.action.explanation.CopyFrom(self._proto)
 
 
 class ShapeMismatchError(Exception):
