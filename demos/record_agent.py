@@ -6,21 +6,16 @@ print("Possible reward types:", env.reward_types())
 print("Possible actions:", env.actions())
 print("Action description", env.action_desc())
 
-for i in range(0, 1):
-    print("episode", i)
+s = env.reset(record=True)
 
-    s = env.reset(record=True)
+print("acting")
+act = env.new_action()
+act.attack_quadrant(2)
 
-    print("acting")
-    act = env.new_action()
-    act.attack_quadrant(2)
+s = env.act(act)
 
-    s = env.act(act)
+if not s.is_terminal():
+    raise Exception("Should not get in loop")
 
-    while not s.is_terminal():
-        raise Exception("Should not get in loop")
-        noop = env.new_action()
-        s = env.act(noop)
-
-    print("Reward is:", s.reward, "Terminal?:", s.is_terminal())
-    print("With types:", s.typed_reward)
+print("Reward is:", s.reward, "Terminal?:", s.is_terminal())
+print("With types:", s.typed_reward)
