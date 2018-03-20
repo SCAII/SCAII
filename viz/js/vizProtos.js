@@ -18,6 +18,9 @@ goog.provide('proto.scaii.common.BackendEndpoint');
 goog.provide('proto.scaii.common.BackendInit');
 goog.provide('proto.scaii.common.BackendSupported');
 goog.provide('proto.scaii.common.BackendSupported.SerializationSupport');
+goog.provide('proto.scaii.common.Bar');
+goog.provide('proto.scaii.common.BarChart');
+goog.provide('proto.scaii.common.BarGroup');
 goog.provide('proto.scaii.common.Cfg');
 goog.provide('proto.scaii.common.ChartActions');
 goog.provide('proto.scaii.common.ChartInfo');
@@ -35,6 +38,7 @@ goog.provide('proto.scaii.common.ExplanationPoints');
 goog.provide('proto.scaii.common.GameComplete');
 goog.provide('proto.scaii.common.InitAs');
 goog.provide('proto.scaii.common.Layer');
+goog.provide('proto.scaii.common.Layers');
 goog.provide('proto.scaii.common.ModuleCfg');
 goog.provide('proto.scaii.common.ModuleEndpoint');
 goog.provide('proto.scaii.common.ModuleInit');
@@ -54,6 +58,7 @@ goog.provide('proto.scaii.common.ReplaySessionConfig');
 goog.provide('proto.scaii.common.ReplayStep');
 goog.provide('proto.scaii.common.RpcConfig');
 goog.provide('proto.scaii.common.RustFFIConfig');
+goog.provide('proto.scaii.common.Saliency');
 goog.provide('proto.scaii.common.ScaiiPacket');
 goog.provide('proto.scaii.common.SerializationFormat');
 goog.provide('proto.scaii.common.SerializationRequest');
@@ -3949,19 +3954,12 @@ proto.scaii.common.ExplanationPoints.prototype.clearExplanationPointsList = func
  * @constructor
  */
 proto.scaii.common.ExplanationPoint = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, proto.scaii.common.ExplanationPoint.repeatedFields_, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.scaii.common.ExplanationPoint, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   proto.scaii.common.ExplanationPoint.displayName = 'proto.scaii.common.ExplanationPoint';
 }
-/**
- * List of repeated fields within this message type.
- * @private {!Array<number>}
- * @const
- */
-proto.scaii.common.ExplanationPoint.repeatedFields_ = [5];
-
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -3995,8 +3993,8 @@ proto.scaii.common.ExplanationPoint.toObject = function(includeInstance, msg) {
     id: jspb.Message.getField(msg, 2),
     title: jspb.Message.getField(msg, 3),
     description: jspb.Message.getField(msg, 4),
-    layersList: jspb.Message.toObjectList(msg.getLayersList(),
-    proto.scaii.common.Layer.toObject, includeInstance)
+    saliency: (f = msg.getSaliency()) && proto.scaii.common.Saliency.toObject(includeInstance, f),
+    barChart: (f = msg.getBarChart()) && proto.scaii.common.BarChart.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -4050,9 +4048,14 @@ proto.scaii.common.ExplanationPoint.deserializeBinaryFromReader = function(msg, 
       msg.setDescription(value);
       break;
     case 5:
-      var value = new proto.scaii.common.Layer;
-      reader.readMessage(value,proto.scaii.common.Layer.deserializeBinaryFromReader);
-      msg.addLayers(value);
+      var value = new proto.scaii.common.Saliency;
+      reader.readMessage(value,proto.scaii.common.Saliency.deserializeBinaryFromReader);
+      msg.setSaliency(value);
+      break;
+    case 6:
+      var value = new proto.scaii.common.BarChart;
+      reader.readMessage(value,proto.scaii.common.BarChart.deserializeBinaryFromReader);
+      msg.setBarChart(value);
       break;
     default:
       reader.skipField();
@@ -4111,12 +4114,20 @@ proto.scaii.common.ExplanationPoint.serializeBinaryToWriter = function(message, 
       f
     );
   }
-  f = message.getLayersList();
-  if (f.length > 0) {
-    writer.writeRepeatedMessage(
+  f = message.getSaliency();
+  if (f != null) {
+    writer.writeMessage(
       5,
       f,
-      proto.scaii.common.Layer.serializeBinaryToWriter
+      proto.scaii.common.Saliency.serializeBinaryToWriter
+    );
+  }
+  f = message.getBarChart();
+  if (f != null) {
+    writer.writeMessage(
+      6,
+      f,
+      proto.scaii.common.BarChart.serializeBinaryToWriter
     );
   }
 };
@@ -4239,33 +4250,62 @@ proto.scaii.common.ExplanationPoint.prototype.hasDescription = function() {
 
 
 /**
- * repeated Layer layers = 5;
- * @return {!Array.<!proto.scaii.common.Layer>}
+ * optional Saliency saliency = 5;
+ * @return {?proto.scaii.common.Saliency}
  */
-proto.scaii.common.ExplanationPoint.prototype.getLayersList = function() {
-  return /** @type{!Array.<!proto.scaii.common.Layer>} */ (
-    jspb.Message.getRepeatedWrapperField(this, proto.scaii.common.Layer, 5));
+proto.scaii.common.ExplanationPoint.prototype.getSaliency = function() {
+  return /** @type{?proto.scaii.common.Saliency} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.Saliency, 5));
 };
 
 
-/** @param {!Array.<!proto.scaii.common.Layer>} value */
-proto.scaii.common.ExplanationPoint.prototype.setLayersList = function(value) {
-  jspb.Message.setRepeatedWrapperField(this, 5, value);
+/** @param {?proto.scaii.common.Saliency|undefined} value */
+proto.scaii.common.ExplanationPoint.prototype.setSaliency = function(value) {
+  jspb.Message.setWrapperField(this, 5, value);
+};
+
+
+proto.scaii.common.ExplanationPoint.prototype.clearSaliency = function() {
+  this.setSaliency(undefined);
 };
 
 
 /**
- * @param {!proto.scaii.common.Layer=} opt_value
- * @param {number=} opt_index
- * @return {!proto.scaii.common.Layer}
+ * Returns whether this field is set.
+ * @return {!boolean}
  */
-proto.scaii.common.ExplanationPoint.prototype.addLayers = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 5, opt_value, proto.scaii.common.Layer, opt_index);
+proto.scaii.common.ExplanationPoint.prototype.hasSaliency = function() {
+  return jspb.Message.getField(this, 5) != null;
 };
 
 
-proto.scaii.common.ExplanationPoint.prototype.clearLayersList = function() {
-  this.setLayersList([]);
+/**
+ * optional BarChart bar_chart = 6;
+ * @return {?proto.scaii.common.BarChart}
+ */
+proto.scaii.common.ExplanationPoint.prototype.getBarChart = function() {
+  return /** @type{?proto.scaii.common.BarChart} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.BarChart, 6));
+};
+
+
+/** @param {?proto.scaii.common.BarChart|undefined} value */
+proto.scaii.common.ExplanationPoint.prototype.setBarChart = function(value) {
+  jspb.Message.setWrapperField(this, 6, value);
+};
+
+
+proto.scaii.common.ExplanationPoint.prototype.clearBarChart = function() {
+  this.setBarChart(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.ExplanationPoint.prototype.hasBarChart = function() {
+  return jspb.Message.getField(this, 6) != null;
 };
 
 
@@ -4552,6 +4592,1138 @@ proto.scaii.common.Layer.prototype.clearHeight = function() {
  */
 proto.scaii.common.Layer.prototype.hasHeight = function() {
   return jspb.Message.getField(this, 4) != null;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.scaii.common.Layers = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.scaii.common.Layers.repeatedFields_, null);
+};
+goog.inherits(proto.scaii.common.Layers, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.Layers.displayName = 'proto.scaii.common.Layers';
+}
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.scaii.common.Layers.repeatedFields_ = [1];
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.Layers.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.Layers.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.Layers} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.Layers.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    layersList: jspb.Message.toObjectList(msg.getLayersList(),
+    proto.scaii.common.Layer.toObject, includeInstance)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.Layers}
+ */
+proto.scaii.common.Layers.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.Layers;
+  return proto.scaii.common.Layers.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.Layers} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.Layers}
+ */
+proto.scaii.common.Layers.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = new proto.scaii.common.Layer;
+      reader.readMessage(value,proto.scaii.common.Layer.deserializeBinaryFromReader);
+      msg.addLayers(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.Layers.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.scaii.common.Layers.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Layers} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.Layers.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getLayersList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      1,
+      f,
+      proto.scaii.common.Layer.serializeBinaryToWriter
+    );
+  }
+};
+
+
+/**
+ * repeated Layer layers = 1;
+ * @return {!Array.<!proto.scaii.common.Layer>}
+ */
+proto.scaii.common.Layers.prototype.getLayersList = function() {
+  return /** @type{!Array.<!proto.scaii.common.Layer>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.scaii.common.Layer, 1));
+};
+
+
+/** @param {!Array.<!proto.scaii.common.Layer>} value */
+proto.scaii.common.Layers.prototype.setLayersList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 1, value);
+};
+
+
+/**
+ * @param {!proto.scaii.common.Layer=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.scaii.common.Layer}
+ */
+proto.scaii.common.Layers.prototype.addLayers = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.scaii.common.Layer, opt_index);
+};
+
+
+proto.scaii.common.Layers.prototype.clearLayersList = function() {
+  this.setLayersList([]);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.scaii.common.Saliency = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.scaii.common.Saliency, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.Saliency.displayName = 'proto.scaii.common.Saliency';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.Saliency.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.Saliency.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.Saliency} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.Saliency.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    saliencyMap: (f = msg.getSaliencyMap()) ? f.toObject(includeInstance, proto.scaii.common.Layers.toObject) : []
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.Saliency}
+ */
+proto.scaii.common.Saliency.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.Saliency;
+  return proto.scaii.common.Saliency.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.Saliency} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.Saliency}
+ */
+proto.scaii.common.Saliency.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = msg.getSaliencyMap();
+      reader.readMessage(value, function(message, reader) {
+        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readMessage, proto.scaii.common.Layers.deserializeBinaryFromReader);
+         });
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.Saliency.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.scaii.common.Saliency.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Saliency} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.Saliency.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getSaliencyMap(true);
+  if (f && f.getLength() > 0) {
+    f.serializeBinary(1, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeMessage, proto.scaii.common.Layers.serializeBinaryToWriter);
+  }
+};
+
+
+/**
+ * map<string, Layers> saliency = 1;
+ * @param {boolean=} opt_noLazyCreate Do not create the map if
+ * empty, instead returning `undefined`
+ * @return {!jspb.Map<string,!proto.scaii.common.Layers>}
+ */
+proto.scaii.common.Saliency.prototype.getSaliencyMap = function(opt_noLazyCreate) {
+  return /** @type {!jspb.Map<string,!proto.scaii.common.Layers>} */ (
+      jspb.Message.getMapField(this, 1, opt_noLazyCreate,
+      proto.scaii.common.Layers));
+};
+
+
+proto.scaii.common.Saliency.prototype.clearSaliencyMap = function() {
+  this.getSaliencyMap().clear();
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.scaii.common.BarChart = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.scaii.common.BarChart.repeatedFields_, null);
+};
+goog.inherits(proto.scaii.common.BarChart, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.BarChart.displayName = 'proto.scaii.common.BarChart';
+}
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.scaii.common.BarChart.repeatedFields_ = [1];
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.BarChart.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.BarChart.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.BarChart} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.BarChart.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    groupList: jspb.Message.toObjectList(msg.getGroupList(),
+    proto.scaii.common.BarGroup.toObject, includeInstance),
+    title: jspb.Message.getField(msg, 2),
+    vTitle: jspb.Message.getField(msg, 3),
+    hTitle: jspb.Message.getField(msg, 4)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.BarChart}
+ */
+proto.scaii.common.BarChart.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.BarChart;
+  return proto.scaii.common.BarChart.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.BarChart} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.BarChart}
+ */
+proto.scaii.common.BarChart.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = new proto.scaii.common.BarGroup;
+      reader.readMessage(value,proto.scaii.common.BarGroup.deserializeBinaryFromReader);
+      msg.addGroup(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTitle(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setVTitle(value);
+      break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setHTitle(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.BarChart.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.scaii.common.BarChart.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.BarChart} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.BarChart.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getGroupList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      1,
+      f,
+      proto.scaii.common.BarGroup.serializeBinaryToWriter
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 2));
+  if (f != null) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 3));
+  if (f != null) {
+    writer.writeString(
+      3,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 4));
+  if (f != null) {
+    writer.writeString(
+      4,
+      f
+    );
+  }
+};
+
+
+/**
+ * repeated BarGroup group = 1;
+ * @return {!Array.<!proto.scaii.common.BarGroup>}
+ */
+proto.scaii.common.BarChart.prototype.getGroupList = function() {
+  return /** @type{!Array.<!proto.scaii.common.BarGroup>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.scaii.common.BarGroup, 1));
+};
+
+
+/** @param {!Array.<!proto.scaii.common.BarGroup>} value */
+proto.scaii.common.BarChart.prototype.setGroupList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 1, value);
+};
+
+
+/**
+ * @param {!proto.scaii.common.BarGroup=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.scaii.common.BarGroup}
+ */
+proto.scaii.common.BarChart.prototype.addGroup = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.scaii.common.BarGroup, opt_index);
+};
+
+
+proto.scaii.common.BarChart.prototype.clearGroupList = function() {
+  this.setGroupList([]);
+};
+
+
+/**
+ * optional string title = 2;
+ * @return {string}
+ */
+proto.scaii.common.BarChart.prototype.getTitle = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.BarChart.prototype.setTitle = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+proto.scaii.common.BarChart.prototype.clearTitle = function() {
+  jspb.Message.setField(this, 2, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.BarChart.prototype.hasTitle = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional string v_title = 3;
+ * @return {string}
+ */
+proto.scaii.common.BarChart.prototype.getVTitle = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.BarChart.prototype.setVTitle = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+proto.scaii.common.BarChart.prototype.clearVTitle = function() {
+  jspb.Message.setField(this, 3, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.BarChart.prototype.hasVTitle = function() {
+  return jspb.Message.getField(this, 3) != null;
+};
+
+
+/**
+ * optional string h_title = 4;
+ * @return {string}
+ */
+proto.scaii.common.BarChart.prototype.getHTitle = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.BarChart.prototype.setHTitle = function(value) {
+  jspb.Message.setField(this, 4, value);
+};
+
+
+proto.scaii.common.BarChart.prototype.clearHTitle = function() {
+  jspb.Message.setField(this, 4, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.BarChart.prototype.hasHTitle = function() {
+  return jspb.Message.getField(this, 4) != null;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.scaii.common.BarGroup = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.scaii.common.BarGroup.repeatedFields_, null);
+};
+goog.inherits(proto.scaii.common.BarGroup, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.BarGroup.displayName = 'proto.scaii.common.BarGroup';
+}
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.scaii.common.BarGroup.repeatedFields_ = [2];
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.BarGroup.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.BarGroup.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.BarGroup} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.BarGroup.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    value: jspb.Message.getOptionalFloatingPointField(msg, 1),
+    barsList: jspb.Message.toObjectList(msg.getBarsList(),
+    proto.scaii.common.Bar.toObject, includeInstance),
+    saliencyId: jspb.Message.getField(msg, 3),
+    name: jspb.Message.getField(msg, 4)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.BarGroup}
+ */
+proto.scaii.common.BarGroup.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.BarGroup;
+  return proto.scaii.common.BarGroup.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.BarGroup} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.BarGroup}
+ */
+proto.scaii.common.BarGroup.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readDouble());
+      msg.setValue(value);
+      break;
+    case 2:
+      var value = new proto.scaii.common.Bar;
+      reader.readMessage(value,proto.scaii.common.Bar.deserializeBinaryFromReader);
+      msg.addBars(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setSaliencyId(value);
+      break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setName(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.BarGroup.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.scaii.common.BarGroup.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.BarGroup} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.BarGroup.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = /** @type {number} */ (jspb.Message.getField(message, 1));
+  if (f != null) {
+    writer.writeDouble(
+      1,
+      f
+    );
+  }
+  f = message.getBarsList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      2,
+      f,
+      proto.scaii.common.Bar.serializeBinaryToWriter
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 3));
+  if (f != null) {
+    writer.writeString(
+      3,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 4));
+  if (f != null) {
+    writer.writeString(
+      4,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional double value = 1;
+ * @return {number}
+ */
+proto.scaii.common.BarGroup.prototype.getValue = function() {
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 1, 0.0));
+};
+
+
+/** @param {number} value */
+proto.scaii.common.BarGroup.prototype.setValue = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+proto.scaii.common.BarGroup.prototype.clearValue = function() {
+  jspb.Message.setField(this, 1, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.BarGroup.prototype.hasValue = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * repeated Bar bars = 2;
+ * @return {!Array.<!proto.scaii.common.Bar>}
+ */
+proto.scaii.common.BarGroup.prototype.getBarsList = function() {
+  return /** @type{!Array.<!proto.scaii.common.Bar>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.scaii.common.Bar, 2));
+};
+
+
+/** @param {!Array.<!proto.scaii.common.Bar>} value */
+proto.scaii.common.BarGroup.prototype.setBarsList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 2, value);
+};
+
+
+/**
+ * @param {!proto.scaii.common.Bar=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.scaii.common.Bar}
+ */
+proto.scaii.common.BarGroup.prototype.addBars = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 2, opt_value, proto.scaii.common.Bar, opt_index);
+};
+
+
+proto.scaii.common.BarGroup.prototype.clearBarsList = function() {
+  this.setBarsList([]);
+};
+
+
+/**
+ * optional string saliency_id = 3;
+ * @return {string}
+ */
+proto.scaii.common.BarGroup.prototype.getSaliencyId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.BarGroup.prototype.setSaliencyId = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+proto.scaii.common.BarGroup.prototype.clearSaliencyId = function() {
+  jspb.Message.setField(this, 3, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.BarGroup.prototype.hasSaliencyId = function() {
+  return jspb.Message.getField(this, 3) != null;
+};
+
+
+/**
+ * optional string name = 4;
+ * @return {string}
+ */
+proto.scaii.common.BarGroup.prototype.getName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.BarGroup.prototype.setName = function(value) {
+  jspb.Message.setField(this, 4, value);
+};
+
+
+proto.scaii.common.BarGroup.prototype.clearName = function() {
+  jspb.Message.setField(this, 4, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.BarGroup.prototype.hasName = function() {
+  return jspb.Message.getField(this, 4) != null;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.scaii.common.Bar = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.scaii.common.Bar, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.Bar.displayName = 'proto.scaii.common.Bar';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.Bar.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.Bar.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.Bar} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.Bar.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    value: +jspb.Message.getField(msg, 1),
+    saliencyId: jspb.Message.getField(msg, 2),
+    name: jspb.Message.getField(msg, 3)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.Bar}
+ */
+proto.scaii.common.Bar.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.Bar;
+  return proto.scaii.common.Bar.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.Bar} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.Bar}
+ */
+proto.scaii.common.Bar.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readDouble());
+      msg.setValue(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setSaliencyId(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setName(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.Bar.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.scaii.common.Bar.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Bar} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.Bar.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = /** @type {number} */ (jspb.Message.getField(message, 1));
+  if (f != null) {
+    writer.writeDouble(
+      1,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 2));
+  if (f != null) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 3));
+  if (f != null) {
+    writer.writeString(
+      3,
+      f
+    );
+  }
+};
+
+
+/**
+ * required double value = 1;
+ * @return {number}
+ */
+proto.scaii.common.Bar.prototype.getValue = function() {
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 1, 0.0));
+};
+
+
+/** @param {number} value */
+proto.scaii.common.Bar.prototype.setValue = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+proto.scaii.common.Bar.prototype.clearValue = function() {
+  jspb.Message.setField(this, 1, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Bar.prototype.hasValue = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * optional string saliency_id = 2;
+ * @return {string}
+ */
+proto.scaii.common.Bar.prototype.getSaliencyId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.Bar.prototype.setSaliencyId = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+proto.scaii.common.Bar.prototype.clearSaliencyId = function() {
+  jspb.Message.setField(this, 2, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Bar.prototype.hasSaliencyId = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional string name = 3;
+ * @return {string}
+ */
+proto.scaii.common.Bar.prototype.getName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.Bar.prototype.setName = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+proto.scaii.common.Bar.prototype.clearName = function() {
+  jspb.Message.setField(this, 3, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Bar.prototype.hasName = function() {
+  return jspb.Message.getField(this, 3) != null;
 };
 
 

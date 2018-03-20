@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='viz.proto',
   package='scaii.common',
   syntax='proto2',
-  serialized_pb=_b('\n\tviz.proto\x12\x0cscaii.common\"\x99\x01\n\x07VizInit\x12\x11\n\ttest_mode\x18\x01 \x01(\x08\x12\x12\n\nstep_count\x18\x02 \x01(\x03\x12\x17\n\x0fgameboard_width\x18\x03 \x01(\r\x12\x18\n\x10gameboard_height\x18\x04 \x01(\r\x12\x34\n\x0c\x65xplanations\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ExplanationPoint\"O\n\x11\x45xplanationPoints\x12:\n\x12\x65xplanation_points\x18\x01 \x03(\x0b\x32\x1e.scaii.common.ExplanationPoint\"u\n\x10\x45xplanationPoint\x12\x0c\n\x04step\x18\x01 \x01(\r\x12\n\n\x02id\x18\x02 \x01(\r\x12\r\n\x05title\x18\x03 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x04 \x01(\t\x12#\n\x06layers\x18\x05 \x03(\x0b\x32\x13.scaii.common.Layer\"C\n\x05Layer\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05\x63\x65lls\x18\x02 \x03(\x01\x12\r\n\x05width\x18\x03 \x01(\r\x12\x0e\n\x06height\x18\x04 \x01(\r\"-\n\x03Viz\x12&\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\x14.scaii.common.Entity\"\xb0\x01\n\tChartInfo\x12\x13\n\x0b\x63hart_title\x18\x01 \x01(\t\x12\x14\n\x0ch_axis_title\x18\x02 \x01(\t\x12\x14\n\x0cv_axis_title\x18\x03 \x01(\t\x12+\n\x07\x61\x63tions\x18\x04 \x01(\x0b\x32\x1a.scaii.common.ChartActions\x12\x35\n\rvalue_vectors\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ChartValueVector\";\n\x0c\x43hartActions\x12\x15\n\ractions_label\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63tion_names\x18\x02 \x03(\t\"8\n\x10\x43hartValueVector\x12\r\n\x05label\x18\x01 \x01(\t\x12\x15\n\raction_values\x18\x02 \x03(\x01\"i\n\x06\x45ntity\x12\n\n\x02id\x18\x01 \x02(\x04\x12\x1e\n\x03pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12#\n\x06shapes\x18\x03 \x03(\x0b\x32\x13.scaii.common.Shape\x12\x0e\n\x06\x64\x65lete\x18\x04 \x02(\x08\"\x1b\n\x03Pos\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\"3\n\x05\x43olor\x12\t\n\x01r\x18\x01 \x02(\r\x12\t\n\x01g\x18\x02 \x02(\r\x12\t\n\x01\x62\x18\x03 \x02(\r\x12\t\n\x01\x61\x18\x04 \x02(\r\"\x1c\n\x08Triangle\x12\x10\n\x08\x62\x61se_len\x18\x01 \x01(\x01\"%\n\x04Rect\x12\r\n\x05width\x18\x01 \x01(\x01\x12\x0e\n\x06height\x18\x02 \x01(\x01\"\x88\x02\n\x05Shape\x12\n\n\x02id\x18\x01 \x02(\x04\x12\'\n\x0crelative_pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12\"\n\x05\x63olor\x18\x03 \x01(\x0b\x32\x13.scaii.common.Color\x12\x10\n\x08rotation\x18\x04 \x02(\x01\x12 \n\x04rect\x18\x14 \x01(\x0b\x32\x12.scaii.common.Rect\x12(\n\x08triangle\x18\x15 \x01(\x0b\x32\x16.scaii.common.Triangle\x12\x0b\n\x03tag\x18\x16 \x01(\t\x12+\n\x0egradient_color\x18\x17 \x01(\x0b\x32\x13.scaii.common.Color\x12\x0e\n\x06\x64\x65lete\x18( \x02(\x08')
+  serialized_pb=_b('\n\tviz.proto\x12\x0cscaii.common\"\x99\x01\n\x07VizInit\x12\x11\n\ttest_mode\x18\x01 \x01(\x08\x12\x12\n\nstep_count\x18\x02 \x01(\x03\x12\x17\n\x0fgameboard_width\x18\x03 \x01(\r\x12\x18\n\x10gameboard_height\x18\x04 \x01(\r\x12\x34\n\x0c\x65xplanations\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ExplanationPoint\"O\n\x11\x45xplanationPoints\x12:\n\x12\x65xplanation_points\x18\x01 \x03(\x0b\x32\x1e.scaii.common.ExplanationPoint\"\xa5\x01\n\x10\x45xplanationPoint\x12\x0c\n\x04step\x18\x01 \x01(\r\x12\n\n\x02id\x18\x02 \x01(\r\x12\r\n\x05title\x18\x03 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x04 \x01(\t\x12(\n\x08saliency\x18\x05 \x01(\x0b\x32\x16.scaii.common.Saliency\x12)\n\tbar_chart\x18\x06 \x01(\x0b\x32\x16.scaii.common.BarChart\"C\n\x05Layer\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05\x63\x65lls\x18\x02 \x03(\x01\x12\r\n\x05width\x18\x03 \x01(\r\x12\x0e\n\x06height\x18\x04 \x01(\r\"-\n\x06Layers\x12#\n\x06layers\x18\x01 \x03(\x0b\x32\x13.scaii.common.Layer\"\x89\x01\n\x08Saliency\x12\x36\n\x08saliency\x18\x01 \x03(\x0b\x32$.scaii.common.Saliency.SaliencyEntry\x1a\x45\n\rSaliencyEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12#\n\x05value\x18\x02 \x01(\x0b\x32\x14.scaii.common.Layers:\x02\x38\x01\"b\n\x08\x42\x61rChart\x12%\n\x05group\x18\x01 \x03(\x0b\x32\x16.scaii.common.BarGroup\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0f\n\x07v_title\x18\x03 \x01(\t\x12\x0f\n\x07h_title\x18\x04 \x01(\t\"]\n\x08\x42\x61rGroup\x12\r\n\x05value\x18\x01 \x01(\x01\x12\x1f\n\x04\x62\x61rs\x18\x02 \x03(\x0b\x32\x11.scaii.common.Bar\x12\x13\n\x0bsaliency_id\x18\x03 \x01(\t\x12\x0c\n\x04name\x18\x04 \x01(\t\"7\n\x03\x42\x61r\x12\r\n\x05value\x18\x01 \x02(\x01\x12\x13\n\x0bsaliency_id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\"-\n\x03Viz\x12&\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\x14.scaii.common.Entity\"\xb0\x01\n\tChartInfo\x12\x13\n\x0b\x63hart_title\x18\x01 \x01(\t\x12\x14\n\x0ch_axis_title\x18\x02 \x01(\t\x12\x14\n\x0cv_axis_title\x18\x03 \x01(\t\x12+\n\x07\x61\x63tions\x18\x04 \x01(\x0b\x32\x1a.scaii.common.ChartActions\x12\x35\n\rvalue_vectors\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ChartValueVector\";\n\x0c\x43hartActions\x12\x15\n\ractions_label\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63tion_names\x18\x02 \x03(\t\"8\n\x10\x43hartValueVector\x12\r\n\x05label\x18\x01 \x01(\t\x12\x15\n\raction_values\x18\x02 \x03(\x01\"i\n\x06\x45ntity\x12\n\n\x02id\x18\x01 \x02(\x04\x12\x1e\n\x03pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12#\n\x06shapes\x18\x03 \x03(\x0b\x32\x13.scaii.common.Shape\x12\x0e\n\x06\x64\x65lete\x18\x04 \x02(\x08\"\x1b\n\x03Pos\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\"3\n\x05\x43olor\x12\t\n\x01r\x18\x01 \x02(\r\x12\t\n\x01g\x18\x02 \x02(\r\x12\t\n\x01\x62\x18\x03 \x02(\r\x12\t\n\x01\x61\x18\x04 \x02(\r\"\x1c\n\x08Triangle\x12\x10\n\x08\x62\x61se_len\x18\x01 \x01(\x01\"%\n\x04Rect\x12\r\n\x05width\x18\x01 \x01(\x01\x12\x0e\n\x06height\x18\x02 \x01(\x01\"\x88\x02\n\x05Shape\x12\n\n\x02id\x18\x01 \x02(\x04\x12\'\n\x0crelative_pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12\"\n\x05\x63olor\x18\x03 \x01(\x0b\x32\x13.scaii.common.Color\x12\x10\n\x08rotation\x18\x04 \x02(\x01\x12 \n\x04rect\x18\x14 \x01(\x0b\x32\x12.scaii.common.Rect\x12(\n\x08triangle\x18\x15 \x01(\x0b\x32\x16.scaii.common.Triangle\x12\x0b\n\x03tag\x18\x16 \x01(\t\x12+\n\x0egradient_color\x18\x17 \x01(\x0b\x32\x13.scaii.common.Color\x12\x0e\n\x06\x64\x65lete\x18( \x02(\x08')
 )
 
 
@@ -151,9 +151,16 @@ _EXPLANATIONPOINT = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='layers', full_name='scaii.common.ExplanationPoint.layers', index=4,
-      number=5, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
+      name='saliency', full_name='scaii.common.ExplanationPoint.saliency', index=4,
+      number=5, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='bar_chart', full_name='scaii.common.ExplanationPoint.bar_chart', index=5,
+      number=6, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -169,8 +176,8 @@ _EXPLANATIONPOINT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=264,
-  serialized_end=381,
+  serialized_start=265,
+  serialized_end=430,
 )
 
 
@@ -221,8 +228,256 @@ _LAYER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=383,
-  serialized_end=450,
+  serialized_start=432,
+  serialized_end=499,
+)
+
+
+_LAYERS = _descriptor.Descriptor(
+  name='Layers',
+  full_name='scaii.common.Layers',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='layers', full_name='scaii.common.Layers.layers', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=501,
+  serialized_end=546,
+)
+
+
+_SALIENCY_SALIENCYENTRY = _descriptor.Descriptor(
+  name='SaliencyEntry',
+  full_name='scaii.common.Saliency.SaliencyEntry',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='key', full_name='scaii.common.Saliency.SaliencyEntry.key', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='value', full_name='scaii.common.Saliency.SaliencyEntry.value', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=_descriptor._ParseOptions(descriptor_pb2.MessageOptions(), _b('8\001')),
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=617,
+  serialized_end=686,
+)
+
+_SALIENCY = _descriptor.Descriptor(
+  name='Saliency',
+  full_name='scaii.common.Saliency',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='saliency', full_name='scaii.common.Saliency.saliency', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[_SALIENCY_SALIENCYENTRY, ],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=549,
+  serialized_end=686,
+)
+
+
+_BARCHART = _descriptor.Descriptor(
+  name='BarChart',
+  full_name='scaii.common.BarChart',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='group', full_name='scaii.common.BarChart.group', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='title', full_name='scaii.common.BarChart.title', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='v_title', full_name='scaii.common.BarChart.v_title', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='h_title', full_name='scaii.common.BarChart.h_title', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=688,
+  serialized_end=786,
+)
+
+
+_BARGROUP = _descriptor.Descriptor(
+  name='BarGroup',
+  full_name='scaii.common.BarGroup',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='value', full_name='scaii.common.BarGroup.value', index=0,
+      number=1, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='bars', full_name='scaii.common.BarGroup.bars', index=1,
+      number=2, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='saliency_id', full_name='scaii.common.BarGroup.saliency_id', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='name', full_name='scaii.common.BarGroup.name', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=788,
+  serialized_end=881,
+)
+
+
+_BAR = _descriptor.Descriptor(
+  name='Bar',
+  full_name='scaii.common.Bar',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='value', full_name='scaii.common.Bar.value', index=0,
+      number=1, type=1, cpp_type=5, label=2,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='saliency_id', full_name='scaii.common.Bar.saliency_id', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='name', full_name='scaii.common.Bar.name', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=883,
+  serialized_end=938,
 )
 
 
@@ -252,8 +507,8 @@ _VIZ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=452,
-  serialized_end=497,
+  serialized_start=940,
+  serialized_end=985,
 )
 
 
@@ -311,8 +566,8 @@ _CHARTINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=500,
-  serialized_end=676,
+  serialized_start=988,
+  serialized_end=1164,
 )
 
 
@@ -349,8 +604,8 @@ _CHARTACTIONS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=678,
-  serialized_end=737,
+  serialized_start=1166,
+  serialized_end=1225,
 )
 
 
@@ -387,8 +642,8 @@ _CHARTVALUEVECTOR = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=739,
-  serialized_end=795,
+  serialized_start=1227,
+  serialized_end=1283,
 )
 
 
@@ -439,8 +694,8 @@ _ENTITY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=797,
-  serialized_end=902,
+  serialized_start=1285,
+  serialized_end=1390,
 )
 
 
@@ -477,8 +732,8 @@ _POS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=904,
-  serialized_end=931,
+  serialized_start=1392,
+  serialized_end=1419,
 )
 
 
@@ -529,8 +784,8 @@ _COLOR = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=933,
-  serialized_end=984,
+  serialized_start=1421,
+  serialized_end=1472,
 )
 
 
@@ -560,8 +815,8 @@ _TRIANGLE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=986,
-  serialized_end=1014,
+  serialized_start=1474,
+  serialized_end=1502,
 )
 
 
@@ -598,8 +853,8 @@ _RECT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1016,
-  serialized_end=1053,
+  serialized_start=1504,
+  serialized_end=1541,
 )
 
 
@@ -685,13 +940,20 @@ _SHAPE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1056,
-  serialized_end=1320,
+  serialized_start=1544,
+  serialized_end=1808,
 )
 
 _VIZINIT.fields_by_name['explanations'].message_type = _EXPLANATIONPOINT
 _EXPLANATIONPOINTS.fields_by_name['explanation_points'].message_type = _EXPLANATIONPOINT
-_EXPLANATIONPOINT.fields_by_name['layers'].message_type = _LAYER
+_EXPLANATIONPOINT.fields_by_name['saliency'].message_type = _SALIENCY
+_EXPLANATIONPOINT.fields_by_name['bar_chart'].message_type = _BARCHART
+_LAYERS.fields_by_name['layers'].message_type = _LAYER
+_SALIENCY_SALIENCYENTRY.fields_by_name['value'].message_type = _LAYERS
+_SALIENCY_SALIENCYENTRY.containing_type = _SALIENCY
+_SALIENCY.fields_by_name['saliency'].message_type = _SALIENCY_SALIENCYENTRY
+_BARCHART.fields_by_name['group'].message_type = _BARGROUP
+_BARGROUP.fields_by_name['bars'].message_type = _BAR
 _VIZ.fields_by_name['entities'].message_type = _ENTITY
 _CHARTINFO.fields_by_name['actions'].message_type = _CHARTACTIONS
 _CHARTINFO.fields_by_name['value_vectors'].message_type = _CHARTVALUEVECTOR
@@ -706,6 +968,11 @@ DESCRIPTOR.message_types_by_name['VizInit'] = _VIZINIT
 DESCRIPTOR.message_types_by_name['ExplanationPoints'] = _EXPLANATIONPOINTS
 DESCRIPTOR.message_types_by_name['ExplanationPoint'] = _EXPLANATIONPOINT
 DESCRIPTOR.message_types_by_name['Layer'] = _LAYER
+DESCRIPTOR.message_types_by_name['Layers'] = _LAYERS
+DESCRIPTOR.message_types_by_name['Saliency'] = _SALIENCY
+DESCRIPTOR.message_types_by_name['BarChart'] = _BARCHART
+DESCRIPTOR.message_types_by_name['BarGroup'] = _BARGROUP
+DESCRIPTOR.message_types_by_name['Bar'] = _BAR
 DESCRIPTOR.message_types_by_name['Viz'] = _VIZ
 DESCRIPTOR.message_types_by_name['ChartInfo'] = _CHARTINFO
 DESCRIPTOR.message_types_by_name['ChartActions'] = _CHARTACTIONS
@@ -745,6 +1012,49 @@ Layer = _reflection.GeneratedProtocolMessageType('Layer', (_message.Message,), d
   # @@protoc_insertion_point(class_scope:scaii.common.Layer)
   ))
 _sym_db.RegisterMessage(Layer)
+
+Layers = _reflection.GeneratedProtocolMessageType('Layers', (_message.Message,), dict(
+  DESCRIPTOR = _LAYERS,
+  __module__ = 'viz_pb2'
+  # @@protoc_insertion_point(class_scope:scaii.common.Layers)
+  ))
+_sym_db.RegisterMessage(Layers)
+
+Saliency = _reflection.GeneratedProtocolMessageType('Saliency', (_message.Message,), dict(
+
+  SaliencyEntry = _reflection.GeneratedProtocolMessageType('SaliencyEntry', (_message.Message,), dict(
+    DESCRIPTOR = _SALIENCY_SALIENCYENTRY,
+    __module__ = 'viz_pb2'
+    # @@protoc_insertion_point(class_scope:scaii.common.Saliency.SaliencyEntry)
+    ))
+  ,
+  DESCRIPTOR = _SALIENCY,
+  __module__ = 'viz_pb2'
+  # @@protoc_insertion_point(class_scope:scaii.common.Saliency)
+  ))
+_sym_db.RegisterMessage(Saliency)
+_sym_db.RegisterMessage(Saliency.SaliencyEntry)
+
+BarChart = _reflection.GeneratedProtocolMessageType('BarChart', (_message.Message,), dict(
+  DESCRIPTOR = _BARCHART,
+  __module__ = 'viz_pb2'
+  # @@protoc_insertion_point(class_scope:scaii.common.BarChart)
+  ))
+_sym_db.RegisterMessage(BarChart)
+
+BarGroup = _reflection.GeneratedProtocolMessageType('BarGroup', (_message.Message,), dict(
+  DESCRIPTOR = _BARGROUP,
+  __module__ = 'viz_pb2'
+  # @@protoc_insertion_point(class_scope:scaii.common.BarGroup)
+  ))
+_sym_db.RegisterMessage(BarGroup)
+
+Bar = _reflection.GeneratedProtocolMessageType('Bar', (_message.Message,), dict(
+  DESCRIPTOR = _BAR,
+  __module__ = 'viz_pb2'
+  # @@protoc_insertion_point(class_scope:scaii.common.Bar)
+  ))
+_sym_db.RegisterMessage(Bar)
 
 Viz = _reflection.GeneratedProtocolMessageType('Viz', (_message.Message,), dict(
   DESCRIPTOR = _VIZ,
@@ -817,4 +1127,6 @@ Shape = _reflection.GeneratedProtocolMessageType('Shape', (_message.Message,), d
 _sym_db.RegisterMessage(Shape)
 
 
+_SALIENCY_SALIENCYENTRY.has_options = True
+_SALIENCY_SALIENCYENTRY._options = _descriptor._ParseOptions(descriptor_pb2.MessageOptions(), _b('8\001'))
 # @@protoc_insertion_point(module_scope)

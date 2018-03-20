@@ -64,7 +64,8 @@ fn get_ep(step: u32, id: u32, title: String, description: String, layers: Vec<La
         id:          Some(id),
         title:       Some(title),
         description: Some(description),
-        layers:      layers,
+        saliency:    None,
+        bar_chart:   None,
     }
 }
 
