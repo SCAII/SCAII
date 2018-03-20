@@ -17,6 +17,7 @@ explanation = Explanation("Fake Random Saliency Info", (40,40))
 layers = np.random.random((40,40,6))
 layer_names = ["HP", "Type 1", "Type 2", "Type 3", "Friend", "Enemy"]
 
+
 explanation.with_layers(layer_names, layers)
 print(len(explanation._proto.layers))
 
