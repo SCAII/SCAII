@@ -95,6 +95,7 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
 	if (matchingStep == selectedExplanationStep) {
 		selectedExplanationStep = undefined;
 		$("#explanation-maps").empty();
+		$("#action-name-label").html(" ");
 	}
 	else {
 		selectedExplanationStep = matchingStep;
@@ -153,6 +154,8 @@ rewindButton.disabled = true;
 rewindButton.setAttribute("id", "rewindButton");
 pauseResumeButton.disabled = true;
 pauseResumeButton.setAttribute("id", "pauseResumeButton");
+var actionLabel = document.createElement("LABEL");
+var actionNameLabel = document.createElement("LABEL");
 
 var controlsManager = configureControlsManager(pauseResumeButton, rewindButton);
 var shape_outline_color = '#202020';
@@ -363,6 +366,7 @@ function clearGameBoard(ctx, canvas, shapePositionMapKey) {
 	shapePositionMapForContext[shapePositionMapKey] = {};
 }
 
+
 function clearExplanationControl(){
 	expl_ctrl_ctx.clearRect(0,0, expl_ctrl_canvas.width, expl_ctrl_canvas.height);
 }
@@ -535,6 +539,12 @@ var initUI = function () {
 	$("#scaii-zoom-controls").append(zoomSlider);
 
 	$("#game-progress").click(processTimelineClick);
+	actionLabel.setAttribute("id", "action-label");
+	$("#action-label-div").append(actionLabel);
+	$("#action-label").html("action");
+	actionNameLabel.setAttribute("id", "action-name-label");
+	$("#action-name-div").append(actionNameLabel);
+	$("#action-name-label").html(" ");
 }
 function clearGameBoards() {
 	clearGameBoard(gameboard_ctx, gameboard_canvas, "game");

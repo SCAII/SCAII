@@ -70,6 +70,7 @@ function getMatchingExplanationStep(ctx, x, y){
 var renderExplanationPoint = function(explPoint){
 	$("#explanation-maps").empty();
 	var title = explPoint.getTitle();
+	$("#action-name-label").html(title);
 	var description = explPoint.getDescription();
 	var expLayers = explPoint.getLayersList();
 	for (var i in expLayers) {
