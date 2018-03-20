@@ -11,9 +11,12 @@ var processTimelineClick = function (e) {
 			var clickX = e.offsetX;
 			var width = $("#game-progress").width();
 			var percent = clickX / width;
-			var targetStepCount = Math.floor((maxStep + 1) * percent);
-			var targetStepCountString = "" + targetStepCount;
-			var args = [targetStepCountString];
+			var targetStep = Math.floor((maxStep + 1) * percent);
+			if (targetStep > maxStep){
+				targetStep = maxStep;
+			}
+			var targetStepString = "" + targetStep;
+			var args = [targetStepString];
 			var userCommand = new proto.scaii.common.UserCommand;
 			userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
 			userCommand.setArgsList(args);
