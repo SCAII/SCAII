@@ -102,6 +102,15 @@
     margin: auto;
 }
 
+#explanation-control-info {
+    display: flex;
+	flex-direction: row;
+	background-color: lightgrey;
+    width: 400px;
+    height: 20px;
+    margin: auto;
+}
+
 #scaii-zoom-controls {
     display: flex;
 	flex-direction: row;
@@ -136,6 +145,11 @@ progress::-moz-progress-bar { background: darkgrey; }
 }
 .left-column-label {
     width: 76px;
+    height: 30px;
+    margin: 0px;
+}
+
+.free-width-label {
     height: 30px;
     margin: 0px;
 }
@@ -203,6 +217,10 @@ progress::-moz-progress-bar { background: darkgrey; }
 					<div id="explanation-control">
 						<div id="explanation-control-label" class="left-column-label"></div>
 						<div id="explanation-control-panel" class="control-panel"></div>
+					</div>
+					<div id="explanation-control-info">
+						<div id="action-label-div" class="left-column-label"></div>
+						<div id="action-name-div" class="free-width-label"></div>
 					</div>
 					<div id="playback">
 						<div id="playback-label" class="left-column-label"></div>
