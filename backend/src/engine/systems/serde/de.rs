@@ -6,7 +6,7 @@ use specs::error::NoError;
 
 use rand::Isaac64Rng;
 
-use engine::resources::{LuaPath, SerializeBytes};
+use engine::resources::{LuaPath, SerializeBytes, Terminal};
 
 #[derive(SystemData)]
 pub struct DeserializeSystemData<'a> {
@@ -14,6 +14,7 @@ pub struct DeserializeSystemData<'a> {
 
     rng: FetchMut<'a, Isaac64Rng>,
     lua_path: FetchMut<'a, LuaPath>,
+    terminal: FetchMut<'a, Terminal>,
 
     decode: Fetch<'a, SerializeBytes>,
 }
@@ -41,5 +42,6 @@ impl<'a> System<'a> for DeserializeSystem {
 
         *world.lua_path = tar.lua_path;
         *world.rng = tar.rng;
+        *world.terminal = tar.terminal;
     }
 }
