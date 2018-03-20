@@ -6,7 +6,7 @@ use specs::error::NoError;
 
 use rand::Isaac64Rng;
 
-use engine::resources::{LuaPath, SerializeBytes};
+use engine::resources::{LuaPath, SerializeBytes, Terminal};
 
 #[derive(SystemData)]
 pub struct SerializeSystemData<'a> {
@@ -14,6 +14,7 @@ pub struct SerializeSystemData<'a> {
 
     rng: FetchMut<'a, Isaac64Rng>,
     lua_path: Fetch<'a, LuaPath>,
+    terminal: Fetch<'a, Terminal>,
 
     out: FetchMut<'a, SerializeBytes>,
 }
@@ -43,6 +44,7 @@ impl<'a> System<'a> for SerializeSystem {
             components: tar,
             lua_path: world.lua_path.clone(),
             rng: world.rng.clone(),
+            terminal: *world.terminal,
         };
 
         let mut out = Serializer::new(out);

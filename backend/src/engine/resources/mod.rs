@@ -80,7 +80,7 @@ pub struct Step(pub usize);
 pub struct MaxStep(pub Option<usize>);
 
 /// Is this the final frame of the scenario?
-#[derive(Copy, Clone, PartialEq, Eq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(Copy, Clone, PartialEq, Eq, Ord, PartialOrd, Hash, Debug, Serialize, Deserialize)]
 pub struct Terminal(pub bool);
 
 /// Time since the last update, in seconds (fixed to one sixtieth of a second for our purposes).
