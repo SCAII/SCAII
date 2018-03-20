@@ -65,9 +65,148 @@ function getMatchingExplanationStep(ctx, x, y){
 	return matchingStep;
 }
 
-
-
+var getMaxValueBarGroup(barGroups){
+	var barGroupWithMaxValue = undefined;
+	for (var i in barGroups) {
+		barGroup = barGroups[i];
+		if (barGroupWithMaxValue == undefined) {
+			barGroupWithMaxValue = barGroup;
+		}
+		else {
+			var curValue = barGroup.getValue();
+			var maxValue = barGroupWithMaxValue.getValue();
+			if (cur_value > max_value) {
+				barGroupWithMaxValue = barGroup;
+			}
+		}
+	}
+	return barGroupWithMaxValue;
+}
 var renderExplanationPoint = function(explPoint){
+	$("#explanation-maps").empty();
+	var title = explPoint.getTitle();
+	$("#action-name-label").html(title);
+	var description = explPoint.getDescription();
+	// now info stored like this...
+	//optional Saliency saliency = 5;
+    //optional BarChart bar_chart = 6;
+	var saliency = explPoint.getSaliency();
+	var barChart =explPoint.getBarChart();
+	// look through the data to discover which saliency to express
+	var barGroups = barChart.getGroupsList();
+	var defaultBarGroup = getMaxValueBarGroup(barGroups);
+	var defaultSaliencyId = defaultBarGroup.getSaliencyId();
+	var saliencyMap = saliency.getSaliencyMap();
+    var layerMessage = saliencyMap[defaultSaliencyId];
+	if (layerMessage == undefined){
+		console.log("ERROR - no Layer message for saliencyID " + defaultSaliencyId);
+	}
+	else {
+		var expLayers = layerMessage.getLayersList();
+		for (var i in expLayers) {
+			expLayer = expLayers[i];
+			console.log('found layer ' + expLayer.getName());
+			var name = expLayer.getName();
+			var cells = expLayer.getCellsList();
+			var width = expLayer.getWidth();
+			var height = expLayer.getHeight();
+			renderExplLayer(name, cells, width, height)
+		} 
+	}
+	var chartData = getChartDataForBarChartMessage(barChart);
+	var options = getOptionsForBarChartMessage(barChart);
+	if (chartData == undefined){
+		console.log("ERROR - chartData could not be harvested for barChart " + barChart.getName());
+	} else if (options == undefined){
+		console.log("ERROR - chartOptions could not be harvested for barChart " + barChart.getName());
+	}
+	else {
+		drawBarChart(chartData, options);
+	}
+	
+}
+
+var getChartDataForBarChartMessage = function(barChart) {
+	// need structure to look like this
+	// var chartData = [
+        // ['', 'r1', 'r2'],
+        // ['unit victorious', 0.77, 0.4],
+        // ['unit loses', -0.39, 0.6],
+        // ['adversary flees', 0.2, 0.3]
+      // ]; 
+	 var rowWithRewardNames = getRewardNameRow(barChart);
+	 var chartData = [];
+	 chartData.push(rowWithRewardNames);
+	 
+	 var barGroups = barChart.getGroupsList();
+	 for (var i in barGroups){
+		 var barGroup = barGroups[i];
+		 var barValuesRow = getBarValuesRow(barGroup);
+		 chartData.push(barValuesRow);
+	 }
+	 return chartData;
+}
+var getBarValuesRow = function(barGroup) {
+	var barValueRow = [];
+	barValueRow.push(barGroup.getName());
+	var bars = barGroup.getBarsList();
+	for (var i in bars){
+		 var bar = bars[i];
+		 var value = getBarValuesRow(barGroup);
+		 barValueRow.push(value);
+	 }
+	 return barValueRow;
+}
+var getRewardNameRow = function(barChart) {
+	var rewardNameRow = [''];
+	// any of the BarGroups can be used to fill in the reward names
+	var barGroups = barChart.getGroupsList();
+	var barGroup = barGroups[0];
+	var bars = barGroup.getBarsList();
+	for (var i in bars){
+		var bar = bars[i];
+		rewardNameRow.push(bar.getName());
+	}
+	return rewardNameRow();
+}
+var getOptionsForBarChartMessage = function(barChart) {
+	var options = {
+		//legend: { position: "none" },
+        title: barChart.getTitle(),
+        //chartArea: {width: '50%', left:70},
+        chartArea: {width: '50%', left:"15%"},
+        hAxis: {
+          title: barChart.getHTitle(),
+          //minValue: 0
+        },
+        vAxis: {
+          title: barChart.getVTitle();
+        },
+		'width':800,
+        'height':400
+      };
+	  return options;
+}
+// message BarChart {
+  // repeated BarGroup group = 1;
+  // optional string title = 2;
+  // optional string v_title = 3;
+  // optional string h_title = 4;
+// }
+
+// message BarGroup {
+	// optional double value = 1;
+    // repeated Bar bars = 2;
+    // optional string saliency_id = 3;
+    // optional string name = 4;
+// }
+
+// message Bar {
+    // required double value = 1;
+    // optional string saliency_id = 2;
+    // optional string name = 3;
+// }
+var renderExplanationPointOld = function(explPoint){
 	$("#explanation-maps").empty();
 	var title = explPoint.getTitle();
 	$("#action-name-label").html(title);
