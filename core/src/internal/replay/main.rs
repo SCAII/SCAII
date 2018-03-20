@@ -493,8 +493,8 @@ impl ReplayManager {
                         if self.test_mode {
                             self.send_test_mode_rewind_hint_message()?;
                         }
-                        let pkt = replay_util::get_reset_env_pkt();
-                        self.send_pkt_to_backend(pkt);
+                        //let pkt = replay_util::get_reset_env_pkt();
+                        //self.send_pkt_to_backend(pkt);
                         let pkt = self.replay_sequencer.rewind();
                         println!("got rewind packet");
                         self.send_pkt_to_backend(pkt)?;
