@@ -219,6 +219,7 @@ pub fn get_emit_viz_pkt() -> ScaiiPacket {
     }
 }
 
+#[allow(dead_code)]
 pub fn get_reset_env_pkt() -> ScaiiPacket {
     ScaiiPacket {
         src: protos::Endpoint {
@@ -231,9 +232,9 @@ pub fn get_reset_env_pkt() -> ScaiiPacket {
     }
 }
 
-pub fn get_replay_configuration_message(replay_data: &Vec<ReplayAction>, count : u32, explanations_option : &Option<Explanations>) -> ScaiiPacket {
+pub fn get_replay_configuration_message(count : u32, explanations_option : &Option<Explanations>) -> ScaiiPacket {
     let mut expl_titles: Vec<String> = Vec::new();
-    let mut chart_titles: Vec<String> = Vec::new();
+    let chart_titles: Vec<String> = Vec::new();
     let mut expl_steps: Vec<u32> = Vec::new();
 
     match explanations_option {

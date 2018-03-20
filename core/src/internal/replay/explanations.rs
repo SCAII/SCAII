@@ -67,11 +67,11 @@ pub fn extract_explanations(replay_actions: Vec<ReplayAction>, r_actions_sans_ex
     Ok(explanation_points)
 }
 
-fn get_serialized_action(action: &Action) -> Result<Vec<u8>, Box<Error>> {
-    let mut action_data: Vec<u8> = Vec::new();
-    action.encode(&mut action_data)?;
-    Ok(action_data)
-}
+// fn get_serialized_action(action: &Action) -> Result<Vec<u8>, Box<Error>> {
+//     let mut action_data: Vec<u8> = Vec::new();
+//     action.encode(&mut action_data)?;
+//     Ok(action_data)
+// }
 
 fn extract_explanation_from_action_wrapper(action_wrapper : ActionWrapper, explanation_points : &mut Vec<ExplanationPoint>, step : u32) -> Result<ActionWrapper, Box<Error>> {
     let data = action_wrapper.serialized_action;
@@ -106,7 +106,7 @@ fn extract_explanation_from_action_wrapper(action_wrapper : ActionWrapper, expla
             })
         }
         Err(err) => {
-            Err(Box::new(ReplayError::new("could not decode ActionWrapper during explanation stripping")))
+            Err(Box::new(ReplayError::new(&format!("could not decode ActionWrapper during explanation stripping: {}", err.description()))))
         }
     }
 }

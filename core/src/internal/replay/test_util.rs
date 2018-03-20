@@ -1,10 +1,10 @@
 use prost::Message;
 use protos::{cfg, scaii_packet, BackendCfg, BackendEndpoint, Cfg, Entity, 
-            ExplanationPoint, ExplanationPoints, Layer, ModuleEndpoint,
+            ModuleEndpoint,
              MultiMessage, RecorderConfig, RecorderEndpoint, ReplayEndpoint, ScaiiPacket, Viz,
              VizInit};
 use protos::endpoint::Endpoint;
-use scaii_core::{ActionWrapper, get_default_replay_dir, ReplayAction, ReplayHeader, SerializationInfo,
+use scaii_core::{ActionWrapper, ReplayAction, ReplayHeader, SerializationInfo,
                  SerializedProtosEndpoint, SerializedProtosScaiiPacket,
                  SerializedProtosSerializationResponse};
 use scaii_defs::protos;

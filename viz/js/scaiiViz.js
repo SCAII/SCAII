@@ -665,7 +665,7 @@ var connect = function (dots, attemptCount) {
 				var userCommand = sPacket.getUserCommand();
 				var commandType = userCommand.getCommandType();
 				if (commandType == proto.scaii.common.UserCommand.UserCommandType.POLL_FOR_COMMANDS) {
-					console.log("-----got pollForCommands");
+					//console.log("-----got pollForCommands");
 					var mm;
 					if (userCommandScaiiPackets.length > 0) {
 						mm = buildResponseToReplay(userCommandScaiiPackets);

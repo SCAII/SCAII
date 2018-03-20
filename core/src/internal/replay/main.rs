@@ -9,7 +9,7 @@ extern crate url;
 
 use prost::Message;
 use protos::{plugin_type, scaii_packet, BackendEndpoint, Cfg, ExplanationDetails, ExplanationPoint, 
-             ExplanationPoints, Layer, ModuleEndpoint, MultiMessage, PluginType, RecorderConfig, 
+             ModuleEndpoint, MultiMessage, PluginType, RecorderConfig, 
              ReplayControl, ReplayEndpoint, RustFfiConfig, ScaiiPacket};
 use protos::cfg::WhichModule;
 use protos::user_command::UserCommandType;
@@ -103,7 +103,6 @@ impl Error for ReplayError {
 enum GameState {
     Running,
     Paused,
-    SingleStep,
 }
 
 // need to register dummy agent to keep RTS happy during replay
@@ -153,7 +152,6 @@ struct ReplayManager {
     poll_delay: Arc<Mutex<u64>>,
     shutdown_received: bool,
     env: Environment,
-    replay_actions: Vec<ReplayAction>,
     replay_sequencer: ReplaySequencer,
     explanations_option: Option<Explanations>,
     header: ReplayAction,
@@ -176,8 +174,8 @@ impl ReplayManager {
         // pull off header and configure
         let header: ReplayAction = self.header.clone();
         let count = self.replay_sequencer.get_sequence_length();
-        let replay_session_cfg = replay_util::get_replay_configuration_message(&self.replay_actions, 
-            count, &self.explanations_option);
+        let replay_session_cfg = replay_util::get_replay_configuration_message(count, 
+            &self.explanations_option);
         self.configure_as_per_header(header, replay_session_cfg)?;
         self.run_and_poll()
     }
@@ -472,7 +470,7 @@ impl ReplayManager {
                         );
                         let step: String = user_command_args[0].clone();
                         println!("please explain action at step {}!",step);
-                        self.explain_action_at_step(step);
+                        self.explain_action_at_step(step)?;
                     }
                     UserCommandType::Pause => {
                         println!("================RECEIVED UserCommandType::Pause================");
@@ -495,6 +493,9 @@ impl ReplayManager {
                         }
                         //let pkt = replay_util::get_reset_env_pkt();
                         //self.send_pkt_to_backend(pkt);
+                        
+                        let emit_viz_pkt = replay_util::get_emit_viz_pkt();
+                        self.send_pkt_to_backend(emit_viz_pkt)?;
                         let pkt = self.replay_sequencer.rewind();
                         println!("got rewind packet");
                         self.send_pkt_to_backend(pkt)?;
@@ -516,6 +517,8 @@ impl ReplayManager {
                         
                         //let pkt = replay_util::get_reset_env_pkt();
                         //self.send_pkt_to_backend(pkt);
+                        let emit_viz_pkt = replay_util::get_emit_viz_pkt();
+                        self.send_pkt_to_backend(emit_viz_pkt)?;
                         game_state = self.handle_jump_request(jump_target)?;
                     }
                     UserCommandType::JumpCompleted => {} // sent to viz, not received from viz
@@ -540,7 +543,9 @@ impl ReplayManager {
         wait(*self.poll_delay.lock().unwrap());
         Ok(game_state)
     }
+ 
 
+    #[allow(unused_assignments)]
     fn explain_action_at_step(&mut self, step: String)  -> Result<(), Box<Error>> {
         let step_int = step.parse::<u32>().unwrap();
         println!("asked to explain step {}", step_int);
@@ -619,10 +624,13 @@ impl ReplayManager {
                     self.send_test_mode_jump_to_hint_message(keyframe_index as u64)?;
                 }
                 let pkts = self.replay_sequencer.jump_to(jump_target_int)?;
+                let rewound_to : i32 = self.replay_sequencer.get_index_rewound_to() as i32;
+                let index_for_ui_to_restart_at : i32 = rewound_to - 1;
+                self.reset_ui_step_position(format!("{}",index_for_ui_to_restart_at))?;
                 for pkt in pkts {
                     self.send_pkt_to_backend(pkt)?;
                 }
-                self.reset_ui_step_position(jump_target.clone())?;
+                
                 self.notify_viz_that_jump_completed()?;
                 if self.test_mode {
                     self.send_test_mode_jump_to_message(jump_target)?;
@@ -700,10 +708,10 @@ impl ReplayManager {
             GameState::Paused => {
                 // do nothing
             }
-            GameState::SingleStep => {
-                let _ignore_game_state = self.execute_run_step()?;
-                game_state = GameState::Paused;
-            }
+            // GameState::SingleStep => {
+            //     let _ignore_game_state = self.execute_run_step()?;
+            //     game_state = GameState::Paused;
+            // }
         }
         Ok(game_state)
     }
@@ -944,7 +952,6 @@ fn run_replay(run_mode: RunMode, mut replay_info: Vec<ReplayAction>, explanation
                 poll_delay: Arc::new(Mutex::new(50)),
                 shutdown_received: false,
                 env: environment,
-                replay_actions: replay_info,
                 replay_sequencer: replay_sequencer,
                 explanations_option: explanations_option,
                 header: header,

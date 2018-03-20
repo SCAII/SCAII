@@ -18,6 +18,7 @@ pub struct ReplaySequencer {
     keyframe_indices: Vec<u32>,
     keyframe_map : BTreeMap<u32, ScaiiPacket>,
     mode_transition_index : Option<u32>,
+    rewound_to: u32,
 }
 
 enum PacketRetrievalModeForJump {
@@ -55,6 +56,7 @@ enum PacketRetrievalModeForJump {
 //
 //   So, for a jump, we have different logic for each mode
 //
+#[allow(unused_assignments)]
 impl ReplaySequencer {
     pub fn new(replay_info: &Vec<ReplayAction>) -> Result<ReplaySequencer, Box<Error>> {
         use super::ReplayError;
@@ -85,6 +87,7 @@ impl ReplaySequencer {
             keyframe_indices: keyframe_indices,
             keyframe_map : keyframe_map,
             mode_transition_index : mode_transition_index,
+            rewound_to: 0,
         })
     }
     #[allow(dead_code)] // for tests
@@ -127,6 +130,10 @@ impl ReplaySequencer {
         
     }
 
+    pub fn get_index_rewound_to(&mut self) -> u32 {
+        self.rewound_to.clone()
+    }
+
     pub fn rewind(&mut self) -> ScaiiPacket{
         let zero_index : u32 = 0;
         let key_frame_pkt = self.keyframe_map.get(&zero_index).unwrap().clone();
@@ -141,7 +148,7 @@ impl ReplaySequencer {
         if !self.keyframe_map.contains_key(&prior_keyframe_index){
             return Err(Box::new(ReplayError::new(&format!("no prior keyframe at index {}", prior_keyframe_index))))
         }
-
+        self.rewound_to = prior_keyframe_index.clone();
         let mut packet_retrieval_mode = PacketRetrievalModeForJump::SimpleMode;
         match self.mode_transition_index {
             None => {
