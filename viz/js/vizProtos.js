@@ -4810,7 +4810,7 @@ proto.scaii.common.Saliency.prototype.toObject = function(opt_includeInstance) {
  */
 proto.scaii.common.Saliency.toObject = function(includeInstance, msg) {
   var f, obj = {
-    saliencyMap: (f = msg.getSaliencyMap()) ? f.toObject(includeInstance, proto.scaii.common.Layers.toObject) : []
+    saliencyMapMap: (f = msg.getSaliencyMapMap()) ? f.toObject(includeInstance, proto.scaii.common.Layers.toObject) : []
   };
 
   if (includeInstance) {
@@ -4848,7 +4848,7 @@ proto.scaii.common.Saliency.deserializeBinaryFromReader = function(msg, reader) 
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = msg.getSaliencyMap();
+      var value = msg.getSaliencyMapMap();
       reader.readMessage(value, function(message, reader) {
         jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readMessage, proto.scaii.common.Layers.deserializeBinaryFromReader);
          });
@@ -4882,7 +4882,7 @@ proto.scaii.common.Saliency.prototype.serializeBinary = function() {
  */
 proto.scaii.common.Saliency.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getSaliencyMap(true);
+  f = message.getSaliencyMapMap(true);
   if (f && f.getLength() > 0) {
     f.serializeBinary(1, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeMessage, proto.scaii.common.Layers.serializeBinaryToWriter);
   }
@@ -4890,20 +4890,20 @@ proto.scaii.common.Saliency.serializeBinaryToWriter = function(message, writer) 
 
 
 /**
- * map<string, Layers> saliency = 1;
+ * map<string, Layers> saliency_map = 1;
  * @param {boolean=} opt_noLazyCreate Do not create the map if
  * empty, instead returning `undefined`
  * @return {!jspb.Map<string,!proto.scaii.common.Layers>}
  */
-proto.scaii.common.Saliency.prototype.getSaliencyMap = function(opt_noLazyCreate) {
+proto.scaii.common.Saliency.prototype.getSaliencyMapMap = function(opt_noLazyCreate) {
   return /** @type {!jspb.Map<string,!proto.scaii.common.Layers>} */ (
       jspb.Message.getMapField(this, 1, opt_noLazyCreate,
       proto.scaii.common.Layers));
 };
 
 
-proto.scaii.common.Saliency.prototype.clearSaliencyMap = function() {
-  this.getSaliencyMap().clear();
+proto.scaii.common.Saliency.prototype.clearSaliencyMapMap = function() {
+  this.getSaliencyMapMap().clear();
 };
 
 
@@ -4961,7 +4961,7 @@ proto.scaii.common.BarChart.prototype.toObject = function(opt_includeInstance) {
  */
 proto.scaii.common.BarChart.toObject = function(includeInstance, msg) {
   var f, obj = {
-    groupList: jspb.Message.toObjectList(msg.getGroupList(),
+    groupsList: jspb.Message.toObjectList(msg.getGroupsList(),
     proto.scaii.common.BarGroup.toObject, includeInstance),
     title: jspb.Message.getField(msg, 2),
     vTitle: jspb.Message.getField(msg, 3),
@@ -5005,7 +5005,7 @@ proto.scaii.common.BarChart.deserializeBinaryFromReader = function(msg, reader) 
     case 1:
       var value = new proto.scaii.common.BarGroup;
       reader.readMessage(value,proto.scaii.common.BarGroup.deserializeBinaryFromReader);
-      msg.addGroup(value);
+      msg.addGroups(value);
       break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
@@ -5048,7 +5048,7 @@ proto.scaii.common.BarChart.prototype.serializeBinary = function() {
  */
 proto.scaii.common.BarChart.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getGroupList();
+  f = message.getGroupsList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
       1,
@@ -5081,17 +5081,17 @@ proto.scaii.common.BarChart.serializeBinaryToWriter = function(message, writer) 
 
 
 /**
- * repeated BarGroup group = 1;
+ * repeated BarGroup groups = 1;
  * @return {!Array.<!proto.scaii.common.BarGroup>}
  */
-proto.scaii.common.BarChart.prototype.getGroupList = function() {
+proto.scaii.common.BarChart.prototype.getGroupsList = function() {
   return /** @type{!Array.<!proto.scaii.common.BarGroup>} */ (
     jspb.Message.getRepeatedWrapperField(this, proto.scaii.common.BarGroup, 1));
 };
 
 
 /** @param {!Array.<!proto.scaii.common.BarGroup>} value */
-proto.scaii.common.BarChart.prototype.setGroupList = function(value) {
+proto.scaii.common.BarChart.prototype.setGroupsList = function(value) {
   jspb.Message.setRepeatedWrapperField(this, 1, value);
 };
 
@@ -5101,13 +5101,13 @@ proto.scaii.common.BarChart.prototype.setGroupList = function(value) {
  * @param {number=} opt_index
  * @return {!proto.scaii.common.BarGroup}
  */
-proto.scaii.common.BarChart.prototype.addGroup = function(opt_value, opt_index) {
+proto.scaii.common.BarChart.prototype.addGroups = function(opt_value, opt_index) {
   return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.scaii.common.BarGroup, opt_index);
 };
 
 
-proto.scaii.common.BarChart.prototype.clearGroupList = function() {
-  this.setGroupList([]);
+proto.scaii.common.BarChart.prototype.clearGroupsList = function() {
+  this.setGroupsList([]);
 };
 
 

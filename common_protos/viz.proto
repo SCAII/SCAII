@@ -47,12 +47,12 @@ message Layers {
 }
 
 message Saliency {
-    map<string,Layers> saliency= 1;
+    map<string,Layers> saliency_map= 1;
 }
 
 
 message BarChart {
-  repeated BarGroup group = 1;
+  repeated BarGroup groups = 1;
   optional string title = 2;
   optional string v_title = 3;
   optional string h_title = 4;
