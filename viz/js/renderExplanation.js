@@ -75,7 +75,7 @@ var getMaxValueBarGroup = function(barGroups){
 		else {
 			var curValue = barGroup.getValue();
 			var maxValue = barGroupWithMaxValue.getValue();
-			if (cur_value > max_value) {
+			if (curValue > maxValue) {
 				barGroupWithMaxValue = barGroup;
 			}
 		}
