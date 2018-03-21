@@ -8,7 +8,7 @@ class Bar():
         self._proto.name = bar_name
         self._proto.value = value
         if saliency_key is not None:
-            self.saliency_id = saliency_key
+            self._proto.saliency_id = saliency_key
 
     def set_value(self, value):
         self._proto.value = value
@@ -18,6 +18,9 @@ class Bar():
 
     def set_saliency(self, saliency_key):
         self._proto.saliency_id = saliency_key
+
+    def saliency_id(self):
+        return self._proto.saliency_id
 
     def to_proto(self):
         return self._proto
@@ -44,6 +47,9 @@ class BarGroup():
 
     def set_value(self, value):
         self._proto.value = value
+
+    def saliency_id(self):
+        return self._proto.saliency_id
 
     def to_proto(self):
         return self._proto
@@ -90,7 +96,7 @@ class Explanation():
         if layer.shape != self.layer_shape:
             raise ShapeMismatchError(self.layer_shape, layer.shape)
 
-        layer_proto = self._proto.saliency.saliency[key].layers.add()
+        layer_proto = self._proto.saliency.saliency_map[key].layers.add()
         layer_proto.cells.extend(layer.reshape(-1))
         layer_proto.width = self.layer_shape[0]
         layer_proto.height = self.layer_shape[1]
@@ -109,12 +115,13 @@ class Explanation():
 
     def verify(self):
         if not self._proto.bar_chart:
-            if len(self._proto.saliency.saliency) > 1:
-                raise TooManySaliencyError(len(self._proto.saliency.saliency))
+            if len(self._proto.saliency.saliency_map) > 1:
+                raise TooManySaliencyError(
+                    len(self._proto.saliency.saliency_map))
             return
 
         referenced = dict([])
-        for key in self._proto.saliency.saliency:
+        for key in self._proto.saliency.saliency_map:
             referenced[key] = []
 
         for bg in self._proto.bar_chart.groups:
@@ -125,7 +132,7 @@ class Explanation():
                 else:
                     raise NoSuchSaliencyError(
                         bg.saliency_id, bg.name, "Bar Group")
-            for bar in bg:
+            for bar in bg.bars:
                 if bar.saliency_id:
                     if bar.saliency_id in referenced:
                         referenced[bar.saliency_id].append(
