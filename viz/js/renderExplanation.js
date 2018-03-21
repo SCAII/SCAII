@@ -114,7 +114,8 @@ var renderExplanationPoint = function(explPoint){
 			renderExplLayer(name, cells, width, height)
 		} 
 	}
-	var chartData = getChartDataForBarChartMessage(barChart);
+	//var chartData = getChartDataNBarsPerAction(barChart);
+	var chartData = getChartDataOneBarPerAction(barChart);
 	var options = getOptionsForBarChartMessage(barChart);
 	if (chartData == undefined){
 		console.log("ERROR - chartData could not be harvested for barChart " + barChart.getName());
@@ -127,7 +128,45 @@ var renderExplanationPoint = function(explPoint){
 	
 }
 
-var getChartDataForBarChartMessage = function(barChart) {
+var getRewardNameRowOneBarPerAction = function(barChart) {
+	var rewardNameRow = ['', 'total reward'];
+	return rewardNameRow;
+}
+
+var getBarValuesRowOneBarPerAction = function(barGroup) {
+	var barValueRow = [];
+	barValueRow.push(barGroup.getName());
+	var bars = barGroup.getBarsList();
+	var total = 0.0;
+	for (var i in bars){
+		var bar = bars[i];
+		var value = bar.getValue();
+		total = total + value;
+	}
+	barValueRow.push(total);
+	return barValueRow;
+}
+var getChartDataOneBarPerAction = function(barChart) {
+	// need structure to look like this
+	// var chartData = [
+        // ['', 'r', ],
+        // ['unit victorious', 0.77],
+        // ['unit loses', -0.39],
+        // ['adversary flees', 0.2]
+      // ]; 
+	 var rowWithRewardNames = getRewardNameRowOneBarPerAction(barChart);
+	 var chartData = [];
+	 chartData.push(rowWithRewardNames);
+	 
+	 var barGroups = barChart.getGroupsList();
+	 for (var i in barGroups){
+		 var barGroup = barGroups[i];
+		 var barValuesRow = getBarValuesRowOneBarPerAction(barGroup);
+		 chartData.push(barValuesRow);
+	 }
+	 return chartData;
+}
+var getChartDataNBarsPerAction = function(barChart) {
 	// need structure to look like this
 	// var chartData = [
         // ['', 'r1', 'r2'],
@@ -135,19 +174,19 @@ var getChartDataForBarChartMessage = function(barChart) {
         // ['unit loses', -0.39, 0.6],
         // ['adversary flees', 0.2, 0.3]
       // ]; 
-	 var rowWithRewardNames = getRewardNameRow(barChart);
+	 var rowWithRewardNames = getRewardNameRowNBarsPerAction(barChart);
 	 var chartData = [];
 	 chartData.push(rowWithRewardNames);
 	 
 	 var barGroups = barChart.getGroupsList();
 	 for (var i in barGroups){
 		 var barGroup = barGroups[i];
-		 var barValuesRow = getBarValuesRow(barGroup);
+		 var barValuesRow = getBarValuesRowNBarsPerAction(barGroup);
 		 chartData.push(barValuesRow);
 	 }
 	 return chartData;
 }
-var getBarValuesRow = function(barGroup) {
+var getBarValuesRowNBarsPerAction = function(barGroup) {
 	var barValueRow = [];
 	barValueRow.push(barGroup.getName());
 	var bars = barGroup.getBarsList();
@@ -158,7 +197,7 @@ var getBarValuesRow = function(barGroup) {
 	 }
 	 return barValueRow;
 }
-var getRewardNameRow = function(barChart) {
+var getRewardNameRowNBarsPerAction = function(barChart) {
 	var rewardNameRow = [''];
 	// any of the BarGroups can be used to fill in the reward names
 	var barGroups = barChart.getGroupsList();

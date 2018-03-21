@@ -105,17 +105,15 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
 		var args = ['' +selectedExplanationStep];
 		userCommand.setArgsList(args);
 		stageUserCommand(userCommand);
+		
+		var userCommand = new proto.scaii.common.UserCommand;
+		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+		// same args as above
+		userCommand.setArgsList(args);
+		stageUserCommand(userCommand);
 	}	
 	
 	handleReplaySessionConfig(replaySessionConfig,selectedExplanationStep);
-	if (selectedExplanationStep != undefined){
-		// var targetStepString = '' + selectedExplanationStep;
-		// var args = [targetStepString];
-		// var userCommand = new proto.scaii.common.UserCommand;
-		// userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-		// userCommand.setArgsList(args);
-		// stageUserCommand(userCommand);
-	}
 });
 
 gameboard_canvas.addEventListener('click', function (event) {
