@@ -65,7 +65,7 @@ function getMatchingExplanationStep(ctx, x, y){
 	return matchingStep;
 }
 
-var getMaxValueBarGroup(barGroups){
+var getMaxValueBarGroup = function(barGroups){
 	var barGroupWithMaxValue = undefined;
 	for (var i in barGroups) {
 		barGroup = barGroups[i];
@@ -84,6 +84,7 @@ var getMaxValueBarGroup(barGroups){
 }
 var renderExplanationPoint = function(explPoint){
 	$("#explanation-maps").empty();
+	$("#explanations-interface").empty();
 	var title = explPoint.getTitle();
 	$("#action-name-label").html(title);
 	var description = explPoint.getDescription();
@@ -180,7 +181,7 @@ var getOptionsForBarChartMessage = function(barChart) {
           //minValue: 0
         },
         vAxis: {
-          title: barChart.getVTitle();
+          title: barChart.getVTitle(),
         },
 		'width':800,
         'height':400
