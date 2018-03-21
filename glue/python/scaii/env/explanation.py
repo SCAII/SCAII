@@ -55,8 +55,8 @@ class BarChart():
 
         self._proto = BCProto()
         self._proto.title = title
-        self._proto.v_axis_title = v_axis_title
-        self._proto.h_axis_title = h_axis_title
+        self._proto.v_title = v_axis_title
+        self._proto.h_title = h_axis_title
 
         self.add_bar_groups(bar_groups)
 
