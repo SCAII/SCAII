@@ -135,7 +135,7 @@ class Explanation():
                             bar.saliency_id, bar.name, "Bar in BarGroup {}".format(bg.name))
 
         failed = False
-        for (_, references) in referenced:
+        for _, references in referenced.items():
             if len(references) != 1:
                 failed = True
                 break
