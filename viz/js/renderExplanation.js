@@ -97,7 +97,7 @@ var renderExplanationPoint = function(explPoint){
 	var barGroups = barChart.getGroupsList();
 	var defaultBarGroup = getMaxValueBarGroup(barGroups);
 	var defaultSaliencyId = defaultBarGroup.getSaliencyId();
-	var saliencyMap = saliency.getSaliencyMap();
+	var saliencyMap = saliency.getSaliencyMapMap();
     var layerMessage = saliencyMap[defaultSaliencyId];
 	if (layerMessage == undefined){
 		console.log("ERROR - no Layer message for saliencyID " + defaultSaliencyId);
