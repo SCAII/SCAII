@@ -95,6 +95,7 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
 	if (matchingStep == selectedExplanationStep) {
 		selectedExplanationStep = undefined;
 		$("#explanation-maps").empty();
+		$("#explanations-interface").empty();
 		$("#action-name-label").html(" ");
 	}
 	else {
