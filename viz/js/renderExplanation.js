@@ -341,11 +341,9 @@ var dummy = function(){
 }
 
 var drawBarChart = function(chartData, options) {
-      var data = google.visualization.arrayToDataTable(chartData);
-	  if (chart == undefined){
-		  chart = new google.visualization.BarChart(document.getElementById('explanations-interface'));
-	  }
-      chart.draw(data, options);
+    var data = google.visualization.arrayToDataTable(chartData);
+	chart = new google.visualization.BarChart(document.getElementById('explanations-interface'));
+    chart.draw(data, options);
 }
 
 /*var redrawChart = function() {
