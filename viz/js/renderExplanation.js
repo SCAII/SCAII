@@ -98,7 +98,7 @@ var renderExplanationPoint = function(explPoint){
 	var defaultBarGroup = getMaxValueBarGroup(barGroups);
 	var defaultSaliencyId = defaultBarGroup.getSaliencyId();
 	var saliencyMap = saliency.getSaliencyMapMap();
-    var layerMessage = saliencyMap[defaultSaliencyId];
+    var layerMessage = saliencyMap.get(defaultSaliencyId);
 	if (layerMessage == undefined){
 		console.log("ERROR - no Layer message for saliencyID " + defaultSaliencyId);
 	}
@@ -153,7 +153,7 @@ var getBarValuesRow = function(barGroup) {
 	var bars = barGroup.getBarsList();
 	for (var i in bars){
 		 var bar = bars[i];
-		 var value = getBarValuesRow(barGroup);
+		 var value = bar.getValue();
 		 barValueRow.push(value);
 	 }
 	 return barValueRow;
@@ -168,7 +168,7 @@ var getRewardNameRow = function(barChart) {
 		var bar = bars[i];
 		rewardNameRow.push(bar.getName());
 	}
-	return rewardNameRow();
+	return rewardNameRow;
 }
 var getOptionsForBarChartMessage = function(barChart) {
 	var options = {
