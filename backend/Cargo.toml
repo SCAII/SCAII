@@ -21,8 +21,8 @@ specs-derive = { git="https://github.com/slide-rs/specs" }
 shred = "0.5"
 shred-derive = "0.3"
 
-prost = "0.2"
-prost-derive = "0.2"
+prost = "0.3"
+prost-derive = "0.3"
 bytes = "0.4.5"
 
 lazy_static = "1.0"
@@ -34,7 +34,7 @@ ncollide = "0.14"
 rayon = "1"
 
 [build-dependencies]
-prost-build = "0.2"
+prost-build = "0.3"
 glob = "0.2.11"
 
 [dev-dependencies]
