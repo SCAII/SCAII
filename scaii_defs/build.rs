@@ -3,8 +3,12 @@ extern crate prost_build;
 
 fn main() {
     use glob::glob;
+    use prost_build::Config;
 
-    prost_build::compile_protos(&["../common_protos/scaii.proto"], &["../common_protos"]).unwrap();
+    Config::new()
+        .type_attribute(".", "#[derive(Serialize,Deserialize)]")
+        .compile_protos(&["../common_protos/scaii.proto"], &["../common_protos"])
+        .unwrap();
 
     // Make our protobuf file a reason to recompile
     // (See http://doc.crates.io/build-script.html for more info
