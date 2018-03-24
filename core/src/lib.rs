@@ -2,10 +2,7 @@
 #![allow(unknown_lints)]
 
 extern crate bincode;
-#[macro_use]
-extern crate lazy_static;
 extern crate libc;
-extern crate libloading;
 extern crate prost;
 extern crate scaii_defs;
 extern crate serde;
@@ -19,9 +16,9 @@ use internal::agent::PublisherAgent;
 use std::rc::Rc;
 use std::cell::RefCell;
 
-#[cfg(feature = "c_api")]
+#[cfg(feature = "c-api")]
 mod c_api;
-#[cfg(feature = "c_api")]
+#[cfg(feature = "c-api")]
 pub use c_api::*;
 
 pub mod util;
@@ -32,10 +29,10 @@ pub use scaii_config::*;
 // Don't publicly expose our internal structure to FFI
 pub(crate) mod internal;
 //...but expose ReplayAction so Replay can access it in Recorder (Replay is a binary so different crate)
-pub use internal::recorder::{get_default_replay_dir, get_default_replay_file_path, ActionWrapper, ReplayAction,
-                             ReplayHeader, SerializationInfo, SerializedProtosAction,
-                             SerializedProtosEndpoint, SerializedProtosScaiiPacket,
-                             SerializedProtosSerializationResponse};
+pub use internal::recorder::{get_default_replay_dir, get_default_replay_file_path, ActionWrapper,
+                             ReplayAction, ReplayHeader, SerializationInfo,
+                             SerializedProtosAction, SerializedProtosEndpoint,
+                             SerializedProtosScaiiPacket, SerializedProtosSerializationResponse};
 pub use internal::rpc::get_rpc_config_for_viz;
 
 /// The Environment created by this library.
@@ -131,33 +128,25 @@ impl Environment {
         plugin_type: &mut scaii_defs::protos::plugin_type::PluginType,
     ) -> Result<(), Box<Error>> {
         use scaii_defs::protos::plugin_type::PluginType::*;
-        use internal::{rpc, rust_ffi};
+        use internal::rpc;
         use internal::LoadedAs;
+        use internal::static_backends;
 
         match *plugin_type {
-            RustPlugin(ref cfg) => match rust_ffi::init_ffi(cfg.clone())? {
-                LoadedAs::Backend(backend) => {
-                    let prev = self.router.register_backend(backend);
+            SkyRts(_) => {
+                if !cfg!(feature = "static-rts") {
+                    Err(format!("RTS not linked statically, did you disable default features? Recompile with the static-rts feature enabled."))?
+                } else {
+                    let prev = self.router
+                        .register_backend(Box::new(static_backends::load_rts()));
                     if prev.is_some() {
-                        Err("Backend previously registered, overwriting".to_string())?
+                        Err(format!("Backend previously registered, overwriting",))?
                     } else {
                         Ok(())
                     }
                 }
-                LoadedAs::Module(module, name) => {
-                    let prev = self.router.register_module(name.clone(), module);
-                    if prev.is_some() {
-                        Err(format!(
-                            "Module {} previously registered, overwriting",
-                            name
-                        ))?
-                    } else {
-                        Ok(())
-                    }
-                }
-            },
+            }
             Rpc(ref cfg) => match rpc::init_rpc(cfg)? {
-                LoadedAs::Backend(_) => unimplemented!(),
                 LoadedAs::Module(module, name) => {
                     let prev = self.router.register_module(name.clone(), module);
                     if prev.is_some() {

@@ -4,10 +4,11 @@ version = "0.1.0"
 authors = ["Zoe Juozapaitis <jragonmiris@gmail.com>"]
 
 [features]
-default = ["c_api"]
+default = ["c-api", "static-backends"]
+static-backends = ["static-rts"]
+static-rts = ["sky-rts"]
 
-c_api = []
-rust_api = []
+c-api = []
 
 [lib]
 crate-type = ["cdylib","rlib"]
@@ -20,10 +21,8 @@ doc = true
 harness = true
 
 [dependencies]
-libloading="0.4.1"
 prost = "0.3"
 libc = "0.2"
-lazy_static = "0.2"
 websocket="0.20"
 serde = "1"
 serde_derive="1"
@@ -32,8 +31,12 @@ url = "1.5.1"
 toml = "0.4.5"
 
 # local deps
-scaii_defs = {version="0.8", path = "../scaii_defs"}
+scaii_defs = {path = "../scaii_defs"}
+sky-rts = {path="../backends/sky-rts", optional = true}
+
 
 [profile.release]
 #We can't unwind over C boundaries
 panic = "abort"
+codegen-units = 1
+lto = true

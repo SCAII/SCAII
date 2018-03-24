@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='cfg.proto',
   package='scaii.common',
   syntax='proto2',
-  serialized_pb=_b('\n\tcfg.proto\x12\x0cscaii.common\"\xcd\x01\n\x03\x43\x66g\x12)\n\x08\x63ore_cfg\x18\x01 \x01(\x0b\x32\x15.scaii.common.CoreCfgH\x00\x12/\n\x0b\x62\x61\x63kend_cfg\x18\x02 \x01(\x0b\x32\x18.scaii.common.BackendCfgH\x00\x12+\n\tagent_cfg\x18\x03 \x01(\x0b\x32\x16.scaii.common.AgentCfgH\x00\x12-\n\nmodule_cfg\x18\x04 \x01(\x0b\x32\x17.scaii.common.ModuleCfgH\x00\x42\x0e\n\x0cwhich_module\"w\n\nPluginType\x12\x32\n\x0brust_plugin\x18\x01 \x01(\x0b\x32\x1b.scaii.common.RustFFIConfigH\x00\x12&\n\x03rpc\x18\x02 \x01(\x0b\x32\x17.scaii.common.RpcConfigH\x00\x42\r\n\x0bplugin_type\"8\n\x07\x43oreCfg\x12-\n\x0bplugin_type\x18\x01 \x02(\x0b\x32\x18.scaii.common.PluginType\"m\n\x06InitAs\x12,\n\x07\x62\x61\x63kend\x18\x01 \x01(\x0b\x32\x19.scaii.common.BackendInitH\x00\x12*\n\x06module\x18\x02 \x01(\x0b\x32\x18.scaii.common.ModuleInitH\x00\x42\t\n\x07init_as\"\r\n\x0b\x42\x61\x63kendInit\"\x1a\n\nModuleInit\x12\x0c\n\x04name\x18\x01 \x02(\t\"K\n\rRustFFIConfig\x12\x13\n\x0bplugin_path\x18\x01 \x02(\t\x12%\n\x07init_as\x18\x02 \x02(\x0b\x32\x14.scaii.common.InitAs\"\x84\x01\n\tRpcConfig\x12\x15\n\x02ip\x18\x01 \x01(\t:\t127.0.0.1\x12\x12\n\x04port\x18\x02 \x01(\r:\x04\x36\x31\x31\x32\x12\x0f\n\x07\x63ommand\x18\x03 \x01(\t\x12\x14\n\x0c\x63ommand_args\x18\x04 \x03(\t\x12%\n\x07init_as\x18\x05 \x02(\x0b\x32\x14.scaii.common.InitAs\"5\n\nBackendCfg\x12\x0f\n\x07\x63\x66g_msg\x18\x01 \x01(\x0c\x12\x16\n\x0eis_replay_mode\x18\x02 \x02(\x08\"\x1b\n\x08\x41gentCfg\x12\x0f\n\x07\x63\x66g_msg\x18\x01 \x01(\x0c\"\x1c\n\tModuleCfg\x12\x0f\n\x07\x63\x66g_msg\x18\x01 \x01(\x0c\"\xbe\x01\n\x11SupportedBehavior\x12\x31\n\x07\x62\x61\x63kend\x18\x01 \x01(\x0b\x32\x1e.scaii.common.BackendSupportedH\x00\x12-\n\x05\x61gent\x18\x02 \x01(\x0b\x32\x1c.scaii.common.AgentSupportedH\x00\x12\x37\n\x0egeneric_module\x18\x05 \x01(\x0b\x32\x1d.scaii.common.ModuleSupportedH\x00\x42\x0e\n\x0cwhich_module\"\xc7\x01\n\x10\x42\x61\x63kendSupported\x12R\n\x15serialization_support\x18\x01 \x02(\x0e\x32\x33.scaii.common.BackendSupported.SerializationSupport\"U\n\x14SerializationSupport\x12\x08\n\x04NONE\x10\x00\x12\x12\n\x0e\x44IVERGING_ONLY\x10\x01\x12\x15\n\x11NONDIVERGING_ONLY\x10\x02\x12\x08\n\x04\x46ULL\x10\x03*\x08\x08\x64\x10\x80\x80\x80\x80\x02\"\x1a\n\x0e\x41gentSupported*\x08\x08\x64\x10\x80\x80\x80\x80\x02\"\x1b\n\x0fModuleSupported*\x08\x08\x64\x10\x80\x80\x80\x80\x02\"\xef\x02\n\x0e\x45nvDescription\x12\x43\n\x0creward_types\x18\x01 \x03(\x0b\x32-.scaii.common.EnvDescription.RewardTypesEntry\x12\\\n\x19possible_discrete_actions\x18\x02 \x03(\x0b\x32\x39.scaii.common.EnvDescription.PossibleDiscreteActionsEntry\x12\x13\n\x0b\x61\x63tion_desc\x18\x03 \x01(\t\x12\x31\n\tsupported\x18\x04 \x02(\x0b\x32\x1e.scaii.common.BackendSupported\x1a\x32\n\x10RewardTypesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x08:\x02\x38\x01\x1a>\n\x1cPossibleDiscreteActionsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01')
+  serialized_pb=_b('\n\tcfg.proto\x12\x0cscaii.common\"\xcd\x01\n\x03\x43\x66g\x12)\n\x08\x63ore_cfg\x18\x01 \x01(\x0b\x32\x15.scaii.common.CoreCfgH\x00\x12/\n\x0b\x62\x61\x63kend_cfg\x18\x02 \x01(\x0b\x32\x18.scaii.common.BackendCfgH\x00\x12+\n\tagent_cfg\x18\x03 \x01(\x0b\x32\x16.scaii.common.AgentCfgH\x00\x12-\n\nmodule_cfg\x18\x04 \x01(\x0b\x32\x17.scaii.common.ModuleCfgH\x00\x42\x0e\n\x0cwhich_module\"l\n\nPluginType\x12\'\n\x07sky_rts\x18\x01 \x01(\x0b\x32\x14.scaii.common.SkyRtsH\x00\x12&\n\x03rpc\x18\x02 \x01(\x0b\x32\x17.scaii.common.RpcConfigH\x00\x42\r\n\x0bplugin_type\"8\n\x07\x43oreCfg\x12-\n\x0bplugin_type\x18\x01 \x02(\x0b\x32\x18.scaii.common.PluginType\"m\n\x06InitAs\x12,\n\x07\x62\x61\x63kend\x18\x01 \x01(\x0b\x32\x19.scaii.common.BackendInitH\x00\x12*\n\x06module\x18\x02 \x01(\x0b\x32\x18.scaii.common.ModuleInitH\x00\x42\t\n\x07init_as\"\x08\n\x06SkyRts\"\r\n\x0b\x42\x61\x63kendInit\"\x1a\n\nModuleInit\x12\x0c\n\x04name\x18\x01 \x02(\t\"\x84\x01\n\tRpcConfig\x12\x15\n\x02ip\x18\x01 \x01(\t:\t127.0.0.1\x12\x12\n\x04port\x18\x02 \x01(\r:\x04\x36\x31\x31\x32\x12\x0f\n\x07\x63ommand\x18\x03 \x01(\t\x12\x14\n\x0c\x63ommand_args\x18\x04 \x03(\t\x12%\n\x07init_as\x18\x05 \x02(\x0b\x32\x14.scaii.common.InitAs\"5\n\nBackendCfg\x12\x0f\n\x07\x63\x66g_msg\x18\x01 \x01(\x0c\x12\x16\n\x0eis_replay_mode\x18\x02 \x02(\x08\"\x1b\n\x08\x41gentCfg\x12\x0f\n\x07\x63\x66g_msg\x18\x01 \x01(\x0c\"\x1c\n\tModuleCfg\x12\x0f\n\x07\x63\x66g_msg\x18\x01 \x01(\x0c\"\xbe\x01\n\x11SupportedBehavior\x12\x31\n\x07\x62\x61\x63kend\x18\x01 \x01(\x0b\x32\x1e.scaii.common.BackendSupportedH\x00\x12-\n\x05\x61gent\x18\x02 \x01(\x0b\x32\x1c.scaii.common.AgentSupportedH\x00\x12\x37\n\x0egeneric_module\x18\x05 \x01(\x0b\x32\x1d.scaii.common.ModuleSupportedH\x00\x42\x0e\n\x0cwhich_module\"\xc7\x01\n\x10\x42\x61\x63kendSupported\x12R\n\x15serialization_support\x18\x01 \x02(\x0e\x32\x33.scaii.common.BackendSupported.SerializationSupport\"U\n\x14SerializationSupport\x12\x08\n\x04NONE\x10\x00\x12\x12\n\x0e\x44IVERGING_ONLY\x10\x01\x12\x15\n\x11NONDIVERGING_ONLY\x10\x02\x12\x08\n\x04\x46ULL\x10\x03*\x08\x08\x64\x10\x80\x80\x80\x80\x02\"\x1a\n\x0e\x41gentSupported*\x08\x08\x64\x10\x80\x80\x80\x80\x02\"\x1b\n\x0fModuleSupported*\x08\x08\x64\x10\x80\x80\x80\x80\x02\"\xef\x02\n\x0e\x45nvDescription\x12\x43\n\x0creward_types\x18\x01 \x03(\x0b\x32-.scaii.common.EnvDescription.RewardTypesEntry\x12\\\n\x19possible_discrete_actions\x18\x02 \x03(\x0b\x32\x39.scaii.common.EnvDescription.PossibleDiscreteActionsEntry\x12\x13\n\x0b\x61\x63tion_desc\x18\x03 \x01(\t\x12\x31\n\tsupported\x18\x04 \x02(\x0b\x32\x1e.scaii.common.BackendSupported\x1a\x32\n\x10RewardTypesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x08:\x02\x38\x01\x1a>\n\x1cPossibleDiscreteActionsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01')
 )
 
 
@@ -49,8 +49,8 @@ _BACKENDSUPPORTED_SERIALIZATIONSUPPORT = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=1192,
-  serialized_end=1277,
+  serialized_start=1114,
+  serialized_end=1199,
 )
 _sym_db.RegisterEnumDescriptor(_BACKENDSUPPORTED_SERIALIZATIONSUPPORT)
 
@@ -118,7 +118,7 @@ _PLUGINTYPE = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='rust_plugin', full_name='scaii.common.PluginType.rust_plugin', index=0,
+      name='sky_rts', full_name='scaii.common.PluginType.sky_rts', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -147,7 +147,7 @@ _PLUGINTYPE = _descriptor.Descriptor(
       index=0, containing_type=None, fields=[]),
   ],
   serialized_start=235,
-  serialized_end=354,
+  serialized_end=343,
 )
 
 
@@ -177,8 +177,8 @@ _CORECFG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=356,
-  serialized_end=412,
+  serialized_start=345,
+  serialized_end=401,
 )
 
 
@@ -218,8 +218,32 @@ _INITAS = _descriptor.Descriptor(
       name='init_as', full_name='scaii.common.InitAs.init_as',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=414,
-  serialized_end=523,
+  serialized_start=403,
+  serialized_end=512,
+)
+
+
+_SKYRTS = _descriptor.Descriptor(
+  name='SkyRts',
+  full_name='scaii.common.SkyRts',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=514,
+  serialized_end=522,
 )
 
 
@@ -242,8 +266,8 @@ _BACKENDINIT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=525,
-  serialized_end=538,
+  serialized_start=524,
+  serialized_end=537,
 )
 
 
@@ -273,46 +297,8 @@ _MODULEINIT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=540,
-  serialized_end=566,
-)
-
-
-_RUSTFFICONFIG = _descriptor.Descriptor(
-  name='RustFFIConfig',
-  full_name='scaii.common.RustFFIConfig',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='plugin_path', full_name='scaii.common.RustFFIConfig.plugin_path', index=0,
-      number=1, type=9, cpp_type=9, label=2,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='init_as', full_name='scaii.common.RustFFIConfig.init_as', index=1,
-      number=2, type=11, cpp_type=10, label=2,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  options=None,
-  is_extendable=False,
-  syntax='proto2',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=568,
-  serialized_end=643,
+  serialized_start=539,
+  serialized_end=565,
 )
 
 
@@ -370,8 +356,8 @@ _RPCCONFIG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=646,
-  serialized_end=778,
+  serialized_start=568,
+  serialized_end=700,
 )
 
 
@@ -408,8 +394,8 @@ _BACKENDCFG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=780,
-  serialized_end=833,
+  serialized_start=702,
+  serialized_end=755,
 )
 
 
@@ -439,8 +425,8 @@ _AGENTCFG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=835,
-  serialized_end=862,
+  serialized_start=757,
+  serialized_end=784,
 )
 
 
@@ -470,8 +456,8 @@ _MODULECFG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=864,
-  serialized_end=892,
+  serialized_start=786,
+  serialized_end=814,
 )
 
 
@@ -518,8 +504,8 @@ _SUPPORTEDBEHAVIOR = _descriptor.Descriptor(
       name='which_module', full_name='scaii.common.SupportedBehavior.which_module',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=895,
-  serialized_end=1085,
+  serialized_start=817,
+  serialized_end=1007,
 )
 
 
@@ -550,8 +536,8 @@ _BACKENDSUPPORTED = _descriptor.Descriptor(
   extension_ranges=[(100, 536870912), ],
   oneofs=[
   ],
-  serialized_start=1088,
-  serialized_end=1287,
+  serialized_start=1010,
+  serialized_end=1209,
 )
 
 
@@ -574,8 +560,8 @@ _AGENTSUPPORTED = _descriptor.Descriptor(
   extension_ranges=[(100, 536870912), ],
   oneofs=[
   ],
-  serialized_start=1289,
-  serialized_end=1315,
+  serialized_start=1211,
+  serialized_end=1237,
 )
 
 
@@ -598,8 +584,8 @@ _MODULESUPPORTED = _descriptor.Descriptor(
   extension_ranges=[(100, 536870912), ],
   oneofs=[
   ],
-  serialized_start=1317,
-  serialized_end=1344,
+  serialized_start=1239,
+  serialized_end=1266,
 )
 
 
@@ -636,8 +622,8 @@ _ENVDESCRIPTION_REWARDTYPESENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1600,
-  serialized_end=1650,
+  serialized_start=1522,
+  serialized_end=1572,
 )
 
 _ENVDESCRIPTION_POSSIBLEDISCRETEACTIONSENTRY = _descriptor.Descriptor(
@@ -673,8 +659,8 @@ _ENVDESCRIPTION_POSSIBLEDISCRETEACTIONSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1652,
-  serialized_end=1714,
+  serialized_start=1574,
+  serialized_end=1636,
 )
 
 _ENVDESCRIPTION = _descriptor.Descriptor(
@@ -724,8 +710,8 @@ _ENVDESCRIPTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1347,
-  serialized_end=1714,
+  serialized_start=1269,
+  serialized_end=1636,
 )
 
 _CFG.fields_by_name['core_cfg'].message_type = _CORECFG
@@ -744,11 +730,11 @@ _CFG.fields_by_name['agent_cfg'].containing_oneof = _CFG.oneofs_by_name['which_m
 _CFG.oneofs_by_name['which_module'].fields.append(
   _CFG.fields_by_name['module_cfg'])
 _CFG.fields_by_name['module_cfg'].containing_oneof = _CFG.oneofs_by_name['which_module']
-_PLUGINTYPE.fields_by_name['rust_plugin'].message_type = _RUSTFFICONFIG
+_PLUGINTYPE.fields_by_name['sky_rts'].message_type = _SKYRTS
 _PLUGINTYPE.fields_by_name['rpc'].message_type = _RPCCONFIG
 _PLUGINTYPE.oneofs_by_name['plugin_type'].fields.append(
-  _PLUGINTYPE.fields_by_name['rust_plugin'])
-_PLUGINTYPE.fields_by_name['rust_plugin'].containing_oneof = _PLUGINTYPE.oneofs_by_name['plugin_type']
+  _PLUGINTYPE.fields_by_name['sky_rts'])
+_PLUGINTYPE.fields_by_name['sky_rts'].containing_oneof = _PLUGINTYPE.oneofs_by_name['plugin_type']
 _PLUGINTYPE.oneofs_by_name['plugin_type'].fields.append(
   _PLUGINTYPE.fields_by_name['rpc'])
 _PLUGINTYPE.fields_by_name['rpc'].containing_oneof = _PLUGINTYPE.oneofs_by_name['plugin_type']
@@ -761,7 +747,6 @@ _INITAS.fields_by_name['backend'].containing_oneof = _INITAS.oneofs_by_name['ini
 _INITAS.oneofs_by_name['init_as'].fields.append(
   _INITAS.fields_by_name['module'])
 _INITAS.fields_by_name['module'].containing_oneof = _INITAS.oneofs_by_name['init_as']
-_RUSTFFICONFIG.fields_by_name['init_as'].message_type = _INITAS
 _RPCCONFIG.fields_by_name['init_as'].message_type = _INITAS
 _SUPPORTEDBEHAVIOR.fields_by_name['backend'].message_type = _BACKENDSUPPORTED
 _SUPPORTEDBEHAVIOR.fields_by_name['agent'].message_type = _AGENTSUPPORTED
@@ -786,9 +771,9 @@ DESCRIPTOR.message_types_by_name['Cfg'] = _CFG
 DESCRIPTOR.message_types_by_name['PluginType'] = _PLUGINTYPE
 DESCRIPTOR.message_types_by_name['CoreCfg'] = _CORECFG
 DESCRIPTOR.message_types_by_name['InitAs'] = _INITAS
+DESCRIPTOR.message_types_by_name['SkyRts'] = _SKYRTS
 DESCRIPTOR.message_types_by_name['BackendInit'] = _BACKENDINIT
 DESCRIPTOR.message_types_by_name['ModuleInit'] = _MODULEINIT
-DESCRIPTOR.message_types_by_name['RustFFIConfig'] = _RUSTFFICONFIG
 DESCRIPTOR.message_types_by_name['RpcConfig'] = _RPCCONFIG
 DESCRIPTOR.message_types_by_name['BackendCfg'] = _BACKENDCFG
 DESCRIPTOR.message_types_by_name['AgentCfg'] = _AGENTCFG
@@ -828,6 +813,13 @@ InitAs = _reflection.GeneratedProtocolMessageType('InitAs', (_message.Message,),
   ))
 _sym_db.RegisterMessage(InitAs)
 
+SkyRts = _reflection.GeneratedProtocolMessageType('SkyRts', (_message.Message,), dict(
+  DESCRIPTOR = _SKYRTS,
+  __module__ = 'cfg_pb2'
+  # @@protoc_insertion_point(class_scope:scaii.common.SkyRts)
+  ))
+_sym_db.RegisterMessage(SkyRts)
+
 BackendInit = _reflection.GeneratedProtocolMessageType('BackendInit', (_message.Message,), dict(
   DESCRIPTOR = _BACKENDINIT,
   __module__ = 'cfg_pb2'
@@ -841,13 +833,6 @@ ModuleInit = _reflection.GeneratedProtocolMessageType('ModuleInit', (_message.Me
   # @@protoc_insertion_point(class_scope:scaii.common.ModuleInit)
   ))
 _sym_db.RegisterMessage(ModuleInit)
-
-RustFFIConfig = _reflection.GeneratedProtocolMessageType('RustFFIConfig', (_message.Message,), dict(
-  DESCRIPTOR = _RUSTFFICONFIG,
-  __module__ = 'cfg_pb2'
-  # @@protoc_insertion_point(class_scope:scaii.common.RustFFIConfig)
-  ))
-_sym_db.RegisterMessage(RustFFIConfig)
 
 RpcConfig = _reflection.GeneratedProtocolMessageType('RpcConfig', (_message.Message,), dict(
   DESCRIPTOR = _RPCCONFIG,

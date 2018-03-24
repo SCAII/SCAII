@@ -7,13 +7,13 @@ fn main() {
 
     Config::new()
         .type_attribute(".", "#[derive(Serialize,Deserialize)]")
-        .compile_protos(&["../common_protos/scaii.proto"], &["../common_protos"])
+        .compile_protos(&["../protos/scaii.proto"], &["../protos"])
         .unwrap();
 
     // Make our protobuf file a reason to recompile
     // (See http://doc.crates.io/build-script.html for more info
     // on outputs)
-    for entry in glob("../common_protos/*.proto").expect("Could not parse glob pattern") {
+    for entry in glob("../protos/*.proto").expect("Could not parse glob pattern") {
         if let Ok(path) = entry {
             println!("cargo:rerun-if-changed={}", path.display());
         }

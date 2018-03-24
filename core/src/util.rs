@@ -191,53 +191,8 @@ fn is_dir_scaii_root(dir: &PathBuf) -> bool {
     let core_dir_exists = candidate_dir.exists();
 
     let mut candidate_dir = dir.clone();
-    candidate_dir.push("common_protos");
+    candidate_dir.push("protos");
     let common_protos_dir_exists = candidate_dir.exists();
 
     core_dir_exists && common_protos_dir_exists
-}
-
-#[cfg(target_os = "macos")]
-pub fn get_default_backend() -> Result<String, Box<Error>> {
-    //$HOME/.scaii/backends/bin/sky_rts.dll
-    use std::env;
-
-    let mut path_option = env::home_dir();
-    match path_option {
-        None => Err(Box::new(ScaiiError::new(&format!(
-            "ERROR - Could not find default backend because could not determine home directory."
-        )))),
-        Some(ref mut path_buf) => {
-            path_buf.push(".scaii".to_string());
-            path_buf.push("backends".to_string());
-            path_buf.push("bin".to_string());
-            path_buf.push("sky-rts".to_string());
-            Ok(path_buf.to_str().unwrap().to_string())
-        }
-    }
-}
-#[cfg(target_os = "windows")]
-pub fn get_default_backend() -> Result<String, Box<Error>> {
-    //$HOME/.scaii/backends/bin/sky_rts.dll
-    use std::env;
-
-    let mut path_option = env::home_dir();
-    match path_option {
-        None => Err(Box::new(ScaiiError::new(&format!(
-            "ERROR - Could not find default backend because could not determine home directory."
-        )))),
-        Some(ref mut path_buf) => {
-            path_buf.push(".scaii".to_string());
-            path_buf.push("backends".to_string());
-            path_buf.push("bin".to_string());
-            path_buf.push("sky-rts.dll".to_string());
-            Ok(path_buf.to_str().unwrap().to_string())
-        }
-    }
-}
-#[cfg(target_os = "linux")]
-pub fn get_default_backend() -> Result<String, Box<Error>> {
-    Err(Box::new(ScaiiError::new(&format!(
-        "linux replay not yet implemented"
-    ))))
 }

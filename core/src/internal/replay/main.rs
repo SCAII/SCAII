@@ -10,7 +10,8 @@ extern crate url;
 use prost::Message;
 use protos::{plugin_type, scaii_packet, BackendEndpoint, Cfg, ExplanationDetails, ExplanationPoint, 
              ModuleEndpoint, MultiMessage, PluginType, RecorderConfig, 
-             ReplayControl, ReplayEndpoint, RustFfiConfig, ScaiiPacket};
+             ReplayControl, ReplayEndpoint, ScaiiPacket};
+use protos::plugin_type::PluginType::SkyRts;
 use protos::cfg::WhichModule;
 use protos::user_command::UserCommandType;
 use protos::endpoint::Endpoint;
@@ -203,12 +204,10 @@ impl ReplayManager {
                     which_module:
                         Some(WhichModule::CoreCfg(protos::CoreCfg {
                             plugin_type:
-                                PluginType {
-                                    plugin_type:
-                                        Some(plugin_type::PluginType::RustPlugin(RustFfiConfig {
-                                            ..
-                                        })),
-                                },
+                                PluginType { plugin_type: Some(SkyRts (
+                                    
+                                        protos::SkyRts{}
+                                )) },
                         })),
                 })) => {
                     rust_ffi_config_pkt = Some(pkt);
@@ -220,8 +219,7 @@ impl ReplayManager {
         }
 
         if rust_ffi_config_pkt == None && !self.test_mode {
-            let default_backend_path = util::get_default_backend()?;
-            rust_ffi_config_pkt = Some(replay_util::create_rust_ffi_config_message(&default_backend_path)?);
+            rust_ffi_config_pkt = Some(replay_util::create_rts_backend_msg()?);
         }
 
         if backend_config_pkt == None {

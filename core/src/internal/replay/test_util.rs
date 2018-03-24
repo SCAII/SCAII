@@ -69,13 +69,7 @@ impl MockRts {
     }
 }
 
-impl Backend for MockRts {
-    fn supported_behavior(&self) -> BackendSupported {
-        BackendSupported {
-            serialization: SerializationStyle::None,
-        }
-    }
-}
+impl Backend for MockRts {}
 
 impl Module for MockRts {
     fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>> {
