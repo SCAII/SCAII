@@ -2,5 +2,6 @@
 members = [
     "core",
     "scaii_defs",
-    "ci/tests/viz/rpc-viz"
+    "ci/tests/viz/rpc-viz",
+    "backends/sky-rts",
 ]

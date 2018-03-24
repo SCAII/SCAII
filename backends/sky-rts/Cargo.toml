@@ -1,5 +1,5 @@
 [package]
-name = "backend"
+name = "sky-rts"
 version = "0.1.0"
 authors = ["Zoe Juozapaitis <Jragonmiris@gmail.com>"]
 
@@ -7,16 +7,16 @@ authors = ["Zoe Juozapaitis <Jragonmiris@gmail.com>"]
 crate-type = ["dylib", "rlib"]
 
 [dependencies]
-scaii_defs = {version="0.8", git = "https://github.com/SCAII/SCAII", branch="dev"}
+scaii_defs = { path="../../scaii_defs" }
 rlua  = "0.9"
 serde = "1"
 serde_derive = "1"
 
-rand = { version="0.4", features=["serde-1"] }
+rand = { git = 'https://github.com/rust-lang-nursery/rand', features=["serde-1"], rev="1591eadd954" }
 
 serde_cbor  = "0.8"
 
-specs = { version="0.10", features=["serde"]}
+specs = { version="0.10", features=["serde"], git="https://github.com/LinearZoetrope/specs"}
 specs-derive = { git="https://github.com/slide-rs/specs" }
 shred = "0.5"
 shred-derive = "0.3"
@@ -39,7 +39,3 @@ glob = "0.2.11"
 
 [dev-dependencies]
 websocket = "0.20"
-
-[patch.crates-io]
-rand = {version="0.4", git = 'https://github.com/rust-lang-nursery/rand', features=["serde-1"], rev="1591eadd954"}
-specs = { version="0.10", features=["serde"], git="https://github.com/LinearZoetrope/specs"}
