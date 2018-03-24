@@ -375,7 +375,7 @@ fn get_action_wrapper_for_recorder_step(
                         title: get_title_value(expl),
                         serialized_action: action_data,
                     })
-                },
+                }
                 None => {
                     println!("RECORDER: action has expl_point?  NO");
                     Ok(ActionWrapper {
@@ -384,7 +384,7 @@ fn get_action_wrapper_for_recorder_step(
                         title: "".to_string(),
                         serialized_action: action_data,
                     })
-                },
+                }
             }
         }
         None => Err(Box::new(RecorderError::new("no action in RecorderStep"))),

@@ -16,4 +16,4 @@ pub use self::attack::AttackSystem;
 pub use self::collision::CollisionSystem;
 pub use self::cleanup::CleanupSystem;
 pub use self::state::StateBuildSystem;
-pub use self::serde::{SerializeSystem, DeserializeSystem};
+pub use self::serde::{DeserializeSystem, SerializeSystem};

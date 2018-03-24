@@ -358,8 +358,7 @@ fn verify_key_frame(replay_action: ReplayAction, replay_vec: &mut Vec<ReplayActi
         _ => {
             assert!(
                 false,
-                "ERROR = expected particular keyframe, got Action"
-                //replay_action
+                "ERROR = expected particular keyframe, got Action" //replay_action
             );
             false
         }
@@ -436,7 +435,7 @@ fn verify_persisted_file(path: &Path) -> Result<(), Box<Error>> {
 
     let replay_action_4 =
         deserialize_from::<BufReader<File>, ReplayAction, Infinite>(&mut reader, Infinite);
-    
+
     // deser SerializedProtosSerializationResponse
     // deser SerializedProtosAction
     //action deserialized as Keyframe(SerializationInfo { source: SerializedProtosEndpoint { data: [10, 0] }, data: SerializedProtosSerializationResponse { data: [10, 3, 7, 8, 9, 16, 1] } }, DecisionPoint(SerializedProtosAction { data: [8, 1] }))
@@ -551,7 +550,10 @@ impl MockRts {
     }
 
     fn step(&mut self) {
-        println!("\nMRTS.step() called with step_position {} and step_count {}",self.step_position,self.step_count);
+        println!(
+            "\nMRTS.step() called with step_position {} and step_count {}",
+            self.step_position, self.step_count
+        );
         if self.step_position <= self.step_count {
             println!("passed limit test");
             let recorder_step = self.recorder_steps[self.step_position as usize].clone();
@@ -571,8 +573,7 @@ impl MockRts {
             }
             self.step_position = self.step_position + 1;
             println!("MockRTS.step_position now {}", self.step_position);
-        }
-        else {
+        } else {
             println!("\n\nFAILED limit test\n\n");
         }
         ()
@@ -593,7 +594,7 @@ impl MockRts {
             packets: vec![scaii_packet],
         });
     }
-    fn send_action(&mut self, step_number : u32) {
+    fn send_action(&mut self, step_number: u32) {
         println!("Mock RTS sending action pkt...");
         let scaii_packet = self.create_record_step_action_pkt(step_number);
         self.outbound_messages.push(MultiMessage {
@@ -613,12 +614,12 @@ impl MockRts {
             specific_msg: Some(scaii_packet::SpecificMsg::RecorderConfig(RecorderConfig {
                 pkts: vec,
                 overwrite: true,
-                filepath : Option::None,
+                filepath: Option::None,
             })),
         }
     }
 
- fn create_serialize_pkt(&mut self) -> ScaiiPacket {
+    fn create_serialize_pkt(&mut self) -> ScaiiPacket {
         let mut ser_vec: Vec<u8> = Vec::new();
         ser_vec.push(7 as u8);
         ser_vec.push(8 as u8);
@@ -643,7 +644,8 @@ impl MockRts {
         let y_delta: u32 = step_number * 4;
         let action_name = format!("move_{}", step_number);
         let action_description = format!("move_{} <some description>", step_number);
-        let explanation_point : ExplanationPoint = get_test_explanation_point(y_delta, action_name, action_description);
+        let explanation_point: ExplanationPoint =
+            get_test_explanation_point(y_delta, action_name, action_description);
         ScaiiPacket {
             src: protos::Endpoint {
                 endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
@@ -664,7 +666,6 @@ impl MockRts {
         }
     }
 }
-
 
 fn get_rust_ffi_config_for_path(path: &str) -> RustFfiConfig {
     RustFfiConfig {
@@ -704,4 +705,3 @@ fn create_test_rust_ffi_config_message() -> ScaiiPacket {
         }
     }
 }
-

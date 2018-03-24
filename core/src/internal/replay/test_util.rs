@@ -1,6 +1,5 @@
 use prost::Message;
-use protos::{cfg, scaii_packet, BackendCfg, BackendEndpoint, Cfg, Entity, 
-            ModuleEndpoint,
+use protos::{cfg, scaii_packet, BackendCfg, BackendEndpoint, Cfg, Entity, ModuleEndpoint,
              MultiMessage, RecorderConfig, RecorderEndpoint, ReplayEndpoint, ScaiiPacket, Viz,
              VizInit};
 use protos::endpoint::Endpoint;

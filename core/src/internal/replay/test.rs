@@ -1,8 +1,7 @@
-use scaii_core::{ActionWrapper, ReplayAction,
-                 SerializedProtosSerializationResponse, SerializationInfo, SerializedProtosEndpoint};
+use scaii_core::{ActionWrapper, ReplayAction, SerializationInfo, SerializedProtosEndpoint,
+                 SerializedProtosSerializationResponse};
 use protos::{Action, ScaiiPacket, SerializationResponse};
 use super::replay_sequencer::{ReplaySequencer, SequenceState};
-
 
 #[test]
 fn test_replay_sequencer() {
@@ -10,21 +9,21 @@ fn test_replay_sequencer() {
     let rs_result = ReplaySequencer::new(&replay_actions);
     match rs_result {
         Ok(mut rs) => {
-            assert!(rs.get_sequence_length() == 11);  // add one for the first keyFrame
+            assert!(rs.get_sequence_length() == 11); // add one for the first keyFrame
             assert!(rs.get_state() == SequenceState::NeedToSendFirstKeyFrame);
-            assert!(rs.get_current_index()==0);
+            assert!(rs.get_current_index() == 0);
             assert!(rs.has_next());
             let _pkt = rs.next();
             assert!(rs.has_next());
             assert!(rs.get_state() == SequenceState::ReadyForNextStep);
-            assert!(rs.get_current_index()==1);
+            assert!(rs.get_current_index() == 1);
             let _pkt = rs.next();
             assert!(rs.has_next());
             assert!(rs.get_state() == SequenceState::ReadyForNextStep);
             let _pkt = rs.next();
             assert!(rs.has_next());
             assert!(rs.get_state() == SequenceState::ReadyForNextStep);
-            assert!(rs.get_current_index()==3);
+            assert!(rs.get_current_index() == 3);
             let _pkt = rs.next();
             assert!(rs.has_next());
             let _pkt = rs.next();
@@ -56,9 +55,11 @@ fn test_replay_sequencer() {
                         assert!(is_action(&pkts[2]));
                         assert!(is_action(&pkts[3]));
                         assert!(is_action(&pkts[4]));
-                    }
-                    else {
-                        println!("jump had wrong number of pkts - should have been 5 , was {}", pkts.len() as u32);
+                    } else {
+                        println!(
+                            "jump had wrong number of pkts - should have been 5 , was {}",
+                            pkts.len() as u32
+                        );
                         assert!(false);
                     }
                     assert!(rs.get_current_index() == 10);
@@ -69,7 +70,7 @@ fn test_replay_sequencer() {
                     assert!(false);
                 }
             }
-            
+
             println!("JUMP TO 5");
             let jump_result = rs.jump_to(5);
             match jump_result {
@@ -80,9 +81,11 @@ fn test_replay_sequencer() {
                         assert!(is_action(&pkts[1]));
                         assert!(is_action(&pkts[2]));
                         assert!(is_action(&pkts[3]));
-                    }
-                    else {
-                        println!("jump had wrong number of pkts - should have been 4 , was {}", pkts.len() as u32);
+                    } else {
+                        println!(
+                            "jump had wrong number of pkts - should have been 4 , was {}",
+                            pkts.len() as u32
+                        );
                         assert!(false);
                     }
                     assert!(rs.get_current_index() == 6);
@@ -93,7 +96,7 @@ fn test_replay_sequencer() {
                     assert!(false);
                 }
             }
-            
+
             println!("JUMP TO 4");
             let jump_result = rs.jump_to(4);
             match jump_result {
@@ -103,9 +106,11 @@ fn test_replay_sequencer() {
                         assert!(is_ser_resp(&pkts[0]));
                         assert!(is_action(&pkts[1]));
                         assert!(is_action(&pkts[2]));
-                    }
-                    else {
-                        println!("jump had wrong number of pkts - should have been 3 , was {}", pkts.len() as u32);
+                    } else {
+                        println!(
+                            "jump had wrong number of pkts - should have been 3 , was {}",
+                            pkts.len() as u32
+                        );
                         assert!(false);
                     }
                     assert!(rs.get_current_index() == 5);
@@ -116,7 +121,7 @@ fn test_replay_sequencer() {
                     assert!(false);
                 }
             }
-            
+
             println!("JUMP TO LATER");
             let jump_result = rs.jump_to(7);
             match jump_result {
@@ -126,9 +131,11 @@ fn test_replay_sequencer() {
                         assert!(is_ser_resp(&pkts[0]));
                         assert!(is_action(&pkts[1]));
                         assert!(is_action(&pkts[2]));
-                    }
-                    else {
-                        println!("jump had wrong number of pkts - should have been 3 , was {}", pkts.len() as u32);
+                    } else {
+                        println!(
+                            "jump had wrong number of pkts - should have been 3 , was {}",
+                            pkts.len() as u32
+                        );
                         assert!(false);
                     }
                     assert!(rs.get_current_index() == 8);
@@ -152,9 +159,11 @@ fn test_replay_sequencer() {
                         assert!(is_action(&pkts[3]));
                         assert!(is_action(&pkts[4]));
                         assert!(is_action(&pkts[5]));
-                    }
-                    else {
-                        println!("jump had wrong number of pkts - should have been 6 , was {}", pkts.len() as u32);
+                    } else {
+                        println!(
+                            "jump had wrong number of pkts - should have been 6 , was {}",
+                            pkts.len() as u32
+                        );
                         assert!(false);
                     }
                     assert!(rs.get_current_index() == 11);
@@ -173,9 +182,11 @@ fn test_replay_sequencer() {
                     if pkts.len() as u32 == 1 {
                         assert!(true);
                         assert!(is_ser_resp(&pkts[0]));
-                    }
-                    else {
-                        println!("jump had wrong number of pkts - should have been 1 , was {}", pkts.len() as u32);
+                    } else {
+                        println!(
+                            "jump had wrong number of pkts - should have been 1 , was {}",
+                            pkts.len() as u32
+                        );
                         assert!(false);
                     }
                     assert!(rs.get_current_index() == 1);
@@ -193,27 +204,26 @@ fn test_replay_sequencer() {
             assert!(is_ser_resp(&first_keyframe_pkt));
             let state = rs.get_state();
             assert!(state == SequenceState::ReadyForNextStep);
-            assert!(rs.get_current_index()==1);
+            assert!(rs.get_current_index() == 1);
         }
         Err(_err) => {
             assert!(false);
         }
     }
-    
 }
 
 fn get_test_replay_actions() -> Vec<ReplayAction> {
-    let mut result : Vec<ReplayAction> = Vec::new();
+    let mut result: Vec<ReplayAction> = Vec::new();
     result.push(get_empty_keyframe()); //0,1
-    result.push(get_empty_action());//2
-    result.push(get_empty_keyframe());//3
-    result.push(get_empty_action());//4
-    result.push(get_empty_action());//5
-    result.push(get_empty_keyframe());//6
-    result.push(get_empty_action());//7
-    result.push(get_empty_action());//8
-    result.push(get_empty_action());//9
-    result.push(get_empty_action());//10
+    result.push(get_empty_action()); //2
+    result.push(get_empty_keyframe()); //3
+    result.push(get_empty_action()); //4
+    result.push(get_empty_action()); //5
+    result.push(get_empty_keyframe()); //6
+    result.push(get_empty_action()); //7
+    result.push(get_empty_action()); //8
+    result.push(get_empty_action()); //9
+    result.push(get_empty_action()); //10
     result
 }
 
@@ -223,21 +233,21 @@ fn test_replay_sequencer2() {
     let rs_result = ReplaySequencer::new(&replay_actions);
     match rs_result {
         Ok(mut rs) => {
-            assert!(rs.get_sequence_length() == 10);  // add one for the first keyFrame
+            assert!(rs.get_sequence_length() == 10); // add one for the first keyFrame
             assert!(rs.get_state() == SequenceState::NeedToSendFirstKeyFrame);
-            assert!(rs.get_current_index()==0);
+            assert!(rs.get_current_index() == 0);
             assert!(rs.has_next());
             let _pkt = rs.next();
             assert!(rs.has_next());
             assert!(rs.get_state() == SequenceState::ReadyForNextStep);
-            assert!(rs.get_current_index()==1);
+            assert!(rs.get_current_index() == 1);
             let _pkt = rs.next();
             assert!(rs.has_next());
             assert!(rs.get_state() == SequenceState::ReadyForNextStep);
             let _pkt = rs.next();
             assert!(rs.has_next());
             assert!(rs.get_state() == SequenceState::ReadyForNextStep);
-            assert!(rs.get_current_index()==3);
+            assert!(rs.get_current_index() == 3);
             let _pkt = rs.next();
             assert!(rs.has_next());
             let _pkt = rs.next();
@@ -263,9 +273,11 @@ fn test_replay_sequencer2() {
                     if pkts.len() as u32 == 1 {
                         assert!(true);
                         assert!(is_ser_resp(&pkts[0]));
-                    }
-                    else {
-                        println!("jump had wrong number of pkts - should have been 1 , was {}", pkts.len() as u32);
+                    } else {
+                        println!(
+                            "jump had wrong number of pkts - should have been 1 , was {}",
+                            pkts.len() as u32
+                        );
                         assert!(false);
                     }
                     assert!(rs.get_current_index() == 1);
@@ -276,7 +288,7 @@ fn test_replay_sequencer2() {
                     assert!(false);
                 }
             }
-            
+
             println!("JUMP TO 1");
             let jump_result = rs.jump_to(1);
             match jump_result {
@@ -285,9 +297,11 @@ fn test_replay_sequencer2() {
                         assert!(true);
                         assert!(is_ser_resp(&pkts[0]));
                         assert!(is_action(&pkts[1]));
-                    }
-                    else {
-                        println!("jump had wrong number of pkts - should have been 2 , was {}", pkts.len() as u32);
+                    } else {
+                        println!(
+                            "jump had wrong number of pkts - should have been 2 , was {}",
+                            pkts.len() as u32
+                        );
                         assert!(false);
                     }
                     assert!(rs.get_current_index() == 2);
@@ -298,7 +312,7 @@ fn test_replay_sequencer2() {
                     assert!(false);
                 }
             }
-            
+
             println!("JUMP TO 2");
             let jump_result = rs.jump_to(2);
             match jump_result {
@@ -306,9 +320,11 @@ fn test_replay_sequencer2() {
                     if pkts.len() as u32 == 2 {
                         assert!(true);
                         assert!(is_ser_resp(&pkts[0]));
-                    }
-                    else {
-                        println!("jump had wrong number of pkts - should have been 2 , was {}", pkts.len() as u32);
+                    } else {
+                        println!(
+                            "jump had wrong number of pkts - should have been 2 , was {}",
+                            pkts.len() as u32
+                        );
                         assert!(false);
                     }
                     assert!(rs.get_current_index() == 3);
@@ -319,7 +335,7 @@ fn test_replay_sequencer2() {
                     assert!(false);
                 }
             }
-            
+
             println!("JUMP TO 4");
             let jump_result = rs.jump_to(4);
             match jump_result {
@@ -328,9 +344,11 @@ fn test_replay_sequencer2() {
                         assert!(true);
                         assert!(is_ser_resp(&pkts[0]));
                         assert!(is_action(&pkts[1]));
-                    }
-                    else {
-                        println!("jump had wrong number of pkts - should have been 4 , was {}", pkts.len() as u32);
+                    } else {
+                        println!(
+                            "jump had wrong number of pkts - should have been 4 , was {}",
+                            pkts.len() as u32
+                        );
                         assert!(false);
                     }
                     assert!(rs.get_current_index() == 5);
@@ -342,7 +360,6 @@ fn test_replay_sequencer2() {
                 }
             }
 
-
             println!("JUMP TO BEGINNING");
             let jump_result = rs.jump_to(0);
             match jump_result {
@@ -350,9 +367,11 @@ fn test_replay_sequencer2() {
                     if pkts.len() as u32 == 1 {
                         assert!(true);
                         assert!(is_ser_resp(&pkts[0]));
-                    }
-                    else {
-                        println!("jump had wrong number of pkts - should have been 1 , was {}", pkts.len() as u32);
+                    } else {
+                        println!(
+                            "jump had wrong number of pkts - should have been 1 , was {}",
+                            pkts.len() as u32
+                        );
                         assert!(false);
                     }
                     assert!(rs.get_current_index() == 1);
@@ -370,26 +389,25 @@ fn test_replay_sequencer2() {
             assert!(is_ser_resp(&first_keyframe_pkt));
             let state = rs.get_state();
             assert!(state == SequenceState::ReadyForNextStep);
-            assert!(rs.get_current_index()==1);
+            assert!(rs.get_current_index() == 1);
         }
         Err(_err) => {
             assert!(false);
         }
     }
-    
 }
 fn get_test_replay_actions2() -> Vec<ReplayAction> {
-    let mut result : Vec<ReplayAction> = Vec::new();
+    let mut result: Vec<ReplayAction> = Vec::new();
     // first keyframe + action will become two steps (two packets)
     result.push(get_empty_keyframe()); //0,1
-    result.push(get_empty_keyframe());//2
-    result.push(get_empty_action());//3
-    result.push(get_empty_action());//4
-    result.push(get_empty_keyframe());//5
-    result.push(get_empty_action());//6
-    result.push(get_empty_action());//7
-    result.push(get_empty_action());//8
-    result.push(get_empty_action());//9
+    result.push(get_empty_keyframe()); //2
+    result.push(get_empty_action()); //3
+    result.push(get_empty_action()); //4
+    result.push(get_empty_keyframe()); //5
+    result.push(get_empty_action()); //6
+    result.push(get_empty_action()); //7
+    result.push(get_empty_action()); //8
+    result.push(get_empty_action()); //9
     result
 }
 
@@ -406,9 +424,11 @@ fn test_replay_sequencer3() {
                     if pkts.len() as u32 == 1 {
                         assert!(true);
                         assert!(is_ser_resp(&pkts[0]));
-                    }
-                    else {
-                        println!("jump had wrong number of pkts - should have been 1 , was {}", pkts.len() as u32);
+                    } else {
+                        println!(
+                            "jump had wrong number of pkts - should have been 1 , was {}",
+                            pkts.len() as u32
+                        );
                         assert!(false);
                     }
                     assert!(rs.get_current_index() == 1);
@@ -419,7 +439,7 @@ fn test_replay_sequencer3() {
                     assert!(false);
                 }
             }
-            
+
             println!("JUMP TO 1");
             let jump_result = rs.jump_to(1);
             match jump_result {
@@ -428,9 +448,11 @@ fn test_replay_sequencer3() {
                         assert!(true);
                         assert!(is_ser_resp(&pkts[0]));
                         assert!(is_action(&pkts[1]));
-                    }
-                    else {
-                        println!("jump had wrong number of pkts - should have been 2 , was {}", pkts.len() as u32);
+                    } else {
+                        println!(
+                            "jump had wrong number of pkts - should have been 2 , was {}",
+                            pkts.len() as u32
+                        );
                         assert!(false);
                     }
                     assert!(rs.get_current_index() == 2);
@@ -441,7 +463,7 @@ fn test_replay_sequencer3() {
                     assert!(false);
                 }
             }
-            
+
             println!("JUMP TO 4");
             let jump_result = rs.jump_to(4);
             match jump_result {
@@ -450,9 +472,11 @@ fn test_replay_sequencer3() {
                         assert!(true);
                         assert!(is_ser_resp(&pkts[0]));
                         assert!(is_action(&pkts[1]));
-                    }
-                    else {
-                        println!("jump had wrong number of pkts - should have been 5 , was {}", pkts.len() as u32);
+                    } else {
+                        println!(
+                            "jump had wrong number of pkts - should have been 5 , was {}",
+                            pkts.len() as u32
+                        );
                         assert!(false);
                     }
                     assert!(rs.get_current_index() == 5);
@@ -471,9 +495,11 @@ fn test_replay_sequencer3() {
                         assert!(true);
                         assert!(is_ser_resp(&pkts[0]));
                         assert!(is_action(&pkts[1]));
-                    }
-                    else {
-                        println!("jump had wrong number of pkts - should have been 2 , was {}", pkts.len() as u32);
+                    } else {
+                        println!(
+                            "jump had wrong number of pkts - should have been 2 , was {}",
+                            pkts.len() as u32
+                        );
                         assert!(false);
                     }
                     assert!(rs.get_current_index() == 6);
@@ -489,20 +515,18 @@ fn test_replay_sequencer3() {
             assert!(false);
         }
     }
-    
 }
 
 fn get_test_replay_actions3() -> Vec<ReplayAction> {
-    let mut result : Vec<ReplayAction> = Vec::new();
+    let mut result: Vec<ReplayAction> = Vec::new();
     // first keyframe + action will become two steps (two packets)
     result.push(get_empty_keyframe()); //0,1
-    result.push(get_empty_action());//2
-    result.push(get_empty_action());//3
-    result.push(get_empty_action());//4
-    result.push(get_empty_keyframe());//5
+    result.push(get_empty_action()); //2
+    result.push(get_empty_action()); //3
+    result.push(get_empty_action()); //4
+    result.push(get_empty_keyframe()); //5
     result
 }
-
 
 #[test]
 fn test_replay_sequencer4() {
@@ -517,9 +541,11 @@ fn test_replay_sequencer4() {
                     if pkts.len() as u32 == 1 {
                         assert!(true);
                         assert!(is_ser_resp(&pkts[0]));
-                    }
-                    else {
-                        println!("jump had wrong number of pkts - should have been 1 , was {}", pkts.len() as u32);
+                    } else {
+                        println!(
+                            "jump had wrong number of pkts - should have been 1 , was {}",
+                            pkts.len() as u32
+                        );
                         assert!(false);
                     }
                     assert!(rs.get_current_index() == 1);
@@ -530,7 +556,7 @@ fn test_replay_sequencer4() {
                     assert!(false);
                 }
             }
-            
+
             println!("JUMP TO 1");
             let jump_result = rs.jump_to(1);
             match jump_result {
@@ -539,9 +565,11 @@ fn test_replay_sequencer4() {
                         assert!(true);
                         assert!(is_ser_resp(&pkts[0]));
                         assert!(is_action(&pkts[1]));
-                    }
-                    else {
-                        println!("jump had wrong number of pkts - should have been 2 , was {}", pkts.len() as u32);
+                    } else {
+                        println!(
+                            "jump had wrong number of pkts - should have been 2 , was {}",
+                            pkts.len() as u32
+                        );
                         assert!(false);
                     }
                     assert!(rs.get_current_index() == 2);
@@ -552,7 +580,7 @@ fn test_replay_sequencer4() {
                     assert!(false);
                 }
             }
-            
+
             println!("JUMP TO 4");
             let jump_result = rs.jump_to(4);
             match jump_result {
@@ -561,9 +589,11 @@ fn test_replay_sequencer4() {
                         assert!(true);
                         assert!(is_ser_resp(&pkts[0]));
                         assert!(is_action(&pkts[1]));
-                    }
-                    else {
-                        println!("jump had wrong number of pkts - should have been 5 , was {}", pkts.len() as u32);
+                    } else {
+                        println!(
+                            "jump had wrong number of pkts - should have been 5 , was {}",
+                            pkts.len() as u32
+                        );
                         assert!(false);
                     }
                     assert!(rs.get_current_index() == 5);
@@ -582,21 +612,21 @@ fn test_replay_sequencer4() {
 }
 
 fn get_test_replay_actions4() -> Vec<ReplayAction> {
-    let mut result : Vec<ReplayAction> = Vec::new();
+    let mut result: Vec<ReplayAction> = Vec::new();
     // first keyframe + action will become two steps (two packets)
     result.push(get_empty_keyframe()); //0,1
-    result.push(get_empty_action());//2
-    result.push(get_empty_action());//3
-    result.push(get_empty_action());//4
+    result.push(get_empty_action()); //2
+    result.push(get_empty_action()); //3
+    result.push(get_empty_action()); //4
     result
 }
 
 fn get_empty_action_wrapper() -> ActionWrapper {
-    let vec_dactions : Vec<i32> = Vec::new();
-    let vec_cactions : Vec<f64> = Vec::new();
+    let vec_dactions: Vec<i32> = Vec::new();
+    let vec_cactions: Vec<f64> = Vec::new();
     let action = Action {
-	    discrete_actions: vec_dactions,
-	    continuous_actions: vec_cactions,
+        discrete_actions: vec_dactions,
+        continuous_actions: vec_cactions,
         alternate_actions: None,
         explanation: None,
     };
@@ -616,8 +646,7 @@ fn get_empty_keyframe() -> ReplayAction {
     ReplayAction::Keyframe(get_empty_ser_info(), get_empty_action_wrapper())
 }
 fn get_empty_ser_info() -> SerializationInfo {
-    let ser_protos_ser_resp =
-        get_serialized_protos_serialization_response();
+    let ser_protos_ser_resp = get_serialized_protos_serialization_response();
     let endpoint_data: Vec<u8> = Vec::new();
     let src_ep_serialized = SerializedProtosEndpoint {
         data: endpoint_data,

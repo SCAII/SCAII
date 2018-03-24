@@ -8,16 +8,16 @@ extern crate serde_derive;
 extern crate url;
 
 use prost::Message;
-use protos::{plugin_type, scaii_packet, BackendEndpoint, Cfg, ExplanationDetails, ExplanationPoint, 
-             ModuleEndpoint, MultiMessage, PluginType, RecorderConfig, 
+use protos::{plugin_type, scaii_packet, BackendEndpoint, Cfg, ExplanationDetails,
+             ExplanationPoint, ModuleEndpoint, MultiMessage, PluginType, RecorderConfig,
              ReplayControl, ReplayEndpoint, ScaiiPacket};
 use protos::plugin_type::PluginType::SkyRts;
 use protos::cfg::WhichModule;
 use protos::user_command::UserCommandType;
 use protos::endpoint::Endpoint;
 use protos::scaii_packet::SpecificMsg;
-use scaii_core::{ActionWrapper, Environment, ReplayAction, ReplayHeader, SerializedProtosScaiiPacket,
-                 SerializedProtosSerializationResponse};
+use scaii_core::{ActionWrapper, Environment, ReplayAction, ReplayHeader,
+                 SerializedProtosScaiiPacket, SerializedProtosSerializationResponse};
 use scaii_defs::protos;
 use scaii_defs::{Agent, Module, Replay};
 use std::error::Error;
@@ -167,18 +167,19 @@ impl ReplayManager {
         match self.explanations_option {
             None => {
                 println!("WARNING - NO EXPLANATIONS PRESENT");
-            },
+            }
             Some(_) => assert!(true),
         }
         // startup viz via rpc
-        let mm = replay_util::wrap_packet_in_multi_message(replay_util::create_rpc_config_message()?);
+        let mm =
+            replay_util::wrap_packet_in_multi_message(replay_util::create_rpc_config_message()?);
         self.env.route_messages(&mm);
         self.env.update();
         // pull off header and configure
         let header: ReplayAction = self.header.clone();
         let count = self.replay_sequencer.get_sequence_length();
-        let replay_session_cfg = replay_util::get_replay_configuration_message(count, 
-            &self.explanations_option);
+        let replay_session_cfg =
+            replay_util::get_replay_configuration_message(count, &self.explanations_option);
         self.configure_as_per_header(header, replay_session_cfg)?;
         self.run_and_poll()
     }
@@ -204,10 +205,9 @@ impl ReplayManager {
                     which_module:
                         Some(WhichModule::CoreCfg(protos::CoreCfg {
                             plugin_type:
-                                PluginType { plugin_type: Some(SkyRts (
-                                    
-                                        protos::SkyRts{}
-                                )) },
+                                PluginType {
+                                    plugin_type: Some(SkyRts(protos::SkyRts {})),
+                                },
                         })),
                 })) => {
                     rust_ffi_config_pkt = Some(pkt);
@@ -366,10 +366,7 @@ impl ReplayManager {
         Ok(scaii_pkts)
     }
 
-    fn send_test_mode_jump_to_message(
-        &mut self,
-        target_step: &String,
-    ) -> Result<(), Box<Error>> {
+    fn send_test_mode_jump_to_message(&mut self, target_step: &String) -> Result<(), Box<Error>> {
         let target: String = String::from("MockRts");
         let command: String = String::from("jumpTo");
         let mut args_list: Vec<String> = Vec::new();
@@ -380,10 +377,7 @@ impl ReplayManager {
         self.send_pkt_to_backend(pkt)
     }
 
-    fn send_pkt_to_backend(
-        &mut self,
-        pkt: ScaiiPacket,
-    ) -> Result<(), Box<Error>> {
+    fn send_pkt_to_backend(&mut self, pkt: ScaiiPacket) -> Result<(), Box<Error>> {
         let mut pkts: Vec<ScaiiPacket> = Vec::new();
         pkts.push(pkt);
         let mm = MultiMessage { packets: pkts };
@@ -391,9 +385,15 @@ impl ReplayManager {
         for scaii_pkt in &scaii_pkts {
             if scaii_defs::protos::is_error_pkt(scaii_pkt) {
                 // Error would have already been shown to user at UI
-                return Err(Box::new(ReplayError::new(&format!("Error response packet received from backend {:?}", scaii_pkt))));
+                return Err(Box::new(ReplayError::new(&format!(
+                    "Error response packet received from backend {:?}",
+                    scaii_pkt
+                ))));
             } else {
-                return Err(Box::new(ReplayError::new(&format!("Unexpected response packet received from backend {:?}", scaii_pkt))));
+                return Err(Box::new(ReplayError::new(&format!(
+                    "Unexpected response packet received from backend {:?}",
+                    scaii_pkt
+                ))));
             }
         }
         Ok(())
@@ -413,9 +413,7 @@ impl ReplayManager {
         }
     }
 
-    fn send_test_mode_rewind_hint_message(
-        &mut self,
-    ) -> Result<(), Box<Error>> {
+    fn send_test_mode_rewind_hint_message(&mut self) -> Result<(), Box<Error>> {
         let target: String = String::from("MockRts");
         let command: String = String::from("rewind");
         let mut args_list: Vec<String> = Vec::new();
@@ -425,10 +423,7 @@ impl ReplayManager {
         self.send_pkt_to_backend(pkt)
     }
 
-    fn send_test_mode_jump_to_hint_message(
-        &mut self,
-        target_index: u64,
-    ) -> Result<(), Box<Error>> {
+    fn send_test_mode_jump_to_hint_message(&mut self, target_index: u64) -> Result<(), Box<Error>> {
         let target: String = String::from("MockRts");
         let command: String = String::from("jump");
         let index: String = format!("{}", target_index);
@@ -469,7 +464,7 @@ impl ReplayManager {
                             "================RECEIVED UserCommandType::Explain================"
                         );
                         let step: String = user_command_args[0].clone();
-                        println!("please explain action at step {}!",step);
+                        println!("please explain action at step {}!", step);
                         self.explain_action_at_step(step)?;
                     }
                     UserCommandType::Pause => {
@@ -487,13 +482,13 @@ impl ReplayManager {
                         println!(
                             "================RECEIVED UserCommandType::Rewind================"
                         );
-                        
+
                         if self.test_mode {
                             self.send_test_mode_rewind_hint_message()?;
                         }
                         //let pkt = replay_util::get_reset_env_pkt();
                         //self.send_pkt_to_backend(pkt);
-                        
+
                         let emit_viz_pkt = replay_util::get_emit_viz_pkt();
                         self.send_pkt_to_backend(emit_viz_pkt)?;
                         let pkt = self.replay_sequencer.rewind();
@@ -514,7 +509,7 @@ impl ReplayManager {
                         );
                         println!("args : {:?}", user_command_args);
                         let jump_target: &String = &user_command_args[0];
-                        
+
                         //let pkt = replay_util::get_reset_env_pkt();
                         //self.send_pkt_to_backend(pkt);
                         let emit_viz_pkt = replay_util::get_emit_viz_pkt();
@@ -543,20 +538,18 @@ impl ReplayManager {
         wait(*self.poll_delay.lock().unwrap());
         Ok(game_state)
     }
- 
 
     #[allow(unused_assignments)]
-    fn explain_action_at_step(&mut self, step: String)  -> Result<(), Box<Error>> {
+    fn explain_action_at_step(&mut self, step: String) -> Result<(), Box<Error>> {
         let step_int = step.parse::<u32>().unwrap();
         println!("asked to explain step {}", step_int);
-        let mut expl_result : Option<ExplanationPoint> = None;
+        let mut expl_result: Option<ExplanationPoint> = None;
         match self.explanations_option {
-            None => { expl_result = None },
+            None => expl_result = None,
             Some(ref explanations) => {
                 if explanations.step_indices.contains(&step_int) {
                     expl_result = explanations.expl_map.get(&step_int).cloned();
-                }
-                else {
+                } else {
                     expl_result = None;
                 }
             }
@@ -571,9 +564,9 @@ impl ReplayManager {
                 })),
             },
             specific_msg: Some(scaii_packet::SpecificMsg::ExplDetails(ExplanationDetails {
-	            step: Some(step_int),
+                step: Some(step_int),
                 expl_point: expl_result,
-                chart : None,
+                chart: None,
             })),
         };
         let _ignored_respons_pkts = self.send_pkt_to_viz(pkt)?;
@@ -627,24 +620,25 @@ impl ReplayManager {
         let mut num = self.step_delay.lock().unwrap();
         *num = msec_delay;
         Ok(())
-    }                   
+    }
 
     fn handle_jump_request(&mut self, jump_target: &String) -> Result<GameState, Box<Error>> {
         let result = jump_target.parse::<u32>();
         match result {
             Ok(jump_target_int) => {
                 if self.test_mode {
-                    let keyframe_index = self.replay_sequencer.get_prior_key_frame_index(jump_target_int);
+                    let keyframe_index = self.replay_sequencer
+                        .get_prior_key_frame_index(jump_target_int);
                     self.send_test_mode_jump_to_hint_message(keyframe_index as u64)?;
                 }
                 let pkts = self.replay_sequencer.jump_to(jump_target_int)?;
-                let rewound_to : i32 = self.replay_sequencer.get_index_rewound_to() as i32;
-                let index_for_ui_to_restart_at : i32 = rewound_to - 1;
-                self.reset_ui_step_position(format!("{}",index_for_ui_to_restart_at))?;
+                let rewound_to: i32 = self.replay_sequencer.get_index_rewound_to() as i32;
+                let index_for_ui_to_restart_at: i32 = rewound_to - 1;
+                self.reset_ui_step_position(format!("{}", index_for_ui_to_restart_at))?;
                 for pkt in pkts {
                     self.send_pkt_to_backend(pkt)?;
                 }
-                
+
                 self.notify_viz_that_jump_completed()?;
                 if self.test_mode {
                     self.send_test_mode_jump_to_message(jump_target)?;
@@ -688,7 +682,7 @@ impl ReplayManager {
         Ok(())
     }
 
-fn run_and_poll_OLD(&mut self) -> Result<(), Box<Error>> {
+    fn run_and_poll_OLD(&mut self) -> Result<(), Box<Error>> {
         let mut game_state: GameState = GameState::Running;
         let (tx_step, rx) = mpsc::channel();
         let (tx_step_ack, rx_step_ack) = mpsc::channel();
@@ -708,29 +702,25 @@ fn run_and_poll_OLD(&mut self) -> Result<(), Box<Error>> {
 
         let arc_step_delay = Arc::clone(&self.step_delay);
         // start step nudge thread
-        let step_nudge_handle = thread::spawn(move || {
-            loop {
-                tx_step.send(String::from("step_nudge")).unwrap();
-                let _ack = rx_step_ack.recv().unwrap();
-                wait(*arc_step_delay.lock().unwrap());
-            }
+        let step_nudge_handle = thread::spawn(move || loop {
+            tx_step.send(String::from("step_nudge")).unwrap();
+            let _ack = rx_step_ack.recv().unwrap();
+            wait(*arc_step_delay.lock().unwrap());
         });
         while !self.shutdown_received {
             let received = rx.recv();
             match received {
-                Ok(nudge) => {
-                    match nudge.as_ref() {
-                        "step_nudge" => {
-                            game_state = self.handle_step_nudge(game_state)?;
-                            tx_step_ack.send(String::from("ack")).unwrap();
-                        }
-                        "poll_nudge" => {
-                            game_state = self.execute_poll_step(game_state)?;
-                            tx_poll_ack.send(String::from("ack")).unwrap();
-                        }
-                        _ => {}
+                Ok(nudge) => match nudge.as_ref() {
+                    "step_nudge" => {
+                        game_state = self.handle_step_nudge(game_state)?;
+                        tx_step_ack.send(String::from("ack")).unwrap();
                     }
-                }
+                    "poll_nudge" => {
+                        game_state = self.execute_poll_step(game_state)?;
+                        tx_poll_ack.send(String::from("ack")).unwrap();
+                    }
+                    _ => {}
+                },
                 Err(receive_error) => return Err(Box::new(receive_error)),
             }
             //wait(50);
@@ -748,11 +738,10 @@ fn run_and_poll_OLD(&mut self) -> Result<(), Box<Error>> {
             }
             GameState::Paused => {
                 // do nothing
-            }
-            // GameState::SingleStep => {
-            //     let _ignore_game_state = self.execute_run_step()?;
-            //     game_state = GameState::Paused;
-            // }
+            } // GameState::SingleStep => {
+              //     let _ignore_game_state = self.execute_run_step()?;
+              //     game_state = GameState::Paused;
+              // }
         }
         Ok(game_state)
     }
@@ -762,8 +751,6 @@ fn wait(milliseconds: u64) {
     let delay = time::Duration::from_millis(milliseconds);
     thread::sleep(delay);
 }
-
-
 
 #[allow(dead_code)]
 enum RunMode {
@@ -854,7 +841,7 @@ fn parse_args(arguments: Vec<String>) -> Args {
 fn main() {
     let result = try_main();
     match result {
-        Ok(_) =>{},
+        Ok(_) => {}
         Err(err) => {
             println!("ERROR: {:?}", err);
         }
@@ -875,8 +862,9 @@ fn try_main() -> Result<(), Box<Error>> {
         println!("Running Replay in test mode...");
         if args.flag_data_from_recorded_file {
             println!("..loading replay data from default path...");
-            let replay_info: Vec<ReplayAction> = replay_util::load_replay_info_from_default_replay_path()
-                .expect("Error - problem generating test replay_info");
+            let replay_info: Vec<ReplayAction> =
+                replay_util::load_replay_info_from_default_replay_path()
+                    .expect("Error - problem generating test replay_info");
             run_replay(RunMode::Test, replay_info, Option::None, args);
             return Ok(());
         } else {
@@ -900,14 +888,26 @@ fn try_main() -> Result<(), Box<Error>> {
                     .expect("Error - problem generating test replay_actions")
             };
             let mut r_actions_sans_explanations: Vec<ReplayAction> = Vec::new();
-            let explanation_points : Vec<ExplanationPoint> = 
-                explanations::extract_explanations(replay_actions,&mut r_actions_sans_explanations)?;
+            let explanation_points: Vec<ExplanationPoint> = explanations::extract_explanations(
+                replay_actions,
+                &mut r_actions_sans_explanations,
+            )?;
             let mut explanations_option = explanations::map_explanations(explanation_points)?;
             if explanations::is_empty(&explanations_option) {
-                println!("using specified replay file to find expl file!{:?}",args.arg_path_to_replay_file);
-                explanations_option =  explanations::get_explanations_for_replay_file(PathBuf::from(args.arg_path_to_replay_file.clone()))?;
+                println!(
+                    "using specified replay file to find expl file!{:?}",
+                    args.arg_path_to_replay_file
+                );
+                explanations_option = explanations::get_explanations_for_replay_file(
+                    PathBuf::from(args.arg_path_to_replay_file.clone()),
+                )?;
             }
-            run_replay(RunMode::Live, r_actions_sans_explanations, explanations_option, args);
+            run_replay(
+                RunMode::Live,
+                r_actions_sans_explanations,
+                explanations_option,
+                args,
+            );
             return Ok(());
         } else {
             let replay_actions: Vec<ReplayAction> = {
@@ -916,8 +916,10 @@ fn try_main() -> Result<(), Box<Error>> {
             };
             let default_replay_file_path = scaii_core::get_default_replay_file_path()?;
             let mut r_actions_sans_explanations: Vec<ReplayAction> = Vec::new();
-            let explanation_points : Vec<ExplanationPoint> = 
-                explanations::extract_explanations(replay_actions,&mut r_actions_sans_explanations)?;
+            let explanation_points: Vec<ExplanationPoint> = explanations::extract_explanations(
+                replay_actions,
+                &mut r_actions_sans_explanations,
+            )?;
             let mut explanations_option = explanations::map_explanations(explanation_points)?;
             match explanations_option {
                 None => {
@@ -928,8 +930,13 @@ fn try_main() -> Result<(), Box<Error>> {
                 }
             }
             if explanations::is_empty(&explanations_option) {
-                println!("using default replay file to find expl file!{:?}",default_replay_file_path);
-                explanations_option = explanations::get_explanations_for_replay_file(default_replay_file_path.clone())?;
+                println!(
+                    "using default replay file to find expl file!{:?}",
+                    default_replay_file_path
+                );
+                explanations_option = explanations::get_explanations_for_replay_file(
+                    default_replay_file_path.clone(),
+                )?;
             }
             match explanations_option {
                 None => {
@@ -939,7 +946,12 @@ fn try_main() -> Result<(), Box<Error>> {
                     println!("B.EXPLANATION_OPTION .....Some");
                 }
             }
-            run_replay(RunMode::Live, r_actions_sans_explanations, explanations_option, args);
+            run_replay(
+                RunMode::Live,
+                r_actions_sans_explanations,
+                explanations_option,
+                args,
+            );
             return Ok(());
         }
     } else {
@@ -948,7 +960,12 @@ fn try_main() -> Result<(), Box<Error>> {
 }
 
 #[allow(unused_assignments)]
-fn run_replay(run_mode: RunMode, mut replay_info: Vec<ReplayAction>, explanations_option: Option<Explanations>,args: Args) {
+fn run_replay(
+    run_mode: RunMode,
+    mut replay_info: Vec<ReplayAction>,
+    explanations_option: Option<Explanations>,
+    args: Args,
+) {
     let mut mode_is_test = true;
     let mut environment: Environment = Environment::new();
 
@@ -982,11 +999,17 @@ fn run_replay(run_mode: RunMode, mut replay_info: Vec<ReplayAction>, explanation
         debug_assert!(environment.router().replay().is_some());
     }
     let header = replay_info.remove(0);
-    println!("replay_info is this long after header removed {}", replay_info.len());
+    println!(
+        "replay_info is this long after header removed {}",
+        replay_info.len()
+    );
     let replay_sequencer_result = ReplaySequencer::new(&replay_info);
     match replay_sequencer_result {
         Ok(mut replay_sequencer) => {
-            println!("sequencer has this many {}", replay_sequencer.get_sequence_length());
+            println!(
+                "sequencer has this many {}",
+                replay_sequencer.get_sequence_length()
+            );
             let mut replay_manager = ReplayManager {
                 incoming_message_queue: rc_replay_message_queue,
                 step_delay: Arc::new(Mutex::new(201)),
@@ -1015,7 +1038,6 @@ fn run_replay(run_mode: RunMode, mut replay_info: Vec<ReplayAction>, explanation
             return;
         }
     }
-
 }
 
 fn configure_and_register_mock_rts(env: &mut Environment) {

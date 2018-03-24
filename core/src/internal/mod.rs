@@ -9,4 +9,3 @@ use scaii_defs::Module;
 pub enum LoadedAs {
     Module(Box<Module>, String),
 }
-

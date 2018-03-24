@@ -185,18 +185,14 @@ impl Shape {
             Err(format!("Shape's id is not 0. Got: {}", shape.id))?;
         }
         Ok(Shape {
-            color: Color::from_proto(
-                shape
-                    .color
-                    .as_ref()
-                    .ok_or_else::<Box<Error>, _>(|| From::from("Shape lacks color field"))?,
-            )?,
-            relative_pos: Pos::from_proto(
-                shape
-                    .relative_pos
-                    .as_ref()
-                    .ok_or_else::<Box<Error>, _>(|| From::from("Shape lacks relative_pos field"))?,
-            )?,
+            color: Color::from_proto(shape
+                .color
+                .as_ref()
+                .ok_or_else::<Box<Error>, _>(|| From::from("Shape lacks color field"))?)?,
+            relative_pos: Pos::from_proto(shape
+                .relative_pos
+                .as_ref()
+                .ok_or_else::<Box<Error>, _>(|| From::from("Shape lacks relative_pos field"))?)?,
             rotation: shape.rotation,
             shape: {
                 if shape.rect.is_some() && shape.triangle.is_some() {
@@ -231,8 +227,7 @@ impl Shape {
                     return Err(format!(
                         "Shape has malformed or missing rect and triangle fields:\
                          triangle: {:?}; rect: {:?}",
-                        shape.triangle,
-                        shape.rect
+                        shape.triangle, shape.rect
                     ))?;
                 }
             },
@@ -350,12 +345,10 @@ impl IdEntity {
         Ok(IdEntity {
             id: entity.id as usize,
             entity: Entity {
-                pos: Pos::from_proto(
-                    entity
-                        .pos
-                        .as_ref()
-                        .ok_or_else::<Box<Error>, _>(|| From::from("Entity lacks pos field"))?,
-                )?,
+                pos: Pos::from_proto(entity
+                    .pos
+                    .as_ref()
+                    .ok_or_else::<Box<Error>, _>(|| From::from("Entity lacks pos field"))?)?,
                 shape: {
                     if entity.shapes.len() != 1 {
                         Err("Entity's shape field is not exactly 1")?;
@@ -440,7 +433,10 @@ impl IdEntity {
 
 #[derive(Clone, PartialEq, Debug)]
 pub enum EntityUpdate {
-    Move { x: Option<f64>, y: Option<f64> },
+    Move {
+        x: Option<f64>,
+        y: Option<f64>,
+    },
     Delete,
     Create,
     ChangeShapeColor(Color, bool),
@@ -449,7 +445,9 @@ pub enum EntityUpdate {
         width: Option<f64>,
         height: Option<f64>,
     },
-    AlterTriangle { base: f64 },
+    AlterTriangle {
+        base: f64,
+    },
 }
 
 impl EntityUpdate {

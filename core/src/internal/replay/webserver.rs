@@ -110,9 +110,11 @@ fn get_python_version(python_command: String) -> Option<String> {
 fn get_python_version(python_command: String) -> Option<String> {
     let mut args: Vec<String> = Vec::new();
     args.push("--version".to_string());
-    let command_result = util::run_command(&python_command, args); // This is the only line that 
-    match command_result {                                         // changes, potential area for 
-        Ok(result_string) => {                                     // consolidation during refactor.
+    let command_result = util::run_command(&python_command, args); // This is the only line that
+    match command_result {
+        // changes, potential area for
+        Ok(result_string) => {
+            // consolidation during refactor.
             if result_string.starts_with("Python 3") {
                 Some("3".to_string())
             } else {

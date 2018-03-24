@@ -69,7 +69,7 @@ fn rand_init() {
 // and such can screw this up.
 #[test]
 fn seeded_rand_is_consistent() {
-    use rand::{XorShiftRng, SeedableRng};
+    use rand::{SeedableRng, XorShiftRng};
     use entity::IdEntity;
 
     use std::collections::HashMap;
@@ -93,7 +93,6 @@ fn seeded_rand_is_consistent() {
         .into_iter()
         .map(|entity| (entity.id, entity))
         .collect();
-
 
     let mut rng = XorShiftRng::from_seed([5, 6, 7, 8]);
 

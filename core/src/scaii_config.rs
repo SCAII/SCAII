@@ -13,14 +13,10 @@ pub struct ScaiiConfig {
 }
 #[derive(Deserialize, Debug)]
 struct ReplayConfig {
-    #[serde(default = "default_browser")]
-    browser: String,
-    #[serde(default = "default_url")]
-    url: String,
-    #[serde(default = "default_port")]
-    port: String,
+    #[serde(default = "default_browser")] browser: String,
+    #[serde(default = "default_url")] url: String,
+    #[serde(default = "default_port")] port: String,
 }
-
 
 #[cfg(target_os = "windows")]
 fn default_browser() -> String {

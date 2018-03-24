@@ -1,7 +1,5 @@
-
-use protos::{BackendEndpoint, BackendInit, Cfg, CoreEndpoint,
-             ModuleEndpoint, MultiMessage, ReplayEndpoint, ReplaySessionConfig, 
-             ScaiiPacket};
+use protos::{BackendEndpoint, BackendInit, Cfg, CoreEndpoint, ModuleEndpoint, MultiMessage,
+             ReplayEndpoint, ReplaySessionConfig, ScaiiPacket};
 use protos::cfg::WhichModule;
 use protos::endpoint::Endpoint;
 use protos::scaii_packet::SpecificMsg;
@@ -26,18 +24,14 @@ pub fn create_rts_backend_msg() -> Result<ScaiiPacket, Box<Error>> {
             endpoint: Some(Endpoint::Core(CoreEndpoint {})),
         },
         specific_msg: Some(SpecificMsg::Config(Cfg {
-                    which_module:
-                        Some(WhichModule::CoreCfg(protos::CoreCfg {
-                            plugin_type:
-                                PluginType { plugin_type: Some(SkyRts (
-                                    
-                                        protos::SkyRts{}
-                                )) },
-                        })),
-                })) ,
-        })
+            which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
+                plugin_type: PluginType {
+                    plugin_type: Some(SkyRts(protos::SkyRts {})),
+                },
+            })),
+        })),
+    })
 }
-
 
 #[allow(unused_assignments)]
 pub fn create_rpc_config_message() -> Result<ScaiiPacket, Box<Error>> {
@@ -106,7 +100,9 @@ pub fn load_replay_file(path: &Path) -> Result<Vec<ReplayAction>, Box<Error>> {
     }
     let mut count = 0;
     println!("");
-    println!("-------------------   Here are the replay actions with numbers  --------------------");
+    println!(
+        "-------------------   Here are the replay actions with numbers  --------------------"
+    );
     for replay_action in &replay_vec {
         match replay_action {
             &ReplayAction::Header(_) => {
@@ -115,7 +111,7 @@ pub fn load_replay_file(path: &Path) -> Result<Vec<ReplayAction>, Box<Error>> {
             &ReplayAction::Delta(_) => {
                 println!("loaded ReplayAction::Delta    {}", count);
             }
-            &ReplayAction::Keyframe(_,_) => {
+            &ReplayAction::Keyframe(_, _) => {
                 println!("loaded ReplayAction::Keyframe {}", count);
             }
         }
@@ -157,8 +153,9 @@ pub fn create_default_replay_backend_config() -> ScaiiPacket {
     }
 }
 
-
-pub fn get_mac_browser_launch_command(scaii_config: &mut ScaiiConfig) -> Result<String, Box<Error>> {
+pub fn get_mac_browser_launch_command(
+    scaii_config: &mut ScaiiConfig,
+) -> Result<String, Box<Error>> {
     let browser = scaii_config.get_replay_browser();
     let full_url = scaii_config.get_full_replay_http_url();
     Ok(format!("{} {}", browser, full_url))
@@ -218,13 +215,16 @@ pub fn get_reset_env_pkt() -> ScaiiPacket {
     }
 }
 
-pub fn get_replay_configuration_message(count : u32, explanations_option : &Option<Explanations>) -> ScaiiPacket {
+pub fn get_replay_configuration_message(
+    count: u32,
+    explanations_option: &Option<Explanations>,
+) -> ScaiiPacket {
     let mut expl_titles: Vec<String> = Vec::new();
     let chart_titles: Vec<String> = Vec::new();
     let mut expl_steps: Vec<u32> = Vec::new();
 
     match explanations_option {
-        &None => {},
+        &None => {}
         &Some(ref explanations) => {
             println!("...adding expl info to config message...");
             for index in &explanations.step_indices {
@@ -269,28 +269,25 @@ pub fn create_replay_session_config_message(
 
 // Delta(ActionWrapper),
 // Keyframe(SerializationInfo, ActionWrapper),
-    
-pub fn get_keframe_indices(replay_data : &Vec<ReplayAction>) -> Vec<u32> {
-    let mut result : Vec<u32> = Vec::new();
-    let mut index : u32 = 0;
+
+pub fn get_keframe_indices(replay_data: &Vec<ReplayAction>) -> Vec<u32> {
+    let mut result: Vec<u32> = Vec::new();
+    let mut index: u32 = 0;
     for replay_action in replay_data {
         match replay_action {
             &ReplayAction::Delta(_) => {
                 println!("....get_keyframe_indices saw delta");
-            },
-            &ReplayAction::Keyframe(_,_) => {
+            }
+            &ReplayAction::Keyframe(_, _) => {
                 println!("....get_keyframe_indices saw keyframe");
                 if index == 0 {
                     result.push(index);
-                }
-                else {
+                } else {
                     // account for the fact that the first ser_response winds up being the first packet
                     // in effect pushing all later indices up one
                     result.push(index + 1);
                 }
-                
-                
-            },
+            }
             &ReplayAction::Header(_) => {
                 println!("....get_keyframe_indices saw header");
             } // should not be in play, can ignore
@@ -300,13 +297,15 @@ pub fn get_keframe_indices(replay_data : &Vec<ReplayAction>) -> Vec<u32> {
     result
 }
 
-pub fn get_keyframe_map(replay_data : &Vec<ReplayAction>) -> Result<BTreeMap<u32, ScaiiPacket>, Box<Error>> {
-    let mut result : BTreeMap<u32, ScaiiPacket> = BTreeMap::new();
+pub fn get_keyframe_map(
+    replay_data: &Vec<ReplayAction>,
+) -> Result<BTreeMap<u32, ScaiiPacket>, Box<Error>> {
+    let mut result: BTreeMap<u32, ScaiiPacket> = BTreeMap::new();
     let mut count: u32 = 0;
     for replay_action in replay_data {
         match replay_action {
-            &ReplayAction::Delta(_) => {},
-            &ReplayAction::Keyframe(ref serialization_info,_) => {
+            &ReplayAction::Delta(_) => {}
+            &ReplayAction::Keyframe(ref serialization_info, _) => {
                 let ser_proto_ser_resp: SerializedProtosSerializationResponse =
                     serialization_info.data.clone();
                 let ser_response_decode_result =
@@ -315,20 +314,18 @@ pub fn get_keyframe_map(replay_data : &Vec<ReplayAction>) -> Result<BTreeMap<u32
                     Ok(ser_response) => {
                         let spkt = wrap_response_in_scaii_pkt(ser_response);
                         if count == 0 {
-                           
                             result.insert(count, spkt);
-                        }
-                        else {
+                        } else {
                             // account for the fact that the first ser_response winds up being the first packet and
                             // it's action winds up being the second.
                             result.insert(count + 1, spkt);
                         }
                     }
-                    Err(err) => { 
+                    Err(err) => {
                         return Err(Box::new(err));
                     }
                 }
-            },
+            }
             &ReplayAction::Header(_) => {}
         }
         count = count + 1;
@@ -336,17 +333,18 @@ pub fn get_keyframe_map(replay_data : &Vec<ReplayAction>) -> Result<BTreeMap<u32
     Ok(result)
 }
 
-
-pub fn get_scaii_packets_for_replay_actions(replay_data : &Vec<ReplayAction>) ->  Result<Vec<ScaiiPacket>, Box<Error>> {
-    let mut result : Vec<ScaiiPacket> = Vec::new();
+pub fn get_scaii_packets_for_replay_actions(
+    replay_data: &Vec<ReplayAction>,
+) -> Result<Vec<ScaiiPacket>, Box<Error>> {
+    let mut result: Vec<ScaiiPacket> = Vec::new();
     let mut stored_first_keyframe = false;
     for replay_action in replay_data {
         match replay_action {
             &ReplayAction::Delta(ref action_wrapper) => {
                 let spkt = convert_action_wrapper_to_action_pkt(action_wrapper.clone())?;
                 result.push(spkt);
-            },
-            &ReplayAction::Keyframe(ref serialization_info,ref action_wrapper) => {
+            }
+            &ReplayAction::Keyframe(ref serialization_info, ref action_wrapper) => {
                 if !stored_first_keyframe {
                     let ser_proto_ser_resp: SerializedProtosSerializationResponse =
                         serialization_info.data.clone();
@@ -357,7 +355,7 @@ pub fn get_scaii_packets_for_replay_actions(replay_data : &Vec<ReplayAction>) ->
                             let spkt = wrap_response_in_scaii_pkt(ser_response);
                             result.push(spkt);
                         }
-                        Err(err) => { 
+                        Err(err) => {
                             return Err(Box::new(err));
                         }
                     }
@@ -365,17 +363,14 @@ pub fn get_scaii_packets_for_replay_actions(replay_data : &Vec<ReplayAction>) ->
                 }
                 let spkt = convert_action_wrapper_to_action_pkt(action_wrapper.clone())?;
                 result.push(spkt);
-            },
+            }
             &ReplayAction::Header(_) => {}
         }
     }
     Ok(result)
 }
 
-
-pub fn wrap_response_in_scaii_pkt(
-    ser_response: protos::SerializationResponse,
-) -> ScaiiPacket {
+pub fn wrap_response_in_scaii_pkt(ser_response: protos::SerializationResponse) -> ScaiiPacket {
     ScaiiPacket {
         src: protos::Endpoint {
             endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
@@ -388,7 +383,6 @@ pub fn wrap_response_in_scaii_pkt(
         )),
     }
 }
-
 
 pub fn convert_action_wrapper_to_action_pkt(
     action_wrapper: ActionWrapper,
@@ -410,4 +404,3 @@ pub fn convert_action_wrapper_to_action_pkt(
         Err(err) => Err(Box::new(err)),
     }
 }
-

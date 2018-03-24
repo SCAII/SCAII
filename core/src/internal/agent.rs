@@ -17,7 +17,9 @@ pub struct PublisherAgent {
 
 impl PublisherAgent {
     pub fn new() -> Self {
-        PublisherAgent { incoming_messages: Vec::with_capacity(5) }
+        PublisherAgent {
+            incoming_messages: Vec::with_capacity(5),
+        }
     }
 }
 
@@ -31,7 +33,9 @@ impl Module for PublisherAgent {
     // and since the frontend is a publisher
     // (driving) it will send responses itself
     fn get_messages(&mut self) -> MultiMessage {
-        MultiMessage { packets: Vec::new() }
+        MultiMessage {
+            packets: Vec::new(),
+        }
     }
 }
 

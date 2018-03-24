@@ -28,11 +28,9 @@ impl CContext {
         mem::replace(&mut self.next_msg, None)
     }
 
-
     fn router_mut(&mut self) -> &mut Router {
         self.env.router_mut()
     }
-
 
     fn env_mut(&mut self) -> &mut Environment {
         &mut self.env
@@ -53,7 +51,12 @@ impl CContext {
         self.next_msg = match self.next_msg {
             None => Some(next_msg),
             Some(ref mut curr_msg) => {
-                let curr_msg = mem::replace(curr_msg, MultiMessage { packets: Vec::new() });
+                let curr_msg = mem::replace(
+                    curr_msg,
+                    MultiMessage {
+                        packets: Vec::new(),
+                    },
+                );
                 let msgs = vec![curr_msg, next_msg];
                 protos::merge_multi_messages(msgs)
             }
@@ -69,7 +72,6 @@ impl CContext {
         }
     }
 }
-
 
 /// Creates a clean environment, further configuration is done via sending
 /// `CoreCfg` messages.
