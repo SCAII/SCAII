@@ -1,4 +1,0 @@
-[replay]
-#browser = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
-url = "localhost"
-port = "8000"
