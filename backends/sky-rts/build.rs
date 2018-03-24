@@ -7,13 +7,13 @@ fn main() {
 
     Config::new()
         .type_attribute(".", "#[derive(Serialize,Deserialize)]")
-        .compile_protos(&["../protos/sky-rts.proto"], &["../protos"])
+        .compile_protos(&["./protos/sky-rts.proto"], &["./protos"])
         .unwrap();
 
     // Make our protobuf file a reason to recompile
     // (See http://doc.crates.io/build-script.html for more info
     // on outputs)
-    println!("cargo:rerun-if-changed=../protos/sky-rts.proto");
+    println!("cargo:rerun-if-changed=./protos/sky-rts.proto");
 
     // Unfortunately, rerun-if-changed overrides Cargo's default handling, which
     // is to rerun if any of our files change, so we have to re-add all our source
