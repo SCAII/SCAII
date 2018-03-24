@@ -353,27 +353,6 @@ class ScaiiEnv():
         """
         return self.action_type()
 
-    def load_backend(self, plugin_path):
-        """
-        Loads the given backend as a plugin, this will throw an exception if there
-        is an error loading it.
-
-        Parameters:
-        ===========
-        plugin_path: string
-            The path to the plugin to be loaded.
-        """
-        packet = self.next_msg.packets.add()
-
-        packet.src.agent.SetInParent()
-        packet.dest.core.SetInParent()
-        packet.config.core_cfg.plugin_type.rust_plugin.plugin_path = plugin_path
-        packet.config.core_cfg.plugin_type.rust_plugin.init_as.backend.SetInParent()
-
-        self.cfg_msg.CopyFrom(packet)
-
-        self._send_recv_msg()
-
     def load_rpc_module(self, name):
         """
         Bootstraps an RPC module in Core with the given name.

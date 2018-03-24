@@ -19,7 +19,7 @@ message Cfg {
 // manager should spawn. 
 message PluginType {
 	oneof plugin_type {
-		RustFFIConfig rust_plugin = 1;
+		SkyRts sky_rts = 1;
 		RpcConfig rpc = 2;
 	}
 }
@@ -38,6 +38,9 @@ message InitAs {
 	}
 }
 
+// Marker for Sky RTS well-known backend
+message SkyRts {}
+
 
 // Initialization marker for a Backend.
 // See `InitAs` for more info.
@@ -47,19 +50,6 @@ message BackendInit {}
 // `InitAs` for more into.
 message ModuleInit {
 	required string name = 1;
-}
-
-// Arguments to initialize a plugin as a dynamically
-// loaded Rust plugin (dylib, so, dll, etc). 
-// 
-// A given Rust plugin may be
-// loaded multiple times as different modules
-// as long as it does not have mutable global state that
-// may cause multiple independent instances to conflict
-// with each other.
-message RustFFIConfig {
-	required string plugin_path = 1;
-	required InitAs init_as = 2;
 }
 
 message RpcConfig {

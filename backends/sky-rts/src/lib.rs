@@ -111,6 +111,12 @@ pub struct Context<'a, 'b> {
 }
 
 impl<'a, 'b> Context<'a, 'b> {
+    pub fn new() -> Self {
+        Context {
+            rts: Rts::new(),
+            awaiting_msgs: vec![],
+        }
+    }
     /// Causes the RNG state to diverge after serialization,
     /// so that reloading will not yield the same outputs.
     fn diverge(&mut self) {
@@ -177,6 +183,29 @@ impl<'a, 'b> Context<'a, 'b> {
             Format::Nondiverging => self.deserialize(&resp.serialized),
             Format::Diverging => self.deserialize_diverging(&resp.serialized),
         }
+    }
+
+    fn serialize(&mut self, _into: Option<Vec<u8>>) -> Result<Vec<u8>, Box<Error>> {
+        Ok(self.rts.serialize())
+    }
+
+    fn deserialize(&mut self, buf: &[u8]) -> Result<(), Box<Error>> {
+        let mm = self.rts.deserialize(buf.to_vec());
+        self.awaiting_msgs.push(mm);
+
+        Ok(())
+    }
+
+    fn serialize_diverging(&mut self, into: Option<Vec<u8>>) -> Result<Vec<u8>, Box<Error>> {
+        let out = self.serialize(into);
+        self.diverge();
+        out
+    }
+
+    fn deserialize_diverging(&mut self, buf: &[u8]) -> Result<(), Box<Error>> {
+        self.deserialize(buf)?;
+        self.diverge();
+        Ok(())
     }
 }
 
@@ -252,52 +281,4 @@ impl<'a, 'b> Module for Context<'a, 'b> {
     }
 }
 
-impl<'a, 'b> Backend for Context<'a, 'b> {
-    fn supported_behavior(&self) -> BackendSupported {
-        SUPPORTED
-    }
-
-    fn serialize(&mut self, _into: Option<Vec<u8>>) -> Result<Vec<u8>, Box<Error>> {
-        Ok(self.rts.serialize())
-    }
-
-    fn deserialize(&mut self, buf: &[u8]) -> Result<(), Box<Error>> {
-        let mm = self.rts.deserialize(buf.to_vec());
-        self.awaiting_msgs.push(mm);
-
-        Ok(())
-    }
-
-    fn serialize_diverging(&mut self, into: Option<Vec<u8>>) -> Result<Vec<u8>, Box<Error>> {
-        let out = self.serialize(into);
-        self.diverge();
-        out
-    }
-
-    fn deserialize_diverging(&mut self, buf: &[u8]) -> Result<(), Box<Error>> {
-        self.deserialize(buf)?;
-        self.diverge();
-        Ok(())
-    }
-}
-
-#[no_mangle]
-pub fn new() -> Box<Module> {
-    Box::new(Context {
-        rts: Rts::new(),
-        awaiting_msgs: vec![],
-    })
-}
-
-#[no_mangle]
-pub fn supported_behavior() -> BackendSupported {
-    SUPPORTED
-}
-
-#[no_mangle]
-pub fn new_backend() -> Box<Backend> {
-    Box::new(Context {
-        rts: Rts::new(),
-        awaiting_msgs: vec![],
-    })
-}
+impl<'a, 'b> Backend for Context<'a, 'b> {}

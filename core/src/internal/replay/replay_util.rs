@@ -1,7 +1,7 @@
 
 use protos::{BackendEndpoint, BackendInit, Cfg, CoreEndpoint,
              ModuleEndpoint, MultiMessage, ReplayEndpoint, ReplaySessionConfig, 
-             RustFfiConfig, ScaiiPacket};
+             ScaiiPacket};
 use protos::cfg::WhichModule;
 use protos::endpoint::Endpoint;
 use protos::scaii_packet::SpecificMsg;
@@ -15,26 +15,9 @@ use bincode::{deserialize_from, Infinite};
 use super::*;
 use scaii_core;
 
+pub fn create_rts_backend_msg() -> Result<ScaiiPacket, Box<Error>> {
+    use scaii_defs::protos::PluginType;
 
-pub fn get_rust_ffi_config_for_path(path: &str) -> RustFfiConfig {
-    RustFfiConfig {
-        plugin_path: path.to_string(),
-        init_as: protos::InitAs {
-            init_as: Some(protos::init_as::InitAs::Backend(BackendInit {})),
-        },
-    }
-}
-
-pub fn create_rust_ffi_config_message(backend_path: &str) -> Result<ScaiiPacket, Box<Error>> {
-    use scaii_defs::protos::plugin_type::PluginType;
-    let path = Path::new(backend_path);
-    if !path.exists() {
-        return Err(Box::new(ReplayError::new(&format!(
-            "specified backend does not exist {}",
-            backend_path
-        ))));
-    }
-    let rust_ffi_config = get_rust_ffi_config_for_path(backend_path);
     Ok(ScaiiPacket {
         src: protos::Endpoint {
             endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
@@ -43,13 +26,16 @@ pub fn create_rust_ffi_config_message(backend_path: &str) -> Result<ScaiiPacket,
             endpoint: Some(Endpoint::Core(CoreEndpoint {})),
         },
         specific_msg: Some(SpecificMsg::Config(Cfg {
-            which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
-                plugin_type: protos::PluginType {
-                    plugin_type: Some(PluginType::RustPlugin(rust_ffi_config)),
-                },
-            })),
-        })),
-    })
+                    which_module:
+                        Some(WhichModule::CoreCfg(protos::CoreCfg {
+                            plugin_type:
+                                PluginType { plugin_type: Some(SkyRts (
+                                    
+                                        protos::SkyRts{}
+                                )) },
+                        })),
+                })) ,
+        })
 }
 
 

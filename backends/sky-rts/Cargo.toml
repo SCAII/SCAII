@@ -3,9 +3,6 @@ name = "sky-rts"
 version = "0.1.0"
 authors = ["Zoe Juozapaitis <Jragonmiris@gmail.com>"]
 
-[lib]
-crate-type = ["dylib", "rlib"]
-
 [dependencies]
 scaii_defs = { path="../../scaii_defs" }
 rlua  = "0.9"
@@ -39,3 +36,7 @@ glob = "0.2.11"
 
 [dev-dependencies]
 websocket = "0.20"
+
+[profile.release]
+lto = true
+codegen-units = 1
