@@ -134,8 +134,6 @@ impl<'a, 'b> Rts<'a, 'b> {
         use SUPPORTED;
 
         use std::env;
-        use std::path::PathBuf;
-
         use scaii_defs::protos;
         use scaii_defs::protos::{EnvDescription, ScaiiPacket};
 
