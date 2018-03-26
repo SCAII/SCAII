@@ -8,9 +8,9 @@ extern crate serde_derive;
 extern crate url;
 
 use prost::Message;
-use protos::{plugin_type, scaii_packet, BackendEndpoint, Cfg, ExplanationDetails,
-             ExplanationPoint, ModuleEndpoint, MultiMessage, PluginType, RecorderConfig,
-             ReplayControl, ReplayEndpoint, ScaiiPacket};
+use protos::{scaii_packet, BackendEndpoint, Cfg, ExplanationDetails, ExplanationPoint,
+             ModuleEndpoint, MultiMessage, PluginType, RecorderConfig, ReplayControl,
+             ReplayEndpoint, ScaiiPacket};
 use protos::plugin_type::PluginType::SkyRts;
 use protos::cfg::WhichModule;
 use protos::user_command::UserCommandType;
@@ -25,10 +25,9 @@ use std::{thread, time};
 use std::rc::Rc;
 use std::cell::RefCell;
 use std::fmt;
-use std::sync::{mpsc, Arc, Mutex};
+use std::sync::{Arc, Mutex};
 use std::path::Path;
 use std::env;
-use scaii_core::util;
 use std::collections::BTreeMap;
 
 mod test_util;
@@ -157,7 +156,7 @@ struct ReplayManager {
     explanations_option: Option<Explanations>,
     header: ReplayAction,
     test_mode: bool,
-    args: Args,
+    _args: Args,
     poll_timer_count: u32,
     step_timer_count: u32,
 }
@@ -608,20 +607,6 @@ impl ReplayManager {
         Ok(())
     }
 
-    fn adjust_replay_speed_OLD(&mut self, speed_string: &str) -> Result<(), Box<Error>> {
-        let speed = speed_string.parse::<u64>()?;
-        // speed = 0  => 2001 ms or one ~ every 2 seconds
-        // speed = 90 => 201 ms or ~ 5/sec,
-        // speed = 100 => 1 ms
-        let translation_step1: u64 = 100 as u64 - speed;
-        let translation_step2: u64 = translation_step1 * 20;
-        let msec_delay = translation_step2 + 1;
-        println!(" speed string was {} and delay is {}", speed, msec_delay);
-        let mut num = self.step_delay.lock().unwrap();
-        *num = msec_delay;
-        Ok(())
-    }
-
     fn handle_jump_request(&mut self, jump_target: &String) -> Result<GameState, Box<Error>> {
         let result = jump_target.parse::<u32>();
         match result {
@@ -679,54 +664,6 @@ impl ReplayManager {
                 game_state = self.handle_step_nudge(game_state)?;
             }
         }
-        Ok(())
-    }
-
-    fn run_and_poll_OLD(&mut self) -> Result<(), Box<Error>> {
-        let mut game_state: GameState = GameState::Running;
-        let (tx_step, rx) = mpsc::channel();
-        let (tx_step_ack, rx_step_ack) = mpsc::channel();
-        let (tx_poll_ack, rx_poll_ack) = mpsc::channel();
-        let tx_poll = mpsc::Sender::clone(&tx_step);
-        let arc_poll_delay = Arc::clone(&self.poll_delay);
-        // start poll nudge  thread
-        let poll_nudge_handle = thread::spawn(move || {
-            //let mut i: u64 = 0;
-            loop {
-                //i = i + 1;
-                tx_poll.send(String::from("poll_nudge")).unwrap();
-                let _ack = rx_poll_ack.recv().unwrap();
-                wait(*arc_poll_delay.lock().unwrap());
-            }
-        });
-
-        let arc_step_delay = Arc::clone(&self.step_delay);
-        // start step nudge thread
-        let step_nudge_handle = thread::spawn(move || loop {
-            tx_step.send(String::from("step_nudge")).unwrap();
-            let _ack = rx_step_ack.recv().unwrap();
-            wait(*arc_step_delay.lock().unwrap());
-        });
-        while !self.shutdown_received {
-            let received = rx.recv();
-            match received {
-                Ok(nudge) => match nudge.as_ref() {
-                    "step_nudge" => {
-                        game_state = self.handle_step_nudge(game_state)?;
-                        tx_step_ack.send(String::from("ack")).unwrap();
-                    }
-                    "poll_nudge" => {
-                        game_state = self.execute_poll_step(game_state)?;
-                        tx_poll_ack.send(String::from("ack")).unwrap();
-                    }
-                    _ => {}
-                },
-                Err(receive_error) => return Err(Box::new(receive_error)),
-            }
-            //wait(50);
-        }
-        poll_nudge_handle.join().unwrap();
-        step_nudge_handle.join().unwrap();
         Ok(())
     }
 
@@ -1020,7 +957,7 @@ fn run_replay(
                 explanations_option: explanations_option,
                 header: header,
                 test_mode: mode_is_test,
-                args: args,
+                _args: args,
                 poll_timer_count: 5,
                 step_timer_count: 10,
             };

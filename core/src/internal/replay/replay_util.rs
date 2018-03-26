@@ -1,5 +1,5 @@
-use protos::{BackendEndpoint, BackendInit, Cfg, CoreEndpoint, ModuleEndpoint, MultiMessage,
-             ReplayEndpoint, ReplaySessionConfig, ScaiiPacket};
+use protos::{BackendEndpoint, Cfg, CoreEndpoint, ModuleEndpoint, MultiMessage, ReplayEndpoint,
+             ReplaySessionConfig, ScaiiPacket};
 use protos::cfg::WhichModule;
 use protos::endpoint::Endpoint;
 use protos::scaii_packet::SpecificMsg;

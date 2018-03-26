@@ -110,7 +110,7 @@ fn get_ep(
     id: u32,
     title: String,
     description: String,
-    layers: Vec<Layer>,
+    _layers: Vec<Layer>,
 ) -> ExplanationPoint {
     ExplanationPoint {
         step: Some(step),

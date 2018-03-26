@@ -8,7 +8,7 @@ use scaii_core::{ActionWrapper, ReplayAction, ReplayHeader, SerializationInfo,
                  SerializedProtosSerializationResponse};
 use scaii_defs::protos;
 use protos::scaii_packet::SpecificMsg;
-use scaii_defs::{Backend, BackendSupported, Module, SerializationStyle};
+use scaii_defs::{Backend, Module};
 use std::error::Error;
 
 pub struct MockRts {
