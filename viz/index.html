@@ -27,25 +27,53 @@
       <script src="js/gameState.js"></script>
       <script src="js/protobufUtils.js"></script>
 		<style> 
-		
+body {
+    display: block;
+    margin: 0px;
+}		
 #scaii-interface {
     display: flex;
 	flex-direction: column;
     background-color: lightgrey;
 }
 
-#scaii-game {
+#top-title-panel {
+	display: flex;
+	flex-direction: row;
+    background-color: lightgrey;
+}
+
+#upper-tier {
+	display: flex;
+	flex-direction: row;
+	background-color: lightgrey;
+}
+
+.titled-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     background-color: lightgrey;
     margin: 2px;
+	/*border-style: outset;*/
+	border-style: groove;
+}
+
+.region-title {
+	background-color: white;
+    margin: 2px;
+	font-family: Fira Sans;
+	font-size: 16px;
+	font-style: bold;
+	padding-left: 50px;
+	/*padding-top: 4px;
+	padding-bottom: 4px;*/
+	text-align: left;
 }
 
 #context-panel {
 	display: flex;
 	flex-direction: column;
     width: 400px;
-    background-color: lightgrey;
 }
 
 #scaii-explanations {
@@ -57,16 +85,28 @@
 
 #scaii-interface-title {
 	background-color: lightgrey;
-    width: 400px;
-    height: 20px;
-    margin: auto;
+    padding-top: 8px;
+	padding-bottom: 8px;
+	padding-left: 0px;
+	padding-right: 40px;
+	font-family: Fira Sans;
+	font-size: 16px;
+	font-style: normal;
 }
 
 #scaii-acronym {
 	background-color: lightgrey;
-    width: 400px;
-    height: 20px;
-    margin: auto;
+    padding-top: 8px;
+	padding-bottom: 8px;
+	padding-left: 40px;
+	padding-right: 40px;
+	font-family: Fira Sans;
+	font-size: 18px;
+	font-style: bold;
+}
+#game-board-container {
+	display: flex;
+    flex-direction: row;
 }
 #scaii-gameboard {
 	background-color: lightgrey;
@@ -106,7 +146,6 @@
     display: flex;
 	flex-direction: row;
 	background-color: lightgrey;
-    width: 400px;
     height: 20px;
     margin: auto;
 }
@@ -122,20 +161,20 @@
 progress::-webkit-progress-value { background: darkgrey; }
 progress::-moz-progress-bar { background: darkgrey; }
 
-#explanation-maps {
+#saliency-maps {
     display: flex;
 	flex-direction: row;
 	/*background-color: blue;
     width: 800px;
     height: 300px;*/
-    margin: 2px;
+    margin: 8px;
 }
 
-#explanations-interface {
+#explanations-rewards {
 	background-color: lightgrey;
-    width: 400px;
-    height: 400px;
-    margin: 0px;
+    /*width: 400px;
+    height: 400px;*/
+    margin: 8px;
 }
 #scaii-gameboard-zoom {
 	background-color: #C0C0C0;
@@ -162,9 +201,8 @@ progress::-moz-progress-bar { background: darkgrey; }
 	padding-bottom: 2px;
 }
 .control-panel {
-	width: 320px;
-    height: 30px;
     margin: 0px;
+	width: 250px;
 	padding-right: 4px;
 	background-color: lightgrey;
 }
@@ -188,7 +226,8 @@ progress::-moz-progress-bar { background: darkgrey; }
   border: 1px solid #0063a6;
 }
 #speed-slider {
-  width: 100%;
+  -webkit-appearance: slider-vertical;
+  height: 100%;
 }
 /*
 #game-progress-value {
@@ -200,38 +239,58 @@ progress::-moz-progress-bar { background: darkgrey; }
 	</head>
 	<body>
 		<div id="scaii-interface">
-			<div id="scaii-game">
-				<div id="context-panel">
-					<div id="scaii-acronym"></div>
-					<div id="scaii-interface-title"></div>
-					<div id="scaii-game-controls">
-						<div id="replay-speed-label" class="left-column-label"></div>
-						<div id="replay-speed-panel" class="control-panel"></div>
+			<div id="top-title-panel">
+				<div id="scaii-acronym">SCAII</div>
+				<div id="scaii-interface-title">Small Configurable AI Interface</div>
+			</div>
+			<div id="upper-tier">
+				<div id="game-titled-container" class="titled-container">
+					<div id="game-replay-title" class="region-title">Game Replay</div>
+					<div id="game-board-container">
+					    <div id="step-control">
+							<!--<div id="replay-speed-label"></div>-->
+							<div id="replay-speed-panel" class="control-panel"></div>
+						</div>
+						<div id="scaii-gameboard"></div>
 					</div>
-					<div id="scaii-timeline">
-						<div id="progress-label" class="left-column-label"></div>
-						<div id="progress-panel" class="control-panel">
-							<progress id="game-progress" value="00" max="99"></progress>
+					
+					<div id="context-panel">
+						<div id="scaii-game-controls">
+							
+						</div>
+						<div id="scaii-timeline">
+							<div id="progress-label" class="left-column-label"></div>
+							<div id="progress-panel" class="control-panel">
+								<progress id="game-progress" value="00" max="99"></progress>
+							</div>
+						</div>
+						<div id="explanation-control">
+							<div id="explanation-control-label" class="left-column-label"></div>
+							<div id="explanation-control-panel" class="control-panel"></div>
+						</div>
+						<div id="explanation-control-info">
+							<div id="action-label-div" class="left-column-label"></div>
+							<div id="action-name-div" class="free-width-label"></div>
+						</div>
+						<div id="playback">
+							<div id="playback-label" class="left-column-label"></div>
+							<div id="playback-panel" class="control-panel"></div>
 						</div>
 					</div>
-					<div id="explanation-control">
-						<div id="explanation-control-label" class="left-column-label"></div>
-						<div id="explanation-control-panel" class="control-panel"></div>
-					</div>
-					<div id="explanation-control-info">
-						<div id="action-label-div" class="left-column-label"></div>
-						<div id="action-name-div" class="free-width-label"></div>
-					</div>
-					<div id="playback">
-						<div id="playback-label" class="left-column-label"></div>
-						<div id="playback-panel" class="control-panel"></div>
-					</div>
+					
 				</div>
-				<div id="scaii-gameboard"></div>
+				<div id="rewards-titled-container" class="titled-container">	
+					<div id="rewards-title" class="region-title">Rewards</div>				
+					<div id="explanations-rewards"></div>
+                </div>					
 			</div>
+			
 			<div id="scaii-explanations">
-			    <div id="explanation-maps"></div>
-				<div id="explanations-interface"></div>
+				<div id="saliency-maps-titled-container" class="titled-container"> 
+					<div id="saliency-maps-title" class="region-title">Saliency</div>
+					<div id="saliency-maps"></div>
+				</div>
+				
 				<!--<div id="scaii-gameboard-zoom"></div>-->
 				<!--<div id="scaii-zoom-controls"></div>-->
 			</div>
@@ -240,4 +299,25 @@ progress::-moz-progress-bar { background: darkgrey; }
 	</body>
 </html>
   
-     
+  <!--
+<div class="tab">
+  <button class="tablinks" onclick="openCity(event, 'London')">London</button>
+  <button class="tablinks" onclick="openCity(event, 'Paris')">Paris</button>
+  <button class="tablinks" onclick="openCity(event, 'Tokyo')">Tokyo</button>
+</div>
+
+ Tab content
+<div id="London" class="tabcontent">
+  <h3>London</h3>
+  <p>London is the capital city of England.</p>
+</div>
+
+<div id="Paris" class="tabcontent">
+  <h3>Paris</h3>
+  <p>Paris is the capital of France.</p> 
+</div>
+
+<div id="Tokyo" class="tabcontent">
+  <h3>Tokyo</h3>
+  <p>Tokyo is the capital of Japan.</p>
+</div>-->

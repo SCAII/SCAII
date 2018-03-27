@@ -1,6 +1,17 @@
 google.charts.load('current', {packages: ['corechart', 'bar']});
 google.charts.setOnLoadCallback(dummy);
 var chart;
+var columnsAreAggregate = true;
+var firstValueColumn= 1;
+var saliencyMapPercentSize = 0.75;
+//
+// when clicking on a bar, the saliency will be looked up as follows:
+// we'll know which mode we are displaying (aggregate vs details)
+// if aggregate, we get the 
+//
+//
+var saliencyCoordinatesMap = {};
+var saliencyLookupMap = {};
 
 function getExplanationBox(left_x,right_x, upper_y, lower_y, step){
 	eBox = {};
@@ -54,7 +65,7 @@ var configureExplanation = function(step_count, step, title, selected){
     explanationBoxMap[step] = eBox;
 }
 
-function getMatchingExplanationStep(ctx, x, y){
+var getMatchingExplanationStep = function(ctx, x, y){
 	var matchingStep = undefined;
 	for (key in explanationBoxMap) {
 		var eBox = explanationBoxMap[key];
@@ -82,28 +93,92 @@ var getMaxValueBarGroup = function(barGroups){
 	}
 	return barGroupWithMaxValue;
 }
+
+var getMaxValueBarGroupIndex = function(barGroups){
+	var barGroupWithMaxValue = undefined;
+	var barGroupWithMaxValueIndex = undefined;
+	for (var i in barGroups) {
+		barGroup = barGroups[i];
+		if (barGroupWithMaxValue == undefined) {
+			barGroupWithMaxValue = barGroup;
+			barGroupWithMaxValueIndex = i;
+		}
+		else {
+			var curValue = barGroup.getValue();
+			var maxValue = barGroupWithMaxValue.getValue();
+			if (curValue > maxValue) {
+				barGroupWithMaxValue = barGroup;
+				barGroupWithMaxValueIndex = i;
+			}
+		}
+	}
+	return barGroupWithMaxValueIndex;
+}
+var populateSaliencyCoordinatesMap = function(explPoint) {
+	
+	var barChart = explPoint.getBarChart();
+	var barGroups = barChart.getGroupsList();
+	for (var i in barGroups) {
+		var barGroup = barGroups[i];
+		var saliencyId = barGroup.getSaliencyId();
+		var coordsKey = getCoordinatesKey(i, firstValueColumn, true);
+		console.log('populating... ' + coordsKey + '  ' + saliencyId);
+		saliencyCoordinatesMap[coordsKey] = saliencyId;
+		var bars = barGroup.getBarsList();
+		for (var j in bars){
+			var bar = bars[j];
+			var final_j = Number(j) + firstValueColumn;
+			var saliencyId = bar.getSaliencyId();
+			var coordsKey = getCoordinatesKey(i, final_j, false);
+			console.log('populating... ' + coordsKey + '  ' + saliencyId);
+			saliencyCoordinatesMap[coordsKey] = saliencyId;
+		}
+	}
+}
+
 var renderExplanationPoint = function(explPoint){
-	$("#explanation-maps").empty();
-	$("#explanations-interface").empty();
+	renderActionName(explPoint);
+	populateSaliencyCoordinatesMap(explPoint);
+	var saliency = explPoint.getSaliency();
+	saliencyLookupMap = saliency.getSaliencyMapMap();
+	columnsAreAggregate = true; // default to highest score, aggregate i.e. highest scoring task
+	
+	// look through the data to discover which saliency to express
+	var barChart = explPoint.getBarChart();
+	var barGroups = barChart.getGroupsList();
+	//var defaultBarGroup = getMaxValueBarGroup(barGroups);
+	var maxValueBarGroupIndex = getMaxValueBarGroupIndex(barGroups);
+	var coordsKey = getCoordinatesKey(maxValueBarGroupIndex, firstValueColumn, true);
+	var maxValueSaliencyId = saliencyCoordinatesMap[coordsKey];
+	renderExplanationSaliencyMaps(maxValueSaliencyId);
+    
+	var chartData = getChartData(barChart);
+	renderExplanationBarChart(barChart, chartData);
+}
+
+function getChartData(barChart){
+	var chartData = undefined;
+	if (columnsAreAggregate) {
+		chartData = getChartDataOneBarPerAction(barChart)
+	}
+	else {
+		chartData = getChartDataNBarsPerAction(barChart)
+	}
+	return chartData;
+}
+var renderActionName = function(explPoint){
 	var title = explPoint.getTitle();
 	$("#action-name-label").html(title);
-	var description = explPoint.getDescription();
-	// now info stored like this...
-	//optional Saliency saliency = 5;
-    //optional BarChart bar_chart = 6;
-	var saliency = explPoint.getSaliency();
-	var barChart =explPoint.getBarChart();
-	// look through the data to discover which saliency to express
-	var barGroups = barChart.getGroupsList();
-	var defaultBarGroup = getMaxValueBarGroup(barGroups);
-	var defaultSaliencyId = defaultBarGroup.getSaliencyId();
-	var saliencyMap = saliency.getSaliencyMapMap();
-    var layerMessage = saliencyMap.get(defaultSaliencyId);
+}
+var renderExplanationSaliencyMaps = function(saliencyId) {
+	$("#saliency-maps").empty();
+	var layerMessage = saliencyLookupMap.get(saliencyId);
 	if (layerMessage == undefined){
 		console.log("ERROR - no Layer message for saliencyID " + defaultSaliencyId);
 	}
 	else {
 		var expLayers = layerMessage.getLayersList();
+		var normalizationFactor = getNormalizationFactor(expLayers);
 		for (var i in expLayers) {
 			expLayer = expLayers[i];
 			console.log('found layer ' + expLayer.getName());
@@ -111,21 +186,47 @@ var renderExplanationPoint = function(explPoint){
 			var cells = expLayer.getCellsList();
 			var width = expLayer.getWidth();
 			var height = expLayer.getHeight();
-			renderExplLayer(name, cells, width, height)
+			renderExplLayer(name, cells, width, height, normalizationFactor);
 		} 
 	}
-	//var chartData = getChartDataNBarsPerAction(barChart);
-	var chartData = getChartDataOneBarPerAction(barChart);
+}
+
+var renderExplanationBarChart = function(barChart, chartData) {
+	$("#explanations-rewards").empty();
 	var options = getOptionsForBarChartMessage(barChart);
 	if (chartData == undefined){
-		console.log("ERROR - chartData could not be harvested for barChart " + barChart.getName());
+		console.log("ERROR - chartData could not be harvested for barChart ");
 	} else if (options == undefined){
-		console.log("ERROR - chartOptions could not be harvested for barChart " + barChart.getName());
+		console.log("ERROR - chartOptions could not be harvested for barChart ");
 	}
 	else {
+		console.log(chartData);
 		drawBarChart(chartData, options);
 	}
-	
+}
+
+var getNormalizationFactor = function(expLayers){
+	var max = 0.0
+	for (var i in expLayers) {
+		expLayer = expLayers[i];
+		var value = getMaxValueForLayer(expLayer.getCellsList());
+		if (value > max) {
+			max = value;
+		}
+	} 
+    var factor = 1 / max;
+	return factor;
+}
+
+var getMaxValueForLayer = function(vals){
+	var max = 0.0;
+	for (var i in vals) {
+		var value = vals[i];
+		if (value > max) {
+			max = value;
+		}
+	}
+	return max;
 }
 
 var getRewardNameRowOneBarPerAction = function(barChart) {
@@ -147,6 +248,7 @@ var getBarValuesRowOneBarPerAction = function(barGroup) {
 	return barValueRow;
 }
 var getChartDataOneBarPerAction = function(barChart) {
+	columnsAreAggregate = true;
 	// need structure to look like this
 	// var chartData = [
         // ['', 'r', ],
@@ -167,6 +269,7 @@ var getChartDataOneBarPerAction = function(barChart) {
 	 return chartData;
 }
 var getChartDataNBarsPerAction = function(barChart) {
+	columnsAreAggregate = false;
 	// need structure to look like this
 	// var chartData = [
         // ['', 'r1', 'r2'],
@@ -247,7 +350,7 @@ var getOptionsForBarChartMessage = function(barChart) {
     // optional string name = 3;
 // }
 var renderExplanationPointOld = function(explPoint){
-	$("#explanation-maps").empty();
+	$("#saliency-maps").empty();
 	var title = explPoint.getTitle();
 	$("#action-name-label").html(title);
 	var description = explPoint.getDescription();
@@ -295,22 +398,22 @@ var getBogusOptions = function() {
 	  return options;
 }
 
-var renderExplLayer = function(name, cells, width, height) {
+var renderExplLayer = function(name, cells, width, height, normalizationFactor) {
 	var uiName = name;
 	name = name.replace(" ","");
 	console.log('render layer ' + name);
 	var explCanvas = document.createElement("canvas");
 	var explCtx = explCanvas.getContext("2d");
 	// canvas size should be same a gameboardHeight
-	explCanvas.width  = gameboard_canvas.width;
-	explCanvas.height = gameboard_canvas.height;
-	renderSaliencyMap(explCanvas, explCtx, cells, width, height);
+	explCanvas.width  = gameboard_canvas.width * saliencyMapPercentSize;
+	explCanvas.height = gameboard_canvas.height * saliencyMapPercentSize;
+	renderSaliencyMap(explCanvas, explCtx, cells, width, height, normalizationFactor);
 	// the div that will contain it should be a bit wider
 	// and tall enough to contain title text
 	var mapContainerDivHeight = explCanvas.height + 30;
 	
 	var mapContainerDiv = document.createElement("div");
-	$("#explanation-maps").append(mapContainerDiv);
+	$("#saliency-maps").append(mapContainerDiv);
 	var mapId = 'mapContainer_' + name;
 	mapContainerDiv.setAttribute("id", mapId);
 	var mapContainerDivSelector = "#" + mapId;
@@ -319,6 +422,7 @@ var renderExplLayer = function(name, cells, width, height) {
 	$(mapContainerDivSelector).css("width", explCanvas.width+'px');
 	$(mapContainerDivSelector).css("height", mapContainerDivHeight+'px');
 	$(mapContainerDivSelector).css("margin-right", '4px');
+	$(mapContainerDivSelector).css("border", '1px solid #0063a6');
 	
 	var mapTitleId = 'title_' + name;
 	var mapTitleDiv   = document.createElement("div");
@@ -351,18 +455,25 @@ var configureMapTitle = function(mapTitleDivSelector){
 
 }
 
-var renderSaliencyMap = function(canvas, ctx, cells, width, height){
+var renderSaliencyMap = function(canvas, ctx, cells, width, height, normalizationFactor){
+	var scaleFactor = gameScaleFactor*saliencyMapPercentSize;
+	var maxCellValue = 0.0;
 	for (var x= 0; x < width; x++){
 		for (var y = 0; y < height; y++){
-			var index = width * y + x;
+			//var index = width * y + x; // assumes 
+			var index = height * x + y;
 			var cellValue = cells[index];
 			if (cellValue != 0.0) {
-				ctx.fillStyle = getWhiteRGBAString(cellValue);
-				ctx.fillRect(x*gameScaleFactor, y*gameScaleFactor, gameScaleFactor, gameScaleFactor);
+				if (cellValue > maxCellValue) {
+					maxCellValue = cellValue;
+				}
+				ctx.fillStyle = getWhiteRGBAString(cellValue * normalizationFactor);
+				ctx.fillRect(x*scaleFactor, y*scaleFactor, scaleFactor, scaleFactor);
 				ctx.fill();
 			}
 		}
 	}
+	console.log('MAX cell value : ' + maxCellValue);
 }
 
 
@@ -381,10 +492,47 @@ var dummy = function(){
 
 var drawBarChart = function(chartData, options) {
     var data = google.visualization.arrayToDataTable(chartData);
-	chart = new google.visualization.BarChart(document.getElementById('explanations-interface'));
+	//chart = new google.visualization.BarChart(document.getElementById('explanations-rewards'));
+	chart = new google.visualization.ColumnChart(document.getElementById('explanations-rewards'));
+	google.visualization.events.addListener(chart, 'select', selectHandler);
     chart.draw(data, options);
 }
 
+
+
+function selectHandler(e) {
+	var selection = chart.getSelection();
+	var col = selection[0]["column"];
+	var row = selection[0]["row"];
+	if (columnsAreAggregate) {
+		var coordKey = getCoordinatesKey(row,col,true);
+		console.log('render saliency maps for key ' + coordKey);
+		displaySaliencyForCoordinates(coordKey);
+	}
+	else {
+		var coordKey = getCoordinatesKey(row,col,false);
+		console.log('render saliency maps for key ' + coordKey);
+		displaySaliencyForCoordinates(coordKey);
+	}
+	var foo = 3;
+}
+
+function displaySaliencyForCoordinates(coordKey){
+	console.log('displaySaliencyFor Coordinates ' + coordKey);
+	var saliencyId = saliencyCoordinatesMap[coordKey];
+	console.log('saliencyId looked up is ' + saliencyId);
+	renderExplanationSaliencyMaps(saliencyId);
+}
+function getCoordinatesKey(row, col, isAggregate){
+	var coordKey = '';
+	if (isAggregate) {
+		coordKey = 'group_'+ row + "_" + col;
+	}
+	else {
+		coordKey = 'bar_'+ row + "_" + col;
+	}
+	return coordKey;
+}
 /*var redrawChart = function() {
 	console.log("trigger button clicked...");
         var data = google.visualization.arrayToDataTable([
