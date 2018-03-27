@@ -166,15 +166,8 @@ impl<'a, 'b> Rts<'a, 'b> {
         }
 
         let scaii_packet = ScaiiPacket {
-            src: protos::Endpoint {
-                endpoint: Some(protos::endpoint::Endpoint::Backend(
-                    protos::BackendEndpoint {},
-                )),
-            },
-            dest: protos::Endpoint {
-                endpoint: Some(protos::endpoint::Endpoint::Agent(protos::AgentEndpoint {})),
-            },
-
+            src: protos::BACKEND_ENDPOINT,
+            dest: protos::AGENT_ENDPOINT,
             specific_msg: Some(protos::scaii_packet::SpecificMsg::EnvDesc(EnvDescription {
                 reward_types: self.world
                     .read_resource::<RewardTypes>()
@@ -244,16 +237,8 @@ impl<'a, 'b> Rts<'a, 'b> {
             let viz_packet = self.world.read_resource::<Render>().0.clone();
 
             let scaii_packet = ScaiiPacket {
-                src: protos::Endpoint {
-                    endpoint: Some(protos::endpoint::Endpoint::Backend(
-                        protos::BackendEndpoint {},
-                    )),
-                },
-                dest: protos::Endpoint {
-                    endpoint: Some(protos::endpoint::Endpoint::Module(protos::ModuleEndpoint {
-                        name: "viz".to_string(),
-                    })),
-                },
+                src: protos::BACKEND_ENDPOINT,
+                dest: protos::mod_endpoint("viz"),
                 specific_msg: Some(protos::scaii_packet::SpecificMsg::VizInit(
                     protos::VizInit::default(),
                 )),
@@ -262,16 +247,8 @@ impl<'a, 'b> Rts<'a, 'b> {
             mm.packets.push(scaii_packet);
 
             let scaii_packet = ScaiiPacket {
-                src: protos::Endpoint {
-                    endpoint: Some(protos::endpoint::Endpoint::Backend(
-                        protos::BackendEndpoint {},
-                    )),
-                },
-                dest: protos::Endpoint {
-                    endpoint: Some(protos::endpoint::Endpoint::Module(protos::ModuleEndpoint {
-                        name: "viz".to_string(),
-                    })),
-                },
+                src: protos::BACKEND_ENDPOINT,
+                dest: protos::mod_endpoint("viz"),
                 specific_msg: Some(protos::scaii_packet::SpecificMsg::Viz(viz_packet)),
             };
 
@@ -279,14 +256,8 @@ impl<'a, 'b> Rts<'a, 'b> {
         }
 
         let scaii_packet = ScaiiPacket {
-            src: protos::Endpoint {
-                endpoint: Some(protos::endpoint::Endpoint::Backend(
-                    protos::BackendEndpoint {},
-                )),
-            },
-            dest: protos::Endpoint {
-                endpoint: Some(protos::endpoint::Endpoint::Agent(protos::AgentEndpoint {})),
-            },
+            src: protos::BACKEND_ENDPOINT,
+            dest: protos::AGENT_ENDPOINT,
             specific_msg: Some(protos::scaii_packet::SpecificMsg::State(
                 self.world.read_resource::<RtsState>().0.clone(),
             )),
@@ -313,16 +284,8 @@ impl<'a, 'b> Rts<'a, 'b> {
             let mut out = Vec::with_capacity(2);
             if self.frames_since_keyframe == 0 {
                 out.push(ScaiiPacket {
-                    src: protos::Endpoint {
-                        endpoint: Some(protos::endpoint::Endpoint::Backend(
-                            protos::BackendEndpoint {},
-                        )),
-                    },
-                    dest: protos::Endpoint {
-                        endpoint: Some(protos::endpoint::Endpoint::Recorder(
-                            protos::RecorderEndpoint {},
-                        )),
-                    },
+                    src: protos::BACKEND_ENDPOINT,
+                    dest: protos::RECORDER_ENDPOINT,
                     specific_msg: Some(protos::scaii_packet::SpecificMsg::SerResp(SerResp {
                         serialized: self.serialize(),
                         format: SerializationFormat::Nondiverging as i32,
@@ -331,16 +294,8 @@ impl<'a, 'b> Rts<'a, 'b> {
             }
 
             out.push(ScaiiPacket {
-                src: protos::Endpoint {
-                    endpoint: Some(protos::endpoint::Endpoint::Backend(
-                        protos::BackendEndpoint {},
-                    )),
-                },
-                dest: protos::Endpoint {
-                    endpoint: Some(protos::endpoint::Endpoint::Recorder(
-                        protos::RecorderEndpoint {},
-                    )),
-                },
+                src: protos::BACKEND_ENDPOINT,
+                dest: protos::RECORDER_ENDPOINT,
                 specific_msg: Some(protos::scaii_packet::SpecificMsg::RecorderStep(
                     RecorderStep {
                         action: Some(self.last_action.clone()),
@@ -405,16 +360,8 @@ impl<'a, 'b> Rts<'a, 'b> {
 
         if self.render {
             let render_packet = ScaiiPacket {
-                src: protos::Endpoint {
-                    endpoint: Some(protos::endpoint::Endpoint::Backend(
-                        protos::BackendEndpoint {},
-                    )),
-                },
-                dest: protos::Endpoint {
-                    endpoint: Some(protos::endpoint::Endpoint::Module(protos::ModuleEndpoint {
-                        name: "viz".to_string(),
-                    })),
-                },
+                src: protos::BACKEND_ENDPOINT,
+                dest: protos::mod_endpoint("viz"),
                 specific_msg: Some(protos::scaii_packet::SpecificMsg::Viz(
                     self.world.read_resource::<Render>().0.clone(),
                 )),
@@ -480,16 +427,8 @@ impl<'a, 'b> Rts<'a, 'b> {
         let mut packets = Vec::with_capacity(1);
         if self.render {
             let scaii_packet = ScaiiPacket {
-                src: protos::Endpoint {
-                    endpoint: Some(protos::endpoint::Endpoint::Backend(
-                        protos::BackendEndpoint {},
-                    )),
-                },
-                dest: protos::Endpoint {
-                    endpoint: Some(protos::endpoint::Endpoint::Module(protos::ModuleEndpoint {
-                        name: "viz".to_string(),
-                    })),
-                },
+                src: protos::BACKEND_ENDPOINT,
+                dest: protos::mod_endpoint("viz"),
                 specific_msg: Some(protos::scaii_packet::SpecificMsg::VizInit(
                     protos::VizInit::default(),
                 )),
@@ -499,16 +438,8 @@ impl<'a, 'b> Rts<'a, 'b> {
             self.out_systems.dispatch(&self.world.res);
 
             let render_packet = ScaiiPacket {
-                src: protos::Endpoint {
-                    endpoint: Some(protos::endpoint::Endpoint::Backend(
-                        protos::BackendEndpoint {},
-                    )),
-                },
-                dest: protos::Endpoint {
-                    endpoint: Some(protos::endpoint::Endpoint::Module(protos::ModuleEndpoint {
-                        name: "viz".to_string(),
-                    })),
-                },
+                src: protos::BACKEND_ENDPOINT,
+                dest: protos::mod_endpoint("viz"),
                 specific_msg: Some(protos::scaii_packet::SpecificMsg::Viz(
                     self.world.read_resource::<Render>().0.clone(),
                 )),
