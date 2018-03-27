@@ -1,0 +1,71 @@
+
+#scaii-timeline {
+    display: flex;
+    flex-direction: row;
+	/*text-align:center;*/
+	background-color: lightgrey;
+    width: 400px;
+    height: 20px;
+    margin: auto;
+}
+
+#scaii-game-controls {
+    display: flex;
+	flex-direction: row;
+	background-color: lightgrey;
+    width: 400px;
+    height: 20px;
+    margin: auto;
+}
+
+.playback-button {
+	margin-right: 5px;
+	margin-left: 5px;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.control-panel {
+    margin: 0px;
+	width: 250px;
+	padding-right: 4px;
+	background-color: lightgrey;
+}
+#playback {
+    display: flex;
+    flex-direction: row;
+	background-color: lightgrey;
+    width: 400px;
+    height: 40px;
+    margin: auto;
+}
+#game-progress {
+  width: 100%;
+  height: 15px;
+  background-color: white;
+  color: darkgrey;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  /*margin-left:70px;
+  margin-right: 70px;*/
+  border: 1px solid #0063a6;
+}
+#speed-slider {
+  -webkit-appearance: slider-vertical;
+  height: 100%;
+}
+
+.left-column-label {
+    width: 76px;
+    height: 30px;
+    margin: 0px;
+}
+
+.free-width-label {
+    height: 30px;
+    margin: 0px;
+}
+
+progress::-webkit-progress-value { background: darkgrey; }
+progress::-moz-progress-bar { background: darkgrey; }
