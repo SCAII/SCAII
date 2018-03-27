@@ -51,8 +51,6 @@ goog.require('proto.scaii.common.VizInit');
 * of patent rights can be found in the PATENTS file in the same directory.
 */
 var userInputBlocked = false;
-var systemAcronym = "SCAII";
-var systemTitle = "Small Configurable AI Interface";
 // VizInit defaults
 var testingMode = false;
 var maxStep = 0;
@@ -61,7 +59,7 @@ var userCommandScaiiPackets = [];
 var sessionState = "pending";
 var currentStep = -1;
 
-var gameScaleFactor = 5;
+var gameScaleFactor = 6;
 var spacingFactor = 1;
 var sizingFactor = 1;
 var zoomFactor = 3;
@@ -94,8 +92,8 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
 	console.log('clicked on step ' + selectedExplanationStep);	
 	if (matchingStep == selectedExplanationStep) {
 		selectedExplanationStep = undefined;
-		$("#explanation-maps").empty();
-		$("#explanations-interface").empty();
+		$("#saliency-maps").empty();
+		$("#explanations-rewards").empty();
 		$("#action-name-label").html(" ");
 	}
 	else {
@@ -386,7 +384,7 @@ var main = function () {
 	var debug = true;
 	if (debug) {
 		var connectButton = document.createElement("BUTTON");
-		var connectText = document.createTextNode("Connect to Replay");
+		var connectText = document.createTextNode("Start Replay");
 		connectButton.setAttribute("class", "connectButton");
 		connectButton.setAttribute("id", "connectButton");
 		connectButton.appendChild(connectText);
@@ -411,6 +409,7 @@ var configureSpeedSlider = function () {
 	speedSlider.setAttribute("value", "90");
 	speedSlider.setAttribute("class", "slider");
 	speedSlider.setAttribute("id", "speed-slider");
+	speedSlider.setAttribute("orient","vertical");
 	speedSlider.oninput = function () {
 		var speedString = "" + this.value;
 		var args = [speedString];
@@ -487,8 +486,8 @@ var initUI = function () {
 	configureZoomSlider();
 	configureExplanationControl();
 	controlsManager.setControlsNotReady();
-	gameboard_canvas.width = 200;
-	gameboard_canvas.height = 200;
+	gameboard_canvas.width = 40 * gameScaleFactor;
+	gameboard_canvas.height = 40 * gameScaleFactor;
 	gameboard_zoom_canvas.width = gameboard_canvas.width;
 	gameboard_zoom_canvas.height = gameboard_canvas.height;
 	$("#scaii-gameboard").append(gameboard_canvas);
@@ -501,9 +500,6 @@ var initUI = function () {
 	$("#scaii-gameboard-zoom").css("height", gameboard_zoom_canvas.height);
 	$("#scaii-gameboard-zoom").css("background-color", game_background_color);
 
-	
-	configureLabelContainer("#scaii-acronym","20px",systemAcronym, "center");
-	configureLabelContainer("#scaii-interface-title","16px",systemTitle, "center");
 	configureLabelContainer("#replay-speed-label","14px","replay speed", "right");
 	configureLabelContainer("#progress-label","14px","progress", "right");
 	configureLabelContainer("#explanation-control-label","14px","explanations", "right");
@@ -574,7 +570,7 @@ function tryConnect(dots, attemptCount) {
 		dots = '.';
 	}
 	attemptCount = attemptCount + 1;
-	$("#scaii-interface-title").html(systemTitle + " (... connecting " + attemptCount + " " + dots + ")");
+	//$("#scaii-interface-title").html(systemTitle + " (... connecting " + attemptCount + " " + dots + ")");
 	//gameboard_ctx.fillText("connecting  " + attemptCount + " " + dots, 10, 50);
 	connect(dots, attemptCount);
 }
@@ -614,7 +610,7 @@ var connect = function (dots, attemptCount) {
 
 	dealer.binaryType = 'arraybuffer';
 	dealer.onopen = function (event) {
-		$("#scaii-interface-title").html(systemTitle);
+		//$("#scaii-interface-title").html(systemTitle);
 		console.log("WS Opened.");
 	};
 
