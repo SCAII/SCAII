@@ -52,18 +52,19 @@ goog.provide('proto.scaii.common.RecorderConfig');
 goog.provide('proto.scaii.common.RecorderEndpoint');
 goog.provide('proto.scaii.common.RecorderStep');
 goog.provide('proto.scaii.common.Rect');
+goog.provide('proto.scaii.common.ReplayChoiceConfig');
 goog.provide('proto.scaii.common.ReplayControl');
 goog.provide('proto.scaii.common.ReplayEndpoint');
 goog.provide('proto.scaii.common.ReplaySessionConfig');
 goog.provide('proto.scaii.common.ReplayStep');
 goog.provide('proto.scaii.common.RpcConfig');
-goog.provide('proto.scaii.common.RustFFIConfig');
 goog.provide('proto.scaii.common.Saliency');
 goog.provide('proto.scaii.common.ScaiiPacket');
 goog.provide('proto.scaii.common.SerializationFormat');
 goog.provide('proto.scaii.common.SerializationRequest');
 goog.provide('proto.scaii.common.SerializationResponse');
 goog.provide('proto.scaii.common.Shape');
+goog.provide('proto.scaii.common.SkyRts');
 goog.provide('proto.scaii.common.State');
 goog.provide('proto.scaii.common.SupportedBehavior');
 goog.provide('proto.scaii.common.TestControl');
@@ -430,7 +431,7 @@ proto.scaii.common.PluginType.oneofGroups_ = [[1,2]];
  */
 proto.scaii.common.PluginType.PluginTypeCase = {
   PLUGIN_TYPE_NOT_SET: 0,
-  RUST_PLUGIN: 1,
+  SKY_RTS: 1,
   RPC: 2
 };
 
@@ -470,7 +471,7 @@ proto.scaii.common.PluginType.prototype.toObject = function(opt_includeInstance)
  */
 proto.scaii.common.PluginType.toObject = function(includeInstance, msg) {
   var f, obj = {
-    rustPlugin: (f = msg.getRustPlugin()) && proto.scaii.common.RustFFIConfig.toObject(includeInstance, f),
+    skyRts: (f = msg.getSkyRts()) && proto.scaii.common.SkyRts.toObject(includeInstance, f),
     rpc: (f = msg.getRpc()) && proto.scaii.common.RpcConfig.toObject(includeInstance, f)
   };
 
@@ -509,9 +510,9 @@ proto.scaii.common.PluginType.deserializeBinaryFromReader = function(msg, reader
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = new proto.scaii.common.RustFFIConfig;
-      reader.readMessage(value,proto.scaii.common.RustFFIConfig.deserializeBinaryFromReader);
-      msg.setRustPlugin(value);
+      var value = new proto.scaii.common.SkyRts;
+      reader.readMessage(value,proto.scaii.common.SkyRts.deserializeBinaryFromReader);
+      msg.setSkyRts(value);
       break;
     case 2:
       var value = new proto.scaii.common.RpcConfig;
@@ -547,12 +548,12 @@ proto.scaii.common.PluginType.prototype.serializeBinary = function() {
  */
 proto.scaii.common.PluginType.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getRustPlugin();
+  f = message.getSkyRts();
   if (f != null) {
     writer.writeMessage(
       1,
       f,
-      proto.scaii.common.RustFFIConfig.serializeBinaryToWriter
+      proto.scaii.common.SkyRts.serializeBinaryToWriter
     );
   }
   f = message.getRpc();
@@ -567,23 +568,23 @@ proto.scaii.common.PluginType.serializeBinaryToWriter = function(message, writer
 
 
 /**
- * optional RustFFIConfig rust_plugin = 1;
- * @return {?proto.scaii.common.RustFFIConfig}
+ * optional SkyRts sky_rts = 1;
+ * @return {?proto.scaii.common.SkyRts}
  */
-proto.scaii.common.PluginType.prototype.getRustPlugin = function() {
-  return /** @type{?proto.scaii.common.RustFFIConfig} */ (
-    jspb.Message.getWrapperField(this, proto.scaii.common.RustFFIConfig, 1));
+proto.scaii.common.PluginType.prototype.getSkyRts = function() {
+  return /** @type{?proto.scaii.common.SkyRts} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.SkyRts, 1));
 };
 
 
-/** @param {?proto.scaii.common.RustFFIConfig|undefined} value */
-proto.scaii.common.PluginType.prototype.setRustPlugin = function(value) {
+/** @param {?proto.scaii.common.SkyRts|undefined} value */
+proto.scaii.common.PluginType.prototype.setSkyRts = function(value) {
   jspb.Message.setOneofWrapperField(this, 1, proto.scaii.common.PluginType.oneofGroups_[0], value);
 };
 
 
-proto.scaii.common.PluginType.prototype.clearRustPlugin = function() {
-  this.setRustPlugin(undefined);
+proto.scaii.common.PluginType.prototype.clearSkyRts = function() {
+  this.setSkyRts(undefined);
 };
 
 
@@ -591,7 +592,7 @@ proto.scaii.common.PluginType.prototype.clearRustPlugin = function() {
  * Returns whether this field is set.
  * @return {!boolean}
  */
-proto.scaii.common.PluginType.prototype.hasRustPlugin = function() {
+proto.scaii.common.PluginType.prototype.hasSkyRts = function() {
   return jspb.Message.getField(this, 1) != null;
 };
 
@@ -1025,6 +1026,122 @@ proto.scaii.common.InitAs.prototype.hasModule = function() {
  * @extends {jspb.Message}
  * @constructor
  */
+proto.scaii.common.SkyRts = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.scaii.common.SkyRts, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.SkyRts.displayName = 'proto.scaii.common.SkyRts';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.SkyRts.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.SkyRts.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.SkyRts} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.SkyRts.toObject = function(includeInstance, msg) {
+  var f, obj = {
+
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.SkyRts}
+ */
+proto.scaii.common.SkyRts.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.SkyRts;
+  return proto.scaii.common.SkyRts.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.SkyRts} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.SkyRts}
+ */
+proto.scaii.common.SkyRts.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.SkyRts.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.scaii.common.SkyRts.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.SkyRts} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.SkyRts.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
 proto.scaii.common.BackendInit = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
@@ -1283,206 +1400,6 @@ proto.scaii.common.ModuleInit.prototype.clearName = function() {
  */
 proto.scaii.common.ModuleInit.prototype.hasName = function() {
   return jspb.Message.getField(this, 1) != null;
-};
-
-
-
-/**
- * Generated by JsPbCodeGenerator.
- * @param {Array=} opt_data Optional initial data array, typically from a
- * server response, or constructed directly in Javascript. The array is used
- * in place and becomes part of the constructed object. It is not cloned.
- * If no data is provided, the constructed object will be empty, but still
- * valid.
- * @extends {jspb.Message}
- * @constructor
- */
-proto.scaii.common.RustFFIConfig = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
-};
-goog.inherits(proto.scaii.common.RustFFIConfig, jspb.Message);
-if (goog.DEBUG && !COMPILED) {
-  proto.scaii.common.RustFFIConfig.displayName = 'proto.scaii.common.RustFFIConfig';
-}
-
-
-if (jspb.Message.GENERATE_TO_OBJECT) {
-/**
- * Creates an object representation of this proto suitable for use in Soy templates.
- * Field names that are reserved in JavaScript and will be renamed to pb_name.
- * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
- * For the list of reserved names please see:
- *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
- * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
- *     for transitional soy proto support: http://goto/soy-param-migration
- * @return {!Object}
- */
-proto.scaii.common.RustFFIConfig.prototype.toObject = function(opt_includeInstance) {
-  return proto.scaii.common.RustFFIConfig.toObject(opt_includeInstance, this);
-};
-
-
-/**
- * Static version of the {@see toObject} method.
- * @param {boolean|undefined} includeInstance Whether to include the JSPB
- *     instance for transitional soy proto support:
- *     http://goto/soy-param-migration
- * @param {!proto.scaii.common.RustFFIConfig} msg The msg instance to transform.
- * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
- */
-proto.scaii.common.RustFFIConfig.toObject = function(includeInstance, msg) {
-  var f, obj = {
-    pluginPath: jspb.Message.getField(msg, 1),
-    initAs: (f = msg.getInitAs()) && proto.scaii.common.InitAs.toObject(includeInstance, f)
-  };
-
-  if (includeInstance) {
-    obj.$jspbMessageInstance = msg;
-  }
-  return obj;
-};
-}
-
-
-/**
- * Deserializes binary data (in protobuf wire format).
- * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.scaii.common.RustFFIConfig}
- */
-proto.scaii.common.RustFFIConfig.deserializeBinary = function(bytes) {
-  var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.scaii.common.RustFFIConfig;
-  return proto.scaii.common.RustFFIConfig.deserializeBinaryFromReader(msg, reader);
-};
-
-
-/**
- * Deserializes binary data (in protobuf wire format) from the
- * given reader into the given message object.
- * @param {!proto.scaii.common.RustFFIConfig} msg The message object to deserialize into.
- * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.scaii.common.RustFFIConfig}
- */
-proto.scaii.common.RustFFIConfig.deserializeBinaryFromReader = function(msg, reader) {
-  while (reader.nextField()) {
-    if (reader.isEndGroup()) {
-      break;
-    }
-    var field = reader.getFieldNumber();
-    switch (field) {
-    case 1:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setPluginPath(value);
-      break;
-    case 2:
-      var value = new proto.scaii.common.InitAs;
-      reader.readMessage(value,proto.scaii.common.InitAs.deserializeBinaryFromReader);
-      msg.setInitAs(value);
-      break;
-    default:
-      reader.skipField();
-      break;
-    }
-  }
-  return msg;
-};
-
-
-/**
- * Serializes the message to binary data (in protobuf wire format).
- * @return {!Uint8Array}
- */
-proto.scaii.common.RustFFIConfig.prototype.serializeBinary = function() {
-  var writer = new jspb.BinaryWriter();
-  proto.scaii.common.RustFFIConfig.serializeBinaryToWriter(this, writer);
-  return writer.getResultBuffer();
-};
-
-
-/**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.scaii.common.RustFFIConfig} message
- * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
- */
-proto.scaii.common.RustFFIConfig.serializeBinaryToWriter = function(message, writer) {
-  var f = undefined;
-  f = /** @type {string} */ (jspb.Message.getField(message, 1));
-  if (f != null) {
-    writer.writeString(
-      1,
-      f
-    );
-  }
-  f = message.getInitAs();
-  if (f != null) {
-    writer.writeMessage(
-      2,
-      f,
-      proto.scaii.common.InitAs.serializeBinaryToWriter
-    );
-  }
-};
-
-
-/**
- * required string plugin_path = 1;
- * @return {string}
- */
-proto.scaii.common.RustFFIConfig.prototype.getPluginPath = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
-};
-
-
-/** @param {string} value */
-proto.scaii.common.RustFFIConfig.prototype.setPluginPath = function(value) {
-  jspb.Message.setField(this, 1, value);
-};
-
-
-proto.scaii.common.RustFFIConfig.prototype.clearPluginPath = function() {
-  jspb.Message.setField(this, 1, undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {!boolean}
- */
-proto.scaii.common.RustFFIConfig.prototype.hasPluginPath = function() {
-  return jspb.Message.getField(this, 1) != null;
-};
-
-
-/**
- * required InitAs init_as = 2;
- * @return {!proto.scaii.common.InitAs}
- */
-proto.scaii.common.RustFFIConfig.prototype.getInitAs = function() {
-  return /** @type{!proto.scaii.common.InitAs} */ (
-    jspb.Message.getWrapperField(this, proto.scaii.common.InitAs, 2, 1));
-};
-
-
-/** @param {!proto.scaii.common.InitAs} value */
-proto.scaii.common.RustFFIConfig.prototype.setInitAs = function(value) {
-  jspb.Message.setWrapperField(this, 2, value);
-};
-
-
-proto.scaii.common.RustFFIConfig.prototype.clearInitAs = function() {
-  jspb.Message.setField(this, 2, undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {!boolean}
- */
-proto.scaii.common.RustFFIConfig.prototype.hasInitAs = function() {
-  return jspb.Message.getField(this, 2) != null;
 };
 
 
@@ -8458,7 +8375,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.scaii.common.ScaiiPacket.oneofGroups_ = [[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,29]];
+proto.scaii.common.ScaiiPacket.oneofGroups_ = [[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,29]];
 
 /**
  * @enum {number}
@@ -8489,6 +8406,7 @@ proto.scaii.common.ScaiiPacket.SpecificMsgCase = {
   ENV_DESC: 22,
   EXPL_DETAILS: 23,
   REPLAY_CONTROL: 24,
+  REPLAY_CHOICE_CONFIG: 25,
   OTHER: 29
 };
 
@@ -8552,6 +8470,7 @@ proto.scaii.common.ScaiiPacket.toObject = function(includeInstance, msg) {
     envDesc: (f = msg.getEnvDesc()) && proto.scaii.common.EnvDescription.toObject(includeInstance, f),
     explDetails: (f = msg.getExplDetails()) && proto.scaii.common.ExplanationDetails.toObject(includeInstance, f),
     replayControl: (f = msg.getReplayControl()) && proto.scaii.common.ReplayControl.toObject(includeInstance, f),
+    replayChoiceConfig: (f = msg.getReplayChoiceConfig()) && proto.scaii.common.ReplayChoiceConfig.toObject(includeInstance, f),
     other: (f = msg.getOther()) && proto.scaii.common.Other.toObject(includeInstance, f),
     src: (f = msg.getSrc()) && proto.scaii.common.Endpoint.toObject(includeInstance, f),
     dest: (f = msg.getDest()) && proto.scaii.common.Endpoint.toObject(includeInstance, f)
@@ -8707,6 +8626,11 @@ proto.scaii.common.ScaiiPacket.deserializeBinaryFromReader = function(msg, reade
       var value = new proto.scaii.common.ReplayControl;
       reader.readMessage(value,proto.scaii.common.ReplayControl.deserializeBinaryFromReader);
       msg.setReplayControl(value);
+      break;
+    case 25:
+      var value = new proto.scaii.common.ReplayChoiceConfig;
+      reader.readMessage(value,proto.scaii.common.ReplayChoiceConfig.deserializeBinaryFromReader);
+      msg.setReplayChoiceConfig(value);
       break;
     case 29:
       var value = new proto.scaii.common.Other;
@@ -8939,6 +8863,14 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       24,
       f,
       proto.scaii.common.ReplayControl.serializeBinaryToWriter
+    );
+  }
+  f = message.getReplayChoiceConfig();
+  if (f != null) {
+    writer.writeMessage(
+      25,
+      f,
+      proto.scaii.common.ReplayChoiceConfig.serializeBinaryToWriter
     );
   }
   f = message.getOther();
@@ -9688,6 +9620,36 @@ proto.scaii.common.ScaiiPacket.prototype.clearReplayControl = function() {
  */
 proto.scaii.common.ScaiiPacket.prototype.hasReplayControl = function() {
   return jspb.Message.getField(this, 24) != null;
+};
+
+
+/**
+ * optional ReplayChoiceConfig replay_choice_config = 25;
+ * @return {?proto.scaii.common.ReplayChoiceConfig}
+ */
+proto.scaii.common.ScaiiPacket.prototype.getReplayChoiceConfig = function() {
+  return /** @type{?proto.scaii.common.ReplayChoiceConfig} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.ReplayChoiceConfig, 25));
+};
+
+
+/** @param {?proto.scaii.common.ReplayChoiceConfig|undefined} value */
+proto.scaii.common.ScaiiPacket.prototype.setReplayChoiceConfig = function(value) {
+  jspb.Message.setOneofWrapperField(this, 25, proto.scaii.common.ScaiiPacket.oneofGroups_[0], value);
+};
+
+
+proto.scaii.common.ScaiiPacket.prototype.clearReplayChoiceConfig = function() {
+  this.setReplayChoiceConfig(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.ScaiiPacket.prototype.hasReplayChoiceConfig = function() {
+  return jspb.Message.getField(this, 25) != null;
 };
 
 
@@ -12873,7 +12835,9 @@ proto.scaii.common.UserCommand.UserCommandType = {
   POLL_FOR_COMMANDS: 5,
   JUMP_TO_STEP: 6,
   JUMP_COMPLETED: 7,
-  SET_SPEED: 8
+  SET_SPEED: 8,
+  SELECT_FILE: 9,
+  SELECT_FILE_COMPLETE: 10
 };
 
 /**
@@ -13708,6 +13672,169 @@ proto.scaii.common.GameComplete.prototype.serializeBinary = function() {
  */
 proto.scaii.common.GameComplete.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.scaii.common.ReplayChoiceConfig = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.scaii.common.ReplayChoiceConfig.repeatedFields_, null);
+};
+goog.inherits(proto.scaii.common.ReplayChoiceConfig, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.ReplayChoiceConfig.displayName = 'proto.scaii.common.ReplayChoiceConfig';
+}
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.scaii.common.ReplayChoiceConfig.repeatedFields_ = [1];
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.ReplayChoiceConfig.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.ReplayChoiceConfig.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.ReplayChoiceConfig} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.ReplayChoiceConfig.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    replayFilenamesList: jspb.Message.getRepeatedField(msg, 1)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.ReplayChoiceConfig}
+ */
+proto.scaii.common.ReplayChoiceConfig.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.ReplayChoiceConfig;
+  return proto.scaii.common.ReplayChoiceConfig.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.ReplayChoiceConfig} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.ReplayChoiceConfig}
+ */
+proto.scaii.common.ReplayChoiceConfig.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addReplayFilenames(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.ReplayChoiceConfig.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.scaii.common.ReplayChoiceConfig.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.ReplayChoiceConfig} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.ReplayChoiceConfig.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getReplayFilenamesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * repeated string replay_filenames = 1;
+ * @return {!Array.<string>}
+ */
+proto.scaii.common.ReplayChoiceConfig.prototype.getReplayFilenamesList = function() {
+  return /** @type {!Array.<string>} */ (jspb.Message.getRepeatedField(this, 1));
+};
+
+
+/** @param {!Array.<string>} value */
+proto.scaii.common.ReplayChoiceConfig.prototype.setReplayFilenamesList = function(value) {
+  jspb.Message.setField(this, 1, value || []);
+};
+
+
+/**
+ * @param {!string} value
+ * @param {number=} opt_index
+ */
+proto.scaii.common.ReplayChoiceConfig.prototype.addReplayFilenames = function(value, opt_index) {
+  jspb.Message.addToRepeatedField(this, 1, value, opt_index);
+};
+
+
+proto.scaii.common.ReplayChoiceConfig.prototype.clearReplayFilenamesList = function() {
+  this.setReplayFilenamesList([]);
 };
 
 

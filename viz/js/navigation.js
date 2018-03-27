@@ -1,33 +1,32 @@
-var updateProgress = function (step, maxStep) {
-	var percentComplete = step / maxStep;
-	var progressValue = percentComplete * 100;
-	var progressString = "" + progressValue;
+var jumpInProgress = false;
+var userInputBlocked = false;
+
+function paintProgress(value) {
+	var progressString = "" + value;
 	$("#game-progress").attr("value", progressString);
 }
-var processTimelineClick = function (e) {
+function tryProcessTimelineClick(e) {
 	try {
 		if (!userInputBlocked) {
-			controlsManager.userJumped();
-			var clickX = e.offsetX;
-			var width = $("#game-progress").width();
-			var percent = clickX / width;
-			var targetStep = Math.floor((maxStep + 1) * percent);
-			if (targetStep > maxStep){
-				targetStep = maxStep;
-			}
-			var targetStepString = "" + targetStep;
-			var args = [targetStepString];
-			var userCommand = new proto.scaii.common.UserCommand;
-			userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-			userCommand.setArgsList(args);
-			stageUserCommand(userCommand);
+			processTimelineClick(e);
 		}
 	}
 	catch (err) {
 		alert(err.message);
 	}
 }
-var stageUserCommand = function (userCommand) {
+function processTimelineClick(e) {
+	controlsManager.userJumped();
+	var clickX = e.offsetX;
+	var replaySequenceTargetStep = sessionIndexManager.getReplaySequencerIndexForClick(clickX);
+	var targetStepString = "" + replaySequenceTargetStep;
+	var args = [targetStepString];
+	var userCommand = new proto.scaii.common.UserCommand;
+	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+	userCommand.setArgsList(args);
+	stageUserCommand(userCommand);
+}
+function stageUserCommand(userCommand) {
 	var scaiiPkt = new proto.scaii.common.ScaiiPacket;
 	scaiiPkt.setUserCommand(userCommand);
 	userCommandScaiiPackets.push(scaiiPkt);
@@ -37,7 +36,7 @@ var tryPause = function () {
 		pauseGame();
 	}
 }
-var pauseGame = function () {
+function pauseGame() {
 	try {
 		controlsManager.userClickedPause();
 		var userCommand = new proto.scaii.common.UserCommand;
@@ -55,7 +54,7 @@ var tryResume = function () {
 	}
 }
 
-var resumeGame = function () {
+function resumeGame() {
 	try {
 		controlsManager.userClickedResume();
 		var userCommand = new proto.scaii.common.UserCommand;
@@ -72,7 +71,7 @@ var tryRewind = function () {
 		rewindGame();
 	}
 }
-var rewindGame = function () {
+function rewindGame() {
 	pauseGame();
 	try {
 		controlsManager.userClickedRewind();
@@ -86,36 +85,71 @@ var rewindGame = function () {
 }
 var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	var manager = {};
+	manager.registeredItems = [];
 	manager.pendingAction = undefined;
 	manager.pauseResumeButton = pauseResumeButton;
 	manager.rewindButton = rewindButton;
 
+	manager.registerJQueryHandleForWaitCursor = function(item) {
+		manager.registeredItems.push(item)
+	}
 	manager.setControlsNotReady = function () {
 		userInputBlocked = true;
 	}
 
 	manager.gameStarted = function () {
 		userInputBlocked = false;
-		this.enableAllControls()
+		this.enableAllControls();
 	}
 
+	manager.startLoadReplayFile = function () {
+		userInputBlocked = true;
+		this.expressResumeButton();
+		this.disablePauseResume();
+		this.disableRewind();
+		this.setWaitCursor();
+	}
+	
+	manager.doneLoadReplayFile = function () {
+		userInputBlocked = false;
+		this.enablePauseResume();
+		this.enableRewind();
+		this.clearWaitCursor();
+	}
+	
 	manager.gameSteppingForward = function () {
 		this.enableRewind();
 	}
+	
 	manager.reachedEndOfGame = function () {
 		this.expressResumeButton();
 		this.disablePauseResume();
 	}
 
+	manager.setWaitCursor = function () {
+		for (var i in this.registeredItems){
+			var item = this.registeredItems[i];
+			item.css("cursor", "wait");
+		}
+	}
+	
+	manager.clearWaitCursor = function () {
+		for (var i in this.registeredItems){
+			var item = this.registeredItems[i];
+			item.css("cursor", "default");
+		}
+	}
 	//
 	//   JUMP
 	//
 	manager.userJumped = function () {
+		jumpInProgress = true;
 		userInputBlocked = true;
 		// no pending action for this, re-enablingcontrols happenes when we get a JUMP_COMPLETED message from replay
 	}
 
 	manager.jumpCompleted = function () {
+		jumpInProgress = false;
 		userInputBlocked = false;
 		//this.expressResumeButton(); // pause automatically engaged in Replay when jump completed.
 		//this.enablePauseResume();
@@ -132,7 +166,7 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	manager.expressResumeButton = function () {
 		console.log('expressing RESUME button');
 		this.pauseResumeButton.onclick = tryResume;
-		this.pauseResumeButton.innerHTML = '<img src="imgs/play.png", height="8px" width="10px"/>';
+		this.pauseResumeButton.innerHTML = '<img src="imgs/play.png", height="16px" width="14px"/>';
 	}
 
 	//
@@ -147,7 +181,7 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	manager.expressPauseButton = function () {
 		console.log('expressing PAUSE button');
 		this.pauseResumeButton.onclick = tryPause;
-		this.pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="8px" width="10px"/>';
+		this.pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="16px" width="14px"/>';
 	}
 
 	//
@@ -210,4 +244,28 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	}
 
 	return manager;
+}
+
+
+function updateButtonsAfterJump() {
+	if (sessionIndexManager.isAtGameStart()) {
+		controlsManager.expressResumeButton();
+		controlsManager.enablePauseResume();
+		controlsManager.disableRewind();
+	}
+	else if (sessionIndexManager.isAtTimelineStepOne()) {
+		controlsManager.expressResumeButton();
+		controlsManager.enablePauseResume();
+		controlsManager.enableRewind();
+	}
+	else if (sessionIndexManager.isAtEndOfGame()) {
+		controlsManager.expressResumeButton();
+		controlsManager.disablePauseResume();
+		controlsManager.enableRewind();
+	}
+	else {
+		controlsManager.expressResumeButton();
+		controlsManager.enablePauseResume();
+		controlsManager.enableRewind();
+	}
 }

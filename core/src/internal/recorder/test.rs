@@ -1,11 +1,10 @@
 use super::*;
 use super::super::super::Environment;
-use super::super::super::util;
 use scaii_defs::protos;
-use scaii_defs::{Agent, Backend, BackendSupported, Module, SerializationStyle};
+use scaii_defs::{Agent, Backend, Module};
 use scaii_defs::protos::{cfg, scaii_packet, AgentEndpoint, BackendCfg, BackendEndpoint,
-                         BackendInit, Cfg, CoreEndpoint, GameComplete, MultiMessage,
-                         RecorderConfig, RecorderEndpoint, ReplayEndpoint, RustFfiConfig,
+                         Cfg, CoreEndpoint, GameComplete, MultiMessage,
+                         RecorderConfig, RecorderEndpoint, ReplayEndpoint,
                          ScaiiPacket, SerializationResponse};
 use scaii_defs::protos::cfg::WhichModule;
 use scaii_defs::protos::endpoint::Endpoint;
@@ -130,8 +129,8 @@ impl RecorderTester {
 
     fn create_cfg_pkt(&mut self) -> ScaiiPacket {
         let mut vec: Vec<ScaiiPacket> = Vec::new();
-        let rust_ffi_conf_pkt = create_test_rust_ffi_config_message();
-        vec.push(rust_ffi_conf_pkt);
+        let sky_rts_conf_pkt = create_sky_rts_config_message();
+        vec.push(sky_rts_conf_pkt);
 
         let cfg = Cfg {
             which_module: Some(cfg::WhichModule::BackendCfg(BackendCfg {
@@ -472,13 +471,7 @@ fn verify_persisted_file(path: &Path) -> Result<(), Box<Error>> {
     Ok(())
 }
 
-impl Backend for MockRts {
-    fn supported_behavior(&self) -> BackendSupported {
-        BackendSupported {
-            serialization: SerializationStyle::None, // ignored for this test driver
-        }
-    }
-}
+impl Backend for MockRts {}
 
 impl Module for MockRts {
     fn process_msg(&mut self, msg: &ScaiiPacket) -> Result<(), Box<Error>> {
@@ -667,41 +660,23 @@ impl MockRts {
     }
 }
 
-fn get_rust_ffi_config_for_path(path: &str) -> RustFfiConfig {
-    RustFfiConfig {
-        plugin_path: path.to_string(),
-        init_as: protos::InitAs {
-            init_as: Some(protos::init_as::InitAs::Backend(BackendInit {})),
-        },
-    }
-}
-
-fn create_test_rust_ffi_config_message() -> ScaiiPacket {
+fn create_sky_rts_config_message() -> ScaiiPacket {
     use scaii_defs::protos::plugin_type::PluginType;
-    let default_backend_result = util::get_default_backend();
-    match default_backend_result {
-        Ok(default_backend_path) => {
-            //let backend_path = "C:\\Users\\Jed Irvine\\.scaii\\backends\\bin\\sky-rts.dll";
-            let rust_ffi_config = get_rust_ffi_config_for_path(default_backend_path.as_ref());
-            ScaiiPacket {
-                // have to make src ReplayEndpoint because no Agent is registered during test
-                src: protos::Endpoint {
-                    endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+    use scaii_defs::protos::SkyRts;
+    ScaiiPacket {
+        // have to make src ReplayEndpoint because no Agent is registered during test
+        src: protos::Endpoint {
+            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+        },
+        dest: protos::Endpoint {
+            endpoint: Some(Endpoint::Core(CoreEndpoint {})),
+        },
+        specific_msg: Some(SpecificMsg::Config(Cfg {
+            which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
+                plugin_type: protos::PluginType {
+                    plugin_type: Some(PluginType::SkyRts(SkyRts{})),
                 },
-                dest: protos::Endpoint {
-                    endpoint: Some(Endpoint::Core(CoreEndpoint {})),
-                },
-                specific_msg: Some(SpecificMsg::Config(Cfg {
-                    which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
-                        plugin_type: protos::PluginType {
-                            plugin_type: Some(PluginType::RustPlugin(rust_ffi_config)),
-                        },
-                    })),
-                })),
-            }
-        }
-        Err(_) => {
-            panic!("no default backend path defined for this platform.  Adjust core/util.rs");
-        }
+            })),
+        })),
     }
 }
