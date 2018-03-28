@@ -23,6 +23,8 @@
       <script src="js/logUtils.js"></script>
       <script src="js/renderEntities.js"></script>
       <script src="js/renderExplanation.js"></script>
+      <script src="js/chart.js"></script>
+      <script src="js/saliency.js"></script>
       <script src="js/navigation.js"></script>
       <script src="js/gameState.js"></script>
       <script src="js/protobufUtils.js"></script>
@@ -78,8 +80,8 @@
 				</div>
 				<div id="rewards-titled-container" class="titled-container">	
 					<div class="tab">
-						<button class="regionTitle" onclick="showRewardsPerAction(event)">Rewards per Action Choice</button>
-						<button class="regionTitle" onclick="showRewardsPerRewardType(event)">Rewards per Reward Type</button>
+						<button id="showRewardsPerActionButton" class="rewardTab" onclick="showRewardsPerAction(event)">Rewards For Action Choices</button>
+						<button id="showRewardsPerRewardTypeButton" class="rewardTab" onclick="showRewardsPerRewardType(event)">Rewards For Each Reward Type</button>
 					</div>
 					<!--<div id="rewards-title" class="region-title">Rewards</div>	-->		
 					<div id="explanations-rewards"></div>

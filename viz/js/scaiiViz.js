@@ -240,7 +240,7 @@ function handleReplaySessionConfig(rsc, selectedStep) {
 			selected = true;
 		}
 		var title = explanation_titles[index];
-		configureExplanation(rsc.getStepCount(), step, title, selected);
+		configureExplanationControls(rsc.getStepCount(), step, title, selected);
 		index = index + 1;
 	}
 }
@@ -287,10 +287,6 @@ function handleViz(vizData) {
 
 	handleEntities(entitiesList);
 
-	//if (vizData.hasChart()) {
-	//	var chartInfo = vizData.getChart();
-	//	renderChartInfo(chartInfo, gameboardHeight);
-	//}
 	currentStep = currentStep + 1;
 
 	if (currentStep == maxStep) {

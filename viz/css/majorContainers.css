@@ -1,0 +1,78 @@
+body {
+    display: block;
+    margin: 0px;
+}	
+
+#scaii-interface {
+    display: flex;
+	flex-direction: column;
+    background-color: lightgrey;
+}
+
+#top-title-panel {
+	display: flex;
+	flex-direction: row;
+    background-color: lightgrey;
+}
+
+#upper-tier {
+	display: flex;
+	flex-direction: row;
+	background-color: lightgrey;
+}
+
+.titled-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0px;
+    background-color: lightgrey;
+	/*border-style: outset;*/
+	border-style: groove;
+}
+
+.region-title {
+	background-color: white;
+    margin: 0px;
+	font-family: Fira Sans;
+	font-size: 16px;
+	font-style: bold;
+	padding-left: 50px;
+	/*padding-top: 4px;
+	padding-bottom: 4px;*/
+	text-align: left;
+}
+
+#context-panel {
+	display: flex;
+	flex-direction: column;
+    width: 400px;
+}
+
+#scaii-explanations {
+    display: flex;
+    flex-direction: column;
+    background-color: lightgrey;
+    margin: 2px;
+}
+
+#scaii-interface-title {
+	background-color: lightgrey;
+    padding-top: 8px;
+	padding-bottom: 8px;
+	padding-left: 0px;
+	padding-right: 40px;
+	font-family: Fira Sans;
+	font-size: 16px;
+	font-style: normal;
+}
+
+#scaii-acronym {
+	background-color: lightgrey;
+    padding-top: 8px;
+	padding-bottom: 8px;
+	padding-left: 40px;
+	padding-right: 40px;
+	font-family: Fira Sans;
+	font-size: 18px;
+	font-style: bold;
+}
