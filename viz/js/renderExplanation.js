@@ -1,7 +1,11 @@
 google.charts.load('current', {packages: ['corechart', 'bar']});
 google.charts.setOnLoadCallback(dummy);
 var chart;
-var columnsAreAggregate = true;
+
+const chartModeAggregate = "show values for Bar Group";
+const chartModeDetailed = "show values for Reward Type";
+var chartMode = chartModeAggregate;
+
 var saliencyMapPercentSize = 0.75;
 
 var chosenSaliencyIdForAggregate = undefined;
@@ -17,28 +21,29 @@ var chosenDetailCoordKey = undefined;
 //
 var saliencyCoordinatesMap = {};
 var saliencyLookupMap = {};
-var currentExplanationPoint = undefined;
+var curExplPt = undefined;
+
 function showRewardsPerAction(evt) {
+	chartMode = chartModeAggregate;
 	renderTabActiveActionRewards();
 	if (undefined == chosenSaliencyIdForAggregate){
-		setSaliencyIdForFavoredAction(currentExplanationPoint);
+		setCuesForFavoredAction(curExplPt);
 	}
-	columnsAreAggregate = true;
-	var barChart = currentExplanationPoint.getBarChart();
-	var chartData = getChartData(barChart, columnsAreAggregate);
-	renderExplanationBarChart(barChart, chartData);
+	
+	var barChart = curExplPt.getBarChart();
+	renderExplanationBarChart(barChart, chartMode, chosenAggregateCoordKey);
 	renderExplanationSaliencyMaps(chosenSaliencyIdForAggregate);
 }
 
 function showRewardsPerRewardType(evt) {
+	chartMode = chartModeDetailed;
     renderTabActiveRewardTypes();
 	if (undefined == chosenSaliencyIdForDetailed){
-		setSaliencyIdForFavoredActionsHighestReward(currentExplanationPoint);
+		setCuesForFavoredActionsHighestReward(curExplPt);
 	}
-	columnsAreAggregate = false;
-	var barChart = currentExplanationPoint.getBarChart();
-	var chartData = getChartData(barChart, columnsAreAggregate);
-	renderExplanationBarChart(barChart, chartData);
+	
+	var barChart = curExplPt.getBarChart();
+	renderExplanationBarChart(barChart, chartMode,chosenDetailCoordKey);
 	renderExplanationSaliencyMaps(chosenSaliencyIdForDetailed);
 }
 var getMaxValueBarGroup = function(barGroups){
@@ -103,24 +108,23 @@ var populateSaliencyCoordinatesMap = function(explPoint) {
 }
 
 function renderExplanationPoint(explPoint){
-	currentExplanationPoint = explPoint;
+	curExplPt = explPoint;
 	renderActionName(explPoint);
 	populateSaliencyCoordinatesMap(explPoint);
 	var saliency = explPoint.getSaliency();
 	saliencyLookupMap = saliency.getSaliencyMapMap();
 	var keys = saliencyLookupMap.keys();
 	console.log('keys for lookup map : ' + keys);
-	columnsAreAggregate = true; // default to highest score, aggregate i.e. highest scoring task
+	chartMode = chartModeAggregate; // default to highest score, aggregate i.e. highest scoring task
 	
+	setCuesForFavoredAction(explPoint);
 	var barChart = explPoint.getBarChart();
-	var chartData = getChartData(barChart, columnsAreAggregate);
-	renderExplanationBarChart(barChart, chartData);
+	renderExplanationBarChart(barChart, chartMode, chosenAggregateCoordKey);
 	renderTabActiveActionRewards();
-	setSaliencyIdForFavoredAction(explPoint);
 	renderExplanationSaliencyMaps(chosenSaliencyIdForAggregate);
 }
 
-function setSaliencyIdForFavoredAction(explPoint){
+function setCuesForFavoredAction(explPoint){
 	// look through the data to discover which saliency to express
 	var barChart = explPoint.getBarChart();
 	var barGroups = barChart.getGroupsList();
@@ -132,7 +136,7 @@ function setSaliencyIdForFavoredAction(explPoint){
 	chosenSaliencyIdForAggregate = saliencyCoordinatesMap[chosenAggregateCoordKey];
 }
 
-function setSaliencyIdForFavoredActionsHighestReward(explPoint){
+function setCuesForFavoredActionsHighestReward(explPoint){
 	// look through the data to discover which saliency to express
 	var barChart = explPoint.getBarChart();
 	var barGroups = barChart.getGroupsList();

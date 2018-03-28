@@ -1,12 +1,12 @@
 
-var drawBarChart = function(chartData, options) {
+var drawBarChart = function(chartData, options, ) {
     var data = google.visualization.arrayToDataTable(chartData);
 	//chart = new google.visualization.BarChart(document.getElementById('explanations-rewards'));
 	chart = new google.visualization.ColumnChart(document.getElementById('explanations-rewards'));
 	google.visualization.events.addListener(chart, 'select', selectHandler);
     chart.draw(data, options);
+	
 }
-
 
 function getDataCoordinatesKey(row, col, isAggregate){
 	var coordKey = '';
@@ -19,12 +19,27 @@ function getDataCoordinatesKey(row, col, isAggregate){
 	return coordKey;
 }
 
+function getColumnFromCoordKey(coordKey){
+	var parts = coordKey.split("_");
+	var col = parts[2];
+	return col;
+}
+
+
+function getRowFromCoordKey(coordKey){
+	var parts = coordKey.split("_");
+	var row = parts[1];
+	return row;
+}
+
 function selectHandler(e) {
 	var selection = chart.getSelection();
+	console.log("SELKECTION from getSelection() looks like: ");
+	console.log(selection);
 	var col = selection[0]["column"];
 	var final_col = col - 1;  // ignore name column for generating key
 	var row = selection[0]["row"];
-	if (columnsAreAggregate) {
+	if (chartMode == chartModeAggregate) {
 		chosenAggregateCoordKey = getDataCoordinatesKey(row,final_col,true);
 		chosenSaliencyIdForAggregate = saliencyCoordinatesMap[chosenAggregateCoordKey];
 		console.log('render saliency map id ' + chosenSaliencyIdForAggregate + ' for key ' + chosenAggregateCoordKey);
@@ -38,9 +53,18 @@ function selectHandler(e) {
 	}
 }
 
-function getChartData(barChart, isAggregate){
+function createSelectionFromCoordKey(coordKey){
+	var selection0 = {};
+	selection0.column = Number(getColumnFromCoordKey(coordKey)) + 1;
+	selection0.row = Number(getRowFromCoordKey(coordKey));
+	var selection = [];
+	selection.push(selection0);
+	return selection;
+}
+
+function getChartData(barChart, chartMode){
 	var chartData = undefined;
-	if (isAggregate) {
+	if (chartMode == chartModeAggregate) {
 		chartData = getChartDataOneBarPerAction(barChart)
 	}
 	else {
@@ -50,17 +74,21 @@ function getChartData(barChart, isAggregate){
 }
 
 
-var renderExplanationBarChart = function(barChart, chartData) {
+var renderExplanationBarChart = function(barChart, chartMode, selectedCoordKey) {
 	$("#explanations-rewards").empty();
 	var options = getOptionsForBarChartMessage(barChart);
+	var chartData = getChartData(barChart, chartMode);
 	if (chartData == undefined){
 		console.log("ERROR - chartData could not be harvested for barChart ");
 	} else if (options == undefined){
 		console.log("ERROR - chartOptions could not be harvested for barChart ");
 	}
 	else {
-		console.log(chartData);
 		drawBarChart(chartData, options);
+		var selection = createSelectionFromCoordKey(selectedCoordKey);
+		console.log("selection I created looks like: ");
+		console.log(selection);
+		chart.setSelection(selection);
 	}
 }
 
@@ -93,7 +121,6 @@ var getBarValuesRowOneBarPerAction = function(barGroup) {
 	return barValueRow;
 }
 var getChartDataOneBarPerAction = function(barChart) {
-	columnsAreAggregate = true;
 	// need structure to look like this
 	// var chartData = [
         // ['', 'r', ],
@@ -116,7 +143,6 @@ var getChartDataOneBarPerAction = function(barChart) {
 	 return chartData;
 }
 var getChartDataNBarsPerAction = function(barChart) {
-	columnsAreAggregate = false;
 	// need structure to look like this
 	// var chartData = [
         // ['', 'r1', 'r2'],
