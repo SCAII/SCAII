@@ -389,8 +389,8 @@ var main = function () {
 			tryConnect('.', 0);
 		};
 		$("#playback-panel").append(connectButton);
-		$("#connectButton").css("margin-left", "30px");
-		$("#connectButton").css("font-family", "Fira Sans");
+		//$("#connectButton").css("margin-left", "30px");
+		//$("#connectButton").css("font-family", "Fira Sans");
 		$("#connectButton").css("font-size", "14px");
 
 	} else {
@@ -444,9 +444,10 @@ var subtractPixels = function(a,b){
 	return intA - intB;
 }
 var configureExplanationControl = function() {
-	var container_width = $(".control-panel").css("width");
-	var container_padding = $(".control-panel").css("padding-right");
-	var can_width = subtractPixels(container_width,container_padding);
+	//var container_width = $(".control-panel").css("width");
+	//var container_padding = $(".control-panel").css("padding-right");
+	//var can_width = subtractPixels(container_width,container_padding);
+	var can_width = 240;
 	
 	expl_ctrl_canvas.width = can_width;
 	expl_ctrl_canvas.height = 30;
