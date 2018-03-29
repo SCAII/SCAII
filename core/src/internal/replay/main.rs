@@ -156,7 +156,6 @@ struct ReplayManager {
     explanations_option: Option<Explanations>,
     header: ReplayAction,
     test_mode: bool,
-    _args: Args,
     poll_timer_count: u32,
     step_timer_count: u32,
 }
@@ -802,7 +801,7 @@ fn try_main() -> Result<(), Box<Error>> {
             let replay_info: Vec<ReplayAction> =
                 replay_util::load_replay_info_from_default_replay_path()
                     .expect("Error - problem generating test replay_info");
-            run_replay(RunMode::Test, replay_info, Option::None, args);
+            run_replay(RunMode::Test, replay_info, Option::None);
             return Ok(());
         } else {
             println!("...loading hardcoded replay data...");
@@ -811,7 +810,7 @@ fn try_main() -> Result<(), Box<Error>> {
             let interval: u32 = 5;
             let replay_info = concoct_replay_info(step_count, interval)
                 .expect("Error - problem generating test replay_info");
-            run_replay(RunMode::Test, replay_info, Option::None, args);
+            run_replay(RunMode::Test, replay_info, Option::None);
             return Ok(());
         }
     } else if args.cmd_file {
@@ -843,7 +842,6 @@ fn try_main() -> Result<(), Box<Error>> {
                 RunMode::Live,
                 r_actions_sans_explanations,
                 explanations_option,
-                args,
             );
             return Ok(());
         } else {
@@ -887,7 +885,6 @@ fn try_main() -> Result<(), Box<Error>> {
                 RunMode::Live,
                 r_actions_sans_explanations,
                 explanations_option,
-                args,
             );
             return Ok(());
         }
@@ -901,7 +898,6 @@ fn run_replay(
     run_mode: RunMode,
     mut replay_info: Vec<ReplayAction>,
     explanations_option: Option<Explanations>,
-    args: Args,
 ) {
     let mut mode_is_test = true;
     let mut environment: Environment = Environment::new();
@@ -957,7 +953,6 @@ fn run_replay(
                 explanations_option: explanations_option,
                 header: header,
                 test_mode: mode_is_test,
-                _args: args,
                 poll_timer_count: 5,
                 step_timer_count: 10,
             };
