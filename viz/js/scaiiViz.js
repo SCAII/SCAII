@@ -145,7 +145,7 @@ var timeline_canvas = document.createElement("canvas");
 var timeline_ctx = timeline_canvas.getContext("2d");
 var pauseResumeButton = document.createElement("BUTTON");
 var rewindButton = document.createElement("BUTTON");
-var speedSlider = document.createElement("input");
+//var speedSlider = document.createElement("input");
 var zoomSlider = document.createElement("input");
 rewindButton.disabled = true;
 rewindButton.setAttribute("id", "rewindButton");
@@ -478,8 +478,8 @@ var configureExplanationControl = function() {
 	ctx.restore();
 }
 var initUI = function () {
-	configureSpeedSlider();
-	configureZoomSlider();
+	//configureSpeedSlider();
+	//configureZoomSlider();
 	configureExplanationControl();
 	controlsManager.setControlsNotReady();
 	gameboard_canvas.width = 40 * gameScaleFactor;
@@ -496,19 +496,18 @@ var initUI = function () {
 	$("#scaii-gameboard-zoom").css("height", gameboard_zoom_canvas.height);
 	$("#scaii-gameboard-zoom").css("background-color", game_background_color);
 
-	configureLabelContainer("#replay-speed-label","14px","replay speed", "right");
 	configureLabelContainer("#progress-label","14px","progress", "right");
 	configureLabelContainer("#explanation-control-label","14px","explanations", "right");
 	configureLabelContainer("#playback-label","14px","", "right");
 	
-	$("#replay-speed-panel").append(speedSlider);
+	//$("#replay-speed-panel").append(speedSlider);
 
 	rewindButton.setAttribute("class", "playbackButton");
 	rewindButton.innerHTML = '<img src="imgs/rewind.png", height="8px" width="10px"/>';
 	rewindButton.onclick = tryRewind;
 	$("#playback-panel").append(rewindButton);
 
-	$("#scaii-game-controls").css("text-align", "center");
+	//$("#scaii-game-controls").css("text-align", "center");
 
 	pauseResumeButton.setAttribute("class", "playbackButton");
 	pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="8px" width="10px"/>';

@@ -1,7 +1,5 @@
 
 #saliency-maps {
-    display: flex;
-	flex-direction: row;
 	/*background-color: blue;
     width: 800px;
     height: 300px;*/
@@ -9,25 +7,19 @@
 }
 
 #explanations-rewards {
-	background-color: lightgrey;
-    /*width: 400px;
-    height: 400px;*/
     margin: 0px;
 }
 
+/*
 #explanation-control {
-    display: flex;
-	flex-direction: row;
-	background-color: lightgrey;
     width: 400px;
     height: 20px;
     margin: auto;
 }
-
+*/
+/*
 #explanation-control-info {
-    display: flex;
-	flex-direction: row;
-	background-color: lightgrey;
     height: 20px;
     margin: auto;
 }
+*/

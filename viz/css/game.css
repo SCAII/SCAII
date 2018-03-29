@@ -1,10 +1,6 @@
 
-#game-board-container {
-	display: flex;
-    flex-direction: row;
-}
+
 #scaii-gameboard {
-	background-color: lightgrey;
     width: 400px;
     height: 400px;
     margin: 0px;
