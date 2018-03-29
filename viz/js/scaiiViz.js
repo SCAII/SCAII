@@ -377,7 +377,7 @@ var main = function () {
 	//redrawChartHiddenButton.setAttribute("id", "chartRedrawTriggerButton");
 	//redrawChartHiddenButton.appendChild(document.createTextNode("Refresh"));
 	//$("#scaii-game-controls").append(redrawChartHiddenButton);
-	var debug = true;
+	var debug = false;
 	if (debug) {
 		var connectButton = document.createElement("BUTTON");
 		var connectText = document.createTextNode("Start Replay");
