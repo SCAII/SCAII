@@ -215,9 +215,24 @@ pub fn get_reset_env_pkt() -> ScaiiPacket {
     }
 }
 
+pub fn get_replay_filepaths() -> Result<Vec<String> , Box<Error>>{
+    use std::fs;
+    let mut result : Vec<String> = Vec::new();
+    let replay_dir = scaii_core::get_default_replay_dir()?;
+    let paths = fs::read_dir(replay_dir.to_str().unwrap().to_string()).unwrap();
+
+    for path in paths {
+        let path_string  = path.unwrap().path().to_str().unwrap().to_string();
+        result.push(path_string.clone());
+        println!("Name: {}", path_string);
+    }
+
+    Ok(result)
+}
 pub fn get_replay_configuration_message(
     count: u32,
     explanations_option: &Option<Explanations>,
+    replay_filepaths: Vec<String>,
 ) -> ScaiiPacket {
     let mut expl_titles: Vec<String> = Vec::new();
     let chart_titles: Vec<String> = Vec::new();
@@ -239,7 +254,7 @@ pub fn get_replay_configuration_message(
     }
 
     let steps = count as i64;
-    let spkt = create_replay_session_config_message(steps, expl_steps, expl_titles, chart_titles);
+    let spkt = create_replay_session_config_message(steps, expl_steps, expl_titles, chart_titles, replay_filepaths);
     spkt
 }
 
@@ -248,6 +263,7 @@ pub fn create_replay_session_config_message(
     expl_steps: Vec<u32>,
     expl_titles: Vec<String>,
     chart_titles: Vec<String>,
+    replay_filepaths: Vec<String>,
 ) -> ScaiiPacket {
     ScaiiPacket {
         src: protos::Endpoint {
@@ -263,6 +279,7 @@ pub fn create_replay_session_config_message(
             explanation_steps: expl_steps,
             explanation_titles: expl_titles,
             chart_titles: chart_titles,
+            replay_filepaths: replay_filepaths,
         })),
     }
 }

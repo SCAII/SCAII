@@ -70,8 +70,6 @@ struct Args {
     cmd_file: bool,
     flag_filename: bool,
     arg_path_to_replay_file: String,
-    //flag_backend: bool,
-    //arg_path_to_backend: String,
 }
 
 #[derive(Debug)]
@@ -154,7 +152,7 @@ struct ReplayManager {
     env: Environment,
     replay_sequencer: ReplaySequencer,
     explanations_option: Option<Explanations>,
-    header: ReplayAction,
+    header: Option<ReplayAction>,
     test_mode: bool,
     poll_timer_count: u32,
     step_timer_count: u32,
@@ -173,15 +171,66 @@ impl ReplayManager {
             replay_util::wrap_packet_in_multi_message(replay_util::create_rpc_config_message()?);
         self.env.route_messages(&mm);
         self.env.update();
-        // pull off header and configure
-        let header: ReplayAction = self.header.clone();
-        let count = self.replay_sequencer.get_sequence_length();
-        let replay_session_cfg =
-            replay_util::get_replay_configuration_message(count, &self.explanations_option);
-        self.configure_as_per_header(header, replay_session_cfg)?;
+        if self.test_mode {
+            let step_count: u32 = 300;
+            let interval: u32 = 5;
+            let replay_actions = concoct_replay_info(step_count, interval)
+            .expect("Error - problem generating test replay_info");
+            let replay_sequencer = ReplaySequencer::new(&replay_actions, false)?;
+            self.replay_sequencer = replay_sequencer;
+        }
         self.run_and_poll()
     }
 
+    fn load_selected_replay_file(&mut self, path_to_replay_file: String)-> Result<(), Box<Error>> {
+        use std::path::PathBuf;
+        let mut replay_actions: Vec<ReplayAction> = {
+            let path = Path::new(&path_to_replay_file);
+            if !path.exists() {
+                return Err(Box::new(ReplayError::new(&format!(
+                    "ERROR - specified replay path does not exist {:?}",
+                    path
+                ))));
+            }
+            replay_util::load_replay_file(&path.to_path_buf())
+                .expect("Error - problem generating test replay_actions")
+        };
+        let header = replay_actions.remove(0);
+        println!(
+            "replay_actions this long after header removed {}",
+            replay_actions.len()
+        );
+        let mut replay_sequencer = ReplaySequencer::new(&mut replay_actions, false)?;
+        let mut r_actions_sans_explanations: Vec<ReplayAction> = Vec::new();
+        let explanation_points: Vec<ExplanationPoint> = explanations::extract_explanations(
+            replay_actions,
+            &mut r_actions_sans_explanations,
+        )?;
+        let mut explanations_option = explanations::map_explanations(explanation_points)?;
+        if explanations::is_empty(&explanations_option) {
+            println!(
+                "using specified replay file to find expl file!{:?}",
+                path_to_replay_file
+            );
+            explanations_option = explanations::get_explanations_for_replay_file(
+                PathBuf::from(path_to_replay_file.clone()),
+            )?;
+        }
+        self.explanations_option = explanations_option;
+        replay_sequencer.print_length();
+        let count = replay_sequencer.get_sequence_length();
+        self.replay_sequencer = replay_sequencer;
+            
+
+        // pull off header and configure
+
+        
+        let replay_filepaths = replay_util::get_replay_filepaths()?;
+        let replay_session_cfg =
+            replay_util::get_replay_configuration_message(count, &self.explanations_option, replay_filepaths);
+        self.configure_as_per_header(header, replay_session_cfg)?;
+        Ok(())
+    }
     fn adjust_cfg_packets(
         &mut self,
         cfg_pkts: Vec<ScaiiPacket>,
@@ -784,8 +833,6 @@ fn main() {
     }
 }
 fn try_main() -> Result<(), Box<Error>> {
-    use std::path::PathBuf;
-
     let arguments: Vec<String> = env::args().collect();
     let args: Args = parse_args(arguments);
     // let args: Args = Docopt::new(USAGE)
@@ -796,109 +843,20 @@ fn try_main() -> Result<(), Box<Error>> {
         return Ok(());
     } else if args.cmd_test {
         println!("Running Replay in test mode...");
-        if args.flag_data_from_recorded_file {
-            println!("..loading replay data from default path...");
-            let replay_info: Vec<ReplayAction> =
-                replay_util::load_replay_info_from_default_replay_path()
-                    .expect("Error - problem generating test replay_info");
-            run_replay(RunMode::Test, replay_info, Option::None);
-            return Ok(());
-        } else {
-            println!("...loading hardcoded replay data...");
-            // must be flag_data_hardcoded
-            let step_count: u32 = 300;
-            let interval: u32 = 5;
-            let replay_info = concoct_replay_info(step_count, interval)
-                .expect("Error - problem generating test replay_info");
-            run_replay(RunMode::Test, replay_info, Option::None);
-            return Ok(());
-        }
+        println!("...loading hardcoded replay data...");
+        run_replay(RunMode::Test)?;
+        return Ok(());
     } else if args.cmd_file {
-        if args.flag_filename {
-            let replay_actions: Vec<ReplayAction> = {
-                let path = Path::new(&args.arg_path_to_replay_file);
-                if !path.exists() {
-                    panic!("ERROR - specified replay path does not exist {:?}", path);
-                }
-                replay_util::load_replay_file(&path.to_path_buf())
-                    .expect("Error - problem generating test replay_actions")
-            };
-            let mut r_actions_sans_explanations: Vec<ReplayAction> = Vec::new();
-            let explanation_points: Vec<ExplanationPoint> = explanations::extract_explanations(
-                replay_actions,
-                &mut r_actions_sans_explanations,
-            )?;
-            let mut explanations_option = explanations::map_explanations(explanation_points)?;
-            if explanations::is_empty(&explanations_option) {
-                println!(
-                    "using specified replay file to find expl file!{:?}",
-                    args.arg_path_to_replay_file
-                );
-                explanations_option = explanations::get_explanations_for_replay_file(
-                    PathBuf::from(args.arg_path_to_replay_file.clone()),
-                )?;
-            }
-            run_replay(
-                RunMode::Live,
-                r_actions_sans_explanations,
-                explanations_option,
-            );
-            return Ok(());
-        } else {
-            let replay_actions: Vec<ReplayAction> = {
-                replay_util::load_replay_info_from_default_replay_path()
-                    .expect("Error - problem generating replay_info from default file")
-            };
-            let default_replay_file_path = scaii_core::get_default_replay_file_path()?;
-            let mut r_actions_sans_explanations: Vec<ReplayAction> = Vec::new();
-            let explanation_points: Vec<ExplanationPoint> = explanations::extract_explanations(
-                replay_actions,
-                &mut r_actions_sans_explanations,
-            )?;
-            let mut explanations_option = explanations::map_explanations(explanation_points)?;
-            match explanations_option {
-                None => {
-                    println!("A. EXPLANATIONS_OPTION ....None");
-                }
-                Some(_) => {
-                    println!("A. EXPLANATION_OPTION .....Some");
-                }
-            }
-            if explanations::is_empty(&explanations_option) {
-                println!(
-                    "using default replay file to find expl file!{:?}",
-                    default_replay_file_path
-                );
-                explanations_option = explanations::get_explanations_for_replay_file(
-                    default_replay_file_path.clone(),
-                )?;
-            }
-            match explanations_option {
-                None => {
-                    println!("B. EXPLANATIONS_OPTION ....None");
-                }
-                Some(_) => {
-                    println!("B.EXPLANATION_OPTION .....Some");
-                }
-            }
-            run_replay(
-                RunMode::Live,
-                r_actions_sans_explanations,
-                explanations_option,
-            );
-            return Ok(());
-        }
+        println!("Running Replay in live mode...");
+        run_replay(RunMode::Live,)?;
+        return Ok(());
     } else {
         panic!("Unrecognized command mode for replay: {:?}", args);
     }
 }
 
 #[allow(unused_assignments)]
-fn run_replay(
-    run_mode: RunMode,
-    mut replay_info: Vec<ReplayAction>,
-    explanations_option: Option<Explanations>,
-) {
+fn run_replay(run_mode: RunMode)  -> Result<(), Box<Error>>{
     let mut mode_is_test = true;
     let mut environment: Environment = Environment::new();
 
@@ -931,45 +889,28 @@ fn run_replay(
             .register_replay(Box::new(Rc::clone(&rc_replay_message_queue)));
         debug_assert!(environment.router().replay().is_some());
     }
-    let header = replay_info.remove(0);
-    println!(
-        "replay_info is this long after header removed {}",
-        replay_info.len()
-    );
-    let replay_sequencer_result = ReplaySequencer::new(&replay_info);
-    match replay_sequencer_result {
-        Ok(mut replay_sequencer) => {
-            println!(
-                "sequencer has this many {}",
-                replay_sequencer.get_sequence_length()
-            );
-            let mut replay_manager = ReplayManager {
-                incoming_message_queue: rc_replay_message_queue,
-                step_delay: Arc::new(Mutex::new(201)),
-                poll_delay: Arc::new(Mutex::new(50)),
-                shutdown_received: false,
-                env: environment,
-                replay_sequencer: replay_sequencer,
-                explanations_option: explanations_option,
-                header: header,
-                test_mode: mode_is_test,
-                poll_timer_count: 5,
-                step_timer_count: 10,
-            };
-            let result = replay_manager.start();
-            match result {
-                Ok(_) => {}
-                Err(e) => {
-                    println!("Replay Error {:?}", e);
-                    return;
-                }
-            }
-        }
-        Err(err) => {
-            println!("Replay Error {:?}", err);
-            return;
-        }
+    let dummy_replay_actions : Vec<ReplayAction> = Vec::new();
+    let dummy_replay_sequencer = ReplaySequencer::new(&dummy_replay_actions, true)?;
+    let mut replay_manager = ReplayManager {
+        incoming_message_queue: rc_replay_message_queue,
+        step_delay: Arc::new(Mutex::new(201)),
+        poll_delay: Arc::new(Mutex::new(50)),
+        shutdown_received: false,
+        env: environment,
+        // pass in dummy rather than have option to simplify downstream code
+        replay_sequencer: dummy_replay_sequencer,
+        explanations_option: None,
+        header: None,
+        test_mode: mode_is_test,
+        poll_timer_count: 5,
+        step_timer_count: 10,
+    };
+    let result = replay_manager.start();
+    match result {
+        Ok(_) => Ok(()),
+        Err(e) => Err(e),
     }
+    
 }
 
 fn configure_and_register_mock_rts(env: &mut Environment) {

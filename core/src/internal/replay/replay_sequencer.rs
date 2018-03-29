@@ -58,44 +58,63 @@ enum PacketRetrievalModeForJump {
 //
 #[allow(unused_assignments)]
 impl ReplaySequencer {
-    pub fn new(replay_info: &Vec<ReplayAction>) -> Result<ReplaySequencer, Box<Error>> {
+    pub fn new(replay_info: &Vec<ReplayAction>, is_dummy: bool) -> Result<ReplaySequencer, Box<Error>> {
         use super::ReplayError;
-        let keyframe_indices: Vec<u32> = replay_util::get_keframe_indices(replay_info);
-        let mut mode_transition_index: Option<u32> = Option::None;
-        if keyframe_indices.len() == 0 {
-            // can't function without keyframes!
-            return Err(Box::new(ReplayError::new(
-                "No keyframes present in recorded file",
-            )));
-        } else if keyframe_indices.len() == 1 {
-            // no second keyframe means that packets will be read out in SIMPLE_MODE
-            // no matter where the jump target
-            println!(" mode_transition_index will be None");
-            mode_transition_index = None;
-        } else {
-            // there is a second keyframe so jumps to and after there will use PREPEND_KEYFRAME_MODE
-            println!(" mode_transition_index will be {}", keyframe_indices[1]);
-            mode_transition_index = Some(keyframe_indices[1]);
+        if is_dummy {
+            let  map: BTreeMap<u32, ScaiiPacket> = BTreeMap::new();
+            Ok(ReplaySequencer {
+                index: 0,
+                scaii_pkts: Vec::new(),
+                keyframe_indices: Vec::new(),
+                keyframe_map: map,
+                mode_transition_index: None,
+                rewound_to: 0,
+            })
         }
-        println!("keyframe_indices : {:?}", keyframe_indices);
-        let scaii_pkts: Vec<ScaiiPacket> =
-            replay_util::get_scaii_packets_for_replay_actions(replay_info)?;
-        let keyframe_map = replay_util::get_keyframe_map(replay_info)?;
+        else {
+            let keyframe_indices: Vec<u32> = replay_util::get_keframe_indices(replay_info);
+            let mut mode_transition_index: Option<u32> = Option::None;
+            if keyframe_indices.len() == 0 {
+                // can't function without keyframes!
+                return Err(Box::new(ReplayError::new(
+                    "No keyframes present in recorded file",
+                )));
+            } else if keyframe_indices.len() == 1 {
+                // no second keyframe means that packets will be read out in SIMPLE_MODE
+                // no matter where the jump target
+                println!(" mode_transition_index will be None");
+                mode_transition_index = None;
+            } else {
+                // there is a second keyframe so jumps to and after there will use PREPEND_KEYFRAME_MODE
+                println!(" mode_transition_index will be {}", keyframe_indices[1]);
+                mode_transition_index = Some(keyframe_indices[1]);
+            }
+            println!("keyframe_indices : {:?}", keyframe_indices);
+            let scaii_pkts: Vec<ScaiiPacket> =
+                replay_util::get_scaii_packets_for_replay_actions(replay_info)?;
+            let keyframe_map = replay_util::get_keyframe_map(replay_info)?;
 
-        Ok(ReplaySequencer {
-            index: 0,
-            scaii_pkts: scaii_pkts,
-            keyframe_indices: keyframe_indices,
-            keyframe_map: keyframe_map,
-            mode_transition_index: mode_transition_index,
-            rewound_to: 0,
-        })
+            Ok(ReplaySequencer {
+                index: 0,
+                scaii_pkts: scaii_pkts,
+                keyframe_indices: keyframe_indices,
+                keyframe_map: keyframe_map,
+                mode_transition_index: mode_transition_index,
+                rewound_to: 0,
+            })
+        }
+        
+    }
+
+    pub fn print_length(&mut self) {
+        println!("sequence length is {}", self.scaii_pkts.len());
     }
     #[allow(dead_code)] // for tests
     pub fn get_sequence_length(&mut self) -> u32 {
         println!("len is {}", self.scaii_pkts.len());
         self.scaii_pkts.len() as u32
     }
+
     #[allow(dead_code)] // for tests
     pub fn get_state(&mut self) -> SequenceState {
         if self.index == 0 {
@@ -106,13 +125,16 @@ impl ReplaySequencer {
             SequenceState::ReadyForNextStep
         }
     }
+
     pub fn has_next(&mut self) -> bool {
         self.index < self.scaii_pkts.len() as u32
     }
+
     #[allow(dead_code)] // for tests
     pub fn get_current_index(&mut self) -> u32 {
         self.index
     }
+
     pub fn next(&mut self) -> ScaiiPacket {
         if self.index == 0 {
             self.index = 1;
@@ -213,6 +235,7 @@ impl ReplaySequencer {
         result.append(&mut action_pkts);
         Ok(result)
     }
+
     pub fn get_prior_key_frame_index(&mut self, starting_point: u32) -> u32 {
         let mut cur_index = self.keyframe_indices.len() as u32;
         println!("finding keyframe index prior to {}", starting_point);
