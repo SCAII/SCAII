@@ -4,59 +4,137 @@ body {
 }	
 
 #scaii-interface {
-    display: flex;
+	width:800px;
+}
+.grid {
+	display: grid;
+	grid-gap: 0px;
+}
+/* 1rst row */
+.r0c0 {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+
+.r0c1 {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+/* 2nd row */
+.r1c0 {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 2;
+  grid-row-end: 3;
+}
+
+.r1c1 {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 2;
+  grid-row-end: 3;
+}
+/* 3rd row */
+.r2c0 {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 3;
+  grid-row-end: 4;
+}
+
+.r2c1 {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 3;
+  grid-row-end: 4;
+}
+/* 4th row */
+.r3c0 {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 4;
+  grid-row-end: 5;
+}
+
+.r3c1 {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 4;
+  grid-row-end: 5;
+}
+/* 5th row */
+.r4c0 {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 5;
+  grid-row-end: 6;
+}
+
+.r4c1 {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 5;
+  grid-row-end: 6;
+}
+/* 6th row */
+.r5c0 {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 6;
+  grid-row-end: 7;
+}
+
+.r5c1 {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 6;
+  grid-row-end: 7;
+}
+
+.r1c0_1 {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 2;
+  grid-row-end: 3;
+}
+/*
+.flex-row {
+	display: flex;
+	flex-direction: row;
+}
+
+.flex-column {
+	display: flex;
 	flex-direction: column;
-    background-color: lightgrey;
 }
-
-#top-title-panel {
-	display: flex;
-	flex-direction: row;
-    background-color: lightgrey;
+*/
+.grid-center {
+	justify-content: center;
 }
-
-#upper-tier {
-	display: flex;
-	flex-direction: row;
+.bg {
 	background-color: lightgrey;
 }
 
 .titled-container {
-    display: flex;
-    flex-direction: column;
-    margin: 0px;
-    background-color: lightgrey;
-	/*border-style: outset;*/
-	border-style: groove;
+    margin: 2px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #404040;
 }
 
 .region-title {
 	background-color: white;
-    margin: 0px;
-	font-family: Fira Sans;
-	font-size: 16px;
-	font-style: bold;
-	padding-left: 50px;
-	/*padding-top: 4px;
-	padding-bottom: 4px;*/
-	text-align: left;
-}
-
-#context-panel {
-	display: flex;
-	flex-direction: column;
-    width: 400px;
-}
-
-#scaii-explanations {
-    display: flex;
-    flex-direction: column;
-    background-color: lightgrey;
-    margin: 2px;
+	padding-left: 16px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	margin: 0px;
 }
 
 #scaii-interface-title {
-	background-color: lightgrey;
     padding-top: 8px;
 	padding-bottom: 8px;
 	padding-left: 0px;
@@ -67,12 +145,15 @@ body {
 }
 
 #scaii-acronym {
-	background-color: lightgrey;
-    padding-top: 8px;
+	background-color: #D73F09; /* OSU orange */
+	color: white;
+	padding: 10px 16px;
+    /*padding-top: 8px;
 	padding-bottom: 8px;
 	padding-left: 40px;
 	padding-right: 40px;
 	font-family: Fira Sans;
 	font-size: 18px;
-	font-style: bold;
+	font-style: bold;*/
 }
+
