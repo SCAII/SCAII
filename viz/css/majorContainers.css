@@ -101,7 +101,7 @@ body {
   grid-row-start: 2;
   grid-row-end: 3;
 }
-/*
+
 .flex-row {
 	display: flex;
 	flex-direction: row;
@@ -111,7 +111,7 @@ body {
 	display: flex;
 	flex-direction: column;
 }
-*/
+
 .grid-center {
 	justify-content: center;
 }
