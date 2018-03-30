@@ -98,10 +98,10 @@ fn extract_explanation_from_action_wrapper(
     let action_decode_result = Action::decode(data);
     match action_decode_result {
         Ok(action) => {
-            println!("ACTION DECODED AS {:?}", action);
+            //println!("ACTION DECODED AS {:?}", action);
             match action.explanation {
                 None => {
-                    println!("Explanation?  None");
+                    //println!("Explanation?  None");
                 }
                 Some(mut explanation_point) => {
                     println!("Explanation?  YES");

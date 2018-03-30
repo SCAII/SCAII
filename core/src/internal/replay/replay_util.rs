@@ -98,12 +98,19 @@ pub fn load_replay_file(path: &Path) -> Result<Vec<ReplayAction>, Box<Error>> {
     {
         replay_vec.push(action);
     }
+    
+    //print_replay_actions(&replay_actions);
+    Ok(replay_vec)
+}
+
+#[allow(dead_code)]
+fn print_replay_actions(replay_vec : &Vec<ReplayAction>){
     let mut count = 0;
     println!("");
     println!(
         "-------------------   Here are the replay actions with numbers  --------------------"
     );
-    for replay_action in &replay_vec {
+    for replay_action in replay_vec {
         match replay_action {
             &ReplayAction::Header(_) => {
                 println!("loaded ReplayAction::Header   {}", count);
@@ -119,9 +126,7 @@ pub fn load_replay_file(path: &Path) -> Result<Vec<ReplayAction>, Box<Error>> {
     }
     println!("");
     println!("");
-    Ok(replay_vec)
 }
-
 pub fn load_replay_info_from_default_replay_path() -> Result<Vec<ReplayAction>, Box<Error>> {
     let path = scaii_core::get_default_replay_file_path()?;
     //load_replay_info_from_replay_file_path(path)

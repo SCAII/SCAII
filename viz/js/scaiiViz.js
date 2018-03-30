@@ -246,6 +246,8 @@ function loadSelectedReplayFile() {
 	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE);
 	userCommand.setArgsList(args);
 	stageUserCommand(userCommand);
+	drawExplanationTimeline();
+	clearGameBoards();
 }
 
 function handleReplaySessionConfig(rsc, selectedStep) {
@@ -253,6 +255,8 @@ function handleReplaySessionConfig(rsc, selectedStep) {
 	if (rsc.hasStepCount()) {
 		maxStep = rsc.getStepCount() - 1;
 	}
+	currentStep = -1;
+	updateProgress(0, maxStep);
 	var explanation_steps = rsc.getExplanationStepsList();
 	var explanation_titles = rsc.getExplanationTitlesList();
 	console.log("explanation count is " + explanation_steps.length);
@@ -265,7 +269,7 @@ function handleReplaySessionConfig(rsc, selectedStep) {
 			selected = true;
 		}
 		var title = explanation_titles[index];
-		configureExplanationControls(rsc.getStepCount(), step, title, selected);
+		configureExplanationSelector(rsc.getStepCount(), step, title, selected);
 		index = index + 1;
 	}
 }
@@ -283,7 +287,6 @@ function handleExplDetails(explDetails){
 }
 
 function handleVizInit(vizInit) {
-	clearGameBoards();
 	//gameboard_ctx.fillText("Received VizInit!", 10, 50);
 	if (vizInit.hasTestMode()) {
 		if (vizInit.getTestMode()) {
@@ -384,11 +387,6 @@ function clearGameBoard(ctx, canvas, shapePositionMapKey) {
 	shapePositionMapForContext[shapePositionMapKey] = {};
 }
 
-
-function clearExplanationControl(){
-	expl_ctrl_ctx.clearRect(0,0, expl_ctrl_canvas.width, expl_ctrl_canvas.height);
-}
-
 var draw_example_shapes = function () {
 	clearGameBoard(gameboard_ctx, gameboard_canvas, "game");
 	colorRGBA = getBasicColorRGBA();
@@ -468,7 +466,8 @@ var subtractPixels = function(a,b){
 	var intB = b.replace("px", "");
 	return intA - intB;
 }
-var configureExplanationControl = function() {
+var drawExplanationTimeline = function() {
+	expl_ctrl_ctx.clearRect(0,0, expl_ctrl_canvas.width, expl_ctrl_canvas.height);
 	//var container_width = $(".control-panel").css("width");
 	//var container_padding = $(".control-panel").css("padding-right");
 	//var can_width = subtractPixels(container_width,container_padding);
@@ -506,7 +505,7 @@ var configureExplanationControl = function() {
 var initUI = function () {
 	//configureSpeedSlider();
 	//configureZoomSlider();
-	configureExplanationControl();
+	drawExplanationTimeline();
 	controlsManager.setControlsNotReady();
 	gameboard_canvas.width = 40 * gameScaleFactor;
 	gameboard_canvas.height = 40 * gameScaleFactor;
@@ -566,17 +565,6 @@ function clearGameBoards() {
 	clearGameBoard(gameboard_ctx, gameboard_canvas, "game");
 	clearGameBoard(gameboard_zoom_ctx, gameboard_zoom_canvas, "zoom");
 }
-function drawExplanationBox(step, type) {
-	var stepNumber = Number.parseInt(step);
-	var startX = 10 + step * 4;
-	var startY = 10;
-	timeline_ctx.moveTo(startX, startY);
-	timeline_ctx.lineTo(startX - 7, startY - 7);
-	timeline_ctx.lineTo(startX + 7, startY - 7);
-	timeline_ctx.moveTo(startX, startY);
-	timeline_ctx.stroke();
-	//timeline_ctx.addHitRegion({id: step});
-}
 // calls connect and paints "working" dots.  If connect fails, it calls tryConnect again
 function tryConnect(dots, attemptCount) {
 	clearGameBoards();
@@ -594,31 +582,6 @@ function tryConnect(dots, attemptCount) {
 	//$("#scaii-interface-title").html(systemTitle + " (... connecting " + attemptCount + " " + dots + ")");
 	//gameboard_ctx.fillText("connecting  " + attemptCount + " " + dots, 10, 50);
 	connect(dots, attemptCount);
-}
-var drawExplanationBarChart = function () {
-
-
-	var options = {
-		//legend: { position: "none" },
-		title: 'Population of Largest U.S. Cities',
-		chartArea: { width: '50%' },
-		hAxis: {
-			title: 'Total Population',
-			minValue: 0
-		},
-		vAxis: {
-			title: 'City'
-		},
-		'width': 600,
-		'height': 400
-	};
-	var chartData = [
-		['Decision', 'r1', 'r2'],
-		['unit victorious', 0.77, 0.4],
-		['unit loses', -0.39, 0.6],
-		['adversary flees', 0.2, 0.3]
-	];
-	drawBarChart(chartData, options);
 }
 
 var ack = function(dealer){
@@ -714,6 +677,10 @@ var connect = function (dots, attemptCount) {
 				else if (commandType == proto.scaii.common.UserCommand.UserCommandType.JUMP_COMPLETED) {
 					console.log("-----got jump completed message");
 					controlsManager.jumpCompleted();
+					ack(dealer);
+				}
+				else if (commandType == proto.scaii.common.UserCommand.UserCommandType.PAUSE){
+					tryPause();
 					ack(dealer);
 				}
 			}

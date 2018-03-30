@@ -160,12 +160,6 @@ struct ReplayManager {
 
 impl ReplayManager {
     fn start(&mut self) -> Result<(), Box<Error>> {
-        match self.explanations_option {
-            None => {
-                println!("WARNING - NO EXPLANATIONS PRESENT");
-            }
-            Some(_) => assert!(true),
-        }
         // startup viz via rpc
         let mm =
             replay_util::wrap_packet_in_multi_message(replay_util::create_rpc_config_message()?);
@@ -349,6 +343,28 @@ impl ReplayManager {
         }
     }
 
+
+    fn tell_viz_to_pause(&mut self) -> Result<Vec<ScaiiPacket>, Box<Error>> {
+        let pkt: ScaiiPacket = ScaiiPacket {
+            src: protos::Endpoint {
+                endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+            },
+            dest: protos::Endpoint {
+                endpoint: Some(Endpoint::Module(ModuleEndpoint {
+                    name: "viz".to_string(),
+                })),
+            },
+            specific_msg: Some(scaii_packet::SpecificMsg::UserCommand(
+                protos::UserCommand {
+                    command_type: protos::user_command::UserCommandType::Pause as i32,
+                    args: Vec::new(),
+                },
+            )),
+        };
+        let result = self.send_pkt_to_viz(pkt)?;
+        Ok(result)
+    }
+
     fn notify_viz_that_jump_completed(&mut self) -> Result<Vec<ScaiiPacket>, Box<Error>> {
         let pkt: ScaiiPacket = ScaiiPacket {
             src: protos::Endpoint {
@@ -518,6 +534,7 @@ impl ReplayManager {
                         );
                         let filename: String = user_command_args[0].clone();
                         println!("load file {}!", filename);
+                        game_state = GameState::AwaitingUserPlayRequest;
                         self.load_selected_replay_file(filename)?;
                     }
                     UserCommandType::Explain => {
@@ -734,7 +751,10 @@ impl ReplayManager {
             GameState::AwaitingUserPlayRequest => {
                 println!("executing first run step to get game board shown");
                 game_state = self.execute_run_step()?;
+                let emit_viz_pkt = replay_util::get_emit_viz_pkt();
+                self.send_pkt_to_backend(emit_viz_pkt)?;
                 game_state = GameState::Paused;
+                self.tell_viz_to_pause()?;
             }
             GameState::Running => {
                 println!("executing run step");

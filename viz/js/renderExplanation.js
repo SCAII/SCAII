@@ -181,7 +181,8 @@ function getExplanationBox(left_x,right_x, upper_y, lower_y, step){
 	return eBox;
 }
 
-var configureExplanationControls = function(step_count, step, title, selected){
+
+var configureExplanationSelector = function(step_count, step, title, selected){
 	var totalWidth = expl_ctrl_canvas.width;
 	var rectWidth = totalWidth / step_count;
 	var leftX = rectWidth * step;
