@@ -27,7 +27,6 @@ goog.require('proto.scaii.common.Other');
 goog.require('proto.scaii.common.PluginType');
 goog.require('proto.scaii.common.Pos');
 goog.require('proto.scaii.common.Rect');
-goog.require('proto.scaii.common.RustFFIConfig');
 goog.require('proto.scaii.common.ScaiiPacket');
 goog.require('proto.scaii.common.SerializationFormat');
 goog.require('proto.scaii.common.SerializationRequest');
@@ -85,7 +84,9 @@ var expl_ctrl_ctx = expl_ctrl_canvas.getContext("2d");
 expl_ctrl_ctx.imageSmoothingEnabled = false;
 
 var replaySessionConfig;
+var replayChoiceConfig;
 var selectedExplanationStep = undefined;
+var fullPathMap = {};
 
 expl_ctrl_canvas.addEventListener('click', function (event) {
 	var matchingStep = getMatchingExplanationStep(expl_ctrl_ctx, event.offsetX, event.offsetY);
@@ -212,6 +213,7 @@ function updateButtonsAfterJump() {
 		controlsManager.enableRewind();
 	}
 }
+
 function handleReplayControl(replayControl) {
 	var command = replayControl.getCommandList();
 	if (command.length == 2) {
@@ -223,6 +225,29 @@ function handleReplayControl(replayControl) {
 		}
 	}
 }
+
+function handleReplayChoiceConfig(config){
+	var replayNames = config.getReplayFilenamesList();
+	for (var i in replayNames) {
+		var name = replayNames[i];
+		$("#replay-file-selector").append($('<option>', {
+			value: i,
+			text: name
+		}));
+	}
+	loadSelectedReplayFile();
+}
+
+function loadSelectedReplayFile() {
+	var chosenFile = $( "#replay-file-selector option:selected" ).text();
+	console.log("chose " + chosenFile);
+	var args = [chosenFile];
+	var userCommand = new proto.scaii.common.UserCommand;
+	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE);
+	userCommand.setArgsList(args);
+	stageUserCommand(userCommand);
+}
+
 function handleReplaySessionConfig(rsc, selectedStep) {
 	explanationBoxMap = {};
 	if (rsc.hasStepCount()) {
@@ -615,7 +640,13 @@ var connect = function (dots, attemptCount) {
 			sessionState = "inProgress";
 			var s = message.data;
 			var sPacket = proto.scaii.common.ScaiiPacket.deserializeBinary(s);
-			if (sPacket.hasReplaySessionConfig()) {
+			if (sPacket.hasReplayChoiceConfig()) {
+				var config = sPacket.getReplayChoiceConfig();
+				replayChoiceConfig = config;
+				handleReplayChoiceConfig(config);
+				ack(dealer);
+			}
+			else if (sPacket.hasReplaySessionConfig()) {
 				console.log("-----got replaySessionConfig");
 				var config = sPacket.getReplaySessionConfig();
 				replaySessionConfig = config;

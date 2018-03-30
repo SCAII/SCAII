@@ -99,6 +99,7 @@ impl Error for ReplayError {
 
 #[derive(Debug)]
 enum GameState {
+    AwaitingUserPlayRequest,
     Running,
     Paused,
 }
@@ -152,7 +153,6 @@ struct ReplayManager {
     env: Environment,
     replay_sequencer: ReplaySequencer,
     explanations_option: Option<Explanations>,
-    header: Option<ReplayAction>,
     test_mode: bool,
     poll_timer_count: u32,
     step_timer_count: u32,
@@ -179,13 +179,22 @@ impl ReplayManager {
             let replay_sequencer = ReplaySequencer::new(&replay_actions, false)?;
             self.replay_sequencer = replay_sequencer;
         }
+        else {
+            let replay_filenames = replay_util::get_replay_filenames()?;
+            let replay_choice_config = replay_util::get_replay_choice_config_message(replay_filenames);
+            let mm = replay_util::wrap_packet_in_multi_message(replay_choice_config);
+            self.env.route_messages(&mm);
+            self.env.update();
+        }
         self.run_and_poll()
     }
 
-    fn load_selected_replay_file(&mut self, path_to_replay_file: String)-> Result<(), Box<Error>> {
+    fn load_selected_replay_file(&mut self, filename: String)-> Result<(), Box<Error>> {
         use std::path::PathBuf;
+        let mut replay_path = scaii_core::get_default_replay_dir()?;
+        replay_path.push(filename.as_str());
         let mut replay_actions: Vec<ReplayAction> = {
-            let path = Path::new(&path_to_replay_file);
+            let path = Path::new(&replay_path);
             if !path.exists() {
                 return Err(Box::new(ReplayError::new(&format!(
                     "ERROR - specified replay path does not exist {:?}",
@@ -210,10 +219,10 @@ impl ReplayManager {
         if explanations::is_empty(&explanations_option) {
             println!(
                 "using specified replay file to find expl file!{:?}",
-                path_to_replay_file
+                replay_path
             );
             explanations_option = explanations::get_explanations_for_replay_file(
-                PathBuf::from(path_to_replay_file.clone()),
+                PathBuf::from(replay_path.clone()),
             )?;
         }
         self.explanations_option = explanations_option;
@@ -223,11 +232,8 @@ impl ReplayManager {
             
 
         // pull off header and configure
-
-        
-        let replay_filepaths = replay_util::get_replay_filepaths()?;
         let replay_session_cfg =
-            replay_util::get_replay_configuration_message(count, &self.explanations_option, replay_filepaths);
+            replay_util::get_replay_configuration_message(count, &self.explanations_option);
         self.configure_as_per_header(header, replay_session_cfg)?;
         Ok(())
     }
@@ -506,6 +512,14 @@ impl ReplayManager {
                     UserCommandType::None => {
                         println!("================RECEIVED UserCommandType::None================");
                     }
+                    UserCommandType::SelectFile => {
+                        println!(
+                            "================RECEIVED UserCommandType::SelectFile================"
+                        );
+                        let filename: String = user_command_args[0].clone();
+                        println!("load file {}!", filename);
+                        self.load_selected_replay_file(filename)?;
+                    }
                     UserCommandType::Explain => {
                         println!(
                             "================RECEIVED UserCommandType::Explain================"
@@ -691,7 +705,7 @@ impl ReplayManager {
     fn run_and_poll(&mut self) -> Result<(), Box<Error>> {
         use std::{thread, time};
         let ten_millis = time::Duration::from_millis(10);
-        let mut game_state: GameState = GameState::Running;
+        let mut game_state: GameState = GameState::AwaitingUserPlayRequest;
 
         let mut poll_timer_count = self.poll_timer_count.clone();
         let mut step_timer_count = self.step_timer_count.clone();
@@ -717,6 +731,11 @@ impl ReplayManager {
 
     fn handle_step_nudge(&mut self, mut game_state: GameState) -> Result<GameState, Box<Error>> {
         match game_state {
+            GameState::AwaitingUserPlayRequest => {
+                println!("executing first run step to get game board shown");
+                game_state = self.execute_run_step()?;
+                game_state = GameState::Paused;
+            }
             GameState::Running => {
                 println!("executing run step");
                 game_state = self.execute_run_step()?;
@@ -900,7 +919,6 @@ fn run_replay(run_mode: RunMode)  -> Result<(), Box<Error>>{
         // pass in dummy rather than have option to simplify downstream code
         replay_sequencer: dummy_replay_sequencer,
         explanations_option: None,
-        header: None,
         test_mode: mode_is_test,
         poll_timer_count: 5,
         step_timer_count: 10,
