@@ -132,7 +132,7 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	manager.expressResumeButton = function () {
 		console.log('expressing RESUME button');
 		this.pauseResumeButton.onclick = tryResume;
-		this.pauseResumeButton.innerHTML = '<img src="imgs/play.png", height="8px" width="10px"/>';
+		this.pauseResumeButton.innerHTML = '<img src="imgs/play.png", height="16px" width="14px"/>';
 	}
 
 	//
@@ -147,7 +147,7 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	manager.expressPauseButton = function () {
 		console.log('expressing PAUSE button');
 		this.pauseResumeButton.onclick = tryPause;
-		this.pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="8px" width="10px"/>';
+		this.pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="16px" width="14px"/>';
 	}
 
 	//

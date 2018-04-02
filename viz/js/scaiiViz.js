@@ -545,16 +545,22 @@ var initUI = function () {
 	//$("#replay-speed-panel").append(speedSlider);
 
 	rewindButton.setAttribute("class", "playbackButton");
-	rewindButton.innerHTML = '<img src="imgs/rewind.png", height="8px" width="10px"/>';
+	rewindButton.setAttribute("id", "rewindButton");
+	rewindButton.innerHTML = '<img src="imgs/rewind.png", height="14px" width="14px"/>';
 	rewindButton.onclick = tryRewind;
 	$("#playback-panel").append(rewindButton);
+	$("#rewindButton").css("padding-top","4px");
 
 	//$("#scaii-game-controls").css("text-align", "center");
 
 	pauseResumeButton.setAttribute("class", "playbackButton");
-	pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="8px" width="10px"/>';
+	pauseResumeButton.setAttribute("id", "pauseResumeButton");
+	pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="16px" width="14px"/>';
 
 	$("#playback-panel").append(pauseResumeButton);
+	$("#pauseResumeButton").css("padding-top","2px");
+	$("#pauseResumeButton").css("padding-bottom","0px");
+	$("#pauseResumeButton").css("margin-left","20px");
 	pauseResumeButton.onclick = tryPause;
 
 
@@ -573,7 +579,8 @@ var initUI = function () {
 	$("#game-progress").click(processTimelineClick);
 	actionLabel.setAttribute("id", "action-label");
 	$("#action-label-div").append(actionLabel);
-	$("#action-label").html("action");
+	$("#action-label").html(" ");
+	//$("#action-label").html("action");
 	actionNameLabel.setAttribute("id", "action-name-label");
 	$("#action-name-div").append(actionNameLabel);
 	$("#action-name-label").html(" ");
