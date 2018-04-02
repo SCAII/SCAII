@@ -88,16 +88,22 @@ var replayChoiceConfig;
 var selectedExplanationStep = undefined;
 var fullPathMap = {};
 
+function clearExplanationInfo() {
+	$("#saliency-maps").empty();
+	$("#explanations-rewards").empty();
+	$("#action-name-label").html(" ");
+}
 expl_ctrl_canvas.addEventListener('click', function (event) {
 	var matchingStep = getMatchingExplanationStep(expl_ctrl_ctx, event.offsetX, event.offsetY);
 	console.log('clicked on step ' + selectedExplanationStep);	
-	if (matchingStep == selectedExplanationStep) {
-		selectedExplanationStep = undefined;
-		$("#saliency-maps").empty();
-		$("#explanations-rewards").empty();
-		$("#action-name-label").html(" ");
+	if (matchingStep == undefined){
+		// ignore click if not on one of the selectors
 	}
-	else {
+	else if (matchingStep == selectedExplanationStep) {
+		selectedExplanationStep = undefined;
+		clearExplanationInfo();
+	}
+	else{
 		selectedExplanationStep = matchingStep;
 		var userCommand = new proto.scaii.common.UserCommand;
 		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.EXPLAIN);
@@ -105,14 +111,20 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
 		userCommand.setArgsList(args);
 		stageUserCommand(userCommand);
 		
-		var userCommand = new proto.scaii.common.UserCommand;
-		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-		// same args as above
-		userCommand.setArgsList(args);
-		stageUserCommand(userCommand);
+		if (matchingStep == currentStep) {
+			console.log("no need to move - already at step with explanation");
+		}
+		else {
+			var userCommand = new proto.scaii.common.UserCommand;
+			console.log("jumping to step " + selectedExplanationStep);
+			userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+			// same args as above
+			userCommand.setArgsList(args);
+			stageUserCommand(userCommand);
+		}
 	}	
 	
-	handleReplaySessionConfig(replaySessionConfig,selectedExplanationStep);
+	renderExplanationSelectors(replaySessionConfig,selectedExplanationStep);
 });
 
 gameboard_canvas.addEventListener('click', function (event) {
@@ -248,6 +260,7 @@ function loadSelectedReplayFile() {
 	stageUserCommand(userCommand);
 	drawExplanationTimeline();
 	clearGameBoards();
+	clearExplanationInfo();
 }
 
 function handleReplaySessionConfig(rsc, selectedStep) {
@@ -255,8 +268,12 @@ function handleReplaySessionConfig(rsc, selectedStep) {
 	if (rsc.hasStepCount()) {
 		maxStep = rsc.getStepCount() - 1;
 	}
-	currentStep = -1;
+	currentStep = 0;
 	updateProgress(0, maxStep);
+	renderExplanationSelectors(rsc, selectedStep);
+}
+
+function renderExplanationSelectors(rsc, selectedStep) {
 	var explanation_steps = rsc.getExplanationStepsList();
 	var explanation_titles = rsc.getExplanationTitlesList();
 	console.log("explanation count is " + explanation_steps.length);
