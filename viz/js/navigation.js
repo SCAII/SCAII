@@ -1,3 +1,6 @@
+
+var userInputBlocked = false;
+
 function updateProgress(step, maxStep) {
 	var percentComplete = step / maxStep;
 	var progressValue = percentComplete * 100;
@@ -108,11 +111,16 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 
 	manager.startLoadReplayFile = function () {
 		userInputBlocked = true;
+		this.expressResumeButton();
+		this.disablePauseResume();
+		this.disableRewind();
 		this.setWaitCursor();
 	}
 	
 	manager.doneLoadReplayFile = function () {
 		userInputBlocked = false;
+		this.enablePauseResume();
+		this.enableRewind();
 		this.clearWaitCursor();
 	}
 	
@@ -241,4 +249,28 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	}
 
 	return manager;
+}
+
+
+function updateButtonsAfterJump() {
+	if (currentStep == 0) {
+		controlsManager.expressResumeButton();
+		controlsManager.enablePauseResume();
+		controlsManager.disableRewind();
+	}
+	else if (currentStep == 1) {
+		controlsManager.expressResumeButton();
+		controlsManager.enablePauseResume();
+		controlsManager.enableRewind();
+	}
+	else if (currentStep == maxStep) {
+		controlsManager.expressResumeButton();
+		controlsManager.disablePauseResume();
+		controlsManager.enableRewind();
+	}
+	else {
+		controlsManager.expressResumeButton();
+		controlsManager.enablePauseResume();
+		controlsManager.enableRewind();
+	}
 }

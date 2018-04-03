@@ -1,6 +1,8 @@
 google.charts.load('current', {packages: ['corechart', 'bar']});
 google.charts.setOnLoadCallback(dummy);
 var chart;
+var explanations = [];
+var explanationBoxMap = {};
 
 const chartModeAggregate = "show values for Bar Group";
 const chartModeDetailed = "show values for Reward Type";
@@ -22,6 +24,59 @@ var chosenDetailCoordKey = undefined;
 var saliencyCoordinatesMap = {};
 var saliencyLookupMap = {};
 var curExplPt = undefined;
+
+
+function clearExplanationInfo() {
+	$("#saliency-maps").empty();
+	$("#explanations-rewards").empty();
+	$("#action-name-label").html(" ");
+}
+
+expl_ctrl_canvas.addEventListener('click', function (event) {
+	var matchingStep = getMatchingExplanationStep(expl_ctrl_ctx, event.offsetX, event.offsetY);
+	console.log('clicked on step ' + selectedExplanationStep);	
+	if (matchingStep == undefined){
+		// ignore click if not on one of the selectors
+	}
+	else if (matchingStep == selectedExplanationStep) {
+		selectedExplanationStep = undefined;
+		clearExplanationInfo();
+	}
+	else{
+		selectedExplanationStep = matchingStep;
+		var userCommand = new proto.scaii.common.UserCommand;
+		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.EXPLAIN);
+		var args = ['' +selectedExplanationStep];
+		userCommand.setArgsList(args);
+		stageUserCommand(userCommand);
+		
+		if (matchingStep == currentStep) {
+			console.log("no need to move - already at step with explanation");
+		}
+		else {
+			var userCommand = new proto.scaii.common.UserCommand;
+			console.log("jumping to step " + selectedExplanationStep);
+			userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+			// same args as above
+			userCommand.setArgsList(args);
+			stageUserCommand(userCommand);
+		}
+	}	
+	renderExplanationSelectors(replaySessionConfig,selectedExplanationStep);
+});
+
+
+function handleExplDetails(explDetails){
+	console.log('handling expl details');
+	if (explDetails.hasExplPoint()){
+		explanationPoint = explDetails.getExplPoint();
+		console.log('got expl point for step ' + explanationPoint.getStep());
+		renderExplanationPoint(explanationPoint);
+	}
+	else {
+		console.log("MISSING expl point!");
+	}
+}
 
 function showRewardsPerAction(evt) {
 	chartMode = chartModeAggregate;
@@ -181,6 +236,24 @@ function getExplanationBox(left_x,right_x, upper_y, lower_y, step){
 	return eBox;
 }
 
+function renderExplanationSelectors(rsc, selectedStep) {
+	explanationBoxMap = {};
+	var explanation_steps = rsc.getExplanationStepsList();
+	var explanation_titles = rsc.getExplanationTitlesList();
+	console.log("explanation count is " + explanation_steps.length);
+	var expl_count = explanation_steps.length;
+	var index = 0;
+	while (index < expl_count){
+		var step = explanation_steps[index];
+		var selected = false;
+		if (selectedStep == step){
+			selected = true;
+		}
+		var title = explanation_titles[index];
+		configureExplanationSelector(rsc.getStepCount(), step, title, selected);
+		index = index + 1;
+	}
+}
 
 var configureExplanationSelector = function(step_count, step, title, selected){
 	var totalWidth = expl_ctrl_canvas.width;

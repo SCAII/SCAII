@@ -1,3 +1,39 @@
+
+function handleEntities(entitiesList) {
+	for (var i in entitiesList) {
+		var entity = entitiesList[i];
+		if (entity.hasId()) {
+			var idString = '' + entity.getId();
+			if (masterEntities[idString] == undefined) {
+				if (entity.hasDelete() && entity.getDelete()) {
+					// do not add new entity that is marked as delete
+				}
+				else {
+					masterEntities[idString] = entity;
+				}
+			}
+			else {
+				if (entity.hasDelete() && entity.getDelete()) {
+					delete masterEntities[idString];
+				}
+				else {
+					var masterEntity = masterEntities[idString];
+					updateMasterEntity(masterEntity, entity);
+				}
+			}
+		}
+		else {
+			console.log('-----ERROR----- no entity ID on entity');
+		}
+	}
+	renderState(gameboard_ctx, gameboard_canvas, masterEntities, gameScaleFactor, 0, 0, shapePositionMapForContext["game"]);
+	// disable zoom box for now
+	//drawZoomBox(gameboard_ctx, gameboard_canvas, zoomBoxOriginX, zoomBoxOriginY, zoomFactor);
+	//renderState(gameboard_zoom_ctx, gameboard_zoom_canvas, masterEntities, zoomFactor, zoomBoxOriginX, zoomBoxOriginY, shapePositionMapForContext["zoom"]);
+}
+
+
+
 function getClosestInRangeShapeId(ctx, x, y, shapePositionMap){
 	console.log("");
 	console.log("X " + x + " Y " + y);
