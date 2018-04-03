@@ -1,10 +1,10 @@
-var updateProgress = function (step, maxStep) {
+function updateProgress(step, maxStep) {
 	var percentComplete = step / maxStep;
 	var progressValue = percentComplete * 100;
 	var progressString = "" + progressValue;
 	$("#game-progress").attr("value", progressString);
 }
-var tryProcessTimelineClick = function (e) {
+function tryProcessTimelineClick(e) {
 	try {
 		if (!userInputBlocked) {
 			processTimelineClick(e);
@@ -30,7 +30,7 @@ function processTimelineClick(e) {
 	userCommand.setArgsList(args);
 	stageUserCommand(userCommand);
 }
-var stageUserCommand = function (userCommand) {
+function stageUserCommand(userCommand) {
 	var scaiiPkt = new proto.scaii.common.ScaiiPacket;
 	scaiiPkt.setUserCommand(userCommand);
 	userCommandScaiiPackets.push(scaiiPkt);
@@ -40,7 +40,7 @@ var tryPause = function () {
 		pauseGame();
 	}
 }
-var pauseGame = function () {
+function pauseGame() {
 	try {
 		controlsManager.userClickedPause();
 		var userCommand = new proto.scaii.common.UserCommand;
@@ -58,7 +58,7 @@ var tryResume = function () {
 	}
 }
 
-var resumeGame = function () {
+function resumeGame() {
 	try {
 		controlsManager.userClickedResume();
 		var userCommand = new proto.scaii.common.UserCommand;
@@ -75,7 +75,7 @@ var tryRewind = function () {
 		rewindGame();
 	}
 }
-var rewindGame = function () {
+function rewindGame() {
 	pauseGame();
 	try {
 		controlsManager.userClickedRewind();
