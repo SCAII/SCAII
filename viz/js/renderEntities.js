@@ -1,4 +1,5 @@
 
+var masterEntities = {};
 function handleEntities(entitiesList) {
 	for (var i in entitiesList) {
 		var entity = entitiesList[i];

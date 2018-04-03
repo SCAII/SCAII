@@ -1,4 +1,9 @@
 var testingMode = false;
+var replaySessionConfig;
+var replayChoiceConfig;
+var currentStep = -1;
+var maxStep = 0;
+var selectedExplanationStep = undefined;
 
 function handleReplayControl(replayControl) {
 	var command = replayControl.getCommandList();

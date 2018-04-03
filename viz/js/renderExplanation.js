@@ -24,7 +24,7 @@ var chosenDetailCoordKey = undefined;
 var saliencyCoordinatesMap = {};
 var saliencyLookupMap = {};
 var curExplPt = undefined;
-
+var explanationControlYPosition = 14;
 
 function clearExplanationInfo() {
 	$("#saliency-maps").empty();
