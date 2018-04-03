@@ -49,7 +49,7 @@ goog.require('proto.scaii.common.VizInit');
 
 var main = function () {
 	initUI();
-	var debug = true;
+	var debug = false;
 	if (debug) {
 		var connectButton = document.createElement("BUTTON");
 		var connectText = document.createTextNode("Start Replay");
@@ -66,5 +66,4 @@ var main = function () {
 		tryConnect('.', 0);
 	}
 }
-//var then = Date.now();
 main();

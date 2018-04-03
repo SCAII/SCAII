@@ -50,9 +50,11 @@ var use_shape_color_for_outline = false;
 function getTrueGameWidth() {
 	return gamePixelDimension * gameScaleFactor;
 }
+
 function getTrueGameHeight() {
 	return gamePixelDimension * gameScaleFactor;
 }
+
 function configureGameboardCanvas(){
 	gameboard_canvas.width = getTrueGameWidth();
 	gameboard_canvas.height = getTrueGameHeight();
@@ -62,7 +64,6 @@ function configureGameboardCanvas(){
 	$("#scaii-gameboard").append(gameboard_canvas);
 	//addZoomControlToGameboardCanvas(gameboard_canvas);
 }
-
 
 function configureLabelContainers() {
 	configureLabelContainer("#progress-label","14px","progress", "right");
