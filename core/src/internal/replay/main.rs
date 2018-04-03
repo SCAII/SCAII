@@ -344,7 +344,7 @@ impl ReplayManager {
     }
 
 
-    fn tell_viz_to_pause(&mut self) -> Result<Vec<ScaiiPacket>, Box<Error>> {
+    fn tell_viz_load_complete(&mut self) -> Result<Vec<ScaiiPacket>, Box<Error>> {
         let pkt: ScaiiPacket = ScaiiPacket {
             src: protos::Endpoint {
                 endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
@@ -356,7 +356,7 @@ impl ReplayManager {
             },
             specific_msg: Some(scaii_packet::SpecificMsg::UserCommand(
                 protos::UserCommand {
-                    command_type: protos::user_command::UserCommandType::Pause as i32,
+                    command_type: protos::user_command::UserCommandType::SelectFileComplete as i32,
                     args: Vec::new(),
                 },
             )),
@@ -527,6 +527,9 @@ impl ReplayManager {
                 match user_command_type {
                     UserCommandType::None => {
                         println!("================RECEIVED UserCommandType::None================");
+                    }
+                    UserCommandType::SelectFileComplete => {
+                        // ignore, only sent to Viz
                     }
                     UserCommandType::SelectFile => {
                         println!(
@@ -754,7 +757,7 @@ impl ReplayManager {
                 let emit_viz_pkt = replay_util::get_emit_viz_pkt();
                 self.send_pkt_to_backend(emit_viz_pkt)?;
                 game_state = GameState::Paused;
-                self.tell_viz_to_pause()?;
+                self.tell_viz_load_complete()?;
             }
             GameState::Running => {
                 println!("executing run step");

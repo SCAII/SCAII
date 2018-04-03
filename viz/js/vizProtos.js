@@ -12836,7 +12836,8 @@ proto.scaii.common.UserCommand.UserCommandType = {
   JUMP_TO_STEP: 6,
   JUMP_COMPLETED: 7,
   SET_SPEED: 8,
-  SELECT_FILE: 9
+  SELECT_FILE: 9,
+  SELECT_FILE_COMPLETE: 10
 };
 
 /**

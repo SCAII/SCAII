@@ -263,6 +263,7 @@ message UserCommand {
 		JUMP_COMPLETED = 7;
 		SET_SPEED = 8;
 		SELECT_FILE = 9;
+		SELECT_FILE_COMPLETE = 10;
 	}
 	required UserCommandType command_type = 1;
 	repeated string args = 2;

@@ -107,6 +107,7 @@ pub fn get_user_command_type(
             7 => Ok(UserCommandType::JumpCompleted),
             8 => Ok(UserCommandType::SetSpeed),
             9 => Ok(UserCommandType::SelectFile),
+            10 => Ok(UserCommandType::SelectFileComplete),
             _ => Err(Box::new(ProtobufEnumWorkaroundError::new(
                 "likely added new UserCommandType and forgot to change this hack.",
             ))),

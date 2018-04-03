@@ -74,6 +74,7 @@ var explanationControlYPosition = 14;
 
 // Create the gameboard canvas
 var gameboard_canvas = document.createElement("canvas");
+gameboard_canvas.setAttribute("id", "gameboard_canvas");
 var gameboard_ctx = gameboard_canvas.getContext("2d");
 
 var gameboard_zoom_canvas = document.createElement("canvas");
@@ -200,7 +201,6 @@ function adjustZoomBoxPosition(x, y) {
 	else {
 		// a-ok - they clicked in the middle somewhere
 	}
-
 }
 
 function updateButtonsAfterJump() {
@@ -251,6 +251,7 @@ function handleReplayChoiceConfig(config){
 }
 
 function loadSelectedReplayFile() {
+	controlsManager.startLoadReplayFile();
 	var chosenFile = $( "#replay-file-selector option:selected" ).text();
 	console.log("chose " + chosenFile);
 	var args = [chosenFile];
@@ -412,12 +413,12 @@ var draw_example_shapes = function () {
 }
 var main = function () {
 	initUI();
-
+	
 	//var redrawChartHiddenButton = document.createElement("BUTTON");
 	//redrawChartHiddenButton.setAttribute("id", "chartRedrawTriggerButton");
 	//redrawChartHiddenButton.appendChild(document.createTextNode("Refresh"));
 	//$("#scaii-game-controls").append(redrawChartHiddenButton);
-	var debug = false;
+	var debug = true;
 	if (debug) {
 		var connectButton = document.createElement("BUTTON");
 		var connectText = document.createTextNode("Start Replay");
@@ -529,6 +530,11 @@ var initUI = function () {
 	gameboard_zoom_canvas.width = gameboard_canvas.width;
 	gameboard_zoom_canvas.height = gameboard_canvas.height;
 	$("#scaii-gameboard").append(gameboard_canvas);
+	var game_canvas_handle = $("#gameboard_canvas")
+	
+	
+	//controlsManager.registerJQueryHandleForWaitCursor($("#gameboard_canvas"));
+	controlsManager.registerJQueryHandleForWaitCursor($("#scaii-interface"));
 	$("#scaii-gameboard").css("width", gameboard_canvas.width);
 	$("#scaii-gameboard").css("height", gameboard_canvas.height);
 	$("#scaii-gameboard").css("background-color", game_background_color);
@@ -576,7 +582,7 @@ var initUI = function () {
 	$("#zoom-slider-label").css("padding-top", "2px");
 	$("#scaii-zoom-controls").append(zoomSlider);
 
-	$("#game-progress").click(processTimelineClick);
+	$("#game-progress").click(tryProcessTimelineClick);
 	actionLabel.setAttribute("id", "action-label");
 	$("#action-label-div").append(actionLabel);
 	$("#action-label").html(" ");
@@ -703,8 +709,8 @@ var connect = function (dots, attemptCount) {
 					controlsManager.jumpCompleted();
 					ack(dealer);
 				}
-				else if (commandType == proto.scaii.common.UserCommand.UserCommandType.PAUSE){
-					tryPause();
+				else if (commandType == proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE_COMPLETE){
+					controlsManager.doneLoadReplayFile();
 					ack(dealer);
 				}
 			}
