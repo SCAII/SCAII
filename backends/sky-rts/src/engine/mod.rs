@@ -414,7 +414,13 @@ impl<'a, 'b> Rts<'a, 'b> {
     pub fn deserialize(&mut self, buf: Vec<u8>) -> MultiMessage {
         use scaii_defs::protos;
         self.initialized = false;
-        self.world.delete_all();
+        // self.world.delete_all();
+        for entity in self.world.entities().join() {
+            println!("{:?}", entity);
+            assert!(self.world.entities().is_alive(entity));
+            self.world.entities().delete(entity).expect("Could not delete");
+        }
+        self.world.maintain();
         self.world.write_resource::<SerializeBytes>().0 = buf;
 
         self.de_system.run_now(&self.world.res);
