@@ -43,91 +43,13 @@ var connect = function (dots, attemptCount) {
 			sessionState = "inProgress";
 			var s = message.data;
 			var sPacket = proto.scaii.common.ScaiiPacket.deserializeBinary(s);
-			if (sPacket.hasReplayChoiceConfig()) {
-				var config = sPacket.getReplayChoiceConfig();
-				replayChoiceConfig = config;
-				handleReplayChoiceConfig(config);
+			var multiMessageToReturn = handleScaiiPacket(sPacket);
+			if (multiMessageToReturn == undefined) {
+				//always need to send a packet back - far side is waiting
 				ack(dealer);
-			}
-			else if (sPacket.hasReplaySessionConfig()) {
-				console.log("-----got replaySessionConfig");
-				var config = sPacket.getReplaySessionConfig();
-				replaySessionConfig = config;
-				//var selectedStep = undefined;
-				handleReplaySessionConfig(config,undefined);
-				ack(dealer);
-			}
-			else if (sPacket.hasVizInit()) {
-				console.log("-----got vizInit");
-				var vizInit = sPacket.getVizInit();
-				handleVizInit(vizInit);
-				controlsManager.gameStarted();
-				ack(dealer);
-			}
-			else if (sPacket.hasViz()) {
-				console.log("-----got Viz");
-				var viz = sPacket.getViz();
-				handleViz(viz);
-				// we're moving forward so rewind should be enabled
-				controlsManager.gameSteppingForward();
-				var mm;
-				if (testingMode) {
-					mm = buildReturnMultiMessageFromState(masterEntities);
-				}
-				else {
-					mm = new proto.scaii.common.MultiMessage;
-				}
-				dealer.send(mm.serializeBinary());
-			}
-			else if (sPacket.hasExplDetails()) {
-				console.log('has expl details');
-				var explDetails = sPacket.getExplDetails();
-				handleExplDetails(explDetails);
-				ack(dealer);
-			}
-			else if (sPacket.hasReplayControl()) {
-				console.log("-----got replayCOntrol");
-				var replayControl = sPacket.getReplayControl();
-				handleReplayControl(replayControl);
-				ack(dealer);
-			}
-			else if (sPacket.hasErr()) {
-				console.log("-----got errorPkt");
-				console.log(sPacket.getErr().getDescription())
-				ack(dealer);
-			}
-			else if (sPacket.hasUserCommand()) {
-				var userCommand = sPacket.getUserCommand();
-				var commandType = userCommand.getCommandType();
-				if (commandType == proto.scaii.common.UserCommand.UserCommandType.POLL_FOR_COMMANDS) {
-					//console.log("-----got pollForCommands");
-					var mm;
-					if (userCommandScaiiPackets.length > 0) {
-						mm = buildResponseToReplay(userCommandScaiiPackets);
-						dealer.send(mm.serializeBinary());
-						controlsManager.userCommandSent();
-					}
-					else {
-						mm = new proto.scaii.common.MultiMessage;
-						dealer.send(mm.serializeBinary());
-					}
-
-					userCommandScaiiPackets = [];
-				}
-				else if (commandType == proto.scaii.common.UserCommand.UserCommandType.JUMP_COMPLETED) {
-					console.log("-----got jump completed message");
-					controlsManager.jumpCompleted();
-					ack(dealer);
-				}
-				else if (commandType == proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE_COMPLETE){
-					controlsManager.doneLoadReplayFile();
-					ack(dealer);
-				}
 			}
 			else {
-				console.log(sPacket.toString())
-				console.log('unexpected message from system!');
-				ack(dealer);
+				dealer.send(multiMessageToReturn.serializeBinary());
 			}
 		}
 		catch (err) {
