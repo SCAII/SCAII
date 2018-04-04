@@ -22,9 +22,9 @@ class TowerAction(MoveList):
 
 class TowerExample(SkyRtsEnv):
     def __init__(self):
-        super().__init__(action_type=TowerAction)
+        super().__init__(action_type=TowerAction, map_name="tower_example")
 
-        super().load_scenario("tower_example")
+        super().load_scenario(map_name)
 
     def new_action(self):
         act = super().new_action()
@@ -40,8 +40,8 @@ class TowerExample(SkyRtsEnv):
                 'bottom_left': 3,
                 'top_left': 4,
             },
-            'desc': "Use action.attack_quadrant(1-4) to select \
-                a quadrant to attack"
+            'desc': "Use action.attack_quadrant(1-4) to select "
+            "a quadrant to attack"
         }
 
 
