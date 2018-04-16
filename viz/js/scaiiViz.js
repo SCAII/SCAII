@@ -66,4 +66,3 @@ var main = function () {
 		tryConnect('.', 0);
 	}
 }
-main();
