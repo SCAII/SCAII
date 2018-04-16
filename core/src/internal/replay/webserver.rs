@@ -12,6 +12,7 @@ use scaii_core::scaii_config;
 // launch the simple python webserver if python3 installed
 pub fn launch_webserver() {
     let python3_command_result = get_python3_command();
+
     match python3_command_result {
         Some(python_command) => match python_command.as_ref() {
             "python" => {
@@ -88,42 +89,20 @@ fn is_python3_invoked_as_python3() -> bool {
     }
 }
 
-#[cfg(windows)]
 fn get_python_version(python_command: String) -> Option<String> {
-    let mut args: Vec<String> = Vec::new();
-    args.push("--version".to_string());
-    let command_result = util::run_command_read_stderr(&python_command, args);
-    match command_result {
-        Ok(result_string) => {
-            if result_string.starts_with("Python 3") {
-                Some("3".to_string())
-            } else {
-                println!("no python3 detected");
-                None
-            }
-        }
-        Err(_) => None,
+    // Need to run <python_command> --version and read output. return Some("3".to_string()) if successful
+    use std::process::{Command, Stdio};
+    let output = Command::new(&python_command)
+        .arg("--version")
+        .stdout(Stdio::piped())
+        .output()
+        .expect("Failed to execute command");
+    let result = String::from_utf8_lossy(&output.stdout);
+    
+    if result.starts_with("Python 3") {
+        return Some("3".to_string())
     }
-}
-
-#[cfg(unix)]
-fn get_python_version(python_command: String) -> Option<String> {
-    let mut args: Vec<String> = Vec::new();
-    args.push("--version".to_string());
-    let command_result = util::run_command(&python_command, args); // This is the only line that
-    match command_result {
-        // changes, potential area for
-        Ok(result_string) => {
-            // consolidation during refactor.
-            if result_string.starts_with("Python 3") {
-                Some("3".to_string())
-            } else {
-                println!("no python3 detected");
-                None
-            }
-        }
-        Err(_) => None,
-    }
+    None
 }
 
 fn change_to_viz_dir() -> Result<(), Box<Error>> {
