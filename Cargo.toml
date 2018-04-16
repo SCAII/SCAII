@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "core",
+    "scaii_defs",
+    "backends/sky-rts",
+]

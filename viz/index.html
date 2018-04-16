@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+	<head>
+<html lang="en">
+		<meta charset="utf-8">
+		<title>SCAII Visualization</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	  <script src="js/closure-library/closure/goog/base.js"></script>
+	  <script>
+	  	goog.require('goog.dom');
+	  </script>
+	  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	  <script src="js/protobuf_js/binary/arith.js"></script>
+      <script src="js/protobuf_js/binary/constants.js"></script>
+      <script src="js/protobuf_js/binary/utils.js"></script>
+      <script src="js/protobuf_js/binary/decoder.js"></script>
+      <script src="js/protobuf_js/binary/encoder.js"></script>
+      <script src="js/protobuf_js/binary/reader.js"></script>
+      <script src="js/protobuf_js/binary/writer.js"></script>
+      <script src="js/protobuf_js/map.js"></script>
+      <script src="js/protobuf_js/message.js"></script>
+      <!--<script src="js/protobuf_js/debug.js"></script>-->
+      <script src="js/vizProtos.js"></script>
+      <script src="js/logUtils.js"></script>
+      <script src="js/renderEntities.js"></script>
+      <script src="js/renderExplanation.js"></script>
+      <script src="js/chart.js"></script>
+      <script src="js/saliency.js"></script>
+      <script src="js/navigation.js"></script>
+      <script src="js/gameState.js"></script>
+      <script src="js/protobufUtils.js"></script>
+	  <link rel="stylesheet" type="text/css" href="css/tabs.css">
+	  <link rel="stylesheet" type="text/css" href="css/gameControls.css">
+	  <link rel="stylesheet" type="text/css" href="css/explanations.css">
+	  <link rel="stylesheet" type="text/css" href="css/game.css">
+	  <link rel="stylesheet" type="text/css" href="css/majorContainers.css">
+	<style>
+    </style>
+	</head>
+	<body>
+		<div id="scaii-interface" class="grid bg">
+			<!--<div id="top-title-panel" class="flex-row bg">
+				<div id="scaii-interface-title" class="bg" >Small Configurable AI Interface</div>
+			</div>-->
+			<div id="game-titled-container" class="titled-container grid r0c0 bg">
+				<div id="scaii-acronym" class="r0c0">SCAII</div>
+				<div id="game-replay-title" class="region-title r0c1">Game Replay</div>
+				<!--<div id="step-control" class="flex-row">
+					<div id="step-control-info class="flex-column">
+						<div id="replay-interval-max" class="minor-label-text">100 (ms)</div>
+						<div id="replay-speed-label" class="minor-label-text">step interval</div>
+						<div id="replay-interval-min" class="minor-label-text">0 (ms)</div>
+					</div>
+					<div id="replay-speed-panel" class="control-panel"></div>
+				</div>-->
+				<div id="scaii-gameboard" class="r1c1 grid-center bg"></div>
+				
+				<div id="progress-label" class="left-column-label r2c0"></div>
+				<div id="progress-panel" class="control-panel r2c1">
+					<progress id="game-progress" value="00" max="99"></progress>
+				</div>
+				<div id="explanation-control-label" class="left-column-label r3c0"></div>
+				<div id="explanation-control-panel" class="control-panel r3c1"></div>
+				<div id="action-label-div" class="left-column-label r4c0"></div>
+				<div id="action-name-div" class="free-width-label r4c1"></div>
+				<div id="playback-label" class="left-column-label r5c0"></div>
+				<div id="playback-panel" class="control-panel r5c1"></div>
+			</div>
+			<div id="rewards-titled-container" class="titled-container r0c1 bg">	
+				<div class="tab">
+					<button id="showRewardsPerActionButton" onclick="showRewardsPerAction(event)">Total Rewards Per Action</button>
+					<button id="showRewardsPerRewardTypeButton" onclick="showRewardsPerRewardType(event)">Specific Rewards Per Action</button>
+				</div>
+				<!--<div id="rewards-title" class="region-title">Rewards</div>	-->		
+				<div id="explanations-rewards" class="bg"></div>
+			</div>
+			
+			<div id="scaii-explanations" class="r1c0_1 bg">
+				<div id="saliency-maps-titled-container" class="titled-container flex-column bg"> 
+					<div id="saliency-maps-title" class="region-title">Saliency</div>
+					<div id="saliency-maps" class="flex-row"></div>
+				</div>
+				
+				<!--<div id="scaii-gameboard-zoom"></div>-->
+				<!--<div id="scaii-zoom-controls"></div>-->
+			</div>
+		</div>
+		<script src="js/scaiiViz.js"></script>
+	</body>
+</html>
+  
+  <!--
+<div class="tab">
+  <button class="tablinks" onclick="showRewardsPerAction(event)">Rewards per Action Choice</button>
+  <button class="tablinks" onclick="showRewardsPerRewardType(event)">Rewards per Reward Type</button>
+</div>
+
+-->

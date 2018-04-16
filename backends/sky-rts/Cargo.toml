@@ -1,0 +1,42 @@
+[package]
+name = "sky-rts"
+version = "0.1.0"
+authors = ["Zoe Juozapaitis <Jragonmiris@gmail.com>"]
+
+[dependencies]
+scaii_defs = { path="../../scaii_defs" }
+rlua  = "0.9"
+serde = "1"
+serde_derive = "1"
+
+rand = { git = 'https://github.com/rust-lang-nursery/rand', features=["serde-1"], rev="1591eadd954" }
+
+serde_cbor  = "0.8"
+
+specs = { version="0.10", features=["serde"], git="https://github.com/LinearZoetrope/specs"}
+specs-derive = { git="https://github.com/slide-rs/specs" }
+shred = "0.5"
+shred-derive = "0.3"
+
+prost = "0.3"
+prost-derive = "0.3"
+bytes = "0.4.5"
+
+lazy_static = "1.0"
+ndarray = {version="0.11", features=["serde-1"]}
+
+nalgebra = {version="0.14", features=["serde-serialize"]}
+ncollide = "0.14"
+
+rayon = "1"
+
+[build-dependencies]
+prost-build = "0.3"
+glob = "0.2.11"
+
+[dev-dependencies]
+websocket = "0.20"
+
+[profile.release]
+lto = true
+codegen-units = 1
