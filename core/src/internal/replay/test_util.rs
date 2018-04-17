@@ -1,4 +1,5 @@
 use prost::Message;
+use scaii_defs;
 use protos::{cfg, scaii_packet, BackendCfg, BackendEndpoint, Cfg, Entity, ModuleEndpoint,
              MultiMessage, RecorderConfig, RecorderEndpoint, ReplayEndpoint, ScaiiPacket, Viz,
              VizInit};
@@ -35,7 +36,7 @@ impl MockRts {
         let pkt_to_send = self.viz_sequence[self.step_position as usize].clone();
         self.step_position += 1;
         println!("MockRTS self.step_position now {}", self.step_position);
-        let mm = super::replay_util::wrap_packet_in_multi_message(pkt_to_send);
+        let mm = super::pkt_util::wrap_packet_in_multi_message(pkt_to_send);
         self.outbound_messages.push(mm);
         ()
     }
@@ -423,5 +424,53 @@ fn wrap_entities_in_viz_packet(entity1: Entity, entity2: Entity) -> ScaiiPacket 
             })),
         },
         specific_msg: Some(SpecificMsg::Viz(Viz { entities: entities })),
+    }
+}
+
+
+pub fn get_test_mode_rewind_hint_message() -> ScaiiPacket {
+    let target: String = String::from("MockRts");
+    let command: String = String::from("rewind");
+    let mut args_list: Vec<String> = Vec::new();
+    args_list.push(target);
+    args_list.push(command);
+    let pkt: ScaiiPacket = create_test_control_message(args_list);
+    pkt
+}
+
+pub fn get_test_mode_jump_to_message(target_step: &String) -> ScaiiPacket {
+    let target: String = String::from("MockRts");
+    let command: String = String::from("jumpTo");
+    let mut args_list: Vec<String> = Vec::new();
+    args_list.push(target);
+    args_list.push(command);
+    args_list.push(target_step.clone());
+    let pkt: ScaiiPacket = create_test_control_message(args_list);
+    pkt
+}
+
+pub fn get_test_mode_jump_to_hint_message(target_index: u64) -> ScaiiPacket {
+    let target: String = String::from("MockRts");
+    let command: String = String::from("jump");
+    let index: String = format!("{}", target_index);
+    let mut args_list: Vec<String> = Vec::new();
+    args_list.push(target);
+    args_list.push(command);
+    args_list.push(index);
+    let pkt: ScaiiPacket = create_test_control_message(args_list);
+    pkt
+}
+
+fn create_test_control_message(args_list: Vec<String>) -> ScaiiPacket {
+    ScaiiPacket {
+        src: protos::Endpoint {
+            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+        },
+        dest: protos::Endpoint {
+            endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
+        },
+        specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::TestControl(
+            protos::TestControl { args: args_list },
+        )),
     }
 }

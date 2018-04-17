@@ -50,6 +50,7 @@ message ScaiiPacket {
 		EnvDescription env_desc = 22;
 		ExplanationDetails expl_details = 23;
 		ReplayControl replay_control = 24;
+		ReplayChoiceConfig replay_choice_config = 25;
 		Other other = 29;
 	}
 
@@ -261,6 +262,8 @@ message UserCommand {
 		JUMP_TO_STEP = 6;
 		JUMP_COMPLETED = 7;
 		SET_SPEED = 8;
+		SELECT_FILE = 9;
+		SELECT_FILE_COMPLETE = 10;
 	}
 	required UserCommandType command_type = 1;
 	repeated string args = 2;
@@ -287,6 +290,11 @@ message RecorderConfig {
 }
 
 message GameComplete {}
+
+// the replay files available for replay
+message ReplayChoiceConfig {
+	repeated string replay_filenames = 1;
+}
 
 message ReplaySessionConfig {
 	required int64 step_count = 1;

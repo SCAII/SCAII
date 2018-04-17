@@ -1,9 +1,7 @@
-use protos::{BackendEndpoint, Cfg, CoreEndpoint, ModuleEndpoint, MultiMessage, ReplayEndpoint,
-             ReplaySessionConfig, ScaiiPacket};
+use protos::{ScaiiPacket, };
 use protos::cfg::WhichModule;
-use protos::endpoint::Endpoint;
 use protos::scaii_packet::SpecificMsg;
-use scaii_core::{ReplayAction, ScaiiConfig};
+use scaii_core::{ReplayAction, SerializedProtosSerializationResponse};
 use scaii_defs::protos;
 use std::error::Error;
 use std::fs::File;
@@ -12,80 +10,6 @@ use std::io::BufReader;
 use bincode::{deserialize_from, Infinite};
 use super::*;
 use scaii_core;
-
-pub fn create_rts_backend_msg() -> Result<ScaiiPacket, Box<Error>> {
-    use scaii_defs::protos::PluginType;
-
-    Ok(ScaiiPacket {
-        src: protos::Endpoint {
-            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-        },
-        dest: protos::Endpoint {
-            endpoint: Some(Endpoint::Core(CoreEndpoint {})),
-        },
-        specific_msg: Some(SpecificMsg::Config(Cfg {
-            which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
-                plugin_type: PluginType {
-                    plugin_type: Some(SkyRts(protos::SkyRts {})),
-                },
-            })),
-        })),
-    })
-}
-
-#[allow(unused_assignments)]
-pub fn create_rpc_config_message() -> Result<ScaiiPacket, Box<Error>> {
-    let mut scaii_config: ScaiiConfig = scaii_core::load_scaii_config();
-
-    let mut comm: Option<String> = None;
-    if cfg!(target_os = "windows") {
-        let windows_command_string = scaii_config.get_replay_browser();
-        comm = Some(windows_command_string);
-    } else if cfg!(target_os = "unix") {
-        panic!("rpc config message for unix not yet implemented!");
-    } else {
-        // mac
-        let mac_command_string = get_mac_browser_launch_command(&mut scaii_config)?;
-        comm = Some(mac_command_string);
-    }
-
-    //
-    // Add arguments on windows,but not mac
-    //
-    let mut vec: Vec<String> = Vec::new();
-    if cfg!(target_os = "windows") {
-        let target_url = scaii_config.get_full_replay_http_url();
-        vec.push(target_url);
-    } else if cfg!(target_os = "unix") {
-        // will panic earlier in function if we are on unix
-    } else {
-        // mac adds no arguments - its all in command (workaround to browser launching issue on mac)
-    }
-
-    let rpc_config = scaii_core::get_rpc_config_for_viz(comm, vec);
-
-    Ok(ScaiiPacket {
-        src: protos::Endpoint {
-            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-        },
-        dest: protos::Endpoint {
-            endpoint: Some(Endpoint::Core(CoreEndpoint {})),
-        },
-        specific_msg: Some(SpecificMsg::Config(Cfg {
-            which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
-                plugin_type: protos::PluginType {
-                    plugin_type: Some(protos::plugin_type::PluginType::Rpc(rpc_config)),
-                },
-            })),
-        })),
-    })
-}
-
-pub fn wrap_packet_in_multi_message(pkt: ScaiiPacket) -> MultiMessage {
-    let mut pkts: Vec<ScaiiPacket> = Vec::new();
-    pkts.push(pkt);
-    MultiMessage { packets: pkts }
-}
 
 pub fn load_replay_file(path: &Path) -> Result<Vec<ReplayAction>, Box<Error>> {
     //use super::ReplayAction;
@@ -98,12 +22,19 @@ pub fn load_replay_file(path: &Path) -> Result<Vec<ReplayAction>, Box<Error>> {
     {
         replay_vec.push(action);
     }
+    
+    //print_replay_actions(&replay_actions);
+    Ok(replay_vec)
+}
+
+#[allow(dead_code)]
+fn print_replay_actions(replay_vec : &Vec<ReplayAction>){
     let mut count = 0;
     println!("");
     println!(
         "-------------------   Here are the replay actions with numbers  --------------------"
     );
-    for replay_action in &replay_vec {
+    for replay_action in replay_vec {
         match replay_action {
             &ReplayAction::Header(_) => {
                 println!("loaded ReplayAction::Header   {}", count);
@@ -119,46 +50,6 @@ pub fn load_replay_file(path: &Path) -> Result<Vec<ReplayAction>, Box<Error>> {
     }
     println!("");
     println!("");
-    Ok(replay_vec)
-}
-
-pub fn load_replay_info_from_default_replay_path() -> Result<Vec<ReplayAction>, Box<Error>> {
-    let path = scaii_core::get_default_replay_file_path()?;
-    //load_replay_info_from_replay_file_path(path)
-    load_replay_file(&path)
-}
-// pub fn load_replay_info_from_replay_file_path(path: PathBuf) -> Result<Vec<ReplayAction>, Box<Error>> {
-//     let load_result = load_replay_file(&path);
-//     match load_result {
-//         Ok(replay_vec) => Ok(replay_vec),
-//         Err(err) => Err(err),
-//     }
-// }
-
-pub fn create_default_replay_backend_config() -> ScaiiPacket {
-    let vec: Vec<u8> = Vec::new();
-    ScaiiPacket {
-        src: protos::Endpoint {
-            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-        },
-        dest: protos::Endpoint {
-            endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-        },
-        specific_msg: Some(SpecificMsg::Config(protos::Cfg {
-            which_module: Some(WhichModule::BackendCfg(protos::BackendCfg {
-                cfg_msg: Some(vec),
-                is_replay_mode: true,
-            })),
-        })),
-    }
-}
-
-pub fn get_mac_browser_launch_command(
-    scaii_config: &mut ScaiiConfig,
-) -> Result<String, Box<Error>> {
-    let browser = scaii_config.get_replay_browser();
-    let full_url = scaii_config.get_full_replay_http_url();
-    Ok(format!("{} {}", browser, full_url))
 }
 
 pub fn set_replay_mode_on_backend_config(packet_option: &mut Option<ScaiiPacket>) {
@@ -178,94 +69,24 @@ pub fn set_replay_mode_on_backend_config(packet_option: &mut Option<ScaiiPacket>
     }
 }
 
-pub fn get_replay_mode_pkt() -> ScaiiPacket {
-    ScaiiPacket {
-        src: protos::Endpoint {
-            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-        },
-        dest: protos::Endpoint {
-            endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-        },
-        specific_msg: Some(SpecificMsg::ReplayMode(true)),
-    }
-}
 
-pub fn get_emit_viz_pkt() -> ScaiiPacket {
-    ScaiiPacket {
-        src: protos::Endpoint {
-            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-        },
-        dest: protos::Endpoint {
-            endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-        },
-        specific_msg: Some(SpecificMsg::EmitViz(true)),
-    }
-}
+pub fn get_replay_filenames() -> Result<Vec<String> , Box<Error>>{
+    use std::fs;
+    let mut result : Vec<String> = Vec::new();
+    let replay_dir = scaii_core::get_default_replay_dir()?;
+    let paths = fs::read_dir(replay_dir.to_str().unwrap().to_string()).unwrap();
 
-#[allow(dead_code)]
-pub fn get_reset_env_pkt() -> ScaiiPacket {
-    ScaiiPacket {
-        src: protos::Endpoint {
-            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-        },
-        dest: protos::Endpoint {
-            endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-        },
-        specific_msg: Some(SpecificMsg::ResetEnv(true)),
-    }
-}
-
-pub fn get_replay_configuration_message(
-    count: u32,
-    explanations_option: &Option<Explanations>,
-) -> ScaiiPacket {
-    let mut expl_titles: Vec<String> = Vec::new();
-    let chart_titles: Vec<String> = Vec::new();
-    let mut expl_steps: Vec<u32> = Vec::new();
-
-    match explanations_option {
-        &None => {}
-        &Some(ref explanations) => {
-            println!("...adding expl info to config message...");
-            for index in &explanations.step_indices {
-                expl_steps.push(index.clone());
-                let expl_point_option = &explanations.expl_map.get(index);
-                let title_option = &expl_point_option.unwrap().title;
-                let title = title_option.clone().unwrap();
-                println!("......step_index {} title{} ", index, title);
-                expl_titles.push(title);
-            }
+    for path in paths {
+        let filename  = path.unwrap().file_name().to_str().unwrap().to_string();
+        if filename.ends_with(".scr"){
+            result.push(filename.clone());
+            println!("Name: {}", filename);
         }
     }
 
-    let steps = count as i64;
-    let spkt = create_replay_session_config_message(steps, expl_steps, expl_titles, chart_titles);
-    spkt
+    Ok(result)
 }
 
-pub fn create_replay_session_config_message(
-    steps: i64,
-    expl_steps: Vec<u32>,
-    expl_titles: Vec<String>,
-    chart_titles: Vec<String>,
-) -> ScaiiPacket {
-    ScaiiPacket {
-        src: protos::Endpoint {
-            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-        },
-        dest: protos::Endpoint {
-            endpoint: Some(Endpoint::Module(ModuleEndpoint {
-                name: "viz".to_string(),
-            })),
-        },
-        specific_msg: Some(SpecificMsg::ReplaySessionConfig(ReplaySessionConfig {
-            step_count: steps,
-            explanation_steps: expl_steps,
-            explanation_titles: expl_titles,
-            chart_titles: chart_titles,
-        })),
-    }
-}
 
 // Delta(ActionWrapper),
 // Keyframe(SerializationInfo, ActionWrapper),
@@ -300,6 +121,7 @@ pub fn get_keframe_indices(replay_data: &Vec<ReplayAction>) -> Vec<u32> {
 pub fn get_keyframe_map(
     replay_data: &Vec<ReplayAction>,
 ) -> Result<BTreeMap<u32, ScaiiPacket>, Box<Error>> {
+    use prost::Message;
     let mut result: BTreeMap<u32, ScaiiPacket> = BTreeMap::new();
     let mut count: u32 = 0;
     for replay_action in replay_data {
@@ -312,7 +134,7 @@ pub fn get_keyframe_map(
                     protos::SerializationResponse::decode(ser_proto_ser_resp.data);
                 match ser_response_decode_result {
                     Ok(ser_response) => {
-                        let spkt = wrap_response_in_scaii_pkt(ser_response);
+                        let spkt = pkt_util::wrap_response_in_scaii_pkt(ser_response);
                         if count == 0 {
                             result.insert(count, spkt);
                         } else {
@@ -336,12 +158,13 @@ pub fn get_keyframe_map(
 pub fn get_scaii_packets_for_replay_actions(
     replay_data: &Vec<ReplayAction>,
 ) -> Result<Vec<ScaiiPacket>, Box<Error>> {
+    use prost::Message;
     let mut result: Vec<ScaiiPacket> = Vec::new();
     let mut stored_first_keyframe = false;
     for replay_action in replay_data {
         match replay_action {
             &ReplayAction::Delta(ref action_wrapper) => {
-                let spkt = convert_action_wrapper_to_action_pkt(action_wrapper.clone())?;
+                let spkt = pkt_util::convert_action_wrapper_to_action_pkt(action_wrapper.clone())?;
                 result.push(spkt);
             }
             &ReplayAction::Keyframe(ref serialization_info, ref action_wrapper) => {
@@ -352,7 +175,7 @@ pub fn get_scaii_packets_for_replay_actions(
                         protos::SerializationResponse::decode(ser_proto_ser_resp.data);
                     match ser_response_decode_result {
                         Ok(ser_response) => {
-                            let spkt = wrap_response_in_scaii_pkt(ser_response);
+                            let spkt = pkt_util::wrap_response_in_scaii_pkt(ser_response);
                             result.push(spkt);
                         }
                         Err(err) => {
@@ -361,7 +184,7 @@ pub fn get_scaii_packets_for_replay_actions(
                     }
                     stored_first_keyframe = true;
                 }
-                let spkt = convert_action_wrapper_to_action_pkt(action_wrapper.clone())?;
+                let spkt = pkt_util::convert_action_wrapper_to_action_pkt(action_wrapper.clone())?;
                 result.push(spkt);
             }
             &ReplayAction::Header(_) => {}
@@ -370,37 +193,83 @@ pub fn get_scaii_packets_for_replay_actions(
     Ok(result)
 }
 
-pub fn wrap_response_in_scaii_pkt(ser_response: protos::SerializationResponse) -> ScaiiPacket {
-    ScaiiPacket {
-        src: protos::Endpoint {
-            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-        },
-        dest: protos::Endpoint {
-            endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-        },
-        specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::SerResp(
-            ser_response,
-        )),
-    }
+
+#[derive(Debug, Deserialize)]
+pub struct Args {
+    pub cmd_webserver: bool,
+    //
+    pub cmd_test: bool,
+    pub flag_data_from_recorded_file: bool,
+    pub flag_data_hardcoded: bool,
+    //
+    pub cmd_file: bool,
+    pub arg_path_to_replay_file: String,
 }
 
-pub fn convert_action_wrapper_to_action_pkt(
-    action_wrapper: ActionWrapper,
-) -> Result<ScaiiPacket, Box<Error>> {
-    let data = action_wrapper.serialized_action;
-    let action_decode_result = protos::Action::decode(data);
-    match action_decode_result {
-        Ok(protos_action) => Ok(ScaiiPacket {
-            src: protos::Endpoint {
-                endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
-            },
-            dest: protos::Endpoint {
-                endpoint: Some(Endpoint::Backend(BackendEndpoint {})),
-            },
-            specific_msg: Some(scaii_defs::protos::scaii_packet::SpecificMsg::Action(
-                protos_action,
-            )),
-        }),
-        Err(err) => Err(Box::new(err)),
+
+pub fn parse_args(arguments: Vec<String>) -> Args {
+    let mut args = Args {
+        cmd_webserver: false,
+        cmd_test: false,
+        flag_data_from_recorded_file: false,
+        flag_data_hardcoded: false,
+
+        cmd_file: false,
+        arg_path_to_replay_file: "".to_string(),
+    };
+    //      replay webserver
+    //  replay file
+    //  replay test [--data-hardcoded | --data-from-recorded-file]
+    //  replay (-h | --help)
+    if arguments.len() < 2 {
+        println!("{}", USAGE);
+        std::process::exit(0);
     }
+    let command = &arguments[1];
+    match command.as_ref() {
+        "webserver" => {
+            args.cmd_webserver = true;
+        }
+        "file" => {
+            args.cmd_file = true;
+            match arguments.len() {
+                2 => {
+                    // no further arguments
+                }
+                _ => {
+                    println!("{}", USAGE);
+                    std::process::exit(0);
+                }
+            }
+        }
+        "test" => {
+            args.cmd_test = true;
+            match arguments.len() {
+                3 => {
+                    let flag = &arguments[2];
+                    match flag.as_ref() {
+                        "--data-hardcoded" => {
+                            args.flag_data_hardcoded = true;
+                        }
+                        "--data-from-recorded-file" => {
+                            args.flag_data_from_recorded_file = true;
+                        }
+                        _ => {
+                            println!("{}", USAGE);
+                            std::process::exit(0);
+                        }
+                    }
+                }
+                _ => {
+                    println!("{}", USAGE);
+                    std::process::exit(0);
+                }
+            }
+        }
+        &_ => {
+            println!("{}", USAGE);
+            std::process::exit(0);
+        }
+    }
+    args
 }

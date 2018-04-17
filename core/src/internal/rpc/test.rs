@@ -33,7 +33,6 @@ fn connect_attempt() {
                     tx.send(String::from("fail")).unwrap();
                 }
             }
-            LoadedAs::Backend(_) => (),
         }
     });
 
