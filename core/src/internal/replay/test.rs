@@ -6,7 +6,7 @@ use super::replay_sequencer::{ReplaySequencer, SequenceState};
 #[test]
 fn test_replay_sequencer() {
     let replay_actions = get_test_replay_actions();
-    let rs_result = ReplaySequencer::new(&replay_actions);
+    let rs_result = ReplaySequencer::new(&replay_actions, false);
     match rs_result {
         Ok(mut rs) => {
             assert!(rs.get_sequence_length() == 11); // add one for the first keyFrame
@@ -230,7 +230,7 @@ fn get_test_replay_actions() -> Vec<ReplayAction> {
 #[test]
 fn test_replay_sequencer2() {
     let replay_actions = get_test_replay_actions2();
-    let rs_result = ReplaySequencer::new(&replay_actions);
+    let rs_result = ReplaySequencer::new(&replay_actions, false);
     match rs_result {
         Ok(mut rs) => {
             assert!(rs.get_sequence_length() == 10); // add one for the first keyFrame
@@ -414,7 +414,7 @@ fn get_test_replay_actions2() -> Vec<ReplayAction> {
 #[test]
 fn test_replay_sequencer3() {
     let replay_actions = get_test_replay_actions3();
-    let rs_result = ReplaySequencer::new(&replay_actions);
+    let rs_result = ReplaySequencer::new(&replay_actions, false);
     match rs_result {
         Ok(mut rs) => {
             println!("JUMP TO 0");
@@ -531,7 +531,7 @@ fn get_test_replay_actions3() -> Vec<ReplayAction> {
 #[test]
 fn test_replay_sequencer4() {
     let replay_actions = get_test_replay_actions4();
-    let rs_result = ReplaySequencer::new(&replay_actions);
+    let rs_result = ReplaySequencer::new(&replay_actions, false);
     match rs_result {
         Ok(mut rs) => {
             println!("JUMP TO 0");

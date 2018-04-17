@@ -24,6 +24,12 @@ body {
   grid-row-start: 1;
   grid-row-end: 2;
 }
+.r0c2 {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
 /* 2nd row */
 .r1c0 {
   grid-column-start: 1;
@@ -126,11 +132,21 @@ body {
 	border-color: #404040;
 }
 
+.region-title-grey {
+	background-color: lightgrey;
+	padding-left: 16px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-right: 6px;
+	margin: 0px;
+}
+
 .region-title {
 	background-color: white;
 	padding-left: 16px;
 	padding-top: 10px;
 	padding-bottom: 10px;
+	padding-right: 6px;
 	margin: 0px;
 }
 
@@ -156,4 +172,3 @@ body {
 	font-size: 18px;
 	font-style: bold;*/
 }
-

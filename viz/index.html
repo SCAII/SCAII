@@ -19,13 +19,17 @@
       <script src="js/protobuf_js/map.js"></script>
       <script src="js/protobuf_js/message.js"></script>
       <!--<script src="js/protobuf_js/debug.js"></script>-->
+      <script src="js/navigation.js"></script>
+      <script src="js/ui.js"></script>
+      <script src="js/session.js"></script>
+      <script src="js/zoomBox.js"></script>
+      <script src="js/comms.js"></script>
       <script src="js/vizProtos.js"></script>
       <script src="js/logUtils.js"></script>
       <script src="js/renderEntities.js"></script>
+      <script src="js/saliency.js"></script>
       <script src="js/renderExplanation.js"></script>
       <script src="js/chart.js"></script>
-      <script src="js/saliency.js"></script>
-      <script src="js/navigation.js"></script>
       <script src="js/gameState.js"></script>
       <script src="js/protobufUtils.js"></script>
 	  <link rel="stylesheet" type="text/css" href="css/tabs.css">
@@ -43,7 +47,11 @@
 			</div>-->
 			<div id="game-titled-container" class="titled-container grid r0c0 bg">
 				<div id="scaii-acronym" class="r0c0">SCAII</div>
-				<div id="game-replay-title" class="region-title r0c1">Game Replay</div>
+				<div id="game-selector-panel" class="r0c1 flex-row">
+					<div id="game-replay-title" class="region-title">replaying:</div>
+					<select id="replay-file-selector" onchange="loadSelectedReplayFile()"></select>
+					
+				</div>
 				<!--<div id="step-control" class="flex-row">
 					<div id="step-control-info class="flex-column">
 						<div id="replay-interval-max" class="minor-label-text">100 (ms)</div>
@@ -53,8 +61,10 @@
 					<div id="replay-speed-panel" class="control-panel"></div>
 				</div>-->
 				<div id="scaii-gameboard" class="r1c1 grid-center bg"></div>
-				
-				<div id="progress-label" class="left-column-label r2c0"></div>
+				<div id="progress-label" class="flex-row r2c0">
+					<div id="step-label" class="minor-label-text">step</div>
+					<div id="step-value" class="minor-label-text"></div>
+				</div>
 				<div id="progress-panel" class="control-panel r2c1">
 					<progress id="game-progress" value="00" max="99"></progress>
 				</div>
@@ -75,9 +85,20 @@
 			</div>
 			
 			<div id="scaii-explanations" class="r1c0_1 bg">
-				<div id="saliency-maps-titled-container" class="titled-container flex-column bg"> 
-					<div id="saliency-maps-title" class="region-title">Saliency</div>
-					<div id="saliency-maps" class="flex-row"></div>
+				<div id="saliency-group" class="flex-row">
+					<div id="saliency-selections" class="flex-column">
+						<div id="saliency-selections-title" class="region-title-grey">Show Saliency Maps For:</div>
+						<div id="saliency-checkboxes" class="grid"></div>
+					</div>
+					<div id="saliency-content" class="flex-column">
+						<div class="tab">
+							<button id="showCombinedSaliencyButton" onclick="showCombinedSaliency(event)">Combined Saliency For Action</button>
+							<button id="showSalienciesButton" onclick="showAllSaliencies(event)">Saliencies For Action</button>
+						</div>
+						<div id="saliency-maps-titled-container" class="titled-container flex-column bg"> 
+							<div id="saliency-maps" class="grid"></div>
+						</div>
+					</div>
 				</div>
 				
 				<!--<div id="scaii-gameboard-zoom"></div>-->
@@ -87,11 +108,3 @@
 		<script src="js/scaiiViz.js"></script>
 	</body>
 </html>
-  
-  <!--
-<div class="tab">
-  <button class="tablinks" onclick="showRewardsPerAction(event)">Rewards per Action Choice</button>
-  <button class="tablinks" onclick="showRewardsPerRewardType(event)">Rewards per Reward Type</button>
-</div>
-
--->
