@@ -211,11 +211,11 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 			//chartArea: {width: '50%', left:70},
 			chartArea: {width: '50%', left:"15%"},
 			hAxis: {
-			  title: this.getHTitle(),
+			  title: this.getVTitle(),
 			  //minValue: 0
 			},
 			vAxis: {
-			  title: this.getVTitle(),
+			  title: this.getHTitle(),
 			},
 			'width':800,
 			'height':400
