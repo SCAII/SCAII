@@ -5,7 +5,8 @@ var gameboardHeight;
 //canvases
 var gameboard_canvas = document.createElement("canvas");
 var gameboard_ctx = gameboard_canvas.getContext("2d");
-var game_background_color = "#123456";
+//var game_background_color = "#123456";
+var game_background_color = "#fafafa";
 
 var timeline_canvas = document.createElement("canvas");
 var timeline_ctx = timeline_canvas.getContext("2d");
@@ -45,7 +46,8 @@ var shapePositionMapForContext = {};
 var primaryHighlightedShapeIds = [];
 var secondaryHighlightedShapeIds = [];
 var shape_outline_color = '#202020';
-var shape_outline_width = 2;
+//var shape_outline_width = 2;
+var shape_outline_width = 0;
 var use_shape_color_for_outline = false;
 
 

@@ -220,10 +220,35 @@ function getSaliencyDisplayManager() {
 		}
 	}
 	
+	sdm.overlaySaliencyMapOntoGame = function(cells, width, height, normalizationFactor) {
+		for (var x= 0; x < width; x++){
+			for (var y = 0; y < height; y++){
+				var index = height * x + y;
+				var cellValue = cells[index];
+				gameboard_ctx.fillStyle = getOverlayOpacityBySaliencyRGBAString(cellValue * normalizationFactor);
+				gameboard_ctx.fillRect(x*gameScaleFactor, y*gameScaleFactor, gameScaleFactor, gameScaleFactor);
+				gameboard_ctx.fill();
+			}
+		}
+	}
+	
 	sdm.renderExplLayer = function(gridX, gridY, saliencyUIName, saliencyNameForId, cells, width, height, normalizationFactor) {
 		var nameNoSpaces = saliencyNameForId.replace(/ /g,"");
 		var nameForId = nameNoSpaces.replace(/,/g,"");
 		var explCanvas = document.createElement("canvas");
+		explCanvas.addEventListener("mouseenter", function() {
+			console.log("entered! " + saliencyUIName);
+			//clear and redraw gameboard
+			handleEntities(entitiesList);
+			saliencyDisplayManager.overlaySaliencyMapOntoGame(cells, width, height, normalizationFactor);
+		}
+		);
+		explCanvas.addEventListener("mouseleave", function() {
+			// clear and redraw gameboard
+			handleEntities(entitiesList);
+			console.log("left! " + saliencyUIName);
+		}
+		);
 		var explCtx = explCanvas.getContext("2d");
 		// canvas size should be same a gameboardHeight
 		explCanvas.width  = gameboard_canvas.width * this.saliencyMapPercentSize;
@@ -244,7 +269,7 @@ function getSaliencyDisplayManager() {
 		$(mapContainerDivSelector).css("flex-direction", "column");
 		$(mapContainerDivSelector).css("width", explCanvas.width+'px');
 		$(mapContainerDivSelector).css("height", mapContainerDivHeight+'px');
-		$(mapContainerDivSelector).css("margin-right", '4px');
+		//$(mapContainerDivSelector).css("margin-right", '4px');
 		$(mapContainerDivSelector).css("border", '1px solid #0063a6');
 		
 		var mapTitleId = 'title_' + nameForId;
@@ -422,10 +447,19 @@ var configureMapTitle = function(mapTitleDivSelector){
 
 }
 
-
+function getOverlayOpacityBySaliencyRGBAString(saliencyValue) {
+  var reverseSaliency = 1.0 - saliencyValue;
+  var color = {};
+  color['R'] = 0;
+  color['G'] = 0;
+  color['B'] = 0;
+  color['A'] = reverseSaliency;
+  var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
+  return result;
+}
 
 function getWhiteRGBAString(saliencyValue) {
-  color = {};
+  var color = {};
   color['R'] = 255;
   color['G'] = 255;
   color['B'] = 255;

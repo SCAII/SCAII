@@ -286,7 +286,7 @@ function layoutEntityAtPosition(ctx, x, y, entity, zoom_factor, xOffset, yOffset
 	  var final_height = height * zoom_factor;
       var shapePoints = getShapePoints(absX,absY,Math.max(final_width, final_height) + 6 * zoom_factor, shapeId) ;
       shapePositionMap[shapeId] = shapePoints;
-	  highlightShape(ctx,shapeId,shapePositionMap);
+//	  highlightShape(ctx,shapeId,shapePositionMap);
 	  var colorRGBA = loadShapeColorAsRGBAString(shape);
 	  drawRect(ctx, absX, absY, final_width, final_height, orientation, colorRGBA);
 	}
@@ -296,7 +296,7 @@ function layoutEntityAtPosition(ctx, x, y, entity, zoom_factor, xOffset, yOffset
 	  var finalBaseLen = baseLen * zoom_factor;
       var shapePoints = getShapePoints(absX,absY,finalBaseLen + 6 * zoom_factor, shapeId) ;
       shapePositionMap[shapeId] = shapePoints;
-	  highlightShape(ctx,shapeId,shapePositionMap);
+//	  highlightShape(ctx,shapeId,shapePositionMap);
 	  var colorRGBA = loadShapeColorAsRGBAString(shape);
 	  //drawTriangle(ctx, x, y, baseLen, orientation, colorRGBA);
 	  drawDiamond(ctx, absX, absY, finalBaseLen, orientation, colorRGBA);
