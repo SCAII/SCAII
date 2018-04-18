@@ -4,7 +4,7 @@ const saliencyModeDetailed = "show all saliencies";
 function getSaliencyDisplayManager() {
 	var sdm = {};
 	sdm.saliencyMode = saliencyModeAggregate;
-	sdm.saliencyMapPercentSize = 0.75;
+	sdm.saliencyMapPercentSize = 1.0;
 	sdm.activeCheckBoxes = [];
 	//A list of strings such as "attack bottom left *"  (for all bars) or "attack bottom left rewardX" 
 	sdm.xaiSelectionManager = undefined;
