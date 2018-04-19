@@ -49,7 +49,7 @@ goog.require('proto.scaii.common.VizInit');
 
 var main = function () {
 	initUI();
-	var debug = false;
+	var debug = true;
 	if (debug) {
 		var connectButton = document.createElement("BUTTON");
 		var connectText = document.createTextNode("Start Replay");

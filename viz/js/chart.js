@@ -1,5 +1,9 @@
 var activeBarChartInfo = undefined;
 
+//Why was action chosen
+const rewardQuestionAggregate = "total rewards/punishments for actions";
+const rewardQuestionDetailed  = "specific rewards/punishments for actions";
+
 function addHelperFunctionsToBarChartInfo(barChartInfo) {
 	
 	// selection
@@ -249,6 +253,16 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		alert('could not find saliencyId for actionName ' + actionName);
 	}
 	
+	barChartInfo.displayAnswerToRewardQuestion = function(){
+		var chosenQuestion = $( "#reward-question-selector option:selected" ).text();
+		if (chosenQuestion == rewardQuestionAggregate){
+			showRewards(true);
+		}
+		else {
+			showRewards(false);
+		}
+	}
+	
 	barChartInfo.renderExplanationBarChart = function() {
 		$("#explanations-rewards").empty();
 		var options = this.getOptionsForBarChartMessage();
@@ -354,6 +368,11 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		}
 		return barGroupWithMaxValue;
 	}
+}
+
+
+function showRewardAnswer() {
+	activeBarChartInfo.displayAnswerToRewardQuestion();
 }
 
 var drawBarChart = function(chartData, options) {
