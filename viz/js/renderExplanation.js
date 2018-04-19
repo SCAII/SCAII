@@ -122,11 +122,22 @@ function renderExplanationPoint(explPoint){
 	activeBarChartInfo.renderExplanationBarChart();
 	
 	renderTabActiveActionRewards();
-	renderTabCombinedSaliency();
+	populateSaliencyQuestionSelector();
+	//renderTabCombinedSaliency();
 	saliencyDisplayManager.populateCheckBoxes(true);
-	saliencyDisplayManager.renderExplanationSaliencyMaps();
+	saliencyDisplayManager.displayAnswerToSaliencyQuestion();
 }
 
+function populateSaliencyQuestionSelector(){
+	$("#saliency-question-selector").append($('<option>', {
+			value: 0,
+			text: saliencyQuestionAggregate
+	}));	
+	$("#saliency-question-selector").append($('<option>', {
+			value: 1,
+			text: saliencyQuestionDetailed
+	}));
+}
 
 function showRewardsPerAction(evt) {
 	renderTabActiveActionRewards();
