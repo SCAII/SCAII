@@ -1,6 +1,9 @@
 const saliencyModeAggregate = "show combined saliency";
 const saliencyModeDetailed = "show all saliencies";
 
+const saliencyQuestionAggregate = "What objects influenced rewards/punishments?";
+const saliencyQuestionDetailed  = "What aspects of objects influenced rewards/punishments?";
+
 function getSaliencyDisplayManager() {
 	var sdm = {};
 	sdm.saliencyMode = saliencyModeAggregate;
@@ -52,6 +55,18 @@ function getSaliencyDisplayManager() {
 		}
 		alert("could not find checkbox with name " + name);
 	}
+	
+	sdm.displayAnswerToSaliencyQuestion = function(){
+		var chosenQuestion = $( "#saliency-question-selector option:selected" ).text();
+		if (chosenQuestion == saliencyQuestionAggregate){
+			sdm.saliencyMode = saliencyModeAggregate;
+		}
+		else {
+			sdm.saliencyMode = saliencyModeDetailed;
+		}
+		this.renderExplanationSaliencyMaps(undefined);
+	}
+	
 	// use checkboxes (which may have changed) to adjust the selection
 	sdm.renderExplanationSaliencyMaps = function(evt) {
 		this.xaiSelectionManager.setSelections([]);
@@ -334,17 +349,17 @@ function getNameDivForRow(rowIndex, rowInfo, layerCount){
 	return nameContainerDiv;
 }
 
-function showCombinedSaliency(evt) {
-	saliencyDisplayManager.setSaliencyMode(saliencyModeAggregate);
-	renderTabCombinedSaliency();
-	saliencyDisplayManager.renderExplanationSaliencyMaps();
-}
+// function showCombinedSaliency(evt) {
+	// saliencyDisplayManager.setSaliencyMode(saliencyModeAggregate);
+	// renderTabCombinedSaliency();
+	// saliencyDisplayManager.renderExplanationSaliencyMaps();
+// }
 
-function showAllSaliencies(evt) {
-	saliencyDisplayManager.setSaliencyMode(saliencyModeDetailed);
-    renderTabAllSaliencies();
-	saliencyDisplayManager.renderExplanationSaliencyMaps();
-}
+// function showAllSaliencies(evt) {
+	// saliencyDisplayManager.setSaliencyMode(saliencyModeDetailed);
+    // renderTabAllSaliencies();
+	// saliencyDisplayManager.renderExplanationSaliencyMaps();
+// }
 
 
 function renderTabCombinedSaliency() {
@@ -445,6 +460,10 @@ var configureMapTitle = function(mapTitleDivSelector){
 	$(mapTitleDivSelector).css("text-align", "center");
 	$(mapTitleDivSelector).css("height", "30px");
 
+}
+
+function showSaliencyAnswer() {
+	saliencyDisplayManager.displayAnswerToSaliencyQuestion();
 }
 
 function getOverlayOpacityBySaliencyRGBAString(saliencyValue) {

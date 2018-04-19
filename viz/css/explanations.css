@@ -10,6 +10,13 @@
     margin: 0px;
 }
 
+
+#saliency-question-selector {
+	border-style: none;
+	background: #e0e0e0;
+	text-indent: 5px;
+	padding: 10px 16px;
+}
 /*
 #explanation-control {
     width: 400px;

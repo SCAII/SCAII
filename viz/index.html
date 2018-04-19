@@ -87,14 +87,18 @@
 			<div id="scaii-explanations" class="r1c0_1 bg">
 				<div id="saliency-group" class="flex-row">
 					<div id="saliency-selections" class="flex-column">
-						<div id="saliency-selections-title" class="region-title-grey">Show Saliency Maps For:</div>
+						<div id="saliency-selections-title" class="region-title-grey">Generating Rewards</div>
 						<div id="saliency-checkboxes" class="grid"></div>
 					</div>
 					<div id="saliency-content" class="flex-column">
-						<div class="tab">
+					    <div id="saliency_selector_panel" class="flex-row">
+						    <div id="saliency-question-prompt"></div>
+							<select id="saliency-question-selector" onchange="showSaliencyAnswer()"></select>
+						</div>
+						<!--<div class="tab">
 							<button id="showCombinedSaliencyButton" onclick="showCombinedSaliency(event)">Combined Saliency For Action</button>
 							<button id="showSalienciesButton" onclick="showAllSaliencies(event)">Saliencies For Action</button>
-						</div>
+						</div>-->
 						<div id="saliency-maps-titled-container" class="titled-container flex-column bg"> 
 							<div id="saliency-maps" class="grid"></div>
 						</div>
