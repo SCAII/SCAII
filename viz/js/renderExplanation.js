@@ -121,7 +121,8 @@ function renderExplanationPoint(explPoint){
 	activeBarChartInfo.setDefaultSelections();
 	activeBarChartInfo.renderExplanationBarChart();
 	
-	renderTabActiveActionRewards();
+	populateRewardQuestionSelector();
+	//renderTabActiveActionRewards();
 	populateSaliencyQuestionSelector();
 	//renderTabCombinedSaliency();
 	saliencyDisplayManager.populateCheckBoxes(true);
@@ -136,6 +137,18 @@ function populateSaliencyQuestionSelector(){
 	$("#saliency-question-selector").append($('<option>', {
 			value: 1,
 			text: saliencyQuestionDetailed
+	}));
+}
+
+
+function populateRewardQuestionSelector(){
+	$("#reward-question-selector").append($('<option>', {
+			value: 0,
+			text: rewardQuestionAggregate
+	}));	
+	$("#reward-question-selector").append($('<option>', {
+			value: 1,
+			text: rewardQuestionDetailed
 	}));
 }
 

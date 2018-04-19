@@ -28,8 +28,8 @@
       <script src="js/logUtils.js"></script>
       <script src="js/renderEntities.js"></script>
       <script src="js/saliency.js"></script>
-      <script src="js/renderExplanation.js"></script>
       <script src="js/chart.js"></script>
+      <script src="js/renderExplanation.js"></script>
       <script src="js/gameState.js"></script>
       <script src="js/protobufUtils.js"></script>
 	  <link rel="stylesheet" type="text/css" href="css/tabs.css">
@@ -75,11 +75,12 @@
 				<div id="playback-label" class="left-column-label r5c0"></div>
 				<div id="playback-panel" class="control-panel r5c1"></div>
 			</div>
-			<div id="rewards-titled-container" class="titled-container r0c1 bg">	
-				<div class="tab">
+			<div id="rewards-titled-container" class="titled-container r0c1 bg">
+                <select id="reward-question-selector"  class="question-selector" onchange="showRewardAnswer()"></select>			
+				<!--<div class="tab">
 					<button id="showRewardsPerActionButton" onclick="showRewardsPerAction(event)">Total Rewards Per Action</button>
 					<button id="showRewardsPerRewardTypeButton" onclick="showRewardsPerRewardType(event)">Specific Rewards Per Action</button>
-				</div>
+				</div>-->
 				<!--<div id="rewards-title" class="region-title">Rewards</div>	-->		
 				<div id="explanations-rewards" class="bg"></div>
 			</div>
@@ -91,10 +92,8 @@
 						<div id="saliency-checkboxes" class="grid"></div>
 					</div>
 					<div id="saliency-content" class="flex-column">
-					    <div id="saliency_selector_panel" class="flex-row">
-						    <div id="saliency-question-prompt"></div>
-							<select id="saliency-question-selector" onchange="showSaliencyAnswer()"></select>
-						</div>
+						<select id="saliency-question-selector" class="question-selector" onchange="showSaliencyAnswer()"></select>
+						
 						<!--<div class="tab">
 							<button id="showCombinedSaliencyButton" onclick="showCombinedSaliency(event)">Combined Saliency For Action</button>
 							<button id="showSalienciesButton" onclick="showAllSaliencies(event)">Saliencies For Action</button>

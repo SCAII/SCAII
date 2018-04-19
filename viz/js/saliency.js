@@ -362,14 +362,14 @@ function getNameDivForRow(rowIndex, rowInfo, layerCount){
 // }
 
 
-function renderTabCombinedSaliency() {
-	$("#showCombinedSaliencyButton").addClass("active");
-	$("#showSalienciesButton").removeClass("active");
-}
-function renderTabAllSaliencies() {
-	$("#showSalienciesButton").addClass("active");
-	$("#showCombinedSaliencyButton").removeClass("active");
-}
+// function renderTabCombinedSaliency() {
+	// $("#showCombinedSaliencyButton").addClass("active");
+	// $("#showSalienciesButton").removeClass("active");
+// }
+// function renderTabAllSaliencies() {
+	// $("#showSalienciesButton").addClass("active");
+	// $("#showCombinedSaliencyButton").removeClass("active");
+// }
 
 
 function renderExplanationSaliencyMaps_Bridge(evt) {
