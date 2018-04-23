@@ -3,9 +3,10 @@ body {
     margin: 0px;
 }	
 
-#scaii-interface {
-	width:800px;
+#game-titled-container {
+	width: 500px;
 }
+
 .grid {
 	display: grid;
 	grid-gap: 0px;
@@ -52,6 +53,13 @@ body {
   grid-row-end: 4;
 }
 
+.r2c0_1 {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 3;
+  grid-row-end: 4;
+}
+
 .r2c1 {
   grid-column-start: 2;
   grid-column-end: 3;
@@ -62,6 +70,13 @@ body {
 .r3c0 {
   grid-column-start: 1;
   grid-column-end: 2;
+  grid-row-start: 4;
+  grid-row-end: 5;
+}
+
+.r3c0_1 {
+  grid-column-start: 1;
+  grid-column-end: 3;
   grid-row-start: 4;
   grid-row-end: 5;
 }
@@ -80,6 +95,13 @@ body {
   grid-row-end: 6;
 }
 
+.r4c0_1 {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 5;
+  grid-row-end: 6;
+}
+
 .r4c1 {
   grid-column-start: 2;
   grid-column-end: 3;
@@ -94,6 +116,13 @@ body {
   grid-row-end: 7;
 }
 
+.r5c0_1 {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 6;
+  grid-row-end: 7;
+}
+
 .r5c1 {
   grid-column-start: 2;
   grid-column-end: 3;
@@ -101,6 +130,12 @@ body {
   grid-row-end: 7;
 }
 
+.r6c0_1 {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 7;
+  grid-row-end: 8;
+}
 .r1c0_1 {
   grid-column-start: 1;
   grid-column-end: 3;
@@ -163,7 +198,8 @@ body {
 #scaii-acronym {
 	background-color: #D73F09; /* OSU orange */
 	color: white;
-	padding: 10px 16px;
+	padding: 10px 20px;
+	width:220px;
     /*padding-top: 8px;
 	padding-bottom: 8px;
 	padding-left: 40px;
@@ -171,4 +207,11 @@ body {
 	font-family: Fira Sans;
 	font-size: 18px;
 	font-style: bold;*/
+}
+
+#action-list {
+	position: relative;
+	top: 0;
+	left: 0;
+	max-height: 40px;
 }

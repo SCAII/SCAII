@@ -50,8 +50,8 @@
 				<div id="game-selector-panel" class="r0c1 flex-row">
 					<div id="game-replay-title" class="region-title">replaying:</div>
 					<select id="replay-file-selector" onchange="loadSelectedReplayFile()"></select>
-					
 				</div>
+				
 				<!--<div id="step-control" class="flex-row">
 					<div id="step-control-info class="flex-column">
 						<div id="replay-interval-max" class="minor-label-text">100 (ms)</div>
@@ -60,23 +60,40 @@
 					</div>
 					<div id="replay-speed-panel" class="control-panel"></div>
 				</div>-->
+				
+				<div id="action-list" class="r1c0 grid-center bg grid">
+				</div>
 				<div id="scaii-gameboard" class="r1c1 grid-center bg"></div>
-				<div id="progress-label" class="flex-row r2c0">
+				
+				<div id="playback-controls-panel" class="flex-row r2c0_1">
 					<div id="step-label" class="minor-label-text">step</div>
 					<div id="step-value" class="minor-label-text"></div>
+					<div id="rewind-control"></div>
+					<div id="step-back-control"></div>
+					<div id="step-forward-control"></div>
+					<div id="pause-play-control"></div>
 				</div>
-				<div id="progress-panel" class="control-panel r2c1">
+				
+				<div id="progress-panel" class="timeline-control r3c0_1">
 					<progress id="game-progress" value="00" max="99"></progress>
 				</div>
-				<div id="explanation-control-label" class="left-column-label r3c0"></div>
-				<div id="explanation-control-panel" class="control-panel r3c1"></div>
-				<div id="action-label-div" class="left-column-label r4c0"></div>
-				<div id="action-name-div" class="free-width-label r4c1"></div>
-				<div id="playback-label" class="left-column-label r5c0"></div>
-				<div id="playback-panel" class="control-panel r5c1"></div>
+				<div id="explanation-control-label" class="r4c0_1">Decision Points</div>
+				<div id="explanation-control-panel" class="timeline-control r5c0_1">
+					<!--<input type="button" id="test-button" style="z-index:2; position:relative; top:20px; left:50px" value="?"/>-->
+				</div>
+				<div id="questions-panel" class="r6c0_1 grid">
+				    <div id="why-label" class="r0c0 question-label"></div>
+				    <div id="why-questions" class="r0c1 question-dropdown">
+						<select id="reward-question-selector"  class="question-selector" onchange="showRewardAnswer()"></select>
+					</div>
+					<div id="what-button-div" class="r0c2"></div>
+				    <div id="what-label" class="r1c0 question-label"></div>
+				    <div id="what-questions" class="r1c1 question-dropdown"></div>
+				    
+				</div>
 			</div>
 			<div id="rewards-titled-container" class="titled-container r0c1 bg">
-                <select id="reward-question-selector"  class="question-selector" onchange="showRewardAnswer()"></select>			
+                			
 				<!--<div class="tab">
 					<button id="showRewardsPerActionButton" onclick="showRewardsPerAction(event)">Total Rewards Per Action</button>
 					<button id="showRewardsPerRewardTypeButton" onclick="showRewardsPerRewardType(event)">Specific Rewards Per Action</button>

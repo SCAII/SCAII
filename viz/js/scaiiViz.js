@@ -60,7 +60,7 @@ var main = function () {
 			console.log("calling tryConnect");
 			tryConnect('.', 0);
 		};
-		$("#playback-panel").append(connectButton);
+		$("#playback-controls-panel").append(connectButton);
 		$("#connectButton").css("font-size", "14px");
 	} else {
 		tryConnect('.', 0);

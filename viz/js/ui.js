@@ -22,9 +22,10 @@ pauseResumeButton.setAttribute("id", "pauseResumeButton");
 
 // explanation controls
 var expl_ctrl_canvas = document.createElement("canvas");
+expl_ctrl_canvas.setAttribute("style", "z-index:1")
+expl_ctrl_canvas.setAttribute("id", "expl-control-canvas");
 var expl_ctrl_ctx = expl_ctrl_canvas.getContext("2d");
 expl_ctrl_ctx.imageSmoothingEnabled = false;
-var actionLabel = document.createElement("LABEL");
 var actionNameLabel = document.createElement("LABEL");
 var explanationControlYPosition = 14;
 
@@ -71,9 +72,7 @@ function configureGameboardCanvas(){
 }
 
 function configureLabelContainers() {
-	//configureLabelContainer("#progress-label","14px","progress", "right");
-	configureLabelContainer("#explanation-control-label","14px","explanations", "right");
-	configureLabelContainer("#playback-label","14px","", "right");
+	//configureLabelContainer("#explanation-control-label","14px","explanations", "right");
 }
 
 function configureNavigationButtons(){
@@ -86,7 +85,7 @@ function configureRewindButton(){
 	rewindButton.setAttribute("id", "rewindButton");
 	rewindButton.innerHTML = '<img src="imgs/rewind.png", height="14px" width="14px"/>';
 	rewindButton.onclick = tryRewind;
-	$("#playback-panel").append(rewindButton);
+	$("#rewind-control").append(rewindButton);
 	$("#rewindButton").css("padding-top","4px");
 	$("#rewindButton").css("opacity", "0.6");
 	rewindButton.disabled = true;
@@ -96,7 +95,7 @@ function configurePauseResumeButton(){
 	pauseResumeButton.setAttribute("class", "playbackButton");
 	pauseResumeButton.setAttribute("id", "pauseResumeButton");
 	pauseResumeButton.innerHTML = '<img src="imgs/play.png", height="16px" width="14px"/>';
-	$("#playback-panel").append(pauseResumeButton);
+	$("#pause-play-control").append(pauseResumeButton);
 	$("#pauseResumeButton").css("padding-top","2px");
 	$("#pauseResumeButton").css("padding-bottom","0px");
 	$("#pauseResumeButton").css("margin-left","20px");
@@ -107,32 +106,40 @@ function configurePauseResumeButton(){
 
 function configureNavigationTimeline() {
 	$("#game-progress").click(tryProcessTimelineClick);
+	// $("#test-button").click(function(e) {
+		// e.preventDefault();
+		// $(this).toggleClass('active');
+	// })
+}
+function configureQuestionArea() {
+	clearWhyQuestions();
+	clearWhatQuestions();
 }
 
-function configureExplanationLabels(){
-	actionLabel.setAttribute("id", "action-label");
-	$("#action-label-div").append(actionLabel);
-	$("#action-label").html(" ");
-	//$("#action-label").html("action");
-	actionNameLabel.setAttribute("id", "action-name-label");
-	$("#action-name-div").append(actionNameLabel);
-	$("#action-name-label").html(" ");
+function clearWhyQuestions() {
+	$("#why-label").html(" ");
+	//$("#why-questions").html(" ");
+	$("#what-button").html(" ");
 }
 
+function clearWhatQuestions() {
+	$("#what-label").html(" ");
+	$("#what-questions").html(" ");
+}
 
 function drawExplanationTimeline() {
 	expl_ctrl_ctx.clearRect(0,0, expl_ctrl_canvas.width, expl_ctrl_canvas.height);
 	// just use width of gameboard for now, may need to be bigger
-	var can_width = getTrueGameWidth();
 	
-	expl_ctrl_canvas.width = can_width;
 	expl_ctrl_canvas.height = 30;
 	$("#explanation-control-panel").append(expl_ctrl_canvas);
 	let ctx = expl_ctrl_ctx;
+	var can_width = 500;
 	
+	expl_ctrl_canvas.width = can_width;
 	ctx.beginPath();
-	ctx.moveTo(0,explanationControlYPosition);
-	ctx.lineTo(can_width,explanationControlYPosition);
+	ctx.moveTo(40,explanationControlYPosition);
+	ctx.lineTo(460,explanationControlYPosition);
 	ctx.stroke();
 	ctx.restore();
 }
@@ -147,7 +154,7 @@ function initUI() {
 	configureLabelContainers();
 	configureNavigationButtons();
 	configureNavigationTimeline();
-	configureExplanationLabels();
+	configureQuestionArea();
 }
 
 function clearGameBoards() {
