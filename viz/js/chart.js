@@ -368,6 +368,10 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		}
 		return barGroupWithMaxValue;
 	}
+	barChartInfo.getChosenActionName = function() {
+		var group = this.getMaxValueBarGroup();
+		return group.getName();
+	}
 }
 
 

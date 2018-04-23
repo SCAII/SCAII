@@ -21,7 +21,8 @@ function handleExplDetails(explDetails){
 	if (explDetails.hasExplPoint()){
 		explanationPoint = explDetails.getExplPoint();
 		//console.log('got expl point for step ' + explanationPoint.getStep());
-		renderExplanationPoint(explanationPoint);
+		renderWhyInfo(explanationPoint);
+		//renderExplanationPoint(explanationPoint);
 	}
 	else {
 		console.log("MISSING expl point!");
@@ -104,12 +105,37 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
 	renderExplanationSelectors(replaySessionConfig,selectedExplanationStep);
 });
 
+function renderWhyInfo(explPoint) {
+	activeBarChartInfo = explPoint.getBarChart();
+	addHelperFunctionsToBarChartInfo(activeBarChartInfo);
 
+	//renderActionName(explPoint);
+//	var saliency = explPoint.getSaliency();
+//	saliencyLookupMap = saliency.getSaliencyMapMap();
+	
+	selectionManager = getSelectionManager();
+//	saliencyDisplayManager.setSelectionManager(selectionManager);
+	activeBarChartInfo.setSelectionManager(selectionManager);
+	
+	activeBarChartInfo.setAggregate(true); 
+	activeBarChartInfo.setDefaultSelections();
+	activeBarChartInfo.renderExplanationBarChart();
+	var whyPrompt = "Why " + activeBarChartInfo.getChosenActionName() + ":";
+	$("#why-label").html(whyPrompt);
+	$("#why-label").css("font-size", 14);
+	populateRewardQuestionSelector();
+	addWhatButtonForAction();
+	//renderTabActiveActionRewards();
+//	populateSaliencyQuestionSelector();
+	//renderTabCombinedSaliency();
+//	saliencyDisplayManager.populateCheckBoxes(true);
+//	saliencyDisplayManager.displayAnswerToSaliencyQuestion();
+}
 function renderExplanationPoint(explPoint){
 	activeBarChartInfo = explPoint.getBarChart();
 	addHelperFunctionsToBarChartInfo(activeBarChartInfo);
 
-	renderActionName(explPoint);
+	//renderActionName(explPoint);
 	var saliency = explPoint.getSaliency();
 	saliencyLookupMap = saliency.getSaliencyMapMap();
 	
@@ -187,7 +213,14 @@ function getExplanationBox(left_x,right_x, upper_y, lower_y, step){
 }
 
 function renderExplanationSelectors(rsc, selectedStep) {
-	explanationBoxMap = {};
+	$("#action-list").empty();
+	var decisionsLabel = document.createElement("LABEL");
+	decisionsLabel.setAttribute("id", "decisions-label");
+	decisionsLabel.setAttribute("style", getGridPositionStyle(1,0) + ';height: 30px; padding-top:10px;font-size: 18px;font-weight: bold;');
+				
+	$("#action-list").append(decisionsLabel);
+	$("#decisions-label").text("Decisions");
+	//explanationBoxMap = {};
 	var explanation_steps = rsc.getExplanationStepsList();
 	var explanation_titles = rsc.getExplanationTitlesList();
 	//console.log("explanation count is " + explanation_steps.length);
@@ -200,18 +233,63 @@ function renderExplanationSelectors(rsc, selectedStep) {
 			selected = true;
 		}
 		var title = explanation_titles[index];
-		configureExplanationSelector(rsc.getStepCount(), step, title, selected);
+		var uiIndex =index + 1;
+		addLabelForAction(title, uiIndex);
+		addWhyButtonForAction(uiIndex);
+		configureExplanationSelector(uiIndex, rsc.getStepCount(), step, title, selected);
 		index = index + 1;
 	}
 }
 
-var configureExplanationSelector = function(step_count, step, title, selected){
+function addWhyButtonForAction(index) {
+	var gridIndex = index;
+	var whyButton = document.createElement("BUTTON");
+	var buttonId = "whyButton_" + gridIndex;
+	whyButton.setAttribute("id", buttonId);
+	var why = document.createTextNode("why?");
+	whyButton.appendChild(why);          
+	whyButton.setAttribute("style", getGridPositionStyle(2,index) + ';margin-left: 40px;');
+	
+	$("#action-list").append(whyButton);
+	$("#" + buttonId).click(function(e) {
+		 e.preventDefault();
+		 $(this).toggleClass('active');
+	})
+}
+
+function addWhatButtonForAction() {
+	var whatButton = document.createElement("BUTTON");
+	var buttonId = "whatButton";
+	whatButton.setAttribute("id", buttonId);
+	var what = document.createTextNode("what?");
+	whatButton.appendChild(what);          
+	whatButton.setAttribute("style", "padding-top:6px; padding-left:6px; padding-bottom:6px; padding-right: 6px;");
+	
+	$("#what-button-div").append(whatButton);
+	$("#" + buttonId).click(function(e) {
+		 e.preventDefault();
+		 $(this).toggleClass('active');
+	})
+}
+function addLabelForAction(title, index){
+	var actionLabel = document.createElement("LABEL");
+	var nameNoSpaces = title.replace(/ /g,"");
+	var nameForId = nameNoSpaces.replace(/,/g,"");
+	nameForId = nameForId + "actionLabel";
+	actionLabel.setAttribute("id", nameForId);
+	actionLabel.setAttribute("style", getGridPositionStyle(1,index) + ';height: 30; padding-top:10px;');
+	var html = index + '.   ' + title;
+	actionLabel.innerHTML = html;
+	$("#action-list").append(actionLabel);
+}
+
+var configureExplanationSelector = function(uiIndex, step_count, step, title, selected){
 	var totalWidth = expl_ctrl_canvas.width;
 	var rectWidth = totalWidth / step_count;
-	var leftX = rectWidth * step;
-	var rightX = rectWidth * (step + 1);
+	var leftX = rectWidth * step + rectWidth/2;
+	var rightX = rectWidth * (step + 1)  + rectWidth/2;
 	var upperLeftX = leftX;
-	var distFromLine = 8
+	var distFromLine = 12
 	var upperLeftY = explanationControlYPosition - distFromLine;
 	var ctx = expl_ctrl_ctx;
 	ctx.beginPath();
@@ -241,6 +319,12 @@ var configureExplanationSelector = function(step_count, step, title, selected){
 	ctx.closePath();
 	ctx.fill();
 	
+	ctx.font = "20px Arial bold";
+	ctx.fillStyle = 'black';
+	var textCenterX = ((rightVertexX - leftVertexX) / 2) + leftVertexX - 8;
+	var textCenterY = explanationControlYPosition + 5;
+	ctx.fillText(uiIndex,textCenterX,textCenterY);
+
 	var rectHeight = distFromLine + distFromLine + 1;
 	//ctx.rect(upper_left_x, upper_left_y, rect_width, rect_height);
 	var eBox = getExplanationBox(leftX,rightX,upperLeftY, upperLeftY + rectHeight, step);
