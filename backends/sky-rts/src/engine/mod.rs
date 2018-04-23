@@ -48,7 +48,7 @@ impl<'a, 'b> Rts<'a, 'b> {
     /// Initializes a new RTS with all systems, components, and resources.
     pub fn new() -> Self {
         use self::systems::{AttackSystem, CleanupSystem, CollisionSystem, InputSystem, MoveSystem,
-                            RenderSystem, StateBuildSystem};
+                            RenderSystem, SpawnSystem, StateBuildSystem};
         use std::sync::Arc;
         use rayon::ThreadPoolBuilder;
 
@@ -65,6 +65,7 @@ impl<'a, 'b> Rts<'a, 'b> {
 
         let simulation_builder: Dispatcher = DispatcherBuilder::new()
             .with_pool(pool.clone())
+            .add(SpawnSystem::default(), "spawn", &[])
             .add(InputSystem::new(), "input", &[])
             .add(MoveSystem::new(), "movement", &["input"])
             .add(CollisionSystem, "collision", &["movement"])
@@ -225,6 +226,7 @@ impl<'a, 'b> Rts<'a, 'b> {
         // Ensure changes and render
         self.world.maintain();
         self.sim_systems.dispatch_seq(&self.world.res);
+        self.world.maintain(); // for spawn
         self.lua_sys.run_now(&self.world.res);
         self.out_systems.dispatch_seq(&self.world.res);
 
@@ -346,6 +348,7 @@ impl<'a, 'b> Rts<'a, 'b> {
         }
 
         self.sim_systems.dispatch_seq(&self.world.res);
+        self.world.maintain();
         self.lua_sys.run_now(&self.world.res);
         self.out_systems.dispatch_seq(&self.world.res);
 
@@ -413,14 +416,22 @@ impl<'a, 'b> Rts<'a, 'b> {
     /// serialized.
     pub fn deserialize(&mut self, buf: Vec<u8>) -> MultiMessage {
         use scaii_defs::protos;
+        use engine::resources::Deserializing;
+        self.world.write_resource::<Deserializing>().0 = true;
+
         self.initialized = false;
-        // self.world.delete_all();
+
+        // self.world.delete_all() workaround, currently bugged
+        // in specs
         for entity in self.world.entities().join() {
-            println!("{:?}", entity);
             assert!(self.world.entities().is_alive(entity));
-            self.world.entities().delete(entity).expect("Could not delete");
+            self.world
+                .entities()
+                .delete(entity)
+                .expect("Could not delete");
         }
         self.world.maintain();
+
         self.world.write_resource::<SerializeBytes>().0 = buf;
 
         self.de_system.run_now(&self.world.res);
@@ -454,6 +465,7 @@ impl<'a, 'b> Rts<'a, 'b> {
             packets.push(render_packet);
         }
 
+        self.world.write_resource::<Deserializing>().0 = false;
         MultiMessage { packets }
     }
 

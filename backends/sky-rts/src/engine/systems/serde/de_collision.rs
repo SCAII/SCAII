@@ -22,8 +22,7 @@ impl<'a> System<'a> for RedoCollisionSys {
     type SystemData = RedoCollisionSysData<'a>;
 
     fn run(&mut self, mut sys_data: Self::SystemData) {
-        let c_world = &mut *sys_data.col_world;
-        *c_world = SkyCollisionWorld::new(0.02);
+        *sys_data.col_world = SkyCollisionWorld::new(0.02);
         let type_map = &*sys_data.u_types;
 
         for (pos, tag, faction, id) in (
@@ -41,10 +40,10 @@ impl<'a> System<'a> for RedoCollisionSys {
                 faction.0,
                 &mut sys_data.c_handle,
                 &mut sys_data.atk_radius,
-                c_world,
+                &mut *sys_data.col_world,
             );
         }
 
-        c_world.update();
+        sys_data.col_world.update();
     }
 }

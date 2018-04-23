@@ -31,6 +31,7 @@ class SkyState(State):
 
         faction_ids = state[:, :, 3].astype(np.int)
         self.factions = np.unique(faction_ids)
+        print(self.factions)
         self.state[:, :, 4:] = np.equal.outer(
             faction_ids, np.unique(faction_ids)).astype(np.float)[:, :, 1:]
 

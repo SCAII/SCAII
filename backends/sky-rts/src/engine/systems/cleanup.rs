@@ -1,10 +1,13 @@
 use specs::prelude::*;
-use engine::components::{AttackSensor, CollisionHandle, DealtDamage, Death, HpChange, MovedFlag};
+use engine::components::{AttackSensor, CollisionHandle, DealtDamage, Death, Delete, HpChange,
+                         MovedFlag, Spawned};
 use engine::resources::SkyCollisionWorld;
 
 #[derive(SystemData)]
 pub struct CleanupSystemData<'a> {
     death: WriteStorage<'a, Death>,
+    delete: WriteStorage<'a, Delete>,
+    spawned: WriteStorage<'a, Spawned>,
     moved: WriteStorage<'a, MovedFlag>,
     dealt_dmg: WriteStorage<'a, DealtDamage>,
     hp_change: WriteStorage<'a, HpChange>,
@@ -15,6 +18,7 @@ pub struct CleanupSystemData<'a> {
     atk_radius: ReadStorage<'a, AttackSensor>,
 }
 
+#[derive(Default)]
 pub struct CleanupSystem;
 
 impl<'a> System<'a> for CleanupSystem {
@@ -24,12 +28,25 @@ impl<'a> System<'a> for CleanupSystem {
         sys_data.moved.clear();
         sys_data.dealt_dmg.clear();
         sys_data.hp_change.clear();
+        sys_data.spawned.clear();
 
         for (id, col_handle, atk_radius, _) in (
             &*sys_data.entities,
             &sys_data.col_handle,
             &sys_data.atk_radius,
             sys_data.death.drain(),
+        ).join()
+        {
+            sys_data.entities.delete(id).unwrap();
+
+            sys_data.collision_sys.remove(&[col_handle.0, atk_radius.0]);
+        }
+
+        for (id, col_handle, atk_radius, _) in (
+            &*sys_data.entities,
+            &sys_data.col_handle,
+            &sys_data.atk_radius,
+            sys_data.delete.drain(),
         ).join()
         {
             sys_data.entities.delete(id).unwrap();

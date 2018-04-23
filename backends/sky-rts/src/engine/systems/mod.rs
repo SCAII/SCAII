@@ -7,6 +7,7 @@ pub mod collision;
 pub mod cleanup;
 pub mod state;
 pub mod serde;
+pub mod spawn;
 
 pub use self::movement::MoveSystem;
 pub use self::proto_render::RenderSystem;
@@ -17,3 +18,4 @@ pub use self::collision::CollisionSystem;
 pub use self::cleanup::CleanupSystem;
 pub use self::state::StateBuildSystem;
 pub use self::serde::{DeserializeSystem, SerializeSystem};
+pub use self::spawn::SpawnSystem;

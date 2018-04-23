@@ -1,11 +1,13 @@
 use std::collections::{HashMap, HashSet};
 
 use super::FactionId;
-use super::components::{AttackSensor, CollisionHandle, Color, Hp, Pos, Shape};
+use engine::components::{AttackSensor, CollisionHandle, Color, Hp, Movable, Pos, Shape, Speed,
+                         Static, UnitTypeTag};
 
 use scaii_defs::protos::{Action, State, Viz};
 
 use specs::prelude::*;
+use specs::world::LazyBuilder;
 
 pub mod collision;
 
@@ -64,6 +66,8 @@ pub(super) fn register_world_resources(world: &mut World) {
     world.add_resource(LuaPath(None));
     world.add_resource(ReplayMode(false));
     world.add_resource(RewardTypes::default());
+    world.add_resource(SpawnBuffer::default());
+    world.add_resource(Deserializing(false));
 }
 
 #[derive(Default, Debug, Clone, PartialEq)]
@@ -158,22 +162,41 @@ impl Default for UnitType {
 }
 
 impl UnitType {
+    pub fn build_entity(
+        &self,
+        world: &mut World,
+        pos: Pos,
+        curr_hp: Option<f64>,
+        faction: usize,
+    ) -> Entity {
+        let lazy_update = world.read_resource::<LazyUpdate>();
+        let lazy_build = lazy_update.create_entity(&world.entities());
+
+        let players = &**world.read_resource::<Vec<Player>>();
+
+        self.build_entity_lazy(lazy_build, &*lazy_update, pos, curr_hp, faction, players)
+    }
+
     /// Creates and places the unit in the game world given its initial
     /// position and faction.
     ///
     /// This also initializes anything it needs such as colliders in the collision system.
-    pub fn build_entity(&self, world: &mut World, pos: Pos, curr_hp: Option<f64>, faction: usize) {
+    pub fn build_entity_lazy(
+        &self,
+        entity: LazyBuilder,
+        update: &LazyUpdate,
+        pos: Pos,
+        curr_hp: Option<f64>,
+        faction: usize,
+        players: &[Player],
+    ) -> Entity {
         use specs::saveload::U64Marker;
 
-        use engine::components::{AttackSensor, CollisionHandle, Movable, Speed, Static,
-                                 UnitTypeTag};
-
-        let color = { world.read_resource::<Vec<Player>>()[faction].color };
+        let color = players[faction].color;
 
         // Scoping for borrow shenanigans
         let entity = {
-            let entity = world
-                .create_entity()
+            let entity = entity
                 .with(pos)
                 .with(self.shape)
                 .with(color)
@@ -192,20 +215,24 @@ impl UnitType {
             }
         }.build();
 
-        let mut col_storage = world.write::<CollisionHandle>();
+        let me = self.clone();
 
-        let mut atk_storage = world.write::<AttackSensor>();
+        update.execute(move |world| {
+            let mut col_storage = world.write::<CollisionHandle>();
+            let mut atk_storage = world.write::<AttackSensor>();
 
-        let c_world = &mut *world.write_resource();
+            let mut c_world = world.write_resource();
+            me.register_collision(
+                entity,
+                pos,
+                faction,
+                &mut col_storage,
+                &mut atk_storage,
+                &mut *c_world,
+            );
+        });
 
-        self.register_collision(
-            entity,
-            pos,
-            faction,
-            &mut col_storage,
-            &mut atk_storage,
-            c_world,
-        )
+        entity
     }
 
     /// Registers a unit with the collision system based on its unit type
@@ -218,7 +245,7 @@ impl UnitType {
         col_storage: &mut WriteStorage<CollisionHandle>,
         atk_storage: &mut WriteStorage<AttackSensor>,
         c_world: &mut SkyCollisionWorld,
-    ) {
+    ) -> Entity {
         use ncollide::shape::{Ball, Cuboid, Cylinder, ShapeHandle};
         use ncollide::world::{CollisionGroups, GeometricQueryType};
         use nalgebra::{Isometry2, Vector2};
@@ -300,6 +327,10 @@ impl UnitType {
 
         col_storage.insert(entity, CollisionHandle(collider));
         atk_storage.insert(entity, AttackSensor(atk_radius));
+
+        c_world.update();
+
+        entity
     }
 }
 
@@ -334,3 +365,18 @@ impl Default for RewardTypes {
         RewardTypes(map)
     }
 }
+
+#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+pub struct Spawn {
+    pub delay: u64,
+    pub pos: super::components::Pos,
+    pub curr_hp: Option<f64>,
+    pub faction: usize,
+    pub u_type: String,
+}
+
+#[derive(Clone, PartialEq, Debug, Default, Serialize, Deserialize)]
+pub struct SpawnBuffer(pub Vec<Spawn>);
+
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Default)]
+pub struct Deserializing(pub bool);

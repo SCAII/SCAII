@@ -7,8 +7,10 @@ use std::error::Error;
 use std::path::Path;
 use std::fmt::Debug;
 
-use engine::components::{DealtDamage, Death, FactionId, HpChange, UnitTypeTag};
-use engine::resources::{MaxStep, Reward, RewardTypes, Skip, Step, Terminal, UnitTypeMap};
+use rand::Isaac64Rng;
+use engine::components::{DealtDamage, Death, Delete, FactionId, Hp, HpChange, Spawned, UnitTypeTag};
+use engine::resources::{MaxStep, Reward, RewardTypes, Skip, SpawnBuffer, Step, Terminal,
+                        UnitTypeMap};
 
 pub(crate) mod userdata;
 
@@ -19,6 +21,9 @@ pub struct LuaSystemData<'a> {
     tag: ReadStorage<'a, UnitTypeTag>,
     dmg_dealt: ReadStorage<'a, DealtDamage>,
     hp_change: ReadStorage<'a, HpChange>,
+    hp: ReadStorage<'a, Hp>,
+    spawned: ReadStorage<'a, Spawned>,
+    ids: Entities<'a>,
 
     step: Fetch<'a, Step>,
     max_step: Fetch<'a, MaxStep>,
@@ -28,6 +33,9 @@ pub struct LuaSystemData<'a> {
     skip: FetchMut<'a, Skip>,
     reward: FetchMut<'a, Reward>,
     terminal: FetchMut<'a, Terminal>,
+    spawn_buf: FetchMut<'a, SpawnBuffer>,
+    rng: FetchMut<'a, Isaac64Rng>,
+    delete: WriteStorage<'a, Delete>,
 }
 
 pub struct LuaSystem {
@@ -40,18 +48,32 @@ impl<'a> System<'a> for LuaSystem {
     type SystemData = LuaSystemData<'a>;
 
     fn run(&mut self, mut sys_data: Self::SystemData) {
-        use self::userdata::{UserDataReadWorld, UserDataUnit, UserDataWorld};
+        use self::userdata::{UserDataReadWorld, UserDataRng, UserDataUnit, UserDataWorld};
 
-        let world = UserDataWorld::default();
+        let world = UserDataWorld::new(UserDataRng {
+            rng: &mut *sys_data.rng,
+        });
         self.lua.globals().set("__sky_world", world).unwrap();
 
-        for (faction, tag, death) in (&sys_data.faction, &sys_data.tag, &sys_data.death).join() {
+        for (faction, tag, hp, death) in (
+            &sys_data.faction,
+            &sys_data.tag,
+            &sys_data.hp,
+            &sys_data.death,
+        ).join()
+        {
             let killer_faction = sys_data.faction.get(death.killer).unwrap();
             let friendly_kill = faction == killer_faction;
 
-            let unit1 = UserDataUnit { faction: *faction };
+            let unit1 = UserDataUnit {
+                faction: *faction,
+                u_type: tag.0.clone(),
+                hp: *hp,
+            };
             let unit2 = UserDataUnit {
                 faction: *killer_faction,
+                u_type: tag.0.clone(),
+                hp: *hp,
             };
 
             self.lua.globals().set("__sky_u1", unit1).unwrap();
@@ -80,6 +102,25 @@ impl<'a> System<'a> for LuaSystem {
                     .entry(u_type.kill_type.clone())
                     .or_insert(0.0) += u_type.kill_reward;
             }
+        }
+
+        for (faction, u_type, hp, _) in (
+            &sys_data.faction,
+            &sys_data.tag,
+            &sys_data.hp,
+            &sys_data.spawned,
+        ).join()
+        {
+            let unit = UserDataUnit {
+                faction: *faction,
+                u_type: u_type.0.clone(),
+                hp: *hp,
+            };
+            println!("LUASYS: Spawned {:?} {:?}", faction, u_type);
+            self.lua.globals().set("__sky_u1", unit).unwrap();
+            self.lua
+                .exec::<()>("on_spawn(__sky_world, __sky_u1)", Some("calling on_spawn"))
+                .unwrap();
         }
 
         for (dmg_dealt, tag, _) in (&sys_data.dmg_dealt, &sys_data.tag, &sys_data.faction)
@@ -124,9 +165,18 @@ impl<'a> System<'a> for LuaSystem {
             }
         }
 
-        let world: UserDataWorld = self.lua.globals().get("__sky_world").unwrap();
+        let mut world: UserDataWorld<Isaac64Rng> = self.lua.globals().get("__sky_world").unwrap();
         if world.victory.is_some() {
             sys_data.terminal.0 = true;
+        }
+
+        if world.delete_all {
+            for id in sys_data.ids.join() {
+                if sys_data.death.get(id).is_some() {
+                    continue;
+                }
+                sys_data.delete.insert(id, Delete);
+            }
         }
 
         let r_types = &sys_data.r_types.0;
@@ -135,6 +185,8 @@ impl<'a> System<'a> for LuaSystem {
             *sys_data.reward.0.entry(r_type).or_insert(0.0) += reward;
         }
 
+        sys_data.spawn_buf.0.extend(world.spawn.drain(..));
+
         if sys_data
             .max_step
             .0
@@ -142,6 +194,10 @@ impl<'a> System<'a> for LuaSystem {
             .unwrap_or(false)
         {
             sys_data.terminal.0 = true;
+        }
+
+        if world.override_skip {
+            *sys_data.skip = Skip(false, None);
         }
 
         if sys_data.skip.0 {
