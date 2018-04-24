@@ -361,8 +361,13 @@ function getRowInfoString(rowInfo) {
 	
 function getNameDivForRow(rowIndex, rowInfo, layerCount){
 	var nameContainerDiv = document.createElement("div");
-	nameContainerDiv.innerHTML = getRowInfoString(rowInfo);
-	nameContainerDiv.setAttribute("style", getGridPositionStyle(0,rowIndex) + '; width:200px; margin:auto; text-align:center;');
+	nameContainerDiv.setAttribute("style", getGridPositionStyle(0,rowIndex) + '; width:200px; height:100%;  vertical-align:middle; border-style: solid; border-width:1px;');
+	
+	
+	var nameContainerContentDiv = document.createElement("div");
+	nameContainerContentDiv.innerHTML = getRowInfoString(rowInfo);
+	nameContainerContentDiv.setAttribute("style", '; text-align:center; padding-top:80px;');
+	nameContainerDiv.append(nameContainerContentDiv);
 	return nameContainerDiv;
 }
 
