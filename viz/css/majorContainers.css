@@ -170,7 +170,8 @@ body {
 	justify-content: center;
 }
 .bg {
-	background-color: lightgrey;
+  /*background-color: lightgrey;*/
+  background-color: #eeeeee;
 }
 
 .titled-container {
@@ -180,14 +181,6 @@ body {
 	border-color: #404040;
 }
 
-.region-title-grey {
-	background-color: lightgrey;
-	padding-left: 16px;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	padding-right: 6px;
-	margin: 0px;
-}
 
 .region-title {
 	background-color: white;
