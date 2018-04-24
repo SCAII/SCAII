@@ -168,7 +168,7 @@ function createRewardChartContainer() {
 	rewardsTitle.setAttribute("class", "rewards-bg");
 	rewardsTitle.setAttribute("style", "margin:auto;");
 	$("#rewards-titled-container").append(rewardsTitle);
-	$("#rewards-title").html("Rewards and Punishments Were Learned");
+	$("#rewards-title").html("Predicted Rewards");
 
 	var explanationRewards = document.createElement("DIV");
 	explanationRewards.setAttribute("id", "explanations-rewards");
@@ -397,7 +397,7 @@ function addWhatButtonForAction() {
 	var whatButton = document.createElement("BUTTON");
 	var buttonId = getWhatButtonId();
 	whatButton.setAttribute("id", buttonId);
-	var what = document.createTextNode("what?");
+	var what = document.createTextNode("what was relevant?");
 	whatButton.appendChild(what);    
 	//whatButton.onclick = renderWhatInfo;      
 	whatButton.setAttribute("style", "padding-top:6px; padding-left:6px; padding-bottom:6px; padding-right: 6px;");
