@@ -79,11 +79,7 @@
     background-color:#C4D6A4; /* OSU reindeer moss */
 }
 
-
-.Button:saliency-active, .saliency-active {
-    background-color:#C6DAE7; /* OSU moondust */
-    color: black;
-}
 .saliencies-bg {
-	background-color:#C6DAE7; /* OSU moondust */
+	/*background-color:#C6DAE7; /* OSU moondust */
+	background-color:#E0E0E0; /* OSU moondust */
 }

@@ -6,7 +6,8 @@ var gameboardHeight;
 var gameboard_canvas = document.createElement("canvas");
 var gameboard_ctx = gameboard_canvas.getContext("2d");
 //var game_background_color = "#123456";
-var game_background_color = "#fafafa";
+var game_background_color = "#000000";
+//var game_background_color = "#fafafa";
 
 var timeline_canvas = document.createElement("canvas");
 var timeline_ctx = timeline_canvas.getContext("2d");
@@ -113,7 +114,7 @@ function configureNavigationTimeline() {
 }
 function configureQuestionArea() {
 	clearWhyQuestions();
-	clearWhatQuestions();
+	//clearWhatQuestions();
 }
 
 function clearWhyQuestions() {
@@ -122,10 +123,10 @@ function clearWhyQuestions() {
 	$("#what-button").html(" ");
 }
 
-function clearWhatQuestions() {
-	$("#what-label").html(" ");
-	$("#what-questions").html(" ");
-}
+//function clearWhatQuestions() {
+//	$("#what-label").html(" ");
+//	$("#what-questions").html(" ");
+//}
 
 function drawExplanationTimeline() {
 	expl_ctrl_ctx.clearRect(0,0, expl_ctrl_canvas.width, expl_ctrl_canvas.height);

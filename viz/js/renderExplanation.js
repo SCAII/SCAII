@@ -12,7 +12,6 @@ var questionMarkButtonIds =[];
 var activeExplanationPoint = undefined;
 
 function clearExplanationInfo() {
-	$("#saliency-maps").empty();
 	$("#explanations-rewards").empty();
 	$("#action-name-label").html(" ");
 	$("#saliency-checkboxes").empty();
@@ -24,12 +23,12 @@ function clearExplanationInfo() {
 	rewardsAreShowing = false;
 	if (salienciesAreShowing) {
 		clearSaliencies();
-		salienciesAreShowing = false;
 	}
 }
 
 function clearSaliencies() {
-
+	$("#scaii-explanations").remove();
+	salienciesAreShowing = false;
 }
 function clearQuestionControls(){
 	$("#why-questions").empty();
@@ -154,20 +153,45 @@ function renderWhatInfo() {
 	createSaliencyContainers();
 	saliencyDisplayManager.setSelectionManager(selectionManager);
     saliencyDisplayManager.populateCheckBoxes(true);
-    saliencyDisplayManager.displayAnswerToSaliencyQuestion();
+	saliencyDisplayManager.displayAnswerToSaliencyQuestion();
+	salienciesAreShowing = true;
 }
 function createRewardChartContainer() {
 	var rewardTitleContainer = document.createElement("DIV");
 	rewardTitleContainer.setAttribute("id", "rewards-titled-container");
-	rewardTitleContainer.setAttribute("class", "titled-container r0c1 rewards-bg");
+	rewardTitleContainer.setAttribute("class", "flex-column titled-container r0c1 rewards-bg");
 	$("#scaii-interface").append(rewardTitleContainer);
 
 	
+	var rewardsTitle = document.createElement("DIV");
+	rewardsTitle.setAttribute("id", "rewards-title");
+	rewardsTitle.setAttribute("class", "rewards-bg");
+	rewardsTitle.setAttribute("style", "margin:auto;");
+	$("#rewards-titled-container").append(rewardsTitle);
+	$("#rewards-title").html("Rewards and Punishments Were Learned");
+
 	var explanationRewards = document.createElement("DIV");
 	explanationRewards.setAttribute("id", "explanations-rewards");
 	explanationRewards.setAttribute("class", "rewards-bg");
-	explanationRewards.setAttribute("style", "margin-left:20px; margin-top:20px; margin-right: 20px;");
+	explanationRewards.setAttribute("style", "margin-left:20px; margin-right: 20px;");
 	$("#rewards-titled-container").append(explanationRewards);
+
+	var whatDiv = document.createElement("DIV");
+	whatDiv.setAttribute("id", "what-div");
+	whatDiv.setAttribute("class", "flex-row rewards-bg question-dropdown");
+	whatDiv.setAttribute("style", "margin:auto;");
+	$("#rewards-titled-container").append(whatDiv);
+
+	var whatButtonDiv = document.createElement("DIV");
+	whatButtonDiv.setAttribute("id", "what-button-div");
+	whatButtonDiv.setAttribute("class", "rewards-bg");
+	//whatButtonDiv.setAttribute("style", "margin:auto;");
+	$("#what-div").append(whatButtonDiv);
+	
+	var whatQuestionDiv = document.createElement("DIV");
+	whatQuestionDiv.setAttribute("id", "what-questions");
+	whatQuestionDiv.setAttribute("class", "rewards-bg");
+	$("#what-div").append(whatQuestionDiv);
 }
 
 function createSaliencyContainers() {
@@ -375,7 +399,7 @@ function addWhatButtonForAction() {
 	whatButton.setAttribute("id", buttonId);
 	var what = document.createTextNode("what?");
 	whatButton.appendChild(what);    
-	whatButton.onclick = renderWhatInfo;      
+	//whatButton.onclick = renderWhatInfo;      
 	whatButton.setAttribute("style", "padding-top:6px; padding-left:6px; padding-bottom:6px; padding-right: 6px;");
 	
 	$("#what-button-div").append(whatButton);
@@ -431,21 +455,18 @@ function processWhyClick(step) {
 	 $("#" + whyButtonId).toggleClass('active');
 	 $("#why-questions").toggleClass('active');
 	 $("#why-label").toggleClass('active');
-	 $("#what-button-div").toggleClass('active');
 }
 
 function processWhatClick() {
 	if (salienciesAreShowing) {
 		clearSaliencies();
-		salienciesAreShowing = false;
 	 }
 	 else {
-		showSaliencyAnswer();
-		salienciesAreShowing = true;
+		renderWhatInfo();
 	 }
 	 var whatButtonId = getWhatButtonId();
-	 $("#" + whatButtonId).toggleClass('saliency-active');
-	 $("#what-questions").toggleClass('salienc-active');
+	 //$("#" + whatButtonId).toggleClass('active');
+	 $("#what-questions").toggleClass('saliency-active');
 	 $("#what-label").toggleClass('saliency-active');
 }
 
