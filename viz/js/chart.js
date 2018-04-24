@@ -264,7 +264,9 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 	}
 	
 	barChartInfo.renderExplanationBarChart = function() {
-		$("#explanations-rewards").empty();
+		if ($("#explanations-rewards").length) {
+			$("#explanations-rewards").empty();
+		}
 		var options = this.getOptionsForBarChartMessage();
 		var chartTable = this.getTableForGoogleChart();
 		if (chartTable == undefined){

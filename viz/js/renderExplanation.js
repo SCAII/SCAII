@@ -9,6 +9,7 @@ var selectionManager;
 var rewardsAreShowing = false;
 var salienciesAreShowing = false;
 var questionMarkButtonIds =[];
+var activeExplanationPoint = undefined;
 
 function clearExplanationInfo() {
 	$("#saliency-maps").empty();
@@ -17,8 +18,19 @@ function clearExplanationInfo() {
 	$("#saliency-checkboxes").empty();
 	removeStaleQuestionMarkButtons();
 	clearQuestionControls();
+	if ($("#rewards-titled-container").length) {
+		$("#rewards-titled-container").remove();
+	}
+	rewardsAreShowing = false;
+	if (salienciesAreShowing) {
+		clearSaliencies();
+		salienciesAreShowing = false;
+	}
 }
 
+function clearSaliencies() {
+
+}
 function clearQuestionControls(){
 	$("#why-questions").empty();
 	$("#what-button-div").empty();
@@ -117,31 +129,96 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
 });
 
 function renderWhyInfo(explPoint) {
+	activeExplanationPoint = explPoint;
 	activeBarChartInfo = explPoint.getBarChart();
 	addHelperFunctionsToBarChartInfo(activeBarChartInfo);
 
-	//renderActionName(explPoint);
-//	var saliency = explPoint.getSaliency();
-//	saliencyLookupMap = saliency.getSaliencyMapMap();
-	
 	selectionManager = getSelectionManager();
-//	saliencyDisplayManager.setSelectionManager(selectionManager);
 	activeBarChartInfo.setSelectionManager(selectionManager);
 	
 	activeBarChartInfo.setAggregate(true); 
 	activeBarChartInfo.setDefaultSelections();
+	createRewardChartContainer();
 	activeBarChartInfo.renderExplanationBarChart();
 	var whyPrompt = "Why " + activeBarChartInfo.getChosenActionName() + ":";
 	$("#why-label").html(whyPrompt);
 	$("#why-label").css("font-size", 14);
 	populateRewardQuestionSelector();
 	addWhatButtonForAction();
-	//renderTabActiveActionRewards();
-//	populateSaliencyQuestionSelector();
-	//renderTabCombinedSaliency();
-//	saliencyDisplayManager.populateCheckBoxes(true);
-//	saliencyDisplayManager.displayAnswerToSaliencyQuestion();
 }
+
+function renderWhatInfo() {
+    var saliency = activeExplanationPoint.getSaliency();
+    saliencyLookupMap = saliency.getSaliencyMapMap();
+	populateSaliencyQuestionSelector();
+	createSaliencyContainers();
+	saliencyDisplayManager.setSelectionManager(selectionManager);
+    saliencyDisplayManager.populateCheckBoxes(true);
+    saliencyDisplayManager.displayAnswerToSaliencyQuestion();
+}
+function createRewardChartContainer() {
+	var rewardTitleContainer = document.createElement("DIV");
+	rewardTitleContainer.setAttribute("id", "rewards-titled-container");
+	rewardTitleContainer.setAttribute("class", "titled-container r0c1 rewards-bg");
+	$("#scaii-interface").append(rewardTitleContainer);
+
+	
+	var explanationRewards = document.createElement("DIV");
+	explanationRewards.setAttribute("id", "explanations-rewards");
+	explanationRewards.setAttribute("class", "rewards-bg");
+	explanationRewards.setAttribute("style", "margin-left:20px; margin-top:20px; margin-right: 20px;");
+	$("#rewards-titled-container").append(explanationRewards);
+}
+
+function createSaliencyContainers() {
+	var scaiiExplanations = document.createElement("DIV");
+	scaiiExplanations.setAttribute("id", "scaii-explanations");
+	scaiiExplanations.setAttribute("class", "r1c0_2 saliencies-bg");
+	$("#scaii-interface").append(scaiiExplanations);
+
+	var saliencyGroup = document.createElement("DIV");
+	saliencyGroup.setAttribute("id", "saliency-group");
+	saliencyGroup.setAttribute("class", "flex-row saliencies-bg");
+	//saliencyGroup.setAttribute("style", "margin-left:20px; margin-top:20px; margin-right: 20px;");
+	$("#scaii-explanations").append(saliencyGroup);
+
+	var saliencySelections = document.createElement("DIV");
+	saliencySelections.setAttribute("id", "saliency-selections");
+	saliencySelections.setAttribute("class", "flex-column  saliencies-bg");
+	$("#saliency-group").append(saliencySelections);
+
+
+	var saliencySelectionsTitle = document.createElement("DIV");
+	saliencySelectionsTitle.setAttribute("id", "saliency-selections-title");
+	saliencySelectionsTitle.setAttribute("class", "saliencies-bg");
+	saliencySelectionsTitle.html = 'Generating Rewards';
+	$("#saliency-selections").append(saliencySelectionsTitle);
+	
+	var saliencyCheckboxes = document.createElement("DIV");
+	saliencyCheckboxes.setAttribute("id", "saliency-checkboxes");
+	saliencyCheckboxes.setAttribute("class", "grid saliencies-bg");
+	$("#saliency-selections").append(saliencyCheckboxes);
+
+
+
+	var saliencyContent = document.createElement("DIV");
+	saliencyContent.setAttribute("id", "saliency-content");
+	saliencyContent.setAttribute("class", "flex-column saliencies-bg");
+	$("#saliency-group").append(saliencyContent);
+
+	
+	var saliencyMapsTitledContainer = document.createElement("DIV");
+	saliencyMapsTitledContainer.setAttribute("id", "saliency-maps-titled-container");
+	saliencyMapsTitledContainer.setAttribute("class", "titled-container flex-column saliencies-bg");
+	$("#saliency-content").append(saliencyMapsTitledContainer);
+
+	
+	var saliencyMaps = document.createElement("DIV");
+	saliencyMaps.setAttribute("id", "saliency-maps");
+	saliencyMaps.setAttribute("class", "grid saliencies-bg");
+	$("#saliency-maps-titled-container").append(saliencyMaps);
+}
+
 function renderExplanationPoint(explPoint){
 	activeBarChartInfo = explPoint.getBarChart();
 	addHelperFunctionsToBarChartInfo(activeBarChartInfo);
@@ -167,6 +244,13 @@ function renderExplanationPoint(explPoint){
 }
 
 function populateSaliencyQuestionSelector(){
+	$("#what-questions").empty();
+	var saliencyQuestionSelector = document.createElement("SELECT");
+	saliencyQuestionSelector.setAttribute("id", "saliency-question-selector");
+	saliencyQuestionSelector.setAttribute("class", "question-selector");
+	saliencyQuestionSelector.onchange = showSaliencyAnswer;
+	//<select id="reward-question-selector"  class="question-selector" onchange="showRewardAnswer()"></select>
+	$("#what-questions").append(saliencyQuestionSelector);
 	$("#saliency-question-selector").append($('<option>', {
 			value: 0,
 			text: saliencyQuestionAggregate
@@ -187,6 +271,7 @@ function populateRewardQuestionSelector(){
 	rewardQuestionSelector.onchange = showRewardAnswer;
 	//<select id="reward-question-selector"  class="question-selector" onchange="showRewardAnswer()"></select>
 	$("#why-questions").append(rewardQuestionSelector);
+	$("#reward-question-selector").toggleClass('active');
 	$("#reward-question-selector").append($('<option>', {
 			value: 0,
 			text: rewardQuestionAggregate
@@ -286,16 +371,17 @@ function addWhyButtonForAction(step, index) {
 function addWhatButtonForAction() {
 	$("#what-button-div").empty();
 	var whatButton = document.createElement("BUTTON");
-	var buttonId = "whatButton";
+	var buttonId = getWhatButtonId();
 	whatButton.setAttribute("id", buttonId);
 	var what = document.createTextNode("what?");
-	whatButton.appendChild(what);          
+	whatButton.appendChild(what);    
+	whatButton.onclick = renderWhatInfo;      
 	whatButton.setAttribute("style", "padding-top:6px; padding-left:6px; padding-bottom:6px; padding-right: 6px;");
 	
 	$("#what-button-div").append(whatButton);
 	$("#" + buttonId).click(function(e) {
 		 e.preventDefault();
-		 $(this).toggleClass('active');
+		 processWhatClick();
 	})
 }
 function addLabelForAction(title, index){
@@ -343,6 +429,28 @@ function processWhyClick(step) {
 	 var whyButtonId = getWhyButtonIdForStep(step);
 	 $("#" + qmButtonId).toggleClass('active');
 	 $("#" + whyButtonId).toggleClass('active');
+	 $("#why-questions").toggleClass('active');
+	 $("#why-label").toggleClass('active');
+	 $("#what-button-div").toggleClass('active');
+}
+
+function processWhatClick() {
+	if (salienciesAreShowing) {
+		clearSaliencies();
+		salienciesAreShowing = false;
+	 }
+	 else {
+		showSaliencyAnswer();
+		salienciesAreShowing = true;
+	 }
+	 var whatButtonId = getWhatButtonId();
+	 $("#" + whatButtonId).toggleClass('saliency-active');
+	 $("#what-questions").toggleClass('salienc-active');
+	 $("#what-label").toggleClass('saliency-active');
+}
+
+function getWhatButtonId() {
+	return 'whatButton';
 }
 
 function getQmButtonId(step) {
