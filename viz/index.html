@@ -46,11 +46,12 @@
 				<div id="scaii-interface-title" class="bg" >Small Configurable AI Interface</div>
 			</div>-->
 			<div id="game-titled-container" class="titled-container grid r0c0 bg">
-				<div id="scaii-acronym" class="r0c0">SCAII</div>
-				<div id="game-selector-panel" class="r0c1 flex-row">
-					<div id="game-replay-title" class="region-title">replaying:</div>
+				<div id="title-row" class="r0c0_2 flex-row">
+					<div id="scaii-acronym">SCAII</div>
+					<div id="game-replay-title">replaying game file:</div>
 					<select id="replay-file-selector" onchange="loadSelectedReplayFile()"></select>
 				</div>
+				
 				
 				<!--<div id="step-control" class="flex-row">
 					<div id="step-control-info class="flex-column">
@@ -60,10 +61,11 @@
 					</div>
 					<div id="replay-speed-panel" class="control-panel"></div>
 				</div>-->
-				
-				<div id="action-list" class="r1c0 grid-center bg grid">
+				<div id="game-row" class="flex-row r1c0_2">
+					<div id="action-list" class="grid-center bg grid"></div>
+					<div id="scaii-gameboard" class="grid-center bg"></div>
 				</div>
-				<div id="scaii-gameboard" class="r1c1 grid-center bg"></div>
+				
 				
 				<div id="playback-controls-panel" class="flex-row r2c0_1">
 					<div id="step-label" class="minor-label-text">step</div>
@@ -84,7 +86,7 @@
 				<div id="questions-panel" class="r6c0_1 grid">
 				    <div id="why-label" class="r0c0 question-label"></div>
 				    <div id="why-questions" class="r0c1 question-dropdown">
-						<select id="reward-question-selector"  class="question-selector" onchange="showRewardAnswer()"></select>
+						<!--<select id="reward-question-selector"  class="question-selector" onchange="showRewardAnswer()"></select>-->
 					</div>
 					<div id="what-button-div" class="r0c2"></div>
 				    <div id="what-label" class="r1c0 question-label"></div>
@@ -92,38 +94,23 @@
 				    
 				</div>
 			</div>
-			<div id="rewards-titled-container" class="titled-container r0c1 bg">
-                			
-				<!--<div class="tab">
-					<button id="showRewardsPerActionButton" onclick="showRewardsPerAction(event)">Total Rewards Per Action</button>
-					<button id="showRewardsPerRewardTypeButton" onclick="showRewardsPerRewardType(event)">Specific Rewards Per Action</button>
-				</div>-->
-				<!--<div id="rewards-title" class="region-title">Rewards</div>	-->		
+			<!--<div id="rewards-titled-container" class="titled-container r0c1 bg">	
 				<div id="explanations-rewards" class="bg"></div>
-			</div>
+			</div>-->
 			
-			<div id="scaii-explanations" class="r1c0_1 bg">
+			<!--<div id="scaii-explanations" class="r1c0_1 bg">
 				<div id="saliency-group" class="flex-row">
 					<div id="saliency-selections" class="flex-column">
 						<div id="saliency-selections-title" class="region-title-grey">Generating Rewards</div>
 						<div id="saliency-checkboxes" class="grid"></div>
 					</div>
 					<div id="saliency-content" class="flex-column">
-						<select id="saliency-question-selector" class="question-selector" onchange="showSaliencyAnswer()"></select>
-						
-						<!--<div class="tab">
-							<button id="showCombinedSaliencyButton" onclick="showCombinedSaliency(event)">Combined Saliency For Action</button>
-							<button id="showSalienciesButton" onclick="showAllSaliencies(event)">Saliencies For Action</button>
-						</div>-->
 						<div id="saliency-maps-titled-container" class="titled-container flex-column bg"> 
 							<div id="saliency-maps" class="grid"></div>
 						</div>
 					</div>
 				</div>
-				
-				<!--<div id="scaii-gameboard-zoom"></div>-->
-				<!--<div id="scaii-zoom-controls"></div>-->
-			</div>
+			</div>-->
 		</div>
 		<script src="js/scaiiViz.js"></script>
 	</body>

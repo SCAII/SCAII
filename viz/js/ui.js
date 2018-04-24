@@ -134,12 +134,12 @@ function drawExplanationTimeline() {
 	expl_ctrl_canvas.height = 30;
 	$("#explanation-control-panel").append(expl_ctrl_canvas);
 	let ctx = expl_ctrl_ctx;
-	var can_width = 500;
+	var can_width = 600;
 	
 	expl_ctrl_canvas.width = can_width;
 	ctx.beginPath();
 	ctx.moveTo(40,explanationControlYPosition);
-	ctx.lineTo(460,explanationControlYPosition);
+	ctx.lineTo(560,explanationControlYPosition);
 	ctx.stroke();
 	ctx.restore();
 }
@@ -148,6 +148,7 @@ function initUI() {
 	//configureSpeedSlider();
 	//configureZoomBox
 	configureGameboardCanvas();
+	sizeNonGeneratedElements();
 	drawExplanationTimeline();
 	controlsManager.setControlsNotReady();
 	controlsManager.registerJQueryHandleForWaitCursor($("#scaii-interface"));
@@ -157,6 +158,38 @@ function initUI() {
 	configureQuestionArea();
 }
 
+function sizeNonGeneratedElements() {
+
+	$("#game-titled-container").css("width", "600px");
+	// first row should add to 600...
+	// 150
+	$("#scaii-acronym").css("padding-left", "20px");
+	$("#scaii-acronym").css("width", "110px");
+	$("#scaii-acronym").css("padding-right", "20px");
+
+	// 150
+	$("#game-replay-title").css("width", "140px");
+	$("#game-replay-title").css("padding-right", "10px");
+
+	// 300
+	$("#replay-file-selector").css("width", "300px");
+
+	
+	$("#scaii-acronym").css("padding-top", "10px");
+	$("#scaii-acronym").css("padding-bottom", "10px");
+	$("#game-replay-title").css("padding-top", "10px");
+	$("#game-replay-title").css("padding-bottom", "10px");
+
+	// second row should add to 600...
+
+	$("#action-list").css("width", "330px");
+	// scaii-gameboard
+
+
+	$("#game-progress").css("margin-left", "40px");
+	$("#game-progress").css("width", "520px");
+	$("#game-progress").css("margin-right", "40px");
+}
 function clearGameBoards() {
 	clearGameBoard(gameboard_ctx, gameboard_canvas, "game");
 	clearGameBoard(gameboard_zoom_ctx, gameboard_zoom_canvas, "zoom");

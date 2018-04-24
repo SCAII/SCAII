@@ -31,16 +31,8 @@
     margin: 0px;
 	background-color: lightgrey;
 }
-#game-replay-title {
-	width: 30%;
-}
-/*
-#game-selector-panel {
-	width: 60%;
-}
-*/
+
 #replay-file-selector {
-	width: 70%;
 	border-style: none;
 	background: #e0e0e0;
 	text-indent: 5px;
@@ -51,14 +43,12 @@
     margin: auto;
 }
 #game-progress {
-	width: 420px;
+	
 	height: 15px;
 	background-color: white;
 	color: darkgrey;
 	margin-top: 4px;
 	margin-bottom: 4px;
-	margin-left: 40px;
-	margin-right: 40px;
 	border: 1px solid #0063a6;
 }
 #speed-slider {
