@@ -6,15 +6,26 @@ var explanationBoxMap = {};
 var saliencyLookupMap = {};
 var saliencyDisplayManager = getSaliencyDisplayManager();
 var selectionManager;
+var rewardsAreShowing = false;
+var salienciesAreShowing = false;
+var questionMarkButtonIds =[];
 
 function clearExplanationInfo() {
 	$("#saliency-maps").empty();
 	$("#explanations-rewards").empty();
 	$("#action-name-label").html(" ");
 	$("#saliency-checkboxes").empty();
+	removeStaleQuestionMarkButtons();
+	clearQuestionControls();
 }
 
+function clearQuestionControls(){
+	$("#why-questions").empty();
+	$("#what-button-div").empty();
+	$("#reward-question-selector").empty();
+	$("#why-label").html(" ");
 
+}
 
 function handleExplDetails(explDetails){
 	//console.log('handling expl details');
@@ -168,6 +179,14 @@ function populateSaliencyQuestionSelector(){
 
 
 function populateRewardQuestionSelector(){
+	$("#why-questions").empty();
+	
+	var rewardQuestionSelector = document.createElement("SELECT");
+	rewardQuestionSelector.setAttribute("id", "reward-question-selector");
+	rewardQuestionSelector.setAttribute("class", "question-selector");
+	rewardQuestionSelector.onchange = showRewardAnswer;
+	//<select id="reward-question-selector"  class="question-selector" onchange="showRewardAnswer()"></select>
+	$("#why-questions").append(rewardQuestionSelector);
 	$("#reward-question-selector").append($('<option>', {
 			value: 0,
 			text: rewardQuestionAggregate
@@ -212,8 +231,16 @@ function getExplanationBox(left_x,right_x, upper_y, lower_y, step){
 	return eBox;
 }
 
+function removeStaleQuestionMarkButtons() {
+	for (id in questionMarkButtonIds){
+		$("#" + id).remove();
+	}
+	questionMarkButtonIds = [];
+}
+
 function renderExplanationSelectors(rsc, selectedStep) {
 	$("#action-list").empty();
+	removeStaleQuestionMarkButtons();
 	var decisionsLabel = document.createElement("LABEL");
 	decisionsLabel.setAttribute("id", "decisions-label");
 	decisionsLabel.setAttribute("style", getGridPositionStyle(1,0) + ';height: 30px; padding-top:10px;font-size: 18px;font-weight: bold;');
@@ -235,16 +262,15 @@ function renderExplanationSelectors(rsc, selectedStep) {
 		var title = explanation_titles[index];
 		var uiIndex =index + 1;
 		addLabelForAction(title, uiIndex);
-		addWhyButtonForAction(uiIndex);
-		configureExplanationSelector(uiIndex, rsc.getStepCount(), step, title, selected);
+		addWhyButtonForAction(step, uiIndex);
+		configureExplanationSelectorButton(rsc.getStepCount(), step);
 		index = index + 1;
 	}
 }
 
-function addWhyButtonForAction(index) {
-	var gridIndex = index;
+function addWhyButtonForAction(step, index) {
 	var whyButton = document.createElement("BUTTON");
-	var buttonId = "whyButton_" + gridIndex;
+	var buttonId = getWhyButtonIdForStep(step);
 	whyButton.setAttribute("id", buttonId);
 	var why = document.createTextNode("why?");
 	whyButton.appendChild(why);          
@@ -253,11 +279,12 @@ function addWhyButtonForAction(index) {
 	$("#action-list").append(whyButton);
 	$("#" + buttonId).click(function(e) {
 		 e.preventDefault();
-		 $(this).toggleClass('active');
+		 processWhyClick(step);
 	})
 }
 
 function addWhatButtonForAction() {
+	$("#what-button-div").empty();
 	var whatButton = document.createElement("BUTTON");
 	var buttonId = "whatButton";
 	whatButton.setAttribute("id", buttonId);
@@ -283,7 +310,70 @@ function addLabelForAction(title, index){
 	$("#action-list").append(actionLabel);
 }
 
-var configureExplanationSelector = function(uiIndex, step_count, step, title, selected){
+function configureExplanationSelectorButton(step_count, step) {
+	var totalWidth = expl_ctrl_canvas.width;
+	var rectWidth = totalWidth / step_count;
+	var leftX = rectWidth * (step - 1) + 40;
+	var y = explanationControlYPosition;
+	var qmButton = document.createElement("BUTTON");
+	var buttonId = getQmButtonId(step);
+	questionMarkButtonIds.push(buttonId);
+	qmButton.setAttribute("id", buttonId);
+	var qm = document.createTextNode("?");
+	qmButton.appendChild(qm);          
+	qmButton.setAttribute("style", 'z-index:2; position:relative; left:' + leftX + 'px; top: -30px; padding-left:2px; padding-right:2px');
+	
+	$("#explanation-control-panel").append(qmButton);
+	$("#" + buttonId).click(function(e) {
+		 e.preventDefault();
+		 processWhyClick(step);
+	})
+}
+
+function processWhyClick(step) {
+	if (rewardsAreShowing) {
+		clearExplanationInfo();
+		rewardsAreShowing = false;
+	 }
+	 else {
+		showExplanationRewardInfo(step);
+		rewardsAreShowing = true;
+	 }
+	 var qmButtonId = getQmButtonId(step);
+	 var whyButtonId = getWhyButtonIdForStep(step);
+	 $("#" + qmButtonId).toggleClass('active');
+	 $("#" + whyButtonId).toggleClass('active');
+}
+
+function getQmButtonId(step) {
+	return 'qmButton' + step;
+}
+function getWhyButtonIdForStep(step) {
+	return 'whyButton'+ step;
+}
+function showExplanationRewardInfo(stepNumber) {
+	selectedExplanationStep = stepNumber;
+	var userCommand = new proto.scaii.common.UserCommand;
+	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.EXPLAIN);
+	var args = ['' +selectedExplanationStep];
+	userCommand.setArgsList(args);
+	stageUserCommand(userCommand);
+	
+	if (stepNumber == sessionIndexManager.getCurrentIndex()) {
+		console.log("no need to move - already at step with explanation");
+	}
+	else {
+		var userCommand = new proto.scaii.common.UserCommand;
+		console.log("jumping to step " + selectedExplanationStep);
+		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+		// same args as above
+		userCommand.setArgsList(args);
+		stageUserCommand(userCommand);
+	}
+	//renderExplanationSelectors(replaySessionConfig,selectedExplanationStep);
+}
+
+function configureExplanationSelectorDiamond(uiIndex, step_count, step, title, selected){
 	var totalWidth = expl_ctrl_canvas.width;
 	var rectWidth = totalWidth / step_count;
 	var leftX = rectWidth * step + rectWidth/2;
@@ -319,11 +409,11 @@ var configureExplanationSelector = function(uiIndex, step_count, step, title, se
 	ctx.closePath();
 	ctx.fill();
 	
-	ctx.font = "20px Arial bold";
+	ctx.font = "16px Arial bold";
 	ctx.fillStyle = 'black';
 	var textCenterX = ((rightVertexX - leftVertexX) / 2) + leftVertexX - 8;
 	var textCenterY = explanationControlYPosition + 5;
-	ctx.fillText(uiIndex,textCenterX,textCenterY);
+	ctx.fillText("?",textCenterX,textCenterY);
 
 	var rectHeight = distFromLine + distFromLine + 1;
 	//ctx.rect(upper_left_x, upper_left_y, rect_width, rect_height);
