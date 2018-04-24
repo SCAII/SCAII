@@ -247,23 +247,36 @@ function getSaliencyDisplayManager() {
 		}
 	}
 	
+	
+	sdm.overlaySaliencyMapOntoGameReplica = function(ctx, cells, width, height, normalizationFactor) {
+		for (var x= 0; x < width; x++){
+			for (var y = 0; y < height; y++){
+				var index = height * x + y;
+				var cellValue = cells[index];
+				ctx.fillStyle = getOverlayOpacityBySaliencyRGBAString(cellValue * normalizationFactor);
+				ctx.fillRect(x*gameScaleFactor, y*gameScaleFactor, gameScaleFactor, gameScaleFactor);
+				ctx.fill();
+			}
+		}
+	}
+
 	sdm.renderExplLayer = function(gridX, gridY, saliencyUIName, saliencyNameForId, cells, width, height, normalizationFactor) {
 		var nameNoSpaces = saliencyNameForId.replace(/ /g,"");
 		var nameForId = nameNoSpaces.replace(/,/g,"");
 		var explCanvas = document.createElement("canvas");
-		explCanvas.addEventListener("mouseenter", function() {
-			console.log("entered! " + saliencyUIName);
-			//clear and redraw gameboard
-			handleEntities(entitiesList);
-			saliencyDisplayManager.overlaySaliencyMapOntoGame(cells, width, height, normalizationFactor);
-		}
-		);
-		explCanvas.addEventListener("mouseleave", function() {
-			// clear and redraw gameboard
-			handleEntities(entitiesList);
-			console.log("left! " + saliencyUIName);
-		}
-		);
+		// explCanvas.addEventListener("mouseenter", function() {
+		// 	console.log("entered! " + saliencyUIName);
+		// 	//clear and redraw gameboard
+		// 	handleEntities(entitiesList);
+		// 	saliencyDisplayManager.overlaySaliencyMapOntoGame(cells, width, height, normalizationFactor);
+		// }
+		// );
+		// explCanvas.addEventListener("mouseleave", function() {
+		// 	// clear and redraw gameboard
+		// 	handleEntities(entitiesList);
+		// 	console.log("left! " + saliencyUIName);
+		// }
+		// );
 		var explCtx = explCanvas.getContext("2d");
 		// canvas size should be same a gameboardHeight
 		explCanvas.width  = gameboard_canvas.width * this.saliencyMapPercentSize;
@@ -308,6 +321,10 @@ function getSaliencyDisplayManager() {
 
 		
 	sdm.renderSaliencyMap = function(canvas, ctx, cells, width, height, normalizationFactor){
+		renderState(ctx, canvas, masterEntities, gameScaleFactor, 0, 0, shapePositionMapForContext["game"]);
+		this.overlaySaliencyMapOntoGameReplica(ctx, cells, width, height, normalizationFactor);
+	}	
+	sdm.renderSaliencyMapOrig = function(canvas, ctx, cells, width, height, normalizationFactor){
 		var scaleFactor = gameScaleFactor * this.saliencyMapPercentSize;
 		var maxCellValue = 0.0;
 		for (var x= 0; x < width; x++){
