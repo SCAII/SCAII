@@ -1,8 +1,8 @@
 const saliencyModeAggregate = "show combined saliency";
 const saliencyModeDetailed = "show all saliencies";
 
-const saliencyQuestionAggregate = "What objects influenced rewards/punishments?";
-const saliencyQuestionDetailed  = "What aspects of objects influenced rewards/punishments?";
+const saliencyQuestionAggregate = "(Showing areas of greatest attention)";
+const saliencyQuestionDetailed  = "(Showing areas of greatest attention by feature)";
 
 function getSaliencyDisplayManager() {
 	var sdm = {};
@@ -230,7 +230,7 @@ function getSaliencyDisplayManager() {
 				var normalizationFactor = getNormalizationFactorFromCells(aggregatedCells);
 				var width = expLayers[0].getWidth();
 				var height = expLayers[0].getHeight();
-				this.renderExplLayer(1, i, "all layers", rowInfoString, aggregatedCells, width, height, normalizationFactor);
+				this.renderExplLayer(1, i, "all features cumulative", rowInfoString, aggregatedCells, width, height, normalizationFactor);
 			}
 		}
 	}

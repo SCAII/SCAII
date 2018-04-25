@@ -5,8 +5,8 @@ var gameboardHeight;
 //canvases
 var gameboard_canvas = document.createElement("canvas");
 var gameboard_ctx = gameboard_canvas.getContext("2d");
-//var game_background_color = "#123456";
-var game_background_color = "#000000";
+var game_background_color = "#123456";
+//var game_background_color = "#000000";
 //var game_background_color = "#fafafa";
 
 var timeline_canvas = document.createElement("canvas");
