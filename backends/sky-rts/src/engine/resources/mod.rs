@@ -68,6 +68,7 @@ pub(super) fn register_world_resources(world: &mut World) {
     world.add_resource(RewardTypes::default());
     world.add_resource(SpawnBuffer::default());
     world.add_resource(Deserializing(false));
+    world.add_resource(SerError(Ok(())));
 }
 
 #[derive(Default, Debug, Clone, PartialEq)]
@@ -380,3 +381,6 @@ pub struct SpawnBuffer(pub Vec<Spawn>);
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Default)]
 pub struct Deserializing(pub bool);
+
+#[derive(Clone, PartialEq, Eq, Debug)]
+pub struct SerError(pub Result<(), String>);

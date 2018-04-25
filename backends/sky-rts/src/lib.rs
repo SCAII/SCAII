@@ -84,7 +84,7 @@ extern crate specs;
 #[macro_use]
 extern crate specs_derive;
 
-mod engine;
+pub mod engine;
 pub(crate) mod util;
 pub mod protos;
 

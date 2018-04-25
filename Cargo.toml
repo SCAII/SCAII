@@ -3,4 +3,5 @@ members = [
     "core",
     "scaii_defs",
     "backends/sky-rts",
+    "tools/replay-conv",
 ]

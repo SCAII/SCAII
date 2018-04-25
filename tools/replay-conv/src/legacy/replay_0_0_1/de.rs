@@ -2,12 +2,11 @@ use std::error::Error;
 
 use specs::prelude::*;
 use specs::saveload::{U64Marker, WorldDeserialize};
-
 use specs::error::NoError;
 
 use rand::Isaac64Rng;
 
-use engine::resources::{LuaPath, SerError, SerializeBytes, SpawnBuffer, Terminal};
+use sky_rts::engine::resources::{LuaPath, SerError, SerializeBytes, Terminal};
 
 #[derive(SystemData)]
 pub struct DeserializeSystemData<'a> {
@@ -16,7 +15,6 @@ pub struct DeserializeSystemData<'a> {
     rng: FetchMut<'a, Isaac64Rng>,
     lua_path: FetchMut<'a, LuaPath>,
     terminal: FetchMut<'a, Terminal>,
-    spawn_buf: FetchMut<'a, SpawnBuffer>,
     ser_error: FetchMut<'a, SerError>,
 
     decode: Fetch<'a, SerializeBytes>,
@@ -28,7 +26,6 @@ struct DeserData<'a> {
     rng: FetchMut<'a, Isaac64Rng>,
     lua_path: FetchMut<'a, LuaPath>,
     terminal: FetchMut<'a, Terminal>,
-    spawn_buf: FetchMut<'a, SpawnBuffer>,
 
     decode: Fetch<'a, SerializeBytes>,
 }
@@ -55,7 +52,6 @@ impl DeserializeSystem {
         *world.lua_path = tar.lua_path;
         *world.rng = tar.rng;
         *world.terminal = tar.terminal;
-        *world.spawn_buf = tar.spawns;
 
         Ok(())
     }
@@ -69,7 +65,6 @@ impl<'a> System<'a> for DeserializeSystem {
             de: world.de,
             rng: world.rng,
             lua_path: world.lua_path,
-            spawn_buf: world.spawn_buf,
             decode: world.decode,
             terminal: world.terminal,
         };

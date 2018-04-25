@@ -27,7 +27,7 @@ use self::systems::serde::{DeserializeSystem, RedoCollisionSys, SerializeSystem}
 /// for running an RTS game, as well as a few flags controlling
 /// program flow.
 pub struct Rts<'a, 'b> {
-    world: World,
+    pub world: World,
     pub initialized: bool,
     pub render: bool,
 
@@ -35,8 +35,8 @@ pub struct Rts<'a, 'b> {
     lua_sys: LuaSystem,
     out_systems: Dispatcher<'a, 'b>,
 
-    ser_system: SerializeSystem,
-    de_system: DeserializeSystem,
+    pub ser_system: SerializeSystem,
+    pub de_system: DeserializeSystem,
     redo_col_sys: RedoCollisionSys,
 
     frames_since_keyframe: usize,
@@ -402,12 +402,22 @@ impl<'a, 'b> Rts<'a, 'b> {
         self.last_action = action;
     }
 
+    // Gets the internal specs world
+    pub fn world(&self) -> &World {
+        &self.world
+    }
+
+    // Gets a mutable version of the internal specs world
+    pub fn world_mut(&mut self) -> &mut World {
+        &mut self.world
+    }
+
     /// Serializes the world into raw bytes
     pub fn serialize(&mut self) -> Vec<u8> {
         use engine::resources::SerializeBytes;
 
         self.ser_system.run_now(&self.world.res);
-
+        self.world.read_resource::<SerError>().clone().0.unwrap();
         self.world.read_resource::<SerializeBytes>().0.clone()
     }
 
@@ -435,6 +445,7 @@ impl<'a, 'b> Rts<'a, 'b> {
         self.world.write_resource::<SerializeBytes>().0 = buf;
 
         self.de_system.run_now(&self.world.res);
+        self.world.read_resource::<SerError>().0.as_ref().unwrap();
         self.redo_col_sys.run_now(&self.world.res);
 
         self.world.write_resource::<NeedsKeyInfo>().0 = true;
