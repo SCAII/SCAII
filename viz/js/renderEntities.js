@@ -313,6 +313,7 @@ function getColorRGBA(r,g,b,a) {
   var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
   return result;
 }
+
 function getBasicColorRGBA() {
   color = {};
   color['R'] = 200;
@@ -322,6 +323,18 @@ function getBasicColorRGBA() {
   var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
   return result;
 }
+
+function isBlueColor(color){
+  var r = Number(color.getR());
+  var g = Number(color.getG());
+  var b = Number(color.getB());
+
+   if (r == 0 && g == 0 && b == 255) {
+     return true;
+   }
+   return false;
+}
+
 function loadShapeColorAsRGBAString(shape) {
   color = {};
   color['R'] = 200;
@@ -330,6 +343,10 @@ function loadShapeColorAsRGBAString(shape) {
   color['A'] = 0.5;
   if (shape.hasColor()) {
     var color = shape.getColor();
+    if (isBlueColor(color)){
+      var betterColorThanBlue = 'rgba(255,181,0,1.0)';
+      return betterColorThanBlue;
+    }
     if (color.hasR()) {
       color['R'] = color.getR();
     }

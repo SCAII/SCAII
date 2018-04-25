@@ -1,8 +1,8 @@
 var activeBarChartInfo = undefined;
 
 //Why was action chosen
-const rewardQuestionAggregate = "total rewards/punishments for actions";
-const rewardQuestionDetailed  = "specific rewards/punishments for actions";
+const rewardQuestionAggregate = "(Showing summed rewards for actions)";
+const rewardQuestionDetailed  = "(Showing detailed rewards for actions)";
 
 function addHelperFunctionsToBarChartInfo(barChartInfo) {
 	

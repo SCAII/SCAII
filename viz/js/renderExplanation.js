@@ -139,9 +139,15 @@ function renderWhyInfo(explPoint) {
 	activeBarChartInfo.setDefaultSelections();
 	createRewardChartContainer();
 	activeBarChartInfo.renderExplanationBarChart();
-	var whyPrompt = "Why " + activeBarChartInfo.getChosenActionName() + ":";
+	var actionName =  activeBarChartInfo.getChosenActionName();
+	var whyPrompt = " had highest predicted reward. ";
+	$("#why-action-label").html(actionName);
+	$("#why-action-label").css("font-size", 14);
+	$("#why-action-label").css("padding-right", 20);
+	$("#why-action-label").css("font-weight", "bold");
 	$("#why-label").html(whyPrompt);
 	$("#why-label").css("font-size", 14);
+	$("#why-label").css("padding-right", 20);
 	populateRewardQuestionSelector();
 	addWhatButtonForAction();
 }
@@ -163,12 +169,28 @@ function createRewardChartContainer() {
 	$("#scaii-interface").append(rewardTitleContainer);
 
 	
-	var rewardsTitle = document.createElement("DIV");
-	rewardsTitle.setAttribute("id", "rewards-title");
-	rewardsTitle.setAttribute("class", "rewards-bg");
-	rewardsTitle.setAttribute("style", "margin:auto;");
-	$("#rewards-titled-container").append(rewardsTitle);
-	$("#rewards-title").html("Predicted Rewards");
+	var whyQuestionsDiv = document.createElement("DIV");
+	whyQuestionsDiv.setAttribute("id", "why-questions-div");
+	whyQuestionsDiv.setAttribute("class", "rewards-bg flex-row");
+	whyQuestionsDiv.setAttribute("style", "margin:auto;");
+	$("#rewards-titled-container").append(whyQuestionsDiv);
+
+	var whyActionLabel = document.createElement("DIV");
+	whyActionLabel.setAttribute("id", "why-action-label");
+	whyActionLabel.setAttribute("class", "rewards-bg");
+	whyActionLabel.setAttribute("style", "padding-top:10px;");
+	$("#why-questions-div").append(whyActionLabel);
+	
+	var whyLabel = document.createElement("DIV");
+	whyLabel.setAttribute("id", "why-label");
+	whyLabel.setAttribute("class", "rewards-bg");
+	whyLabel.setAttribute("style", "padding-top:10px;");
+	$("#why-questions-div").append(whyLabel);
+
+	var whyQuestions = document.createElement("DIV");
+	whyQuestions.setAttribute("id", "why-questions");
+	whyQuestions.setAttribute("class", "rewards-bg question-dropdown");
+	$("#why-questions-div").append(whyQuestions);
 
 	var explanationRewards = document.createElement("DIV");
 	explanationRewards.setAttribute("id", "explanations-rewards");
@@ -400,7 +422,7 @@ function addWhatButtonForAction() {
 	var what = document.createTextNode("what was relevant?");
 	whatButton.appendChild(what);    
 	//whatButton.onclick = renderWhatInfo;      
-	whatButton.setAttribute("style", "padding-top:6px; padding-left:6px; padding-bottom:6px; padding-right: 6px;");
+	whatButton.setAttribute("style", "padding-top:6px; padding-left:6px; padding-bottom:6px; padding-right: 6px;margin-right:30px;");
 	
 	$("#what-button-div").append(whatButton);
 	$("#" + buttonId).click(function(e) {
