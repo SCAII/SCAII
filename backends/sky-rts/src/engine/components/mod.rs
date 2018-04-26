@@ -105,7 +105,7 @@ pub struct Hp {
 #[storage(HashMapStorage)]
 pub struct HpChange(pub f64);
 
-#[derive(Component, Clone, PartialEq)]
+#[derive(Component, Clone, Default, PartialEq)]
 #[storage(HashMapStorage)]
 pub struct DealtDamage {
     pub val: f64,

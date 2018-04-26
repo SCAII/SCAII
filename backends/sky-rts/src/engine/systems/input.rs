@@ -1,8 +1,8 @@
-use specs::prelude::*;
-use specs::world::Index;
+use engine::ActionInput;
 use engine::components::{Movable, Move};
 use engine::resources::{ReplayMode, Skip};
-use engine::ActionInput;
+use specs::prelude::*;
+use specs::world::Index;
 
 use scaii_defs::protos::Action as ScaiiAction;
 
@@ -30,11 +30,10 @@ impl<'a> System<'a> for InputSystem {
     type SystemData = InputSystemData<'a>;
 
     fn run(&mut self, mut sys_data: Self::SystemData) {
-        use std::mem;
         use engine::components::{MoveBehavior, MoveTarget};
+        use std::mem;
 
         let actions = mem::replace(&mut sys_data.input.0, None);
-
         let actions = if actions.is_some() {
             let (actions, skip, skip_lua) = to_action_list(actions.unwrap());
             // ignore skipping for replays
@@ -71,7 +70,6 @@ impl<'a> System<'a> for InputSystem {
                     }
                 }
             };
-
             sys_data.moves.insert(entity, move_order);
         }
 
@@ -92,8 +90,8 @@ enum ActionTarget {
 
 fn to_action_list(raw: ScaiiAction) -> (Vec<Action>, bool, Option<String>) {
     use prost::Message;
-    use protos::{ActionList, AttackUnit};
     use protos::unit_action::Action as RtsAction;
+    use protos::{ActionList, AttackUnit};
 
     if raw.alternate_actions.is_none() {
         return Default::default();
@@ -111,10 +109,71 @@ fn to_action_list(raw: ScaiiAction) -> (Vec<Action>, bool, Option<String>) {
                 RtsAction::AttackUnit(AttackUnit { target_id }) => {
                     ActionTarget::Attack(target_id as Index)
                 }
-                _ => unimplemented!(),
+                _ => unimplemented!(), // whats this line do
             },
         })
         .collect();
 
     (actions, action.skip.unwrap_or_default(), action.skip_lua)
+}
+
+#[cfg(test)]
+mod tests {
+    use engine::ActionInput;
+    use engine::components::{Movable, Move};
+    use specs::prelude::*;
+
+    use scaii_defs::protos::Action as ScaiiAction;
+
+    use super::*;
+
+    #[test]
+    fn input() {
+        use engine::{resources, components};
+        use engine::components::{MoveBehavior, MoveTarget};
+        use prost::Message;
+        use protos::unit_action::Action;
+        use protos::{ActionList, AttackUnit, UnitAction};
+        let mut world = World::new();
+        
+        components::register_world_components(&mut world);
+        resources::register_world_resources(&mut world);
+
+        let test_player = world.create_entity().with(Movable(0)).build();
+
+        let test_target = world.create_entity().build();
+
+        let actions = ActionList {
+            actions: vec![
+                UnitAction {
+                    unit_id: test_player.id().into(),
+                    action: Some(Action::AttackUnit(AttackUnit {
+                        target_id: test_target.id(),
+                    })),
+                },
+            ],
+            ..Default::default()
+        };
+
+        let mut buf = Vec::new();
+
+        actions.encode(&mut buf).unwrap();
+
+        world.write_resource::<ActionInput>().0 = Some(
+            ScaiiAction {
+                alternate_actions: Some(buf),
+                ..Default::default()
+            }.clone(),
+        );
+
+        let mut sys: Dispatcher = DispatcherBuilder::new()
+            .add(InputSystem::new(), "input", &[])
+            .build();
+
+        sys.dispatch(&mut world.res);
+        let moves = world.read::<Move>();
+        assert!(moves.get(test_player).unwrap().target == MoveTarget::Unit(test_target)); // Verifies that test_player's target is test target
+        assert!(moves.get(test_player).unwrap().behavior == MoveBehavior::Straight); // Verifies that test_player's move behavior is straight
+    }
+
 }
