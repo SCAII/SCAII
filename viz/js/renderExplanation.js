@@ -15,7 +15,6 @@ function clearExplanationInfo() {
 	$("#explanations-rewards").empty();
 	$("#action-name-label").html(" ");
 	$("#saliency-checkboxes").empty();
-	removeStaleQuestionMarkButtons();
 	clearQuestionControls();
 	if ($("#rewards-titled-container").length) {
 		$("#rewards-titled-container").remove();
@@ -403,16 +402,15 @@ function getExplanationBox(left_x,right_x, upper_y, lower_y, step){
 	return eBox;
 }
 
-function removeStaleQuestionMarkButtons() {
-	for (id in questionMarkButtonIds){
-		$("#" + id).remove();
-	}
-	questionMarkButtonIds = [];
-}
+// function removeStaleQuestionMarkButtons() {
+// 	for (id in questionMarkButtonIds){
+// 		var count = $("#" + id).length;
+// 		$("#" + id).remove();
+// 	}
+// 	questionMarkButtonIds = [];
+// }
 
 function renderExplanationSelectors(rsc, selectedStep) {
-	$("#action-list").empty();
-	removeStaleQuestionMarkButtons();
 	var decisionsLabel = document.createElement("LABEL");
 	decisionsLabel.setAttribute("id", "decisions-label");
 	decisionsLabel.setAttribute("style", getGridPositionStyle(1,0) + ';height: 30px; padding-top:10px;font-size: 18px;font-weight: bold;');

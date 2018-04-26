@@ -222,7 +222,7 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 			vAxis: {
 			  title: this.getHTitle(),
 			},
-			'width':800,
+			'width':700,
 			'height':400
 		  };
 		  return options;
@@ -432,7 +432,7 @@ function selectHandler(e) {
 	
 	saliencyDisplayManager.renderExplanationSaliencyMaps();
 }
-
+//'stroke-color: #871B47; stroke-opacity: 0.6; stroke-width: 8; fill-color: #BC5679; fill-opacity: 0.2'
 function getValueForBarGroup(barGroup) {
 	var statedValue = barGroup.getValue();
 	if (statedValue == 0.0){

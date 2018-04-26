@@ -116,10 +116,12 @@ function loadSelectedReplayFile() {
 	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE);
 	userCommand.setArgsList(args);
 	stageUserCommand(userCommand);
+	$("#action-list").empty();
+	$("#explanation-control-panel").empty();
 	drawExplanationTimeline();
 	clearGameBoards();
 	clearExplanationInfo();
-	removeStaleQuestionMarkButtons();
+	//removeStaleQuestionMarkButtons();
 }
 
 
