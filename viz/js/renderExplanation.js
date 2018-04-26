@@ -78,8 +78,49 @@ function getSelectionManager() {
 		else {
 			this.detailedSelections.push(selection);
 		}
-		
 	}
+
+	sm.removeSelectionFromList = function (selections, selection) {
+		var newList = [];
+		for (var i in selections) {
+			var curSel = selections[i];
+			if (curSel[0] == selection[0] && curSel[1] == selection[1]) {
+				// skip
+			}
+			else {
+				newList.push(curSel);
+			}
+		}
+		return newList;
+	}
+
+	sm.listHasSelection = function(aList, selection) {
+		for (var i in aList) {
+			var cur = aList[i];
+			if (cur[0] == selection[0] && cur[1] == selection[1]) {
+				return true;
+			}
+		}
+		return false;
+	}
+	sm.removeSelection = function(selection){
+		if (this.isAggregate){
+			this.aggregateSelections = this.removeSelectionFromList(this.aggregateSelections, selection);
+		}
+		else {
+			this.detailedSelections = this.removeSelectionFromList(this.detailedSelections, selection);
+		} 
+	}
+
+	sm.isSelected = function(selection) {
+		if (this.isAggregate){
+			return this.listHasSelection(this.aggregateSelections, selection);
+		}
+		else {
+			return this.listHasSelection(this.detailedSelections, selection);
+		} 
+	}
+
 	sm.getSelections = function(){
 		if (this.isAggregate){
 			return this.aggregateSelections;

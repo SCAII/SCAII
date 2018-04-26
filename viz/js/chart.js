@@ -1,5 +1,6 @@
 var activeBarChartInfo = undefined;
-
+var activeDataTable = undefined;
+var activeOptions = undefined;
 //Why was action chosen
 const rewardQuestionAggregate = "(Showing summed rewards for actions)";
 const rewardQuestionDetailed  = "(Showing detailed rewards for actions)";
@@ -305,6 +306,21 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		this.xaiSelectionManager.setSelections(selections);			
 	}
 	
+	barChartInfo.getSelections = function() {
+		return this.xaiSelectionManager.getSelections();
+	}
+	barChartInfo.isSelected = function(selection) {
+		return this.xaiSelectionManager.isSelected(selection);
+	}
+
+	barChartInfo.removeSelection = function(selection) {
+		this.xaiSelectionManager.removeSelection(selection);
+	}
+
+	barChartInfo.addSelection = function(selection) {
+		return this.xaiSelectionManager.addSelection(selection);
+	}
+
 	// default to highest score, aggregate i.e. highest scoring task
 	// barChartInfo.setDefaultSelectionsIfNoneSet = function() {
 		// if (!this.hasSelections()){
@@ -382,23 +398,40 @@ function showRewardAnswer() {
 }
 
 var drawBarChart = function(chartData, options) {
-    var data = google.visualization.arrayToDataTable(chartData);
+    activeDataTable = google.visualization.arrayToDataTable(chartData);
 	//chart = new google.visualization.BarChart(document.getElementById('explanations-rewards'));
 	googleChart = new google.visualization.ColumnChart(document.getElementById('explanations-rewards'));
 	google.visualization.events.addListener(googleChart, 'select', selectHandler);
-    googleChart.draw(data, options);
+	activeOptions = options;
+    googleChart.draw(activeDataTable, options);
 	
 }
 
+var keys = {};
+window.onkeyup = function(e) { keys[e.keyCode] = false; }
+window.onkeydown = function(e) { keys[e.keyCode] = true; }
 
 function selectHandler(e) {
 	var googleChartSelections = googleChart.getSelection();
 	var selectionsByName = activeBarChartInfo.convertGoogleChartSelectionsToSelectionsByName(googleChartSelections);
-	saliencyDisplayManager.adjustCheckboxes(selectionsByName);
+	if (keys[17]){
+		for (var i in selectionsByName){
+			var selection = selectionsByName[i];
+			if (activeBarChartInfo.isSelected(selection)) {
+				activeBarChartInfo.removeSelection(selection);
+			}
+			else {
+				activeBarChartInfo.addSelection(selection);
+			}
+		}
+		saliencyDisplayManager.adjustCheckboxes(activeBarChartInfo.getSelections());
+	}
+	else {
+		saliencyDisplayManager.adjustCheckboxes(selectionsByName);
+	}
+	
 	saliencyDisplayManager.renderExplanationSaliencyMaps();
 }
-
-
 
 function getValueForBarGroup(barGroup) {
 	var statedValue = barGroup.getValue();
