@@ -150,7 +150,7 @@ function initUI() {
 	//configureZoomBox
 	configureGameboardCanvas();
 	sizeNonGeneratedElements();
-	drawExplanationTimeline();
+	//drawExplanationTimeline();
 	controlsManager.setControlsNotReady();
 	controlsManager.registerJQueryHandleForWaitCursor($("#scaii-interface"));
 	configureLabelContainers();
