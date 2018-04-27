@@ -39,6 +39,7 @@ impl<'a> System<'a> for RenderSystem {
 
 impl RenderSystem {
     fn render_delta(&mut self, mut sys_data: RenderSystemData) {
+        use std::collections::HashMap;
         let out = &mut sys_data.out.0;
         out.entities.clear();
 
@@ -51,12 +52,17 @@ impl RenderSystem {
             if !sys_data.moved.get(id).is_some() || !sys_data.death.get(id).is_some() {
                 continue;
             }
-
+            let bool_metadata  : HashMap<String, bool> = HashMap::new();
+            let int_metadata   : HashMap<String, i64>  = HashMap::new();
+            let float_metadata : HashMap<String, f32>  = HashMap::new();
             let entity = ScaiiEntity {
                 id: id.id() as u64,
                 pos: Some(pos.to_scaii_pos()),
                 delete: sys_data.death.get(id).is_some(),
                 shapes: vec![],
+                bool_metadata: bool_metadata,
+                int_metadata: int_metadata,
+                float_metadata: float_metadata,
             };
 
             out.entities.push(entity);
@@ -64,6 +70,7 @@ impl RenderSystem {
     }
 
     fn render_all(&mut self, mut sys_data: RenderSystemData) {
+        use std::collections::HashMap;
         let out = &mut sys_data.out.0;
         out.entities.clear();
 
@@ -79,11 +86,17 @@ impl RenderSystem {
             scaii_shape.color = Some(color.to_scaii_color());
             scaii_shape.relative_pos = Some(Pos::new(0.0, 0.0).to_scaii_pos());
 
+            let bool_metadata  : HashMap<String, bool> = HashMap::new();
+            let int_metadata   : HashMap<String, i64>  = HashMap::new();
+            let float_metadata : HashMap<String, f32>  = HashMap::new();
             let entity = ScaiiEntity {
                 shapes: vec![scaii_shape],
                 id: id.id() as u64,
                 delete: sys_data.death.get(id).is_some(),
                 pos: Some(pos.to_scaii_pos()),
+                bool_metadata: bool_metadata,
+                int_metadata: int_metadata,
+                float_metadata: float_metadata,
             };
 
             out.entities.push(entity);
