@@ -121,7 +121,6 @@ function loadSelectedReplayFile() {
 	drawExplanationTimeline();
 	clearGameBoards();
 	clearExplanationInfo();
-	//removeStaleQuestionMarkButtons();
 }
 
 
