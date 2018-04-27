@@ -6613,7 +6613,10 @@ proto.scaii.common.Entity.toObject = function(includeInstance, msg) {
     pos: (f = msg.getPos()) && proto.scaii.common.Pos.toObject(includeInstance, f),
     shapesList: jspb.Message.toObjectList(msg.getShapesList(),
     proto.scaii.common.Shape.toObject, includeInstance),
-    pb_delete: jspb.Message.getField(msg, 4)
+    pb_delete: jspb.Message.getField(msg, 4),
+    boolmetadataMap: (f = msg.getBoolmetadataMap()) ? f.toObject(includeInstance, undefined) : [],
+    intmetadataMap: (f = msg.getIntmetadataMap()) ? f.toObject(includeInstance, undefined) : [],
+    floatmetadaMap: (f = msg.getFloatmetadaMap()) ? f.toObject(includeInstance, undefined) : []
   };
 
   if (includeInstance) {
@@ -6667,6 +6670,24 @@ proto.scaii.common.Entity.deserializeBinaryFromReader = function(msg, reader) {
     case 4:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setDelete(value);
+      break;
+    case 5:
+      var value = msg.getBoolmetadataMap();
+      reader.readMessage(value, function(message, reader) {
+        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readBool);
+         });
+      break;
+    case 6:
+      var value = msg.getIntmetadataMap();
+      reader.readMessage(value, function(message, reader) {
+        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readInt64);
+         });
+      break;
+    case 7:
+      var value = msg.getFloatmetadaMap();
+      reader.readMessage(value, function(message, reader) {
+        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readFloat);
+         });
       break;
     default:
       reader.skipField();
@@ -6726,6 +6747,18 @@ proto.scaii.common.Entity.serializeBinaryToWriter = function(message, writer) {
       4,
       f
     );
+  }
+  f = message.getBoolmetadataMap(true);
+  if (f && f.getLength() > 0) {
+    f.serializeBinary(5, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeBool);
+  }
+  f = message.getIntmetadataMap(true);
+  if (f && f.getLength() > 0) {
+    f.serializeBinary(6, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeInt64);
+  }
+  f = message.getFloatmetadaMap(true);
+  if (f && f.getLength() > 0) {
+    f.serializeBinary(7, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeFloat);
   }
 };
 
@@ -6848,6 +6881,60 @@ proto.scaii.common.Entity.prototype.clearDelete = function() {
  */
 proto.scaii.common.Entity.prototype.hasDelete = function() {
   return jspb.Message.getField(this, 4) != null;
+};
+
+
+/**
+ * map<string, bool> boolMetadata = 5;
+ * @param {boolean=} opt_noLazyCreate Do not create the map if
+ * empty, instead returning `undefined`
+ * @return {!jspb.Map<string,boolean>}
+ */
+proto.scaii.common.Entity.prototype.getBoolmetadataMap = function(opt_noLazyCreate) {
+  return /** @type {!jspb.Map<string,boolean>} */ (
+      jspb.Message.getMapField(this, 5, opt_noLazyCreate,
+      null));
+};
+
+
+proto.scaii.common.Entity.prototype.clearBoolmetadataMap = function() {
+  this.getBoolmetadataMap().clear();
+};
+
+
+/**
+ * map<string, int64> intMetadata = 6;
+ * @param {boolean=} opt_noLazyCreate Do not create the map if
+ * empty, instead returning `undefined`
+ * @return {!jspb.Map<string,number>}
+ */
+proto.scaii.common.Entity.prototype.getIntmetadataMap = function(opt_noLazyCreate) {
+  return /** @type {!jspb.Map<string,number>} */ (
+      jspb.Message.getMapField(this, 6, opt_noLazyCreate,
+      null));
+};
+
+
+proto.scaii.common.Entity.prototype.clearIntmetadataMap = function() {
+  this.getIntmetadataMap().clear();
+};
+
+
+/**
+ * map<string, float> floatMetada = 7;
+ * @param {boolean=} opt_noLazyCreate Do not create the map if
+ * empty, instead returning `undefined`
+ * @return {!jspb.Map<string,number>}
+ */
+proto.scaii.common.Entity.prototype.getFloatmetadaMap = function(opt_noLazyCreate) {
+  return /** @type {!jspb.Map<string,number>} */ (
+      jspb.Message.getMapField(this, 7, opt_noLazyCreate,
+      null));
+};
+
+
+proto.scaii.common.Entity.prototype.clearFloatmetadaMap = function() {
+  this.getFloatmetadaMap().clear();
 };
 
 
