@@ -53,7 +53,8 @@ impl RenderSystem {
                 continue;
             }
             let bool_metadata  : HashMap<String, bool> = HashMap::new();
-            let int_metadata   : HashMap<String, i64>  = HashMap::new();
+            let mut int_metadata   : HashMap<String, i64>  = HashMap::new();
+            int_metadata.insert("hit_points".to_string(), 33);
             let float_metadata : HashMap<String, f32>  = HashMap::new();
             let entity = ScaiiEntity {
                 id: id.id() as u64,
@@ -87,7 +88,8 @@ impl RenderSystem {
             scaii_shape.relative_pos = Some(Pos::new(0.0, 0.0).to_scaii_pos());
 
             let bool_metadata  : HashMap<String, bool> = HashMap::new();
-            let int_metadata   : HashMap<String, i64>  = HashMap::new();
+            let mut int_metadata   : HashMap<String, i64>  = HashMap::new();
+            int_metadata.insert("hit_points".to_string(), 55);
             let float_metadata : HashMap<String, f32>  = HashMap::new();
             let entity = ScaiiEntity {
                 shapes: vec![scaii_shape],
