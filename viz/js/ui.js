@@ -5,6 +5,7 @@ var gameboardHeight;
 //canvases
 var gameboard_canvas = document.createElement("canvas");
 var gameboard_ctx = gameboard_canvas.getContext("2d");
+
 var game_background_color = "#123456";
 //var game_background_color = "#000000";
 //var game_background_color = "#fafafa";
@@ -157,8 +158,25 @@ function initUI() {
 	configureNavigationButtons();
 	configureNavigationTimeline();
 	configureQuestionArea();
+	setUpMetadataToolTipEventHandler();
 }
-
+function setUpMetadataToolTipEventHandler() {
+	// for hiding/showing tooltips
+	gameboard_canvas.addEventListener('click', function(evt) {
+		var x = event.offsetX;
+		var y = event.offsetY;
+		var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y, shapePositionMapForContext['game'])
+		if (shapeId != undefined){
+			$("#metadata" + shapeId).toggleClass('tooltip-invisible');
+			if (selectedToolTipIds[shapeId] == "show") {
+				selectedToolTipIds[shapeId] = "hide";
+			}
+			else {
+				selectedToolTipIds[shapeId] = "show";
+			}
+		}
+  	});
+}
 function sizeNonGeneratedElements() {
 
 	$("#game-titled-container").css("width", "600px");
@@ -195,6 +213,7 @@ function clearGameBoards() {
 	clearGameBoard(gameboard_ctx, gameboard_canvas, "game");
 	clearGameBoard(gameboard_zoom_ctx, gameboard_zoom_canvas, "zoom");
 }
+
 
 function clearGameBoard(ctx, canvas, shapePositionMapKey) {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
