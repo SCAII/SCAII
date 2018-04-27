@@ -264,6 +264,8 @@ function getSaliencyDisplayManager() {
 		var nameNoSpaces = saliencyNameForId.replace(/ /g,"");
 		var nameForId = nameNoSpaces.replace(/,/g,"");
 		var explCanvas = document.createElement("canvas");
+		explCanvas.setAttribute("class", "explanation-canvas");
+		
 		// explCanvas.addEventListener("mouseenter", function() {
 		// 	console.log("entered! " + saliencyUIName);
 		// 	//clear and redraw gameboard
@@ -317,6 +319,33 @@ function getSaliencyDisplayManager() {
 		$(mapDivSelector).css("height",explCanvas.height + 'px');
 		$(mapDivSelector).css("background-color", "#123456");
 		$(mapDivSelector).append(explCanvas);
+
+		
+		var valueSpan = document.createElement("span");
+		valueSpan.setAttribute("class","value-div");
+		valueSpan.setAttribute("style", 'visibility:hidden;');
+		$(mapDivSelector).append(valueSpan);
+		
+		explCanvas.addEventListener('mouseenter', function(evt) {
+			valueSpan.setAttribute("style", 'visibility:hidden;');
+		});
+		explCanvas.addEventListener('mouseleave', function(evt) {
+			valueSpan.setAttribute("style", 'visibility:hidden;');
+		});
+		explCanvas.addEventListener('mousemove', function(evt) {
+			var mousePos = getMousePos(explCanvas, evt);
+			var xForValueLookup = Math.floor(mousePos.x / gameScaleFactor);
+			var yForValueLookup = Math.floor(mousePos.y/gameScaleFactor);
+			var index = height * xForValueLookup + yForValueLookup;
+			var cellValue = cells[index];
+			var normValue = cellValue*normalizationFactor;
+			var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y + ' val: ' + normValue.toFixed(2);
+			var top = (mousePos.y + 10 - (40 * gameScaleFactor)) + 'px'; // shift it to canvas above
+			var left = (mousePos.x + 10) + 'px';
+			valueSpan.setAttribute("style", 'z-index:2; position:relative; left:' + left + '; top: ' + top + '; color:#D73F09;'); // OSU orange
+			valueSpan.innerHTML = normValue.toFixed(2);
+			console.log(message);
+		  }, false);
 	}
 
 		
@@ -357,7 +386,14 @@ function getRowInfoString(rowInfo) {
 	}
 	return result;
 }
-	
+
+function getMousePos(canvas, evt) {
+	var rect = canvas.getBoundingClientRect();
+	return {
+	  x: evt.clientX - rect.left,
+	  y: evt.clientY - rect.top
+	};
+  }
 	
 function getNameDivForRow(rowIndex, rowInfo, layerCount){
 	var nameContainerDiv = document.createElement("div");
@@ -370,29 +406,6 @@ function getNameDivForRow(rowIndex, rowInfo, layerCount){
 	nameContainerDiv.append(nameContainerContentDiv);
 	return nameContainerDiv;
 }
-
-// function showCombinedSaliency(evt) {
-	// saliencyDisplayManager.setSaliencyMode(saliencyModeAggregate);
-	// renderTabCombinedSaliency();
-	// saliencyDisplayManager.renderExplanationSaliencyMaps();
-// }
-
-// function showAllSaliencies(evt) {
-	// saliencyDisplayManager.setSaliencyMode(saliencyModeDetailed);
-    // renderTabAllSaliencies();
-	// saliencyDisplayManager.renderExplanationSaliencyMaps();
-// }
-
-
-// function renderTabCombinedSaliency() {
-	// $("#showCombinedSaliencyButton").addClass("active");
-	// $("#showSalienciesButton").removeClass("active");
-// }
-// function renderTabAllSaliencies() {
-	// $("#showSalienciesButton").addClass("active");
-	// $("#showCombinedSaliencyButton").removeClass("active");
-// }
-
 
 function renderExplanationSaliencyMaps_Bridge(evt) {
 	saliencyDisplayManager.renderExplanationSaliencyMaps(evt);

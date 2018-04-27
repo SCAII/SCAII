@@ -83,3 +83,18 @@
 	/*background-color:#C6DAE7; /* OSU moondust */
 	background-color:#E0E0E0; /* OSU moondust */
 }
+
+.value-tooltip-holder{
+    text-decoration:none;
+    position:relative;
+}
+.value-tooltip-holder span {
+	display:none;
+	color: white;
+}
+.explanation-canvas:hover span {
+    display:block;
+    position:relative;
+	overflow:hidden;
+	color: white;
+}
