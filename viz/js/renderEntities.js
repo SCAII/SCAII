@@ -1,6 +1,18 @@
-
+var entityToolTipIds = [];
+var selectedToolTipIds = {};
 var masterEntities = {};
+
+
+function cleanToolTips(){
+	for (var i in entityToolTipIds){
+		var id = entityToolTipIds[i];
+		var count = $("#"+id).length;
+		$("#"+id).remove();
+	}
+}
+
 function handleEntities(entitiesList) {
+	cleanToolTips();
 	for (var i in entitiesList) {
 		var entity = entitiesList[i];
 		if (entity.hasId()) {
@@ -250,58 +262,82 @@ function drawDiamond(ctx, x, y, baseLen, rotation_in_radians, colorRGBA) {
   ctx.restore();
 }
 
-function layoutEntityAtPosition(ctx, x, y, entity, zoom_factor, xOffset, yOffset, shapePositionMap) {
+function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOffset, yOffset, shapePositionMap) {
   var final_x = (x - xOffset) * zoom_factor;
   var final_y = (y - yOffset) * zoom_factor;
   var shapesList = entity.getShapesList();
   for (var j in shapesList) {
     var shape = shapesList[j];
     //
-	var shapeId = entity.getId() + "." + shape.getId();
-	var relPos = undefined;
+	  var shapeId = entity.getId() + "_" + shape.getId();
+	  var relPos = undefined;
     if (shape.hasRelativePos()) {
-      relPos = shape.getRelativePos();
-    }
-	else {
+        relPos = shape.getRelativePos();
+      }
+    else {
       relPos = new proto.scaii.common.Pos;
       relPos.setX(0.0);
       relPos.setY(0.0);
-    }
-	var absPos = getAbsoluteOrigin(final_x, final_y, relPos, zoom_factor);
-	var absX = absPos[0];
-	var absY = absPos[1];
-	var orientation = 0.0;
-	orientation = shape.getRotation();
-	if (shape.hasRect()) {
-	  var rect = shape.getRect();
-	  var width = 40;
-	  var height = 30;
-	  if (rect.hasWidth()) {
-	    width = rect.getWidth();
-	  }
-	  if (rect.hasHeight()) {
-	    height = rect.getHeight();
-	  }
-	  var final_width = width * zoom_factor;
-	  var final_height = height * zoom_factor;
+      }
+    var absPos = getAbsoluteOrigin(final_x, final_y, relPos, zoom_factor);
+    var absX = absPos[0];
+    var absY = absPos[1];
+    var orientation = 0.0;
+    orientation = shape.getRotation();
+    var intMap = entity.getIntmetadataMap();
+    var hit_points = Number(intMap.get("hit_points"));
+    console.log('entity had hp ' + hit_points);
+    if (shape.hasRect()) {
+      var rect = shape.getRect();
+      var width = 40;
+      var height = 30;
+      if (rect.hasWidth()) {
+        width = rect.getWidth();
+      }
+      if (rect.hasHeight()) {
+        height = rect.getHeight();
+      }
+      var final_width = width * zoom_factor;
+      var final_height = height * zoom_factor;
       var shapePoints = getShapePoints(absX,absY,Math.max(final_width, final_height) + 6 * zoom_factor, shapeId) ;
       shapePositionMap[shapeId] = shapePoints;
-//	  highlightShape(ctx,shapeId,shapePositionMap);
-	  var colorRGBA = loadShapeColorAsRGBAString(shape);
-	  drawRect(ctx, absX, absY, final_width, final_height, orientation, colorRGBA);
-	}
-	else if (shape.hasTriangle()) {
-	  var triangle = shape.getTriangle();
-	  var baseLen = triangle.getBaseLen();
-	  var finalBaseLen = baseLen * zoom_factor;
+  //	highlightShape(ctx,shapeId,shapePositionMap);
+      var colorRGBA = loadShapeColorAsRGBAString(shape);
+      drawRect(ctx, absX, absY, final_width, final_height, orientation, colorRGBA);
+      createToolTip(entityIndex+2, shapeId, absX, absY, hit_points, colorRGBA);
+    }
+    else if (shape.hasTriangle()) {
+      var triangle = shape.getTriangle();
+      var baseLen = triangle.getBaseLen();
+      var finalBaseLen = baseLen * zoom_factor;
       var shapePoints = getShapePoints(absX,absY,finalBaseLen + 6 * zoom_factor, shapeId) ;
       shapePositionMap[shapeId] = shapePoints;
-//	  highlightShape(ctx,shapeId,shapePositionMap);
-	  var colorRGBA = loadShapeColorAsRGBAString(shape);
-	  //drawTriangle(ctx, x, y, baseLen, orientation, colorRGBA);
-	  drawDiamond(ctx, absX, absY, finalBaseLen, orientation, colorRGBA);
-	}
+  //	highlightShape(ctx,shapeId,shapePositionMap);
+      var colorRGBA = loadShapeColorAsRGBAString(shape);
+      //drawTriangle(ctx, x, y, baseLen, orientation, colorRGBA);
+      drawDiamond(ctx, absX, absY, finalBaseLen, orientation, colorRGBA);
+      createToolTip(entityIndex+2, shapeId, absX, absY , hit_points, colorRGBA);
+    }
   }
+}
+
+function createToolTip(z_index, shapeId, absX, absY, hit_points, color) {
+  var canvas_bounds = gameboard_canvas.getBoundingClientRect();
+  var valueSpan = document.createElement("span");
+  var setToShow = selectedToolTipIds[shapeId];
+  if (setToShow == undefined || setToShow == "hide"){
+    valueSpan.setAttribute("class","tooltip-invisible");
+  }
+  
+  var id = "metadata" + shapeId;
+  valueSpan.setAttribute("id",id);
+   // position it relative to where origin of bounding box of gameboard is
+  var y = absY + canvas_bounds.top - 20;
+  var x = absX + canvas_bounds.left + 20;
+  valueSpan.setAttribute("style", 'zIndex:' + z_index + ';position:absolute;left:' + x + 'px;top:' + y + 'px;color:' + color + ';');
+  $("#scaii-gameboard").append(valueSpan);
+  valueSpan.innerHTML = 'hp: ' + hit_points;
+  entityToolTipIds.push(id);
 }
 
 function getColorRGBA(r,g,b,a) {
@@ -384,7 +420,7 @@ function renderState(ctx, canvas, entities, zoom_factor, xOffset, yOffset, shape
         if (pos.hasX() && pos.hasY()) {
           var x = pos.getX();
           var y = pos.getY();
-          layoutEntityAtPosition(ctx, x , y , entity, zoom_factor, xOffset, yOffset, shapePositionMap);
+          layoutEntityAtPosition(Number(i), ctx, x , y , entity, zoom_factor, xOffset, yOffset, shapePositionMap);
         }
       }
     }
