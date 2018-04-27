@@ -122,6 +122,9 @@ message Entity {
 	// If this is true, the other fields are
 	// ignored (except ID, naturally).
 	required bool delete = 4;
+	optional map<String,bool> boolMetadata = 5;
+	optional map<String,int> intMetadata = 6;
+	optional map<String,float> floatMetada = 7;
 }
 
 // A position.
