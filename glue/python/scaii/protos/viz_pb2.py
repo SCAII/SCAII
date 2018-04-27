@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='viz.proto',
   package='scaii.common',
   syntax='proto2',
-  serialized_pb=_b('\n\tviz.proto\x12\x0cscaii.common\"\x99\x01\n\x07VizInit\x12\x11\n\ttest_mode\x18\x01 \x01(\x08\x12\x12\n\nstep_count\x18\x02 \x01(\x03\x12\x17\n\x0fgameboard_width\x18\x03 \x01(\r\x12\x18\n\x10gameboard_height\x18\x04 \x01(\r\x12\x34\n\x0c\x65xplanations\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ExplanationPoint\"O\n\x11\x45xplanationPoints\x12:\n\x12\x65xplanation_points\x18\x01 \x03(\x0b\x32\x1e.scaii.common.ExplanationPoint\"\xa5\x01\n\x10\x45xplanationPoint\x12\x0c\n\x04step\x18\x01 \x01(\r\x12\n\n\x02id\x18\x02 \x01(\r\x12\r\n\x05title\x18\x03 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x04 \x01(\t\x12(\n\x08saliency\x18\x05 \x01(\x0b\x32\x16.scaii.common.Saliency\x12)\n\tbar_chart\x18\x06 \x01(\x0b\x32\x16.scaii.common.BarChart\"C\n\x05Layer\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05\x63\x65lls\x18\x02 \x03(\x01\x12\r\n\x05width\x18\x03 \x01(\r\x12\x0e\n\x06height\x18\x04 \x01(\r\"-\n\x06Layers\x12#\n\x06layers\x18\x01 \x03(\x0b\x32\x13.scaii.common.Layer\"\x93\x01\n\x08Saliency\x12=\n\x0csaliency_map\x18\x01 \x03(\x0b\x32\'.scaii.common.Saliency.SaliencyMapEntry\x1aH\n\x10SaliencyMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12#\n\x05value\x18\x02 \x01(\x0b\x32\x14.scaii.common.Layers:\x02\x38\x01\"c\n\x08\x42\x61rChart\x12&\n\x06groups\x18\x01 \x03(\x0b\x32\x16.scaii.common.BarGroup\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0f\n\x07v_title\x18\x03 \x01(\t\x12\x0f\n\x07h_title\x18\x04 \x01(\t\"]\n\x08\x42\x61rGroup\x12\r\n\x05value\x18\x01 \x01(\x01\x12\x1f\n\x04\x62\x61rs\x18\x02 \x03(\x0b\x32\x11.scaii.common.Bar\x12\x13\n\x0bsaliency_id\x18\x03 \x01(\t\x12\x0c\n\x04name\x18\x04 \x01(\t\"7\n\x03\x42\x61r\x12\r\n\x05value\x18\x01 \x02(\x01\x12\x13\n\x0bsaliency_id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\"-\n\x03Viz\x12&\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\x14.scaii.common.Entity\"\xb0\x01\n\tChartInfo\x12\x13\n\x0b\x63hart_title\x18\x01 \x01(\t\x12\x14\n\x0ch_axis_title\x18\x02 \x01(\t\x12\x14\n\x0cv_axis_title\x18\x03 \x01(\t\x12+\n\x07\x61\x63tions\x18\x04 \x01(\x0b\x32\x1a.scaii.common.ChartActions\x12\x35\n\rvalue_vectors\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ChartValueVector\";\n\x0c\x43hartActions\x12\x15\n\ractions_label\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63tion_names\x18\x02 \x03(\t\"8\n\x10\x43hartValueVector\x12\r\n\x05label\x18\x01 \x01(\t\x12\x15\n\raction_values\x18\x02 \x03(\x01\"i\n\x06\x45ntity\x12\n\n\x02id\x18\x01 \x02(\x04\x12\x1e\n\x03pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12#\n\x06shapes\x18\x03 \x03(\x0b\x32\x13.scaii.common.Shape\x12\x0e\n\x06\x64\x65lete\x18\x04 \x02(\x08\"\x1b\n\x03Pos\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\"3\n\x05\x43olor\x12\t\n\x01r\x18\x01 \x02(\r\x12\t\n\x01g\x18\x02 \x02(\r\x12\t\n\x01\x62\x18\x03 \x02(\r\x12\t\n\x01\x61\x18\x04 \x02(\r\"\x1c\n\x08Triangle\x12\x10\n\x08\x62\x61se_len\x18\x01 \x01(\x01\"%\n\x04Rect\x12\r\n\x05width\x18\x01 \x01(\x01\x12\x0e\n\x06height\x18\x02 \x01(\x01\"\x88\x02\n\x05Shape\x12\n\n\x02id\x18\x01 \x02(\x04\x12\'\n\x0crelative_pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12\"\n\x05\x63olor\x18\x03 \x01(\x0b\x32\x13.scaii.common.Color\x12\x10\n\x08rotation\x18\x04 \x02(\x01\x12 \n\x04rect\x18\x14 \x01(\x0b\x32\x12.scaii.common.Rect\x12(\n\x08triangle\x18\x15 \x01(\x0b\x32\x16.scaii.common.Triangle\x12\x0b\n\x03tag\x18\x16 \x01(\t\x12+\n\x0egradient_color\x18\x17 \x01(\x0b\x32\x13.scaii.common.Color\x12\x0e\n\x06\x64\x65lete\x18( \x02(\x08')
+  serialized_pb=_b('\n\tviz.proto\x12\x0cscaii.common\"\x99\x01\n\x07VizInit\x12\x11\n\ttest_mode\x18\x01 \x01(\x08\x12\x12\n\nstep_count\x18\x02 \x01(\x03\x12\x17\n\x0fgameboard_width\x18\x03 \x01(\r\x12\x18\n\x10gameboard_height\x18\x04 \x01(\r\x12\x34\n\x0c\x65xplanations\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ExplanationPoint\"O\n\x11\x45xplanationPoints\x12:\n\x12\x65xplanation_points\x18\x01 \x03(\x0b\x32\x1e.scaii.common.ExplanationPoint\"\xa5\x01\n\x10\x45xplanationPoint\x12\x0c\n\x04step\x18\x01 \x01(\r\x12\n\n\x02id\x18\x02 \x01(\r\x12\r\n\x05title\x18\x03 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x04 \x01(\t\x12(\n\x08saliency\x18\x05 \x01(\x0b\x32\x16.scaii.common.Saliency\x12)\n\tbar_chart\x18\x06 \x01(\x0b\x32\x16.scaii.common.BarChart\"C\n\x05Layer\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05\x63\x65lls\x18\x02 \x03(\x01\x12\r\n\x05width\x18\x03 \x01(\r\x12\x0e\n\x06height\x18\x04 \x01(\r\"-\n\x06Layers\x12#\n\x06layers\x18\x01 \x03(\x0b\x32\x13.scaii.common.Layer\"\x93\x01\n\x08Saliency\x12=\n\x0csaliency_map\x18\x01 \x03(\x0b\x32\'.scaii.common.Saliency.SaliencyMapEntry\x1aH\n\x10SaliencyMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12#\n\x05value\x18\x02 \x01(\x0b\x32\x14.scaii.common.Layers:\x02\x38\x01\"c\n\x08\x42\x61rChart\x12&\n\x06groups\x18\x01 \x03(\x0b\x32\x16.scaii.common.BarGroup\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0f\n\x07v_title\x18\x03 \x01(\t\x12\x0f\n\x07h_title\x18\x04 \x01(\t\"]\n\x08\x42\x61rGroup\x12\r\n\x05value\x18\x01 \x01(\x01\x12\x1f\n\x04\x62\x61rs\x18\x02 \x03(\x0b\x32\x11.scaii.common.Bar\x12\x13\n\x0bsaliency_id\x18\x03 \x01(\t\x12\x0c\n\x04name\x18\x04 \x01(\t\"7\n\x03\x42\x61r\x12\r\n\x05value\x18\x01 \x02(\x01\x12\x13\n\x0bsaliency_id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\"-\n\x03Viz\x12&\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\x14.scaii.common.Entity\"\xb0\x01\n\tChartInfo\x12\x13\n\x0b\x63hart_title\x18\x01 \x01(\t\x12\x14\n\x0ch_axis_title\x18\x02 \x01(\t\x12\x14\n\x0cv_axis_title\x18\x03 \x01(\t\x12+\n\x07\x61\x63tions\x18\x04 \x01(\x0b\x32\x1a.scaii.common.ChartActions\x12\x35\n\rvalue_vectors\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ChartValueVector\";\n\x0c\x43hartActions\x12\x15\n\ractions_label\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63tion_names\x18\x02 \x03(\t\"8\n\x10\x43hartValueVector\x12\r\n\x05label\x18\x01 \x01(\t\x12\x15\n\raction_values\x18\x02 \x03(\x01\"\xbc\x03\n\x06\x45ntity\x12\n\n\x02id\x18\x01 \x02(\x04\x12\x1e\n\x03pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12#\n\x06shapes\x18\x03 \x03(\x0b\x32\x13.scaii.common.Shape\x12\x0e\n\x06\x64\x65lete\x18\x04 \x02(\x08\x12<\n\x0c\x62oolMetadata\x18\x05 \x03(\x0b\x32&.scaii.common.Entity.BoolMetadataEntry\x12:\n\x0bintMetadata\x18\x06 \x03(\x0b\x32%.scaii.common.Entity.IntMetadataEntry\x12:\n\x0b\x66loatMetada\x18\x07 \x03(\x0b\x32%.scaii.common.Entity.FloatMetadaEntry\x1a\x33\n\x11\x42oolMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x08:\x02\x38\x01\x1a\x32\n\x10IntMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x03:\x02\x38\x01\x1a\x32\n\x10\x46loatMetadaEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x02:\x02\x38\x01\"\x1b\n\x03Pos\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\"3\n\x05\x43olor\x12\t\n\x01r\x18\x01 \x02(\r\x12\t\n\x01g\x18\x02 \x02(\r\x12\t\n\x01\x62\x18\x03 \x02(\r\x12\t\n\x01\x61\x18\x04 \x02(\r\"\x1c\n\x08Triangle\x12\x10\n\x08\x62\x61se_len\x18\x01 \x01(\x01\"%\n\x04Rect\x12\r\n\x05width\x18\x01 \x01(\x01\x12\x0e\n\x06height\x18\x02 \x01(\x01\"\x88\x02\n\x05Shape\x12\n\n\x02id\x18\x01 \x02(\x04\x12\'\n\x0crelative_pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12\"\n\x05\x63olor\x18\x03 \x01(\x0b\x32\x13.scaii.common.Color\x12\x10\n\x08rotation\x18\x04 \x02(\x01\x12 \n\x04rect\x18\x14 \x01(\x0b\x32\x12.scaii.common.Rect\x12(\n\x08triangle\x18\x15 \x01(\x0b\x32\x16.scaii.common.Triangle\x12\x0b\n\x03tag\x18\x16 \x01(\t\x12+\n\x0egradient_color\x18\x17 \x01(\x0b\x32\x13.scaii.common.Color\x12\x0e\n\x06\x64\x65lete\x18( \x02(\x08')
 )
 
 
@@ -647,6 +647,117 @@ _CHARTVALUEVECTOR = _descriptor.Descriptor(
 )
 
 
+_ENTITY_BOOLMETADATAENTRY = _descriptor.Descriptor(
+  name='BoolMetadataEntry',
+  full_name='scaii.common.Entity.BoolMetadataEntry',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='key', full_name='scaii.common.Entity.BoolMetadataEntry.key', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='value', full_name='scaii.common.Entity.BoolMetadataEntry.value', index=1,
+      number=2, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=_descriptor._ParseOptions(descriptor_pb2.MessageOptions(), _b('8\001')),
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1586,
+  serialized_end=1637,
+)
+
+_ENTITY_INTMETADATAENTRY = _descriptor.Descriptor(
+  name='IntMetadataEntry',
+  full_name='scaii.common.Entity.IntMetadataEntry',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='key', full_name='scaii.common.Entity.IntMetadataEntry.key', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='value', full_name='scaii.common.Entity.IntMetadataEntry.value', index=1,
+      number=2, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=_descriptor._ParseOptions(descriptor_pb2.MessageOptions(), _b('8\001')),
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1639,
+  serialized_end=1689,
+)
+
+_ENTITY_FLOATMETADAENTRY = _descriptor.Descriptor(
+  name='FloatMetadaEntry',
+  full_name='scaii.common.Entity.FloatMetadaEntry',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='key', full_name='scaii.common.Entity.FloatMetadaEntry.key', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='value', full_name='scaii.common.Entity.FloatMetadaEntry.value', index=1,
+      number=2, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=_descriptor._ParseOptions(descriptor_pb2.MessageOptions(), _b('8\001')),
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1691,
+  serialized_end=1741,
+)
+
 _ENTITY = _descriptor.Descriptor(
   name='Entity',
   full_name='scaii.common.Entity',
@@ -682,10 +793,31 @@ _ENTITY = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='boolMetadata', full_name='scaii.common.Entity.boolMetadata', index=4,
+      number=5, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='intMetadata', full_name='scaii.common.Entity.intMetadata', index=5,
+      number=6, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='floatMetada', full_name='scaii.common.Entity.floatMetada', index=6,
+      number=7, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
-  nested_types=[],
+  nested_types=[_ENTITY_BOOLMETADATAENTRY, _ENTITY_INTMETADATAENTRY, _ENTITY_FLOATMETADAENTRY, ],
   enum_types=[
   ],
   options=None,
@@ -694,8 +826,8 @@ _ENTITY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1296,
-  serialized_end=1401,
+  serialized_start=1297,
+  serialized_end=1741,
 )
 
 
@@ -732,8 +864,8 @@ _POS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1403,
-  serialized_end=1430,
+  serialized_start=1743,
+  serialized_end=1770,
 )
 
 
@@ -784,8 +916,8 @@ _COLOR = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1432,
-  serialized_end=1483,
+  serialized_start=1772,
+  serialized_end=1823,
 )
 
 
@@ -815,8 +947,8 @@ _TRIANGLE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1485,
-  serialized_end=1513,
+  serialized_start=1825,
+  serialized_end=1853,
 )
 
 
@@ -853,8 +985,8 @@ _RECT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1515,
-  serialized_end=1552,
+  serialized_start=1855,
+  serialized_end=1892,
 )
 
 
@@ -940,8 +1072,8 @@ _SHAPE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1555,
-  serialized_end=1819,
+  serialized_start=1895,
+  serialized_end=2159,
 )
 
 _VIZINIT.fields_by_name['explanations'].message_type = _EXPLANATIONPOINT
@@ -957,8 +1089,14 @@ _BARGROUP.fields_by_name['bars'].message_type = _BAR
 _VIZ.fields_by_name['entities'].message_type = _ENTITY
 _CHARTINFO.fields_by_name['actions'].message_type = _CHARTACTIONS
 _CHARTINFO.fields_by_name['value_vectors'].message_type = _CHARTVALUEVECTOR
+_ENTITY_BOOLMETADATAENTRY.containing_type = _ENTITY
+_ENTITY_INTMETADATAENTRY.containing_type = _ENTITY
+_ENTITY_FLOATMETADAENTRY.containing_type = _ENTITY
 _ENTITY.fields_by_name['pos'].message_type = _POS
 _ENTITY.fields_by_name['shapes'].message_type = _SHAPE
+_ENTITY.fields_by_name['boolMetadata'].message_type = _ENTITY_BOOLMETADATAENTRY
+_ENTITY.fields_by_name['intMetadata'].message_type = _ENTITY_INTMETADATAENTRY
+_ENTITY.fields_by_name['floatMetada'].message_type = _ENTITY_FLOATMETADAENTRY
 _SHAPE.fields_by_name['relative_pos'].message_type = _POS
 _SHAPE.fields_by_name['color'].message_type = _COLOR
 _SHAPE.fields_by_name['rect'].message_type = _RECT
@@ -1085,11 +1223,35 @@ ChartValueVector = _reflection.GeneratedProtocolMessageType('ChartValueVector', 
 _sym_db.RegisterMessage(ChartValueVector)
 
 Entity = _reflection.GeneratedProtocolMessageType('Entity', (_message.Message,), dict(
+
+  BoolMetadataEntry = _reflection.GeneratedProtocolMessageType('BoolMetadataEntry', (_message.Message,), dict(
+    DESCRIPTOR = _ENTITY_BOOLMETADATAENTRY,
+    __module__ = 'viz_pb2'
+    # @@protoc_insertion_point(class_scope:scaii.common.Entity.BoolMetadataEntry)
+    ))
+  ,
+
+  IntMetadataEntry = _reflection.GeneratedProtocolMessageType('IntMetadataEntry', (_message.Message,), dict(
+    DESCRIPTOR = _ENTITY_INTMETADATAENTRY,
+    __module__ = 'viz_pb2'
+    # @@protoc_insertion_point(class_scope:scaii.common.Entity.IntMetadataEntry)
+    ))
+  ,
+
+  FloatMetadaEntry = _reflection.GeneratedProtocolMessageType('FloatMetadaEntry', (_message.Message,), dict(
+    DESCRIPTOR = _ENTITY_FLOATMETADAENTRY,
+    __module__ = 'viz_pb2'
+    # @@protoc_insertion_point(class_scope:scaii.common.Entity.FloatMetadaEntry)
+    ))
+  ,
   DESCRIPTOR = _ENTITY,
   __module__ = 'viz_pb2'
   # @@protoc_insertion_point(class_scope:scaii.common.Entity)
   ))
 _sym_db.RegisterMessage(Entity)
+_sym_db.RegisterMessage(Entity.BoolMetadataEntry)
+_sym_db.RegisterMessage(Entity.IntMetadataEntry)
+_sym_db.RegisterMessage(Entity.FloatMetadaEntry)
 
 Pos = _reflection.GeneratedProtocolMessageType('Pos', (_message.Message,), dict(
   DESCRIPTOR = _POS,
@@ -1129,4 +1291,10 @@ _sym_db.RegisterMessage(Shape)
 
 _SALIENCY_SALIENCYMAPENTRY.has_options = True
 _SALIENCY_SALIENCYMAPENTRY._options = _descriptor._ParseOptions(descriptor_pb2.MessageOptions(), _b('8\001'))
+_ENTITY_BOOLMETADATAENTRY.has_options = True
+_ENTITY_BOOLMETADATAENTRY._options = _descriptor._ParseOptions(descriptor_pb2.MessageOptions(), _b('8\001'))
+_ENTITY_INTMETADATAENTRY.has_options = True
+_ENTITY_INTMETADATAENTRY._options = _descriptor._ParseOptions(descriptor_pb2.MessageOptions(), _b('8\001'))
+_ENTITY_FLOATMETADAENTRY.has_options = True
+_ENTITY_FLOATMETADAENTRY._options = _descriptor._ParseOptions(descriptor_pb2.MessageOptions(), _b('8\001'))
 # @@protoc_insertion_point(module_scope)
