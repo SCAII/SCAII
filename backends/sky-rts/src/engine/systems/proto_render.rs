@@ -96,18 +96,27 @@ impl RenderSystem {
             scaii_shape.relative_pos = Some(Pos::new(0.0, 0.0).to_scaii_pos());
 
             // TODO: maybe keep these around in a pool to reduce allocations?
-            let mut float_metadata = HashMap::with_capacity(1);
-            let mut bool_metadata= HashMap::with_capacity(2);
-            let mut string_metadata = HashMap::with_capacity(1);
-
+            let mut float_metadata : HashMap<String, f32> = HashMap::with_capacity(1);
+            //let mut bool_metadata : HashMap<String, bool> = HashMap::with_capacity(2);
+            let mut string_metadata : HashMap<String, String> = HashMap::with_capacity(1);
+            let mut bool_string_metadata : HashMap<String, String> = HashMap::with_capacity(2);
             let is_friend = sys_data.faction.get(id).unwrap().0 == 0;
             let hp = sys_data.hp.get(id).unwrap();
             let tag = sys_data.u_type.get(id).unwrap();
+            
+            println!("entity : {:?} HitPoints : {}", id, hp.curr_hp);
+            float_metadata.insert("Hitpoints".to_string(), hp.curr_hp as f32);
+           // bool_metadata.insert("Enemy?".to_string(), not_is_friend);
+           // bool_metadata.insert("Friend?".to_string(), is_friend);
+           let mut enemy_bool_string = "true".to_string();
+           let mut friend_bool_string = "false".to_string();
+            if is_friend {
+                enemy_bool_string = "false".to_string();
+                friend_bool_string = "true".to_string();
+            }
 
-            float_metadata.insert("Hitpoints ".to_string(), hp.curr_hp as f32);
-            bool_metadata.insert("Friend? ".to_string(), is_friend);
-            bool_metadata.insert("Enemy? ".to_string(), !is_friend);
-
+            bool_string_metadata.insert("Enemy?".to_string(),enemy_bool_string);
+            bool_string_metadata.insert("Friend?".to_string(),friend_bool_string);
             string_metadata.insert("Unit Type".to_string(), tag.0.clone());
             ScaiiEntity {
                 shapes: vec![scaii_shape],
@@ -115,7 +124,8 @@ impl RenderSystem {
                 delete: sys_data.death.get(id).is_some(),
                 pos: Some(pos.to_scaii_pos()),
                 float_metadata,
-                bool_metadata,
+                string_metadata,
+                bool_string_metadata,
                 ..ScaiiEntity::default()
             }
         }

@@ -126,8 +126,9 @@ message Entity {
 	map<string,int64> intMetadata = 6;
 	map<string,float> floatMetadata = 7;
 	map<string,string> stringMetadata = 8;
+	map<string,string> boolStringMetadata = 9;
 }
-
+	
 // A position.
 // The positions x and y can be interpreted
 // roughly as pixels.
