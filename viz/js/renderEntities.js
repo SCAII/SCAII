@@ -284,9 +284,9 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
     var absY = absPos[1];
     var orientation = 0.0;
     orientation = shape.getRotation();
-    var intMap = entity.getIntmetadataMap();
-    var hit_points = Number(intMap.get("hit_points"));
-    console.log('entity had hp ' + hit_points);
+    var floatMap = entity.getFloatmetadataMap();
+    var hitPoints = Number(floatMap.get("Hitpoints"));
+    console.log('entity had hp ' + hitPoints);
     if (shape.hasRect()) {
       var rect = shape.getRect();
       var width = 40;
@@ -304,7 +304,7 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
   //	highlightShape(ctx,shapeId,shapePositionMap);
       var colorRGBA = loadShapeColorAsRGBAString(shape);
       drawRect(ctx, absX, absY, final_width, final_height, orientation, colorRGBA);
-      createToolTip(entityIndex+2, shapeId, absX, absY, hit_points, colorRGBA);
+      createToolTip(entityIndex+2, shapeId, absX, absY, hitPoints, colorRGBA);
     }
     else if (shape.hasTriangle()) {
       var triangle = shape.getTriangle();
@@ -316,12 +316,12 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
       var colorRGBA = loadShapeColorAsRGBAString(shape);
       //drawTriangle(ctx, x, y, baseLen, orientation, colorRGBA);
       drawDiamond(ctx, absX, absY, finalBaseLen, orientation, colorRGBA);
-      createToolTip(entityIndex+2, shapeId, absX, absY , hit_points, colorRGBA);
+      createToolTip(entityIndex+2, shapeId, absX, absY , hitPoints, colorRGBA);
     }
   }
 }
 
-function createToolTip(z_index, shapeId, absX, absY, hit_points, color) {
+function createToolTip(z_index, shapeId, absX, absY, hitPoints, color) {
   var canvas_bounds = gameboard_canvas.getBoundingClientRect();
   var valueSpan = document.createElement("span");
   var setToShow = selectedToolTipIds[shapeId];
@@ -336,7 +336,7 @@ function createToolTip(z_index, shapeId, absX, absY, hit_points, color) {
   var x = absX + canvas_bounds.left + 20;
   valueSpan.setAttribute("style", 'zIndex:' + z_index + ';position:absolute;left:' + x + 'px;top:' + y + 'px;color:' + color + ';');
   $("#scaii-gameboard").append(valueSpan);
-  valueSpan.innerHTML = 'hp: ' + hit_points;
+  valueSpan.innerHTML = 'hp: ' + hitPoints;
   entityToolTipIds.push(id);
 }
 
