@@ -265,10 +265,6 @@ pub fn get_test_mode_replay_header(step_count: u32) -> Result<ReplayHeader, Box<
 }
 
 pub fn create_triangle_entity_at(x: &f64, y: &f64, orient: &f64) -> Entity {
-    use std::collections::HashMap;
-    let bool_metadata  : HashMap<String, bool> = HashMap::new();
-    let int_metadata   : HashMap<String, i64>  = HashMap::new();
-    let float_metadata : HashMap<String, f32>  = HashMap::new();
     Entity {
         id: 2,
         pos: Some(protos::Pos {
@@ -299,17 +295,11 @@ pub fn create_triangle_entity_at(x: &f64, y: &f64, orient: &f64) -> Entity {
             },
         ],
         delete: false,
-        bool_metadata: bool_metadata,
-        int_metadata: int_metadata,
-        float_metadata: float_metadata,
+        ..Entity::default()
     }
 }
 
 pub fn create_rectangle_entity_at(x: &f64, y: &f64, orient: &f64) -> Entity {
-    use std::collections::HashMap;
-    let bool_metadata  : HashMap<String, bool> = HashMap::new();
-    let int_metadata   : HashMap<String, i64>  = HashMap::new();
-    let float_metadata : HashMap<String, f32>  = HashMap::new();
     Entity {
         id: 1,
         pos: Some(protos::Pos {
@@ -341,9 +331,7 @@ pub fn create_rectangle_entity_at(x: &f64, y: &f64, orient: &f64) -> Entity {
             },
         ],
         delete: false,
-        bool_metadata: bool_metadata,
-        int_metadata: int_metadata,
-        float_metadata: float_metadata,
+        ..Entity::default()
     }
 }
 
@@ -440,7 +428,6 @@ fn wrap_entities_in_viz_packet(entity1: Entity, entity2: Entity) -> ScaiiPacket 
         specific_msg: Some(SpecificMsg::Viz(Viz { entities: entities })),
     }
 }
-
 
 pub fn get_test_mode_rewind_hint_message() -> ScaiiPacket {
     let target: String = String::from("MockRts");

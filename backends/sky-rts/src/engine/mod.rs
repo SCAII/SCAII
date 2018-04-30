@@ -205,6 +205,7 @@ impl<'a, 'b> Rts<'a, 'b> {
             SkyCollisionWorld::new(COLLISION_MARGIN);
         self.world.write_resource::<Skip>().0 = false;
         self.world.write_resource::<Skip>().1 = None;
+        self.world.write_resource::<NeedsKeyInfo>().0 = true;
         self.last_action = Default::default();
 
         self.world.delete_all();
@@ -264,6 +265,8 @@ impl<'a, 'b> Rts<'a, 'b> {
                 self.world.read_resource::<RtsState>().0.clone(),
             )),
         };
+
+        self.world.write_resource::<NeedsKeyInfo>().0 = false;
 
         mm.packets.push(scaii_packet);
 
@@ -466,6 +469,8 @@ impl<'a, 'b> Rts<'a, 'b> {
         }
 
         self.world.write_resource::<Deserializing>().0 = false;
+        self.world.write_resource::<NeedsKeyInfo>().0 = false;
+
         MultiMessage { packets }
     }
 
