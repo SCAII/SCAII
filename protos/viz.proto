@@ -125,6 +125,7 @@ message Entity {
 	map<string,bool> boolMetadata = 5;
 	map<string,int64> intMetadata = 6;
 	map<string,float> floatMetadata = 7;
+	map<string,string> stringMetadata = 8;
 }
 
 // A position.

@@ -6616,7 +6616,8 @@ proto.scaii.common.Entity.toObject = function(includeInstance, msg) {
     pb_delete: jspb.Message.getField(msg, 4),
     boolmetadataMap: (f = msg.getBoolmetadataMap()) ? f.toObject(includeInstance, undefined) : [],
     intmetadataMap: (f = msg.getIntmetadataMap()) ? f.toObject(includeInstance, undefined) : [],
-    floatmetadataMap: (f = msg.getFloatmetadataMap()) ? f.toObject(includeInstance, undefined) : []
+    floatmetadataMap: (f = msg.getFloatmetadataMap()) ? f.toObject(includeInstance, undefined) : [],
+    stringmetadataMap: (f = msg.getStringmetadataMap()) ? f.toObject(includeInstance, undefined) : []
   };
 
   if (includeInstance) {
@@ -6689,6 +6690,12 @@ proto.scaii.common.Entity.deserializeBinaryFromReader = function(msg, reader) {
         jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readFloat);
          });
       break;
+    case 8:
+      var value = msg.getStringmetadataMap();
+      reader.readMessage(value, function(message, reader) {
+        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString);
+         });
+      break;
     default:
       reader.skipField();
       break;
@@ -6759,6 +6766,10 @@ proto.scaii.common.Entity.serializeBinaryToWriter = function(message, writer) {
   f = message.getFloatmetadataMap(true);
   if (f && f.getLength() > 0) {
     f.serializeBinary(7, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeFloat);
+  }
+  f = message.getStringmetadataMap(true);
+  if (f && f.getLength() > 0) {
+    f.serializeBinary(8, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
   }
 };
 
@@ -6935,6 +6946,24 @@ proto.scaii.common.Entity.prototype.getFloatmetadataMap = function(opt_noLazyCre
 
 proto.scaii.common.Entity.prototype.clearFloatmetadataMap = function() {
   this.getFloatmetadataMap().clear();
+};
+
+
+/**
+ * map<string, string> stringMetadata = 8;
+ * @param {boolean=} opt_noLazyCreate Do not create the map if
+ * empty, instead returning `undefined`
+ * @return {!jspb.Map<string,string>}
+ */
+proto.scaii.common.Entity.prototype.getStringmetadataMap = function(opt_noLazyCreate) {
+  return /** @type {!jspb.Map<string,string>} */ (
+      jspb.Message.getMapField(this, 8, opt_noLazyCreate,
+      null));
+};
+
+
+proto.scaii.common.Entity.prototype.clearStringmetadataMap = function() {
+  this.getStringmetadataMap().clear();
 };
 
 
