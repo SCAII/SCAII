@@ -17,6 +17,10 @@ use prost::Message;
 mod test;
 mod test_util;
 
+pub use scaii_defs::replay::{ActionWrapper, ReplayAction, ReplayHeader, SerializationInfo,
+                     SerializedProtosAction, SerializedProtosEndpoint,
+                     SerializedProtosScaiiPacket, SerializedProtosSerializationResponse};
+
 #[derive(Debug)]
 struct RecorderError {
     details: String,
@@ -40,55 +44,6 @@ impl Error for RecorderError {
     fn description(&self) -> &str {
         &self.details
     }
-}
-
-//
-// wrapper structs for serialized proto messages
-//
-
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
-pub struct SerializedProtosSerializationResponse {
-    pub data: Vec<u8>,
-}
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
-pub struct SerializedProtosAction {
-    pub data: Vec<u8>,
-}
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
-pub struct SerializedProtosScaiiPacket {
-    pub data: Vec<u8>,
-}
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
-pub struct SerializedProtosEndpoint {
-    pub data: Vec<u8>,
-}
-
-//
-//  structs supporting ReplayAction
-//
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
-pub struct ActionWrapper {
-    pub has_explanation: bool,
-    pub step: u32,
-    pub title: String,
-    pub serialized_action: Vec<u8>,
-}
-
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
-pub enum ReplayAction {
-    Header(ReplayHeader),
-    Delta(ActionWrapper),
-    Keyframe(SerializationInfo, ActionWrapper),
-}
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
-pub struct SerializationInfo {
-    pub source: SerializedProtosEndpoint,
-    pub data: SerializedProtosSerializationResponse,
-}
-
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
-pub struct ReplayHeader {
-    pub configs: SerializedProtosScaiiPacket,
 }
 
 //

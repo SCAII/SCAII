@@ -1,34 +1,16 @@
-use protos::{ScaiiPacket, };
+use protos::ScaiiPacket;
 use protos::cfg::WhichModule;
 use protos::scaii_packet::SpecificMsg;
 use scaii_core::{ReplayAction, SerializedProtosSerializationResponse};
 use scaii_defs::protos;
 use std::error::Error;
-use std::fs::File;
-use std::path::Path;
-use std::io::BufReader;
-use bincode::{deserialize_from, Infinite};
 use super::*;
 use scaii_core;
 
-pub fn load_replay_file(path: &Path) -> Result<Vec<ReplayAction>, Box<Error>> {
-    //use super::ReplayAction;
-    let replay_file = File::open(path).expect("file not found");
-    let mut replay_vec: Vec<ReplayAction> = Vec::new();
-    let mut reader = BufReader::new(replay_file);
-
-    while let Ok(action) =
-        deserialize_from::<BufReader<File>, ReplayAction, Infinite>(&mut reader, Infinite)
-    {
-        replay_vec.push(action);
-    }
-    
-    //print_replay_actions(&replay_actions);
-    Ok(replay_vec)
-}
+pub use scaii_defs::replay::load_replay_file;
 
 #[allow(dead_code)]
-fn print_replay_actions(replay_vec : &Vec<ReplayAction>){
+fn print_replay_actions(replay_vec: &Vec<ReplayAction>) {
     let mut count = 0;
     println!("");
     println!(
@@ -69,16 +51,15 @@ pub fn set_replay_mode_on_backend_config(packet_option: &mut Option<ScaiiPacket>
     }
 }
 
-
-pub fn get_replay_filenames() -> Result<Vec<String> , Box<Error>>{
+pub fn get_replay_filenames() -> Result<Vec<String>, Box<Error>> {
     use std::fs;
-    let mut result : Vec<String> = Vec::new();
+    let mut result: Vec<String> = Vec::new();
     let replay_dir = scaii_core::get_default_replay_dir()?;
     let paths = fs::read_dir(replay_dir.to_str().unwrap().to_string()).unwrap();
 
     for path in paths {
-        let filename  = path.unwrap().file_name().to_str().unwrap().to_string();
-        if filename.ends_with(".scr"){
+        let filename = path.unwrap().file_name().to_str().unwrap().to_string();
+        if filename.ends_with(".scr") {
             result.push(filename.clone());
             println!("Name: {}", filename);
         }
@@ -86,7 +67,6 @@ pub fn get_replay_filenames() -> Result<Vec<String> , Box<Error>>{
 
     Ok(result)
 }
-
 
 // Delta(ActionWrapper),
 // Keyframe(SerializationInfo, ActionWrapper),
@@ -193,7 +173,6 @@ pub fn get_scaii_packets_for_replay_actions(
     Ok(result)
 }
 
-
 #[derive(Debug, Deserialize)]
 pub struct Args {
     pub cmd_webserver: bool,
@@ -205,7 +184,6 @@ pub struct Args {
     pub cmd_file: bool,
     pub arg_path_to_replay_file: String,
 }
-
 
 pub fn parse_args(arguments: Vec<String>) -> Args {
     let mut args = Args {
