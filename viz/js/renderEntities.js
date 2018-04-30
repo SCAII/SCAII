@@ -50,20 +50,22 @@ function getClosestInRangeShapeId(ctx, x, y, shapePositionMap){
 	console.log("");
 	console.log("X " + x + " Y " + y);
 	var closestId = undefined;
+	var closestDistance = undefined;
 	for (key in shapePositionMap) {
 		var shapePoints = shapePositionMap[key];
 		if (closestId == undefined){
 			var d = getDistance(x,y,shapePoints.x, shapePoints.y);
 			if (d <= shapePoints.radius){
 				closestId = shapePoints.id;
+				closestDistance = d;
 			}
 		}
 		else {
 			var d = getDistance(x,y,shapePoints.x, shapePoints.y);
 			if (d <= shapePoints.radius){
-				var dClosest = getDistance(x,y,closest.x, closest.y);
-				if(d < dClosest) {
+				if(d < closestDistance) {
 					closestId = shapePoints.id;
+					closestDistance = d;
 				}
 			}
 		}
