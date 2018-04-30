@@ -157,6 +157,8 @@ function updateMasterEntity(master, update) {
     else {
       if (updateShape.hasDelete() && updateShape.getDelete()) {
         //console.log('DELETING shape ' + updateShapeId);
+        var fullShapeId = getShapeId(update, updeateShape);
+        removeFullShapeIdFromTrackingLists(fullShapeId);
         deleteShape(masterShapes, masterShape);
       }
       else {
