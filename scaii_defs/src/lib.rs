@@ -2,6 +2,7 @@
 extern crate prost_derive;
 #[macro_use]
 extern crate serde_derive;
+extern crate bincode;
 
 use std::error::Error;
 use std::rc::Rc;
@@ -9,6 +10,8 @@ use std::cell::RefCell;
 
 /// Contains protobuf definitions
 pub mod protos;
+/// Basic record/replay defs and functions
+pub mod replay;
 
 use protos::{MultiMessage, ScaiiPacket};
 

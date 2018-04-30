@@ -150,6 +150,7 @@ impl ReplaySequencer {
         }
     }
 
+    #[allow(dead_code)]
     pub fn get_index_rewound_to(&mut self) -> u32 {
         self.rewound_to.clone()
     }
