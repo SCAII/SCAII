@@ -158,22 +158,40 @@ function initUI() {
 	configureNavigationButtons();
 	configureNavigationTimeline();
 	configureQuestionArea();
-	setUpMetadataToolTipEventHandler();
+	setUpMetadataToolTipEventHandlers();
 }
-function setUpMetadataToolTipEventHandler() {
+function setUpMetadataToolTipEventHandlers() {
 	// for hiding/showing tooltips
 	gameboard_canvas.addEventListener('click', function(evt) {
 		var x = event.offsetX;
 		var y = event.offsetY;
 		var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y, shapePositionMapForContext['game'])
 		if (shapeId != undefined){
-			$("#metadata" + shapeId).toggleClass('tooltip-invisible');
+			$("#metadata_hp" + shapeId).toggleClass('tooltip-invisible');
 			if (selectedToolTipIds[shapeId] == "show") {
 				selectedToolTipIds[shapeId] = "hide";
 			}
 			else {
 				selectedToolTipIds[shapeId] = "show";
 			}
+		}
+	  });
+	  
+	  gameboard_canvas.addEventListener('mousemove', function(evt) {
+		var x = event.offsetX;
+		var y = event.offsetY;
+		var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y, shapePositionMapForContext['game'])
+		if (shapeId == undefined) {
+			// we're not inside an object, so hide all the "all_metadata" tooltips
+			for (var sId in entityAllDataToolTipIds) {
+				entityAllDataToolTipIds[sId] = "hide";
+				$("#" + sId).addClass('tooltip-invisible');
+			}
+		}
+		else {
+			//we're inside one, keep it visible
+			$("#metadata_all" + shapeId).removeClass('tooltip-invisible');
+			entityAllDataToolTipIds[shapeId] == "show";
 		}
   	});
 }
