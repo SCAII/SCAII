@@ -284,8 +284,13 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
     var absY = absPos[1];
     var orientation = 0.0;
     orientation = shape.getRotation();
-    var floatMap = entity.getFloatmetadataMap();
-    var hitPoints = Number(floatMap.get("Hitpoints"));
+    var floatStringMap = entity.getFloatstringmetadataMap();
+    var hitPoints = undefined;
+    if (undefined != floatStringMap) {
+      hitPointsString = floatStringMap.get("Hitpoints");
+      hitPoints = Number(hitPointsString);
+    }
+    
     console.log('entity had hp ' + hitPoints);
     if (shape.hasRect()) {
       var rect = shape.getRect();
@@ -322,22 +327,24 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
 }
 
 function createToolTip(z_index, shapeId, absX, absY, hitPoints, color) {
-  var canvas_bounds = gameboard_canvas.getBoundingClientRect();
-  var valueSpan = document.createElement("span");
-  var setToShow = selectedToolTipIds[shapeId];
-  if (setToShow == undefined || setToShow == "hide"){
-    valueSpan.setAttribute("class","tooltip-invisible");
+  if (undefined != hitPoints) {
+    var canvas_bounds = gameboard_canvas.getBoundingClientRect();
+    var valueSpan = document.createElement("span");
+    var setToShow = selectedToolTipIds[shapeId];
+    if (setToShow == undefined || setToShow == "hide"){
+      valueSpan.setAttribute("class","tooltip-invisible");
+    }
+    
+    var id = "metadata" + shapeId;
+    valueSpan.setAttribute("id",id);
+     // position it relative to where origin of bounding box of gameboard is
+    var y = absY + canvas_bounds.top - 20;
+    var x = absX + canvas_bounds.left + 20;
+    valueSpan.setAttribute("style", 'zIndex:' + z_index + ';position:absolute;left:' + x + 'px;top:' + y + 'px;color:' + color + ';');
+    $("#scaii-gameboard").append(valueSpan);
+    valueSpan.innerHTML = 'hp: ' + hitPoints;
+    entityToolTipIds.push(id);
   }
-  
-  var id = "metadata" + shapeId;
-  valueSpan.setAttribute("id",id);
-   // position it relative to where origin of bounding box of gameboard is
-  var y = absY + canvas_bounds.top - 20;
-  var x = absX + canvas_bounds.left + 20;
-  valueSpan.setAttribute("style", 'zIndex:' + z_index + ';position:absolute;left:' + x + 'px;top:' + y + 'px;color:' + color + ';');
-  $("#scaii-gameboard").append(valueSpan);
-  valueSpan.innerHTML = 'hp: ' + hitPoints;
-  entityToolTipIds.push(id);
 }
 
 function getColorRGBA(r,g,b,a) {

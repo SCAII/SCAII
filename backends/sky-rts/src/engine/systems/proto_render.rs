@@ -63,7 +63,10 @@ impl RenderSystem {
             };
 
             if sys_data.hp_change.get(id).is_some() {
-                entity.float_metadata.insert("Hitpoints ".to_string(), sys_data.hp.get(id).unwrap().curr_hp as f32);
+                let hit_points_string = format!("{}",sys_data.hp.get(id).unwrap().curr_hp);
+                 println!(" sending hitpoints string in delta {}", hit_points_string);
+                entity.float_string_metadata.insert("Hitpoints".to_string(), hit_points_string);
+                //entity.float_metadata.insert("Hitpoints".to_string(), sys_data.hp.get(id).unwrap().curr_hp as f32);
             }
 
             out.entities.push(entity);
@@ -80,7 +83,6 @@ impl RenderSystem {
             &*sys_data.ids,
         ).join()
         {
-
             let entity = self.render_new(&sys_data, id, color, pos, shape);
             sys_data.out.0.entities.push(entity);
         }
@@ -96,16 +98,19 @@ impl RenderSystem {
             scaii_shape.relative_pos = Some(Pos::new(0.0, 0.0).to_scaii_pos());
 
             // TODO: maybe keep these around in a pool to reduce allocations?
-            let mut float_metadata : HashMap<String, f32> = HashMap::with_capacity(1);
+            let float_metadata : HashMap<String, f32> = HashMap::with_capacity(1);
             //let mut bool_metadata : HashMap<String, bool> = HashMap::with_capacity(2);
             let mut string_metadata : HashMap<String, String> = HashMap::with_capacity(1);
             let mut bool_string_metadata : HashMap<String, String> = HashMap::with_capacity(2);
+            let mut float_string_metadata : HashMap<String, String> = HashMap::with_capacity(1);
             let is_friend = sys_data.faction.get(id).unwrap().0 == 0;
             let hp = sys_data.hp.get(id).unwrap();
             let tag = sys_data.u_type.get(id).unwrap();
             
-            println!("entity : {:?} HitPoints : {}", id, hp.curr_hp);
-            float_metadata.insert("Hitpoints".to_string(), hp.curr_hp as f32);
+            let hit_points_string = format!("{}",hp.curr_hp);
+            println!("entity : {:?} HitPoints string : {}", id, hit_points_string);
+            float_string_metadata.insert("Hitpoints".to_string(), hit_points_string);
+            //float_metadata.insert("Hitpoints".to_string(), hp.curr_hp as f32);
            // bool_metadata.insert("Enemy?".to_string(), not_is_friend);
            // bool_metadata.insert("Friend?".to_string(), is_friend);
            let mut enemy_bool_string = "true".to_string();
@@ -123,7 +128,7 @@ impl RenderSystem {
                 id: id.id() as u64,
                 delete: sys_data.death.get(id).is_some(),
                 pos: Some(pos.to_scaii_pos()),
-                float_metadata,
+                float_string_metadata,
                 string_metadata,
                 bool_string_metadata,
                 ..ScaiiEntity::default()
