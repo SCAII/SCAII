@@ -22,7 +22,8 @@ function handleEntities(entitiesList) {
 					// do not add new entity that is marked as delete
 				}
 				else {
-					masterEntities[idString] = entity;
+          masterEntities[idString] = entity;
+          copyMapsIntoUpdateablePosition(entity)
 				}
 			}
 			else {
@@ -44,8 +45,6 @@ function handleEntities(entitiesList) {
 	//drawZoomBox(gameboard_ctx, gameboard_canvas, zoomBoxOriginX, zoomBoxOriginY, zoomFactor);
 	//renderState(gameboard_zoom_ctx, gameboard_zoom_canvas, masterEntities, zoomFactor, zoomBoxOriginX, zoomBoxOriginY, shapePositionMapForContext["zoom"]);
 }
-
-
 
 function getClosestInRangeShapeId(ctx, x, y, shapePositionMap){
 	console.log("");
@@ -284,7 +283,7 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
     var absY = absPos[1];
     var orientation = 0.0;
     orientation = shape.getRotation();
-    var floatStringMap = entity.getFloatstringmetadataMap();
+    var floatStringMap = entity.floatstringmetadataMap;
     var hitPoints = undefined;
     if (undefined != floatStringMap) {
       hitPointsString = floatStringMap.get("Hitpoints");
