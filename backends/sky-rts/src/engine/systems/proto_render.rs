@@ -98,7 +98,7 @@ impl RenderSystem {
             scaii_shape.relative_pos = Some(Pos::new(0.0, 0.0).to_scaii_pos());
 
             // TODO: maybe keep these around in a pool to reduce allocations?
-            let float_metadata : HashMap<String, f32> = HashMap::with_capacity(1);
+            //let float_metadata : HashMap<String, f32> = HashMap::with_capacity(1);
             //let mut bool_metadata : HashMap<String, bool> = HashMap::with_capacity(2);
             let mut string_metadata : HashMap<String, String> = HashMap::with_capacity(1);
             let mut bool_string_metadata : HashMap<String, String> = HashMap::with_capacity(2);
@@ -111,10 +111,10 @@ impl RenderSystem {
             println!("entity : {:?} HitPoints string : {}", id, hit_points_string);
             float_string_metadata.insert("Hitpoints".to_string(), hit_points_string);
             //float_metadata.insert("Hitpoints".to_string(), hp.curr_hp as f32);
-           // bool_metadata.insert("Enemy?".to_string(), not_is_friend);
-           // bool_metadata.insert("Friend?".to_string(), is_friend);
-           let mut enemy_bool_string = "true".to_string();
-           let mut friend_bool_string = "false".to_string();
+            // bool_metadata.insert("Enemy?".to_string(), not_is_friend);
+            // bool_metadata.insert("Friend?".to_string(), is_friend);
+            let mut enemy_bool_string = "true".to_string();
+            let mut friend_bool_string = "false".to_string();
             if is_friend {
                 enemy_bool_string = "false".to_string();
                 friend_bool_string = "true".to_string();
