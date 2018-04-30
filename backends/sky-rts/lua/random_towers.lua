@@ -17,6 +17,9 @@ function gen_tower(rng,x,out)
     table.insert(out, tower)
 end
 
+function on_spawn(world, unit)
+end
+
 function sky_reset(rng)
     local agent = {
         pos = {x=20.0, y=20.0},

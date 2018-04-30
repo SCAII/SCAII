@@ -1,6 +1,6 @@
 use nalgebra::Point2;
 
-use specs::storage::HashMapStorage;
+use specs::storage::{HashMapStorage, NullStorage};
 use specs::saveload::SaveLoadComponent;
 use specs::prelude::*;
 use specs::error::NoError;
@@ -48,6 +48,8 @@ pub(super) fn register_world_components(world: &mut World) {
     world.register::<UnitTypeTag>();
     world.register::<Attack>();
     world.register::<Death>();
+    world.register::<Delete>();
+    world.register::<Spawned>();
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -210,3 +212,12 @@ where
 pub struct Death {
     pub killer: Entity,
 }
+
+/// Delete differs from Death in that it yields no reward or on-death triggers
+#[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Default, Component)]
+#[storage(NullStorage)]
+pub struct Delete;
+
+#[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Default, Component)]
+#[storage(NullStorage)]
+pub struct Spawned;

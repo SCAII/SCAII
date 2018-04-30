@@ -46,6 +46,9 @@ function sky_reset(rng)
     return out
 end
 
+function on_spawn(world, unit)
+end
+
 function sky_init()
     local factions = 2
 

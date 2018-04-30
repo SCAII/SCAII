@@ -5,8 +5,10 @@ import numpy as np
 
 def invert_actions(env):
     out = dict([])
-    for (k, v) in env.actions()['actions'].items():
+    for k, v in env.actions()['actions'].items():
         out[v] = k
+
+    return out
 
 
 env = TowerExample()
@@ -29,7 +31,7 @@ max_value = -np.inf
 for quad in range(1, 5):
     layers = np.random.random((40, 40, 6))
     key = "BarGroup{}".format(quad)
-    group = BarGroup("Attack {}".format(quad), saliency_key=key)
+    group = BarGroup("Attack {}".format(actions[quad]), saliency_key=key)
     explanation.add_layers(layer_names, layers, key=key)
 
     value = 0.0
