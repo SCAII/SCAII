@@ -1,13 +1,30 @@
 var entityHPToolTipIds = [];
 var selectedToolTipIds = {};
-var entityAllDataToolTipIds = {};
+var entityAllDataToolTipIds = [];
+var hoveredAllDataToolTipIds = {};
 var masterEntities = {};
 
+
+function removeFullShapeIdFromTrackingLists(fullShapeId){
+  removeMemoryOfToolTip(selectedToolTipIds, entityHPToolTipIds, fullShapeId);
+  removeMemoryOfToolTip(hoveredAllDataToolTipIds, entityAllDataToolTipIds, fullShapeId);
+}
+
+function removeMemoryOfToolTip(someDict, someArray, someId) {
+  var index = someArray.indexOf(someId);
+  if (index !== -1) {
+    someArray.splice(index, 1);
+    delete someDict[someId];
+  }
+}
 
 function cleanToolTips(){
 	for (var i in entityHPToolTipIds){
 		var id = entityHPToolTipIds[i];
-		var count = $("#"+id).length;
+		$("#"+id).remove();
+  }
+  for (var i in entityAllDataToolTipIds){
+		var id = entityAllDataToolTipIds[i];
 		$("#"+id).remove();
 	}
 }
@@ -264,6 +281,9 @@ function drawDiamond(ctx, x, y, baseLen, rotation_in_radians, colorRGBA) {
   ctx.restore();
 }
 
+function getShapeId(entity, shape) {
+  return entity.getId() + "_" + shape.getId();
+}
 function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOffset, yOffset, shapePositionMap) {
   var final_x = (x - xOffset) * zoom_factor;
   var final_y = (y - yOffset) * zoom_factor;
@@ -271,7 +291,7 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
   for (var j in shapesList) {
     var shape = shapesList[j];
     //
-	  var shapeId = entity.getId() + "_" + shape.getId();
+	  var shapeId = getShapeId(entity, shape);
 	  var relPos = undefined;
     if (shape.hasRelativePos()) {
         relPos = shape.getRelativePos();
@@ -337,18 +357,36 @@ function getHitPoints(entity){
 
 function getIsEnemy(entity){
   var map = entity.boolstringmetadataMap;
-  var isEnemy = undefined;
   if (undefined != map) {
-    isEnemy = map.get("Enemy?");
+    var isEnemy = map.get("Enemy?");
     if (isEnemy == "true") {
-      isEnemy = true;
+      return true;
     }
-    else {
-      isEnemy = false;
-    }
+    return false;
   }
-  return isEnemy;
 }
+
+function getIsFriend(entity){
+  var map = entity.boolstringmetadataMap;
+  if (undefined != map) {
+    var isFriend = map.get("Friend?");
+    if (isFriend == "true") {
+      return true;
+    }
+    return false;
+  }
+}
+
+
+function getUnitType(entity){
+  var map = entity.stringmetadataMap;
+  var type = undefined;
+  if (undefined != map) {
+    type = map.get("Unit Type");
+  }
+  return type;
+}
+
 function createHPToolTip(z_index, shapeId, absX, absY, hitPoints, color) {
   if (undefined != hitPoints) {
     var canvas_bounds = gameboard_canvas.getBoundingClientRect();
@@ -365,7 +403,7 @@ function createHPToolTip(z_index, shapeId, absX, absY, hitPoints, color) {
     var x = absX + canvas_bounds.left + 20;
     valueSpan.setAttribute("style", 'zIndex:' + z_index + ';position:absolute;left:' + x + 'px;top:' + y + 'px;color:' + color + ';font-family:Arial');
     $("#scaii-gameboard").append(valueSpan);
-    valueSpan.innerHTML = 'hp: ' + hitPoints;
+    valueSpan.innerHTML = 'HP: ' + hitPoints;
     entityHPToolTipIds.push(id);
   }
 }
@@ -373,28 +411,39 @@ function createHPToolTip(z_index, shapeId, absX, absY, hitPoints, color) {
 function createAllDataToolTip(z_index, shapeId, absX, absY, entity, color) {
   var canvas_bounds = gameboard_canvas.getBoundingClientRect();
   var valuesDiv = document.createElement("div");
-  var setToShow = entityAllDataToolTipIds[shapeId];
+  var setToShow = hoveredAllDataToolTipIds[shapeId];
   if (setToShow == undefined || setToShow == "hide"){
     valuesDiv.setAttribute("class","tooltip-invisible");
   }
   var id = "metadata_all" + shapeId;
-  entityAllDataToolTipIds[id] = "hide";
+  hoveredAllDataToolTipIds[id] = "hide";
   valuesDiv.setAttribute("id",id);
    // position it relative to where origin of bounding box of gameboard is
   var y = absY + canvas_bounds.top + 20;
   var x = absX + canvas_bounds.left + 20;
   valuesDiv.setAttribute("style", 'padding:4px;background-color:black;zIndex:' + z_index + ';position:absolute;left:' + x + 'px;top:' + y + 'px;color:white;	display: flex;flex-direction: column;font-family:Arial');
   $("#scaii-gameboard").append(valuesDiv);
+  entityAllDataToolTipIds.push(id);
 
   var hpLabel = document.createElement("div");
   var hitPoints = getHitPoints(entity);
-  hpLabel.innerHTML = 'hp   : ' + hitPoints;
+  hpLabel.innerHTML = 'HP   : ' + hitPoints;
   valuesDiv.append(hpLabel);
   
   var enemyLabel = document.createElement("div");
   var isEnemy = getIsEnemy(entity);
-  enemyLabel.innerHTML = 'enemy: ' + isEnemy;
+  enemyLabel.innerHTML = 'Enemy: ' + isEnemy;
   valuesDiv.append(enemyLabel);
+
+  var friendLabel = document.createElement("div");
+  var isFriend = getIsFriend(entity);
+  friendLabel.innerHTML = 'Friend: ' + isFriend;
+  valuesDiv.append(friendLabel);
+  
+  var unitTypeLabel = document.createElement("div");
+  var type = getUnitType(entity);
+  unitTypeLabel.innerHTML = 'Unit Type: ' + type;
+  valuesDiv.append(unitTypeLabel);
 }
 
 function getColorRGBA(r,g,b,a) {

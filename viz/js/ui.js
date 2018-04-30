@@ -183,15 +183,15 @@ function setUpMetadataToolTipEventHandlers() {
 		var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y, shapePositionMapForContext['game'])
 		if (shapeId == undefined) {
 			// we're not inside an object, so hide all the "all_metadata" tooltips
-			for (var sId in entityAllDataToolTipIds) {
-				entityAllDataToolTipIds[sId] = "hide";
+			for (var sId in hoveredAllDataToolTipIds) {
+				hoveredAllDataToolTipIds[sId] = "hide";
 				$("#" + sId).addClass('tooltip-invisible');
 			}
 		}
 		else {
 			//we're inside one, keep it visible
 			$("#metadata_all" + shapeId).removeClass('tooltip-invisible');
-			entityAllDataToolTipIds[shapeId] == "show";
+			hoveredAllDataToolTipIds[shapeId] == "show";
 		}
   	});
 }
