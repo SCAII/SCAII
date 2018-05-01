@@ -128,7 +128,7 @@ function clearWhyQuestions() {
 //	$("#what-label").html(" ");
 //	$("#what-questions").html(" ");
 //}
-
+var timelineMargin = 40;
 function drawExplanationTimeline() {
 	expl_ctrl_ctx.clearRect(0,0, expl_ctrl_canvas.width, expl_ctrl_canvas.height);
 	// just use width of gameboard for now, may need to be bigger
@@ -140,8 +140,8 @@ function drawExplanationTimeline() {
 	
 	expl_ctrl_canvas.width = can_width;
 	ctx.beginPath();
-	ctx.moveTo(40,explanationControlYPosition);
-	ctx.lineTo(560,explanationControlYPosition);
+	ctx.moveTo(timelineMargin,explanationControlYPosition);
+	ctx.lineTo(can_width - timelineMargin,explanationControlYPosition);
 	ctx.stroke();
 	ctx.restore();
 }
