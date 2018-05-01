@@ -444,7 +444,7 @@ function addWhyButtonForAction(step, index) {
 	whyButton.setAttribute("id", buttonId);
 	var why = document.createTextNode("why?");
 	whyButton.appendChild(why);          
-	whyButton.setAttribute("style", getGridPositionStyle(2,index) + ';margin-left: 40px;');
+	whyButton.setAttribute("style", getGridPositionStyle(2,index) + ';margin-left: 40px;margin-bottom:10px');
 	
 	$("#action-list").append(whyButton);
 	$("#" + buttonId).click(function(e) {
@@ -475,7 +475,7 @@ function addLabelForAction(title, index){
 	var nameForId = nameNoSpaces.replace(/,/g,"");
 	nameForId = nameForId + "actionLabel";
 	actionLabel.setAttribute("id", nameForId);
-	actionLabel.setAttribute("style", getGridPositionStyle(1,index) + ';height: 30; padding-top:10px;');
+	actionLabel.setAttribute("style", getGridPositionStyle(1,index) + ';height: 30; padding-top:10px;margin-bottom:10px');
 	var html = index + '.   ' + title;
 	actionLabel.innerHTML = html;
 	$("#action-list").append(actionLabel);
