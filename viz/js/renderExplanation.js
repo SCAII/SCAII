@@ -501,21 +501,60 @@ function configureExplanationSelectorButton(step_count, step) {
 	})
 }
 
+var selectedWhyButtonId = undefined;
+var selectedQmButtonId = undefined;
+var selectedDecisionStep = undefined;
+
 function processWhyClick(step) {
-	if (rewardsAreShowing) {
+	if (selectedDecisionStep == step){
+		// toggle active buttons
+		$("#" + selectedQmButtonId).toggleClass('active');
+		$("#" + selectedWhyButtonId).toggleClass('active');
+
+		// clear explanation info
 		clearExplanationInfo();
-		rewardsAreShowing = false;
-	 }
-	 else {
+		selectedDecisionStep = undefined;
+		selectedWhyButtonId = undefined;
+		selectedQmButtonId = undefined;
+
+		// engage selection color for supporting areas
+		$("#why-questions").toggleClass('active');
+		$("#why-label").toggleClass('active');
+	}
+	else if (selectedDecisionStep == undefined) {
+		// toggle target buttons
+		selectedQmButtonId = getQmButtonId(step);
+	 	selectedWhyButtonId = getWhyButtonIdForStep(step);
+	 	selectedDecisionStep = step;
+	 	$("#" + selectedQmButtonId).toggleClass('active');
+	 	$("#" + selectedWhyButtonId).toggleClass('active');
+		// show explanation info for new step
 		showExplanationRewardInfo(step);
-		rewardsAreShowing = true;
-	 }
-	 var qmButtonId = getQmButtonId(step);
-	 var whyButtonId = getWhyButtonIdForStep(step);
-	 $("#" + qmButtonId).toggleClass('active');
-	 $("#" + whyButtonId).toggleClass('active');
-	 $("#why-questions").toggleClass('active');
-	 $("#why-label").toggleClass('active');
+		
+		// engage selection color for supporting areas
+		$("#why-questions").toggleClass('active');
+		$("#why-label").toggleClass('active');
+	}
+	else {
+		// (selectedDecisionStep == someOtherStep)
+		// toggle active buttons
+		$("#" + selectedQmButtonId).toggleClass('active');
+		$("#" + selectedWhyButtonId).toggleClass('active');
+
+		// clear explanation info
+		clearExplanationInfo();
+
+		// toggle target buttons
+		selectedQmButtonId = getQmButtonId(step);
+	 	selectedWhyButtonId = getWhyButtonIdForStep(step);
+	 	selectedDecisionStep = step;
+	 	$("#" + selectedQmButtonId).toggleClass('active');
+		$("#" + selectedWhyButtonId).toggleClass('active');
+		 
+		// show explanation info for new step
+		showExplanationRewardInfo(step);
+
+	}
 }
 
 function processWhatClick() {
