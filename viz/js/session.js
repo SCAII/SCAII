@@ -138,6 +138,7 @@ function handleReplaySessionConfig(rsc, selectedStep) {
 
 
 function handleVizInit(vizInit) {
+	$("#connectButton").remove();
 	if (vizInit.hasTestMode()) {
 		if (vizInit.getTestMode()) {
 			testingMode = true;
