@@ -589,11 +589,11 @@ function showExplanationRewardInfo(stepNumber) {
 	stageUserCommand(userCommand);
 	
 	if (stepNumber == sessionIndexManager.getCurrentIndex()) {
-		console.log("no need to move - already at step with explanation");
+		//console.log("no need to move - already at step with explanation");
 	}
 	else {
 		var userCommand = new proto.scaii.common.UserCommand;
-		console.log("jumping to step " + selectedExplanationStep);
+		//console.log("jumping to step " + selectedExplanationStep);
 		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
 		// same args as above
 		userCommand.setArgsList(args);

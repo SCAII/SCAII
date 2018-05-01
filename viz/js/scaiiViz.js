@@ -57,7 +57,6 @@ var main = function () {
 		connectButton.setAttribute("id", "connectButton");
 		connectButton.appendChild(connectText);
 		connectButton.onclick = function () {
-			console.log("calling tryConnect");
 			tryConnect('.', 0);
 		};
 		$("#playback-controls-panel").append(connectButton);

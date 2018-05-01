@@ -40,17 +40,17 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, progressWidth)
 		var percent = xIndexOfClick/this.progressWidth;
 		// example, click 65% -> 6.5 -> 6  -> add one for UI render -> 7  so clicking on segment 7 of 10
 		var replaySequenceTargetStep = Math.floor(this.progressBarSegmentCount * percent) + 1;
-		console.log('calculated replaySequenceTargetStep as ' + replaySequenceTargetStep);
+		//console.log('calculated replaySequenceTargetStep as ' + replaySequenceTargetStep);
 		return replaySequenceTargetStep;
 	}
 	
 	sim.setReplaySequencerIndex = function(index) {
 		this.replaySequencerIndex = index;
-		console.log('');
-		console.log('');
-		console.log('replaySequencerIndex is now ' + index);
-		console.log('');
-		console.log('');
+		//console.log('');
+		//console.log('');
+		//console.log('replaySequencerIndex is now ' + index);
+		//console.log('');
+		//console.log('');
 		var displayVal = this.getStepCountToDisplay();
 		if (displayVal == undefined){
 			$("#step-value").html(this.progressBarSegmentCount + " steps");
@@ -63,7 +63,7 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, progressWidth)
 	
 	sim.getProgressBarValue = function() {
 		var value = Math.floor((this.replaySequencerIndex / this.replaySequencerMaxIndex ) * 100);
-		console.log('progress value to paint: ' + value);
+		//console.log('progress value to paint: ' + value);
 		return value;
 	}
 	
@@ -87,7 +87,7 @@ function handleReplayControl(replayControl) {
 	var command = replayControl.getCommandList();
 	if (command.length == 2) {
 		if (command[0] == 'set_step_position') {
-			console.log('___set_step_position updating step from handleReplayControl to ' + command[1] + ' which should be one prior to what the first viz packet arriving will set it to');
+			//console.log('___set_step_position updating step from handleReplayControl to ' + command[1] + ' which should be one prior to what the first viz packet arriving will set it to');
 			sessionIndexManager.setReplaySequencerIndex(parseInt(command[1]));
 			updateButtonsAfterJump();
 		}
@@ -110,7 +110,7 @@ function handleReplayChoiceConfig(config){
 function loadSelectedReplayFile() {
 	controlsManager.startLoadReplayFile();
 	var chosenFile = $( "#replay-file-selector option:selected" ).text();
-	console.log("    file selected: " + chosenFile);
+	//console.log("    file selected: " + chosenFile);
 	var args = [chosenFile];
 	var userCommand = new proto.scaii.common.UserCommand;
 	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE);
@@ -151,8 +151,6 @@ function handleViz(vizData) {
 	handleEntities(entitiesList);
 	if (!jumpInProgress) {
 		sessionIndexManager.incrementReplaySequencerIndex();
-		console.log('');
-		console.log('___Viz called incrementReplaySequencerIndex');
 	}
 	if (sessionIndexManager.isAtEndOfGame()) {
 		controlsManager.reachedEndOfGame();
@@ -168,20 +166,20 @@ function handleScaiiPacket(sPacket) {
 		handleReplayChoiceConfig(config);
 	}
 	else if (sPacket.hasReplaySessionConfig()) {
-		console.log("-----got replaySessionConfig");
+		//console.log("-----got replaySessionConfig");
 		var config = sPacket.getReplaySessionConfig();
 		replaySessionConfig = config;
 		//var selectedStep = undefined;
 		handleReplaySessionConfig(config,undefined);
 	}
 	else if (sPacket.hasVizInit()) {
-		console.log("-----got vizInit");
+		//console.log("-----got vizInit");
 		var vizInit = sPacket.getVizInit();
 		handleVizInit(vizInit);
 		controlsManager.gameStarted();
 	}
 	else if (sPacket.hasViz()) {
-		console.log("-----got Viz");
+		//console.log("-----got Viz");
 		var viz = sPacket.getViz();
 		handleViz(viz);
 		// we're moving forward so rewind should be enabled
@@ -194,12 +192,12 @@ function handleScaiiPacket(sPacket) {
 		}
 	}
 	else if (sPacket.hasExplDetails()) {
-		console.log('has expl details');
+		//console.log('has expl details');
 		var explDetails = sPacket.getExplDetails();
 		handleExplDetails(explDetails);
 	}
 	else if (sPacket.hasReplayControl()) {
-		console.log("-----got replayCOntrol");
+		//console.log("-----got replayCOntrol");
 		var replayControl = sPacket.getReplayControl();
 		handleReplayControl(replayControl);
 	}
@@ -222,7 +220,7 @@ function handleScaiiPacket(sPacket) {
 			userCommandScaiiPackets = [];
 		}
 		else if (commandType == proto.scaii.common.UserCommand.UserCommandType.JUMP_COMPLETED) {
-			console.log("-----got jump completed message");
+			//console.log("-----got jump completed message");
 			controlsManager.jumpCompleted();
 		}
 		else if (commandType == proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE_COMPLETE){

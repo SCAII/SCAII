@@ -185,7 +185,7 @@ function getSaliencyDisplayManager() {
 		for (var i in rowInfos){
 			var rowInfo = rowInfos[i];
 			var saliencyId = activeBarChartInfo.getSaliencyIdForActionNameAndBar(rowInfo[0], rowInfo[1]);
-			console.log("NON-COMBINED MAP saliencyID " + saliencyId);
+			//console.log("NON-COMBINED MAP saliencyID " + saliencyId);
 			var layerMessage = saliencyLookupMap.get(saliencyId);
 			if (layerMessage == undefined){
 				console.log("ERROR - no Layer message for saliencyID " + saliencyId);
@@ -216,7 +216,7 @@ function getSaliencyDisplayManager() {
 		for (var i in rowInfos){
 			var rowInfo = rowInfos[i]; 
 			var saliencyId = activeBarChartInfo.getSaliencyIdForActionNameAndBar(rowInfo[0], rowInfo[1]);
-			console.log("COMBINED MAP saliencyID " + saliencyId);
+			//console.log("COMBINED MAP saliencyID " + saliencyId);
 			var layerMessage = saliencyLookupMap.get(saliencyId);
 			if (layerMessage == undefined){
 				console.log("ERROR - no Layer message for saliencyID " + saliencyId);
@@ -344,7 +344,7 @@ function getSaliencyDisplayManager() {
 			var left = (mousePos.x + 10) + 'px';
 			valueSpan.setAttribute("style", 'z-index:2; position:relative; left:' + left + '; top: ' + top + '; color:#D73F09;'); // OSU orange
 			valueSpan.innerHTML = normValue.toFixed(2);
-			console.log(message);
+			//console.log(message);
 		  }, false);
 	}
 
