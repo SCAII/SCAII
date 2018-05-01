@@ -134,38 +134,38 @@ function getSelectionManager() {
 
 
 
-expl_ctrl_canvas.addEventListener('click', function (event) {
-	var matchingStep = getMatchingExplanationStep(expl_ctrl_ctx, event.offsetX, event.offsetY);
-	console.log('clicked on step ' + selectedExplanationStep);	
-	if (matchingStep == undefined){
-		// ignore click if not on one of the selectors
-	}
-	else if (matchingStep == selectedExplanationStep) {
-		selectedExplanationStep = undefined;
-		clearExplanationInfo();
-	}
-	else{
-		selectedExplanationStep = matchingStep;
-		var userCommand = new proto.scaii.common.UserCommand;
-		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.EXPLAIN);
-		var args = ['' +selectedExplanationStep];
-		userCommand.setArgsList(args);
-		stageUserCommand(userCommand);
+// expl_ctrl_canvas.addEventListener('click', function (event) {
+// 	var matchingStep = getMatchingExplanationStep(expl_ctrl_ctx, event.offsetX, event.offsetY);
+// 	console.log('clicked on step ' + selectedExplanationStep);	
+// 	if (matchingStep == undefined){
+// 		// ignore click if not on one of the selectors
+// 	}
+// 	else if (matchingStep == selectedExplanationStep) {
+// 		selectedExplanationStep = undefined;
+// 		clearExplanationInfo();
+// 	}
+// 	else{
+// 		selectedExplanationStep = matchingStep;
+// 		var userCommand = new proto.scaii.common.UserCommand;
+// 		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.EXPLAIN);
+// 		var args = ['' +selectedExplanationStep];
+// 		userCommand.setArgsList(args);
+// 		stageUserCommand(userCommand);
 		
-		if (matchingStep == sessionIndexManager.getCurrentIndex()) {
-			console.log("no need to move - already at step with explanation");
-		}
-		else {
-			var userCommand = new proto.scaii.common.UserCommand;
-			console.log("jumping to step " + selectedExplanationStep);
-			userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-			// same args as above
-			userCommand.setArgsList(args);
-			stageUserCommand(userCommand);
-		}
-	}	
-	renderExplanationSelectors(replaySessionConfig,selectedExplanationStep);
-});
+// 		if (matchingStep == sessionIndexManager.getCurrentIndex()) {
+// 			console.log("no need to move - already at step with explanation");
+// 		}
+// 		else {
+// 			var userCommand = new proto.scaii.common.UserCommand;
+// 			console.log("jumping to step " + selectedExplanationStep);
+// 			userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+// 			// same args as above
+// 			userCommand.setArgsList(args);
+// 			stageUserCommand(userCommand);
+// 		}
+// 	}	
+// 	renderExplanationSelectors(replaySessionConfig,selectedExplanationStep);
+// });
 
 function renderWhyInfo(explPoint) {
 	activeExplanationPoint = explPoint;
@@ -482,9 +482,9 @@ function addLabelForAction(title, index){
 }
 
 function configureExplanationSelectorButton(step_count, step) {
-	var totalWidth = expl_ctrl_canvas.width;
+	var totalWidth = expl_ctrl_canvas.width - 2*timelineMargin;
 	var rectWidth = totalWidth / step_count;
-	var leftX = rectWidth * (step - 1) + 40;
+	var leftX = timelineMargin + rectWidth * (step - 1);
 	var y = explanationControlYPosition;
 	var qmButton = document.createElement("BUTTON");
 	var buttonId = getQmButtonId(step);
