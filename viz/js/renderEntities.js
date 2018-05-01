@@ -65,8 +65,6 @@ function handleEntities(entitiesList) {
 }
 
 function getClosestInRangeShapeId(ctx, x, y, shapePositionMap){
-	console.log("");
-	console.log("X " + x + " Y " + y);
 	var closestId = undefined;
 	var closestDistance = undefined;
 	for (key in shapePositionMap) {
@@ -92,11 +90,9 @@ function getClosestInRangeShapeId(ctx, x, y, shapePositionMap){
 }
 
 function getDistance(x1,y1,x2,y2){
-	console.log("x2 " + x2 + " y2 " + y2);
 	var a = x2 - x1;
 	var b = y2 - y1;
 	var d = Math.sqrt( a*a + b*b );
-	console.log('a ' + a + ' b ' + b + ' d ' + d);
 	return d;
 }
 function getShapePoints(x,y,radiusBasis, id){
@@ -162,7 +158,6 @@ function drawRectWithGradient(ctx, x, y, width, height, rotation_in_radians, col
   var gradient = ctx.createLinearGradient(x1, y_orig, x2, y_orig);
   gradient.addColorStop(0, colorRGBA);
   gradient.addColorStop(1, 'white');
-  //console.log('drawing rect ' + x1 + ' ' + x2 + ' ' + y1 + ' ' + y2 + ';' + colorRGBA);
   ctx.beginPath();
 
   ctx.lineWidth = shape_outline_width;
@@ -211,7 +206,6 @@ function drawTriangle(ctx, x, y, baseLen, rotation_in_radians, colorRGBA) {
   var xTip = x;
   var xBottomLeft = x - baseLen / 2;
   var xBottomRight = x + baseLen / 2;
-  //console.log('drawing triangle ' + xTip + ',' + yTip + ' ; ' + xBottomRight + ',' + yBottom + ' ; ' + xBottomLeft + ',' + yBottom + ';' + colorRGBA);
   ctx.beginPath();
   ctx.moveTo(xTip, yTip);
   ctx.lineTo(xBottomRight, yBottom);
@@ -308,7 +302,7 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
     orientation = shape.getRotation();
     var hitPoints = getHitPoints(entity);
     
-    console.log('entity had hp ' + hitPoints);
+    //console.log('entity had hp ' + hitPoints);
     if (shape.hasRect()) {
       var rect = shape.getRect();
       var width = 40;

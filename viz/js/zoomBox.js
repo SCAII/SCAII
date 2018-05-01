@@ -90,7 +90,7 @@ var configureZoomSlider = function () {
 	zoomSlider.setAttribute("id", "zoom-slider");
 	zoomSlider.oninput = function () {
 		zoomFactor = "" + this.value / 100;
-		console.log("zoom factor " + zoomFactor);
+		//console.log("zoom factor " + zoomFactor);
 		handleEntities(entitiesList);
 	}
 }

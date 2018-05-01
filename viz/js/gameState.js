@@ -65,7 +65,6 @@ function updateMasterRect(masterShape, masterRect, updateRect) {
     masterRect.setWidth(updateRect.getWidth());
   }
   if (updateRect.hasHeight()) {
-    //console.log('updating rect HEIGHT from ' + masterRect.getHeight() + ' to ' + updateRect.getHeight());
     masterRect.setHeight(updateRect.getHeight());
   }
 }
@@ -156,7 +155,6 @@ function updateMasterEntity(master, update) {
     }
     else {
       if (updateShape.hasDelete() && updateShape.getDelete()) {
-        //console.log('DELETING shape ' + updateShapeId);
         var fullShapeId = getShapeId(update, updeateShape);
         removeFullShapeIdFromTrackingLists(fullShapeId);
         deleteShape(masterShapes, masterShape);

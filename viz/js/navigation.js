@@ -164,7 +164,7 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	}
 
 	manager.expressResumeButton = function () {
-		console.log('expressing RESUME button');
+		//console.log('expressing RESUME button');
 		this.pauseResumeButton.onclick = tryResume;
 		this.pauseResumeButton.innerHTML = '<img src="imgs/play.png", height="16px" width="14px"/>';
 	}
@@ -179,7 +179,7 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	}
 
 	manager.expressPauseButton = function () {
-		console.log('expressing PAUSE button');
+		//console.log('expressing PAUSE button');
 		this.pauseResumeButton.onclick = tryPause;
 		this.pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="16px" width="14px"/>';
 	}
@@ -197,32 +197,32 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 		this.expressResumeButton();
 		this.disableRewind();
 		this.enablePauseResume();
-		console.log('enabled pauseResume after adjustToRewindClick');
+		//console.log('enabled pauseResume after adjustToRewindClick');
 	}
 
 	//
 	//  enabling/disabling
 	//
 	manager.disablePauseResume = function () {
-		console.log("disablin' pauseResume");
+		//console.log("disablin' pauseResume");
 		$("#pauseResumeButton").css("opacity", "0.6");
 		this.pauseResumeButton.disabled = true;
 	}
 
 	manager.enablePauseResume = function () {
-		console.log("enablin' pauseResume");
+		//console.log("enablin' pauseResume");
 		$("#pauseResumeButton").css("opacity", "1.0");
 		this.pauseResumeButton.disabled = false;
 	}
 
 	manager.disableRewind = function () {
-		console.log("disablin' rewind");
+		//console.log("disablin' rewind");
 		$("#rewindButton").css("opacity", "0.6");
 		this.rewindButton.disabled = true;
 	}
 
 	manager.enableRewind = function () {
-		console.log("enablin' rewind");
+		//console.log("enablin' rewind");
 		$("#rewindButton").css("opacity", "1.0");
 		this.rewindButton.disabled = false;
 	}
