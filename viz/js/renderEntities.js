@@ -350,7 +350,7 @@ function getHitPoints(entity){
   var hitPoints = undefined;
   if (undefined != map) {
     hitPointsString = map.get("Hitpoints");
-    hitPoints = Number(hitPointsString);
+    hitPoints = (Number(hitPointsString)).toFixed(2);;
   }
   return hitPoints;
 }
