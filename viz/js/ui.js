@@ -89,6 +89,7 @@ function configureRewindButton(){
 	rewindButton.onclick = tryRewind;
 	$("#rewind-control").append(rewindButton);
 	$("#rewindButton").css("padding-top","4px");
+	$("#rewindButton").css("margin-left","100px");
 	$("#rewindButton").css("opacity", "0.6");
 	rewindButton.disabled = true;
 }
