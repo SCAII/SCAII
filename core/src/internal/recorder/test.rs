@@ -2,10 +2,9 @@ use super::*;
 use super::super::super::Environment;
 use scaii_defs::protos;
 use scaii_defs::{Agent, Backend, Module};
-use scaii_defs::protos::{cfg, scaii_packet, AgentEndpoint, BackendCfg, BackendEndpoint,
-                         Cfg, CoreEndpoint, GameComplete, MultiMessage,
-                         RecorderConfig, RecorderEndpoint, ReplayEndpoint,
-                         ScaiiPacket, SerializationResponse};
+use scaii_defs::protos::{cfg, scaii_packet, AgentEndpoint, BackendCfg, BackendEndpoint, Cfg,
+                         CoreEndpoint, GameComplete, MultiMessage, RecorderConfig,
+                         RecorderEndpoint, ReplayEndpoint, ScaiiPacket, SerializationResponse};
 use scaii_defs::protos::cfg::WhichModule;
 use scaii_defs::protos::endpoint::Endpoint;
 use scaii_defs::protos::scaii_packet::SpecificMsg;
@@ -674,7 +673,7 @@ fn create_sky_rts_config_message() -> ScaiiPacket {
         specific_msg: Some(SpecificMsg::Config(Cfg {
             which_module: Some(WhichModule::CoreCfg(protos::CoreCfg {
                 plugin_type: protos::PluginType {
-                    plugin_type: Some(PluginType::SkyRts(SkyRts{})),
+                    plugin_type: Some(PluginType::SkyRts(SkyRts {})),
                 },
             })),
         })),

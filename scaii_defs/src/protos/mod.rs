@@ -45,7 +45,10 @@ pub fn packet_from_entity_list(entities: Vec<Entity>) -> ScaiiPacket {
             })),
         },
 
-        specific_msg: Some(scaii_packet::SpecificMsg::Viz(Viz { entities: entities })),
+        specific_msg: Some(scaii_packet::SpecificMsg::Viz(Viz {
+            entities: entities,
+            ..Default::default()
+        })),
     }
 }
 

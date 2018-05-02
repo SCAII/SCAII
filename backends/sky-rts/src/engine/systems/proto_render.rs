@@ -1,8 +1,8 @@
 use specs::prelude::*;
-use engine::components::{Color, Death, FactionId, Hp, HpChange, MovedFlag, Pos, Shape, Spawned,
-                         UnitTypeTag};
+use engine::components::{Color, Death, Delete, FactionId, Hp, HpChange, MovedFlag, Pos, Shape,
+                         Spawned, UnitTypeTag};
 use engine::{NeedsKeyInfo, Render};
-use engine::resources::Skip;
+use engine::resources::{CumReward, Skip};
 
 use scaii_defs::protos::Entity as ScaiiEntity;
 
@@ -17,10 +17,12 @@ pub struct RenderSystemData<'a> {
     faction: ReadStorage<'a, FactionId>,
     moved: ReadStorage<'a, MovedFlag>,
     death: ReadStorage<'a, Death>,
+    delete: ReadStorage<'a, Delete>,
     u_type: ReadStorage<'a, UnitTypeTag>,
     ids: Entities<'a>,
     skip: Fetch<'a, Skip>,
     spawn: ReadStorage<'a, Spawned>,
+    cum_reward: Fetch<'a, CumReward>,
 
     out: FetchMut<'a, Render>,
 }
@@ -31,10 +33,19 @@ pub struct RenderSystem {}
 impl<'a> System<'a> for RenderSystem {
     type SystemData = RenderSystemData<'a>;
 
-    fn run(&mut self, sys_data: Self::SystemData) {
+    fn run(&mut self, mut sys_data: Self::SystemData) {
         if sys_data.skip.0 {
             return;
         }
+
+        // Workaround, switch to HashMap<String,f64> when we can
+        sys_data.out.0.cumulative_rewards = sys_data
+            .cum_reward
+            .0
+            .iter()
+            .map(|(k, v)| (k.clone(), format!("{}", v)))
+            .collect();
+
         if sys_data.complete_rerender.0 {
             self.render_all(sys_data);
         } else {
@@ -49,6 +60,7 @@ impl RenderSystem {
 
         for (pos, id) in (&sys_data.pos, &*sys_data.ids).join() {
             if !(sys_data.moved.get(id).is_some() || sys_data.death.get(id).is_some()
+                || sys_data.delete.get(id).is_some()
                 || sys_data.hp_change.get(id).is_some()
                 || sys_data.spawn.get(id).is_some())
             {
@@ -72,19 +84,17 @@ impl RenderSystem {
             let mut entity = ScaiiEntity {
                 id: id.id() as u64,
                 pos: Some(pos.to_scaii_pos()),
-                delete: sys_data.death.get(id).is_some(),
+                delete: sys_data.death.get(id).is_some() || sys_data.delete.get(id).is_some(),
                 shapes: vec![],
 
                 ..ScaiiEntity::default()
             };
 
             if sys_data.hp_change.get(id).is_some() {
-                let hit_points_string = format!("{}", sys_data.hp.get(id).unwrap().curr_hp);
-                println!(" sending hitpoints string in delta {}", hit_points_string);
+                let hp_string = format!("{}", sys_data.hp.get(id).unwrap().curr_hp);
                 entity
                     .float_string_metadata
-                    .insert("Hitpoints".to_string(), hit_points_string);
-                //entity.float_metadata.insert("Hitpoints".to_string(), sys_data.hp.get(id).unwrap().curr_hp as f32);
+                    .insert("Hitpoints".to_string(), hp_string);
             }
 
             sys_data.out.0.entities.push(entity);
@@ -114,7 +124,6 @@ impl RenderSystem {
         pos: &Pos,
         shape: &Shape,
     ) -> ScaiiEntity {
-        println!("Rendering");
         use std::collections::HashMap;
 
         let mut scaii_shape = shape.to_scaii_shape(0);
@@ -127,27 +136,29 @@ impl RenderSystem {
         //let mut bool_metadata : HashMap<String, bool> = HashMap::with_capacity(2);
         let mut string_metadata: HashMap<String, String> = HashMap::with_capacity(1);
         let mut bool_string_metadata: HashMap<String, String> = HashMap::with_capacity(2);
-        let mut float_string_metadata: HashMap<String, String> = HashMap::with_capacity(1);
+        let mut float_string_metadata: HashMap<String, String> = HashMap::with_capacity(2);
+
+        // Special case for us = faction 0 for now, need to switch if we support multi-agent
+        // or self-play later.
         let is_friend = sys_data.faction.get(id).unwrap().0 == 0;
         let hp = sys_data.hp.get(id).unwrap();
         let tag = sys_data.u_type.get(id).unwrap();
 
-        let hit_points_string = format!("{}", hp.curr_hp);
-        println!("entity : {:?} HitPoints string : {}", id, hit_points_string);
-        float_string_metadata.insert("Hitpoints".to_string(), hit_points_string);
-        //float_metadata.insert("Hitpoints".to_string(), hp.curr_hp as f32);
-        // bool_metadata.insert("Enemy?".to_string(), not_is_friend);
-        // bool_metadata.insert("Friend?".to_string(), is_friend);
-        let mut enemy_bool_string = "true".to_string();
-        let mut friend_bool_string = "false".to_string();
-        if is_friend {
-            enemy_bool_string = "false".to_string();
-            friend_bool_string = "true".to_string();
-        }
+        /* There's some weirdness with the protobuf library so we need
+        to use strings or we get weird undefined values. Hopefully fixable in
+        the future.  */
+        let hp_string = format!("{}", hp.curr_hp);
+        let max_hp_string = format!("{}", hp.max_hp);
+        float_string_metadata.insert("Hitpoints".to_string(), hp_string);
+        float_string_metadata.insert("Max Hp".to_string(), max_hp_string);
 
-        bool_string_metadata.insert("Enemy?".to_string(), enemy_bool_string);
-        bool_string_metadata.insert("Friend?".to_string(), friend_bool_string);
+        let enemy_string = format!("{}", !is_friend);
+        let friend_string = format!("{}", is_friend);
+
+        bool_string_metadata.insert("Enemy?".to_string(), enemy_string);
+        bool_string_metadata.insert("Friend?".to_string(), friend_string);
         string_metadata.insert("Unit Type".to_string(), tag.0.clone());
+
         ScaiiEntity {
             shapes: vec![scaii_shape],
             id: id.id() as u64,
