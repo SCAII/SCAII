@@ -63,6 +63,8 @@ impl<'a> System<'a> for LuaSystem {
         ).join()
         {
             let killer_faction = sys_data.faction.get(death.killer).unwrap();
+            let killer_tag = sys_data.tag.get(death.killer).unwrap();
+            let killer_hp = sys_data.hp.get(death.killer).unwrap();
             let friendly_kill = faction == killer_faction;
 
             let unit1 = UserDataUnit {
@@ -72,8 +74,8 @@ impl<'a> System<'a> for LuaSystem {
             };
             let unit2 = UserDataUnit {
                 faction: *killer_faction,
-                u_type: tag.0.clone(),
-                hp: *hp,
+                u_type: killer_tag.0.clone(),
+                hp: *killer_hp,
             };
 
             self.lua.globals().set("__sky_u1", unit1).unwrap();
