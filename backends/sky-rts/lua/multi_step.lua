@@ -70,7 +70,7 @@ function sky_init()
         kill_reward=0,
         death_penalty=0,
         dmg_recv_type="took_damage",
-        dmg_deal_type="dealt_damage",
+        dmg_deal_type="damaged_enemy",
         speed=40.0,
         attack_range=0.3,
         attack_dmg=10,
@@ -87,9 +87,9 @@ function sky_init()
         },
         can_move=false,
         kill_reward=50,
-        kill_type="bonus",
+        kill_type="kill_bonus",
         death_type="friendly_kill",
-        damage_recv_penalty=0,
+        dmg_recv_type="harmed_friend",
         damage_deal_reward=0,
         attack_range=0.3,
         attack_dmg=5,
@@ -106,9 +106,9 @@ function sky_init()
         },
         can_move=false,
         kill_reward=70,
-        kill_type="bonus",
+        kill_type="kill_bonus",
         death_type="friendly_kill",
-        damage_recv_penalty=0,
+        dmg_recv_type="harmed_friend",
         damage_deal_reward=0,
         attack_range=0.3,
         attack_dmg=10,
@@ -120,7 +120,7 @@ function sky_init()
         factions=factions,
         victory_reward=0,
         failure_penalty=0,
-        reward_types={"took_damage", "dealt_damage", "friendly_kill", "bonus"},
+        reward_types={"took_damage", "harmed_friend", "damaged_enemy", "friendly_kill", "kill_bonus"},
     }
 end
 
@@ -136,7 +136,6 @@ function on_death(world, dead, cause)
     -- the next board and tweak it to our liking
     new_board = sky_reset(world:rng())
     for _k,entity in pairs(new_board) do
-        print(entity.unit_type, entity.faction)
         -- Carry over agent HP to next iteration
         if entity.unit_type == "agent" then
             entity.hp = cause:hp() -- Due to the nature of the scenario, if the agent didn't die they caused the death

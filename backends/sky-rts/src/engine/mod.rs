@@ -243,7 +243,15 @@ impl<'a, 'b> Rts<'a, 'b> {
                 src: protos::BACKEND_ENDPOINT,
                 dest: protos::mod_endpoint("viz"),
                 specific_msg: Some(protos::scaii_packet::SpecificMsg::VizInit(
-                    protos::VizInit::default(),
+                    protos::VizInit {
+                        reward_types: self.world
+                            .read_resource::<RewardTypes>()
+                            .0
+                            .iter()
+                            .cloned()
+                            .collect(),
+                        ..Default::default()
+                    },
                 )),
             };
 
@@ -419,7 +427,9 @@ impl<'a, 'b> Rts<'a, 'b> {
     /// serialized.
     pub fn deserialize(&mut self, buf: Vec<u8>) -> MultiMessage {
         use scaii_defs::protos;
-        use engine::resources::Deserializing;
+        use engine::resources::{Deserializing, PLAYER_COLORS};
+        use engine::components::Color;
+
         self.world.write_resource::<Deserializing>().0 = true;
 
         self.initialized = false;
@@ -439,6 +449,14 @@ impl<'a, 'b> Rts<'a, 'b> {
 
         self.de_system.run_now(&self.world.res);
         self.redo_col_sys.run_now(&self.world.res);
+
+        for id in self.world.entities().join() {
+            if let Some(faction) = self.world.read::<FactionId>().get(id) {
+                self.world
+                    .write::<Color>()
+                    .insert(id, PLAYER_COLORS[faction.0]);
+            }
+        }
 
         self.world.write_resource::<NeedsKeyInfo>().0 = true;
 

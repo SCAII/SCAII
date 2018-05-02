@@ -101,13 +101,16 @@ pub struct Hp {
     pub curr_hp: f64,
 }
 
-#[derive(Default, Component, Copy, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Component, Clone, PartialEq)]
 #[storage(HashMapStorage)]
 pub struct HpChange(pub f64);
 
-#[derive(Default, Component, Copy, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Component, Clone, PartialEq)]
 #[storage(HashMapStorage)]
-pub struct DealtDamage(pub f64);
+pub struct DealtDamage {
+    pub val: f64,
+    pub by_source: Vec<(f64, FactionId)>,
+}
 
 #[derive(Default, Component, Copy, Clone, PartialEq, Eq, Serialize, Debug, Deserialize)]
 #[storage(VecStorage)]

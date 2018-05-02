@@ -64,6 +64,7 @@ impl MockRts {
                 gameboard_width: Some(width),
                 gameboard_height: Some(height),
                 explanations: Vec::new(),
+                ..Default::default()
             })),
         }
     }
@@ -425,7 +426,10 @@ fn wrap_entities_in_viz_packet(entity1: Entity, entity2: Entity) -> ScaiiPacket 
                 name: "viz".to_string(),
             })),
         },
-        specific_msg: Some(SpecificMsg::Viz(Viz { entities: entities })),
+        specific_msg: Some(SpecificMsg::Viz(Viz {
+            entities: entities,
+            ..Default::default()
+        })),
     }
 }
 

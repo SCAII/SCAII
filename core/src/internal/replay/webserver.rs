@@ -101,22 +101,21 @@ fn get_python_version(python_command: String) -> Option<String> {
     let result = String::from_utf8_lossy(&output_stdout.stdout);
 
     if result.starts_with("Python 3") {
-        return Some("3".to_string())
+        return Some("3".to_string());
     } else {
         let output_stderr = Command::new(&python_command) // Python 3.4 outputs to stderr
         .arg("--version")
         .stderr(Stdio::piped())
         .output()
         .expect("Failed to execute command");
-        
+
         let result = String::from_utf8_lossy(&output_stderr.stderr);
         if result.starts_with("Python 3") {
-            return Some("3".to_string())
+            return Some("3".to_string());
         }
     }
     None
 }
-
 
 fn change_to_viz_dir() -> Result<(), Box<Error>> {
     //cd <SCAII_ROOT>\viz
