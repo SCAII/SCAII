@@ -65,4 +65,7 @@ var main = function () {
 		tryConnect('.', 0);
 	}
 }
+function debug(position, message){
+	$("#debug" + position).html(message);
+}
 main();

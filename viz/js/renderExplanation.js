@@ -132,40 +132,25 @@ function getSelectionManager() {
 }
 
 
-
-
-// expl_ctrl_canvas.addEventListener('click', function (event) {
-// 	var matchingStep = getMatchingExplanationStep(expl_ctrl_ctx, event.offsetX, event.offsetY);
-// 	console.log('clicked on step ' + selectedExplanationStep);	
-// 	if (matchingStep == undefined){
-// 		// ignore click if not on one of the selectors
-// 	}
-// 	else if (matchingStep == selectedExplanationStep) {
-// 		selectedExplanationStep = undefined;
-// 		clearExplanationInfo();
-// 	}
-// 	else{
-// 		selectedExplanationStep = matchingStep;
-// 		var userCommand = new proto.scaii.common.UserCommand;
-// 		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.EXPLAIN);
-// 		var args = ['' +selectedExplanationStep];
-// 		userCommand.setArgsList(args);
-// 		stageUserCommand(userCommand);
-		
-// 		if (matchingStep == sessionIndexManager.getCurrentIndex()) {
-// 			console.log("no need to move - already at step with explanation");
-// 		}
-// 		else {
-// 			var userCommand = new proto.scaii.common.UserCommand;
-// 			console.log("jumping to step " + selectedExplanationStep);
-// 			userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-// 			// same args as above
-// 			userCommand.setArgsList(args);
-// 			stageUserCommand(userCommand);
-// 		}
-// 	}	
-// 	renderExplanationSelectors(replaySessionConfig,selectedExplanationStep);
-// });
+expl_ctrl_canvas.addEventListener('click', function (event) {
+	var matchingStep = getMatchingExplanationStep(expl_ctrl_ctx, event.offsetX, event.offsetY);
+	if (matchingStep == undefined){
+		// ignore click if not on one of the selectors
+	}
+	else{
+		if (matchingStep == sessionIndexManager.getCurrentIndex()) {
+			//no need to move - already at step with explanation
+		}
+		else {
+			var userCommand = new proto.scaii.common.UserCommand;
+			userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+			// same args as above
+			var args = ['' +matchingStep];
+			userCommand.setArgsList(args);
+			stageUserCommand(userCommand);
+		}
+	}	
+});
 
 function renderWhyInfo(explPoint) {
 	activeExplanationPoint = explPoint;
@@ -410,7 +395,7 @@ function getExplanationBox(left_x,right_x, upper_y, lower_y, step){
 // 	questionMarkButtonIds = [];
 // }
 
-function renderExplanationSelectors(rsc, selectedStep) {
+function renderExplanationSelectors() {
 	var decisionsLabel = document.createElement("LABEL");
 	decisionsLabel.setAttribute("id", "decisions-label");
 	decisionsLabel.setAttribute("style", getGridPositionStyle(1,0) + ';height: 30px; padding-top:10px;font-size: 18px;font-weight: bold;');
@@ -418,35 +403,31 @@ function renderExplanationSelectors(rsc, selectedStep) {
 	$("#action-list").append(decisionsLabel);
 	$("#decisions-label").text("Decisions");
 	//explanationBoxMap = {};
-	var explanation_steps = rsc.getExplanationStepsList();
-	var explanation_titles = rsc.getExplanationTitlesList();
+	var explanation_steps = replaySessionConfig.getExplanationStepsList();
+	var explanation_titles = replaySessionConfig.getExplanationTitlesList();
 	//console.log("explanation count is " + explanation_steps.length);
 	var expl_count = explanation_steps.length;
 	var index = 0;
 	while (index < expl_count){
 		var step = explanation_steps[index];
-		var selected = false;
-		if (selectedStep == step){
-			selected = true;
-		}
 		var title = explanation_titles[index];
 		var uiIndex =index + 1;
 		addLabelForAction(title, uiIndex);
-		addWhyButtonForAction(step, uiIndex);
-		configureExplanationSelectorButton(rsc.getStepCount(), step);
+		configureExplanationSelectorDiamond(uiIndex, step);
+		//configureExplanationSelectorButton(replaySessionConfig.getStepCount(), step);
 		index = index + 1;
 	}
 }
 
-function addWhyButtonForAction(step, index) {
+function addWhyButtonForAction(step, x,  y) {
 	var whyButton = document.createElement("BUTTON");
-	var buttonId = getWhyButtonIdForStep(step);
+	var buttonId = "why-button";
 	whyButton.setAttribute("id", buttonId);
 	var why = document.createTextNode("why?");
 	whyButton.appendChild(why);          
-	whyButton.setAttribute("style", getGridPositionStyle(2,index) + ';margin-left: 40px;margin-bottom:10px');
+	whyButton.setAttribute("style", 'z-index:2;position:relative;left:' + x + 'px;top:' + y + 'px');
 	
-	$("#action-list").append(whyButton);
+	$("#explanation-control-panel").append(whyButton);
 	$("#" + buttonId).click(function(e) {
 		 e.preventDefault();
 		 processWhyClick(step);
@@ -581,10 +562,9 @@ function getWhyButtonIdForStep(step) {
 	return 'whyButton'+ step;
 }
 function showExplanationRewardInfo(stepNumber) {
-	selectedExplanationStep = stepNumber;
 	var userCommand = new proto.scaii.common.UserCommand;
 	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.EXPLAIN);
-	var args = ['' +selectedExplanationStep];
+	var args = ['' +stepNumber];
 	userCommand.setArgsList(args);
 	stageUserCommand(userCommand);
 	
@@ -593,42 +573,49 @@ function showExplanationRewardInfo(stepNumber) {
 	}
 	else {
 		var userCommand = new proto.scaii.common.UserCommand;
-		//console.log("jumping to step " + selectedExplanationStep);
 		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
 		// same args as above
 		userCommand.setArgsList(args);
 		stageUserCommand(userCommand);
 	}
-	//renderExplanationSelectors(replaySessionConfig,selectedExplanationStep);
 }
 
-function configureExplanationSelectorDiamond(uiIndex, step_count, step, title, selected){
-	var totalWidth = expl_ctrl_canvas.width;
-	var rectWidth = totalWidth / step_count;
-	var leftX = rectWidth * step + rectWidth/2;
-	var rightX = rectWidth * (step + 1)  + rectWidth/2;
-	var upperLeftX = leftX;
-	var distFromLine = 12
-	var upperLeftY = explanationControlYPosition - distFromLine;
-	var ctx = expl_ctrl_ctx;
-	ctx.beginPath();
-	if (selected){
-		ctx.fillStyle = 'yellow';
+function configureExplanationSelectorDiamond(uiIndex,step){
+	var widthOfTimeline = expl_ctrl_canvas.width - 2*timelineMargin;
+	var value = sessionIndexManager.getPercentIntoGameForStep(step);
+	var x = timelineMargin + (value / 100) * widthOfTimeline;
+	var y = explanationControlYPosition;
+	var halfWidth;
+	var halfHeight;
+	
+	var currentStep = sessionIndexManager.getCurrentIndex();
+	// subtract1 as currentIndex has already been advanced
+	if (currentStep == step) {
+		halfWidth = 24;
+		halfHeight = 24;
+		var yPositionOfWhyButton = -30;// relative to the next container below
+		var xPositionOfWhyButton = x - 20;
+		addWhyButtonForAction(step, xPositionOfWhyButton,  yPositionOfWhyButton);
 	}
 	else {
-		ctx.fillStyle = 'blue';
+		halfWidth = 16;
+		halfHeight = 16;
 	}
+	var ctx = expl_ctrl_ctx;
+	ctx.beginPath();
 	
-	ctx.lineWidth = 1;
+	ctx.fillStyle = 'black';
+	
 	ctx.strokeStyle = 'black';
-	var leftVertexX = leftX;
+	ctx.lineWidth = 2;
+	var leftVertexX = x - halfWidth;;
 	var leftVertexY = explanationControlYPosition;
-	var rightVertexX = rightX;
+	var rightVertexX = x + halfWidth;
 	var rightVertexY = explanationControlYPosition;
-	var topVertexX = leftVertexX + (rightVertexX - leftVertexX)/2 ;
-	var topVertexY = explanationControlYPosition - distFromLine;
-	var bottomVertexX = topVertexX;
-	var bottomVertexY = explanationControlYPosition + distFromLine;
+	var topVertexX = x ;
+	var topVertexY = explanationControlYPosition - halfHeight;
+	var bottomVertexX = x;
+	var bottomVertexY = explanationControlYPosition + halfHeight;
 	
 	ctx.moveTo(leftVertexX, leftVertexY);
 	ctx.lineTo(topVertexX,topVertexY);
@@ -639,14 +626,13 @@ function configureExplanationSelectorDiamond(uiIndex, step_count, step, title, s
 	ctx.fill();
 	
 	ctx.font = "16px Arial bold";
-	ctx.fillStyle = 'black';
+	ctx.fillStyle = 'white';
 	var textCenterX = ((rightVertexX - leftVertexX) / 2) + leftVertexX - 8;
 	var textCenterY = explanationControlYPosition + 5;
-	ctx.fillText("?",textCenterX,textCenterY);
+	ctx.fillText(uiIndex + "?",textCenterX,textCenterY);
 
-	var rectHeight = distFromLine + distFromLine + 1;
 	//ctx.rect(upper_left_x, upper_left_y, rect_width, rect_height);
-	var eBox = getExplanationBox(leftX,rightX,upperLeftY, upperLeftY + rectHeight, step);
+	var eBox = getExplanationBox(leftVertexX, rightVertexX, topVertexY, bottomVertexY, step);
     explanationBoxMap[step] = eBox;
 }
 
