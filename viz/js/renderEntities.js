@@ -46,7 +46,7 @@ function handleEntities(entitiesList) {
 			}
 			else {
 				if (entity.hasDelete() && entity.getDelete()) {
-					//delete masterEntities[idString];
+					delete masterEntities[idString];
 				}
 				else {
 					var masterEntity = masterEntities[idString];
@@ -228,7 +228,8 @@ function drawTriangle(ctx, x, y, baseLen, rotation_in_radians, colorRGBA) {
 
 
 function drawDiamond(ctx, x, y, baseLen, rotation_in_radians, colorRGBA) {
-  var sizeFudgeFactor = 1.4; // with math below, diamond is too small so just boost the baselen so we can keep the math simple later
+  //var sizeFudgeFactor = 1.4; // with math below, diamond is too small so just boost the baselen so we can keep the math simple later
+  var sizeFudgeFactor = 2.5;
   baseLen = baseLen * sizeFudgeFactor;
   ctx.save();
   ctx.translate(x,y);
@@ -397,7 +398,7 @@ function createHPToolTip(z_index, shapeId, absX, absY, hitPoints, color) {
     var x = absX + canvas_bounds.left + 20;
     valueSpan.setAttribute("style", 'background-color:white;zIndex:' + z_index + ';position:absolute;left:' + x + 'px;top:' + y + 'px;color:' + color + ';font-family:Arial; font-size:13px');
     $("#scaii-gameboard").append(valueSpan);
-    valueSpan.innerHTML = 'HP: ' + hitPoints;
+    valueSpan.innerHTML = 'HP: ' + hitPoints + '; ' + shapeId;
     entityHPToolTipIds.push(id);
   }
 }
