@@ -133,23 +133,25 @@ function getSelectionManager() {
 
 
 expl_ctrl_canvas.addEventListener('click', function (event) {
-	var matchingStep = getMatchingExplanationStep(expl_ctrl_ctx, event.offsetX, event.offsetY);
-	if (matchingStep == undefined){
-		// ignore click if not on one of the selectors
+	if (!userInputBlocked){
+		var matchingStep = getMatchingExplanationStep(expl_ctrl_ctx, event.offsetX, event.offsetY);
+		if (matchingStep == undefined){
+			processTimelineClick(event);
+		}
+		else{
+			if (matchingStep == sessionIndexManager.getCurrentIndex()) {
+				//no need to move - already at step with explanation
+			}
+			else {
+				var userCommand = new proto.scaii.common.UserCommand;
+				userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+				// same args as above
+				var args = ['' +matchingStep];
+				userCommand.setArgsList(args);
+				stageUserCommand(userCommand);
+			}
+		}	
 	}
-	else{
-		if (matchingStep == sessionIndexManager.getCurrentIndex()) {
-			//no need to move - already at step with explanation
-		}
-		else {
-			var userCommand = new proto.scaii.common.UserCommand;
-			userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-			// same args as above
-			var args = ['' +matchingStep];
-			userCommand.setArgsList(args);
-			stageUserCommand(userCommand);
-		}
-	}	
 });
 
 function renderWhyInfo(explPoint) {

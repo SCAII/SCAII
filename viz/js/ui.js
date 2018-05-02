@@ -109,13 +109,6 @@ function configurePauseResumeButton(){
 	pauseResumeButton.disabled = true;
 }
 
-function configureNavigationTimeline() {
-	$("#game-progress").click(tryProcessTimelineClick);
-	// $("#test-button").click(function(e) {
-		// e.preventDefault();
-		// $(this).toggleClass('active');
-	// })
-}
 function configureQuestionArea() {
 	clearWhyQuestions();
 	//clearWhatQuestions();
@@ -162,7 +155,6 @@ function initUI() {
 	controlsManager.registerJQueryHandleForWaitCursor($("#scaii-interface"));
 	configureLabelContainers();
 	configureNavigationButtons();
-	configureNavigationTimeline();
 	configureQuestionArea();
 	setUpMetadataToolTipEventHandlers();
 }
