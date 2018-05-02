@@ -45,6 +45,7 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, progressWidth)
 	}
 	
 	sim.setReplaySequencerIndex = function(index) {
+		$("#why-button").remove();
 		this.replaySequencerIndex = index;
 		//console.log('');
 		//console.log('');
@@ -67,6 +68,10 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, progressWidth)
 		return value;
 	}
 	
+	sim.getPercentIntoGameForStep = function(step){
+		var value = Math.floor((step / this.replaySequencerMaxIndex ) * 100);
+		return value;
+	}
 	sim.getCurrentIndex = function() {
 		return this.replaySequencerIndex;
 	}
@@ -133,7 +138,7 @@ function handleReplaySessionConfig(rsc, selectedStep) {
 	sessionIndexManager = getSessionIndexManager(rsc.getStepCount(), progressWidth);
 
 	sessionIndexManager.setReplaySequencerIndex(0);
-	renderExplanationSelectors(rsc, selectedStep);
+	//renderExplanationSelectors(replaySessionConfig, selectedStep);
 }
 
 

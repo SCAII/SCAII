@@ -5,6 +5,7 @@ function paintProgress(value) {
 	var progressString = "" + value;
 	$("#game-progress").attr("value", progressString);
 	showPositionOnTimeline(value);
+	renderExplanationSelectors();
 }
 
 function showPositionOnTimeline(value) {
@@ -23,16 +24,15 @@ function showPositionOnTimeline(value) {
 	ctx.fillStyle = 'darkgrey';
 	ctx.lineWidth = 1;
 	ctx.strokeStyle = 'darkgray';
-	var fudgeFactor = 4;
-	var upperLeftVertexX = xLeft - fudgeFactor;
+	var upperLeftVertexX = xLeft;
 	var upperLeftVertexY = yTop;
-	var upperRightVertexX = xRight - fudgeFactor;
+	var upperRightVertexX = xRight;
 	var upperRightVertexY = yTop;
-	var lowerLeftVertexX = xLeft - fudgeFactor ;
+	var lowerLeftVertexX = xLeft;
 	var lowerLeftVertexY =  yBottom;
-	var lowerRightVertexX = xRight - fudgeFactor;
+	var lowerRightVertexX = xRight;
 	var lowerRightVertexY = yBottom;
-	
+
 	ctx.moveTo(upperLeftVertexX, upperLeftVertexY);
 	ctx.lineTo(upperRightVertexX,upperRightVertexY);
 	ctx.lineTo(lowerRightVertexX, lowerRightVertexY);

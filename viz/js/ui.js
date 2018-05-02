@@ -132,11 +132,12 @@ function clearWhyQuestions() {
 //	$("#what-questions").html(" ");
 //}
 var timelineMargin = 40;
+var explanationControlCanvasHeight = 80;
 function drawExplanationTimeline() {
 	expl_ctrl_ctx.clearRect(0,0, expl_ctrl_canvas.width, expl_ctrl_canvas.height);
 	// just use width of gameboard for now, may need to be bigger
 	
-	expl_ctrl_canvas.height = 60;
+	expl_ctrl_canvas.height = explanationControlCanvasHeight;
 	$("#explanation-control-panel").append(expl_ctrl_canvas);
 	let ctx = expl_ctrl_ctx;
 	var can_width = 600;
