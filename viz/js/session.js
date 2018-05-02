@@ -40,6 +40,9 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, progressWidth)
 		var percent = xIndexOfClick/this.progressWidth;
 		// example, click 65% -> 6.5 -> 6  -> add one for UI render -> 7  so clicking on segment 7 of 10
 		var replaySequenceTargetStep = Math.floor(this.progressBarSegmentCount * percent) + 1;
+		if (replaySequenceTargetStep > this.replaySequencerMaxIndex) {
+			replaySequenceTargetStep = this.replaySequencerMaxIndex;
+		}
 		//console.log('calculated replaySequenceTargetStep as ' + replaySequenceTargetStep);
 		return replaySequenceTargetStep;
 	}
@@ -138,7 +141,6 @@ function handleReplaySessionConfig(rsc, selectedStep) {
 	sessionIndexManager = getSessionIndexManager(rsc.getStepCount(), progressWidth);
 
 	sessionIndexManager.setReplaySequencerIndex(0);
-	//renderExplanationSelectors(replaySessionConfig, selectedStep);
 }
 
 

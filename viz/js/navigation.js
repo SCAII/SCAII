@@ -42,21 +42,10 @@ function showPositionOnTimeline(value) {
 	ctx.fill();
 }
 
-
-
-function tryProcessTimelineClick(e) {
-	try {
-		if (!userInputBlocked) {
-			processTimelineClick(e);
-		}
-	}
-	catch (err) {
-		alert(err.message);
-	}
-}
 function processTimelineClick(e) {
 	controlsManager.userJumped();
-	var clickX = e.offsetX;
+	var clickX = e.offsetX - timelineMargin;
+	debug(1, 'clickX was ' + clickX);
 	var replaySequenceTargetStep = sessionIndexManager.getReplaySequencerIndexForClick(clickX);
 	var targetStepString = "" + replaySequenceTargetStep;
 	var args = [targetStepString];
