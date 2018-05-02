@@ -1,12 +1,9 @@
-
 use prost::Message;
-use protos::{scaii_packet, ExplanationPoint,
-             ModuleEndpoint, MultiMessage, RecorderConfig, ReplayControl,
-             ReplayEndpoint, ScaiiPacket};
+use protos::{scaii_packet, ExplanationPoint, ModuleEndpoint, MultiMessage, RecorderConfig,
+             ReplayControl, ReplayEndpoint, ScaiiPacket};
 use protos::user_command::UserCommandType;
 use protos::endpoint::Endpoint;
-use scaii_core::{Environment, ReplayAction, ReplayHeader,
-                 SerializedProtosScaiiPacket};
+use scaii_core::{Environment, ReplayAction, ReplayHeader, SerializedProtosScaiiPacket};
 use scaii_defs::protos;
 use std::error::Error;
 use std::rc::Rc;
@@ -15,11 +12,9 @@ use std::sync::{Arc, Mutex};
 use std::path::Path;
 use std::{thread, time};
 
-
 use super::pkt_util;
 use super::replay_sequencer::ReplaySequencer;
 use super::explanations::Explanations;
-
 
 #[derive(Debug)]
 enum GameState {
@@ -45,19 +40,17 @@ impl ReplayManager {
     pub fn start(&mut self) -> Result<(), Box<Error>> {
         use super::{replay_util, test_util};
         // startup viz via rpc
-        let mm =
-            pkt_util::wrap_packet_in_multi_message(pkt_util::create_rpc_config_message()?);
+        let mm = pkt_util::wrap_packet_in_multi_message(pkt_util::create_rpc_config_message()?);
         self.env.route_messages(&mm);
         self.env.update();
         if self.test_mode {
             let step_count: u32 = 300;
             let interval: u32 = 5;
             let replay_actions = test_util::concoct_replay_info(step_count, interval)
-            .expect("Error - problem generating test replay_info");
+                .expect("Error - problem generating test replay_info");
             let replay_sequencer = ReplaySequencer::new(&replay_actions, false)?;
             self.replay_sequencer = replay_sequencer;
-        }
-        else {
+        } else {
             let replay_filenames = replay_util::get_replay_filenames()?;
             let replay_choice_config = pkt_util::get_replay_choice_config_message(replay_filenames);
             let mm = pkt_util::wrap_packet_in_multi_message(replay_choice_config);
@@ -67,8 +60,8 @@ impl ReplayManager {
         self.run_and_poll()
     }
 
-    fn load_selected_replay_file(&mut self, filename: String)-> Result<(), Box<Error>> {
-        use super::{replay_util, explanations, ReplayError};
+    fn load_selected_replay_file(&mut self, filename: String) -> Result<(), Box<Error>> {
+        use super::{explanations, replay_util, ReplayError};
         use std::path::PathBuf;
         use scaii_core;
         let mut replay_path = scaii_core::get_default_replay_dir()?;
@@ -91,25 +84,21 @@ impl ReplayManager {
         );
         let mut replay_sequencer = ReplaySequencer::new(&mut replay_actions, false)?;
         let mut r_actions_sans_explanations: Vec<ReplayAction> = Vec::new();
-        let explanation_points: Vec<ExplanationPoint> = explanations::extract_explanations(
-            replay_actions,
-            &mut r_actions_sans_explanations,
-        )?;
+        let explanation_points: Vec<ExplanationPoint> =
+            explanations::extract_explanations(replay_actions, &mut r_actions_sans_explanations)?;
         let mut explanations_option = explanations::map_explanations(explanation_points)?;
         if explanations::is_empty(&explanations_option) {
             println!(
                 "using specified replay file to find expl file!{:?}",
                 replay_path
             );
-            explanations_option = explanations::get_explanations_for_replay_file(
-                PathBuf::from(replay_path.clone()),
-            )?;
+            explanations_option =
+                explanations::get_explanations_for_replay_file(PathBuf::from(replay_path.clone()))?;
         }
         self.explanations_option = explanations_option;
         replay_sequencer.print_length();
         let count = replay_sequencer.get_sequence_length();
         self.replay_sequencer = replay_sequencer;
-            
 
         // pull off header and configure
         let replay_session_cfg =
@@ -117,7 +106,6 @@ impl ReplayManager {
         self.configure_as_per_header(header, replay_session_cfg)?;
         Ok(())
     }
-
 
     fn emit_cfg_packets(&mut self, cfg_pkts: Vec<ScaiiPacket>) -> Result<(), Box<Error>> {
         for pkt in &cfg_pkts {
@@ -167,7 +155,6 @@ impl ReplayManager {
             }
         }
     }
-
 
     fn tell_viz_load_complete(&mut self) -> Result<Vec<ScaiiPacket>, Box<Error>> {
         let pkt: ScaiiPacket = ScaiiPacket {
@@ -259,8 +246,6 @@ impl ReplayManager {
         };
         Ok(scaii_pkts)
     }
-
-
 
     fn send_pkt_to_backend(&mut self, pkt: ScaiiPacket) -> Result<(), Box<Error>> {
         use scaii_defs;
@@ -559,7 +544,6 @@ impl ReplayManager {
         Ok(game_state)
     }
 }
-
 
 fn wait(milliseconds: u64) {
     let delay = time::Duration::from_millis(milliseconds);

@@ -26,9 +26,9 @@ pub const STATE_SCALE: usize = 1;
 
 lazy_static! {
     pub static ref PLAYER_COLORS: Vec<Color> = vec![
+        Color { r: 255, g: 255, b: 0 },
         Color { r: 255, g: 0, b: 0 },
         Color { r: 0, g: 0, b: 255 },
-        Color { r: 0, g: 255, b: 0 },
     ];
 }
 
@@ -68,6 +68,7 @@ pub(super) fn register_world_resources(world: &mut World) {
     world.add_resource(RewardTypes::default());
     world.add_resource(SpawnBuffer::default());
     world.add_resource(Deserializing(false));
+    world.add_resource(CumReward::default());
 }
 
 #[derive(Default, Debug, Clone, PartialEq)]
@@ -114,6 +115,9 @@ pub struct ActionInput(pub Option<Action>);
 #[derive(PartialEq, Default, Clone)]
 pub struct Reward(pub HashMap<String, f64>);
 
+#[derive(PartialEq, Default, Clone, Serialize, Deserialize, Debug)]
+pub struct CumReward(pub HashMap<String, f64>);
+
 #[derive(Eq, PartialEq, Default, Clone, Debug, Hash)]
 pub struct Skip(pub bool, pub Option<String>);
 
@@ -152,7 +156,7 @@ impl Default for UnitType {
             death_type: "death".to_string(),
             dmg_recv_type: "dmg_recvd".to_string(),
             dmg_deal_type: "dmg_dealt".to_string(),
-            kill_type: "kill".to_string(),
+            kill_type: "killed_enemy".to_string(),
             speed: 20.0,
             attack_range: 10.0,
             attack_delay: 1.0,

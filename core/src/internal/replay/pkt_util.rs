@@ -1,5 +1,5 @@
-use protos::{BackendEndpoint, BarChart, BarGroup, Cfg, CoreEndpoint, ModuleEndpoint, MultiMessage, PluginType,
-             ReplayEndpoint,ReplayChoiceConfig, ReplaySessionConfig, ScaiiPacket};
+use protos::{BackendEndpoint, BarChart, BarGroup, Cfg, CoreEndpoint, ModuleEndpoint, MultiMessage,
+             PluginType, ReplayChoiceConfig, ReplayEndpoint, ReplaySessionConfig, ScaiiPacket};
 use protos::cfg::WhichModule;
 use protos::plugin_type::PluginType::SkyRts;
 use protos::endpoint::Endpoint;
@@ -186,7 +186,6 @@ pub fn create_rpc_config_message() -> Result<ScaiiPacket, Box<Error>> {
     })
 }
 
-
 pub fn create_rts_backend_msg() -> Result<ScaiiPacket, Box<Error>> {
     use scaii_defs::protos::PluginType;
 
@@ -206,7 +205,6 @@ pub fn create_rts_backend_msg() -> Result<ScaiiPacket, Box<Error>> {
         })),
     })
 }
-
 
 pub fn wrap_packet_in_multi_message(pkt: ScaiiPacket) -> MultiMessage {
     let mut pkts: Vec<ScaiiPacket> = Vec::new();
@@ -238,7 +236,6 @@ pub fn get_emit_viz_pkt() -> ScaiiPacket {
     }
 }
 
-
 #[allow(dead_code)]
 pub fn get_reset_env_pkt() -> ScaiiPacket {
     ScaiiPacket {
@@ -252,7 +249,7 @@ pub fn get_reset_env_pkt() -> ScaiiPacket {
     }
 }
 
-pub fn get_replay_choice_config_message(replay_filenames : Vec<String>) -> ScaiiPacket {
+pub fn get_replay_choice_config_message(replay_filenames: Vec<String>) -> ScaiiPacket {
     ScaiiPacket {
         src: protos::Endpoint {
             endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
@@ -267,8 +264,6 @@ pub fn get_replay_choice_config_message(replay_filenames : Vec<String>) -> Scaii
         })),
     }
 }
-
-
 
 pub fn get_replay_configuration_message(
     count: u32,
@@ -302,19 +297,18 @@ pub fn get_replay_configuration_message(
 }
 
 pub fn get_chosen_action_name_from_bar_chart(barchart: BarChart) -> String {
-    let group : BarGroup = get_max_value_group(barchart);
+    let group: BarGroup = get_max_value_group(barchart);
     let action_name = group.name.clone().unwrap();
     action_name
 }
 fn get_max_value_group(barchart: BarChart) -> BarGroup {
-    let mut max_group_option : Option<BarGroup> = None;
-    let mut max_value :f64 = 0.0;
+    let mut max_group_option: Option<BarGroup> = None;
+    let mut max_value: f64 = 0.0;
     for group in barchart.groups {
         if max_value == 0.0 {
             max_group_option = Some(group.clone());
             max_value = get_value_for_bar_group(group);
-        }
-        else {
+        } else {
             let cur_value = get_value_for_bar_group(group.clone());
             if cur_value > max_value {
                 max_group_option = Some(group);
@@ -325,8 +319,7 @@ fn get_max_value_group(barchart: BarChart) -> BarGroup {
     max_group_option.unwrap()
 }
 
-
-fn get_value_for_bar_group(group : BarGroup) -> f64 {
+fn get_value_for_bar_group(group: BarGroup) -> f64 {
     match group.value {
         None => {
             let total = add_row_values(group.clone());
@@ -336,10 +329,10 @@ fn get_value_for_bar_group(group : BarGroup) -> f64 {
             return val.clone();
         }
     }
-}   
+}
 
-fn add_row_values(group : BarGroup ) ->f64 {
-    let mut total : f64 = 0.0;
+fn add_row_values(group: BarGroup) -> f64 {
+    let mut total: f64 = 0.0;
     for bar in group.bars {
         total = total + bar.value;
     }

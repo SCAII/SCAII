@@ -1,8 +1,6 @@
 /**
  * @fileoverview
  * @enhanceable
- * @suppress {messageConventions} JS Compiler reports an error if a variable or
- *     field starts with 'MSG_' and isn't a translatable message.
  * @public
  */
 // GENERATED CODE -- DO NOT EDIT!
@@ -74,10 +72,10 @@ goog.provide('proto.scaii.common.UserCommand.UserCommandType');
 goog.provide('proto.scaii.common.Viz');
 goog.provide('proto.scaii.common.VizInit');
 
+goog.require('jspb.Message');
 goog.require('jspb.BinaryReader');
 goog.require('jspb.BinaryWriter');
 goog.require('jspb.Map');
-goog.require('jspb.Message');
 
 
 /**
@@ -150,7 +148,6 @@ proto.scaii.common.Cfg.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Cfg} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Cfg.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -239,7 +236,6 @@ proto.scaii.common.Cfg.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.Cfg} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Cfg.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -467,7 +463,6 @@ proto.scaii.common.PluginType.prototype.toObject = function(opt_includeInstance)
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.PluginType} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.PluginType.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -544,7 +539,6 @@ proto.scaii.common.PluginType.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.PluginType} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.PluginType.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -670,7 +664,6 @@ proto.scaii.common.CoreCfg.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.CoreCfg} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.CoreCfg.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -741,7 +734,6 @@ proto.scaii.common.CoreCfg.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.CoreCfg} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.CoreCfg.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -855,7 +847,6 @@ proto.scaii.common.InitAs.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.InitAs} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.InitAs.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -932,7 +923,6 @@ proto.scaii.common.InitAs.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.InitAs} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.InitAs.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -1058,7 +1048,6 @@ proto.scaii.common.SkyRts.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.SkyRts} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.SkyRts.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -1124,7 +1113,6 @@ proto.scaii.common.SkyRts.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.SkyRts} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.SkyRts.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -1174,7 +1162,6 @@ proto.scaii.common.BackendInit.prototype.toObject = function(opt_includeInstance
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.BackendInit} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.BackendInit.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -1240,7 +1227,6 @@ proto.scaii.common.BackendInit.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.BackendInit} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.BackendInit.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -1290,7 +1276,6 @@ proto.scaii.common.ModuleInit.prototype.toObject = function(opt_includeInstance)
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ModuleInit} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ModuleInit.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -1360,7 +1345,6 @@ proto.scaii.common.ModuleInit.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.ModuleInit} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ModuleInit.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -1453,14 +1437,13 @@ proto.scaii.common.RpcConfig.prototype.toObject = function(opt_includeInstance) 
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.RpcConfig} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.RpcConfig.toObject = function(includeInstance, msg) {
   var f, obj = {
     ip: jspb.Message.getFieldWithDefault(msg, 1, "127.0.0.1"),
     port: jspb.Message.getFieldWithDefault(msg, 2, 6112),
     command: jspb.Message.getField(msg, 3),
-    commandArgsList: jspb.Message.getRepeatedField(msg, 4),
+    commandArgsList: jspb.Message.getField(msg, 4),
     initAs: (f = msg.getInitAs()) && proto.scaii.common.InitAs.toObject(includeInstance, f)
   };
 
@@ -1544,7 +1527,6 @@ proto.scaii.common.RpcConfig.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.RpcConfig} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.RpcConfig.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -1676,10 +1658,12 @@ proto.scaii.common.RpcConfig.prototype.hasCommand = function() {
 
 /**
  * repeated string command_args = 4;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<string>}
  */
 proto.scaii.common.RpcConfig.prototype.getCommandArgsList = function() {
-  return /** @type {!Array.<string>} */ (jspb.Message.getRepeatedField(this, 4));
+  return /** @type {!Array.<string>} */ (jspb.Message.getField(this, 4));
 };
 
 
@@ -1776,7 +1760,6 @@ proto.scaii.common.BackendCfg.prototype.toObject = function(opt_includeInstance)
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.BackendCfg} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.BackendCfg.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -1851,7 +1834,6 @@ proto.scaii.common.BackendCfg.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.BackendCfg} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.BackendCfg.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -1999,7 +1981,6 @@ proto.scaii.common.AgentCfg.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.AgentCfg} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.AgentCfg.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -2069,7 +2050,6 @@ proto.scaii.common.AgentCfg.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.AgentCfg} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.AgentCfg.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -2179,7 +2159,6 @@ proto.scaii.common.ModuleCfg.prototype.toObject = function(opt_includeInstance) 
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ModuleCfg} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ModuleCfg.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -2249,7 +2228,6 @@ proto.scaii.common.ModuleCfg.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.ModuleCfg} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ModuleCfg.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -2386,7 +2364,6 @@ proto.scaii.common.SupportedBehavior.prototype.toObject = function(opt_includeIn
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.SupportedBehavior} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.SupportedBehavior.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -2469,7 +2446,6 @@ proto.scaii.common.SupportedBehavior.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.SupportedBehavior} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.SupportedBehavior.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -2633,7 +2609,6 @@ proto.scaii.common.BackendSupported.prototype.toObject = function(opt_includeIns
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.BackendSupported} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.BackendSupported.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -2708,7 +2683,6 @@ proto.scaii.common.BackendSupported.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.BackendSupported} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.BackendSupported.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -2836,7 +2810,6 @@ proto.scaii.common.AgentSupported.prototype.toObject = function(opt_includeInsta
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.AgentSupported} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.AgentSupported.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -2907,7 +2880,6 @@ proto.scaii.common.AgentSupported.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.AgentSupported} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.AgentSupported.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -2989,7 +2961,6 @@ proto.scaii.common.ModuleSupported.prototype.toObject = function(opt_includeInst
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ModuleSupported} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ModuleSupported.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -3060,7 +3031,6 @@ proto.scaii.common.ModuleSupported.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.ModuleSupported} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ModuleSupported.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -3142,7 +3112,6 @@ proto.scaii.common.EnvDescription.prototype.toObject = function(opt_includeInsta
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.EnvDescription} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.EnvDescription.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -3232,7 +3201,6 @@ proto.scaii.common.EnvDescription.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.EnvDescription} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.EnvDescription.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -3380,7 +3348,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<number>}
  * @const
  */
-proto.scaii.common.VizInit.repeatedFields_ = [5];
+proto.scaii.common.VizInit.repeatedFields_ = [5,6];
 
 
 
@@ -3407,7 +3375,6 @@ proto.scaii.common.VizInit.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.VizInit} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.VizInit.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -3416,7 +3383,8 @@ proto.scaii.common.VizInit.toObject = function(includeInstance, msg) {
     gameboardWidth: jspb.Message.getField(msg, 3),
     gameboardHeight: jspb.Message.getField(msg, 4),
     explanationsList: jspb.Message.toObjectList(msg.getExplanationsList(),
-    proto.scaii.common.ExplanationPoint.toObject, includeInstance)
+    proto.scaii.common.ExplanationPoint.toObject, includeInstance),
+    rewardTypesList: jspb.Message.getField(msg, 6)
   };
 
   if (includeInstance) {
@@ -3474,6 +3442,10 @@ proto.scaii.common.VizInit.deserializeBinaryFromReader = function(msg, reader) {
       reader.readMessage(value,proto.scaii.common.ExplanationPoint.deserializeBinaryFromReader);
       msg.addExplanations(value);
       break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addRewardTypes(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -3499,7 +3471,6 @@ proto.scaii.common.VizInit.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.VizInit} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.VizInit.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -3537,6 +3508,13 @@ proto.scaii.common.VizInit.serializeBinaryToWriter = function(message, writer) {
       5,
       f,
       proto.scaii.common.ExplanationPoint.serializeBinaryToWriter
+    );
+  }
+  f = message.getRewardTypesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      6,
+      f
     );
   }
 };
@@ -3662,6 +3640,8 @@ proto.scaii.common.VizInit.prototype.hasGameboardHeight = function() {
 
 /**
  * repeated ExplanationPoint explanations = 5;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<!proto.scaii.common.ExplanationPoint>}
  */
 proto.scaii.common.VizInit.prototype.getExplanationsList = function() {
@@ -3688,6 +3668,37 @@ proto.scaii.common.VizInit.prototype.addExplanations = function(opt_value, opt_i
 
 proto.scaii.common.VizInit.prototype.clearExplanationsList = function() {
   this.setExplanationsList([]);
+};
+
+
+/**
+ * repeated string reward_types = 6;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
+ * @return {!Array.<string>}
+ */
+proto.scaii.common.VizInit.prototype.getRewardTypesList = function() {
+  return /** @type {!Array.<string>} */ (jspb.Message.getField(this, 6));
+};
+
+
+/** @param {!Array.<string>} value */
+proto.scaii.common.VizInit.prototype.setRewardTypesList = function(value) {
+  jspb.Message.setField(this, 6, value || []);
+};
+
+
+/**
+ * @param {!string} value
+ * @param {number=} opt_index
+ */
+proto.scaii.common.VizInit.prototype.addRewardTypes = function(value, opt_index) {
+  jspb.Message.addToRepeatedField(this, 6, value, opt_index);
+};
+
+
+proto.scaii.common.VizInit.prototype.clearRewardTypesList = function() {
+  this.setRewardTypesList([]);
 };
 
 
@@ -3741,7 +3752,6 @@ proto.scaii.common.ExplanationPoints.prototype.toObject = function(opt_includeIn
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ExplanationPoints} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ExplanationPoints.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -3813,7 +3823,6 @@ proto.scaii.common.ExplanationPoints.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.ExplanationPoints} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ExplanationPoints.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -3830,6 +3839,8 @@ proto.scaii.common.ExplanationPoints.serializeBinaryToWriter = function(message,
 
 /**
  * repeated ExplanationPoint explanation_points = 1;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<!proto.scaii.common.ExplanationPoint>}
  */
 proto.scaii.common.ExplanationPoints.prototype.getExplanationPointsList = function() {
@@ -3902,7 +3913,6 @@ proto.scaii.common.ExplanationPoint.prototype.toObject = function(opt_includeIns
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ExplanationPoint} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ExplanationPoint.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -3999,7 +4009,6 @@ proto.scaii.common.ExplanationPoint.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.ExplanationPoint} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ExplanationPoint.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -4276,7 +4285,6 @@ proto.scaii.common.Layer.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Layer} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Layer.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -4361,7 +4369,6 @@ proto.scaii.common.Layer.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.Layer} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Layer.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -4427,6 +4434,8 @@ proto.scaii.common.Layer.prototype.hasName = function() {
 
 /**
  * repeated double cells = 2;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<number>}
  */
 proto.scaii.common.Layer.prototype.getCellsList = function() {
@@ -4562,7 +4571,6 @@ proto.scaii.common.Layers.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Layers} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Layers.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -4634,7 +4642,6 @@ proto.scaii.common.Layers.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.Layers} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Layers.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -4651,6 +4658,8 @@ proto.scaii.common.Layers.serializeBinaryToWriter = function(message, writer) {
 
 /**
  * repeated Layer layers = 1;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<!proto.scaii.common.Layer>}
  */
 proto.scaii.common.Layers.prototype.getLayersList = function() {
@@ -4723,7 +4732,6 @@ proto.scaii.common.Saliency.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Saliency} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Saliency.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -4795,7 +4803,6 @@ proto.scaii.common.Saliency.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.Saliency} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Saliency.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -4874,7 +4881,6 @@ proto.scaii.common.BarChart.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.BarChart} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.BarChart.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -4961,7 +4967,6 @@ proto.scaii.common.BarChart.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.BarChart} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.BarChart.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -4999,6 +5004,8 @@ proto.scaii.common.BarChart.serializeBinaryToWriter = function(message, writer) 
 
 /**
  * repeated BarGroup groups = 1;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<!proto.scaii.common.BarGroup>}
  */
 proto.scaii.common.BarChart.prototype.getGroupsList = function() {
@@ -5165,7 +5172,6 @@ proto.scaii.common.BarGroup.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.BarGroup} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.BarGroup.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -5252,7 +5258,6 @@ proto.scaii.common.BarGroup.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.BarGroup} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.BarGroup.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -5319,6 +5324,8 @@ proto.scaii.common.BarGroup.prototype.hasValue = function() {
 
 /**
  * repeated Bar bars = 2;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<!proto.scaii.common.Bar>}
  */
 proto.scaii.common.BarGroup.prototype.getBarsList = function() {
@@ -5449,7 +5456,6 @@ proto.scaii.common.Bar.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Bar} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Bar.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -5529,7 +5535,6 @@ proto.scaii.common.Bar.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.Bar} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Bar.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -5694,12 +5699,12 @@ proto.scaii.common.Viz.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Viz} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Viz.toObject = function(includeInstance, msg) {
   var f, obj = {
     entitiesList: jspb.Message.toObjectList(msg.getEntitiesList(),
-    proto.scaii.common.Entity.toObject, includeInstance)
+    proto.scaii.common.Entity.toObject, includeInstance),
+    cumulativeRewardsMap: (f = msg.getCumulativeRewardsMap()) ? f.toObject(includeInstance, undefined) : []
   };
 
   if (includeInstance) {
@@ -5741,6 +5746,12 @@ proto.scaii.common.Viz.deserializeBinaryFromReader = function(msg, reader) {
       reader.readMessage(value,proto.scaii.common.Entity.deserializeBinaryFromReader);
       msg.addEntities(value);
       break;
+    case 2:
+      var value = msg.getCumulativeRewardsMap();
+      reader.readMessage(value, function(message, reader) {
+        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString);
+         });
+      break;
     default:
       reader.skipField();
       break;
@@ -5766,7 +5777,6 @@ proto.scaii.common.Viz.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.Viz} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Viz.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -5778,11 +5788,17 @@ proto.scaii.common.Viz.serializeBinaryToWriter = function(message, writer) {
       proto.scaii.common.Entity.serializeBinaryToWriter
     );
   }
+  f = message.getCumulativeRewardsMap(true);
+  if (f && f.getLength() > 0) {
+    f.serializeBinary(2, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
+  }
 };
 
 
 /**
  * repeated Entity entities = 1;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<!proto.scaii.common.Entity>}
  */
 proto.scaii.common.Viz.prototype.getEntitiesList = function() {
@@ -5809,6 +5825,24 @@ proto.scaii.common.Viz.prototype.addEntities = function(opt_value, opt_index) {
 
 proto.scaii.common.Viz.prototype.clearEntitiesList = function() {
   this.setEntitiesList([]);
+};
+
+
+/**
+ * map<string, string> cumulative_rewards = 2;
+ * @param {boolean=} opt_noLazyCreate Do not create the map if
+ * empty, instead returning `undefined`
+ * @return {!jspb.Map<string,string>}
+ */
+proto.scaii.common.Viz.prototype.getCumulativeRewardsMap = function(opt_noLazyCreate) {
+  return /** @type {!jspb.Map<string,string>} */ (
+      jspb.Message.getMapField(this, 2, opt_noLazyCreate,
+      null));
+};
+
+
+proto.scaii.common.Viz.prototype.clearCumulativeRewardsMap = function() {
+  this.getCumulativeRewardsMap().clear();
 };
 
 
@@ -5862,7 +5896,6 @@ proto.scaii.common.ChartInfo.prototype.toObject = function(opt_includeInstance) 
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ChartInfo} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ChartInfo.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -5955,7 +5988,6 @@ proto.scaii.common.ChartInfo.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.ChartInfo} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ChartInfo.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -6118,6 +6150,8 @@ proto.scaii.common.ChartInfo.prototype.hasActions = function() {
 
 /**
  * repeated ChartValueVector value_vectors = 5;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<!proto.scaii.common.ChartValueVector>}
  */
 proto.scaii.common.ChartInfo.prototype.getValueVectorsList = function() {
@@ -6197,12 +6231,11 @@ proto.scaii.common.ChartActions.prototype.toObject = function(opt_includeInstanc
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ChartActions} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ChartActions.toObject = function(includeInstance, msg) {
   var f, obj = {
     actionsLabel: jspb.Message.getField(msg, 1),
-    actionNamesList: jspb.Message.getRepeatedField(msg, 2)
+    actionNamesList: jspb.Message.getField(msg, 2)
   };
 
   if (includeInstance) {
@@ -6272,7 +6305,6 @@ proto.scaii.common.ChartActions.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.ChartActions} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ChartActions.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -6324,10 +6356,12 @@ proto.scaii.common.ChartActions.prototype.hasActionsLabel = function() {
 
 /**
  * repeated string action_names = 2;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<string>}
  */
 proto.scaii.common.ChartActions.prototype.getActionNamesList = function() {
-  return /** @type {!Array.<string>} */ (jspb.Message.getRepeatedField(this, 2));
+  return /** @type {!Array.<string>} */ (jspb.Message.getField(this, 2));
 };
 
 
@@ -6401,7 +6435,6 @@ proto.scaii.common.ChartValueVector.prototype.toObject = function(opt_includeIns
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ChartValueVector} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ChartValueVector.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -6476,7 +6509,6 @@ proto.scaii.common.ChartValueVector.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.ChartValueVector} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ChartValueVector.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -6528,6 +6560,8 @@ proto.scaii.common.ChartValueVector.prototype.hasLabel = function() {
 
 /**
  * repeated double action_values = 2;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<number>}
  */
 proto.scaii.common.ChartValueVector.prototype.getActionValuesList = function() {
@@ -6605,7 +6639,6 @@ proto.scaii.common.Entity.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Entity} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Entity.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -6735,7 +6768,6 @@ proto.scaii.common.Entity.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.Entity} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Entity.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -6857,6 +6889,8 @@ proto.scaii.common.Entity.prototype.hasPos = function() {
 
 /**
  * repeated Shape shapes = 3;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<!proto.scaii.common.Shape>}
  */
 proto.scaii.common.Entity.prototype.getShapesList = function() {
@@ -7068,7 +7102,6 @@ proto.scaii.common.Pos.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Pos} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Pos.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -7143,7 +7176,6 @@ proto.scaii.common.Pos.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.Pos} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Pos.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -7265,7 +7297,6 @@ proto.scaii.common.Color.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Color} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Color.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -7350,7 +7381,6 @@ proto.scaii.common.Color.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.Color} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Color.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -7544,7 +7574,6 @@ proto.scaii.common.Triangle.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Triangle} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Triangle.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -7614,7 +7643,6 @@ proto.scaii.common.Triangle.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.Triangle} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Triangle.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -7700,7 +7728,6 @@ proto.scaii.common.Rect.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Rect} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Rect.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -7775,7 +7802,6 @@ proto.scaii.common.Rect.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.Rect} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Rect.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -7897,7 +7923,6 @@ proto.scaii.common.Shape.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Shape} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Shape.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -8012,7 +8037,6 @@ proto.scaii.common.Shape.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.Shape} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Shape.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -8405,7 +8429,6 @@ proto.scaii.common.MultiMessage.prototype.toObject = function(opt_includeInstanc
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.MultiMessage} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.MultiMessage.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -8477,7 +8500,6 @@ proto.scaii.common.MultiMessage.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.MultiMessage} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.MultiMessage.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -8494,6 +8516,8 @@ proto.scaii.common.MultiMessage.serializeBinaryToWriter = function(message, writ
 
 /**
  * repeated ScaiiPacket packets = 1;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<!proto.scaii.common.ScaiiPacket>}
  */
 proto.scaii.common.MultiMessage.prototype.getPacketsList = function() {
@@ -8616,7 +8640,6 @@ proto.scaii.common.ScaiiPacket.prototype.toObject = function(opt_includeInstance
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ScaiiPacket} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ScaiiPacket.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -8846,7 +8869,6 @@ proto.scaii.common.ScaiiPacket.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.ScaiiPacket} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -9960,7 +9982,6 @@ proto.scaii.common.Ack.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Ack} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Ack.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -10026,7 +10047,6 @@ proto.scaii.common.Ack.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.Ack} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Ack.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -10106,7 +10126,6 @@ proto.scaii.common.Endpoint.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Endpoint} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Endpoint.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -10207,7 +10226,6 @@ proto.scaii.common.Endpoint.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.Endpoint} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Endpoint.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -10485,7 +10503,6 @@ proto.scaii.common.ReplayStep.prototype.toObject = function(opt_includeInstance)
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ReplayStep} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ReplayStep.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -10551,7 +10568,6 @@ proto.scaii.common.ReplayStep.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.ReplayStep} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ReplayStep.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -10601,7 +10617,6 @@ proto.scaii.common.BackendEndpoint.prototype.toObject = function(opt_includeInst
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.BackendEndpoint} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.BackendEndpoint.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -10667,7 +10682,6 @@ proto.scaii.common.BackendEndpoint.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.BackendEndpoint} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.BackendEndpoint.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -10717,7 +10731,6 @@ proto.scaii.common.AgentEndpoint.prototype.toObject = function(opt_includeInstan
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.AgentEndpoint} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.AgentEndpoint.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -10783,7 +10796,6 @@ proto.scaii.common.AgentEndpoint.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.AgentEndpoint} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.AgentEndpoint.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -10833,7 +10845,6 @@ proto.scaii.common.CoreEndpoint.prototype.toObject = function(opt_includeInstanc
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.CoreEndpoint} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.CoreEndpoint.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -10899,7 +10910,6 @@ proto.scaii.common.CoreEndpoint.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.CoreEndpoint} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.CoreEndpoint.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -10949,7 +10959,6 @@ proto.scaii.common.ModuleEndpoint.prototype.toObject = function(opt_includeInsta
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ModuleEndpoint} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ModuleEndpoint.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -11019,7 +11028,6 @@ proto.scaii.common.ModuleEndpoint.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.ModuleEndpoint} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ModuleEndpoint.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -11105,7 +11113,6 @@ proto.scaii.common.ReplayEndpoint.prototype.toObject = function(opt_includeInsta
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ReplayEndpoint} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ReplayEndpoint.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -11171,7 +11178,6 @@ proto.scaii.common.ReplayEndpoint.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.ReplayEndpoint} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ReplayEndpoint.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -11221,7 +11227,6 @@ proto.scaii.common.RecorderEndpoint.prototype.toObject = function(opt_includeIns
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.RecorderEndpoint} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.RecorderEndpoint.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -11287,7 +11292,6 @@ proto.scaii.common.RecorderEndpoint.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.RecorderEndpoint} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.RecorderEndpoint.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -11344,12 +11348,11 @@ proto.scaii.common.State.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.State} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.State.toObject = function(includeInstance, msg) {
   var f, obj = {
     featuresList: jspb.Message.getRepeatedFloatingPointField(msg, 1),
-    featureArrayDimsList: jspb.Message.getRepeatedField(msg, 2),
+    featureArrayDimsList: jspb.Message.getField(msg, 2),
     reward: jspb.Message.getOptionalFloatingPointField(msg, 3),
     expandedState: msg.getExpandedState_asB64(),
     typedRewardMap: (f = msg.getTypedRewardMap()) ? f.toObject(includeInstance, undefined) : [],
@@ -11441,7 +11444,6 @@ proto.scaii.common.State.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.State} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.State.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -11489,6 +11491,8 @@ proto.scaii.common.State.serializeBinaryToWriter = function(message, writer) {
 
 /**
  * repeated double features = 1;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<number>}
  */
 proto.scaii.common.State.prototype.getFeaturesList = function() {
@@ -11518,10 +11522,12 @@ proto.scaii.common.State.prototype.clearFeaturesList = function() {
 
 /**
  * repeated uint32 feature_array_dims = 2;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<number>}
  */
 proto.scaii.common.State.prototype.getFeatureArrayDimsList = function() {
-  return /** @type {!Array.<number>} */ (jspb.Message.getRepeatedField(this, 2));
+  return /** @type {!Array.<number>} */ (jspb.Message.getField(this, 2));
 };
 
 
@@ -11726,11 +11732,10 @@ proto.scaii.common.Action.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Action} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Action.toObject = function(includeInstance, msg) {
   var f, obj = {
-    discreteActionsList: jspb.Message.getRepeatedField(msg, 1),
+    discreteActionsList: jspb.Message.getField(msg, 1),
     continuousActionsList: jspb.Message.getRepeatedFloatingPointField(msg, 2),
     alternateActions: msg.getAlternateActions_asB64(),
     explanation: (f = msg.getExplanation()) && proto.scaii.common.ExplanationPoint.toObject(includeInstance, f)
@@ -11812,7 +11817,6 @@ proto.scaii.common.Action.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.Action} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Action.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -11850,10 +11854,12 @@ proto.scaii.common.Action.serializeBinaryToWriter = function(message, writer) {
 
 /**
  * repeated int32 discrete_actions = 1;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<number>}
  */
 proto.scaii.common.Action.prototype.getDiscreteActionsList = function() {
-  return /** @type {!Array.<number>} */ (jspb.Message.getRepeatedField(this, 1));
+  return /** @type {!Array.<number>} */ (jspb.Message.getField(this, 1));
 };
 
 
@@ -11879,6 +11885,8 @@ proto.scaii.common.Action.prototype.clearDiscreteActionsList = function() {
 
 /**
  * repeated double continuous_actions = 2;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<number>}
  */
 proto.scaii.common.Action.prototype.getContinuousActionsList = function() {
@@ -12032,7 +12040,6 @@ proto.scaii.common.Error.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Error} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Error.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -12112,7 +12119,6 @@ proto.scaii.common.Error.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.Error} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Error.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -12296,7 +12302,6 @@ proto.scaii.common.Other.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Other} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Other.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -12371,7 +12376,6 @@ proto.scaii.common.Other.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.Other} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Other.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -12517,7 +12521,6 @@ proto.scaii.common.SerializationRequest.prototype.toObject = function(opt_includ
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.SerializationRequest} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.SerializationRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -12587,7 +12590,6 @@ proto.scaii.common.SerializationRequest.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.SerializationRequest} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.SerializationRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -12673,7 +12675,6 @@ proto.scaii.common.SerializationResponse.prototype.toObject = function(opt_inclu
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.SerializationResponse} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.SerializationResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -12748,7 +12749,6 @@ proto.scaii.common.SerializationResponse.prototype.serializeBinary = function() 
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.SerializationResponse} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.SerializationResponse.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -12901,12 +12901,11 @@ proto.scaii.common.UserCommand.prototype.toObject = function(opt_includeInstance
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.UserCommand} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.UserCommand.toObject = function(includeInstance, msg) {
   var f, obj = {
     commandType: jspb.Message.getField(msg, 1),
-    argsList: jspb.Message.getRepeatedField(msg, 2)
+    argsList: jspb.Message.getField(msg, 2)
   };
 
   if (includeInstance) {
@@ -12976,7 +12975,6 @@ proto.scaii.common.UserCommand.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.UserCommand} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.UserCommand.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -13045,10 +13043,12 @@ proto.scaii.common.UserCommand.prototype.hasCommandType = function() {
 
 /**
  * repeated string args = 2;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<string>}
  */
 proto.scaii.common.UserCommand.prototype.getArgsList = function() {
-  return /** @type {!Array.<string>} */ (jspb.Message.getRepeatedField(this, 2));
+  return /** @type {!Array.<string>} */ (jspb.Message.getField(this, 2));
 };
 
 
@@ -13122,11 +13122,10 @@ proto.scaii.common.TestControl.prototype.toObject = function(opt_includeInstance
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.TestControl} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.TestControl.toObject = function(includeInstance, msg) {
   var f, obj = {
-    argsList: jspb.Message.getRepeatedField(msg, 1)
+    argsList: jspb.Message.getField(msg, 1)
   };
 
   if (includeInstance) {
@@ -13192,7 +13191,6 @@ proto.scaii.common.TestControl.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.TestControl} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.TestControl.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -13208,10 +13206,12 @@ proto.scaii.common.TestControl.serializeBinaryToWriter = function(message, write
 
 /**
  * repeated string args = 1;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<string>}
  */
 proto.scaii.common.TestControl.prototype.getArgsList = function() {
-  return /** @type {!Array.<string>} */ (jspb.Message.getRepeatedField(this, 1));
+  return /** @type {!Array.<string>} */ (jspb.Message.getField(this, 1));
 };
 
 
@@ -13278,7 +13278,6 @@ proto.scaii.common.RecorderStep.prototype.toObject = function(opt_includeInstanc
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.RecorderStep} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.RecorderStep.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -13360,7 +13359,6 @@ proto.scaii.common.RecorderStep.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.RecorderStep} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.RecorderStep.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -13531,7 +13529,6 @@ proto.scaii.common.RecorderConfig.prototype.toObject = function(opt_includeInsta
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.RecorderConfig} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.RecorderConfig.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -13613,7 +13610,6 @@ proto.scaii.common.RecorderConfig.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.RecorderConfig} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.RecorderConfig.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -13644,6 +13640,8 @@ proto.scaii.common.RecorderConfig.serializeBinaryToWriter = function(message, wr
 
 /**
  * repeated ScaiiPacket pkts = 1;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<!proto.scaii.common.ScaiiPacket>}
  */
 proto.scaii.common.RecorderConfig.prototype.getPktsList = function() {
@@ -13776,7 +13774,6 @@ proto.scaii.common.GameComplete.prototype.toObject = function(opt_includeInstanc
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.GameComplete} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.GameComplete.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -13842,7 +13839,6 @@ proto.scaii.common.GameComplete.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.GameComplete} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.GameComplete.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -13899,11 +13895,10 @@ proto.scaii.common.ReplayChoiceConfig.prototype.toObject = function(opt_includeI
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ReplayChoiceConfig} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ReplayChoiceConfig.toObject = function(includeInstance, msg) {
   var f, obj = {
-    replayFilenamesList: jspb.Message.getRepeatedField(msg, 1)
+    replayFilenamesList: jspb.Message.getField(msg, 1)
   };
 
   if (includeInstance) {
@@ -13969,7 +13964,6 @@ proto.scaii.common.ReplayChoiceConfig.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.ReplayChoiceConfig} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ReplayChoiceConfig.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -13985,10 +13979,12 @@ proto.scaii.common.ReplayChoiceConfig.serializeBinaryToWriter = function(message
 
 /**
  * repeated string replay_filenames = 1;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<string>}
  */
 proto.scaii.common.ReplayChoiceConfig.prototype.getReplayFilenamesList = function() {
-  return /** @type {!Array.<string>} */ (jspb.Message.getRepeatedField(this, 1));
+  return /** @type {!Array.<string>} */ (jspb.Message.getField(this, 1));
 };
 
 
@@ -14062,14 +14058,13 @@ proto.scaii.common.ReplaySessionConfig.prototype.toObject = function(opt_include
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ReplaySessionConfig} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ReplaySessionConfig.toObject = function(includeInstance, msg) {
   var f, obj = {
     stepCount: jspb.Message.getField(msg, 1),
-    explanationStepsList: jspb.Message.getRepeatedField(msg, 2),
-    explanationTitlesList: jspb.Message.getRepeatedField(msg, 3),
-    chartTitlesList: jspb.Message.getRepeatedField(msg, 4)
+    explanationStepsList: jspb.Message.getField(msg, 2),
+    explanationTitlesList: jspb.Message.getField(msg, 3),
+    chartTitlesList: jspb.Message.getField(msg, 4)
   };
 
   if (includeInstance) {
@@ -14147,7 +14142,6 @@ proto.scaii.common.ReplaySessionConfig.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.ReplaySessionConfig} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ReplaySessionConfig.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -14213,10 +14207,12 @@ proto.scaii.common.ReplaySessionConfig.prototype.hasStepCount = function() {
 
 /**
  * repeated uint32 explanation_steps = 2;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<number>}
  */
 proto.scaii.common.ReplaySessionConfig.prototype.getExplanationStepsList = function() {
-  return /** @type {!Array.<number>} */ (jspb.Message.getRepeatedField(this, 2));
+  return /** @type {!Array.<number>} */ (jspb.Message.getField(this, 2));
 };
 
 
@@ -14242,10 +14238,12 @@ proto.scaii.common.ReplaySessionConfig.prototype.clearExplanationStepsList = fun
 
 /**
  * repeated string explanation_titles = 3;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<string>}
  */
 proto.scaii.common.ReplaySessionConfig.prototype.getExplanationTitlesList = function() {
-  return /** @type {!Array.<string>} */ (jspb.Message.getRepeatedField(this, 3));
+  return /** @type {!Array.<string>} */ (jspb.Message.getField(this, 3));
 };
 
 
@@ -14271,10 +14269,12 @@ proto.scaii.common.ReplaySessionConfig.prototype.clearExplanationTitlesList = fu
 
 /**
  * repeated string chart_titles = 4;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<string>}
  */
 proto.scaii.common.ReplaySessionConfig.prototype.getChartTitlesList = function() {
-  return /** @type {!Array.<string>} */ (jspb.Message.getRepeatedField(this, 4));
+  return /** @type {!Array.<string>} */ (jspb.Message.getField(this, 4));
 };
 
 
@@ -14341,7 +14341,6 @@ proto.scaii.common.Record.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.Record} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Record.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -14411,7 +14410,6 @@ proto.scaii.common.Record.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.Record} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.Record.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -14497,7 +14495,6 @@ proto.scaii.common.ExplanationDetails.prototype.toObject = function(opt_includeI
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ExplanationDetails} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ExplanationDetails.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -14579,7 +14576,6 @@ proto.scaii.common.ExplanationDetails.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.ExplanationDetails} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ExplanationDetails.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -14748,11 +14744,10 @@ proto.scaii.common.ReplayControl.prototype.toObject = function(opt_includeInstan
  *     http://goto/soy-param-migration
  * @param {!proto.scaii.common.ReplayControl} msg The msg instance to transform.
  * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ReplayControl.toObject = function(includeInstance, msg) {
   var f, obj = {
-    commandList: jspb.Message.getRepeatedField(msg, 1)
+    commandList: jspb.Message.getField(msg, 1)
   };
 
   if (includeInstance) {
@@ -14818,7 +14813,6 @@ proto.scaii.common.ReplayControl.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.scaii.common.ReplayControl} message
  * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.scaii.common.ReplayControl.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -14834,10 +14828,12 @@ proto.scaii.common.ReplayControl.serializeBinaryToWriter = function(message, wri
 
 /**
  * repeated string command = 1;
+ * If you change this array by adding, removing or replacing elements, or if you
+ * replace the array itself, then you must call the setter to update it.
  * @return {!Array.<string>}
  */
 proto.scaii.common.ReplayControl.prototype.getCommandList = function() {
-  return /** @type {!Array.<string>} */ (jspb.Message.getRepeatedField(this, 1));
+  return /** @type {!Array.<string>} */ (jspb.Message.getField(this, 1));
 };
 
 

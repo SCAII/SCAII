@@ -58,10 +58,13 @@ enum PacketRetrievalModeForJump {
 //
 #[allow(unused_assignments)]
 impl ReplaySequencer {
-    pub fn new(replay_info: &Vec<ReplayAction>, is_dummy: bool) -> Result<ReplaySequencer, Box<Error>> {
+    pub fn new(
+        replay_info: &Vec<ReplayAction>,
+        is_dummy: bool,
+    ) -> Result<ReplaySequencer, Box<Error>> {
         use super::ReplayError;
         if is_dummy {
-            let  map: BTreeMap<u32, ScaiiPacket> = BTreeMap::new();
+            let map: BTreeMap<u32, ScaiiPacket> = BTreeMap::new();
             Ok(ReplaySequencer {
                 index: 0,
                 scaii_pkts: Vec::new(),
@@ -70,8 +73,7 @@ impl ReplaySequencer {
                 mode_transition_index: None,
                 rewound_to: 0,
             })
-        }
-        else {
+        } else {
             let keyframe_indices: Vec<u32> = replay_util::get_keframe_indices(replay_info);
             let mut mode_transition_index: Option<u32> = Option::None;
             if keyframe_indices.len() == 0 {
@@ -103,7 +105,6 @@ impl ReplaySequencer {
                 rewound_to: 0,
             })
         }
-        
     }
 
     pub fn print_length(&mut self) {

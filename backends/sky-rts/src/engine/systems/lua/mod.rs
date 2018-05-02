@@ -9,8 +9,8 @@ use std::fmt::Debug;
 
 use rand::Isaac64Rng;
 use engine::components::{DealtDamage, Death, Delete, FactionId, Hp, HpChange, Spawned, UnitTypeTag};
-use engine::resources::{MaxStep, Reward, RewardTypes, Skip, SpawnBuffer, Step, Terminal,
-                        UnitTypeMap};
+use engine::resources::{CumReward, MaxStep, Reward, RewardTypes, Skip, SpawnBuffer, Step,
+                        Terminal, UnitTypeMap};
 
 pub(crate) mod userdata;
 
@@ -36,6 +36,7 @@ pub struct LuaSystemData<'a> {
     spawn_buf: FetchMut<'a, SpawnBuffer>,
     rng: FetchMut<'a, Isaac64Rng>,
     delete: WriteStorage<'a, Delete>,
+    cum_reward: FetchMut<'a, CumReward>,
 }
 
 pub struct LuaSystem {
@@ -63,7 +64,8 @@ impl<'a> System<'a> for LuaSystem {
         ).join()
         {
             let killer_faction = sys_data.faction.get(death.killer).unwrap();
-            let friendly_kill = faction == killer_faction;
+            let killer_tag = sys_data.tag.get(death.killer).unwrap();
+            let killer_hp = sys_data.hp.get(death.killer).unwrap();
 
             let unit1 = UserDataUnit {
                 faction: *faction,
@@ -72,11 +74,11 @@ impl<'a> System<'a> for LuaSystem {
             };
             let unit2 = UserDataUnit {
                 faction: *killer_faction,
-                u_type: tag.0.clone(),
-                hp: *hp,
+                u_type: killer_tag.0.clone(),
+                hp: *killer_hp,
             };
 
-            self.lua.globals().set("__sky_u1", unit1).unwrap();
+            self.lua.globals().set("__sky_u1", unit1.clone()).unwrap();
 
             self.lua.globals().set("__sky_u2", unit2).unwrap();
 
@@ -87,20 +89,20 @@ impl<'a> System<'a> for LuaSystem {
                 )
                 .unwrap();
 
-            let u_type = sys_data.unit_type.tag_map.get(&tag.0).unwrap();
+            let dead_type = sys_data.unit_type.tag_map.get(&unit1.u_type).unwrap();
 
-            if (killer_faction.0 != 0 || friendly_kill) && u_type.death_penalty != 0.0 {
+            if faction.0 == 0 && dead_type.death_penalty != 0.0 {
                 *sys_data
                     .reward
                     .0
-                    .entry(u_type.death_type.clone())
-                    .or_insert(0.0) += u_type.death_penalty;
-            } else if u_type.kill_reward != 0.0 {
+                    .entry(dead_type.death_type.clone())
+                    .or_insert(0.0) += dead_type.death_penalty;
+            } else if faction.0 == 1 && killer_faction.0 == 0 && dead_type.kill_reward != 0.0 {
                 *sys_data
                     .reward
                     .0
-                    .entry(u_type.kill_type.clone())
-                    .or_insert(0.0) += u_type.kill_reward;
+                    .entry(dead_type.kill_type.clone())
+                    .or_insert(0.0) += dead_type.kill_reward;
             }
         }
 
@@ -116,7 +118,7 @@ impl<'a> System<'a> for LuaSystem {
                 u_type: u_type.0.clone(),
                 hp: *hp,
             };
-            println!("LUASYS: Spawned {:?} {:?}", faction, u_type);
+
             self.lua.globals().set("__sky_u1", unit).unwrap();
             self.lua
                 .exec::<()>("on_spawn(__sky_world, __sky_u1)", Some("calling on_spawn"))
@@ -130,17 +132,25 @@ impl<'a> System<'a> for LuaSystem {
             let u_type = sys_data.unit_type.tag_map.get(&tag.0).unwrap();
 
             if u_type.damage_deal_reward.is_none() {
+                let enemy_dmg: f64 = dmg_dealt
+                    .by_source
+                    .iter()
+                    .filter_map(|d| if (d.1).0 != 0 { Some(d.0) } else { None })
+                    .sum();
+
                 *sys_data
                     .reward
                     .0
                     .entry(u_type.dmg_deal_type.clone())
-                    .or_insert(0.0) += dmg_dealt.0
+                    .or_insert(0.0) += enemy_dmg
             } else if u_type.damage_deal_reward.unwrap() != 0.0 {
+                let enemy_dmg_ct = dmg_dealt.by_source.iter().filter(|d| (d.1).0 != 0).count();
+
                 *sys_data
                     .reward
                     .0
                     .entry(u_type.dmg_deal_type.clone())
-                    .or_insert(0.0) += u_type.damage_deal_reward.unwrap();
+                    .or_insert(0.0) += (enemy_dmg_ct as f64) * u_type.damage_deal_reward.unwrap();
             }
         }
 
@@ -212,6 +222,14 @@ impl<'a> System<'a> for LuaSystem {
                     .exec::<()>(src, Some("Skip lua"))
                     .expect("Could not execute lua to skip current state");
             }
+        }
+
+        for (r_type, reward) in sys_data.reward.0.iter() {
+            *sys_data
+                .cum_reward
+                .0
+                .get_mut(r_type)
+                .expect(&format!("No r_type named {} ?", r_type)) += reward;
         }
     }
 }
@@ -327,7 +345,8 @@ impl LuaSystem {
 
     pub fn load_scenario(&mut self, world: &mut World) -> Result<(), Box<Error>> {
         use engine::components::{FactionId, Shape};
-        use engine::resources::{MaxStep, Player, RewardTypes, UnitType, UnitTypeMap, PLAYER_COLORS};
+        use engine::resources::{CumReward, MaxStep, Player, RewardTypes, UnitType, UnitTypeMap,
+                                PLAYER_COLORS};
         use std::collections::HashSet;
 
         let table: Table = self.lua
@@ -548,6 +567,15 @@ impl LuaSystem {
 
                 u_type_map.typ_ids.insert(concrete.tag.clone(), i);
                 u_type_map.tag_map.insert(concrete.tag.clone(), concrete);
+            }
+
+            let cum_reward = &mut world.write_resource::<CumReward>().0;
+            // IsEmpty is a safety hatch for deserializing, we won't overwrite it
+            // if there's info there
+            if cum_reward.is_empty() {
+                for r_type in r_types.iter() {
+                    cum_reward.insert(r_type.clone(), 0.0);
+                }
             }
 
             world.write_resource::<RewardTypes>().0 = r_types;
