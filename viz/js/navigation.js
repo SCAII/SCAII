@@ -4,7 +4,46 @@ var userInputBlocked = false;
 function paintProgress(value) {
 	var progressString = "" + value;
 	$("#game-progress").attr("value", progressString);
+	showPositionOnTimeline(value);
 }
+
+function showPositionOnTimeline(value) {
+	drawExplanationTimeline();
+	var widthOfTimeline = expl_ctrl_canvas.width - 2*timelineMargin;
+	var x = timelineMargin + (value / 100) * widthOfTimeline;
+	var y = explanationControlYPosition;
+	
+	var xLeft = x - 1;
+	var xRight = x + 1;
+	var yBottom = y + 30;
+	var yTop = y - 30;
+	var ctx = expl_ctrl_ctx;
+	ctx.beginPath();
+	
+	ctx.fillStyle = 'darkgrey';
+	ctx.lineWidth = 1;
+	ctx.strokeStyle = 'darkgray';
+	var fudgeFactor = 4;
+	var upperLeftVertexX = xLeft - fudgeFactor;
+	var upperLeftVertexY = yTop;
+	var upperRightVertexX = xRight - fudgeFactor;
+	var upperRightVertexY = yTop;
+	var lowerLeftVertexX = xLeft - fudgeFactor ;
+	var lowerLeftVertexY =  yBottom;
+	var lowerRightVertexX = xRight - fudgeFactor;
+	var lowerRightVertexY = yBottom;
+	
+	ctx.moveTo(upperLeftVertexX, upperLeftVertexY);
+	ctx.lineTo(upperRightVertexX,upperRightVertexY);
+	ctx.lineTo(lowerRightVertexX, lowerRightVertexY);
+	ctx.lineTo(lowerLeftVertexX, lowerLeftVertexY);
+	ctx.lineTo(upperLeftVertexX, upperLeftVertexY);
+	ctx.closePath();
+	ctx.fill();
+}
+
+
+
 function tryProcessTimelineClick(e) {
 	try {
 		if (!userInputBlocked) {

@@ -30,7 +30,7 @@ expl_ctrl_canvas.setAttribute("id", "expl-control-canvas");
 var expl_ctrl_ctx = expl_ctrl_canvas.getContext("2d");
 expl_ctrl_ctx.imageSmoothingEnabled = false;
 var actionNameLabel = document.createElement("LABEL");
-var explanationControlYPosition = 14;
+var explanationControlYPosition = 30;;
 
 // controlsManager encapsulates:
 // - enabling/disabling controls
@@ -136,7 +136,7 @@ function drawExplanationTimeline() {
 	expl_ctrl_ctx.clearRect(0,0, expl_ctrl_canvas.width, expl_ctrl_canvas.height);
 	// just use width of gameboard for now, may need to be bigger
 	
-	expl_ctrl_canvas.height = 30;
+	expl_ctrl_canvas.height = 60;
 	$("#explanation-control-panel").append(expl_ctrl_canvas);
 	let ctx = expl_ctrl_ctx;
 	var can_width = 600;
@@ -144,6 +144,8 @@ function drawExplanationTimeline() {
 	expl_ctrl_canvas.width = can_width;
 	ctx.beginPath();
 	ctx.moveTo(timelineMargin,explanationControlYPosition);
+	ctx.lineWidth = 16;
+	ctx.strokeStyle = 'darkgrey';
 	ctx.lineTo(can_width - timelineMargin,explanationControlYPosition);
 	ctx.stroke();
 	ctx.restore();
