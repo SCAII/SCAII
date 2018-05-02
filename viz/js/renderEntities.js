@@ -46,7 +46,7 @@ function handleEntities(entitiesList) {
 			}
 			else {
 				if (entity.hasDelete() && entity.getDelete()) {
-					delete masterEntities[idString];
+					//delete masterEntities[idString];
 				}
 				else {
 					var masterEntity = masterEntities[idString];
@@ -395,7 +395,7 @@ function createHPToolTip(z_index, shapeId, absX, absY, hitPoints, color) {
      // position it relative to where origin of bounding box of gameboard is
     var y = absY + canvas_bounds.top - 20;
     var x = absX + canvas_bounds.left + 20;
-    valueSpan.setAttribute("style", 'zIndex:' + z_index + ';position:absolute;left:' + x + 'px;top:' + y + 'px;color:' + color + ';font-family:Arial');
+    valueSpan.setAttribute("style", 'background-color:white;zIndex:' + z_index + ';position:absolute;left:' + x + 'px;top:' + y + 'px;color:' + color + ';font-family:Arial; font-size:13px');
     $("#scaii-gameboard").append(valueSpan);
     valueSpan.innerHTML = 'HP: ' + hitPoints;
     entityHPToolTipIds.push(id);

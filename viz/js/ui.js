@@ -6,9 +6,10 @@ var gameboardHeight;
 var gameboard_canvas = document.createElement("canvas");
 var gameboard_ctx = gameboard_canvas.getContext("2d");
 
-var game_background_color = "#123456";
+//var game_background_color = "#123456";
 //var game_background_color = "#000000";
-//var game_background_color = "#fafafa";
+//var game_background_color = "#f0f0f0";
+var game_background_color = "#808080";
 
 var timeline_canvas = document.createElement("canvas");
 var timeline_ctx = timeline_canvas.getContext("2d");
@@ -69,6 +70,7 @@ function configureGameboardCanvas(){
 	$("#scaii-gameboard").css("width", gameboard_canvas.width);
 	$("#scaii-gameboard").css("height", gameboard_canvas.height);
 	$("#scaii-gameboard").css("background-color", game_background_color);
+	$("#scaii-gameboard").css("border-style", "solid");
 	$("#scaii-gameboard").append(gameboard_canvas);
 	//addZoomControlToGameboardCanvas(gameboard_canvas);
 }
