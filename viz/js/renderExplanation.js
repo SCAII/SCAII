@@ -255,11 +255,30 @@ function createSaliencyContainers() {
 	//saliencyGroup.setAttribute("style", "margin-left:20px; margin-top:20px; margin-right: 20px;");
 	$("#scaii-explanations").append(saliencyGroup);
 
+	
+
+	var saliencyContent = document.createElement("DIV");
+	saliencyContent.setAttribute("id", "saliency-content");
+	saliencyContent.setAttribute("class", "flex-column saliencies-bg");
+	$("#saliency-group").append(saliencyContent);
+
+	
+	var saliencyMapsTitledContainer = document.createElement("DIV");
+	saliencyMapsTitledContainer.setAttribute("id", "saliency-maps-titled-container");
+	saliencyMapsTitledContainer.setAttribute("class", "titled-container flex-column saliencies-bg");
+	$("#saliency-content").append(saliencyMapsTitledContainer);
+
+	var saliencyMaps = document.createElement("DIV");
+	saliencyMaps.setAttribute("id", "saliency-maps");
+	saliencyMaps.setAttribute("class", "grid saliencies-bg");
+	$("#saliency-maps-titled-container").append(saliencyMaps);
+
+	// selections area will be hidden so wedon't see checkboxes
 	var saliencySelections = document.createElement("DIV");
 	saliencySelections.setAttribute("id", "saliency-selections");
 	saliencySelections.setAttribute("class", "flex-column  saliencies-bg");
+	saliencySelections.setAttribute("style", "visibility:hidden;");
 	$("#saliency-group").append(saliencySelections);
-
 
 	var saliencySelectionsTitle = document.createElement("DIV");
 	saliencySelectionsTitle.setAttribute("id", "saliency-selections-title");
@@ -273,23 +292,6 @@ function createSaliencyContainers() {
 	$("#saliency-selections").append(saliencyCheckboxes);
 
 
-
-	var saliencyContent = document.createElement("DIV");
-	saliencyContent.setAttribute("id", "saliency-content");
-	saliencyContent.setAttribute("class", "flex-column saliencies-bg");
-	$("#saliency-group").append(saliencyContent);
-
-	
-	var saliencyMapsTitledContainer = document.createElement("DIV");
-	saliencyMapsTitledContainer.setAttribute("id", "saliency-maps-titled-container");
-	saliencyMapsTitledContainer.setAttribute("class", "titled-container flex-column saliencies-bg");
-	$("#saliency-content").append(saliencyMapsTitledContainer);
-
-	
-	var saliencyMaps = document.createElement("DIV");
-	saliencyMaps.setAttribute("id", "saliency-maps");
-	saliencyMaps.setAttribute("class", "grid saliencies-bg");
-	$("#saliency-maps-titled-container").append(saliencyMaps);
 }
 
 function renderExplanationPoint(explPoint){
