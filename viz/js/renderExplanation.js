@@ -199,7 +199,7 @@ function createRewardChartContainer() {
 	var whyQuestionsDiv = document.createElement("DIV");
 	whyQuestionsDiv.setAttribute("id", "why-questions-div");
 	whyQuestionsDiv.setAttribute("class", "rewards-bg flex-row");
-	whyQuestionsDiv.setAttribute("style", "margin:auto;font-family:Arial;");
+	whyQuestionsDiv.setAttribute("style", "font-family:Arial;padding:10px;");
 	$("#rewards-titled-container").append(whyQuestionsDiv);
 
 	var whyActionLabel = document.createElement("DIV");
@@ -216,7 +216,7 @@ function createRewardChartContainer() {
 
 	var whyQuestions = document.createElement("DIV");
 	whyQuestions.setAttribute("id", "why-questions");
-	whyQuestions.setAttribute("class", "rewards-bg question-dropdown");
+	whyQuestions.setAttribute("class", "rewards-bg flex-row");
 	$("#why-questions-div").append(whyQuestions);
 
 	var explanationRewards = document.createElement("DIV");
@@ -227,7 +227,7 @@ function createRewardChartContainer() {
 
 	var whatDiv = document.createElement("DIV");
 	whatDiv.setAttribute("id", "what-div");
-	whatDiv.setAttribute("class", "flex-row rewards-bg question-dropdown");
+	whatDiv.setAttribute("class", "flex-row rewards-bg");
 	whatDiv.setAttribute("style", "margin:auto;font-family:Arial;");
 	$("#rewards-titled-container").append(whatDiv);
 
@@ -338,6 +338,37 @@ function populateSaliencyQuestionSelector(){
 
 
 function populateRewardQuestionSelector(){
+	$("#why-questions").empty();
+	
+	var radioCombined = document.createElement("input");
+	radioCombined.setAttribute("type","radio");
+	radioCombined.setAttribute("name","rewardView");
+	radioCombined.setAttribute("value","combined");
+	radioCombined.setAttribute("style", "margin-left:20px;");
+
+	var combinedLabel = document.createElement("div");
+	combinedLabel.setAttribute("style", "margin-left:10px;font-family:Arial;");
+	combinedLabel.innerHTML = "combined view";
+
+	var radioDetailed = document.createElement("input");
+	radioDetailed.setAttribute("type","radio");
+	radioDetailed.setAttribute("name","rewardView");
+	radioDetailed.setAttribute("value","detailed");
+	radioDetailed.setAttribute("style", "margin-left:20px; ");
+
+	var detailedLabel = document.createElement("div");
+	detailedLabel.setAttribute("style", "margin-left:10px;font-family:Arial;");
+	detailedLabel.innerHTML = "detailed view";
+	
+	//rewardQuestionSelector.onchange = showRewardAnswer;
+	//<select id="reward-question-selector"  class="question-selector" onchange="showRewardAnswer()"></select>
+	$("#why-questions").append(radioCombined);
+	$("#why-questions").append(combinedLabel);
+	$("#why-questions").append(radioDetailed);
+	$("#why-questions").append(detailedLabel);
+}
+
+function populateRewardQuestionSelectorOld(){
 	$("#why-questions").empty();
 	
 	var rewardQuestionSelector = document.createElement("SELECT");

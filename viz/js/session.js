@@ -156,6 +156,8 @@ function handleVizInit(vizInit) {
 }
 function handleViz(vizData) {
 	entitiesList = vizData.getEntitiesList();
+	cumulativeRewardsMap = vizData.getCumulativeRewardsMap();
+	handleCumulativeRewards(cumulativeRewardsMap);
 	handleEntities(entitiesList);
 	if (!jumpInProgress) {
 		sessionIndexManager.incrementReplaySequencerIndex();
@@ -165,12 +167,54 @@ function handleViz(vizData) {
 	}
 }
 
+var rewardsDivMap = {};
+function handleCumulativeRewards(crm) {
+	var entryList = crm.getEntryList();
+  	for (var i in entryList ){
+    	var entry = entryList[i];
+    	var key = entry[0];
+		var val = entry[1];
+		var valId = getRewardValueId(key);
+		var idOfExistingValueLabel = rewardsDivMap[valId];
+		if (idOfExistingValueLabel == undefined) {
+			var indexInt = Number(i);
+			addCumRewardPair(indexInt, key, val);
+		}
+		else {
+			$("#" + valId).html(val);
+		}
+  	}
+}
+
+function getRewardValueId(val) {
+	var legalIdVal = convertNameToLegalId(val);
+	return 'reward'+legalIdVal;
+}
+
+function addCumRewardPair(index, key, val){
+	var rewardKeyDiv = document.createElement("DIV");
+	rewardKeyDiv.setAttribute("class", "r" + index +"c0");
+	rewardKeyDiv.setAttribute("style", "height:15px;font-family:Arial;font-size:14px;");
+	rewardKeyDiv.innerHTML = key;
+	$("#cumulative-rewards").append(rewardKeyDiv);
+
+	var rewardValDiv = document.createElement("DIV");
+	// give the value div an id constructed with key so can find it later to update
+	var id = getRewardValueId(key);
+	rewardsDivMap[id] = rewardValDiv;
+	rewardValDiv.setAttribute("id", id);
+	rewardValDiv.setAttribute("class", "r" + index +"c1");
+	rewardValDiv.setAttribute("style", "margin-left: 20px;height:15px;font-family:Arial;font-size:14px;");
+	rewardValDiv.innerHTML = val;
+    $("#cumulative-rewards").append(rewardValDiv);
+}
 
 function handleScaiiPacket(sPacket) {
 	var result = undefined;
 	if (sPacket.hasReplayChoiceConfig()) {
 		var config = sPacket.getReplayChoiceConfig();
 		replayChoiceConfig = config;
+		rewardsDivMap = {};
 		handleReplayChoiceConfig(config);
 	}
 	else if (sPacket.hasReplaySessionConfig()) {

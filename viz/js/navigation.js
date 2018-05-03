@@ -45,7 +45,6 @@ function showPositionOnTimeline(value) {
 function processTimelineClick(e) {
 	controlsManager.userJumped();
 	var clickX = e.offsetX - timelineMargin;
-	debug(1, 'clickX was ' + clickX);
 	var replaySequenceTargetStep = sessionIndexManager.getReplaySequencerIndexForClick(clickX);
 	var targetStepString = "" + replaySequenceTargetStep;
 	var args = [targetStepString];
