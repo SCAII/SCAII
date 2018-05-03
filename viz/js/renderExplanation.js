@@ -199,19 +199,19 @@ function createRewardChartContainer() {
 	var whyQuestionsDiv = document.createElement("DIV");
 	whyQuestionsDiv.setAttribute("id", "why-questions-div");
 	whyQuestionsDiv.setAttribute("class", "rewards-bg flex-row");
-	whyQuestionsDiv.setAttribute("style", "margin:auto;");
+	whyQuestionsDiv.setAttribute("style", "margin:auto;font-family:Arial;");
 	$("#rewards-titled-container").append(whyQuestionsDiv);
 
 	var whyActionLabel = document.createElement("DIV");
 	whyActionLabel.setAttribute("id", "why-action-label");
 	whyActionLabel.setAttribute("class", "rewards-bg");
-	whyActionLabel.setAttribute("style", "padding-top:10px;");
+	whyActionLabel.setAttribute("style", "padding-top:10px;font-family:Arial;");
 	$("#why-questions-div").append(whyActionLabel);
 	
 	var whyLabel = document.createElement("DIV");
 	whyLabel.setAttribute("id", "why-label");
 	whyLabel.setAttribute("class", "rewards-bg");
-	whyLabel.setAttribute("style", "padding-top:10px;");
+	whyLabel.setAttribute("style", "padding-top:10px;font-family:Arial;");
 	$("#why-questions-div").append(whyLabel);
 
 	var whyQuestions = document.createElement("DIV");
@@ -222,13 +222,13 @@ function createRewardChartContainer() {
 	var explanationRewards = document.createElement("DIV");
 	explanationRewards.setAttribute("id", "explanations-rewards");
 	explanationRewards.setAttribute("class", "rewards-bg");
-	explanationRewards.setAttribute("style", "margin-left:20px; margin-right: 20px;");
+	explanationRewards.setAttribute("style", "margin-left:20px; margin-right: 20px;font-family:Arial;");
 	$("#rewards-titled-container").append(explanationRewards);
 
 	var whatDiv = document.createElement("DIV");
 	whatDiv.setAttribute("id", "what-div");
 	whatDiv.setAttribute("class", "flex-row rewards-bg question-dropdown");
-	whatDiv.setAttribute("style", "margin:auto;");
+	whatDiv.setAttribute("style", "margin:auto;font-family:Arial;");
 	$("#rewards-titled-container").append(whatDiv);
 
 	var whatButtonDiv = document.createElement("DIV");
@@ -397,26 +397,36 @@ function getExplanationBox(left_x,right_x, upper_y, lower_y, step){
 // 	questionMarkButtonIds = [];
 // }
 
-function renderExplanationSelectors() {
-	var decisionsLabel = document.createElement("LABEL");
-	decisionsLabel.setAttribute("id", "decisions-label");
-	decisionsLabel.setAttribute("style", getGridPositionStyle(1,0) + ';height: 30px; padding-top:10px;font-size: 18px;font-weight: bold;');
-				
-	$("#action-list").append(decisionsLabel);
-	$("#decisions-label").text("Decisions");
-	//explanationBoxMap = {};
+function renderDecisionPointLegend() {
+	$("#action-list").empty();
+	decisionPointIds = {};
+	var legendLabel = document.createElement("LABEL");
+	legendLabel.setAttribute("id", "legend-label");
+	legendLabel.setAttribute("style", getGridPositionStyle(0,0) + 'margin-left:10px;margin-bottom:5px;margin-top:10px;font-family:Arial;font-size:14px;');
+	legendLabel.innerHTML = "Decision Points: ";
+	$("#action-list").append(legendLabel);
+
 	var explanation_steps = replaySessionConfig.getExplanationStepsList();
 	var explanation_titles = replaySessionConfig.getExplanationTitlesList();
-	//console.log("explanation count is " + explanation_steps.length);
+	var expl_count = explanation_steps.length;
+	var index = 0;
+	while (index < expl_count){
+		var title = explanation_titles[index];
+		var uiIndex =index + 1;
+		var step = explanation_steps[index];
+		addLabelForAction(title, uiIndex, step);
+		index = index + 1;
+	}
+}
+
+function renderExplanationSelectors() {
+	var explanation_steps = replaySessionConfig.getExplanationStepsList();
 	var expl_count = explanation_steps.length;
 	var index = 0;
 	while (index < expl_count){
 		var step = explanation_steps[index];
-		var title = explanation_titles[index];
 		var uiIndex =index + 1;
-		addLabelForAction(title, uiIndex);
 		configureExplanationSelectorDiamond(uiIndex, step);
-		//configureExplanationSelectorButton(replaySessionConfig.getStepCount(), step);
 		index = index + 1;
 	}
 }
@@ -427,7 +437,7 @@ function addWhyButtonForAction(step, x,  y) {
 	whyButton.setAttribute("id", buttonId);
 	var why = document.createTextNode("why?");
 	whyButton.appendChild(why);          
-	whyButton.setAttribute("style", 'z-index:2;position:relative;left:' + x + 'px;top:' + y + 'px');
+	whyButton.setAttribute("style", 'z-index:2;position:relative;left:' + x + 'px;top:' + y + 'px;font-family:Arial;');
 	
 	$("#explanation-control-panel").append(whyButton);
 	$("#" + buttonId).click(function(e) {
@@ -444,7 +454,7 @@ function addWhatButtonForAction() {
 	var what = document.createTextNode("what was relevant?");
 	whatButton.appendChild(what);    
 	//whatButton.onclick = renderWhatInfo;      
-	whatButton.setAttribute("style", "padding-top:6px; padding-left:6px; padding-bottom:6px; padding-right: 6px;margin-right:30px;");
+	whatButton.setAttribute("style", "width:100px;padding-top:6px; padding-left:6px; padding-bottom:6px; padding-right: 6px;margin-right:30px;font-family:Arial;");
 	
 	$("#what-button-div").append(whatButton);
 	$("#" + buttonId).click(function(e) {
@@ -452,14 +462,62 @@ function addWhatButtonForAction() {
 		 processWhatClick();
 	})
 }
-function addLabelForAction(title, index){
-	var actionLabel = document.createElement("LABEL");
-	var nameNoSpaces = title.replace(/ /g,"");
+function convertNameToLegalId(name) {
+	var nameNoSpaces = name.replace(/ /g,"");
 	var nameForId = nameNoSpaces.replace(/,/g,"");
-	nameForId = nameForId + "actionLabel";
-	actionLabel.setAttribute("id", nameForId);
-	actionLabel.setAttribute("style", getGridPositionStyle(1,index) + ';height: 30; padding-top:10px;margin-bottom:10px');
-	var html = index + '.   ' + title;
+	return nameForId;
+}
+var decisionPointIds = {};
+
+function unboldThisStepInLegend(step){
+	var decisionPointId = decisionPointIds[step];
+	if (decisionPointId != undefined) {
+		$("#" + decisionPointId).css("font-weight","normal");
+	}
+}
+
+function boldThisStepInLegend(step){
+	var decisionPointId = decisionPointIds[step];
+	if (decisionPointId != undefined) {
+		$("#" + decisionPointId).css("font-weight","bold");
+	}
+}
+
+function getDecisionPointIdForName(name, step){
+	var nameForId = convertNameToLegalId(name);
+	nameForId = step + nameForId + "actionLabel";
+	return nameForId;
+}
+function addLabelForAction(title, index, step){
+	var actionLabel = document.createElement("div");
+	var id = getDecisionPointIdForName(title, step);
+	decisionPointIds[step] = id;
+
+	actionLabel.setAttribute("id", id);
+
+	actionLabel.addEventListener("click", function(evt) {
+		if (!userInputBlocked){
+			var userCommand = new proto.scaii.common.UserCommand;
+			userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+			// same args as above
+			var args = ['' +step];
+			userCommand.setArgsList(args);
+			stageUserCommand(userCommand);
+		}
+	});
+	actionLabel.addEventListener("mouseenter", function(evt) {
+		//$("#" + id).css("background-color","rgba(100,100,100,1.0);");
+		$("#" + id).css("background-color","#EEDDCC");
+	});
+	actionLabel.addEventListener("mouseleave", function(evt) {
+		//$("#" + id).css("background-color","rgba(100,100,100,0.0)");
+		$("#" + id).css("background-color","transparent");
+	});
+
+	var row = Math.floor((index - 1) / 2);
+	var col = 1 + (index - 1) % 2;
+	actionLabel.setAttribute("style", getGridPositionStyle(col, row) + 'padding:5px;margin-left:10px;margin-bottom:5px;margin-top:10px;margin-right:10px;font-family:Arial;font-size:14px;');
+	var html = 'D' + index + ': ' + title;
 	actionLabel.innerHTML = html;
 	$("#action-list").append(actionLabel);
 }
@@ -475,7 +533,7 @@ function configureExplanationSelectorButton(step_count, step) {
 	qmButton.setAttribute("id", buttonId);
 	var qm = document.createTextNode("?");
 	qmButton.appendChild(qm);          
-	qmButton.setAttribute("style", 'z-index:2; position:relative; left:' + leftX + 'px; top: -30px; padding-left:2px; padding-right:2px');
+	qmButton.setAttribute("style", 'z-index:2; position:relative; left:' + leftX + 'px; top: -30px; padding-left:2px; padding-right:2px;font-family:Arial;');
 	
 	$("#explanation-control-panel").append(qmButton);
 	$("#" + buttonId).click(function(e) {
@@ -591,19 +649,23 @@ function configureExplanationSelectorDiamond(uiIndex,step){
 	var halfHeight;
 	
 	var currentStep = sessionIndexManager.getCurrentIndex();
-	// subtract1 as currentIndex has already been advanced
+	var ctx = expl_ctrl_ctx;
 	if (currentStep == step) {
-		halfWidth = 24;
-		halfHeight = 24;
-		var yPositionOfWhyButton = -30;// relative to the next container below
+		ctx.font = "16px Arial bold";
+		halfWidth = 22;
+		halfHeight = 22;
+		var yPositionOfWhyButton = -14;// relative to the next container below
 		var xPositionOfWhyButton = x - 20;
 		addWhyButtonForAction(step, xPositionOfWhyButton,  yPositionOfWhyButton);
+		boldThisStepInLegend(step);
 	}
 	else {
+		ctx.font = "12px Arial bold";
 		halfWidth = 16;
 		halfHeight = 16;
+		unboldThisStepInLegend(step);
 	}
-	var ctx = expl_ctrl_ctx;
+	
 	ctx.beginPath();
 	
 	ctx.fillStyle = 'black';
@@ -627,11 +689,16 @@ function configureExplanationSelectorDiamond(uiIndex,step){
 	ctx.closePath();
 	ctx.fill();
 	
-	ctx.font = "16px Arial bold";
 	ctx.fillStyle = 'white';
-	var textCenterX = ((rightVertexX - leftVertexX) / 2) + leftVertexX - 8;
+	if (currentStep == step) {
+		var textCenterX = ((rightVertexX - leftVertexX) / 2) + leftVertexX - 10;
+	}
+	else {
+		var textCenterX = ((rightVertexX - leftVertexX) / 2) + leftVertexX - 7;
+	}
+	ctx.font = "Arial";
 	var textCenterY = explanationControlYPosition + 5;
-	ctx.fillText(uiIndex + "?",textCenterX,textCenterY);
+	ctx.fillText('D' + uiIndex,textCenterX,textCenterY);
 
 	//ctx.rect(upper_left_x, upper_left_y, rect_width, rect_height);
 	var eBox = getExplanationBox(leftVertexX, rightVertexX, topVertexY, bottomVertexY, step);

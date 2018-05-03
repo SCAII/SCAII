@@ -30,7 +30,7 @@ expl_ctrl_canvas.setAttribute("id", "expl-control-canvas");
 var expl_ctrl_ctx = expl_ctrl_canvas.getContext("2d");
 expl_ctrl_ctx.imageSmoothingEnabled = false;
 var actionNameLabel = document.createElement("LABEL");
-var explanationControlYPosition = 30;;
+var explanationControlYPosition = 36;
 
 // controlsManager encapsulates:
 // - enabling/disabling controls
@@ -73,10 +73,6 @@ function configureGameboardCanvas(){
 	$("#scaii-gameboard").css("border-style", "solid");
 	$("#scaii-gameboard").append(gameboard_canvas);
 	//addZoomControlToGameboardCanvas(gameboard_canvas);
-}
-
-function configureLabelContainers() {
-	//configureLabelContainer("#explanation-control-label","14px","explanations", "right");
 }
 
 function configureNavigationButtons(){
@@ -125,7 +121,8 @@ function clearWhyQuestions() {
 //	$("#what-questions").html(" ");
 //}
 var timelineMargin = 40;
-var explanationControlCanvasHeight = 80;
+var explanationControlCanvasHeight = 70;
+var timelineHeight = 16;
 function drawExplanationTimeline() {
 	expl_ctrl_ctx.clearRect(0,0, expl_ctrl_canvas.width, expl_ctrl_canvas.height);
 	// just use width of gameboard for now, may need to be bigger
@@ -138,7 +135,7 @@ function drawExplanationTimeline() {
 	expl_ctrl_canvas.width = can_width;
 	ctx.beginPath();
 	ctx.moveTo(timelineMargin,explanationControlYPosition);
-	ctx.lineWidth = 16;
+	ctx.lineWidth = timelineHeight;
 	ctx.strokeStyle = 'darkgrey';
 	ctx.lineTo(can_width - timelineMargin,explanationControlYPosition);
 	ctx.stroke();
@@ -150,13 +147,12 @@ function initUI() {
 	//configureZoomBox
 	configureGameboardCanvas();
 	sizeNonGeneratedElements();
-	//drawExplanationTimeline();
 	controlsManager.setControlsNotReady();
 	controlsManager.registerJQueryHandleForWaitCursor($("#scaii-interface"));
-	configureLabelContainers();
 	configureNavigationButtons();
 	configureQuestionArea();
 	setUpMetadataToolTipEventHandlers();
+	drawExplanationTimeline();
 }
 function setUpMetadataToolTipEventHandlers() {
 	// for hiding/showing tooltips
@@ -215,16 +211,8 @@ function sizeNonGeneratedElements() {
 	$("#game-replay-title").css("padding-top", "10px");
 	$("#game-replay-title").css("padding-bottom", "10px");
 
-	// second row should add to 600...
-
-	$("#action-list").css("width", "330px");
-	// scaii-gameboard
-
-
-	$("#game-progress").css("margin-left", "40px");
-	$("#game-progress").css("width", "520px");
-	$("#game-progress").css("margin-right", "40px");
 }
+
 function clearGameBoards() {
 	clearGameBoard(gameboard_ctx, gameboard_canvas, "game");
 	clearGameBoard(gameboard_zoom_ctx, gameboard_zoom_canvas, "zoom");

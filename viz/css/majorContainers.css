@@ -19,6 +19,12 @@ body {
   grid-row-end: 2;
 }
 
+.r0c0_1 {
+  grid-column-start: 1;
+  grid-column-end: 4;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
 .r0c0_2 {
   grid-column-start: 1;
   grid-column-end: 4;
@@ -117,6 +123,13 @@ body {
 .r4c0_1 {
   grid-column-start: 1;
   grid-column-end: 3;
+  grid-row-start: 5;
+  grid-row-end: 6;
+}
+
+.r4c0_2 {
+  grid-column-start: 1;
+  grid-column-end: 4;
   grid-row-start: 5;
   grid-row-end: 6;
 }

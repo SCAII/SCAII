@@ -132,10 +132,10 @@ function getSaliencyDisplayManager() {
 			checkBoxLabel.appendChild(t);
 			
 			var gridPositionInfoCheck = getGridPositionStyle(0,i);
-			checkBox.setAttribute("style", gridPositionInfoCheck + '; margin-left:30px; margin-top:10px; ');
+			checkBox.setAttribute("style", gridPositionInfoCheck + '; margin-left:30px; margin-top:10px;');
 			
 			var gridPositionInfoName = getGridPositionStyle(1,i);
-			checkBoxLabel.setAttribute("style", gridPositionInfoName + '; width:200px; margin-top:10px; ');
+			checkBoxLabel.setAttribute("style", gridPositionInfoName + '; width:200px; margin-top:10px; font-family:Arial;');
 			this.activeCheckBoxes.push(checkBox);
 			$("#saliency-checkboxes").append(checkBox);
 			$("#saliency-checkboxes").append(checkBoxLabel);
@@ -170,7 +170,7 @@ function getSaliencyDisplayManager() {
 				checkBox.setAttribute("style", gridPositionInfoCheck + '; margin-left:30px; margin-top:10px; ');
 				
 				var gridPositionInfoName = getGridPositionStyle(1,rowIndex);
-				checkBoxLabel.setAttribute("style", gridPositionInfoName + '; width:200px; margin-top:10px; ');
+				checkBoxLabel.setAttribute("style", gridPositionInfoName + '; width:200px; margin-top:10px; font-family:Arial;');
 				this.activeCheckBoxes.push(checkBox);
 				$("#saliency-checkboxes").append(checkBox);
 				$("#saliency-checkboxes").append(checkBoxLabel);
@@ -323,7 +323,7 @@ function getSaliencyDisplayManager() {
 		
 		var valueSpan = document.createElement("span");
 		valueSpan.setAttribute("class","value-div");
-		valueSpan.setAttribute("style", 'visibility:hidden;');
+		valueSpan.setAttribute("style", 'visibility:hidden;font-family:Arial;');
 		$(mapDivSelector).append(valueSpan);
 		
 		explCanvas.addEventListener('mouseenter', function(evt) {
@@ -342,7 +342,7 @@ function getSaliencyDisplayManager() {
 			var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y + ' val: ' + normValue.toFixed(2);
 			var top = (mousePos.y + 10 - (40 * gameScaleFactor)) + 'px'; // shift it to canvas above
 			var left = (mousePos.x + 10) + 'px';
-			valueSpan.setAttribute("style", 'z-index:2; position:relative; left:' + left + '; top: ' + top + '; color:#D73F09;'); // OSU orange
+			valueSpan.setAttribute("style", 'z-index:2; position:relative; left:' + left + '; top: ' + top + '; color:#D73F09;font-family:Arial;'); // OSU orange
 			valueSpan.innerHTML = normValue.toFixed(2);
 			//console.log(message);
 		  }, false);
@@ -397,12 +397,12 @@ function getMousePos(canvas, evt) {
 	
 function getNameDivForRow(rowIndex, rowInfo, layerCount){
 	var nameContainerDiv = document.createElement("div");
-	nameContainerDiv.setAttribute("style", getGridPositionStyle(0,rowIndex) + '; width:200px; height:100%;  vertical-align:middle; border-style: solid; border-width:1px;');
+	nameContainerDiv.setAttribute("style", getGridPositionStyle(0,rowIndex) + '; width:200px; height:100%;  vertical-align:middle; border-style: solid; border-width:1px;font-family:Arial;');
 	
 	
 	var nameContainerContentDiv = document.createElement("div");
 	nameContainerContentDiv.innerHTML = getRowInfoString(rowInfo);
-	nameContainerContentDiv.setAttribute("style", '; text-align:center; padding-top:80px;');
+	nameContainerContentDiv.setAttribute("style", '; text-align:center; padding-top:80px;font-family:Arial;');
 	nameContainerDiv.append(nameContainerContentDiv);
 	return nameContainerDiv;
 }
