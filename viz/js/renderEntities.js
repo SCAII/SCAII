@@ -30,7 +30,7 @@ function cleanToolTips(){
 }
 
 function handleEntities(entitiesList) {
-	cleanToolTips();
+  cleanToolTips();
 	for (var i in entitiesList) {
 		var entity = entitiesList[i];
 		if (entity.hasId()) {
