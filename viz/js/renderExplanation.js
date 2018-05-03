@@ -30,7 +30,7 @@ function clearSaliencies() {
 	salienciesAreShowing = false;
 }
 function clearQuestionControls(){
-	$("#why-questions").empty();
+	$("#why-radios").empty();
 	$("#what-button-div").empty();
 	$("#reward-question-selector").empty();
 	$("#why-label").html(" ");
@@ -38,12 +38,9 @@ function clearQuestionControls(){
 }
 
 function handleExplDetails(explDetails){
-	//console.log('handling expl details');
 	if (explDetails.hasExplPoint()){
 		explanationPoint = explDetails.getExplPoint();
-		//console.log('got expl point for step ' + explanationPoint.getStep());
 		renderWhyInfo(explanationPoint);
-		//renderExplanationPoint(explanationPoint);
 	}
 	else {
 		console.log("MISSING expl point!");
@@ -154,6 +151,17 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
 	}
 });
 
+
+function showRewards(isAggregate, isRewardMode) {
+	activeBarChartInfo.setAggregate(isAggregate);
+	activeBarChartInfo.setRewardsMode(isRewardMode);
+	activeBarChartInfo.setDefaultSelections();
+	activeBarChartInfo.renderExplanationBarChart();
+	
+	saliencyDisplayManager.populateCheckBoxes(isAggregate);
+	saliencyDisplayManager.renderExplanationSaliencyMaps();
+}
+
 function renderWhyInfo(explPoint) {
 	activeExplanationPoint = explPoint;
 	activeBarChartInfo = explPoint.getBarChart();
@@ -161,11 +169,14 @@ function renderWhyInfo(explPoint) {
 
 	selectionManager = getSelectionManager();
 	activeBarChartInfo.setSelectionManager(selectionManager);
-	
-	activeBarChartInfo.setAggregate(true); 
-	activeBarChartInfo.setDefaultSelections();
+
 	createRewardChartContainer();
+
+	activeBarChartInfo.setAggregate(true); 
+	activeBarChartInfo.setRewardsMode(true); 
+	activeBarChartInfo.setDefaultSelections();
 	activeBarChartInfo.renderExplanationBarChart();
+	
 	var actionName =  activeBarChartInfo.getChosenActionName();
 	var whyPrompt = " had highest predicted reward. ";
 	$("#why-action-label").html(actionName);
@@ -195,29 +206,30 @@ function createRewardChartContainer() {
 	rewardTitleContainer.setAttribute("class", "flex-column titled-container r0c1 rewards-bg");
 	$("#scaii-interface").append(rewardTitleContainer);
 
-	
 	var whyQuestionsDiv = document.createElement("DIV");
 	whyQuestionsDiv.setAttribute("id", "why-questions-div");
 	whyQuestionsDiv.setAttribute("class", "rewards-bg flex-row");
-	whyQuestionsDiv.setAttribute("style", "font-family:Arial;padding:10px;");
+	whyQuestionsDiv.setAttribute("style", "margin:auto;font-family:Arial;padding:10px;");
 	$("#rewards-titled-container").append(whyQuestionsDiv);
 
 	var whyActionLabel = document.createElement("DIV");
 	whyActionLabel.setAttribute("id", "why-action-label");
 	whyActionLabel.setAttribute("class", "rewards-bg");
-	whyActionLabel.setAttribute("style", "padding-top:10px;font-family:Arial;");
+	whyActionLabel.setAttribute("style", "font-family:Arial;font-size:14px;");
 	$("#why-questions-div").append(whyActionLabel);
 	
 	var whyLabel = document.createElement("DIV");
 	whyLabel.setAttribute("id", "why-label");
 	whyLabel.setAttribute("class", "rewards-bg");
-	whyLabel.setAttribute("style", "padding-top:10px;font-family:Arial;");
+	whyLabel.setAttribute("style", "font-family:Arial;");
 	$("#why-questions-div").append(whyLabel);
 
-	var whyQuestions = document.createElement("DIV");
-	whyQuestions.setAttribute("id", "why-questions");
-	whyQuestions.setAttribute("class", "rewards-bg flex-row");
-	$("#why-questions-div").append(whyQuestions);
+
+	var whyRadios = document.createElement("DIV");
+	whyRadios.setAttribute("id", "why-radios");
+	whyRadios.setAttribute("class", "rewards-bg flex-row");
+	whyRadios.setAttribute("style", "margin:auto;font-family:Arial;padding:10px;font-size:14px;");
+	$("#rewards-titled-container").append(whyRadios);
 
 	var explanationRewards = document.createElement("DIV");
 	explanationRewards.setAttribute("id", "explanations-rewards");
@@ -338,45 +350,85 @@ function populateSaliencyQuestionSelector(){
 
 
 function populateRewardQuestionSelector(){
-	$("#why-questions").empty();
+	$("#why-radios").empty();
 	
-	var radioCombined = document.createElement("input");
-	radioCombined.setAttribute("type","radio");
-	radioCombined.setAttribute("name","rewardView");
-	radioCombined.setAttribute("value","combined");
-	radioCombined.setAttribute("style", "margin-left:20px;");
+	// REWARDS SECTION
+	var radioCombinedRewards = document.createElement("input");
+	radioCombinedRewards.setAttribute("type","radio");
+	radioCombinedRewards.setAttribute("name","rewardView");
+	radioCombinedRewards.setAttribute("value","rewardCombined");
+	radioCombinedRewards.setAttribute("style", "margin-left:20px;");
+	radioCombinedRewards.setAttribute("checked", "true");
+	radioCombinedRewards.onclick = function() {
+		showRewards(true, false);
+	};
 
-	var combinedLabel = document.createElement("div");
-	combinedLabel.setAttribute("style", "margin-left:10px;font-family:Arial;");
-	combinedLabel.innerHTML = "combined view";
+	var combinedRewardsLabel = document.createElement("div");
+	combinedRewardsLabel.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:14px;");
+	combinedRewardsLabel.innerHTML = "combined rewards";
 
-	var radioDetailed = document.createElement("input");
-	radioDetailed.setAttribute("type","radio");
-	radioDetailed.setAttribute("name","rewardView");
-	radioDetailed.setAttribute("value","detailed");
-	radioDetailed.setAttribute("style", "margin-left:20px; ");
+	var radioDetailedRewards = document.createElement("input");
+	radioDetailedRewards.setAttribute("type","radio");
+	radioDetailedRewards.setAttribute("name","rewardView");
+	radioDetailedRewards.setAttribute("value","rewardDetailed");
+	radioDetailedRewards.setAttribute("style", "margin-left:20px; ");
+	radioDetailedRewards.onclick = function() {
+		showRewards(false, false);
+	};
 
-	var detailedLabel = document.createElement("div");
-	detailedLabel.setAttribute("style", "margin-left:10px;font-family:Arial;");
-	detailedLabel.innerHTML = "detailed view";
+	var detailedRewardsLabel = document.createElement("div");
+	detailedRewardsLabel.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:14px;");
+	detailedRewardsLabel.innerHTML = "detailed rewards";
 	
+	$("#why-radios").append(radioCombinedRewards);
+	$("#why-radios").append(combinedRewardsLabel);
+	$("#why-radios").append(radioDetailedRewards);
+	$("#why-radios").append(detailedRewardsLabel);
+
+	// ADVANTAGE SECTION
+	var radioCombinedAdvantage = document.createElement("input");
+	radioCombinedAdvantage.setAttribute("type","radio");
+	radioCombinedAdvantage.setAttribute("name","rewardView");
+	radioCombinedAdvantage.setAttribute("value","advantageCombined");
+	radioCombinedAdvantage.setAttribute("style", "margin-left:20px;");
+	radioCombinedAdvantage.onclick = function() {
+		showRewards(true, true);
+	};
+
+	var combinedAdvantageLabel = document.createElement("div");
+	combinedAdvantageLabel.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:14px;");
+	combinedAdvantageLabel.innerHTML = "combined advantage";
+
+	var radioDetailedAdvantage = document.createElement("input");
+	radioDetailedAdvantage.setAttribute("type","radio");
+	radioDetailedAdvantage.setAttribute("name","rewardView");
+	radioDetailedAdvantage.setAttribute("value","advantageDetailed");
+	radioDetailedAdvantage.setAttribute("style", "margin-left:20px; ");
+	radioDetailedAdvantage.onclick = function() {
+		showRewards(false, true);
+	};
+
+	var detailedAdvantageLabel = document.createElement("div");
+	detailedAdvantageLabel.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:14px;");
+	detailedAdvantageLabel.innerHTML = "detailed advantage";
+	
+	$("#why-radios").append(radioCombinedAdvantage);
+	$("#why-radios").append(combinedAdvantageLabel);
+	$("#why-radios").append(radioDetailedAdvantage);
+	$("#why-radios").append(detailedAdvantageLabel);
+
 	//rewardQuestionSelector.onchange = showRewardAnswer;
-	//<select id="reward-question-selector"  class="question-selector" onchange="showRewardAnswer()"></select>
-	$("#why-questions").append(radioCombined);
-	$("#why-questions").append(combinedLabel);
-	$("#why-questions").append(radioDetailed);
-	$("#why-questions").append(detailedLabel);
 }
 
 function populateRewardQuestionSelectorOld(){
-	$("#why-questions").empty();
+	$("#why-radios").empty();
 	
 	var rewardQuestionSelector = document.createElement("SELECT");
 	rewardQuestionSelector.setAttribute("id", "reward-question-selector");
 	rewardQuestionSelector.setAttribute("class", "question-selector");
 	rewardQuestionSelector.onchange = showRewardAnswer;
 	//<select id="reward-question-selector"  class="question-selector" onchange="showRewardAnswer()"></select>
-	$("#why-questions").append(rewardQuestionSelector);
+	$("#why-radios").append(rewardQuestionSelector);
 	$("#reward-question-selector").toggleClass('active');
 	$("#reward-question-selector").append($('<option>', {
 			value: 0,
@@ -388,24 +440,6 @@ function populateRewardQuestionSelectorOld(){
 	}));
 }
 
-function showRewardsPerAction(evt) {
-	renderTabActiveActionRewards();
-	showRewards(true);
-}
-
-function showRewardsPerRewardType(evt) {
-    renderTabActiveRewardTypes();
-	showRewards(false);
-}
-
-function showRewards(isAggregate) {
-	activeBarChartInfo.setAggregate(isAggregate);
-	activeBarChartInfo.setDefaultSelections();
-	activeBarChartInfo.renderExplanationBarChart();
-	
-	saliencyDisplayManager.populateCheckBoxes(isAggregate);
-	saliencyDisplayManager.renderExplanationSaliencyMaps();
-}
 var renderActionName = function(explPoint){
 	var title = explPoint.getTitle();
 	$("#action-name-label").html(title);
@@ -421,14 +455,6 @@ function getExplanationBox(left_x,right_x, upper_y, lower_y, step){
 	eBox.step = step;
 	return eBox;
 }
-
-// function removeStaleQuestionMarkButtons() {
-// 	for (id in questionMarkButtonIds){
-// 		var count = $("#" + id).length;
-// 		$("#" + id).remove();
-// 	}
-// 	questionMarkButtonIds = [];
-// }
 
 function renderDecisionPointLegend() {
 	$("#action-list").empty();
@@ -582,7 +608,7 @@ var selectedDecisionStep = undefined;
 function processWhyClick(step) {
 	if (selectedDecisionStep == step){
 		// toggle active buttons
-		$("#" + selectedQmButtonId).toggleClass('active');
+		//$("#" + selectedQmButtonId).toggleClass('active');
 		$("#" + selectedWhyButtonId).toggleClass('active');
 
 		// clear explanation info
@@ -592,15 +618,15 @@ function processWhyClick(step) {
 		selectedQmButtonId = undefined;
 
 		// engage selection color for supporting areas
-		$("#why-questions").toggleClass('active');
-		$("#why-label").toggleClass('active');
+		//$("#why-questions").toggleClass('active');
+		//$("#why-label").toggleClass('active');
 	}
 	else if (selectedDecisionStep == undefined) {
 		// toggle target buttons
-		selectedQmButtonId = getQmButtonId(step);
+		//selectedQmButtonId = getQmButtonId(step);
 	 	selectedWhyButtonId = getWhyButtonIdForStep(step);
 	 	selectedDecisionStep = step;
-	 	$("#" + selectedQmButtonId).toggleClass('active');
+	 	//$("#" + selectedQmButtonId).toggleClass('active');
 	 	$("#" + selectedWhyButtonId).toggleClass('active');
 		// show explanation info for new step
 		showExplanationRewardInfo(step);

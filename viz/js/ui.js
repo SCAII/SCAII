@@ -112,7 +112,6 @@ function configureQuestionArea() {
 
 function clearWhyQuestions() {
 	$("#why-label").html(" ");
-	//$("#why-questions").html(" ");
 	$("#what-button").html(" ");
 }
 
