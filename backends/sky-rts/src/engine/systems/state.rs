@@ -40,6 +40,10 @@ impl<'a> System<'a> for StateBuildSystem {
         use engine::resources::COLLISION_SCALE;
         use std::mem;
 
+        if sys_data.replay_mode.0 {
+            sys_data.reward.0.clear();
+        }
+
         if sys_data.skip.0 || sys_data.replay_mode.0 {
             return;
         }
