@@ -1,3 +1,7 @@
+#explanation-control-panel {
+	height: 85px;
+	background-color:#EEDDCC;
+}
 
 #saliency-maps {
 	/*background-color: blue;
@@ -8,12 +12,6 @@
 
 #explanations-rewards {
     margin: 0px;
-}
-
-#explanation-control-label {
-	padding-left: 40px;
-	padding-top: 40px;
-	padding-bottom: 10px;
 }
 
 .question-selector {

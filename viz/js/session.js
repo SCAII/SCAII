@@ -57,10 +57,11 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, progressWidth)
 		//console.log('');
 		var displayVal = this.getStepCountToDisplay();
 		if (displayVal == undefined){
-			$("#step-value").html(this.progressBarSegmentCount + " steps");
+			$("#step-value").html('');
+			//$("#step-value").html(this.progressBarSegmentCount + " steps");
 		}
 		else {
-			$("#step-value").html('' + displayVal + ' / ' + this.progressBarSegmentCount);
+			$("#step-value").html('step ' + displayVal + ' / ' + this.progressBarSegmentCount);
 		}
 		paintProgress(this.getProgressBarValue());
 	}
@@ -137,10 +138,10 @@ function handleReplaySessionConfig(rsc, selectedStep) {
 	if (!rsc.hasStepCount()) {
 		dialog('Error no stepCount carried by ReplaySessionConfig');
 	}
-	var progressWidth = $("#game-progress").width();
-	sessionIndexManager = getSessionIndexManager(rsc.getStepCount(), progressWidth);
-
+	var timelineWidth = expl_ctrl_canvas.width - 2*timelineMargin;
+	sessionIndexManager = getSessionIndexManager(rsc.getStepCount(), timelineWidth);
 	sessionIndexManager.setReplaySequencerIndex(0);
+	renderDecisionPointLegend();
 }
 
 

@@ -9,8 +9,8 @@
 #playback-controls-panel {
 	width: 460px;
 	margin-left: 40px;
-	margin-top: 30px;
-	margin-bottom: 30px;
+	margin-top: 20px;
+	margin-bottom: 15px;
 }
 
 .minor-label-text {
@@ -38,15 +38,7 @@
     height: 40px;
     margin: auto;
 }
-#game-progress {
-	
-	height: 15px;
-	background-color: white;
-	color: darkgrey;
-	margin-top: 4px;
-	margin-bottom: 4px;
-	border: 1px solid #0063a6;
-}
+
 #speed-slider {
   -webkit-appearance: slider-vertical;
   height: 100%;
@@ -70,11 +62,7 @@
 progress::-webkit-progress-value { background: darkgrey; }
 progress::-moz-progress-bar { background: darkgrey; }
 
-#step-label {
-	width: 50px;
-}
-
 #step-value {
-	width: 75px;
+	width:200px;
 	text-align: left;
 }

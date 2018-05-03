@@ -47,10 +47,10 @@
 				<div id="scaii-interface-title" class="bg" >Small Configurable AI Interface</div>
 			</div>-->
 			<div id="game-titled-container" class="titled-container grid r0c0 bg">
-				<div id="title-row" class="r0c0_2 flex-row">
-					<div id="scaii-acronym">XAI  xACT</div>
-					<div id="game-replay-title">replaying game file:</div>
-					<select id="replay-file-selector" onchange="loadSelectedReplayFile()"></select>
+				<div id="title-row" class="r0c0_1 flex-row">
+					<div id="scaii-acronym" style="font-family:Arial;">XAI  xACT</div>
+					<div id="game-replay-title" style="font-family:Arial;">replaying game file:</div>
+					<select id="replay-file-selector" style="font-family:Arial;font-size:16px" onchange="loadSelectedReplayFile()"></select>
 				</div>
 				
 				
@@ -62,29 +62,24 @@
 					</div>
 					<div id="replay-speed-panel" class="control-panel"></div>
 				</div>-->
-				<div id="game-row" class="flex-row r1c0_2">
-					<div id="action-list" class="grid-center bg grid"></div>
+				<div id="game-row" class="flex-row r1c0_1">
+					
 					<div id="scaii-gameboard" class="grid-center bg"></div>
 				</div>
 				
 				
 				<div id="playback-controls-panel" class="flex-row r2c0_1">
-					<div id="step-label" class="minor-label-text">step</div>
 					<div id="step-value" class="minor-label-text"></div>
 					<div id="rewind-control"></div>
 					<div id="step-back-control"></div>
 					<div id="step-forward-control"></div>
 					<div id="pause-play-control"></div>
 				</div>
-				<div id="progress-panel" class="timeline-control r3c0_1">
-						<progress id="game-progress" value="00" max="99"></progress>
-				</div>
-				
-				<div id="explanation-control-label" class="r4c0_1">Decision Points</div>
-				<div id="explanation-control-panel" class="timeline-control r5c0_1 bg">
+				<div id="explanation-control-panel" class="timeline-control r3c0_1 bg">
 					<!--<input type="button" id="test-button" style="z-index:2; position:relative; top:20px; left:50px" value="?"/>-->
 				</div>
-				<div id="debug-panel" class="r6c0_1 flex-row" style="height:60px;">
+				<div id="action-list" class="r4c0_1  bg grid" style="margin-top:10px; height:80px;"></div>
+				<div id="debug-panel" class="r5c0_1 flex-row" style="height:60px;">
 					<div id="debug1" class="debug-msg"></div>
 					<div id="debug2" class="debug-msg"></div>
 					<div id="debug3" class="debug-msg"></div>

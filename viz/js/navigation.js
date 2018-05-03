@@ -2,22 +2,22 @@ var jumpInProgress = false;
 var userInputBlocked = false;
 
 function paintProgress(value) {
-	var progressString = "" + value;
-	$("#game-progress").attr("value", progressString);
 	showPositionOnTimeline(value);
 	renderExplanationSelectors();
 }
 
+var cursorHeight = 60;
+var cursorWidth = 4;
 function showPositionOnTimeline(value) {
 	drawExplanationTimeline();
 	var widthOfTimeline = expl_ctrl_canvas.width - 2*timelineMargin;
 	var x = timelineMargin + (value / 100) * widthOfTimeline;
 	var y = explanationControlYPosition;
 	
-	var xLeft = x - 1;
-	var xRight = x + 1;
-	var yBottom = y + 30;
-	var yTop = y - 30;
+	var xLeft = x - cursorWidth/2;
+	var xRight = x + cursorWidth/2;
+	var yBottom = y + cursorHeight/2;
+	var yTop = y - cursorHeight/2;
 	var ctx = expl_ctrl_ctx;
 	ctx.beginPath();
 	
