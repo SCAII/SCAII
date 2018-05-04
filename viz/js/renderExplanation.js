@@ -157,9 +157,6 @@ function showRewards(isAggregate, isRewardMode) {
 	activeBarChartInfo.setRewardsMode(isRewardMode);
 	activeBarChartInfo.setDefaultSelections();
 	activeBarChartInfo.renderExplanationBarChart();
-	
-//	saliencyDisplayManager.populateCheckBoxes(isAggregate);
-//saliencyDisplayManager.renderExplanationSaliencyMaps();
 }
 
 function renderWhyInfo(explPoint) {
@@ -187,7 +184,7 @@ function renderWhyInfo(explPoint) {
 	$("#why-label").css("font-size", 14);
 	$("#why-label").css("padding-right", 20);
 	populateRewardQuestionSelector();
-	addWhatButtonForAction();
+	addWhatButton();
 }
 
 function renderWhatInfo() {
@@ -196,8 +193,9 @@ function renderWhatInfo() {
 	populateSaliencyQuestionSelector();
 	createSaliencyContainers();
 	saliencyDisplayManager.setSelectionManager(selectionManager);
-    saliencyDisplayManager.populateCheckBoxes(true);
-	saliencyDisplayManager.displayAnswerToSaliencyQuestion();
+	saliencyDisplayManager.populateCheckBoxes(true);
+	saliencyDisplayManager.saliencyMode = saliencyModeAggregate;
+	saliencyDisplayManager.renderExplanationSaliencyMaps();
 	salienciesAreShowing = true;
 }
 function createRewardChartContainer() {
@@ -249,10 +247,11 @@ function createRewardChartContainer() {
 	//whatButtonDiv.setAttribute("style", "margin:auto;");
 	$("#what-div").append(whatButtonDiv);
 	
-	var whatQuestionDiv = document.createElement("DIV");
-	whatQuestionDiv.setAttribute("id", "what-questions");
-	whatQuestionDiv.setAttribute("class", "rewards-bg");
-	$("#what-div").append(whatQuestionDiv);
+	var whatRadios = document.createElement("DIV");
+	whatRadios.setAttribute("id", "what-radios");
+	whatRadios.setAttribute("class", "flex-row rewards-bg");
+	whatRadios.setAttribute("style", "padding:6px");
+	$("#what-div").append(whatRadios);
 }
 
 function createSaliencyContainers() {
@@ -282,7 +281,7 @@ function createSaliencyContainers() {
 
 	var saliencyMaps = document.createElement("DIV");
 	saliencyMaps.setAttribute("id", "saliency-maps");
-	saliencyMaps.setAttribute("class", "grid saliencies-bg");
+	saliencyMaps.setAttribute("class", "grid");
 	$("#saliency-maps-titled-container").append(saliencyMaps);
 
 	// selections area will be hidden so wedon't see checkboxes
@@ -306,47 +305,87 @@ function createSaliencyContainers() {
 
 }
 
-function renderExplanationPoint(explPoint){
-	activeBarChartInfo = explPoint.getBarChart();
-	addHelperFunctionsToBarChartInfo(activeBarChartInfo);
+// function renderExplanationPoint(explPoint){
+// 	activeBarChartInfo = explPoint.getBarChart();
+// 	addHelperFunctionsToBarChartInfo(activeBarChartInfo);
 
-	//renderActionName(explPoint);
-	var saliency = explPoint.getSaliency();
-	saliencyLookupMap = saliency.getSaliencyMapMap();
+// 	//renderActionName(explPoint);
+// 	var saliency = explPoint.getSaliency();
+// 	saliencyLookupMap = saliency.getSaliencyMapMap();
 	
-	selectionManager = getSelectionManager();
-	saliencyDisplayManager.setSelectionManager(selectionManager);
-	activeBarChartInfo.setSelectionManager(selectionManager);
+// 	selectionManager = getSelectionManager();
+// 	saliencyDisplayManager.setSelectionManager(selectionManager);
+// 	activeBarChartInfo.setSelectionManager(selectionManager);
 	
-	activeBarChartInfo.setAggregate(true); 
-	activeBarChartInfo.setDefaultSelections();
-	activeBarChartInfo.renderExplanationBarChart();
+// 	activeBarChartInfo.setAggregate(true); 
+// 	activeBarChartInfo.setDefaultSelections();
+// 	activeBarChartInfo.renderExplanationBarChart();
 	
-	populateRewardQuestionSelector();
-	//renderTabActiveActionRewards();
-	populateSaliencyQuestionSelector();
-	//renderTabCombinedSaliency();
-	saliencyDisplayManager.populateCheckBoxes(true);
-	saliencyDisplayManager.displayAnswerToSaliencyQuestion();
-}
+// 	populateRewardQuestionSelector();
+// 	//renderTabActiveActionRewards();
+// 	populateSaliencyQuestionSelector();
+// 	//renderTabCombinedSaliency();
+// 	saliencyDisplayManager.populateCheckBoxes(true);
+// 	saliencyDisplayManager.displayAnswerToSaliencyQuestion();
+// }
+
 
 function populateSaliencyQuestionSelector(){
-	$("#what-questions").empty();
-	var saliencyQuestionSelector = document.createElement("SELECT");
-	saliencyQuestionSelector.setAttribute("id", "saliency-question-selector");
-	saliencyQuestionSelector.setAttribute("class", "question-selector");
-	saliencyQuestionSelector.onchange = showSaliencyAnswer;
-	//<select id="reward-question-selector"  class="question-selector" onchange="showRewardAnswer()"></select>
-	$("#what-questions").append(saliencyQuestionSelector);
-	$("#saliency-question-selector").append($('<option>', {
-			value: 0,
-			text: saliencyQuestionAggregate
-	}));	
-	$("#saliency-question-selector").append($('<option>', {
-			value: 1,
-			text: saliencyQuestionDetailed
-	}));
+	$("#what-radios").empty();
+	
+	// SALIENCY SECTION
+	var radioCombinedSaliency = document.createElement("input");
+	radioCombinedSaliency.setAttribute("type","radio");
+	radioCombinedSaliency.setAttribute("name","saliencyView");
+	radioCombinedSaliency.setAttribute("value","saliencyCombined");
+	radioCombinedSaliency.setAttribute("style", "margin-left:20px;");
+	radioCombinedSaliency.setAttribute("checked", "true");
+	radioCombinedSaliency.onclick = function() {
+		saliencyDisplayManager.saliencyMode = saliencyModeAggregate;
+		saliencyDisplayManager.renderExplanationSaliencyMaps();
+	};
+
+	var combinedSaliencyLabel = document.createElement("div");
+	combinedSaliencyLabel.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:14px;");
+	combinedSaliencyLabel.innerHTML = "relevance combined";
+
+	var radioDetailedSaliency = document.createElement("input");
+	radioDetailedSaliency.setAttribute("type","radio");
+	radioDetailedSaliency.setAttribute("name","saliencyView");
+	radioDetailedSaliency.setAttribute("value","saliencyDetailed");
+	radioDetailedSaliency.setAttribute("style", "margin-left:20px; ");
+	radioDetailedSaliency.onclick = function() {
+		saliencyDisplayManager.saliencyMode = saliencyModeDetailed;
+		saliencyDisplayManager.renderExplanationSaliencyMaps();
+	};
+
+	var detailedSaliencyLabel = document.createElement("div");
+	detailedSaliencyLabel.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:14px;");
+	detailedSaliencyLabel.innerHTML = "relevance details";
+	
+	$("#what-radios").append(radioCombinedSaliency);
+	$("#what-radios").append(combinedSaliencyLabel);
+	$("#what-radios").append(radioDetailedSaliency);
+	$("#what-radios").append(detailedSaliencyLabel);
 }
+
+// function populateSaliencyQuestionSelector(){
+// 	$("#what-questions").empty();
+// 	var saliencyQuestionSelector = document.createElement("SELECT");
+// 	saliencyQuestionSelector.setAttribute("id", "saliency-question-selector");
+// 	saliencyQuestionSelector.setAttribute("class", "question-selector");
+// 	saliencyQuestionSelector.onchange = showSaliencyAnswer;
+// 	//<select id="reward-question-selector"  class="question-selector" onchange="showRewardAnswer()"></select>
+// 	$("#what-questions").append(saliencyQuestionSelector);
+// 	$("#saliency-question-selector").append($('<option>', {
+// 			value: 0,
+// 			text: saliencyQuestionAggregate
+// 	}));	
+// 	$("#saliency-question-selector").append($('<option>', {
+// 			value: 1,
+// 			text: saliencyQuestionDetailed
+// 	}));
+// }
 
 
 function populateRewardQuestionSelector(){
@@ -417,28 +456,27 @@ function populateRewardQuestionSelector(){
 	$("#why-radios").append(radioDetailedAdvantage);
 	$("#why-radios").append(detailedAdvantageLabel);
 
-	//rewardQuestionSelector.onchange = showRewardAnswer;
 }
 
-function populateRewardQuestionSelectorOld(){
-	$("#why-radios").empty();
+// function populateRewardQuestionSelector(){
+// 	$("#why-radios").empty();
 	
-	var rewardQuestionSelector = document.createElement("SELECT");
-	rewardQuestionSelector.setAttribute("id", "reward-question-selector");
-	rewardQuestionSelector.setAttribute("class", "question-selector");
-	rewardQuestionSelector.onchange = showRewardAnswer;
-	//<select id="reward-question-selector"  class="question-selector" onchange="showRewardAnswer()"></select>
-	$("#why-radios").append(rewardQuestionSelector);
-	$("#reward-question-selector").toggleClass('active');
-	$("#reward-question-selector").append($('<option>', {
-			value: 0,
-			text: rewardQuestionAggregate
-	}));	
-	$("#reward-question-selector").append($('<option>', {
-			value: 1,
-			text: rewardQuestionDetailed
-	}));
-}
+// 	var rewardQuestionSelector = document.createElement("SELECT");
+// 	rewardQuestionSelector.setAttribute("id", "reward-question-selector");
+// 	rewardQuestionSelector.setAttribute("class", "question-selector");
+// 	rewardQuestionSelector.onchange = showRewardAnswer;
+// 	//<select id="reward-question-selector"  class="question-selector" onchange="showRewardAnswer()"></select>
+// 	$("#why-radios").append(rewardQuestionSelector);
+// 	$("#reward-question-selector").toggleClass('active');
+// 	$("#reward-question-selector").append($('<option>', {
+// 			value: 0,
+// 			text: rewardQuestionAggregate
+// 	}));	
+// 	$("#reward-question-selector").append($('<option>', {
+// 			value: 1,
+// 			text: rewardQuestionDetailed
+// 	}));
+// }
 
 var renderActionName = function(explPoint){
 	var title = explPoint.getTitle();
@@ -505,15 +543,15 @@ function addWhyButtonForAction(step, x,  y) {
 	})
 }
 
-function addWhatButtonForAction() {
+function addWhatButton() {
 	$("#what-button-div").empty();
 	var whatButton = document.createElement("BUTTON");
-	var buttonId = getWhatButtonId();
+	var buttonId = "what-button";
 	whatButton.setAttribute("id", buttonId);
 	var what = document.createTextNode("what was relevant?");
 	whatButton.appendChild(what);    
 	//whatButton.onclick = renderWhatInfo;      
-	whatButton.setAttribute("style", "width:100px;padding-top:6px; padding-left:6px; padding-bottom:6px; padding-right: 6px;margin-right:30px;font-family:Arial;");
+	whatButton.setAttribute("style", "padding:6px;margin-right:30px;font-family:Arial;");
 	
 	$("#what-button-div").append(whatButton);
 	$("#" + buttonId).click(function(e) {
@@ -664,15 +702,10 @@ function processWhatClick() {
 	 else {
 		renderWhatInfo();
 	 }
-	 var whatButtonId = getWhatButtonId();
-	 //$("#" + whatButtonId).toggleClass('active');
 	 $("#what-questions").toggleClass('saliency-active');
 	 $("#what-label").toggleClass('saliency-active');
 }
 
-function getWhatButtonId() {
-	return 'whatButton';
-}
 
 function getQmButtonId(step) {
 	return 'qmButton' + step;

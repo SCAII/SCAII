@@ -56,19 +56,20 @@ function getSaliencyDisplayManager() {
 		alert("could not find checkbox with name " + name);
 	}
 	
-	sdm.displayAnswerToSaliencyQuestion = function(){
-		var chosenQuestion = $( "#saliency-question-selector option:selected" ).text();
-		if (chosenQuestion == saliencyQuestionAggregate){
-			sdm.saliencyMode = saliencyModeAggregate;
-		}
-		else {
-			sdm.saliencyMode = saliencyModeDetailed;
-		}
-		this.renderExplanationSaliencyMaps(undefined);
-	}
+	// sdm.displayAnswerToSaliencyQuestion = function(){
+	// 	var chosenQuestion = $( "#saliency-question-selector option:selected" ).text();
+	// 	if (chosenQuestion == saliencyQuestionAggregate){
+	// 		sdm.saliencyMode = saliencyModeAggregate;
+	// 	}
+	// 	else {
+	// 		sdm.saliencyMode = saliencyModeDetailed;
+	// 	}
+	// 	this.renderExplanationSaliencyMaps(undefined);
+	// }
 	
 	// use checkboxes (which may have changed) to adjust the selection
-	sdm.renderExplanationSaliencyMaps = function(evt) {
+
+	sdm.renderExplanationSaliencyMaps = function() {
 		this.xaiSelectionManager.setSelections([]);
 		for (var i in this.activeCheckBoxes){
 			var cb = this.activeCheckBoxes[i];
@@ -397,18 +398,18 @@ function getMousePos(canvas, evt) {
 	
 function getNameDivForRow(rowIndex, rowInfo, layerCount){
 	var nameContainerDiv = document.createElement("div");
-	nameContainerDiv.setAttribute("style", getGridPositionStyle(0,rowIndex) + '; width:200px; height:100%;  vertical-align:middle; border-style: solid; border-width:1px;font-family:Arial;');
-	
-	
-	var nameContainerContentDiv = document.createElement("div");
-	nameContainerContentDiv.innerHTML = getRowInfoString(rowInfo);
-	nameContainerContentDiv.setAttribute("style", '; text-align:center; padding-top:80px;font-family:Arial;');
-	nameContainerDiv.append(nameContainerContentDiv);
+	nameContainerDiv.setAttribute("style", getGridPositionStyle(0,rowIndex) + '; width:200px; height:100%;padding-top:125px; text-align:center; border-style: solid; border-width:1px;font-family:Arial;');
+	nameContainerDiv.innerHTML = getRowInfoString(rowInfo);
+//	var nameContainerContentDiv = document.createElement("div");
+//	nameContainerContentDiv.innerHTML = getRowInfoString(rowInfo);
+//	nameContainerContentDiv.setAttribute("style", 'margin:auto;font-family:Arial;');
+	//nameContainerContentDiv.setAttribute("style", 'text-align:center; padding-top:80px;font-family:Arial;');
+//	nameContainerDiv.append(nameContainerContentDiv);
 	return nameContainerDiv;
 }
 
 function renderExplanationSaliencyMaps_Bridge(evt) {
-	saliencyDisplayManager.renderExplanationSaliencyMaps(evt);
+	saliencyDisplayManager.renderExplanationSaliencyMaps();
 }
 
 function createCheckBox(name) {
@@ -497,9 +498,9 @@ var configureMapTitle = function(mapTitleDivSelector){
 
 }
 
-function showSaliencyAnswer() {
-	saliencyDisplayManager.displayAnswerToSaliencyQuestion();
-}
+// function showSaliencyAnswer() {
+// 	saliencyDisplayManager.displayAnswerToSaliencyQuestion();
+// }
 
 function getOverlayOpacityBySaliencyRGBAString(saliencyValue) {
   var reverseSaliency = 1.0 - saliencyValue;
