@@ -175,9 +175,10 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		 chartTable.push(rowWithRewardNames);
 		 
 		 var barGroups = this.getGroupsList();
+		 var maxBarGroup = this.getMaxValueBarGroup();
 		 for (var i in barGroups){
 			 var barGroup = barGroups[i];
-			 var barValuesRow = this.getBarValuesRowOneBarPerAction(barGroup);
+			 var barValuesRow = this.getBarAdvantagesRowOneBarPerAction(barGroup, maxBarGroup);
 			 chartTable.push(barValuesRow);
 		 }
 		 //console.log("chartTable for actions:");
@@ -221,10 +222,11 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		 var chartTable = [];
 		 chartTable.push(rowWithRewardNames);
 		 
+		 var maxBarGroup = this.getMaxValueBarGroup();
 		 var barGroups = this.getGroupsList();
 		 for (var i in barGroups){
 			 var barGroup = barGroups[i];
-			 var barValuesRow = this.getBarValuesRowNBarsPerAction(barGroup);
+			 var barValuesRow = this.getBarAdvantagesRowNBarsPerAction(barGroup, maxBarGroup);
 			 chartTable.push(barValuesRow);
 		 }
 		 //console.log("chartTable for types:");
@@ -238,6 +240,16 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		return rewardNameRow;
 	}
 
+	
+	barChartInfo.getBarAdvantagesRowOneBarPerAction = function(barGroup, maxBarGroup) {
+		var barValueRow = [];
+		barValueRow.push(barGroup.getName());
+		var barGroupValue = getValueForBarGroup(barGroup);
+		var maxBarGroupValue = getValueForBarGroup(maxBarGroup);
+		var diff = barGroupValue - maxBarGroupValue;
+		barValueRow.push(diff);
+		return barValueRow;
+	}
 	
 	barChartInfo.getBarValuesRowOneBarPerAction = function(barGroup) {
 		var barValueRow = [];
@@ -258,6 +270,21 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		 }
 		 return barValueRow;
 	}
+	
+	barChartInfo.getBarAdvantagesRowNBarsPerAction = function(barGroup, maxBarGroup) {
+		var barValueRow = [];
+		barValueRow.push(barGroup.getName());
+		var bars = barGroup.getBarsList();
+		var maxBars = maxBarGroup.getBarsList();
+		for (var i in bars){
+			 var bar = bars[i];
+			 var maxBar = maxBars[i];
+			 var value = bar.getValue() - maxBar.getValue();
+			 barValueRow.push(value);
+		 }
+		 return barValueRow;
+	}
+
 	barChartInfo.getRewardNameRowNBarsPerAction = function() {
 		var rewardNameRow = [''];
 		// any of the BarGroups can be used to fill in the reward names

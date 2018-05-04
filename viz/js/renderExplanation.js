@@ -158,8 +158,8 @@ function showRewards(isAggregate, isRewardMode) {
 	activeBarChartInfo.setDefaultSelections();
 	activeBarChartInfo.renderExplanationBarChart();
 	
-	saliencyDisplayManager.populateCheckBoxes(isAggregate);
-	saliencyDisplayManager.renderExplanationSaliencyMaps();
+//	saliencyDisplayManager.populateCheckBoxes(isAggregate);
+//saliencyDisplayManager.renderExplanationSaliencyMaps();
 }
 
 function renderWhyInfo(explPoint) {
@@ -176,7 +176,7 @@ function renderWhyInfo(explPoint) {
 	activeBarChartInfo.setRewardsMode(true); 
 	activeBarChartInfo.setDefaultSelections();
 	activeBarChartInfo.renderExplanationBarChart();
-	
+
 	var actionName =  activeBarChartInfo.getChosenActionName();
 	var whyPrompt = " had highest predicted reward. ";
 	$("#why-action-label").html(actionName);
@@ -360,7 +360,7 @@ function populateRewardQuestionSelector(){
 	radioCombinedRewards.setAttribute("style", "margin-left:20px;");
 	radioCombinedRewards.setAttribute("checked", "true");
 	radioCombinedRewards.onclick = function() {
-		showRewards(true, false);
+		showRewards(true, true);
 	};
 
 	var combinedRewardsLabel = document.createElement("div");
@@ -373,7 +373,7 @@ function populateRewardQuestionSelector(){
 	radioDetailedRewards.setAttribute("value","rewardDetailed");
 	radioDetailedRewards.setAttribute("style", "margin-left:20px; ");
 	radioDetailedRewards.onclick = function() {
-		showRewards(false, false);
+		showRewards(false, true);
 	};
 
 	var detailedRewardsLabel = document.createElement("div");
@@ -392,7 +392,7 @@ function populateRewardQuestionSelector(){
 	radioCombinedAdvantage.setAttribute("value","advantageCombined");
 	radioCombinedAdvantage.setAttribute("style", "margin-left:20px;");
 	radioCombinedAdvantage.onclick = function() {
-		showRewards(true, true);
+		showRewards(true, false);
 	};
 
 	var combinedAdvantageLabel = document.createElement("div");
@@ -405,7 +405,7 @@ function populateRewardQuestionSelector(){
 	radioDetailedAdvantage.setAttribute("value","advantageDetailed");
 	radioDetailedAdvantage.setAttribute("style", "margin-left:20px; ");
 	radioDetailedAdvantage.onclick = function() {
-		showRewards(false, true);
+		showRewards(false, false);
 	};
 
 	var detailedAdvantageLabel = document.createElement("div");
