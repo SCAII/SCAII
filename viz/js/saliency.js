@@ -56,17 +56,6 @@ function getSaliencyDisplayManager() {
 		alert("could not find checkbox with name " + name);
 	}
 	
-	// sdm.displayAnswerToSaliencyQuestion = function(){
-	// 	var chosenQuestion = $( "#saliency-question-selector option:selected" ).text();
-	// 	if (chosenQuestion == saliencyQuestionAggregate){
-	// 		sdm.saliencyMode = saliencyModeAggregate;
-	// 	}
-	// 	else {
-	// 		sdm.saliencyMode = saliencyModeDetailed;
-	// 	}
-	// 	this.renderExplanationSaliencyMaps(undefined);
-	// }
-	
 	// use checkboxes (which may have changed) to adjust the selection
 
 	sdm.renderExplanationSaliencyMaps = function() {
@@ -398,8 +387,8 @@ function getMousePos(canvas, evt) {
 	
 function getNameDivForRow(rowIndex, rowInfo, layerCount){
 	var nameContainerDiv = document.createElement("div");
-	nameContainerDiv.setAttribute("style", getGridPositionStyle(0,rowIndex) + '; width:200px; height:100%;padding-top:125px; text-align:center; border-style: solid; border-width:1px;font-family:Arial;');
-	nameContainerDiv.innerHTML = getRowInfoString(rowInfo);
+	nameContainerDiv.setAttribute("style", getGridPositionStyle(0,rowIndex) + '; width:200px;padding-top:125px; text-align:center; border-style: solid; border-width:1px;font-family:Arial;');
+	nameContainerDiv.innerHTML = getRowInfoString(rowInfo);                              // had height:100%
 //	var nameContainerContentDiv = document.createElement("div");
 //	nameContainerContentDiv.innerHTML = getRowInfoString(rowInfo);
 //	nameContainerContentDiv.setAttribute("style", 'margin:auto;font-family:Arial;');
