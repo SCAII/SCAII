@@ -27,7 +27,7 @@ use self::systems::serde::{DeserializeSystem, RedoCollisionSys, SerializeSystem}
 /// for running an RTS game, as well as a few flags controlling
 /// program flow.
 pub struct Rts<'a, 'b> {
-    world: World,
+    pub world: World,
     pub initialized: bool,
     pub render: bool,
 

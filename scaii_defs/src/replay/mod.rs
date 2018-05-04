@@ -41,6 +41,15 @@ pub enum ReplayAction {
     Keyframe(SerializationInfo, ActionWrapper),
 }
 
+impl ReplayAction {
+    pub fn header(self) -> Option<ReplayHeader> {
+        match self {
+            ReplayAction::Header(header) => Some(header),
+            _ => None,
+        }
+    }
+}
+
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 pub struct SerializationInfo {
     pub source: SerializedProtosEndpoint,
@@ -52,7 +61,7 @@ pub struct ReplayHeader {
     pub configs: SerializedProtosScaiiPacket,
 }
 
-pub fn load_replay_file(path: &Path) -> Result<Vec<ReplayAction>, Box<Error>> {
+pub fn load_replay_file<P: AsRef<Path>>(path: P) -> Result<Vec<ReplayAction>, Box<Error>> {
     use bincode;
     use bincode::Infinite;
     use std::fs::File;
@@ -72,7 +81,10 @@ pub fn load_replay_file(path: &Path) -> Result<Vec<ReplayAction>, Box<Error>> {
     Ok(replay_vec)
 }
 
-pub fn save_replay<P: AsRef<Path>>(path: P, replay_actions: &[ReplayAction]) -> Result<(),Box<Error>>{
+pub fn save_replay<P: AsRef<Path>>(
+    path: P,
+    replay_actions: &[ReplayAction],
+) -> Result<(), Box<Error>> {
     let mut file = File::create(path)?;
 
     for action in replay_actions {
@@ -91,7 +103,7 @@ fn persist_replay_action(file: &mut File, replay_action: &ReplayAction) -> Resul
     let data_size = encoded.len();
     let write_result = file.write(&encoded)?;
 
-    assert_eq!(write_result, data_size);  
+    assert_eq!(write_result, data_size);
 
     Ok(())
 }

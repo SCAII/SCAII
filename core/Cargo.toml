@@ -33,10 +33,3 @@ toml = "0.4.5"
 # local deps
 scaii_defs = {path = "../scaii_defs"}
 sky-rts = {path="../backends/sky-rts", optional = true}
-
-
-[profile.release]
-#We can't unwind over C boundaries
-panic = "abort"
-codegen-units = 1
-lto = true

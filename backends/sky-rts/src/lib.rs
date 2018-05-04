@@ -84,7 +84,7 @@ extern crate specs;
 #[macro_use]
 extern crate specs_derive;
 
-mod engine;
+pub mod engine;
 pub(crate) mod util;
 pub mod protos;
 
@@ -106,7 +106,7 @@ const SUPPORTED: BackendSupported = BackendSupported {
 ///
 /// This is typically used as a `Backend` trait object.
 pub struct Context<'a, 'b> {
-    rts: Rts<'a, 'b>,
+    pub rts: Rts<'a, 'b>,
     awaiting_msgs: Vec<MultiMessage>,
 }
 

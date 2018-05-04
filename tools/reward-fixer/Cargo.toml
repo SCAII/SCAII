@@ -1,0 +1,10 @@
+[package]
+name = "replay-fixer"
+version = "0.1.0"
+authors = ["Zoe Juozapaitis <Jragonmiris@gmail.com>"]
+
+[dependencies]
+scaii_defs = {path="../../scaii_defs"}
+sky-rts = {path="../../backends/sky-rts"}
+prost = "0.3"
+walkdir = "2"
