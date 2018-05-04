@@ -34,7 +34,6 @@ function clearQuestionControls(){
 	$("#what-button-div").empty();
 	$("#reward-question-selector").empty();
 	$("#why-label").html(" ");
-
 }
 
 function handleExplDetails(explDetails){
@@ -157,6 +156,9 @@ function showRewards(isAggregate, isRewardMode) {
 	activeBarChartInfo.setRewardsMode(isRewardMode);
 	activeBarChartInfo.setDefaultSelections();
 	activeBarChartInfo.renderExplanationBarChart();
+	if (salienciesAreShowing){
+		saliencyDisplayManager.renderExplanationSaliencyMaps();
+	}
 }
 
 function renderWhyInfo(explPoint) {
@@ -185,6 +187,7 @@ function renderWhyInfo(explPoint) {
 	$("#why-label").css("padding-right", 20);
 	populateRewardQuestionSelector();
 	addWhatButton();
+	rewardsAreShowing = true;
 }
 
 function renderWhatInfo() {
@@ -194,7 +197,7 @@ function renderWhatInfo() {
 	createSaliencyContainers();
 	saliencyDisplayManager.setSelectionManager(selectionManager);
 	saliencyDisplayManager.populateCheckBoxes(true);
-	saliencyDisplayManager.saliencyMode = saliencyModeAggregate;
+	saliencyDisplayManager.setSaliencyMode(saliencyModeAggregate);
 	saliencyDisplayManager.renderExplanationSaliencyMaps();
 	salienciesAreShowing = true;
 }
@@ -341,7 +344,7 @@ function populateSaliencyQuestionSelector(){
 	radioCombinedSaliency.setAttribute("style", "margin-left:20px;");
 	radioCombinedSaliency.setAttribute("checked", "true");
 	radioCombinedSaliency.onclick = function() {
-		saliencyDisplayManager.saliencyMode = saliencyModeAggregate;
+		saliencyDisplayManager.setSaliencyMode(saliencyModeAggregate);
 		saliencyDisplayManager.renderExplanationSaliencyMaps();
 	};
 
@@ -355,7 +358,7 @@ function populateSaliencyQuestionSelector(){
 	radioDetailedSaliency.setAttribute("value","saliencyDetailed");
 	radioDetailedSaliency.setAttribute("style", "margin-left:20px; ");
 	radioDetailedSaliency.onclick = function() {
-		saliencyDisplayManager.saliencyMode = saliencyModeDetailed;
+		saliencyDisplayManager.setSaliencyMode(saliencyModeDetailed);
 		saliencyDisplayManager.renderExplanationSaliencyMaps();
 	};
 
