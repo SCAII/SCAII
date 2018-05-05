@@ -463,16 +463,16 @@ function selectHandler(e) {
 				activeBarChartManager.addSelection(selection);
 			}
 		}
-		if (!salienciesAreShowing) {
-			renderWhatInfo();
-		}
+		
 		activeSaliencyDisplayManager.adjustCheckboxes(activeBarChartManager.getSelections());
 	}
 	else {
 		activeSaliencyDisplayManager.adjustCheckboxes(selectionsByName);
 	}
 	
-	activeSaliencyDisplayManager.renderExplanationSaliencyMaps();
+	if (!salienciesAreShowing) {
+		renderWhatInfo();
+	}
 }
 //'stroke-color: #871B47; stroke-opacity: 0.6; stroke-width: 8; fill-color: #BC5679; fill-opacity: 0.2'
 function getValueForBarGroup(barGroup) {
