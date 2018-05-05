@@ -33,7 +33,7 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 		var googleChartSelections = [];
 		for (var i in selectionsByName) {
 			var selectionByName = selectionsByName[i];
-			var coordsForChart = this.getChartCoordsForNames(selectionByName[0], selectionsByName[1]);
+			var coordsForChart = this.getChartCoordsForNames(selectionByName[0], selectionByName[1]);
 			var row = coordsForChart[0];
 			var col = coordsForChart[1];
 			var googleChartSelection = {};
@@ -441,8 +441,14 @@ var drawBarChart = function(chartData, options) {
 }
 
 var keys = {};
-window.onkeyup = function(e) { keys[e.keyCode] = false; }
-window.onkeydown = function(e) { keys[e.keyCode] = true; }
+window.onkeyup = function(e) { 
+	keys[e.keyCode] = false; 
+	debug(1, keys); 
+}
+window.onkeydown = function(e) { 
+	keys[e.keyCode] = true; 
+	debug(1,keys);
+}
 
 function selectHandler(e) {
 	var googleChartSelections = googleChart.getSelection();
