@@ -166,10 +166,26 @@ function handleViz(vizData) {
 		controlsManager.reachedEndOfGame();
 	}
 }
-
+var totalsString = "total HP";
 var rewardsDivMap = {};
 function handleCumulativeRewards(crm) {
 	var entryList = crm.getEntryList();
+	var total = 0;
+	//compute totals
+	for (var i in entryList ){
+    	var entry = entryList[i];
+		var val = entry[1];
+		total = Number(total) + Number(val);
+	}
+	var valId = getRewardValueId(totalsString);
+	var idOfExistingTotalLabel = rewardsDivMap[valId];
+	if (idOfExistingTotalLabel == undefined) {
+		addCumRewardPair(0, totalsString, total);
+	}
+	else {
+		$("#" + valId).html(total);
+	}  
+	// add individual values
   	for (var i in entryList ){
     	var entry = entryList[i];
     	var key = entry[0];
@@ -177,7 +193,7 @@ function handleCumulativeRewards(crm) {
 		var valId = getRewardValueId(key);
 		var idOfExistingValueLabel = rewardsDivMap[valId];
 		if (idOfExistingValueLabel == undefined) {
-			var indexInt = Number(i);
+			var indexInt = Number(i+1);
 			addCumRewardPair(indexInt, key, val);
 		}
 		else {
@@ -194,7 +210,13 @@ function getRewardValueId(val) {
 function addCumRewardPair(index, key, val){
 	var rewardKeyDiv = document.createElement("DIV");
 	rewardKeyDiv.setAttribute("class", "r" + index +"c0");
-	rewardKeyDiv.setAttribute("style", "height:15px;font-family:Arial;font-size:14px;");
+	if (key == totalsString){
+		rewardKeyDiv.setAttribute("style", "height:15px;font-family:Arial;font-size:14px;font-weight:bold;");
+	}
+	else {
+		rewardKeyDiv.setAttribute("style", "height:15px;font-family:Arial;font-size:14px;");
+	}
+	
 	rewardKeyDiv.innerHTML = key;
 	$("#cumulative-rewards").append(rewardKeyDiv);
 
@@ -204,7 +226,13 @@ function addCumRewardPair(index, key, val){
 	rewardsDivMap[id] = rewardValDiv;
 	rewardValDiv.setAttribute("id", id);
 	rewardValDiv.setAttribute("class", "r" + index +"c1");
-	rewardValDiv.setAttribute("style", "margin-left: 20px;height:15px;font-family:Arial;font-size:14px;");
+	if (key == totalsString){
+		rewardValDiv.setAttribute("style", "margin-left: 20px;height:15px;font-family:Arial;font-size:14px;font-weight:bold");
+	}
+	else {
+		rewardValDiv.setAttribute("style", "margin-left: 20px;height:15px;font-family:Arial;font-size:14px;");
+	}
+	
 	rewardValDiv.innerHTML = val;
     $("#cumulative-rewards").append(rewardValDiv);
 }
