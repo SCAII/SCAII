@@ -559,7 +559,7 @@ function renderDecisionPointLegend() {
 	decisionPointIds = {};
 	var legendLabel = document.createElement("LABEL");
 	legendLabel.setAttribute("id", "legend-label");
-	legendLabel.setAttribute("style", getGridPositionStyle(0,0) + 'margin-left:10px;margin-bottom:5px;margin-top:10px;font-family:Arial;font-size:14px;');
+	legendLabel.setAttribute("style", getGridPositionStyle(0,0) + 'margin-left:10px;margin-bottom:0px;margin-top:6px;font-family:Arial;font-size:14px;');
 	legendLabel.innerHTML = "Decision Points: ";
 	$("#action-list").append(legendLabel);
 
@@ -673,7 +673,7 @@ function addLabelForAction(title, index, step){
 
 	var row = Math.floor((index - 1) / 2);
 	var col = 1 + (index - 1) % 2;
-	actionLabel.setAttribute("style", getGridPositionStyle(col, row) + 'padding:5px;margin-left:10px;margin-bottom:5px;margin-top:10px;margin-right:10px;font-family:Arial;font-size:14px;');
+	actionLabel.setAttribute("style", getGridPositionStyle(col, row) + 'padding:0px;margin-left:4px;margin-bottom:2px;margin-top:2px;margin-right:4px;font-family:Arial;font-size:14px;');
 	var html = 'D' + index + ': ' + title;
 	actionLabel.innerHTML = html;
 	$("#action-list").append(actionLabel);
