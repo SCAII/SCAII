@@ -4,17 +4,14 @@ const saliencyModeDetailed = "show all saliencies";
 const saliencyQuestionAggregate = "(Showing areas of greatest attention)";
 const saliencyQuestionDetailed  = "(Showing areas of greatest attention by feature)";
 
-function getSaliencyDisplayManager() {
+function getSaliencyDisplayManager(selectionManager) {
 	var sdm = {};
 	sdm.saliencyMode = saliencyModeAggregate;
 	sdm.saliencyMapPercentSize = 1.0;
 	sdm.activeCheckBoxes = [];
 	//A list of strings such as "attack bottom left *"  (for all bars) or "attack bottom left rewardX" 
-	sdm.xaiSelectionManager = undefined;
+	sdm.xaiSelectionManager = selectionManager;
 	sdm.rowInfosByName = {};
-	sdm.setSelectionManager = function(selectionManager){
-		this.xaiSelectionManager = selectionManager;
-	}
 	
 	sdm.setActiveRowInfo = function(activeRowInfos) {
 		this.rowInfosByName = {};
@@ -76,7 +73,7 @@ function getSaliencyDisplayManager() {
 			this.renderAllExplanationSaliencyMaps();
 		}
 		var currentSelections = this.xaiSelectionManager.getSelections();
-		var googleChartSelections = activeBarChartInfo.convertSelectionsByNameToGoogleChartSelections(currentSelections);
+		var googleChartSelections = activeBarChartManager.convertSelectionsByNameToGoogleChartSelections(currentSelections);
 		googleChart.setSelection(googleChartSelections);
 	}
 
@@ -92,19 +89,10 @@ function getSaliencyDisplayManager() {
 		}
 		return false;
 	}
-    sdm.populateCheckBoxes = function(isAggregate){
-		this.activeCheckBoxes = [];
-		if (isAggregate) {
-			this.populateActionCheckBoxes();
-		}
-		else {
-			this.populateActionBarCheckBoxes();
-		}
-	}
 
 	sdm.populateActionCheckBoxes = function() {
-		$("#saliency-checkboxes").empty();
-		var barGroups = activeBarChartInfo.getGroupsList();
+		//$("#saliency-checkboxes").empty();
+		var barGroups = activeBarChartManager.groupsList;
 		for (var i in barGroups) {
 			var barGroup = barGroups[i];
 			var actionName = barGroup.getName();
@@ -127,14 +115,14 @@ function getSaliencyDisplayManager() {
 			var gridPositionInfoName = getGridPositionStyle(1,i);
 			checkBoxLabel.setAttribute("style", gridPositionInfoName + '; width:200px; margin-top:10px; font-family:Arial;');
 			this.activeCheckBoxes.push(checkBox);
-			$("#saliency-checkboxes").append(checkBox);
-			$("#saliency-checkboxes").append(checkBoxLabel);
+			//$("#saliency-checkboxes").append(checkBox);
+			//$("#saliency-checkboxes").append(checkBoxLabel);
 		}
 	}
 		
 	sdm.populateActionBarCheckBoxes = function() {
-		$("#saliency-checkboxes").empty();
-		var barGroups = activeBarChartInfo.getGroupsList();
+		//$("#saliency-checkboxes").empty();
+		var barGroups = activeBarChartManager.groupsList;
 		for (var i in barGroups) {
 			var barGroup = barGroups[i];
 			var actionName = barGroup.getName();
@@ -162,8 +150,8 @@ function getSaliencyDisplayManager() {
 				var gridPositionInfoName = getGridPositionStyle(1,rowIndex);
 				checkBoxLabel.setAttribute("style", gridPositionInfoName + '; width:200px; margin-top:10px; font-family:Arial;');
 				this.activeCheckBoxes.push(checkBox);
-				$("#saliency-checkboxes").append(checkBox);
-				$("#saliency-checkboxes").append(checkBoxLabel);
+				//$("#saliency-checkboxes").append(checkBox);
+				//$("#saliency-checkboxes").append(checkBoxLabel);
 			}
 		}
 	}
@@ -174,7 +162,7 @@ function getSaliencyDisplayManager() {
 		var rowInfos = this.xaiSelectionManager.getSelections();
 		for (var i in rowInfos){
 			var rowInfo = rowInfos[i];
-			var saliencyId = activeBarChartInfo.getSaliencyIdForActionNameAndBar(rowInfo[0], rowInfo[1]);
+			var saliencyId = activeBarChartManager.getSaliencyIdForActionNameAndBar(rowInfo[0], rowInfo[1]);
 			//console.log("NON-COMBINED MAP saliencyID " + saliencyId);
 			var layerMessage = saliencyLookupMap.get(saliencyId);
 			if (layerMessage == undefined){
@@ -205,7 +193,7 @@ function getSaliencyDisplayManager() {
 		var rowInfos = this.xaiSelectionManager.getSelections();
 		for (var i in rowInfos){
 			var rowInfo = rowInfos[i]; 
-			var saliencyId = activeBarChartInfo.getSaliencyIdForActionNameAndBar(rowInfo[0], rowInfo[1]);
+			var saliencyId = activeBarChartManager.getSaliencyIdForActionNameAndBar(rowInfo[0], rowInfo[1]);
 			//console.log("COMBINED MAP saliencyID " + saliencyId);
 			var layerMessage = saliencyLookupMap.get(saliencyId);
 			if (layerMessage == undefined){
@@ -398,7 +386,7 @@ function getNameDivForRow(rowIndex, rowInfo, layerCount){
 }
 
 function renderExplanationSaliencyMaps_Bridge(evt) {
-	saliencyDisplayManager.renderExplanationSaliencyMaps();
+	activeSaliencyDisplayManager.renderExplanationSaliencyMaps();
 }
 
 function createCheckBox(name) {

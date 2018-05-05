@@ -1,21 +1,21 @@
-var activeBarChartInfo = undefined;
 var activeDataTable = undefined;
 var activeOptions = undefined;
 //Why was action chosen
 const rewardQuestionAggregate = "(Showing summed rewards for actions)";
 const rewardQuestionDetailed  = "(Showing detailed rewards for actions)";
 
-function addHelperFunctionsToBarChartInfo(barChartInfo) {
+function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayManager,isCombined,isRewardMode) {
 	
 	// selection
+	var bcm = {};
+	bcm.barChartMessage = barChartMessage;
+	bcm.groupsList = barChartMessage.getGroupsList();
+	bcm.selectionManager = selectionManager;
+	bcm.saliencyDisplayManager = saliencyDisplayManager;
+	bcm.isCombined = isCombined;
+	bcm.isRewardMode = isRewardMode;
 	
-	barChartInfo.xaiSelectionManager = undefined;
-	
-	barChartInfo.setSelectionManager = function(selectionManager){
-		this.xaiSelectionManager = selectionManager;
-	}
-	
-	barChartInfo.convertGoogleChartSelectionsToSelectionsByName = function(googleChartSelections){
+	bcm.convertGoogleChartSelectionsToSelectionsByName = function(googleChartSelections){
 		var selectionsByName = [];
 		console.log("SELECTION from getSelection() looks like: ");
 		console.log(googleChartSelections);
@@ -29,7 +29,7 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		return selectionsByName;
 	}
 	
-	barChartInfo.convertSelectionsByNameToGoogleChartSelections = function(selectionsByName) {
+	bcm.convertSelectionsByNameToGoogleChartSelections = function(selectionsByName) {
 		var googleChartSelections = [];
 		for (var i in selectionsByName) {
 			var selectionByName = selectionsByName[i];
@@ -44,15 +44,15 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		return googleChartSelections;
 	}
 	
-	barChartInfo.getNameInfoForChartCoords = function(rowCol) {
+	bcm.getNameInfoForChartCoords = function(rowCol) {
 		var row = rowCol[0];
 		var col = rowCol[1];
-		var groups = this.getGroupsList();
+		var groups = this.groupsList;
 		for (var i in groups){
 			var group = groups[i];
 			var curName = group.getName();
 			if (i == row){
-				if (this.isAggregate()) {
+				if (this.isCombined) {
 					return [curName, "*"];
 				}
 				else {
@@ -69,29 +69,11 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		}
 	}
 	
-	
-	// handle awareness of aggregate vs detailed
-	barChartInfo.xaiChartModeIsAggregate = true;
-	barChartInfo.xaiChartModeIsRewardsMode = true;
-	
-	barChartInfo.isAggregate = function(){
-		return this.xaiChartModeIsAggregate;
-	}
-	barChartInfo.isRewardsMode = function(){
-		return this.xaiChartModeIsRewardsMode;
-	}
-	barChartInfo.setAggregate = function(boolValue) {
-		this.xaiChartModeIsAggregate = boolValue;
-		this.xaiSelectionManager.setAggregate(boolValue);
-	}
-	barChartInfo.setRewardsMode = function(boolValue) {
-		this.xaiChartModeIsRewardsMode = boolValue;
-	}
 	// chart coords in data model given to chart renderer
-	barChartInfo.getChartCoordsForNames = function(groupName, barName){
+	bcm.getChartCoordsForNames = function(groupName, barName){
 		var row = undefined;
 		var col = undefined;
-		var groups = this.getGroupsList();
+		var groups = this.groupsList;
 		for (var i in groups){
 			var group = groups[i];
 			var curName = group.getName();
@@ -117,20 +99,20 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 	}
 	
 	
-	barChartInfo.getTableForGoogleChart = function(){
+	bcm.getTableForGoogleChart = function(){
 		var chartTable = undefined;
-		if (this.isAggregate() && this.isRewardsMode()) {
+		if (this.isCombined && this.isRewardMode) {
 			chartTable = this.getTableForGoogleChartAggregateRewards();
 		}
-		else if (this.isAggregate() && !this.isRewardsMode()){
+		else if (this.isCombined && !this.isRewardMode){
 			// combined advantage
 			chartTable = this.getTableForGoogleChartAggregateAdvantage();
 		}
-		else if (!this.isAggregate() && this.isRewardsMode()){
+		else if (!this.isCombined && this.isRewardMode){
 			chartTable = this.getTableForGoogleChartDetailedReward();
 		}
 		else {
-			// !this.isAggregate() && !this.isRewardsMode() i.e. detailed advantage
+			// !this.isCombined && !this.isRewardMode i.e. detailed advantage
 			chartTable = this.getTableForGoogleChartDetailedAdvantage();
 		}
 		return chartTable;
@@ -138,7 +120,7 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 
 
 
-	barChartInfo.getTableForGoogleChartAggregateRewards = function() {
+	bcm.getTableForGoogleChartAggregateRewards = function() {
 		// need structure to look like this
 		// var chartTable = [
 			// ['', 'r', ],
@@ -146,14 +128,14 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 			// ['unit loses', -0.39],
 			// ['adversary flees', 0.2]
 		  // ]; 
-		 var rowWithRewardNames = this.getRewardNameRowOneBarPerAction();
+		 var rowWithRewardNames = getRewardNameRowOneBarPerAction();
 		 var chartTable = [];
 		 chartTable.push(rowWithRewardNames);
 		 
-		 var barGroups = this.getGroupsList();
+		 var barGroups = this.groupsList;
 		 for (var i in barGroups){
 			 var barGroup = barGroups[i];
-			 var barValuesRow = this.getBarValuesRowOneBarPerAction(barGroup);
+			 var barValuesRow = getBarValuesRowOneBarPerAction(barGroup);
 			 chartTable.push(barValuesRow);
 		 }
 		 //console.log("chartTable for actions:");
@@ -162,7 +144,7 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 	}
 
 	
-	barChartInfo.getTableForGoogleChartAggregateAdvantage = function() {
+	bcm.getTableForGoogleChartAggregateAdvantage = function() {
 		// need structure to look like this
 		// var chartTable = [
 			// ['', 'r', ],
@@ -170,11 +152,11 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 			// ['unit loses', -0.39],
 			// ['adversary flees', 0.2]
 		  // ]; 
-		 var rowWithRewardNames = this.getRewardNameRowOneBarPerAction();
+		 var rowWithRewardNames = getRewardNameRowOneBarPerAction();
 		 var chartTable = [];
 		 chartTable.push(rowWithRewardNames);
 		 
-		 var barGroups = this.getGroupsList();
+		 var barGroups = this.groupsList;
 		 var maxBarGroup = this.getMaxValueBarGroup();
 		 for (var i in barGroups){
 			 var barGroup = barGroups[i];
@@ -186,7 +168,7 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		 return chartTable;
 	}
 
-	barChartInfo.getTableForGoogleChartDetailedReward = function() {
+	bcm.getTableForGoogleChartDetailedReward = function() {
 		// need structure to look like this
 		// var chartTable = [
 			// ['', 'r1', 'r2'],
@@ -198,7 +180,7 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		 var chartTable = [];
 		 chartTable.push(rowWithRewardNames);
 		 
-		 var barGroups = this.getGroupsList();
+		 var barGroups = this.groupsList;
 		 for (var i in barGroups){
 			 var barGroup = barGroups[i];
 			 var barValuesRow = this.getBarValuesRowNBarsPerAction(barGroup);
@@ -210,7 +192,7 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 	}
 	
 	
-	barChartInfo.getTableForGoogleChartDetailedAdvantage = function() {
+	bcm.getTableForGoogleChartDetailedAdvantage = function() {
 		// need structure to look like this
 		// var chartTable = [
 			// ['', 'r1', 'r2'],
@@ -223,7 +205,7 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		 chartTable.push(rowWithRewardNames);
 		 
 		 var maxBarGroup = this.getMaxValueBarGroup();
-		 var barGroups = this.getGroupsList();
+		 var barGroups = this.groupsList;
 		 for (var i in barGroups){
 			 var barGroup = barGroups[i];
 			 var barValuesRow = this.getBarAdvantagesRowNBarsPerAction(barGroup, maxBarGroup);
@@ -235,13 +217,8 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 	}
 
 	
-	barChartInfo.getRewardNameRowOneBarPerAction = function() {
-		var rewardNameRow = ['', 'total reward'];
-		return rewardNameRow;
-	}
-
 	
-	barChartInfo.getBarAdvantagesRowOneBarPerAction = function(barGroup, maxBarGroup) {
+	bcm.getBarAdvantagesRowOneBarPerAction = function(barGroup, maxBarGroup) {
 		var barValueRow = [];
 		barValueRow.push(barGroup.getName());
 		var barGroupValue = getValueForBarGroup(barGroup);
@@ -251,15 +228,7 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		return barValueRow;
 	}
 	
-	barChartInfo.getBarValuesRowOneBarPerAction = function(barGroup) {
-		var barValueRow = [];
-		barValueRow.push(barGroup.getName());
-		var barGroupValue = getValueForBarGroup(barGroup);
-		barValueRow.push(barGroupValue);
-		return barValueRow;
-	}
-	
-	barChartInfo.getBarValuesRowNBarsPerAction = function(barGroup) {
+	bcm.getBarValuesRowNBarsPerAction = function(barGroup) {
 		var barValueRow = [];
 		barValueRow.push(barGroup.getName());
 		var bars = barGroup.getBarsList();
@@ -271,7 +240,7 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		 return barValueRow;
 	}
 	
-	barChartInfo.getBarAdvantagesRowNBarsPerAction = function(barGroup, maxBarGroup) {
+	bcm.getBarAdvantagesRowNBarsPerAction = function(barGroup, maxBarGroup) {
 		var barValueRow = [];
 		barValueRow.push(barGroup.getName());
 		var bars = barGroup.getBarsList();
@@ -285,10 +254,10 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		 return barValueRow;
 	}
 
-	barChartInfo.getRewardNameRowNBarsPerAction = function() {
+	bcm.getRewardNameRowNBarsPerAction = function() {
 		var rewardNameRow = [''];
 		// any of the BarGroups can be used to fill in the reward names
-		var barGroups = this.getGroupsList();
+		var barGroups = this.groupsList;
 		var barGroup = barGroups[0];
 		var bars = barGroup.getBarsList();
 		for (var i in bars){
@@ -297,18 +266,18 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		}
 		return rewardNameRow;
 	}
-	barChartInfo.getOptionsForBarChartMessage = function() {
+	bcm.getOptionsForBarChartMessage = function() {
 		var options = {
 			//legend: { position: "none" },
-			title: this.getTitle(),
+			title: this.barChartMessage.getTitle(),
 			//chartArea: {width: '50%', left:70},
 			chartArea: {width: '50%', left:"15%"},
 			hAxis: {
-			  title: this.getVTitle(),
+			  title: this.barChartMessage.getVTitle(),
 			  //minValue: 0
 			},
 			vAxis: {
-			  title: this.getHTitle(),
+			  title: this.barChartMessage.getHTitle(),
 			},
 			'width':700,
 			'height':400
@@ -317,8 +286,8 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 	}
 	
 	
-	barChartInfo.getSaliencyIdForActionNameAndBar = function(actionName, barName) {
-		var barGroups = this.getGroupsList();
+	bcm.getSaliencyIdForActionNameAndBar = function(actionName, barName) {
+		var barGroups = this.groupsList;
 		for (var i in barGroups){
 			var barGroup = barGroups[i];
 			if (barGroup.getName() == actionName) {
@@ -342,17 +311,7 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		alert('could not find saliencyId for actionName ' + actionName);
 	}
 	
-	// barChartInfo.displayAnswerToRewardQuestion = function(){
-	// 	var chosenQuestion = $( "#reward-question-selector option:selected" ).text();
-	// 	if (chosenQuestion == rewardQuestionAggregate){
-	// 		showRewards(true);
-	// 	}
-	// 	else {
-	// 		showRewards(false);
-	// 	}
-	// }
-	
-	barChartInfo.renderExplanationBarChart = function() {
+	bcm.renderExplanationBarChart = function() {
 		if ($("#explanations-rewards").length) {
 			$("#explanations-rewards").empty();
 		}
@@ -372,69 +331,45 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		}
 	}
 	
-	barChartInfo.createGoogleChartSelections = function(){
-		var selections = this.xaiSelectionManager.getSelections();
+	bcm.createGoogleChartSelections = function(){
+		var selections = this.selectionManager.getSelections();
 		var googleChartSelections = this.convertSelectionsByNameToGoogleChartSelections(selections);
 		return googleChartSelections;
 	}
 	
 	// default to highest score, aggregate i.e. highest scoring task
-	barChartInfo.setDefaultSelections = function() {
+	bcm.setDefaultSelections = function() {
 		var barGroup = this.getMaxValueBarGroup();
 		var barGroupName = barGroup.getName();
 		var selections = [];
 		var rowInfo = undefined;
-		if (this.isAggregate()) {
+		if (this.isCombined) {
 			rowInfo = [ barGroupName, "*"];
 		}
 		else {
 			rowInfo = this.getRowInfoForHighestRewardBar();
 		}
 		selections.push(rowInfo);
-		this.xaiSelectionManager.setSelections(selections);			
+		this.selectionManager.setSelections(selections);	
+		this.saliencyDisplayManager.adjustCheckboxes(selections);		
 	}
 	
-	barChartInfo.getSelections = function() {
-		return this.xaiSelectionManager.getSelections();
+	bcm.getSelections = function() {
+		return this.selectionManager.getSelections();
 	}
-	barChartInfo.isSelected = function(selection) {
-		return this.xaiSelectionManager.isSelected(selection);
-	}
-
-	barChartInfo.removeSelection = function(selection) {
-		this.xaiSelectionManager.removeSelection(selection);
+	bcm.isSelected = function(selection) {
+		return this.selectionManager.isSelected(selection);
 	}
 
-	barChartInfo.addSelection = function(selection) {
-		return this.xaiSelectionManager.addSelection(selection);
+	bcm.removeSelection = function(selection) {
+		this.selectionManager.removeSelection(selection);
 	}
 
-	// default to highest score, aggregate i.e. highest scoring task
-	// barChartInfo.setDefaultSelectionsIfNoneSet = function() {
-		// if (!this.hasSelections()){
-			// var barGroup = this.getMaxValueBarGroup();
-			// var barGroupName = barGroup.getName();
-			// var selections = [];
-			// var rowInfo = undefined;
-			// if (this.isAggregate()) {
-				// rowInfo = [ barGroupName, "*"];
-			// }
-			// else {
-				// rowInfo = this.getRowInfoForHighestRewardBar();
-			// }
-			// selections.push(rowInfo);
-			// this.xaiSelectionManager.setSelections(selections);			
-		// }
-	// }
-	
-	// barChartInfo.hasSelections = function() {
-		// if (this.xaiSelectionManager.getSelections().length == 0) {
-			// return false;
-		// }
-		// return true;
-	// }
-	
-	barChartInfo.getRowInfoForHighestRewardBar = function() {
+	bcm.addSelection = function(selection) {
+		return this.selectionManager.addSelection(selection);
+	}
+
+	bcm.getRowInfoForHighestRewardBar = function() {
 		var barGroup = this.getMaxValueBarGroup();
 		var actionName = barGroup.getName();
 		var bars = barGroup.getBarsList();
@@ -456,8 +391,8 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 	}
 
 	
-	barChartInfo.getMaxValueBarGroup = function(){
-		var barGroups = this.getGroupsList();
+	bcm.getMaxValueBarGroup = function(){
+		var barGroups = this.groupsList;
 		var barGroupWithMaxValue = undefined;
 		for (var i in barGroups) {
 			barGroup = barGroups[i];
@@ -474,14 +409,25 @@ function addHelperFunctionsToBarChartInfo(barChartInfo) {
 		}
 		return barGroupWithMaxValue;
 	}
-	barChartInfo.getChosenActionName = function() {
+	bcm.getChosenActionName = function() {
 		var group = this.getMaxValueBarGroup();
 		return group.getName();
 	}
+	return bcm;
 }
 
-function showRewardAnswer() {
-	activeBarChartInfo.displayAnswerToRewardQuestion();
+
+function getRewardNameRowOneBarPerAction() {
+	var rewardNameRow = ['', 'total reward'];
+	return rewardNameRow;
+}
+
+function getBarValuesRowOneBarPerAction(barGroup) {
+	var barValueRow = [];
+	barValueRow.push(barGroup.getName());
+	var barGroupValue = getValueForBarGroup(barGroup);
+	barValueRow.push(barGroupValue);
+	return barValueRow;
 }
 
 var drawBarChart = function(chartData, options) {
@@ -500,24 +446,27 @@ window.onkeydown = function(e) { keys[e.keyCode] = true; }
 
 function selectHandler(e) {
 	var googleChartSelections = googleChart.getSelection();
-	var selectionsByName = activeBarChartInfo.convertGoogleChartSelectionsToSelectionsByName(googleChartSelections);
+	var selectionsByName = activeBarChartManager.convertGoogleChartSelectionsToSelectionsByName(googleChartSelections);
 	if (keys[17]){
 		for (var i in selectionsByName){
 			var selection = selectionsByName[i];
-			if (activeBarChartInfo.isSelected(selection)) {
-				activeBarChartInfo.removeSelection(selection);
+			if (activeBarChartManager.isSelected(selection)) {
+				activeBarChartManager.removeSelection(selection);
 			}
 			else {
-				activeBarChartInfo.addSelection(selection);
+				activeBarChartManager.addSelection(selection);
 			}
 		}
-		saliencyDisplayManager.adjustCheckboxes(activeBarChartInfo.getSelections());
+		if (!salienciesAreShowing) {
+			renderWhatInfo();
+		}
+		activeSaliencyDisplayManager.adjustCheckboxes(activeBarChartManager.getSelections());
 	}
 	else {
-		saliencyDisplayManager.adjustCheckboxes(selectionsByName);
+		activeSaliencyDisplayManager.adjustCheckboxes(selectionsByName);
 	}
 	
-	saliencyDisplayManager.renderExplanationSaliencyMaps();
+	activeSaliencyDisplayManager.renderExplanationSaliencyMaps();
 }
 //'stroke-color: #871B47; stroke-opacity: 0.6; stroke-width: 8; fill-color: #BC5679; fill-opacity: 0.2'
 function getValueForBarGroup(barGroup) {

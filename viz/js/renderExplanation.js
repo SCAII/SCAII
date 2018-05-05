@@ -4,12 +4,35 @@ var googleChart;
 var explanations = [];
 var explanationBoxMap = {};
 var saliencyLookupMap = {};
-var saliencyDisplayManager = getSaliencyDisplayManager();
-var selectionManager;
+
+// selection Managers for four contexts
+var selectionManagerRewardsCombined = undefined;
+var selectionManagerRewardsDetailed = undefined;
+var selectionManagerAdvantageCombined = undefined;
+var selectionManagerAdvantageDetailed = undefined;
+
+//saliencyDisplayManagers for four contexts
+var saliencyDisplayManagerRewardsCombined = undefined;
+var saliencyDisplayManagerRewardsDetailed = undefined;
+var saliencyDisplayManagerAdvantageCombined = undefined;
+var saliencyDisplayManagerAdvantageDetailed = undefined;
+var activeSaliencyDisplayManager = undefined;
+
+// barChartManagers for four contexts
+var barChartManagerRewardsCombined = undefined;
+var barChartManagerRewardsDetailed = undefined;
+var barChartManagerAdvantageCombined = undefined;
+var barChartManagerAdvantageDetailed = undefined;
+var activeBarChartManager = undefined;
+
+
 var rewardsAreShowing = false;
 var salienciesAreShowing = false;
 var questionMarkButtonIds =[];
 var activeExplanationPoint = undefined;
+
+var isCombinedView = undefined;
+var isRewardMode = undefined;
 
 function clearExplanationInfo() {
 	$("#explanations-rewards").empty();
@@ -36,9 +59,36 @@ function clearQuestionControls(){
 	$("#why-label").html(" ");
 }
 
+function initSelectionManagers(){
+	selectionManagerRewardsCombined = getSelectionManager();
+	selectionManagerRewardsDetailed = getSelectionManager();
+	selectionManagerAdvantageCombined = getSelectionManager();
+	selectionManagerAdvantageDetailed = getSelectionManager();
+}
+
+function initSaliencyDisplayManagers(){
+	saliencyDisplayManagerRewardsCombined = getSaliencyDisplayManager(selectionManagerRewardsCombined);
+	saliencyDisplayManagerRewardsDetailed = getSaliencyDisplayManager(selectionManagerRewardsDetailed);
+	saliencyDisplayManagerAdvantageCombined = getSaliencyDisplayManager(selectionManagerAdvantageCombined);
+	saliencyDisplayManagerAdvantageDetailed = getSaliencyDisplayManager(selectionManagerAdvantageDetailed);
+	activeSaliencyDisplayManager = saliencyDisplayManagerRewardsCombined;
+}
+
+function initChartManagers(barChartMessage) {
+	barChartManagerRewardsCombined = getBarChartManager(barChartMessage,selectionManagerRewardsCombined,saliencyDisplayManagerRewardsCombined,true, true);
+	barChartManagerRewardsDetailed = getBarChartManager(barChartMessage,selectionManagerRewardsDetailed,saliencyDisplayManagerRewardsDetailed, false, true);
+	barChartManagerAdvantageCombined = getBarChartManager(barChartMessage,selectionManagerAdvantageCombined,saliencyDisplayManagerAdvantageCombined, true, false);
+	barChartManagerAdvantageDetailed = getBarChartManager(barChartMessage,selectionManagerAdvantageDetailed,saliencyDisplayManagerAdvantageDetailed, false, false);
+	activeBarChartManager = barChartManagerRewardsCombined;
+}
+
 function handleExplDetails(explDetails){
 	if (explDetails.hasExplPoint()){
 		explanationPoint = explDetails.getExplPoint();
+		initSelectionManagers();
+		initSaliencyDisplayManagers();
+		var barChartMessage = explanationPoint.getBarChart();
+		initChartManagers(barChartMessage);
 		renderWhyInfo(explanationPoint);
 	}
 	else {
@@ -49,36 +99,20 @@ function handleExplDetails(explDetails){
 
 function getSelectionManager() {
 	var sm = {};
-	sm.isAggregate = true;
-	sm.aggregateSelections = [];
-	sm.detailedSelections  = [];
-	
-	sm.setAggregate = function(boolValue){
-		this.isAggregate = boolValue;
-	}
+	sm.selections = [];
 	
 	sm.setSelections = function(info) {
-		if (this.isAggregate){
-			this.aggregateSelections = info;
-		}
-		else {
-			this.detailedSelections = info;
-		}
+		this.selections = info;
 	}
 	
 	sm.addSelection = function(selection) {
-		if (this.isAggregate){
-			this.aggregateSelections.push(selection);
-		}
-		else {
-			this.detailedSelections.push(selection);
-		}
+		this.selections.push(selection);
 	}
 
-	sm.removeSelectionFromList = function (selections, selection) {
+	sm.removeSelection = function (selection) {
 		var newList = [];
-		for (var i in selections) {
-			var curSel = selections[i];
+		for (var i in this.selections) {
+			var curSel = this.selections[i];
 			if (curSel[0] == selection[0] && curSel[1] == selection[1]) {
 				// skip
 			}
@@ -86,43 +120,21 @@ function getSelectionManager() {
 				newList.push(curSel);
 			}
 		}
-		return newList;
+		this.selections = newList;
 	}
 
-	sm.listHasSelection = function(aList, selection) {
-		for (var i in aList) {
-			var cur = aList[i];
+	sm.isSelected = function(selection) {
+		for (var i in this.selections) {
+			var cur = this.selections[i];
 			if (cur[0] == selection[0] && cur[1] == selection[1]) {
 				return true;
 			}
 		}
 		return false;
 	}
-	sm.removeSelection = function(selection){
-		if (this.isAggregate){
-			this.aggregateSelections = this.removeSelectionFromList(this.aggregateSelections, selection);
-		}
-		else {
-			this.detailedSelections = this.removeSelectionFromList(this.detailedSelections, selection);
-		} 
-	}
-
-	sm.isSelected = function(selection) {
-		if (this.isAggregate){
-			return this.listHasSelection(this.aggregateSelections, selection);
-		}
-		else {
-			return this.listHasSelection(this.detailedSelections, selection);
-		} 
-	}
 
 	sm.getSelections = function(){
-		if (this.isAggregate){
-			return this.aggregateSelections;
-		}
-		else {
-			return this.detailedSelections;
-		}
+		return this.selections;
 	}
 	return sm;
 }
@@ -151,32 +163,137 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
 });
 
 
-function showRewards(isAggregate, isRewardMode) {
-	activeBarChartInfo.setAggregate(isAggregate);
-	activeBarChartInfo.setRewardsMode(isRewardMode);
-	activeBarChartInfo.setDefaultSelections();
-	activeBarChartInfo.renderExplanationBarChart();
-	if (salienciesAreShowing){
-		saliencyDisplayManager.renderExplanationSaliencyMaps();
+var defSelSetForRewardCombined = false;
+var defSelSetForRewardDetailed = false;
+var defSelSetForAdvantageCombined = false;
+var defSelSetForAdvantageDetailed = false;
+
+function clearDefaultSelections() {
+	defSelSetForRewardCombined = false;
+	defSelSetForRewardDetailed = false;
+	defSelSetForAdvantageCombined = false;
+	defSelSetForAdvantageDetailed = false;
+}
+function rememberDefaultSelection(isAggregate, isRewardMode) {
+	if (isAggregate && isRewardMode) {
+		defSelSetForRewardCombined = true;
+	}
+	else if (!isAggregate && isRewardMode) {
+		defSelSetForRewardDetailed = true;
+	}
+	else if (isAggregate && !isRewardMode) {
+		defSelSetForAdvantageCombined= true;
+	}
+	else {
+		// !isAggregate && !isRewardMode
+		defSelSetForAdvantageDetailed = true;
+	}
+}
+function wasDefaultSelectionDone(isAggregate, isRewardMode){
+	if (isAggregate && isRewardMode) {
+		return defSelSetForRewardCombined;
+	}
+	else if (!isAggregate && isRewardMode) {
+		return defSelSetForRewardDetailed;
+	}
+	else if (isAggregate && !isRewardMode) {
+		return defSelSetForAdvantageCombined;
+	}
+	else {
+		// !isAggregate && !isRewardMode
+		return defSelSetForAdvantageDetailed;
 	}
 }
 
+// function getSelectionManagerForSituation(isAggregate, isRewardMode) {
+// 	if (isAggregate && isRewardMode) {
+// 		return selectionManagerRewardsCombined;
+// 	}
+// 	else if (!isAggregate && isRewardMode) {
+// 		return selectionManagerRewardsDetailed;
+// 	}
+// 	else if (isAggregate && !isRewardMode) {
+// 		return selectionManagerAdvantageCombined;
+// 	}
+// 	else {
+// 		// !isAggregate && !isRewardMode
+// 		return selectionManagerAdvantageDetailed;
+// 	}
+// }
+
+function getSaliencyDisplayManagerForSituation(isAggregate, isRewardMode) {
+	if (isAggregate && isRewardMode) {
+		return saliencyDisplayManagerRewardsCombined;
+	}
+	else if (!isAggregate && isRewardMode) {
+		return saliencyDisplayManagerRewardsDetailed;
+	}
+	else if (isAggregate && !isRewardMode) {
+		return saliencyDisplayManagerAdvantageCombined;
+	}
+	else {
+		// !isAggregate && !isRewardMode
+		return saliencyDisplayManagerAdvantageDetailed;
+	}
+}
+
+function getBarChartManagerForSituation(isAggregate, isRewardMode) {
+	if (isAggregate && isRewardMode) {
+		return barChartManagerRewardsCombined;
+	}
+	else if (!isAggregate && isRewardMode) {
+		return barChartManagerRewardsDetailed;
+	}
+	else if (isAggregate && !isRewardMode) {
+		return barChartManagerAdvantageCombined;
+	}
+	else {
+		// !isAggregate && !isRewardMode
+		return barChartManagerAdvantageDetailed;
+	}
+}
+
+function showRewards(isAggregate, isRewardMode) {
+	activeSaliencyDisplayManager = getSaliencyDisplayManagerForSituation(isAggregate, isRewardMode);
+	configureRewardChart(isAggregate, isRewardMode);
+	if (salienciesAreShowing){
+		if (saliencyCombined) {
+			activeSaliencyDisplayManager.setSaliencyMode(saliencyModeAggregate);
+		}
+		else {
+			activeSaliencyDisplayManager.setSaliencyMode(saliencyModeDetailed);
+		}
+		activeSaliencyDisplayManager.renderExplanationSaliencyMaps();
+	}
+}
+
+function configureRewardChart(isAggregate, isRewardView) {
+	isCombinedView = isAggregate;
+	isRewardMode = isRewardView;
+	activeBarChartManager = getBarChartManagerForSituation(isAggregate,isRewardMode);
+	if (!wasDefaultSelectionDone(isAggregate, isRewardView)){
+		activeBarChartManager.setDefaultSelections();
+		rememberDefaultSelection(isAggregate, isRewardView);
+	}
+	activeBarChartManager.renderExplanationBarChart();
+	rewardsAreShowing = true;
+}
+
 function renderWhyInfo(explPoint) {
-	activeExplanationPoint = explPoint;
-	activeBarChartInfo = explPoint.getBarChart();
-	addHelperFunctionsToBarChartInfo(activeBarChartInfo);
-
-	selectionManager = getSelectionManager();
-	activeBarChartInfo.setSelectionManager(selectionManager);
-
+	clearExplanationInfo();
+	clearDefaultSelections();
 	createRewardChartContainer();
+	activeExplanationPoint = explPoint;
 
-	activeBarChartInfo.setAggregate(true); 
-	activeBarChartInfo.setRewardsMode(true); 
-	activeBarChartInfo.setDefaultSelections();
-	activeBarChartInfo.renderExplanationBarChart();
+	saliencyDisplayManagerRewardsCombined.populateActionCheckBoxes();
+	saliencyDisplayManagerAdvantageCombined.populateActionCheckBoxes();
+	
+	saliencyDisplayManagerRewardsDetailed.populateActionBarCheckBoxes();
+	saliencyDisplayManagerAdvantageDetailed.populateActionBarCheckBoxes();
+	activeSaliencyDisplayManager = getSaliencyDisplayManagerForSituation(true, true);
+	configureRewardChart(true, true);
 
-	var actionName =  activeBarChartInfo.getChosenActionName();
+	var actionName =  activeBarChartManager.getChosenActionName();
 	var whyPrompt = " had highest predicted reward. ";
 	$("#why-action-label").html(actionName);
 	$("#why-action-label").css("font-size", 14);
@@ -187,7 +304,9 @@ function renderWhyInfo(explPoint) {
 	$("#why-label").css("padding-right", 20);
 	populateRewardQuestionSelector();
 	addWhatButton();
-	rewardsAreShowing = true;
+	if (salienciesAreShowing || saliencyKeepAlive){
+		processWhatClick();
+	}
 }
 
 function renderWhatInfo() {
@@ -195,10 +314,9 @@ function renderWhatInfo() {
     saliencyLookupMap = saliency.getSaliencyMapMap();
 	populateSaliencyQuestionSelector();
 	createSaliencyContainers();
-	saliencyDisplayManager.setSelectionManager(selectionManager);
-	saliencyDisplayManager.populateCheckBoxes(true);
-	saliencyDisplayManager.setSaliencyMode(saliencyModeAggregate);
-	saliencyDisplayManager.renderExplanationSaliencyMaps();
+	activeSaliencyDisplayManager = getSaliencyDisplayManagerForSituation(isCombinedView, isRewardMode);
+	activeSaliencyDisplayManager.setSaliencyMode(saliencyModeAggregate);
+	activeSaliencyDisplayManager.renderExplanationSaliencyMaps();
 	salienciesAreShowing = true;
 }
 function createRewardChartContainer() {
@@ -269,7 +387,6 @@ function createSaliencyContainers() {
 	//saliencyGroup.setAttribute("style", "margin-left:20px; margin-top:20px; margin-right: 20px;");
 	$("#scaii-explanations").append(saliencyGroup);
 
-	
 
 	var saliencyContent = document.createElement("DIV");
 	saliencyContent.setAttribute("id", "saliency-content");
@@ -304,34 +421,9 @@ function createSaliencyContainers() {
 	saliencyCheckboxes.setAttribute("id", "saliency-checkboxes");
 	saliencyCheckboxes.setAttribute("class", "grid saliencies-bg");
 	$("#saliency-selections").append(saliencyCheckboxes);
-
-
 }
 
-// function renderExplanationPoint(explPoint){
-// 	activeBarChartInfo = explPoint.getBarChart();
-// 	addHelperFunctionsToBarChartInfo(activeBarChartInfo);
-
-// 	//renderActionName(explPoint);
-// 	var saliency = explPoint.getSaliency();
-// 	saliencyLookupMap = saliency.getSaliencyMapMap();
-	
-// 	selectionManager = getSelectionManager();
-// 	saliencyDisplayManager.setSelectionManager(selectionManager);
-// 	activeBarChartInfo.setSelectionManager(selectionManager);
-	
-// 	activeBarChartInfo.setAggregate(true); 
-// 	activeBarChartInfo.setDefaultSelections();
-// 	activeBarChartInfo.renderExplanationBarChart();
-	
-// 	populateRewardQuestionSelector();
-// 	//renderTabActiveActionRewards();
-// 	populateSaliencyQuestionSelector();
-// 	//renderTabCombinedSaliency();
-// 	saliencyDisplayManager.populateCheckBoxes(true);
-// 	saliencyDisplayManager.displayAnswerToSaliencyQuestion();
-// }
-
+var saliencyCombined = true;
 
 function populateSaliencyQuestionSelector(){
 	$("#what-radios").empty();
@@ -344,8 +436,9 @@ function populateSaliencyQuestionSelector(){
 	radioCombinedSaliency.setAttribute("style", "margin-left:20px;");
 	radioCombinedSaliency.setAttribute("checked", "true");
 	radioCombinedSaliency.onclick = function() {
-		saliencyDisplayManager.setSaliencyMode(saliencyModeAggregate);
-		saliencyDisplayManager.renderExplanationSaliencyMaps();
+		saliencyCombined = true;
+		activeSaliencyDisplayManager.setSaliencyMode(saliencyModeAggregate);
+		activeSaliencyDisplayManager.renderExplanationSaliencyMaps();
 	};
 
 	var combinedSaliencyLabel = document.createElement("div");
@@ -358,8 +451,9 @@ function populateSaliencyQuestionSelector(){
 	radioDetailedSaliency.setAttribute("value","saliencyDetailed");
 	radioDetailedSaliency.setAttribute("style", "margin-left:20px; ");
 	radioDetailedSaliency.onclick = function() {
-		saliencyDisplayManager.setSaliencyMode(saliencyModeDetailed);
-		saliencyDisplayManager.renderExplanationSaliencyMaps();
+		saliencyCombined = false;
+		activeSaliencyDisplayManager.setSaliencyMode(saliencyModeDetailed);
+		activeSaliencyDisplayManager.renderExplanationSaliencyMaps();
 	};
 
 	var detailedSaliencyLabel = document.createElement("div");
@@ -371,24 +465,6 @@ function populateSaliencyQuestionSelector(){
 	$("#what-radios").append(radioDetailedSaliency);
 	$("#what-radios").append(detailedSaliencyLabel);
 }
-
-// function populateSaliencyQuestionSelector(){
-// 	$("#what-questions").empty();
-// 	var saliencyQuestionSelector = document.createElement("SELECT");
-// 	saliencyQuestionSelector.setAttribute("id", "saliency-question-selector");
-// 	saliencyQuestionSelector.setAttribute("class", "question-selector");
-// 	saliencyQuestionSelector.onchange = showSaliencyAnswer;
-// 	//<select id="reward-question-selector"  class="question-selector" onchange="showRewardAnswer()"></select>
-// 	$("#what-questions").append(saliencyQuestionSelector);
-// 	$("#saliency-question-selector").append($('<option>', {
-// 			value: 0,
-// 			text: saliencyQuestionAggregate
-// 	}));	
-// 	$("#saliency-question-selector").append($('<option>', {
-// 			value: 1,
-// 			text: saliencyQuestionDetailed
-// 	}));
-// }
 
 
 function populateRewardQuestionSelector(){
@@ -461,25 +537,6 @@ function populateRewardQuestionSelector(){
 
 }
 
-// function populateRewardQuestionSelector(){
-// 	$("#why-radios").empty();
-	
-// 	var rewardQuestionSelector = document.createElement("SELECT");
-// 	rewardQuestionSelector.setAttribute("id", "reward-question-selector");
-// 	rewardQuestionSelector.setAttribute("class", "question-selector");
-// 	rewardQuestionSelector.onchange = showRewardAnswer;
-// 	//<select id="reward-question-selector"  class="question-selector" onchange="showRewardAnswer()"></select>
-// 	$("#why-radios").append(rewardQuestionSelector);
-// 	$("#reward-question-selector").toggleClass('active');
-// 	$("#reward-question-selector").append($('<option>', {
-// 			value: 0,
-// 			text: rewardQuestionAggregate
-// 	}));	
-// 	$("#reward-question-selector").append($('<option>', {
-// 			value: 1,
-// 			text: rewardQuestionDetailed
-// 	}));
-// }
 
 var renderActionName = function(explPoint){
 	var title = explPoint.getTitle();
@@ -683,8 +740,7 @@ function processWhyClick(step) {
 		$("#" + selectedWhyButtonId).toggleClass('active');
 
 		// clear explanation info
-		clearExplanationInfo();
-
+		//clearExplanationInfo();
 		// toggle target buttons
 		selectedQmButtonId = getQmButtonId(step);
 	 	selectedWhyButtonId = getWhyButtonIdForStep(step);
@@ -697,9 +753,13 @@ function processWhyClick(step) {
 
 	}
 }
-
+var saliencyKeepAlive = false;
 function processWhatClick() {
-	if (salienciesAreShowing) {
+	if (saliencyKeepAlive) {
+		renderWhatInfo();
+		saliencyKeepAlive = false;
+	}
+	else if (salienciesAreShowing) {
 		clearSaliencies();
 	 }
 	 else {
@@ -753,6 +813,16 @@ function configureExplanationSelectorDiamond(uiIndex,step){
 		var xPositionOfWhyButton = x - 20;
 		addWhyButtonForAction(step, xPositionOfWhyButton,  yPositionOfWhyButton);
 		boldThisStepInLegend(step);
+		if (rewardsAreShowing){
+			// send a request to back end for focusing on this new step
+			processWhyClick(step);
+			// but salienciesAreShowing is cleared by default on loading new explanation point
+			if (salienciesAreShowing){
+				// so we force saliency to stay visible across a round trip request to back using a keepAlive flag
+				saliencyKeepAlive = true;
+			}
+			
+		}
 	}
 	else {
 		ctx.font = "12px Arial bold";
