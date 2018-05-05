@@ -4,6 +4,7 @@ var googleChart;
 var explanations = [];
 var explanationBoxMap = {};
 var saliencyLookupMap = {};
+var showingDecisionNumber;
 
 // selection Managers for four contexts
 var selectionManagerRewardsCombined = undefined;
@@ -294,8 +295,9 @@ function renderWhyInfo(explPoint) {
 	configureRewardChart(true, true);
 
 	var actionName =  activeBarChartManager.getChosenActionName();
+	var fullName = 'D' + showingDecisionNumber + ': ' + actionName;
 	var whyPrompt = " had highest predicted reward. ";
-	$("#why-action-label").html(actionName);
+	$("#why-action-label").html(fullName);
 	$("#why-action-label").css("font-size", 14);
 	$("#why-action-label").css("padding-right", 20);
 	$("#why-action-label").css("font-weight", "bold");
@@ -674,8 +676,8 @@ function addLabelForAction(title, index, step){
 	var row = Math.floor((index - 1) / 2);
 	var col = 1 + (index - 1) % 2;
 	actionLabel.setAttribute("style", getGridPositionStyle(col, row) + 'padding:0px;margin-left:4px;margin-bottom:2px;margin-top:2px;margin-right:4px;font-family:Arial;font-size:14px;');
-	var html = 'D' + index + ': ' + title;
-	actionLabel.innerHTML = html;
+	var fullName = 'D' + index + ': ' + title;
+	actionLabel.innerHTML = fullName;
 	$("#action-list").append(actionLabel);
 }
 
@@ -806,6 +808,7 @@ function configureExplanationSelectorDiamond(uiIndex,step){
 	var currentStep = sessionIndexManager.getCurrentIndex();
 	var ctx = expl_ctrl_ctx;
 	if (currentStep == step) {
+		showingDecisionNumber = uiIndex;
 		ctx.font = "16px Arial bold";
 		halfWidth = 22;
 		halfHeight = 22;
