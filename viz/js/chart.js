@@ -467,7 +467,6 @@ function selectHandler(e) {
 	}
 	
 	var selection = activeBarChartManager.createGoogleChartSelections();
-	debug(1,selection.length);
 	googleChart.setSelection(selection);
 	if (salienciesAreShowing) {
 		updateSaliencyContainers();

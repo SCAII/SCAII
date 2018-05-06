@@ -82,7 +82,9 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, progressWidth)
 	}
 
 	sim.incrementReplaySequencerIndex = function() {
-		this.setReplaySequencerIndex(this.replaySequencerIndex + 1);
+		if (Number(Number(this.replaySequencerIndex) + Number(1)) <= this.replaySequencerMaxIndex) {
+			this.setReplaySequencerIndex(this.replaySequencerIndex + 1);
+		}
 	}
 	sim.isAtEndOfGame = function(){
 		if (this.replaySequencerIndex == this.replaySequencerMaxIndex) {
