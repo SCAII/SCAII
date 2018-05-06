@@ -88,7 +88,8 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 						var bar = bars[j];
 						var curBarName = bar.getName();
 						if (curBarName == barName) {
-							col = j + 1 // account for name column on the left side of the table
+							col = Number(j) + 1; // account for name column on the left side of the table
+							var foo = 3;
 						}
 					}
 				}
