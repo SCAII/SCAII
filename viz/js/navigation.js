@@ -139,6 +139,7 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	
 	manager.doneLoadReplayFile = function () {
 		userInputBlocked = false;
+		this.expressResumeButton();
 		this.enablePauseResume();
 		this.enableRewind();
 		this.clearWaitCursor();
