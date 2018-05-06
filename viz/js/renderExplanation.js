@@ -52,6 +52,10 @@ function clearExplanationInfo() {
 function clearSaliencies() {
 	$("#scaii-explanations").remove();
 	salienciesAreShowing = false;
+	$("#relevance-combined-radio").remove();
+	$("#relevance-detailed-radio").remove();
+	$("#relevance-combined-label").remove();
+	$("#relevance-detailed-label").remove();
 }
 function clearQuestionControls(){
 	$("#why-radios").empty();
@@ -434,6 +438,7 @@ function populateSaliencyQuestionSelector(){
 	var radioCombinedSaliency = document.createElement("input");
 	radioCombinedSaliency.setAttribute("type","radio");
 	radioCombinedSaliency.setAttribute("name","saliencyView");
+	radioCombinedSaliency.setAttribute("id","relevance-combined-radio");
 	radioCombinedSaliency.setAttribute("value","saliencyCombined");
 	radioCombinedSaliency.setAttribute("style", "margin-left:20px;");
 	radioCombinedSaliency.setAttribute("checked", "true");
@@ -446,10 +451,12 @@ function populateSaliencyQuestionSelector(){
 	var combinedSaliencyLabel = document.createElement("div");
 	combinedSaliencyLabel.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:14px;");
 	combinedSaliencyLabel.innerHTML = "relevance combined";
+	combinedSaliencyLabel.setAttribute("id","relevance-combined-label");
 
 	var radioDetailedSaliency = document.createElement("input");
 	radioDetailedSaliency.setAttribute("type","radio");
 	radioDetailedSaliency.setAttribute("name","saliencyView");
+	radioDetailedSaliency.setAttribute("id","relevance-detailed-radio");
 	radioDetailedSaliency.setAttribute("value","saliencyDetailed");
 	radioDetailedSaliency.setAttribute("style", "margin-left:20px; ");
 	radioDetailedSaliency.onclick = function() {
@@ -461,6 +468,7 @@ function populateSaliencyQuestionSelector(){
 	var detailedSaliencyLabel = document.createElement("div");
 	detailedSaliencyLabel.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:14px;");
 	detailedSaliencyLabel.innerHTML = "relevance details";
+	detailedSaliencyLabel.setAttribute("id","relevance-detailed-label");
 	
 	$("#what-radios").append(radioCombinedSaliency);
 	$("#what-radios").append(combinedSaliencyLabel);

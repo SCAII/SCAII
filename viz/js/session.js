@@ -115,6 +115,7 @@ function handleReplayChoiceConfig(config){
 			text: name
 		}));
 	}
+	explanationBoxMap = {};
 	loadSelectedReplayFile();
 }
 
