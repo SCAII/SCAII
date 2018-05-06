@@ -325,8 +325,6 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 		else {
 			drawBarChart(chartTable, options);
 			var selection = this.createGoogleChartSelections();
-			//console.log("selection I created looks like: ");
-			//console.log(selection);
 			googleChart.setSelection(selection);
 		}
 	}
@@ -440,20 +438,10 @@ var drawBarChart = function(chartData, options) {
 	
 }
 
-var keys = {};
-window.onkeyup = function(e) { 
-	keys[e.keyCode] = false; 
-	debug(1, keys); 
-}
-window.onkeydown = function(e) { 
-	keys[e.keyCode] = true; 
-	debug(1,keys);
-}
-
 function selectHandler(e) {
 	var googleChartSelections = googleChart.getSelection();
 	var selectionsByName = activeBarChartManager.convertGoogleChartSelectionsToSelectionsByName(googleChartSelections);
-	if (keys[17]){
+	if (mostRecentClickHadCtrlKeyDepressed){
 		for (var i in selectionsByName){
 			var selection = selectionsByName[i];
 			if (activeBarChartManager.isSelected(selection)) {
@@ -463,15 +451,24 @@ function selectHandler(e) {
 				activeBarChartManager.addSelection(selection);
 			}
 		}
-		
+		console.log('selections after ctrl-click: ' + activeBarChartManager.getSelections());
 		activeSaliencyDisplayManager.adjustCheckboxes(activeBarChartManager.getSelections());
 	}
 	else {
 		activeSaliencyDisplayManager.adjustCheckboxes(selectionsByName);
+		console.log('selections after click: ' + activeBarChartManager.getSelections());
+		
 	}
 	
-	if (!salienciesAreShowing) {
-		renderWhatInfo();
+	var selection = activeBarChartManager.createGoogleChartSelections();
+	debug(1,selection.length);
+	googleChart.setSelection(selection);
+	if (salienciesAreShowing) {
+		updateSaliencyContainers();
+	}
+	else {
+		initSaliencyContainers();
+		updateSaliencyContainers();
 	}
 }
 //'stroke-color: #871B47; stroke-opacity: 0.6; stroke-width: 8; fill-color: #BC5679; fill-opacity: 0.2'

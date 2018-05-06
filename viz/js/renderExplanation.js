@@ -268,6 +268,9 @@ function showRewards(isAggregate, isRewardMode) {
 		else {
 			activeSaliencyDisplayManager.setSaliencyMode(saliencyModeDetailed);
 		}
+		if (showCheckboxes) {
+			activeSaliencyDisplayManager.renderCheckboxes();
+		}
 		activeSaliencyDisplayManager.renderExplanationSaliencyMaps();
 	}
 }
@@ -315,13 +318,15 @@ function renderWhyInfo(explPoint) {
 	}
 }
 
-function renderWhatInfo() {
-    var saliency = activeExplanationPoint.getSaliency();
+function initSaliencyContainers(){
+	var saliency = activeExplanationPoint.getSaliency();
     saliencyLookupMap = saliency.getSaliencyMapMap();
 	populateSaliencyQuestionSelector();
 	createSaliencyContainers();
 	activeSaliencyDisplayManager = getSaliencyDisplayManagerForSituation(isCombinedView, isRewardMode);
 	activeSaliencyDisplayManager.setSaliencyMode(saliencyModeAggregate);
+}
+function updateSaliencyContainers(){
 	activeSaliencyDisplayManager.renderExplanationSaliencyMaps();
 	salienciesAreShowing = true;
 }
@@ -393,6 +398,26 @@ function createSaliencyContainers() {
 	//saliencyGroup.setAttribute("style", "margin-left:20px; margin-top:20px; margin-right: 20px;");
 	$("#scaii-explanations").append(saliencyGroup);
 
+	
+	// selections area will be hidden so wedon't see checkboxes
+	var saliencySelections = document.createElement("DIV");
+	saliencySelections.setAttribute("id", "saliency-selections");
+	saliencySelections.setAttribute("class", "flex-column  saliencies-bg");
+	//saliencySelections.setAttribute("style", "visibility:hidden;");
+	$("#saliency-group").append(saliencySelections);
+
+	var saliencySelectionsTitle = document.createElement("DIV");
+	saliencySelectionsTitle.setAttribute("id", "saliency-selections-title");
+	saliencySelectionsTitle.setAttribute("class", "saliencies-bg");
+	saliencySelectionsTitle.html = 'Generating Rewards';
+	$("#saliency-selections").append(saliencySelectionsTitle);
+	
+	var saliencyCheckboxes = document.createElement("DIV");
+	saliencyCheckboxes.setAttribute("id", "saliency-checkboxes");
+	saliencyCheckboxes.setAttribute("class", "grid saliencies-bg");
+	$("#saliency-selections").append(saliencyCheckboxes);
+
+
 
 	var saliencyContent = document.createElement("DIV");
 	saliencyContent.setAttribute("id", "saliency-content");
@@ -410,23 +435,6 @@ function createSaliencyContainers() {
 	saliencyMaps.setAttribute("class", "grid");
 	$("#saliency-maps-titled-container").append(saliencyMaps);
 
-	// selections area will be hidden so wedon't see checkboxes
-	var saliencySelections = document.createElement("DIV");
-	saliencySelections.setAttribute("id", "saliency-selections");
-	saliencySelections.setAttribute("class", "flex-column  saliencies-bg");
-	saliencySelections.setAttribute("style", "visibility:hidden;");
-	$("#saliency-group").append(saliencySelections);
-
-	var saliencySelectionsTitle = document.createElement("DIV");
-	saliencySelectionsTitle.setAttribute("id", "saliency-selections-title");
-	saliencySelectionsTitle.setAttribute("class", "saliencies-bg");
-	saliencySelectionsTitle.html = 'Generating Rewards';
-	$("#saliency-selections").append(saliencySelectionsTitle);
-	
-	var saliencyCheckboxes = document.createElement("DIV");
-	saliencyCheckboxes.setAttribute("id", "saliency-checkboxes");
-	saliencyCheckboxes.setAttribute("class", "grid saliencies-bg");
-	$("#saliency-selections").append(saliencyCheckboxes);
 }
 
 var saliencyCombined = true;
@@ -621,7 +629,6 @@ function addWhatButton() {
 	whatButton.setAttribute("id", buttonId);
 	var what = document.createTextNode("what was relevant?");
 	whatButton.appendChild(what);    
-	//whatButton.onclick = renderWhatInfo;      
 	whatButton.setAttribute("style", "padding:6px;margin-right:30px;font-family:Arial;");
 	
 	$("#what-button-div").append(whatButton);
@@ -767,15 +774,17 @@ function processWhyClick(step) {
 var saliencyKeepAlive = false;
 function processWhatClick() {
 	if (saliencyKeepAlive) {
-		renderWhatInfo();
+		updateSaliencyContainers();
 		saliencyKeepAlive = false;
 	}
 	else if (salienciesAreShowing) {
 		clearSaliencies();
 	 }
 	 else {
-		renderWhatInfo();
-	 }
+		initSaliencyContainers();
+		activeSaliencyDisplayManager.renderCheckboxes();
+		updateSaliencyContainers();
+	}
 	 $("#what-questions").toggleClass('saliency-active');
 	 $("#what-label").toggleClass('saliency-active');
 }

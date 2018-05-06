@@ -54,6 +54,8 @@ var shape_outline_color = '#202020';
 var shape_outline_width = 0;
 var use_shape_color_for_outline = false;
 
+var mostRecentClickHadCtrlKeyDepressed;
+
 
 
 function getTrueGameWidth() {
@@ -141,9 +143,35 @@ function drawExplanationTimeline() {
 	ctx.restore();
 }
 
+var showCheckboxes = false;
+
+function toggleCheckboxVisibility(){
+	if (showCheckboxes) {
+		if (salienciesAreShowing) {
+			showCheckboxes = false;
+			activeSaliencyDisplayManager.hideCheckboxes();
+			updateSaliencyContainers();
+		}
+	}
+	else {
+		if (salienciesAreShowing) {
+			showCheckboxes = true;
+			activeSaliencyDisplayManager.renderCheckboxes();
+			updateSaliencyContainers();
+		}
+	}
+}
 function initUI() {
 	//configureSpeedSlider();
 	//configureZoomBox
+	var scaiiInterface = document.getElementById("scaii-interface");
+	scaiiInterface.addEventListener('click', function(evt) {
+		mostRecentClickHadCtrlKeyDepressed = evt.ctrlKey;
+		if (evt.altKey){
+			toggleCheckboxVisibility();
+		}
+	}, true);
+	
 	configureGameboardCanvas();
 	sizeNonGeneratedElements();
 	controlsManager.setControlsNotReady();

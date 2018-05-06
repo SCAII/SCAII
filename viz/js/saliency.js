@@ -9,6 +9,7 @@ function getSaliencyDisplayManager(selectionManager) {
 	sdm.saliencyMode = saliencyModeAggregate;
 	sdm.saliencyMapPercentSize = 1.0;
 	sdm.activeCheckBoxes = [];
+	sdm.activeCheckBoxLabels = [];
 	//A list of strings such as "attack bottom left *"  (for all bars) or "attack bottom left rewardX" 
 	sdm.xaiSelectionManager = selectionManager;
 	sdm.rowInfosByName = {};
@@ -90,8 +91,21 @@ function getSaliencyDisplayManager(selectionManager) {
 		return false;
 	}
 
-	sdm.populateActionCheckBoxes = function() {
-		//$("#saliency-checkboxes").empty();
+	sdm.hideCheckboxes = function() {
+		$("#saliency-checkboxes").empty();
+	}
+	sdm.renderCheckboxes = function() {
+		if (showCheckboxes) {
+			$("#saliency-checkboxes").empty();
+			for (var i in this.activeCheckBoxes){
+				var checkBox = this.activeCheckBoxes[i];
+				var checkBoxLabel = this.activeCheckBoxLabels[i];
+				$("#saliency-checkboxes").append(checkBox);
+				$("#saliency-checkboxes").append(checkBoxLabel);
+			}
+		}
+	}
+	sdm.populateActionCheckBoxes = function() {	
 		var barGroups = activeBarChartManager.groupsList;
 		for (var i in barGroups) {
 			var barGroup = barGroups[i];
@@ -115,13 +129,11 @@ function getSaliencyDisplayManager(selectionManager) {
 			var gridPositionInfoName = getGridPositionStyle(1,i);
 			checkBoxLabel.setAttribute("style", gridPositionInfoName + '; width:200px; margin-top:10px; font-family:Arial;');
 			this.activeCheckBoxes.push(checkBox);
-			//$("#saliency-checkboxes").append(checkBox);
-			//$("#saliency-checkboxes").append(checkBoxLabel);
+			this.activeCheckBoxLabels.push(checkBoxLabel);
 		}
 	}
 		
-	sdm.populateActionBarCheckBoxes = function() {
-		//$("#saliency-checkboxes").empty();
+	sdm.populateActionBarCheckBoxes = function(){
 		var barGroups = activeBarChartManager.groupsList;
 		for (var i in barGroups) {
 			var barGroup = barGroups[i];
@@ -150,8 +162,7 @@ function getSaliencyDisplayManager(selectionManager) {
 				var gridPositionInfoName = getGridPositionStyle(1,rowIndex);
 				checkBoxLabel.setAttribute("style", gridPositionInfoName + '; width:200px; margin-top:10px; font-family:Arial;');
 				this.activeCheckBoxes.push(checkBox);
-				//$("#saliency-checkboxes").append(checkBox);
-				//$("#saliency-checkboxes").append(checkBoxLabel);
+				this.activeCheckBoxLabels.push(checkBoxLabel);
 			}
 		}
 	}
