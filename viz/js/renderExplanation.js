@@ -774,13 +774,15 @@ function processWhyClick(step) {
 var saliencyKeepAlive = false;
 function processWhatClick() {
 	if (saliencyKeepAlive) {
+		initSaliencyContainers();
+		activeSaliencyDisplayManager.renderCheckboxes();
 		updateSaliencyContainers();
 		saliencyKeepAlive = false;
 	}
 	else if (salienciesAreShowing) {
 		clearSaliencies();
-	 }
-	 else {
+	}
+	else {
 		initSaliencyContainers();
 		activeSaliencyDisplayManager.renderCheckboxes();
 		updateSaliencyContainers();
