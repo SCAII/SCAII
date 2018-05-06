@@ -590,6 +590,7 @@ function renderExplanationSelectors() {
 	var explanation_steps = replaySessionConfig.getExplanationStepsList();
 	var expl_count = explanation_steps.length;
 	var index = 0;
+	explanationBoxMap = {};
 	while (index < expl_count){
 		var step = explanation_steps[index];
 		var uiIndex =index + 1;
