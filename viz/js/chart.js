@@ -267,6 +267,12 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 		return rewardNameRow;
 	}
 	bcm.getOptionsForBarChartMessage = function() {
+		//vAxisandhAxis flipped due to our chart orientation being not the default
+		var vAxisString = this.barChartMessage.getHTitle();
+		if (!this.isRewardMode){
+			vAxisString = 'Advantage';
+		}
+	
 		var options = {
 			//legend: { position: "none" },
 			title: this.barChartMessage.getTitle(),
@@ -277,7 +283,7 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 			  //minValue: 0
 			},
 			vAxis: {
-			  title: this.barChartMessage.getHTitle(),
+			  title: vAxisString,
 			},
 			'width':700,
 			'height':400
