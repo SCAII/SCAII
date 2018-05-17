@@ -5,10 +5,12 @@
     margin: auto;
 }
 
-#scaii-game-controls {
-    width: 100%;
-    height: 20px;
-    margin: auto;
+
+#playback-controls-panel {
+	width: 460px;
+	margin-left: 40px;
+	margin-top: 20px;
+	margin-bottom: 15px;
 }
 
 .minor-label-text {
@@ -25,20 +27,8 @@
 	padding-top: 2px;
 	padding-bottom: 2px;
 }
-.control-panel {
-    margin: 0px;
-	background-color: lightgrey;
-}
-#game-replay-title {
-	width: 30%;
-}
-/*
-#game-selector-panel {
-	width: 60%;
-}
-*/
+
 #replay-file-selector {
-	width: 70%;
 	border-style: none;
 	background: #e0e0e0;
 	text-indent: 5px;
@@ -48,17 +38,7 @@
     height: 40px;
     margin: auto;
 }
-#game-progress {
-  width: 240px;
-  height: 15px;
-  background-color: white;
-  color: darkgrey;
-  margin-top: 4px;
-  margin-bottom: 4px;
-  /*margin-left:70px;
-  margin-right: 70px;*/
-  border: 1px solid #0063a6;
-}
+
 #speed-slider {
   -webkit-appearance: slider-vertical;
   height: 100%;
@@ -74,17 +54,15 @@
     height: 30px;
     margin: 0px;
 }
-#progress-panel {
-	/*width: 100%;*/
-}
+/*.timeline-control {
+	width: 90%;
+    padding-left:5%;
+    padding-right: 5%;
+}*/
 progress::-webkit-progress-value { background: darkgrey; }
 progress::-moz-progress-bar { background: darkgrey; }
 
-#step-label {
-	width: 50px;
-}
-
 #step-value {
-	width: 75px;
+	width:200px;
 	text-align: left;
 }

@@ -49,21 +49,23 @@ goog.require('proto.scaii.common.VizInit');
 
 var main = function () {
 	initUI();
-	var debug = false;
+	var debug = true;
 	if (debug) {
 		var connectButton = document.createElement("BUTTON");
-		var connectText = document.createTextNode("Start Replay");
+		var connectText = document.createTextNode("Connect");
 		connectButton.setAttribute("class", "connectButton");
 		connectButton.setAttribute("id", "connectButton");
 		connectButton.appendChild(connectText);
 		connectButton.onclick = function () {
-			console.log("calling tryConnect");
 			tryConnect('.', 0);
 		};
-		$("#playback-panel").append(connectButton);
+		$("#playback-controls-panel").append(connectButton);
 		$("#connectButton").css("font-size", "14px");
 	} else {
 		tryConnect('.', 0);
 	}
+}
+function debug(position, message){
+	$("#debug" + position).html(message);
 }
 main();

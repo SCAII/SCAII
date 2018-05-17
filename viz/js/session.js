@@ -4,6 +4,7 @@ var replayChoiceConfig;
 var selectedExplanationStep = undefined;
 var sessionIndexManager = undefined;
 
+
 // ToDo - when strat jump- turn off incrementing index until receive set position.  Unblock incrementing on jump complete
 // then it will be apparent if we need to correct for ReplaySequencer's index pointing to next-packet-to-send rather than 
 // current packet in hand
@@ -40,39 +41,50 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, progressWidth)
 		var percent = xIndexOfClick/this.progressWidth;
 		// example, click 65% -> 6.5 -> 6  -> add one for UI render -> 7  so clicking on segment 7 of 10
 		var replaySequenceTargetStep = Math.floor(this.progressBarSegmentCount * percent) + 1;
-		console.log('calculated replaySequenceTargetStep as ' + replaySequenceTargetStep);
+		if (replaySequenceTargetStep > this.replaySequencerMaxIndex) {
+			replaySequenceTargetStep = this.replaySequencerMaxIndex;
+		}
+		//console.log('calculated replaySequenceTargetStep as ' + replaySequenceTargetStep);
 		return replaySequenceTargetStep;
 	}
 	
 	sim.setReplaySequencerIndex = function(index) {
+		$("#why-button").remove();
 		this.replaySequencerIndex = index;
-		console.log('');
-		console.log('');
-		console.log('replaySequencerIndex is now ' + index);
-		console.log('');
-		console.log('');
+		//console.log('');
+		//console.log('');
+		//console.log('replaySequencerIndex is now ' + index);
+		//console.log('');
+		//console.log('');
 		var displayVal = this.getStepCountToDisplay();
 		if (displayVal == undefined){
-			$("#step-value").html(this.progressBarSegmentCount + " steps");
+			$("#step-value").html('');
+			//$("#step-value").html(this.progressBarSegmentCount + " steps");
 		}
 		else {
-			$("#step-value").html('' + displayVal + ' / ' + this.progressBarSegmentCount);
+			$("#step-value").html('step ' + displayVal + ' / ' + this.progressBarSegmentCount);
 		}
 		paintProgress(this.getProgressBarValue());
 	}
 	
 	sim.getProgressBarValue = function() {
 		var value = Math.floor((this.replaySequencerIndex / this.replaySequencerMaxIndex ) * 100);
-		console.log('progress value to paint: ' + value);
+		//console.log('progress value to paint: ' + value);
 		return value;
 	}
 	
+	sim.getPercentIntoGameForStep = function(step){
+		var value = Math.floor((step / this.replaySequencerMaxIndex ) * 100);
+		return value;
+	}
 	sim.getCurrentIndex = function() {
 		return this.replaySequencerIndex;
 	}
 
 	sim.incrementReplaySequencerIndex = function() {
-		this.setReplaySequencerIndex(this.replaySequencerIndex + 1);
+		if (Number(Number(this.replaySequencerIndex) + Number(1)) <= this.replaySequencerMaxIndex) {
+			this.setReplaySequencerIndex(this.replaySequencerIndex + 1);
+		}
 	}
 	sim.isAtEndOfGame = function(){
 		if (this.replaySequencerIndex == this.replaySequencerMaxIndex) {
@@ -87,7 +99,7 @@ function handleReplayControl(replayControl) {
 	var command = replayControl.getCommandList();
 	if (command.length == 2) {
 		if (command[0] == 'set_step_position') {
-			console.log('___set_step_position updating step from handleReplayControl to ' + command[1] + ' which should be one prior to what the first viz packet arriving will set it to');
+			//console.log('___set_step_position updating step from handleReplayControl to ' + command[1] + ' which should be one prior to what the first viz packet arriving will set it to');
 			sessionIndexManager.setReplaySequencerIndex(parseInt(command[1]));
 			updateButtonsAfterJump();
 		}
@@ -110,12 +122,14 @@ function handleReplayChoiceConfig(config){
 function loadSelectedReplayFile() {
 	controlsManager.startLoadReplayFile();
 	var chosenFile = $( "#replay-file-selector option:selected" ).text();
-	console.log("    file selected: " + chosenFile);
+	//console.log("    file selected: " + chosenFile);
 	var args = [chosenFile];
 	var userCommand = new proto.scaii.common.UserCommand;
 	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE);
 	userCommand.setArgsList(args);
 	stageUserCommand(userCommand);
+	$("#action-list").empty();
+	$("#explanation-control-panel").empty();
 	drawExplanationTimeline();
 	clearGameBoards();
 	clearExplanationInfo();
@@ -127,15 +141,15 @@ function handleReplaySessionConfig(rsc, selectedStep) {
 	if (!rsc.hasStepCount()) {
 		dialog('Error no stepCount carried by ReplaySessionConfig');
 	}
-	var progressWidth = $("#game-progress").width();
-	sessionIndexManager = getSessionIndexManager(rsc.getStepCount(), progressWidth);
-
+	var timelineWidth = expl_ctrl_canvas.width - 2*timelineMargin;
+	sessionIndexManager = getSessionIndexManager(rsc.getStepCount(), timelineWidth);
 	sessionIndexManager.setReplaySequencerIndex(0);
-	renderExplanationSelectors(rsc, selectedStep);
+	renderDecisionPointLegend();
 }
 
 
 function handleVizInit(vizInit) {
+	$("#connectButton").remove();
 	if (vizInit.hasTestMode()) {
 		if (vizInit.getTestMode()) {
 			testingMode = true;
@@ -145,40 +159,110 @@ function handleVizInit(vizInit) {
 }
 function handleViz(vizData) {
 	entitiesList = vizData.getEntitiesList();
+	cumulativeRewardsMap = vizData.getCumulativeRewardsMap();
+	handleCumulativeRewards(cumulativeRewardsMap);
 	handleEntities(entitiesList);
 	if (!jumpInProgress) {
 		sessionIndexManager.incrementReplaySequencerIndex();
-		console.log('');
-		console.log('___Viz called incrementReplaySequencerIndex');
 	}
 	if (sessionIndexManager.isAtEndOfGame()) {
 		controlsManager.reachedEndOfGame();
 	}
 }
+var totalsString = "total HP";
+var rewardsDivMap = {};
+function handleCumulativeRewards(crm) {
+	var entryList = crm.getEntryList();
+	var total = 0;
+	//compute totals
+	for (var i in entryList ){
+    	var entry = entryList[i];
+		var val = entry[1];
+		total = Number(total) + Number(val);
+	}
+	var valId = getRewardValueId(totalsString);
+	var idOfExistingTotalLabel = rewardsDivMap[valId];
+	if (idOfExistingTotalLabel == undefined) {
+		addCumRewardPair(0, totalsString, total);
+	}
+	else {
+		$("#" + valId).html(total);
+	}  
+	// add individual values
+  	for (var i in entryList ){
+    	var entry = entryList[i];
+    	var key = entry[0];
+		var val = entry[1];
+		var valId = getRewardValueId(key);
+		var idOfExistingValueLabel = rewardsDivMap[valId];
+		if (idOfExistingValueLabel == undefined) {
+			var indexInt = Number(i+1);
+			addCumRewardPair(indexInt, key, val);
+		}
+		else {
+			$("#" + valId).html(val);
+		}
+  	}
+}
 
+function getRewardValueId(val) {
+	var legalIdVal = convertNameToLegalId(val);
+	return 'reward'+legalIdVal;
+}
+
+function addCumRewardPair(index, key, val){
+	var rewardKeyDiv = document.createElement("DIV");
+	rewardKeyDiv.setAttribute("class", "r" + index +"c0");
+	if (key == totalsString){
+		rewardKeyDiv.setAttribute("style", "height:15px;font-family:Arial;font-size:14px;font-weight:bold;");
+	}
+	else {
+		rewardKeyDiv.setAttribute("style", "height:15px;font-family:Arial;font-size:14px;");
+	}
+	
+	rewardKeyDiv.innerHTML = key;
+	$("#cumulative-rewards").append(rewardKeyDiv);
+
+	var rewardValDiv = document.createElement("DIV");
+	// give the value div an id constructed with key so can find it later to update
+	var id = getRewardValueId(key);
+	rewardsDivMap[id] = rewardValDiv;
+	rewardValDiv.setAttribute("id", id);
+	rewardValDiv.setAttribute("class", "r" + index +"c1");
+	if (key == totalsString){
+		rewardValDiv.setAttribute("style", "margin-left: 20px;height:15px;font-family:Arial;font-size:14px;font-weight:bold");
+	}
+	else {
+		rewardValDiv.setAttribute("style", "margin-left: 20px;height:15px;font-family:Arial;font-size:14px;");
+	}
+	
+	rewardValDiv.innerHTML = val;
+    $("#cumulative-rewards").append(rewardValDiv);
+}
 
 function handleScaiiPacket(sPacket) {
 	var result = undefined;
 	if (sPacket.hasReplayChoiceConfig()) {
 		var config = sPacket.getReplayChoiceConfig();
 		replayChoiceConfig = config;
+		rewardsDivMap = {};
 		handleReplayChoiceConfig(config);
 	}
 	else if (sPacket.hasReplaySessionConfig()) {
-		console.log("-----got replaySessionConfig");
+		//console.log("-----got replaySessionConfig");
 		var config = sPacket.getReplaySessionConfig();
 		replaySessionConfig = config;
 		//var selectedStep = undefined;
 		handleReplaySessionConfig(config,undefined);
 	}
 	else if (sPacket.hasVizInit()) {
-		console.log("-----got vizInit");
+		//console.log("-----got vizInit");
 		var vizInit = sPacket.getVizInit();
 		handleVizInit(vizInit);
 		controlsManager.gameStarted();
 	}
 	else if (sPacket.hasViz()) {
-		console.log("-----got Viz");
+		//console.log("-----got Viz");
 		var viz = sPacket.getViz();
 		handleViz(viz);
 		// we're moving forward so rewind should be enabled
@@ -191,12 +275,12 @@ function handleScaiiPacket(sPacket) {
 		}
 	}
 	else if (sPacket.hasExplDetails()) {
-		console.log('has expl details');
+		//console.log('has expl details');
 		var explDetails = sPacket.getExplDetails();
 		handleExplDetails(explDetails);
 	}
 	else if (sPacket.hasReplayControl()) {
-		console.log("-----got replayCOntrol");
+		//console.log("-----got replayCOntrol");
 		var replayControl = sPacket.getReplayControl();
 		handleReplayControl(replayControl);
 	}
@@ -219,7 +303,7 @@ function handleScaiiPacket(sPacket) {
 			userCommandScaiiPackets = [];
 		}
 		else if (commandType == proto.scaii.common.UserCommand.UserCommandType.JUMP_COMPLETED) {
-			console.log("-----got jump completed message");
+			//console.log("-----got jump completed message");
 			controlsManager.jumpCompleted();
 		}
 		else if (commandType == proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE_COMPLETE){

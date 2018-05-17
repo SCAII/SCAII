@@ -64,6 +64,7 @@ impl MockRts {
                 gameboard_width: Some(width),
                 gameboard_height: Some(height),
                 explanations: Vec::new(),
+                ..Default::default()
             })),
         }
     }
@@ -295,6 +296,7 @@ pub fn create_triangle_entity_at(x: &f64, y: &f64, orient: &f64) -> Entity {
             },
         ],
         delete: false,
+        ..Entity::default()
     }
 }
 
@@ -330,6 +332,7 @@ pub fn create_rectangle_entity_at(x: &f64, y: &f64, orient: &f64) -> Entity {
             },
         ],
         delete: false,
+        ..Entity::default()
     }
 }
 
@@ -423,10 +426,12 @@ fn wrap_entities_in_viz_packet(entity1: Entity, entity2: Entity) -> ScaiiPacket 
                 name: "viz".to_string(),
             })),
         },
-        specific_msg: Some(SpecificMsg::Viz(Viz { entities: entities })),
+        specific_msg: Some(SpecificMsg::Viz(Viz {
+            entities: entities,
+            ..Default::default()
+        })),
     }
 }
-
 
 pub fn get_test_mode_rewind_hint_message() -> ScaiiPacket {
     let target: String = String::from("MockRts");

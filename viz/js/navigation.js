@@ -2,22 +2,49 @@ var jumpInProgress = false;
 var userInputBlocked = false;
 
 function paintProgress(value) {
-	var progressString = "" + value;
-	$("#game-progress").attr("value", progressString);
+	showPositionOnTimeline(value);
+	renderExplanationSelectors();
 }
-function tryProcessTimelineClick(e) {
-	try {
-		if (!userInputBlocked) {
-			processTimelineClick(e);
-		}
-	}
-	catch (err) {
-		alert(err.message);
-	}
+
+var cursorHeight = 60;
+var cursorWidth = 4;
+function showPositionOnTimeline(value) {
+	drawExplanationTimeline();
+	var widthOfTimeline = expl_ctrl_canvas.width - 2*timelineMargin;
+	var x = timelineMargin + (value / 100) * widthOfTimeline;
+	var y = explanationControlYPosition;
+	
+	var xLeft = x - cursorWidth/2;
+	var xRight = x + cursorWidth/2;
+	var yBottom = y + cursorHeight/2;
+	var yTop = y - cursorHeight/2;
+	var ctx = expl_ctrl_ctx;
+	ctx.beginPath();
+	
+	ctx.fillStyle = 'darkgrey';
+	ctx.lineWidth = 1;
+	ctx.strokeStyle = 'darkgray';
+	var upperLeftVertexX = xLeft;
+	var upperLeftVertexY = yTop;
+	var upperRightVertexX = xRight;
+	var upperRightVertexY = yTop;
+	var lowerLeftVertexX = xLeft;
+	var lowerLeftVertexY =  yBottom;
+	var lowerRightVertexX = xRight;
+	var lowerRightVertexY = yBottom;
+
+	ctx.moveTo(upperLeftVertexX, upperLeftVertexY);
+	ctx.lineTo(upperRightVertexX,upperRightVertexY);
+	ctx.lineTo(lowerRightVertexX, lowerRightVertexY);
+	ctx.lineTo(lowerLeftVertexX, lowerLeftVertexY);
+	ctx.lineTo(upperLeftVertexX, upperLeftVertexY);
+	ctx.closePath();
+	ctx.fill();
 }
+
 function processTimelineClick(e) {
 	controlsManager.userJumped();
-	var clickX = e.offsetX;
+	var clickX = e.offsetX - timelineMargin;
 	var replaySequenceTargetStep = sessionIndexManager.getReplaySequencerIndexForClick(clickX);
 	var targetStepString = "" + replaySequenceTargetStep;
 	var args = [targetStepString];
@@ -112,6 +139,7 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	
 	manager.doneLoadReplayFile = function () {
 		userInputBlocked = false;
+		this.expressResumeButton();
 		this.enablePauseResume();
 		this.enableRewind();
 		this.clearWaitCursor();
@@ -164,7 +192,7 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	}
 
 	manager.expressResumeButton = function () {
-		console.log('expressing RESUME button');
+		//console.log('expressing RESUME button');
 		this.pauseResumeButton.onclick = tryResume;
 		this.pauseResumeButton.innerHTML = '<img src="imgs/play.png", height="16px" width="14px"/>';
 	}
@@ -179,7 +207,7 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	}
 
 	manager.expressPauseButton = function () {
-		console.log('expressing PAUSE button');
+		//console.log('expressing PAUSE button');
 		this.pauseResumeButton.onclick = tryPause;
 		this.pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="16px" width="14px"/>';
 	}
@@ -197,32 +225,32 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 		this.expressResumeButton();
 		this.disableRewind();
 		this.enablePauseResume();
-		console.log('enabled pauseResume after adjustToRewindClick');
+		//console.log('enabled pauseResume after adjustToRewindClick');
 	}
 
 	//
 	//  enabling/disabling
 	//
 	manager.disablePauseResume = function () {
-		console.log("disablin' pauseResume");
+		//console.log("disablin' pauseResume");
 		$("#pauseResumeButton").css("opacity", "0.6");
 		this.pauseResumeButton.disabled = true;
 	}
 
 	manager.enablePauseResume = function () {
-		console.log("enablin' pauseResume");
+		//console.log("enablin' pauseResume");
 		$("#pauseResumeButton").css("opacity", "1.0");
 		this.pauseResumeButton.disabled = false;
 	}
 
 	manager.disableRewind = function () {
-		console.log("disablin' rewind");
+		//console.log("disablin' rewind");
 		$("#rewindButton").css("opacity", "0.6");
 		this.rewindButton.disabled = true;
 	}
 
 	manager.enableRewind = function () {
-		console.log("enablin' rewind");
+		//console.log("enablin' rewind");
 		$("#rewindButton").css("opacity", "1.0");
 		this.rewindButton.disabled = false;
 	}

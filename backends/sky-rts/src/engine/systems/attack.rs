@@ -1,5 +1,5 @@
 use specs::prelude::*;
-use engine::components::{Attack, DealtDamage, Death, Hp, HpChange, UnitTypeTag};
+use engine::components::{Attack, DealtDamage, Death, FactionId, Hp, HpChange, UnitTypeTag};
 use engine::resources::{DeltaT, UnitTypeMap};
 
 #[derive(SystemData)]
@@ -13,6 +13,7 @@ pub struct AttackSystemData<'a> {
     delta_t: Fetch<'a, DeltaT>,
     unit_type_map: Fetch<'a, UnitTypeMap>,
     tag: ReadStorage<'a, UnitTypeTag>,
+    faction: ReadStorage<'a, FactionId>,
     entities: Entities<'a>,
 }
 
@@ -49,12 +50,15 @@ impl<'a> System<'a> for AttackSystem {
                     .or_insert(HpChange(0.0))
                     .0 -= unit_type.attack_damage;
 
-                sys_data
-                    .damage
-                    .entry(id)
-                    .unwrap()
-                    .or_insert(DealtDamage(0.0))
-                    .0 += unit_type.attack_damage;
+                let dmg = sys_data.damage.entry(id).unwrap().or_insert(DealtDamage {
+                    val: 0.0,
+                    by_source: vec![],
+                });
+                dmg.val += unit_type.attack_damage;
+                dmg.by_source.push((
+                    unit_type.attack_damage,
+                    *sys_data.faction.get(atk.target).unwrap(),
+                ));
 
                 if tar_hp.curr_hp <= 0.0 {
                     sys_data.death.insert(atk.target, Death { killer: id });

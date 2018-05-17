@@ -14,7 +14,10 @@ message VizInit {
 	optional int64 step_count = 2;
     optional uint32 gameboard_width = 3;
     optional uint32 gameboard_height = 4;
+	
 	repeated ExplanationPoint explanations = 5;
+	
+	repeated string reward_types = 6;
 }
 
 message ExplanationPoints {
@@ -77,6 +80,7 @@ message Bar {
 // on what has changed since the last packet.
 message Viz {
 	repeated Entity entities = 1; 
+	map<string,string> cumulative_rewards = 2;
 }
 // chart info for Magesh data demo
 message ChartInfo {
@@ -122,8 +126,14 @@ message Entity {
 	// If this is true, the other fields are
 	// ignored (except ID, naturally).
 	required bool delete = 4;
+	map<string,string> stringMetadata = 5;
+	map<string,string> boolStringMetadata = 6;
+	map<string,string> floatStringMetadata = 7;
+	map<string,int64> intMetadata = 8;
+	map<string,bool> boolMetadata = 9;
+	map<string,float> floatMetadata = 10;
 }
-
+	
 // A position.
 // The positions x and y can be interpreted
 // roughly as pixels.

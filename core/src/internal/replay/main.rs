@@ -116,7 +116,6 @@ impl Module for ReplayMessageQueue {
 
 impl Replay for ReplayMessageQueue {}
 
-
 #[allow(dead_code)]
 enum RunMode {
     Live,
@@ -148,7 +147,7 @@ fn try_main() -> Result<(), Box<Error>> {
         return Ok(());
     } else if args.cmd_file {
         println!("Running Replay in live mode...");
-        run_replay(RunMode::Live,)?;
+        run_replay(RunMode::Live)?;
         return Ok(());
     } else {
         panic!("Unrecognized command mode for replay: {:?}", args);
@@ -156,7 +155,7 @@ fn try_main() -> Result<(), Box<Error>> {
 }
 
 #[allow(unused_assignments)]
-fn run_replay(run_mode: RunMode)  -> Result<(), Box<Error>>{
+fn run_replay(run_mode: RunMode) -> Result<(), Box<Error>> {
     let mut mode_is_test = true;
     let mut environment: Environment = Environment::new();
 
@@ -189,7 +188,7 @@ fn run_replay(run_mode: RunMode)  -> Result<(), Box<Error>>{
             .register_replay(Box::new(Rc::clone(&rc_replay_message_queue)));
         debug_assert!(environment.router().replay().is_some());
     }
-    let dummy_replay_actions : Vec<ReplayAction> = Vec::new();
+    let dummy_replay_actions: Vec<ReplayAction> = Vec::new();
     let dummy_replay_sequencer = ReplaySequencer::new(&dummy_replay_actions, true)?;
     let mut replay_manager = replay_manager::ReplayManager {
         incoming_message_queue: rc_replay_message_queue,
@@ -202,14 +201,14 @@ fn run_replay(run_mode: RunMode)  -> Result<(), Box<Error>>{
         explanations_option: None,
         test_mode: mode_is_test,
         poll_timer_count: 5,
-        step_timer_count: 25,
+        //step_timer_count: 25,
+        step_timer_count: 10,
     };
     let result = replay_manager.start();
     match result {
         Ok(_) => Ok(()),
         Err(e) => Err(e),
     }
-    
 }
 
 fn configure_and_register_mock_rts(env: &mut Environment) {

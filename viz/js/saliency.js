@@ -1,17 +1,18 @@
 const saliencyModeAggregate = "show combined saliency";
 const saliencyModeDetailed = "show all saliencies";
 
-function getSaliencyDisplayManager() {
+const saliencyQuestionAggregate = "(Showing areas of greatest attention)";
+const saliencyQuestionDetailed  = "(Showing areas of greatest attention by feature)";
+
+function getSaliencyDisplayManager(selectionManager) {
 	var sdm = {};
 	sdm.saliencyMode = saliencyModeAggregate;
-	sdm.saliencyMapPercentSize = 0.75;
+	sdm.saliencyMapPercentSize = 1.0;
 	sdm.activeCheckBoxes = [];
+	sdm.activeCheckBoxLabels = [];
 	//A list of strings such as "attack bottom left *"  (for all bars) or "attack bottom left rewardX" 
-	sdm.xaiSelectionManager = undefined;
+	sdm.xaiSelectionManager = selectionManager;
 	sdm.rowInfosByName = {};
-	sdm.setSelectionManager = function(selectionManager){
-		this.xaiSelectionManager = selectionManager;
-	}
 	
 	sdm.setActiveRowInfo = function(activeRowInfos) {
 		this.rowInfosByName = {};
@@ -52,8 +53,10 @@ function getSaliencyDisplayManager() {
 		}
 		alert("could not find checkbox with name " + name);
 	}
+	
 	// use checkboxes (which may have changed) to adjust the selection
-	sdm.renderExplanationSaliencyMaps = function(evt) {
+
+	sdm.renderExplanationSaliencyMaps = function() {
 		this.xaiSelectionManager.setSelections([]);
 		for (var i in this.activeCheckBoxes){
 			var cb = this.activeCheckBoxes[i];
@@ -71,7 +74,7 @@ function getSaliencyDisplayManager() {
 			this.renderAllExplanationSaliencyMaps();
 		}
 		var currentSelections = this.xaiSelectionManager.getSelections();
-		var googleChartSelections = activeBarChartInfo.convertSelectionsByNameToGoogleChartSelections(currentSelections);
+		var googleChartSelections = activeBarChartManager.convertSelectionsByNameToGoogleChartSelections(currentSelections);
 		googleChart.setSelection(googleChartSelections);
 	}
 
@@ -87,19 +90,23 @@ function getSaliencyDisplayManager() {
 		}
 		return false;
 	}
-    sdm.populateCheckBoxes = function(isAggregate){
-		this.activeCheckBoxes = [];
-		if (isAggregate) {
-			this.populateActionCheckBoxes();
-		}
-		else {
-			this.populateActionBarCheckBoxes();
+
+	sdm.hideCheckboxes = function() {
+		$("#saliency-checkboxes").empty();
+	}
+	sdm.renderCheckboxes = function() {
+		if (showCheckboxes) {
+			$("#saliency-checkboxes").empty();
+			for (var i in this.activeCheckBoxes){
+				var checkBox = this.activeCheckBoxes[i];
+				var checkBoxLabel = this.activeCheckBoxLabels[i];
+				$("#saliency-checkboxes").append(checkBox);
+				$("#saliency-checkboxes").append(checkBoxLabel);
+			}
 		}
 	}
-
-	sdm.populateActionCheckBoxes = function() {
-		$("#saliency-checkboxes").empty();
-		var barGroups = activeBarChartInfo.getGroupsList();
+	sdm.populateActionCheckBoxes = function() {	
+		var barGroups = activeBarChartManager.groupsList;
 		for (var i in barGroups) {
 			var barGroup = barGroups[i];
 			var actionName = barGroup.getName();
@@ -117,19 +124,17 @@ function getSaliencyDisplayManager() {
 			checkBoxLabel.appendChild(t);
 			
 			var gridPositionInfoCheck = getGridPositionStyle(0,i);
-			checkBox.setAttribute("style", gridPositionInfoCheck + '; margin-left:30px; margin-top:10px; ');
+			checkBox.setAttribute("style", gridPositionInfoCheck + '; margin-left:30px; margin-top:10px;');
 			
 			var gridPositionInfoName = getGridPositionStyle(1,i);
-			checkBoxLabel.setAttribute("style", gridPositionInfoName + '; width:200px; margin-top:10px; ');
+			checkBoxLabel.setAttribute("style", gridPositionInfoName + '; width:200px; margin-top:10px; font-family:Arial;');
 			this.activeCheckBoxes.push(checkBox);
-			$("#saliency-checkboxes").append(checkBox);
-			$("#saliency-checkboxes").append(checkBoxLabel);
+			this.activeCheckBoxLabels.push(checkBoxLabel);
 		}
 	}
 		
-	sdm.populateActionBarCheckBoxes = function() {
-		$("#saliency-checkboxes").empty();
-		var barGroups = activeBarChartInfo.getGroupsList();
+	sdm.populateActionBarCheckBoxes = function(){
+		var barGroups = activeBarChartManager.groupsList;
 		for (var i in barGroups) {
 			var barGroup = barGroups[i];
 			var actionName = barGroup.getName();
@@ -155,10 +160,9 @@ function getSaliencyDisplayManager() {
 				checkBox.setAttribute("style", gridPositionInfoCheck + '; margin-left:30px; margin-top:10px; ');
 				
 				var gridPositionInfoName = getGridPositionStyle(1,rowIndex);
-				checkBoxLabel.setAttribute("style", gridPositionInfoName + '; width:200px; margin-top:10px; ');
+				checkBoxLabel.setAttribute("style", gridPositionInfoName + '; width:200px; margin-top:10px; font-family:Arial;');
 				this.activeCheckBoxes.push(checkBox);
-				$("#saliency-checkboxes").append(checkBox);
-				$("#saliency-checkboxes").append(checkBoxLabel);
+				this.activeCheckBoxLabels.push(checkBoxLabel);
 			}
 		}
 	}
@@ -169,8 +173,8 @@ function getSaliencyDisplayManager() {
 		var rowInfos = this.xaiSelectionManager.getSelections();
 		for (var i in rowInfos){
 			var rowInfo = rowInfos[i];
-			var saliencyId = activeBarChartInfo.getSaliencyIdForActionNameAndBar(rowInfo[0], rowInfo[1]);
-			console.log("NON-COMBINED MAP saliencyID " + saliencyId);
+			var saliencyId = activeBarChartManager.getSaliencyIdForActionNameAndBar(rowInfo[0], rowInfo[1]);
+			//console.log("NON-COMBINED MAP saliencyID " + saliencyId);
 			var layerMessage = saliencyLookupMap.get(saliencyId);
 			if (layerMessage == undefined){
 				console.log("ERROR - no Layer message for saliencyID " + saliencyId);
@@ -200,8 +204,8 @@ function getSaliencyDisplayManager() {
 		var rowInfos = this.xaiSelectionManager.getSelections();
 		for (var i in rowInfos){
 			var rowInfo = rowInfos[i]; 
-			var saliencyId = activeBarChartInfo.getSaliencyIdForActionNameAndBar(rowInfo[0], rowInfo[1]);
-			console.log("COMBINED MAP saliencyID " + saliencyId);
+			var saliencyId = activeBarChartManager.getSaliencyIdForActionNameAndBar(rowInfo[0], rowInfo[1]);
+			//console.log("COMBINED MAP saliencyID " + saliencyId);
 			var layerMessage = saliencyLookupMap.get(saliencyId);
 			if (layerMessage == undefined){
 				console.log("ERROR - no Layer message for saliencyID " + saliencyId);
@@ -215,15 +219,55 @@ function getSaliencyDisplayManager() {
 				var normalizationFactor = getNormalizationFactorFromCells(aggregatedCells);
 				var width = expLayers[0].getWidth();
 				var height = expLayers[0].getHeight();
-				this.renderExplLayer(1, i, "all layers", rowInfoString, aggregatedCells, width, height, normalizationFactor);
+				this.renderExplLayer(1, i, "all features cumulative", rowInfoString, aggregatedCells, width, height, normalizationFactor);
 			}
 		}
 	}
 	
+	sdm.overlaySaliencyMapOntoGame = function(cells, width, height, normalizationFactor) {
+		for (var x= 0; x < width; x++){
+			for (var y = 0; y < height; y++){
+				var index = height * x + y;
+				var cellValue = cells[index];
+				gameboard_ctx.fillStyle = getOverlayOpacityBySaliencyRGBAString(cellValue * normalizationFactor);
+				gameboard_ctx.fillRect(x*gameScaleFactor, y*gameScaleFactor, gameScaleFactor, gameScaleFactor);
+				gameboard_ctx.fill();
+			}
+		}
+	}
+	
+	
+	sdm.overlaySaliencyMapOntoGameReplica = function(ctx, cells, width, height, normalizationFactor) {
+		for (var x= 0; x < width; x++){
+			for (var y = 0; y < height; y++){
+				var index = height * x + y;
+				var cellValue = cells[index];
+				ctx.fillStyle = getOverlayOpacityBySaliencyRGBAString(cellValue * normalizationFactor);
+				ctx.fillRect(x*gameScaleFactor, y*gameScaleFactor, gameScaleFactor, gameScaleFactor);
+				ctx.fill();
+			}
+		}
+	}
+
 	sdm.renderExplLayer = function(gridX, gridY, saliencyUIName, saliencyNameForId, cells, width, height, normalizationFactor) {
 		var nameNoSpaces = saliencyNameForId.replace(/ /g,"");
 		var nameForId = nameNoSpaces.replace(/,/g,"");
 		var explCanvas = document.createElement("canvas");
+		explCanvas.setAttribute("class", "explanation-canvas");
+		
+		// explCanvas.addEventListener("mouseenter", function() {
+		// 	console.log("entered! " + saliencyUIName);
+		// 	//clear and redraw gameboard
+		// 	handleEntities(entitiesList);
+		// 	saliencyDisplayManager.overlaySaliencyMapOntoGame(cells, width, height, normalizationFactor);
+		// }
+		// );
+		// explCanvas.addEventListener("mouseleave", function() {
+		// 	// clear and redraw gameboard
+		// 	handleEntities(entitiesList);
+		// 	console.log("left! " + saliencyUIName);
+		// }
+		// );
 		var explCtx = explCanvas.getContext("2d");
 		// canvas size should be same a gameboardHeight
 		explCanvas.width  = gameboard_canvas.width * this.saliencyMapPercentSize;
@@ -244,7 +288,7 @@ function getSaliencyDisplayManager() {
 		$(mapContainerDivSelector).css("flex-direction", "column");
 		$(mapContainerDivSelector).css("width", explCanvas.width+'px');
 		$(mapContainerDivSelector).css("height", mapContainerDivHeight+'px');
-		$(mapContainerDivSelector).css("margin-right", '4px');
+		//$(mapContainerDivSelector).css("margin-right", '4px');
 		$(mapContainerDivSelector).css("border", '1px solid #0063a6');
 		
 		var mapTitleId = 'title_' + nameForId;
@@ -264,10 +308,41 @@ function getSaliencyDisplayManager() {
 		$(mapDivSelector).css("height",explCanvas.height + 'px');
 		$(mapDivSelector).css("background-color", "#123456");
 		$(mapDivSelector).append(explCanvas);
+
+		
+		var valueSpan = document.createElement("span");
+		valueSpan.setAttribute("class","value-div");
+		valueSpan.setAttribute("style", 'visibility:hidden;font-family:Arial;');
+		$(mapDivSelector).append(valueSpan);
+		
+		explCanvas.addEventListener('mouseenter', function(evt) {
+			valueSpan.setAttribute("style", 'visibility:hidden;');
+		});
+		explCanvas.addEventListener('mouseleave', function(evt) {
+			valueSpan.setAttribute("style", 'visibility:hidden;');
+		});
+		explCanvas.addEventListener('mousemove', function(evt) {
+			var mousePos = getMousePos(explCanvas, evt);
+			var xForValueLookup = Math.floor(mousePos.x / gameScaleFactor);
+			var yForValueLookup = Math.floor(mousePos.y/gameScaleFactor);
+			var index = height * xForValueLookup + yForValueLookup;
+			var cellValue = cells[index];
+			var normValue = cellValue*normalizationFactor;
+			var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y + ' val: ' + normValue.toFixed(2);
+			var top = (mousePos.y + 10 - (40 * gameScaleFactor)) + 'px'; // shift it to canvas above
+			var left = (mousePos.x + 10) + 'px';
+			valueSpan.setAttribute("style", 'z-index:2; position:relative; left:' + left + '; top: ' + top + '; color:#D73F09;font-family:Arial;'); // OSU orange
+			valueSpan.innerHTML = normValue.toFixed(2);
+			//console.log(message);
+		  }, false);
 	}
 
 		
 	sdm.renderSaliencyMap = function(canvas, ctx, cells, width, height, normalizationFactor){
+		renderState(ctx, canvas, masterEntities, gameScaleFactor, 0, 0, shapePositionMapForContext["game"]);
+		this.overlaySaliencyMapOntoGameReplica(ctx, cells, width, height, normalizationFactor);
+	}	
+	sdm.renderSaliencyMapOrig = function(canvas, ctx, cells, width, height, normalizationFactor){
 		var scaleFactor = gameScaleFactor * this.saliencyMapPercentSize;
 		var maxCellValue = 0.0;
 		for (var x= 0; x < width; x++){
@@ -300,40 +375,29 @@ function getRowInfoString(rowInfo) {
 	}
 	return result;
 }
-	
+
+function getMousePos(canvas, evt) {
+	var rect = canvas.getBoundingClientRect();
+	return {
+	  x: evt.clientX - rect.left,
+	  y: evt.clientY - rect.top
+	};
+  }
 	
 function getNameDivForRow(rowIndex, rowInfo, layerCount){
 	var nameContainerDiv = document.createElement("div");
-	nameContainerDiv.innerHTML = getRowInfoString(rowInfo);
-	nameContainerDiv.setAttribute("style", getGridPositionStyle(0,rowIndex) + '; width:200px; margin:auto; text-align:center;');
+	nameContainerDiv.setAttribute("style", getGridPositionStyle(0,rowIndex) + '; width:200px;padding-top:125px; text-align:center; border-style: solid; border-width:1px;font-family:Arial;');
+	nameContainerDiv.innerHTML = getRowInfoString(rowInfo);                              // had height:100%
+//	var nameContainerContentDiv = document.createElement("div");
+//	nameContainerContentDiv.innerHTML = getRowInfoString(rowInfo);
+//	nameContainerContentDiv.setAttribute("style", 'margin:auto;font-family:Arial;');
+	//nameContainerContentDiv.setAttribute("style", 'text-align:center; padding-top:80px;font-family:Arial;');
+//	nameContainerDiv.append(nameContainerContentDiv);
 	return nameContainerDiv;
 }
 
-function showCombinedSaliency(evt) {
-	saliencyDisplayManager.setSaliencyMode(saliencyModeAggregate);
-	renderTabCombinedSaliency();
-	saliencyDisplayManager.renderExplanationSaliencyMaps();
-}
-
-function showAllSaliencies(evt) {
-	saliencyDisplayManager.setSaliencyMode(saliencyModeDetailed);
-    renderTabAllSaliencies();
-	saliencyDisplayManager.renderExplanationSaliencyMaps();
-}
-
-
-function renderTabCombinedSaliency() {
-	$("#showCombinedSaliencyButton").addClass("active");
-	$("#showSalienciesButton").removeClass("active");
-}
-function renderTabAllSaliencies() {
-	$("#showSalienciesButton").addClass("active");
-	$("#showCombinedSaliencyButton").removeClass("active");
-}
-
-
 function renderExplanationSaliencyMaps_Bridge(evt) {
-	saliencyDisplayManager.renderExplanationSaliencyMaps(evt);
+	activeSaliencyDisplayManager.renderExplanationSaliencyMaps();
 }
 
 function createCheckBox(name) {
@@ -422,10 +486,23 @@ var configureMapTitle = function(mapTitleDivSelector){
 
 }
 
+// function showSaliencyAnswer() {
+// 	saliencyDisplayManager.displayAnswerToSaliencyQuestion();
+// }
 
+function getOverlayOpacityBySaliencyRGBAString(saliencyValue) {
+  var reverseSaliency = 1.0 - saliencyValue;
+  var color = {};
+  color['R'] = 0;
+  color['G'] = 0;
+  color['B'] = 0;
+  color['A'] = reverseSaliency;
+  var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
+  return result;
+}
 
 function getWhiteRGBAString(saliencyValue) {
-  color = {};
+  var color = {};
   color['R'] = 255;
   color['G'] = 255;
   color['B'] = 255;

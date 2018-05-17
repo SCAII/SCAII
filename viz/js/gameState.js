@@ -65,7 +65,6 @@ function updateMasterRect(masterShape, masterRect, updateRect) {
     masterRect.setWidth(updateRect.getWidth());
   }
   if (updateRect.hasHeight()) {
-    //console.log('updating rect HEIGHT from ' + masterRect.getHeight() + ' to ' + updateRect.getHeight());
     masterRect.setHeight(updateRect.getHeight());
   }
 }
@@ -156,13 +155,44 @@ function updateMasterEntity(master, update) {
     }
     else {
       if (updateShape.hasDelete() && updateShape.getDelete()) {
-        //console.log('DELETING shape ' + updateShapeId);
+        var fullShapeId = getShapeId(update, updeateShape);
+        removeFullShapeIdFromTrackingLists(fullShapeId);
         deleteShape(masterShapes, masterShape);
       }
       else {
         updateMasterShape(masterShape, updateShape);
       }
     }
+  }
+  updateMetadata(master, update);
+}
+
+function copyMapsIntoUpdateablePosition(entity) {
+  entity.stringmetadataMap = entity.getStringmetadataMap();
+  entity.boolstringmetadataMap = entity.getBoolstringmetadataMap();
+  entity.floatstringmetadataMap = entity.getFloatstringmetadataMap();
+  entity.intmetadataMap = entity.getIntmetadataMap();
+  entity.boolmetadataMap = entity.getBoolmetadataMap();
+  entity.floatmetadataMap = entity.getFloatmetadataMap();
+}
+
+function updateMetadata(master, update){
+  transferMap(update.getStringmetadataMap(),      master.stringmetadataMap);
+  transferMap(update.getBoolstringmetadataMap(),  master.boolstringmetadataMap);
+  transferMap(update.getFloatstringmetadataMap(), master.floatstringmetadataMap);
+  transferMap(update.getIntmetadataMap(),         master.intmetadataMap);
+  transferMap(update.getBoolmetadataMap(),        master.boolmetadataMap);
+  transferMap(update.getFloatmetadataMap(),       master.floatmetadataMap);
+}
+
+function transferMap(sourceMap, targetMap){
+  // if there is data in the new map, copy it into the old map
+  var entryList = sourceMap.getEntryList();
+  for (var i in entryList ){
+    var entry = entryList[i];
+    var key = entry[0];
+    var val = entry[1];
+    targetMap.set(key, val);
   }
 }
 

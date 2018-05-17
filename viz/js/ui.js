@@ -5,7 +5,11 @@ var gameboardHeight;
 //canvases
 var gameboard_canvas = document.createElement("canvas");
 var gameboard_ctx = gameboard_canvas.getContext("2d");
-var game_background_color = "#123456";
+
+//var game_background_color = "#123456";
+//var game_background_color = "#000000";
+//var game_background_color = "#f0f0f0";
+var game_background_color = "#808080";
 
 var timeline_canvas = document.createElement("canvas");
 var timeline_ctx = timeline_canvas.getContext("2d");
@@ -21,11 +25,12 @@ pauseResumeButton.setAttribute("id", "pauseResumeButton");
 
 // explanation controls
 var expl_ctrl_canvas = document.createElement("canvas");
+expl_ctrl_canvas.setAttribute("style", "z-index:1")
+expl_ctrl_canvas.setAttribute("id", "expl-control-canvas");
 var expl_ctrl_ctx = expl_ctrl_canvas.getContext("2d");
 expl_ctrl_ctx.imageSmoothingEnabled = false;
-var actionLabel = document.createElement("LABEL");
 var actionNameLabel = document.createElement("LABEL");
-var explanationControlYPosition = 14;
+var explanationControlYPosition = 36;
 
 // controlsManager encapsulates:
 // - enabling/disabling controls
@@ -45,8 +50,11 @@ var shapePositionMapForContext = {};
 var primaryHighlightedShapeIds = [];
 var secondaryHighlightedShapeIds = [];
 var shape_outline_color = '#202020';
-var shape_outline_width = 2;
+//var shape_outline_width = 2;
+var shape_outline_width = 0;
 var use_shape_color_for_outline = false;
+
+var mostRecentClickHadCtrlKeyDepressed;
 
 
 
@@ -64,14 +72,9 @@ function configureGameboardCanvas(){
 	$("#scaii-gameboard").css("width", gameboard_canvas.width);
 	$("#scaii-gameboard").css("height", gameboard_canvas.height);
 	$("#scaii-gameboard").css("background-color", game_background_color);
+	$("#scaii-gameboard").css("border-style", "solid");
 	$("#scaii-gameboard").append(gameboard_canvas);
 	//addZoomControlToGameboardCanvas(gameboard_canvas);
-}
-
-function configureLabelContainers() {
-	//configureLabelContainer("#progress-label","14px","progress", "right");
-	configureLabelContainer("#explanation-control-label","14px","explanations", "right");
-	configureLabelContainer("#playback-label","14px","", "right");
 }
 
 function configureNavigationButtons(){
@@ -84,8 +87,9 @@ function configureRewindButton(){
 	rewindButton.setAttribute("id", "rewindButton");
 	rewindButton.innerHTML = '<img src="imgs/rewind.png", height="14px" width="14px"/>';
 	rewindButton.onclick = tryRewind;
-	$("#playback-panel").append(rewindButton);
+	$("#rewind-control").append(rewindButton);
 	$("#rewindButton").css("padding-top","4px");
+	$("#rewindButton").css("margin-left","150px");
 	$("#rewindButton").css("opacity", "0.6");
 	rewindButton.disabled = true;
 }
@@ -94,7 +98,7 @@ function configurePauseResumeButton(){
 	pauseResumeButton.setAttribute("class", "playbackButton");
 	pauseResumeButton.setAttribute("id", "pauseResumeButton");
 	pauseResumeButton.innerHTML = '<img src="imgs/play.png", height="16px" width="14px"/>';
-	$("#playback-panel").append(pauseResumeButton);
+	$("#pause-play-control").append(pauseResumeButton);
 	$("#pauseResumeButton").css("padding-top","2px");
 	$("#pauseResumeButton").css("padding-bottom","0px");
 	$("#pauseResumeButton").css("margin-left","20px");
@@ -103,55 +107,144 @@ function configurePauseResumeButton(){
 	pauseResumeButton.disabled = true;
 }
 
-function configureNavigationTimeline() {
-	$("#game-progress").click(tryProcessTimelineClick);
+function configureQuestionArea() {
+	clearWhyQuestions();
+	//clearWhatQuestions();
 }
 
-function configureExplanationLabels(){
-	actionLabel.setAttribute("id", "action-label");
-	$("#action-label-div").append(actionLabel);
-	$("#action-label").html(" ");
-	//$("#action-label").html("action");
-	actionNameLabel.setAttribute("id", "action-name-label");
-	$("#action-name-div").append(actionNameLabel);
-	$("#action-name-label").html(" ");
+function clearWhyQuestions() {
+	$("#why-label").html(" ");
+	$("#what-button").html(" ");
 }
 
-
+//function clearWhatQuestions() {
+//	$("#what-label").html(" ");
+//	$("#what-questions").html(" ");
+//}
+var timelineMargin = 40;
+var explanationControlCanvasHeight = 70;
+var timelineHeight = 16;
 function drawExplanationTimeline() {
 	expl_ctrl_ctx.clearRect(0,0, expl_ctrl_canvas.width, expl_ctrl_canvas.height);
 	// just use width of gameboard for now, may need to be bigger
-	var can_width = getTrueGameWidth();
 	
-	expl_ctrl_canvas.width = can_width;
-	expl_ctrl_canvas.height = 30;
+	expl_ctrl_canvas.height = explanationControlCanvasHeight;
 	$("#explanation-control-panel").append(expl_ctrl_canvas);
 	let ctx = expl_ctrl_ctx;
+	var can_width = 600;
 	
+	expl_ctrl_canvas.width = can_width;
 	ctx.beginPath();
-	ctx.moveTo(0,explanationControlYPosition);
-	ctx.lineTo(can_width,explanationControlYPosition);
+	ctx.moveTo(timelineMargin,explanationControlYPosition);
+	ctx.lineWidth = timelineHeight;
+	ctx.strokeStyle = 'darkgrey';
+	ctx.lineTo(can_width - timelineMargin,explanationControlYPosition);
 	ctx.stroke();
 	ctx.restore();
 }
 
+var showCheckboxes = false;
+
+function toggleCheckboxVisibility(){
+	if (showCheckboxes) {
+		if (salienciesAreShowing) {
+			showCheckboxes = false;
+			activeSaliencyDisplayManager.hideCheckboxes();
+			updateSaliencyContainers();
+		}
+	}
+	else {
+		if (salienciesAreShowing) {
+			showCheckboxes = true;
+			activeSaliencyDisplayManager.renderCheckboxes();
+			updateSaliencyContainers();
+		}
+	}
+}
 function initUI() {
 	//configureSpeedSlider();
 	//configureZoomBox
+	var scaiiInterface = document.getElementById("scaii-interface");
+	scaiiInterface.addEventListener('click', function(evt) {
+		mostRecentClickHadCtrlKeyDepressed = evt.ctrlKey;
+		if (evt.altKey){
+			toggleCheckboxVisibility();
+		}
+	}, true);
+	
 	configureGameboardCanvas();
-	drawExplanationTimeline();
+	sizeNonGeneratedElements();
 	controlsManager.setControlsNotReady();
 	controlsManager.registerJQueryHandleForWaitCursor($("#scaii-interface"));
-	configureLabelContainers();
 	configureNavigationButtons();
-	configureNavigationTimeline();
-	configureExplanationLabels();
+	configureQuestionArea();
+	setUpMetadataToolTipEventHandlers();
+	drawExplanationTimeline();
+}
+function setUpMetadataToolTipEventHandlers() {
+	// for hiding/showing tooltips
+	gameboard_canvas.addEventListener('click', function(evt) {
+		var x = event.offsetX;
+		var y = event.offsetY;
+		var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y, shapePositionMapForContext['game'])
+		if (shapeId != undefined){
+			$("#metadata_hp" + shapeId).toggleClass('tooltip-invisible');
+			if (selectedToolTipIds[shapeId] == "show") {
+				selectedToolTipIds[shapeId] = "hide";
+			}
+			else {
+				selectedToolTipIds[shapeId] = "show";
+			}
+		}
+	  });
+	  
+	  gameboard_canvas.addEventListener('mousemove', function(evt) {
+		var x = event.offsetX;
+		var y = event.offsetY;
+		var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y, shapePositionMapForContext['game'])
+		if (shapeId == undefined) {
+			// we're not inside an object, so hide all the "all_metadata" tooltips
+			for (var sId in hoveredAllDataToolTipIds) {
+				hoveredAllDataToolTipIds[sId] = "hide";
+				$("#" + sId).addClass('tooltip-invisible');
+			}
+		}
+		else {
+			//we're inside one, keep it visible
+			$("#metadata_all" + shapeId).removeClass('tooltip-invisible');
+			hoveredAllDataToolTipIds[shapeId] == "show";
+		}
+  	});
+}
+function sizeNonGeneratedElements() {
+
+	$("#game-titled-container").css("width", "600px");
+	// first row should add to 600...
+	// 150
+	$("#scaii-acronym").css("padding-left", "20px");
+	$("#scaii-acronym").css("width", "110px");
+	$("#scaii-acronym").css("padding-right", "20px");
+
+	// 150
+	$("#game-replay-title").css("width", "140px");
+	$("#game-replay-title").css("padding-right", "10px");
+
+	// 300
+	$("#replay-file-selector").css("width", "300px");
+
+	
+	$("#scaii-acronym").css("padding-top", "10px");
+	$("#scaii-acronym").css("padding-bottom", "10px");
+	$("#game-replay-title").css("padding-top", "10px");
+	$("#game-replay-title").css("padding-bottom", "10px");
+
 }
 
 function clearGameBoards() {
 	clearGameBoard(gameboard_ctx, gameboard_canvas, "game");
 	clearGameBoard(gameboard_zoom_ctx, gameboard_zoom_canvas, "zoom");
 }
+
 
 function clearGameBoard(ctx, canvas, shapePositionMapKey) {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);

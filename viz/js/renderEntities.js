@@ -1,6 +1,36 @@
-
+var entityHPToolTipIds = [];
+var selectedToolTipIds = {};
+var entityAllDataToolTipIds = [];
+var hoveredAllDataToolTipIds = {};
 var masterEntities = {};
+
+
+function removeFullShapeIdFromTrackingLists(fullShapeId){
+  removeMemoryOfToolTip(selectedToolTipIds, entityHPToolTipIds, fullShapeId);
+  removeMemoryOfToolTip(hoveredAllDataToolTipIds, entityAllDataToolTipIds, fullShapeId);
+}
+
+function removeMemoryOfToolTip(someDict, someArray, someId) {
+  var index = someArray.indexOf(someId);
+  if (index !== -1) {
+    someArray.splice(index, 1);
+    delete someDict[someId];
+  }
+}
+
+function cleanToolTips(){
+	for (var i in entityHPToolTipIds){
+		var id = entityHPToolTipIds[i];
+		$("#"+id).remove();
+  }
+  for (var i in entityAllDataToolTipIds){
+		var id = entityAllDataToolTipIds[i];
+		$("#"+id).remove();
+	}
+}
+
 function handleEntities(entitiesList) {
+  cleanToolTips();
 	for (var i in entitiesList) {
 		var entity = entitiesList[i];
 		if (entity.hasId()) {
@@ -10,7 +40,8 @@ function handleEntities(entitiesList) {
 					// do not add new entity that is marked as delete
 				}
 				else {
-					masterEntities[idString] = entity;
+          masterEntities[idString] = entity;
+          copyMapsIntoUpdateablePosition(entity)
 				}
 			}
 			else {
@@ -33,26 +64,24 @@ function handleEntities(entitiesList) {
 	//renderState(gameboard_zoom_ctx, gameboard_zoom_canvas, masterEntities, zoomFactor, zoomBoxOriginX, zoomBoxOriginY, shapePositionMapForContext["zoom"]);
 }
 
-
-
 function getClosestInRangeShapeId(ctx, x, y, shapePositionMap){
-	console.log("");
-	console.log("X " + x + " Y " + y);
 	var closestId = undefined;
+	var closestDistance = undefined;
 	for (key in shapePositionMap) {
 		var shapePoints = shapePositionMap[key];
 		if (closestId == undefined){
 			var d = getDistance(x,y,shapePoints.x, shapePoints.y);
 			if (d <= shapePoints.radius){
 				closestId = shapePoints.id;
+				closestDistance = d;
 			}
 		}
 		else {
 			var d = getDistance(x,y,shapePoints.x, shapePoints.y);
 			if (d <= shapePoints.radius){
-				var dClosest = getDistance(x,y,closest.x, closest.y);
-				if(d < dClosest) {
+				if(d < closestDistance) {
 					closestId = shapePoints.id;
+					closestDistance = d;
 				}
 			}
 		}
@@ -61,11 +90,9 @@ function getClosestInRangeShapeId(ctx, x, y, shapePositionMap){
 }
 
 function getDistance(x1,y1,x2,y2){
-	console.log("x2 " + x2 + " y2 " + y2);
 	var a = x2 - x1;
 	var b = y2 - y1;
 	var d = Math.sqrt( a*a + b*b );
-	console.log('a ' + a + ' b ' + b + ' d ' + d);
 	return d;
 }
 function getShapePoints(x,y,radiusBasis, id){
@@ -131,7 +158,6 @@ function drawRectWithGradient(ctx, x, y, width, height, rotation_in_radians, col
   var gradient = ctx.createLinearGradient(x1, y_orig, x2, y_orig);
   gradient.addColorStop(0, colorRGBA);
   gradient.addColorStop(1, 'white');
-  //console.log('drawing rect ' + x1 + ' ' + x2 + ' ' + y1 + ' ' + y2 + ';' + colorRGBA);
   ctx.beginPath();
 
   ctx.lineWidth = shape_outline_width;
@@ -180,7 +206,6 @@ function drawTriangle(ctx, x, y, baseLen, rotation_in_radians, colorRGBA) {
   var xTip = x;
   var xBottomLeft = x - baseLen / 2;
   var xBottomRight = x + baseLen / 2;
-  //console.log('drawing triangle ' + xTip + ',' + yTip + ' ; ' + xBottomRight + ',' + yBottom + ' ; ' + xBottomLeft + ',' + yBottom + ';' + colorRGBA);
   ctx.beginPath();
   ctx.moveTo(xTip, yTip);
   ctx.lineTo(xBottomRight, yBottom);
@@ -203,7 +228,8 @@ function drawTriangle(ctx, x, y, baseLen, rotation_in_radians, colorRGBA) {
 
 
 function drawDiamond(ctx, x, y, baseLen, rotation_in_radians, colorRGBA) {
-  var sizeFudgeFactor = 1.4; // with math below, diamond is too small so just boost the baselen so we can keep the math simple later
+  //var sizeFudgeFactor = 1.4; // with math below, diamond is too small so just boost the baselen so we can keep the math simple later
+  var sizeFudgeFactor = 2.5;
   baseLen = baseLen * sizeFudgeFactor;
   ctx.save();
   ctx.translate(x,y);
@@ -250,58 +276,190 @@ function drawDiamond(ctx, x, y, baseLen, rotation_in_radians, colorRGBA) {
   ctx.restore();
 }
 
-function layoutEntityAtPosition(ctx, x, y, entity, zoom_factor, xOffset, yOffset, shapePositionMap) {
+function getShapeId(entity, shape) {
+  return entity.getId() + "_" + shape.getId();
+}
+
+function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOffset, yOffset, shapePositionMap) {
   var final_x = (x - xOffset) * zoom_factor;
   var final_y = (y - yOffset) * zoom_factor;
   var shapesList = entity.getShapesList();
   for (var j in shapesList) {
     var shape = shapesList[j];
     //
-	var shapeId = entity.getId() + "." + shape.getId();
-	var relPos = undefined;
+	  var shapeId = getShapeId(entity, shape);
+	  var relPos = undefined;
     if (shape.hasRelativePos()) {
-      relPos = shape.getRelativePos();
-    }
-	else {
+        relPos = shape.getRelativePos();
+      }
+    else {
       relPos = new proto.scaii.common.Pos;
       relPos.setX(0.0);
       relPos.setY(0.0);
+      }
+    var absPos = getAbsoluteOrigin(final_x, final_y, relPos, zoom_factor);
+    var absX = absPos[0];
+    var absY = absPos[1];
+    var orientation = 0.0;
+    orientation = shape.getRotation();
+    var hitPoints =getNumericValueFromFloatStringMap(entity, "Hitpoints");
+    var maxHitPoints = getNumericValueFromFloatStringMap(entity, "Max Hp");
+    
+    //console.log('entity had hp ' + hitPoints);
+    if (shape.hasRect()) {
+      var rect = shape.getRect();
+      var width = 40;
+      var height = 30;
+      if (rect.hasWidth()) {
+        width = rect.getWidth();
+      }
+      if (rect.hasHeight()) {
+        height = rect.getHeight();
+      }
+      var final_width = width * zoom_factor;
+      var final_height = height * zoom_factor;
+      var shapePoints = getShapePoints(absX,absY,Math.max(final_width, final_height) + 6 , shapeId) ;
+      shapePositionMap[shapeId] = shapePoints;
+  //	highlightShape(ctx,shapeId,shapePositionMap);
+      var colorRGBA = loadShapeColorAsRGBAString(shape);
+      drawRect(ctx, absX, absY, final_width, final_height, orientation, colorRGBA);
+      var tooltipX = absX - final_width/2 - 10;
+      var tooltipY = absY - final_height/2 - 10;
+      createHPToolTip(entityIndex+2, shapeId, tooltipX, tooltipY, hitPoints, maxHitPoints, colorRGBA);
+      createAllDataToolTip(entityIndex+2000, shapeId, absX, absY, entity, colorRGBA);
     }
-	var absPos = getAbsoluteOrigin(final_x, final_y, relPos, zoom_factor);
-	var absX = absPos[0];
-	var absY = absPos[1];
-	var orientation = 0.0;
-	orientation = shape.getRotation();
-	if (shape.hasRect()) {
-	  var rect = shape.getRect();
-	  var width = 40;
-	  var height = 30;
-	  if (rect.hasWidth()) {
-	    width = rect.getWidth();
-	  }
-	  if (rect.hasHeight()) {
-	    height = rect.getHeight();
-	  }
-	  var final_width = width * zoom_factor;
-	  var final_height = height * zoom_factor;
-      var shapePoints = getShapePoints(absX,absY,Math.max(final_width, final_height) + 6 * zoom_factor, shapeId) ;
+    else if (shape.hasTriangle()) {
+      var triangle = shape.getTriangle();
+      var baseLen = triangle.getBaseLen();
+      var finalBaseLen = baseLen * zoom_factor;
+      var shapePoints = getShapePoints(absX,absY,finalBaseLen + 6, shapeId) ;
       shapePositionMap[shapeId] = shapePoints;
-	  highlightShape(ctx,shapeId,shapePositionMap);
-	  var colorRGBA = loadShapeColorAsRGBAString(shape);
-	  drawRect(ctx, absX, absY, final_width, final_height, orientation, colorRGBA);
-	}
-	else if (shape.hasTriangle()) {
-	  var triangle = shape.getTriangle();
-	  var baseLen = triangle.getBaseLen();
-	  var finalBaseLen = baseLen * zoom_factor;
-      var shapePoints = getShapePoints(absX,absY,finalBaseLen + 6 * zoom_factor, shapeId) ;
-      shapePositionMap[shapeId] = shapePoints;
-	  highlightShape(ctx,shapeId,shapePositionMap);
-	  var colorRGBA = loadShapeColorAsRGBAString(shape);
-	  //drawTriangle(ctx, x, y, baseLen, orientation, colorRGBA);
-	  drawDiamond(ctx, absX, absY, finalBaseLen, orientation, colorRGBA);
-	}
+  //	highlightShape(ctx,shapeId,shapePositionMap);
+      var colorRGBA = loadShapeColorAsRGBAString(shape);
+      //drawTriangle(ctx, x, y, baseLen, orientation, colorRGBA);
+      drawDiamond(ctx, absX, absY, finalBaseLen, orientation, colorRGBA);
+      var tooltipX = absX - (finalBaseLen + 6)/2 - 10;
+      var tooltipY = absY - (finalBaseLen + 6)/2 - 10;
+      createHPToolTip(entityIndex+2, shapeId, tooltipX, tooltipY , hitPoints, maxHitPoints, colorRGBA);
+      createAllDataToolTip(entityIndex+2000, shapeId, absX, absY, entity, colorRGBA);
+    }
   }
+}
+
+function getNumericValueFromFloatStringMap(entity, key){
+  var map = entity.floatstringmetadataMap;
+  var value = undefined;
+  if (undefined != map) {
+    valueString = map.get(key);
+    value = (Number(valueString)).toFixed(2);
+  }
+  return value;
+}
+
+function getIsEnemy(entity){
+  var map = entity.boolstringmetadataMap;
+  if (undefined != map) {
+    var isEnemy = map.get("Enemy?");
+    if (isEnemy == "true") {
+      return true;
+    }
+    return false;
+  }
+}
+
+function getIsFriend(entity){
+  var map = entity.boolstringmetadataMap;
+  if (undefined != map) {
+    var isFriend = map.get("Friend?");
+    if (isFriend == "true") {
+      return true;
+    }
+    return false;
+  }
+}
+
+function getUnitType(entity){
+  var map = entity.stringmetadataMap;
+  var type = undefined;
+  if (undefined != map) {
+    type = map.get("Unit Type");
+  }
+  return type;
+}
+
+function createHPToolTip(z_index, shapeId, absX, absY, hitPoints, maxHitPoints, color) {
+  if (undefined != hitPoints) {
+    var canvas_bounds = gameboard_canvas.getBoundingClientRect();
+    var hpDiv = document.createElement("div");
+    var setToShow = selectedToolTipIds[shapeId];
+    if (setToShow == undefined || setToShow == "hide"){
+      hpDiv.setAttribute("class","tooltip-invisible");
+    }
+    
+    var id = "metadata_hp" + shapeId;
+    hpDiv.setAttribute("id",id);
+     // position it relative to where origin of bounding box of gameboard is
+    var y = absY + canvas_bounds.top;
+    var x = absX + canvas_bounds.left;
+    var hpWidgetWidth = 20;
+    var hpWidgetHeight = 3;
+    hpDiv.setAttribute("class", "flex-row");
+    hpDiv.setAttribute("style", 'background-color:black;zIndex:' + z_index + ';position:absolute;left:' + x + 'px;top:' + y + 'px;color:' + color + ';height:' + hpWidgetHeight + 'px;width:' + hpWidgetWidth + 'px');
+    $("#scaii-gameboard").append(hpDiv);
+
+    var percentHPRemaining = hitPoints / maxHitPoints;
+    var hpRemainingDivWidth = hpWidgetWidth * percentHPRemaining;
+    var hpLostDivWidth = hpWidgetWidth - hpRemainingDivWidth;
+
+    var remainingHpDiv = document.createElement("div");
+    remainingHpDiv.setAttribute("style", 'background-color:white;height:' + hpWidgetHeight + 'px;width:' + hpRemainingDivWidth + 'px');
+    hpDiv.append(remainingHpDiv);
+
+    entityHPToolTipIds.push(id);
+  }
+}
+
+function createAllDataToolTip(z_index, shapeId, absX, absY, entity, color) {
+  var canvas_bounds = gameboard_canvas.getBoundingClientRect();
+  var valuesDiv = document.createElement("div");
+  var setToShow = hoveredAllDataToolTipIds[shapeId];
+  if (setToShow == undefined || setToShow == "hide"){
+    valuesDiv.setAttribute("class","tooltip-invisible");
+  }
+  var id = "metadata_all" + shapeId;
+  hoveredAllDataToolTipIds[id] = "hide";
+  valuesDiv.setAttribute("id",id);
+   // position it relative to where origin of bounding box of gameboard is
+  var y = absY + canvas_bounds.top + 20;
+  var x = absX + canvas_bounds.left + -125;
+  valuesDiv.setAttribute("style", 'padding:4px;background-color:black;zIndex:' + z_index + ';position:absolute;left:' + x + 'px;top:' + y + 'px;color:white;	display: flex;flex-direction: column;font-family:Arial');
+  $("#scaii-gameboard").append(valuesDiv);
+  entityAllDataToolTipIds.push(id);
+
+  var hpLabel = document.createElement("div");
+  var hitPoints = getNumericValueFromFloatStringMap(entity,"Hitpoints");
+  hpLabel.innerHTML = 'HP   : ' + hitPoints;
+  valuesDiv.append(hpLabel);
+  
+  var mhpLabel = document.createElement("div");
+  var maxHitPoints = getNumericValueFromFloatStringMap(entity,"Max Hp");
+  mhpLabel.innerHTML = 'Max HP: ' + maxHitPoints;
+  valuesDiv.append(mhpLabel);
+  
+  var enemyLabel = document.createElement("div");
+  var isEnemy = getIsEnemy(entity);
+  enemyLabel.innerHTML = 'Enemy: ' + isEnemy;
+  valuesDiv.append(enemyLabel);
+
+  var friendLabel = document.createElement("div");
+  var isFriend = getIsFriend(entity);
+  friendLabel.innerHTML = 'Friend: ' + isFriend;
+  valuesDiv.append(friendLabel);
+  
+  var unitTypeLabel = document.createElement("div");
+  var type = getUnitType(entity);
+  unitTypeLabel.innerHTML = 'Unit Type: ' + type;
+  valuesDiv.append(unitTypeLabel);
 }
 
 function getColorRGBA(r,g,b,a) {
@@ -313,6 +471,7 @@ function getColorRGBA(r,g,b,a) {
   var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
   return result;
 }
+
 function getBasicColorRGBA() {
   color = {};
   color['R'] = 200;
@@ -322,6 +481,18 @@ function getBasicColorRGBA() {
   var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
   return result;
 }
+
+function isBlueColor(color){
+  var r = Number(color.getR());
+  var g = Number(color.getG());
+  var b = Number(color.getB());
+
+   if (r == 0 && g == 0 && b == 255) {
+     return true;
+   }
+   return false;
+}
+
 function loadShapeColorAsRGBAString(shape) {
   color = {};
   color['R'] = 200;
@@ -330,6 +501,10 @@ function loadShapeColorAsRGBAString(shape) {
   color['A'] = 0.5;
   if (shape.hasColor()) {
     var color = shape.getColor();
+    if (isBlueColor(color)){
+      var betterColorThanBlue = 'rgba(255,181,0,1.0)';
+      return betterColorThanBlue;
+    }
     if (color.hasR()) {
       color['R'] = color.getR();
     }
@@ -367,7 +542,7 @@ function renderState(ctx, canvas, entities, zoom_factor, xOffset, yOffset, shape
         if (pos.hasX() && pos.hasY()) {
           var x = pos.getX();
           var y = pos.getY();
-          layoutEntityAtPosition(ctx, x , y , entity, zoom_factor, xOffset, yOffset, shapePositionMap);
+          layoutEntityAtPosition(Number(i), ctx, x , y , entity, zoom_factor, xOffset, yOffset, shapePositionMap);
         }
       }
     }

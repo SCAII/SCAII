@@ -2,5 +2,11 @@
 #scaii-gameboard {
     /*width: 400px;
     height: 400px;*/
-    margin: 0px;
+    margin-left: 90px;
+}
+.tooltip-invisible {
+    visibility:hidden;
+}
+.debug-msg {
+    margin: 10px;
 }

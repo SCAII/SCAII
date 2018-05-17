@@ -2,10 +2,11 @@ body {
     display: block;
     margin: 0px;
 }	
-
 #scaii-interface {
-	width:800px;
+    width: 50px;
+    height: 50px;
 }
+
 .grid {
 	display: grid;
 	grid-gap: 0px;
@@ -18,6 +19,18 @@ body {
   grid-row-end: 2;
 }
 
+.r0c0_1 {
+  grid-column-start: 1;
+  grid-column-end: 4;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+.r0c0_2 {
+  grid-column-start: 1;
+  grid-column-end: 4;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
 .r0c1 {
   grid-column-start: 2;
   grid-column-end: 3;
@@ -38,6 +51,19 @@ body {
   grid-row-end: 3;
 }
 
+.r1c0_1 {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 2;
+  grid-row-end: 3;
+}
+
+.r1c0_2 {
+  grid-column-start: 1;
+  grid-column-end: 4;
+  grid-row-start: 2;
+  grid-row-end: 3;
+}
 .r1c1 {
   grid-column-start: 2;
   grid-column-end: 3;
@@ -48,6 +74,13 @@ body {
 .r2c0 {
   grid-column-start: 1;
   grid-column-end: 2;
+  grid-row-start: 3;
+  grid-row-end: 4;
+}
+
+.r2c0_1 {
+  grid-column-start: 1;
+  grid-column-end: 3;
   grid-row-start: 3;
   grid-row-end: 4;
 }
@@ -66,6 +99,13 @@ body {
   grid-row-end: 5;
 }
 
+.r3c0_1 {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 4;
+  grid-row-end: 5;
+}
+
 .r3c1 {
   grid-column-start: 2;
   grid-column-end: 3;
@@ -76,6 +116,20 @@ body {
 .r4c0 {
   grid-column-start: 1;
   grid-column-end: 2;
+  grid-row-start: 5;
+  grid-row-end: 6;
+}
+
+.r4c0_1 {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 5;
+  grid-row-end: 6;
+}
+
+.r4c0_2 {
+  grid-column-start: 1;
+  grid-column-end: 4;
   grid-row-start: 5;
   grid-row-end: 6;
 }
@@ -94,6 +148,13 @@ body {
   grid-row-end: 7;
 }
 
+.r5c0_1 {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 6;
+  grid-row-end: 7;
+}
+
 .r5c1 {
   grid-column-start: 2;
   grid-column-end: 3;
@@ -101,11 +162,11 @@ body {
   grid-row-end: 7;
 }
 
-.r1c0_1 {
+.r6c0_1 {
   grid-column-start: 1;
   grid-column-end: 3;
-  grid-row-start: 2;
-  grid-row-end: 3;
+  grid-row-start: 7;
+  grid-row-end: 8;
 }
 
 .flex-row {
@@ -122,7 +183,9 @@ body {
 	justify-content: center;
 }
 .bg {
-	background-color: lightgrey;
+  /*background-color: lightgrey;*/
+  background-color: #eeeeee;
+  /*background-color: #f4f4f4;*/
 }
 
 .titled-container {
@@ -132,14 +195,6 @@ body {
 	border-color: #404040;
 }
 
-.region-title-grey {
-	background-color: lightgrey;
-	padding-left: 16px;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	padding-right: 6px;
-	margin: 0px;
-}
 
 .region-title {
 	background-color: white;
@@ -163,12 +218,14 @@ body {
 #scaii-acronym {
 	background-color: #D73F09; /* OSU orange */
 	color: white;
-	padding: 10px 16px;
-    /*padding-top: 8px;
-	padding-bottom: 8px;
-	padding-left: 40px;
-	padding-right: 40px;
-	font-family: Fira Sans;
-	font-size: 18px;
-	font-style: bold;*/
+}
+#game-replay-title {
+  background-color: #D73F09; /* OSU orange */
+	color: white;
+}
+#action-list {
+	position: relative;
+	top: 0;
+	left: 0;
+	max-height: 40px;
 }
