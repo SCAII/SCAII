@@ -23,10 +23,12 @@ function cleanToolTips(){
 		var id = entityHPToolTipIds[i];
 		$("#"+id).remove();
   }
+  entityHPToolTipIds = [];
   for (var i in entityAllDataToolTipIds){
 		var id = entityAllDataToolTipIds[i];
 		$("#"+id).remove();
-	}
+    }
+    entityAllDataToolTipIds = [];
 }
 
 function handleEntities(entitiesList) {
@@ -90,10 +92,10 @@ function getClosestInRangeShapeId(ctx, x, y, shapePositionMap){
 }
 
 function getDistance(x1,y1,x2,y2){
-	var a = x2 - x1;
-	var b = y2 - y1;
-	var d = Math.sqrt( a*a + b*b );
-	return d;
+    var a = x2 - x1;
+    var b = y2 - y1;
+    var d = Math.sqrt( a*a + b*b );
+    return d;
 }
 function getShapePoints(x,y,radiusBasis, id){
 	shape = {};
@@ -103,36 +105,38 @@ function getShapePoints(x,y,radiusBasis, id){
 	shape.id = id;
 	return shape;
 }
-function drawRect(ctx, x, y, width, height, rotation_in_radians, colorRGBA) {
-  ctx.save();
-  ctx.translate(x,y);
-  ctx.rotate(rotation_in_radians);
-  var x_orig = x;
-  var y_orig = y;
-  x = 0; 
-  y = 0;
-  var x1 = x - (height / 2);
-  //if (x1 < 0) {
-  //  x1 = 0;
-  //}
-  var y1 = y - (width / 2);
-  //if (y1 < 0) {
-  //  y1 = 0;
-  //}
-  var x2 = x + (height / 2);
-  var y2 = y + (width / 2);
-  ctx.beginPath();
-
-  ctx.lineWidth = shape_outline_width;
-  ctx.strokeStyle = shape_outline_color;
-  if (use_shape_color_for_outline) {
-    ctx.strokeStyle = colorRGBA;
-  }
-  ctx.strokeRect(x1, y1, height, width);
-  ctx.fillStyle = colorRGBA;
-  //ctx.fillStyle = colorRGBA;
-  ctx.fillRect(x1, y1, height, width);
-  ctx.restore();
+function drawRect(shapeInfo) {
+    var si = shapeInfo;
+    var ctx = si.ctx;
+    ctx.save();
+    ctx.translate(si.x,si.y);
+    ctx.rotate(si.rotation_in_radians);
+    var x_orig = si.x;
+    var y_orig = si.y;
+    x = 0; 
+    y = 0;
+    var x1 = x - (si.height / 2);
+    //if (x1 < 0) {
+    //  x1 = 0;
+    //}
+    var y1 = y - (si.width / 2);
+    //if (y1 < 0) {
+    //  y1 = 0;
+    //}
+    var x2 = x + (si.height / 2);
+    var y2 = y + (si.width / 2);
+    ctx.beginPath();
+  
+    ctx.lineWidth = shape_outline_width;
+    ctx.strokeStyle = shape_outline_color;
+    if (use_shape_color_for_outline) {
+      ctx.strokeStyle = si.colorRGBA;
+    }
+    ctx.strokeRect(x1, y1, si.height, si.width);
+    ctx.fillStyle = si.colorRGBA;
+    //ctx.fillStyle = colorRGBA;
+    ctx.fillRect(x1, y1, si.height, si.width);
+    ctx.restore();
 }
 
 
@@ -227,125 +231,157 @@ function drawTriangle(ctx, x, y, baseLen, rotation_in_radians, colorRGBA) {
 }
 
 
-function drawDiamond(ctx, x, y, baseLen, rotation_in_radians, colorRGBA) {
-  //var sizeFudgeFactor = 1.4; // with math below, diamond is too small so just boost the baselen so we can keep the math simple later
-  var sizeFudgeFactor = 2.5;
-  baseLen = baseLen * sizeFudgeFactor;
-  ctx.save();
-  ctx.translate(x,y);
-  ctx.rotate(rotation_in_radians);
-  x = 0;
-  y = 0;
-  var radians = 60 * Math.PI / 180;
-  var height = (Math.tan(radians) * baseLen) / 2;
- // var yTip = y - height / 2;
- // var yBottom = y + height / 2;
- // var xTip = x;
-  var yTip = y;
-  var yBottom = y;
-  var xTip = x + height / 2;
-  var xBottom = x - height / 2;
-  var xLeftWing = x - height / 4;
-  var yLeftWing = y - baseLen / 3;
-  var xRightWing = x - height / 4;
-  var yRightWing = y + baseLen / 3;
+function drawKite(shapeInfo) {
+    var si = shapeInfo;
+    var ctx = si.ctx;
+    ctx.save();
+    ctx.translate(si.x,si.y);
+    ctx.rotate(si.rotation_in_radians);
+    x = 0;
+    y = 0;
+    var radians = 60 * Math.PI / 180;
+    var height = (Math.tan(radians) * si.baseLen) / 2;
+    // var yTip = y - height / 2;
+    // var yBottom = y + height / 2;
+    // var xTip = x;
+    var yTip = y;
+    var yBottom = y;
+    var xTip = x + height / 2;
+    var xBottom = x - height / 2;
+    var xLeftWing = x - height / 4;
+    var yLeftWing = y - si.baseLen / 3;
+    var xRightWing = x - height / 4;
+    var yRightWing = y + si.baseLen / 3;
+    
+    var gradient = ctx.createLinearGradient(xBottom, yBottom, xTip, yTip);
+    gradient.addColorStop(0, si.colorRGBA);
+    gradient.addColorStop(1, 'white');
+    
+    ctx.beginPath();
+    ctx.moveTo(xTip, yTip);
+    ctx.lineTo(xLeftWing, yLeftWing);
+    ctx.lineTo(xBottom, yBottom);
+    ctx.lineTo(xRightWing, yRightWing);
+    ctx.closePath();
   
-  var gradient = ctx.createLinearGradient(xBottom, yBottom, xTip, yTip);
-  gradient.addColorStop(0, colorRGBA);
-  gradient.addColorStop(1, 'white');
+    // the outline
+    ctx.lineWidth = shape_outline_width;
+    ctx.strokeStyle = shape_outline_color;
+    if (use_shape_color_for_outline) {
+      ctx.strokeStyle = si.colorRGBA;
+    }
+    ctx.stroke();
   
-  ctx.beginPath();
-  ctx.moveTo(xTip, yTip);
-  ctx.lineTo(xLeftWing, yLeftWing);
-  ctx.lineTo(xBottom, yBottom);
-  ctx.lineTo(xRightWing, yRightWing);
-  ctx.closePath();
-
-  // the outline
-  ctx.lineWidth = shape_outline_width;
-  ctx.strokeStyle = shape_outline_color;
-  if (use_shape_color_for_outline) {
-    ctx.strokeStyle = colorRGBA;
-  }
-  ctx.stroke();
-
-  // the fill color
-  //ctx.fillStyle = colorRGBA;
-  ctx.fillStyle = gradient;
-  ctx.fill();
-  ctx.restore();
+    // the fill color
+    //ctx.fillStyle = colorRGBA;
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    ctx.restore();
 }
 
 function getShapeId(entity, shape) {
   return entity.getId() + "_" + shape.getId();
 }
 
+function zoom(value) {
+    return value * gameScaleFactor;
+}
+
+function renderRectangle(si, shape) {
+    var rect = shape.getRect();
+    si.width = zoom(40);
+    si.height = zoom(30);
+    if (rect.hasWidth()) {
+      si.width = zoom(rect.getWidth());
+    }
+    if (rect.hasHeight()) {
+      si.height = zoom(rect.getHeight());
+    }
+    var shapePoints = getShapePoints(si.x,si.y,Math.max(si.width, si.height) + 6 , si.shapeId) ;
+    si.shapePositionMap[si.shapeId] = shapePoints;
+    //	highlightShape(ctx,shapeId,shapePositionMap);
+    si.colorRGBA = loadShapeColorAsRGBAString(shape);
+    drawRect(si);
+}
+
+function createToolTips(shapeInfo) {
+    createHPToolTip(shapeInfo);
+    createAllDataToolTip(shapeInfo);
+}
+
+function setRelativePosition(shapeInfo, shape) {
+    if (shape.hasRelativePos()) {
+        shapeInfo.relPos = shape.getRelativePos();
+    }
+    else {
+        var relPos = new proto.scaii.common.Pos;
+        relPos.setX(0.0);
+        relPos.setY(0.0);
+        shapeInfo.relPos = relPos;
+    }
+}
+
+function setAbsolutePosition(si) {
+    var absPos = getAbsoluteOrigin(si.entityX, si.entityY, si.relPos, si.zoom_factor);
+    si.x = absPos[0];
+    si.y = absPos[1];
+}
+
+function setHitPointsInfo(si, entity) {
+    si.hitPoints =getNumericValueFromFloatStringMap(entity, "Hitpoints");
+    si.maxHitPoints = getNumericValueFromFloatStringMap(entity, "Max Hp");
+    if (si.hitPoints != undefined) {
+        si.percentHPRemaining = si.hitPoints / si.maxHitPoints;
+    }
+}
 function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOffset, yOffset, shapePositionMap) {
-  var final_x = (x - xOffset) * zoom_factor;
-  var final_y = (y - yOffset) * zoom_factor;
+  var entityX = zoom(x - xOffset);
+  var entityY = zoom(y - yOffset);
   var shapesList = entity.getShapesList();
   for (var j in shapesList) {
     var shape = shapesList[j];
+    var shapeInfo = {}; // so we remember what this is
+    var si = shapeInfo;
     //
-	  var shapeId = getShapeId(entity, shape);
-	  var relPos = undefined;
-    if (shape.hasRelativePos()) {
-        relPos = shape.getRelativePos();
-      }
-    else {
-      relPos = new proto.scaii.common.Pos;
-      relPos.setX(0.0);
-      relPos.setY(0.0);
-      }
-    var absPos = getAbsoluteOrigin(final_x, final_y, relPos, zoom_factor);
-    var absX = absPos[0];
-    var absY = absPos[1];
-    var orientation = 0.0;
-    orientation = shape.getRotation();
-    var hitPoints =getNumericValueFromFloatStringMap(entity, "Hitpoints");
-    var maxHitPoints = getNumericValueFromFloatStringMap(entity, "Max Hp");
+    si.entity = entity;
+    si.shapePositionMap = shapePositionMap;
+    si.ctx = ctx;
+    si.entityIndex = entityIndex;
+    si.entityX = entityX;
+    si.entityY = entityY;
+    si.zoom_factor = zoom_factor;
+    si.shapeId = getShapeId(entity, shape);
+    setRelativePosition(si, shape);
+    setAbsolutePosition(si);
+    si.rotation_in_radians = shape.getRotation();
+    setHitPointsInfo(si, entity);
     
     //console.log('entity had hp ' + hitPoints);
     if (shape.hasRect()) {
-      var rect = shape.getRect();
-      var width = 40;
-      var height = 30;
-      if (rect.hasWidth()) {
-        width = rect.getWidth();
-      }
-      if (rect.hasHeight()) {
-        height = rect.getHeight();
-      }
-      var final_width = width * zoom_factor;
-      var final_height = height * zoom_factor;
-      var shapePoints = getShapePoints(absX,absY,Math.max(final_width, final_height) + 6 , shapeId) ;
-      shapePositionMap[shapeId] = shapePoints;
-  //	highlightShape(ctx,shapeId,shapePositionMap);
-      var colorRGBA = loadShapeColorAsRGBAString(shape);
-      drawRect(ctx, absX, absY, final_width, final_height, orientation, colorRGBA);
-      var tooltipX = absX - final_width/2 - 10;
-      var tooltipY = absY - final_height/2 - 10;
-      createHPToolTip(entityIndex+2, shapeId, tooltipX, tooltipY, hitPoints, maxHitPoints, colorRGBA);
-      createAllDataToolTip(entityIndex+2000, shapeId, absX, absY, entity, colorRGBA);
+        renderRectangle(si, shape);
+        si.tooltipX = si.x - si.width/2 - 10;
+        si.tooltipY = si.y - si.height/2 - 10;
     }
     else if (shape.hasTriangle()) {
-      var triangle = shape.getTriangle();
-      var baseLen = triangle.getBaseLen();
-      var finalBaseLen = baseLen * zoom_factor;
-      var shapePoints = getShapePoints(absX,absY,finalBaseLen + 6, shapeId) ;
-      shapePositionMap[shapeId] = shapePoints;
-  //	highlightShape(ctx,shapeId,shapePositionMap);
-      var colorRGBA = loadShapeColorAsRGBAString(shape);
-      //drawTriangle(ctx, x, y, baseLen, orientation, colorRGBA);
-      drawDiamond(ctx, absX, absY, finalBaseLen, orientation, colorRGBA);
-      var tooltipX = absX - (finalBaseLen + 6)/2 - 10;
-      var tooltipY = absY - (finalBaseLen + 6)/2 - 10;
-      createHPToolTip(entityIndex+2, shapeId, tooltipX, tooltipY , hitPoints, maxHitPoints, colorRGBA);
-      createAllDataToolTip(entityIndex+2000, shapeId, absX, absY, entity, colorRGBA);
+        renderTriangle(si, shape);
+        si.tooltipX = si.x - (si.baseLen + 6)/2 - 10;
+        si.tooltipY = si.y - (si.baseLen + 6)/2 - 10;
     }
+    createToolTips(si);
   }
 }
 
+function renderTriangle(shapeInfo, shape) {
+    var si = shapeInfo;
+    var triangle = shape.getTriangle();
+    si.baseLen = zoom(triangle.getBaseLen());
+    var shapePoints = getShapePoints(si.x,si.y,si.baseLen + 6, si.shapeId) ;
+    si.shapePositionMap[si.shapeId] = shapePoints;
+    //	highlightShape(ctx,shapeId,shapePositionMap);
+    si.colorRGBA = loadShapeColorAsRGBAString(shape);
+    //drawTriangle(ctx, x, y, baseLen, orientation, colorRGBA);
+    drawKite(si);
+}
 function getNumericValueFromFloatStringMap(entity, key){
   var map = entity.floatstringmetadataMap;
   var value = undefined;
@@ -387,79 +423,82 @@ function getUnitType(entity){
   return type;
 }
 
-function createHPToolTip(z_index, shapeId, absX, absY, hitPoints, maxHitPoints, color) {
-  if (undefined != hitPoints) {
-    var canvas_bounds = gameboard_canvas.getBoundingClientRect();
-    var hpDiv = document.createElement("div");
-    var setToShow = selectedToolTipIds[shapeId];
-    if (setToShow == undefined || setToShow == "hide"){
-      hpDiv.setAttribute("class","tooltip-invisible");
-    }
+function createHPToolTip(shapeInfo) {
+    var si = shapeInfo;
+    var z_index = si.entityIndex + 2;
+    if (undefined != si.percentHPRemaining) {
+        var canvas_bounds = gameboard_canvas.getBoundingClientRect();
+        var hpDiv = document.createElement("div");
+        var setToShow = selectedToolTipIds[si.shapeId];
+        if (setToShow == undefined || setToShow == "hide"){
+          hpDiv.setAttribute("class","tooltip-invisible");
+        }
+        
+        var id = "metadata_hp" + si.shapeId;
+        hpDiv.setAttribute("id",id);
+         // position it relative to where origin of bounding box of gameboard is
+        var y = si.tooltipY + canvas_bounds.top;
+        var x = si.tooltipX + canvas_bounds.left;
+        var hpWidgetWidth = 20;
+        var hpWidgetHeight = 3;
+        hpDiv.setAttribute("class", "flex-row");
+        hpDiv.setAttribute("style", 'background-color:black;zIndex:' + z_index + ';position:absolute;left:' + x + 'px;top:' + y + 'px;color:' + si.colorRGBA + ';height:' + hpWidgetHeight + 'px;width:' + hpWidgetWidth + 'px');
+        $("#scaii-gameboard").append(hpDiv);
     
-    var id = "metadata_hp" + shapeId;
-    hpDiv.setAttribute("id",id);
-     // position it relative to where origin of bounding box of gameboard is
-    var y = absY + canvas_bounds.top;
-    var x = absX + canvas_bounds.left;
-    var hpWidgetWidth = 20;
-    var hpWidgetHeight = 3;
-    hpDiv.setAttribute("class", "flex-row");
-    hpDiv.setAttribute("style", 'background-color:black;zIndex:' + z_index + ';position:absolute;left:' + x + 'px;top:' + y + 'px;color:' + color + ';height:' + hpWidgetHeight + 'px;width:' + hpWidgetWidth + 'px');
-    $("#scaii-gameboard").append(hpDiv);
-
-    var percentHPRemaining = hitPoints / maxHitPoints;
-    var hpRemainingDivWidth = hpWidgetWidth * percentHPRemaining;
-    var hpLostDivWidth = hpWidgetWidth - hpRemainingDivWidth;
-
-    var remainingHpDiv = document.createElement("div");
-    remainingHpDiv.setAttribute("style", 'background-color:white;height:' + hpWidgetHeight + 'px;width:' + hpRemainingDivWidth + 'px');
-    hpDiv.append(remainingHpDiv);
-
-    entityHPToolTipIds.push(id);
-  }
+        var hpRemainingDivWidth = hpWidgetWidth * si.percentHPRemaining;
+        var hpLostDivWidth = hpWidgetWidth - hpRemainingDivWidth;
+    
+        var remainingHpDiv = document.createElement("div");
+        remainingHpDiv.setAttribute("style", 'background-color:white;height:' + hpWidgetHeight + 'px;width:' + hpRemainingDivWidth + 'px');
+        hpDiv.append(remainingHpDiv);
+    
+        entityHPToolTipIds.push(id);
+      }
 }
 
-function createAllDataToolTip(z_index, shapeId, absX, absY, entity, color) {
-  var canvas_bounds = gameboard_canvas.getBoundingClientRect();
-  var valuesDiv = document.createElement("div");
-  var setToShow = hoveredAllDataToolTipIds[shapeId];
-  if (setToShow == undefined || setToShow == "hide"){
-    valuesDiv.setAttribute("class","tooltip-invisible");
-  }
-  var id = "metadata_all" + shapeId;
-  hoveredAllDataToolTipIds[id] = "hide";
-  valuesDiv.setAttribute("id",id);
-   // position it relative to where origin of bounding box of gameboard is
-  var y = absY + canvas_bounds.top + 20;
-  var x = absX + canvas_bounds.left + -125;
-  valuesDiv.setAttribute("style", 'padding:4px;background-color:black;zIndex:' + z_index + ';position:absolute;left:' + x + 'px;top:' + y + 'px;color:white;	display: flex;flex-direction: column;font-family:Arial');
-  $("#scaii-gameboard").append(valuesDiv);
-  entityAllDataToolTipIds.push(id);
-
-  var hpLabel = document.createElement("div");
-  var hitPoints = getNumericValueFromFloatStringMap(entity,"Hitpoints");
-  hpLabel.innerHTML = 'HP   : ' + hitPoints;
-  valuesDiv.append(hpLabel);
+function createAllDataToolTip(shapeInfo) {
+    var si = shapeInfo;
+    var z_index = si.entityIndex + 2000;
+    var canvas_bounds = gameboard_canvas.getBoundingClientRect();
+    var valuesDiv = document.createElement("div");
+    var setToShow = hoveredAllDataToolTipIds[si.shapeId];
+    if (setToShow == undefined || setToShow == "hide"){
+      valuesDiv.setAttribute("class","tooltip-invisible");
+    }
+    var id = "metadata_all" + si.shapeId;
+    hoveredAllDataToolTipIds[id] = "hide";
+    valuesDiv.setAttribute("id",id);
+     // position it relative to where origin of bounding box of gameboard is
+    var y = si.y + canvas_bounds.top + 20;
+    var x = si.y + canvas_bounds.left + -125;
+    valuesDiv.setAttribute("style", 'padding:4px;background-color:black;zIndex:' + z_index + ';position:absolute;left:' + x + 'px;top:' + y + 'px;color:white;	display: flex;flex-direction: column;font-family:Arial');
+    $("#scaii-gameboard").append(valuesDiv);
+    entityAllDataToolTipIds.push(id);
   
-  var mhpLabel = document.createElement("div");
-  var maxHitPoints = getNumericValueFromFloatStringMap(entity,"Max Hp");
-  mhpLabel.innerHTML = 'Max HP: ' + maxHitPoints;
-  valuesDiv.append(mhpLabel);
+    var hpLabel = document.createElement("div");
+    var hitPoints = getNumericValueFromFloatStringMap(si.entity,"Hitpoints");
+    hpLabel.innerHTML = 'HP   : ' + hitPoints;
+    valuesDiv.append(hpLabel);
+    
+    var mhpLabel = document.createElement("div");
+    var maxHitPoints = getNumericValueFromFloatStringMap(si.entity,"Max Hp");
+    mhpLabel.innerHTML = 'Max HP: ' + maxHitPoints;
+    valuesDiv.append(mhpLabel);
+    
+    var enemyLabel = document.createElement("div");
+    var isEnemy = getIsEnemy(si.entity);
+    enemyLabel.innerHTML = 'Enemy: ' + isEnemy;
+    valuesDiv.append(enemyLabel);
   
-  var enemyLabel = document.createElement("div");
-  var isEnemy = getIsEnemy(entity);
-  enemyLabel.innerHTML = 'Enemy: ' + isEnemy;
-  valuesDiv.append(enemyLabel);
-
-  var friendLabel = document.createElement("div");
-  var isFriend = getIsFriend(entity);
-  friendLabel.innerHTML = 'Friend: ' + isFriend;
-  valuesDiv.append(friendLabel);
-  
-  var unitTypeLabel = document.createElement("div");
-  var type = getUnitType(entity);
-  unitTypeLabel.innerHTML = 'Unit Type: ' + type;
-  valuesDiv.append(unitTypeLabel);
+    var friendLabel = document.createElement("div");
+    var isFriend = getIsFriend(si.entity);
+    friendLabel.innerHTML = 'Friend: ' + isFriend;
+    valuesDiv.append(friendLabel);
+    
+    var unitTypeLabel = document.createElement("div");
+    var type = getUnitType(si.entity);
+    unitTypeLabel.innerHTML = 'Unit Type: ' + type;
+    valuesDiv.append(unitTypeLabel);
 }
 
 function getColorRGBA(r,g,b,a) {
