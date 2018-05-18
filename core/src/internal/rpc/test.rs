@@ -27,6 +27,7 @@ fn connect_attempt() {
                     gameboard_width: Some(400),
                     gameboard_height: Some(400),
                     explanations: Vec::new(),
+                    ..protos::VizInit::default()
                 })) {
                     tx.send(String::from("success")).unwrap();
                 } else {
@@ -76,6 +77,7 @@ fn get_dummy_scaii_pkt() -> ScaiiPacket {
             gameboard_width: Some(400),
             gameboard_height: Some(400),
             explanations: Vec::new(),
+            ..protos::VizInit::default()
         })),
     }
 }
