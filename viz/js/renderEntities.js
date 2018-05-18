@@ -89,6 +89,11 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
             si.tooltipX = si.x - (si.baseLen + 6)/2 - 10;
             si.tooltipY = si.y - (si.baseLen + 6)/2 - 10;
         }
+        else if (shape.hasKite()) {
+            renderKite(si, shape);
+            si.tooltipX = si.x - (si.baseLen + 6)/2 - 10;
+            si.tooltipY = si.y - (si.baseLen + 6)/2 - 10;
+        }
         createToolTips(si);
     }
 }
@@ -129,73 +134,75 @@ function drawRect(shapeInfo) {
 }
 
 
-function drawRectWithGradient(ctx, x, y, width, height, rotation_in_radians, colorRGBA) {
-  ctx.save();
-  ctx.translate(x,y);
-  ctx.rotate(rotation_in_radians);
-  var x_orig = x;
-  var y_orig = y;
-  x = 0; 
-  y = 0;
-  var x1 = x - (height / 2);
-  //if (x1 < 0) {
-  //  x1 = 0;
-  //}
-  var y1 = y - (width / 2);
-  //if (y1 < 0) {
-  //  y1 = 0;
-  //}
-  var x2 = x + (height / 2);
-  var y2 = y + (width / 2);
-
-  var gradient = ctx.createLinearGradient(x1, y_orig, x2, y_orig);
-  gradient.addColorStop(0, colorRGBA);
-  gradient.addColorStop(1, 'white');
-  ctx.beginPath();
-
-  ctx.lineWidth = shape_outline_width;
-  ctx.strokeStyle = shape_outline_color;
-  if (use_shape_color_for_outline) {
-    ctx.strokeStyle = colorRGBA;
-  }
-  ctx.strokeRect(x1, y1, height, width);
-  ctx.fillStyle = gradient;
-  //ctx.fillStyle = colorRGBA;
-  ctx.fillRect(x1, y1, height, width);
-  ctx.restore();
+function drawRectWithGradient(shapeInfo) {
+    var si = shapeInfo;
+    var ctx = si.ctx;
+    ctx.save();
+    ctx.translate(si.x,si.y);
+    ctx.rotate(si.rotation_in_radians);
+    x = 0; 
+    y = 0;
+    var x1 = x - (si.height / 2);
+    //if (x1 < 0) {
+    //  x1 = 0;
+    //}
+    var y1 = y - (si.width / 2);
+    //if (y1 < 0) {
+    //  y1 = 0;
+    //}
+    var x2 = x + (si.height / 2);
+    var y2 = y + (si.width / 2);
+  
+    var gradient = ctx.createLinearGradient(x1, si.y, x2, si.y);
+    gradient.addColorStop(0, si.colorRGBA);
+    gradient.addColorStop(1, 'white');
+    ctx.beginPath();
+  
+    ctx.lineWidth = shape_outline_width;
+    ctx.strokeStyle = shape_outline_color;
+    if (use_shape_color_for_outline) {
+        ctx.strokeStyle = si.colorRGBA;
+    }
+    ctx.strokeRect(x1, y1, height, width);
+    ctx.fillStyle = gradient;
+    //ctx.fillStyle = colorRGBA;
+    ctx.fillRect(x1, y1, height, width);
+    ctx.restore();
 }
 
-function drawTriangle(ctx, x, y, baseLen, rotation_in_radians, colorRGBA) {
-  ctx.save();
-  ctx.translate(x,y);
-  ctx.rotate(rotation_in_radians);
-  x = 0;
-  y = 0;
-  var radians = 60 * Math.PI / 180;
-  var height = (Math.tan(radians) * baseLen) / 2;
-  var yTip = y - height / 2;
-  var yBottom = y + height / 2;
-  var xTip = x;
-  var xBottomLeft = x - baseLen / 2;
-  var xBottomRight = x + baseLen / 2;
-  ctx.beginPath();
-  ctx.moveTo(xTip, yTip);
-  ctx.lineTo(xBottomRight, yBottom);
-  ctx.lineTo(xBottomLeft, yBottom);
-  ctx.closePath();
-
-  // the outline
-  ctx.lineWidth = shape_outline_width;
-  ctx.strokeStyle = shape_outline_color;
-  if (use_shape_color_for_outline) {
-    ctx.strokeStyle = colorRGBA;
-  }
-  ctx.stroke();
-
-  // the fill color
-  ctx.fillStyle = colorRGBA;
-  ctx.fill();
-  ctx.restore();
+function drawTriangle(shapeInfo) {
+    var si = shapeInfo;
+    var ctx = si.ctx;
+    ctx.save();
+    ctx.translate(si.x,si.y);
+    ctx.rotate(si.rotation_in_radians);
+    x = 0;
+    y = 0;
+    var radians = 60 * Math.PI / 180;
+    var height = (Math.tan(radians) * si.baseLen) / 2;
+    var yTip = y - height / 2;
+    var yBottom = y + height / 2;
+    var xTip = x;
+    var xBottomLeft = x - si.baseLen / 2;
+    var xBottomRight = x + si.baseLen / 2;
+    ctx.beginPath();
+    ctx.moveTo(xTip, yTip);
+    ctx.lineTo(xBottomRight, yBottom);
+    ctx.lineTo(xBottomLeft, yBottom);
+    ctx.closePath();
+  
+    // the outline
+    ctx.lineWidth = shape_outline_width;
+    ctx.strokeStyle = shape_outline_color;
+    if (use_shape_color_for_outline) {
+      ctx.strokeStyle = si.colorRGBA;
+    }
+    ctx.stroke();
+  
+    // the fill color
+    ctx.fillStyle = si.colorRGBA;
+    ctx.fill();
+    ctx.restore();
 }
 
 
@@ -207,19 +214,19 @@ function drawKite(shapeInfo) {
     ctx.rotate(si.rotation_in_radians);
     x = 0;
     y = 0;
-    var radians = 60 * Math.PI / 180;
-    var height = (Math.tan(radians) * si.baseLen) / 2;
+    //var radians = 60 * Math.PI / 180;
+    //var height = (Math.tan(radians) * si.baseLen) / 2;
     // var yTip = y - height / 2;
     // var yBottom = y + height / 2;
     // var xTip = x;
     var yTip = y;
     var yBottom = y;
-    var xTip = x + height / 2;
-    var xBottom = x - height / 2;
-    var xLeftWing = x - height / 4;
-    var yLeftWing = y - si.baseLen / 3;
-    var xRightWing = x - height / 4;
-    var yRightWing = y + si.baseLen / 3;
+    var xTip = x + si.width / 2;
+    var xBottom = x - si.width / 2;
+    var xLeftWing = x - si.width / 4;
+    var yLeftWing = y - si.length / 3;
+    var xRightWing = x - si.width / 4;
+    var yRightWing = y + si.length / 3;
     
     var gradient = ctx.createLinearGradient(xBottom, yBottom, xTip, yTip);
     gradient.addColorStop(0, si.colorRGBA);
@@ -274,9 +281,21 @@ function renderTriangle(shapeInfo, shape) {
     //	highlightShape(ctx,shapeId,shapePositionMap);
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
     //drawTriangle(ctx, x, y, baseLen, orientation, colorRGBA);
-    drawKite(si);
+    drawTriangle(si);
 }
 
+
+function renderKite(shapeInfo, shape) {
+    var si = shapeInfo;
+    var kite = shape.getKite();
+    si.length = zoom(kite.getLength());
+    si.width = zoom(kite.getWidth());
+    var shapePoints = getShapePoints(si.x,si.y,Math.max(si.width, si.length), si.shapeId) ;
+    si.shapePositionMap[si.shapeId] = shapePoints;
+    //	highlightShape(ctx,shapeId,shapePositionMap);
+    si.colorRGBA = loadShapeColorAsRGBAString(shape);
+    drawKite(si);
+}
 
 
 
