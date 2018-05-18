@@ -235,3 +235,14 @@ function highlightShape(ctx, shapeId, shapePositionMap) {
     ctx.stroke();
   }
   
+function getOctagonHeight(si) {
+    var h = Math.sqrt((si.edgeCorner * si.edgeCorner) / 2.0 );
+    var result  = si.edgeLeft + 2 * h;
+    return result;
+}
+
+function getOctagonWidth(si) {
+    var h = Math.sqrt((si.edgeCorner * si.edgeCorner) / 2.0 );
+    var result  = si.edgeTop + 2 * h;
+    return result;
+}

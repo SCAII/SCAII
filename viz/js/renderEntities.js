@@ -53,6 +53,13 @@ function renderState(ctx, canvas, entities, zoom_factor, xOffset, yOffset, shape
             }
         }
     }
+    var si = {};
+    si.x = 100;
+    si.y = 200;
+    si.radius = 50;
+    var shape = {};
+    shape.
+    renderCircle(si, shape);
 }
   
 
@@ -94,9 +101,109 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
             si.tooltipX = si.x - (si.baseLen + 6)/2 - 10;
             si.tooltipY = si.y - (si.baseLen + 6)/2 - 10;
         }
+        else if (shape.hasCircle()) {
+            renderCircle(si, shape);
+            si.tooltipX = si.x - (si.radius + 6)/2 - 10;
+            si.tooltipY = si.y - (si.radius + 6)/2 - 10;
+        }
+        else if (shape.hasOctagon()) {
+            renderOctagon(si, shape);
+            si.tooltipX = si.x - 10;
+            si.tooltipY = si.y - (getOctagonHeight(si) + 6)/2 - 10;
+        }
         createToolTips(si);
     }
 }
+
+function renderCircle(si, shape) {
+    var circ = shape.getCircle();
+    si.radius = zoom(40);
+    if (circ.hasRadius()) {
+      si.radius = zoom(rect.getRadius());
+    }
+
+    var shapePoints = getShapePoints(si.x,si.y,si.radius + 6 , si.shapeId) ;
+    si.shapePositionMap[si.shapeId] = shapePoints;
+    //	highlightShape(ctx,shapeId,shapePositionMap);
+    si.colorRGBA = loadShapeColorAsRGBAString(shape);
+    drawCircle(si);
+}
+
+function renderRectangle(si, shape) {
+    var rect = shape.getRect();
+    si.width = zoom(40);
+    si.height = zoom(30);
+    if (rect.hasWidth()) {
+      si.width = zoom(rect.getWidth());
+    }
+    if (rect.hasHeight()) {
+      si.height = zoom(rect.getHeight());
+    }
+    var shapePoints = getShapePoints(si.x,si.y,Math.max(si.width, si.height ) + 6 , si.shapeId) ;
+    si.shapePositionMap[si.shapeId] = shapePoints;
+    //	highlightShape(ctx,shapeId,shapePositionMap);
+    si.colorRGBA = loadShapeColorAsRGBAString(shape);
+    drawRect(si);
+}
+
+function renderOctagon(si, shape) {
+    var oct = shape.getOctagon();
+    si.edgeTop = zoom(40);
+    si.edgeCorner = zoom(40);
+    si.edgeLeft = zoom(40);
+    if (oct.hasEdgeTop()) {
+      si.edgeTop = zoom(oct.getEdgeTop());
+    }
+    if (oct.hasEdgeLeft()) {
+      si.edgeLeft = zoom(oct.getEdgeLeft());
+    }
+    if (oct.hasEdgeCorner()) {
+      si.edgeCorner = zoom(oct.getEdgeCorner());
+    }
+    var shapePoints = getShapePoints(si.x,si.y,Math.max(getOctagonHeight(si), getOctagonWidth(si)) + 6 , si.shapeId) ;
+    si.shapePositionMap[si.shapeId] = shapePoints;
+    //	highlightShape(ctx,shapeId,shapePositionMap);
+    si.colorRGBA = loadShapeColorAsRGBAString(shape);
+    drawOctagon(si);
+}
+
+function renderTriangle(shapeInfo, shape) {
+    var si = shapeInfo;
+    var triangle = shape.getTriangle();
+    si.baseLen = zoom(triangle.getBaseLen());
+    var shapePoints = getShapePoints(si.x,si.y,si.baseLen + 6, si.shapeId) ;
+    si.shapePositionMap[si.shapeId] = shapePoints;
+    //	highlightShape(ctx,shapeId,shapePositionMap);
+    si.colorRGBA = loadShapeColorAsRGBAString(shape);
+    //drawTriangle(ctx, x, y, baseLen, orientation, colorRGBA);
+    drawTriangle(si);
+}
+
+function renderKite(shapeInfo, shape) {
+    var si = shapeInfo;
+    var kite = shape.getKite();
+    si.length = zoom(kite.getLength());
+    si.width = zoom(kite.getWidth());
+    var shapePoints = getShapePoints(si.x,si.y,Math.max(si.width, si.length), si.shapeId) ;
+    si.shapePositionMap[si.shapeId] = shapePoints;
+    //	highlightShape(ctx,shapeId,shapePositionMap);
+    si.colorRGBA = loadShapeColorAsRGBAString(shape);
+    drawKite(si);
+}
+
+function drawCircle(shapeInfo) {
+    var si = shapeInfo;
+    var ctx = si.ctx;
+    ctx.save();
+    ctx.translate(si.x,si.y);
+    ctx.rotate(si.rotation_in_radians);
+    ctx.beginPath();
+    ctx.arc(0,0,si.radius,0,2*Math.PI);
+    ctx.stroke();
+    ctx.fill();
+    ctx.restore();
+}
+
 
 
 function drawRect(shapeInfo) {
@@ -105,8 +212,6 @@ function drawRect(shapeInfo) {
     ctx.save();
     ctx.translate(si.x,si.y);
     ctx.rotate(si.rotation_in_radians);
-    var x_orig = si.x;
-    var y_orig = si.y;
     x = 0; 
     y = 0;
     var x1 = x - (si.height / 2);
@@ -214,11 +319,6 @@ function drawKite(shapeInfo) {
     ctx.rotate(si.rotation_in_radians);
     x = 0;
     y = 0;
-    //var radians = 60 * Math.PI / 180;
-    //var height = (Math.tan(radians) * si.baseLen) / 2;
-    // var yTip = y - height / 2;
-    // var yBottom = y + height / 2;
-    // var xTip = x;
     var yTip = y;
     var yBottom = y;
     var xTip = x + si.width / 2;
@@ -254,50 +354,41 @@ function drawKite(shapeInfo) {
     ctx.restore();
 }
 
-function renderRectangle(si, shape) {
-    var rect = shape.getRect();
-    si.width = zoom(40);
-    si.height = zoom(30);
-    if (rect.hasWidth()) {
-      si.width = zoom(rect.getWidth());
-    }
-    if (rect.hasHeight()) {
-      si.height = zoom(rect.getHeight());
-    }
-    var shapePoints = getShapePoints(si.x,si.y,Math.max(si.width, si.height) + 6 , si.shapeId) ;
-    si.shapePositionMap[si.shapeId] = shapePoints;
-    //	highlightShape(ctx,shapeId,shapePositionMap);
-    si.colorRGBA = loadShapeColorAsRGBAString(shape);
-    drawRect(si);
-}
 
-
-function renderTriangle(shapeInfo, shape) {
+function drawOctagon(shapeInfo) {
     var si = shapeInfo;
-    var triangle = shape.getTriangle();
-    si.baseLen = zoom(triangle.getBaseLen());
-    var shapePoints = getShapePoints(si.x,si.y,si.baseLen + 6, si.shapeId) ;
-    si.shapePositionMap[si.shapeId] = shapePoints;
-    //	highlightShape(ctx,shapeId,shapePositionMap);
-    si.colorRGBA = loadShapeColorAsRGBAString(shape);
-    //drawTriangle(ctx, x, y, baseLen, orientation, colorRGBA);
-    drawTriangle(si);
+    var ctx = si.ctx;
+    ctx.save();
+    ctx.translate(si.x,si.y);
+    ctx.rotate(si.rotation_in_radians);
+    var x1 = si.x - si.edgeTop/2;
+    var y1 = si.y - getOctagonHeight(si)/2;
+    
+    var gradient = ctx.createLinearGradient(xBottom, yBottom, xTip, yTip);
+    gradient.addColorStop(0, si.colorRGBA);
+    gradient.addColorStop(1, 'white');
+    
+    ctx.beginPath();
+    ctx.moveTo(xTip, yTip);
+    ctx.lineTo(xLeftWing, yLeftWing);
+    ctx.lineTo(xBottom, yBottom);
+    ctx.lineTo(xRightWing, yRightWing);
+    ctx.closePath();
+  
+    // the outline
+    ctx.lineWidth = shape_outline_width;
+    ctx.strokeStyle = shape_outline_color;
+    if (use_shape_color_for_outline) {
+      ctx.strokeStyle = si.colorRGBA;
+    }
+    ctx.stroke();
+  
+    // the fill color
+    //ctx.fillStyle = colorRGBA;
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    ctx.restore();
 }
-
-
-function renderKite(shapeInfo, shape) {
-    var si = shapeInfo;
-    var kite = shape.getKite();
-    si.length = zoom(kite.getLength());
-    si.width = zoom(kite.getWidth());
-    var shapePoints = getShapePoints(si.x,si.y,Math.max(si.width, si.length), si.shapeId) ;
-    si.shapePositionMap[si.shapeId] = shapePoints;
-    //	highlightShape(ctx,shapeId,shapePositionMap);
-    si.colorRGBA = loadShapeColorAsRGBAString(shape);
-    drawKite(si);
-}
-
-
 
 
 
