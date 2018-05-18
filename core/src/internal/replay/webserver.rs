@@ -2,12 +2,12 @@
 //#[macro_use]
 //extern crate serde_derive;
 
-use std::process;
+use scaii_core::scaii_config;
+use scaii_core::util;
+use scaii_core::{ScaiiConfig, ScaiiError};
 use std::env;
 use std::error::Error;
-use scaii_core::{ScaiiConfig, ScaiiError};
-use scaii_core::util;
-use scaii_core::scaii_config;
+use std::process;
 
 // launch the simple python webserver if python3 installed
 pub fn launch_webserver() {

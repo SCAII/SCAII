@@ -1,14 +1,16 @@
 use prost::Message;
-use scaii_defs;
-use protos::{cfg, scaii_packet, BackendCfg, BackendEndpoint, Cfg, Entity, ModuleEndpoint,
-             MultiMessage, RecorderConfig, RecorderEndpoint, ReplayEndpoint, ScaiiPacket, Viz,
-             VizInit};
 use protos::endpoint::Endpoint;
-use scaii_core::{ActionWrapper, ReplayAction, ReplayHeader, SerializationInfo,
-                 SerializedProtosEndpoint, SerializedProtosScaiiPacket,
-                 SerializedProtosSerializationResponse};
-use scaii_defs::protos;
 use protos::scaii_packet::SpecificMsg;
+use protos::{
+    cfg, scaii_packet, BackendCfg, BackendEndpoint, Cfg, Entity, ModuleEndpoint, MultiMessage,
+    RecorderConfig, RecorderEndpoint, ReplayEndpoint, ScaiiPacket, Viz, VizInit,
+};
+use scaii_core::{
+    ActionWrapper, ReplayAction, ReplayHeader, SerializationInfo, SerializedProtosEndpoint,
+    SerializedProtosScaiiPacket, SerializedProtosSerializationResponse,
+};
+use scaii_defs;
+use scaii_defs::protos;
 use scaii_defs::{Backend, Module};
 use std::error::Error;
 
@@ -272,29 +274,27 @@ pub fn create_triangle_entity_at(x: &f64, y: &f64, orient: &f64) -> Entity {
             x: Some(*x),
             y: Some(*y),
         }),
-        shapes: vec![
-            protos::Shape {
-                id: 0,
-                relative_pos: Some(protos::Pos {
-                    x: Some(0.0),
-                    y: Some(0.0),
-                }),
-                color: Some(protos::Color {
-                    r: 0,
-                    b: 0,
-                    g: 255,
-                    a: 255,
-                }),
-                rotation: *orient,
-                rect: None,
-                triangle: Some(protos::Triangle {
-                    base_len: Some(10.0),
-                }),
-                delete: false,
-                tag: None,
-                gradient_color: None,
-            },
-        ],
+        shapes: vec![protos::Shape {
+            id: 0,
+            relative_pos: Some(protos::Pos {
+                x: Some(0.0),
+                y: Some(0.0),
+            }),
+            color: Some(protos::Color {
+                r: 0,
+                b: 0,
+                g: 255,
+                a: 255,
+            }),
+            rotation: *orient,
+            rect: None,
+            triangle: Some(protos::Triangle {
+                base_len: Some(10.0),
+            }),
+            delete: false,
+            tag: None,
+            gradient_color: None,
+        }],
         delete: false,
         ..Entity::default()
     }
@@ -307,30 +307,28 @@ pub fn create_rectangle_entity_at(x: &f64, y: &f64, orient: &f64) -> Entity {
             x: Some(*x),
             y: Some(*y),
         }),
-        shapes: vec![
-            protos::Shape {
-                id: 0,
-                relative_pos: Some(protos::Pos {
-                    x: Some(0.0),
-                    y: Some(0.0),
-                }),
-                color: Some(protos::Color {
-                    r: 0,
-                    b: 0,
-                    g: 255,
-                    a: 255,
-                }),
-                rotation: *orient,
-                rect: Some(protos::Rect {
-                    width: Some(10.0),
-                    height: Some(10.0),
-                }),
-                triangle: None,
-                delete: false,
-                tag: None,
-                gradient_color: None,
-            },
-        ],
+        shapes: vec![protos::Shape {
+            id: 0,
+            relative_pos: Some(protos::Pos {
+                x: Some(0.0),
+                y: Some(0.0),
+            }),
+            color: Some(protos::Color {
+                r: 0,
+                b: 0,
+                g: 255,
+                a: 255,
+            }),
+            rotation: *orient,
+            rect: Some(protos::Rect {
+                width: Some(10.0),
+                height: Some(10.0),
+            }),
+            triangle: None,
+            delete: false,
+            tag: None,
+            gradient_color: None,
+        }],
         delete: false,
         ..Entity::default()
     }

@@ -1,8 +1,9 @@
 use std::collections::{HashMap, HashSet};
 
 use super::FactionId;
-use engine::components::{AttackSensor, CollisionHandle, Color, Hp, Movable, Pos, Shape, Speed,
-                         Static, UnitTypeTag};
+use engine::components::{
+    AttackSensor, CollisionHandle, Color, Hp, Movable, Pos, Shape, Speed, Static, UnitTypeTag,
+};
 
 use scaii_defs::protos::{Action, State, Viz};
 
@@ -26,7 +27,11 @@ pub const STATE_SCALE: usize = 1;
 
 lazy_static! {
     pub static ref PLAYER_COLORS: Vec<Color> = vec![
-        Color { r: 255, g: 181, b: 0 },
+        Color {
+            r: 255,
+            g: 181,
+            b: 0,
+        },
         Color { r: 255, g: 0, b: 0 },
         Color { r: 0, g: 0, b: 255 },
     ];
@@ -37,9 +42,9 @@ lazy_static! {
 const SIXTY_FPS: f64 = 1.0 / 60.0;
 
 pub(super) fn register_world_resources(world: &mut World) {
-    use util;
-    use specs::saveload::U64MarkerAllocator;
     use ndarray::Array3;
+    use specs::saveload::U64MarkerAllocator;
+    use util;
 
     let rng = util::make_rng();
     world.add_resource(rng);
@@ -250,10 +255,10 @@ impl UnitType {
         atk_storage: &mut WriteStorage<AttackSensor>,
         c_world: &mut SkyCollisionWorld,
     ) -> Entity {
+        use nalgebra;
+        use nalgebra::{Isometry2, Vector2};
         use ncollide::shape::{Ball, Cuboid, Cylinder, ShapeHandle};
         use ncollide::world::{CollisionGroups, GeometricQueryType};
-        use nalgebra::{Isometry2, Vector2};
-        use nalgebra;
 
         let mut collider_group = CollisionGroups::new();
         collider_group.modify_membership(faction, true);

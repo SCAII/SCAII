@@ -1,6 +1,6 @@
-use engine::ActionInput;
 use engine::components::{Movable, Move};
 use engine::resources::{ReplayMode, Skip};
+use engine::ActionInput;
 use specs::prelude::*;
 use specs::world::Index;
 
@@ -119,8 +119,8 @@ fn to_action_list(raw: ScaiiAction) -> (Vec<Action>, bool, Option<String>) {
 
 #[cfg(test)]
 mod tests {
-    use engine::ActionInput;
     use engine::components::{Movable, Move};
+    use engine::ActionInput;
     use specs::prelude::*;
 
     use scaii_defs::protos::Action as ScaiiAction;
@@ -129,13 +129,13 @@ mod tests {
 
     #[test]
     fn input() {
-        use engine::{resources, components};
         use engine::components::{MoveBehavior, MoveTarget};
+        use engine::{components, resources};
         use prost::Message;
         use protos::unit_action::Action;
         use protos::{ActionList, AttackUnit, UnitAction};
         let mut world = World::new();
-        
+
         components::register_world_components(&mut world);
         resources::register_world_resources(&mut world);
 
@@ -144,14 +144,12 @@ mod tests {
         let test_target = world.create_entity().build();
 
         let actions = ActionList {
-            actions: vec![
-                UnitAction {
-                    unit_id: test_player.id().into(),
-                    action: Some(Action::AttackUnit(AttackUnit {
-                        target_id: test_target.id(),
-                    })),
-                },
-            ],
+            actions: vec![UnitAction {
+                unit_id: test_player.id().into(),
+                action: Some(Action::AttackUnit(AttackUnit {
+                    target_id: test_target.id(),
+                })),
+            }],
             ..Default::default()
         };
 

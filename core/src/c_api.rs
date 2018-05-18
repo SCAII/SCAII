@@ -1,11 +1,11 @@
+use super::{Environment, FATAL_OWNER_ERROR};
+use internal::agent::PublisherAgent;
+use internal::router::Router;
 use libc::{c_uchar, size_t};
 use prost::Message;
 use scaii_defs::protos::MultiMessage;
-use super::{Environment, FATAL_OWNER_ERROR};
-use internal::router::Router;
-use std::rc::Rc;
 use std::cell::RefCell;
-use internal::agent::PublisherAgent;
+use std::rc::Rc;
 
 pub struct CContext {
     env: Environment,
@@ -101,10 +101,10 @@ pub unsafe extern "C" fn destroy_environment(env: *mut CContext) {
 /// the SCAII protobuf type `MultiMessage`.
 #[no_mangle]
 pub unsafe extern "C" fn next_msg(env: *mut CContext, buf: *mut c_uchar, buf_len: size_t) {
-    use std::slice;
-    use std::io::Cursor;
     use scaii_defs::protos::endpoint::Endpoint;
     use scaii_defs::protos::{AgentEndpoint, CoreEndpoint};
+    use std::io::Cursor;
+    use std::slice;
 
     let env = &mut *env;
     let next_msg = env.take_next_msg();
@@ -168,9 +168,9 @@ pub unsafe extern "C" fn route_msg(
     msg_buf: *mut c_uchar,
     msg_len: size_t,
 ) -> size_t {
-    use std::slice;
     use scaii_defs::protos::endpoint::Endpoint;
     use scaii_defs::protos::{AgentEndpoint, CoreEndpoint};
+    use std::slice;
 
     let env = &mut *env;
 

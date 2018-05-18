@@ -1,18 +1,18 @@
 use nalgebra::Point2;
 
-use specs::storage::{HashMapStorage, NullStorage};
-use specs::saveload::SaveLoadComponent;
-use specs::prelude::*;
 use specs::error::NoError;
+use specs::prelude::*;
+use specs::saveload::SaveLoadComponent;
+use specs::storage::{HashMapStorage, NullStorage};
 
-use std::ops::{Deref, DerefMut};
 use std::fmt::Debug;
+use std::ops::{Deref, DerefMut};
 
-use scaii_defs::protos::Pos as ScaiiPos;
-use scaii_defs::protos::Shape as ScaiiShape;
-use scaii_defs::protos::Rect as ScaiiRect;
-use scaii_defs::protos::Triangle as ScaiiTriangle;
 use scaii_defs::protos::Color as ScaiiColor;
+use scaii_defs::protos::Pos as ScaiiPos;
+use scaii_defs::protos::Rect as ScaiiRect;
+use scaii_defs::protos::Shape as ScaiiShape;
+use scaii_defs::protos::Triangle as ScaiiTriangle;
 
 use serde::{Deserialize, Serialize};
 
@@ -20,11 +20,11 @@ use serde::{Deserialize, Serialize};
 // extend the name a little. Other submods should probably
 // just be named things like `render` rather than
 // `render_component`.
-mod move_component;
 mod collision;
+mod move_component;
 
-pub use self::move_component::*;
 pub use self::collision::*;
+pub use self::move_component::*;
 
 pub(super) fn register_world_components(world: &mut World) {
     use specs::saveload::U64Marker;

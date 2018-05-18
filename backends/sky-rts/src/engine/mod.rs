@@ -10,8 +10,8 @@
 //! initializing, updating, and configuring it.
 
 pub mod components;
-pub mod systems;
 pub mod resources;
+pub mod systems;
 
 use self::resources::*;
 
@@ -47,10 +47,12 @@ pub struct Rts<'a, 'b> {
 impl<'a, 'b> Rts<'a, 'b> {
     /// Initializes a new RTS with all systems, components, and resources.
     pub fn new() -> Self {
-        use self::systems::{AttackSystem, CleanupSystem, CollisionSystem, InputSystem, MoveSystem,
-                            RenderSystem, SpawnSystem, StateBuildSystem};
-        use std::sync::Arc;
+        use self::systems::{
+            AttackSystem, CleanupSystem, CollisionSystem, InputSystem, MoveSystem, RenderSystem,
+            SpawnSystem, StateBuildSystem,
+        };
         use rayon::ThreadPoolBuilder;
+        use std::sync::Arc;
 
         let mut world = World::new();
         components::register_world_components(&mut world);
@@ -134,9 +136,9 @@ impl<'a, 'b> Rts<'a, 'b> {
         use engine::resources::LuaPath;
         use SUPPORTED;
 
-        use std::env;
         use scaii_defs::protos;
         use scaii_defs::protos::{EnvDescription, ScaiiPacket};
+        use std::env;
 
         if self.initialized {
             panic!("Double initialize in RTS");
@@ -144,7 +146,8 @@ impl<'a, 'b> Rts<'a, 'b> {
 
         self.initialized = true;
 
-        let lua_path = self.world
+        let lua_path = self
+            .world
             .read_resource::<LuaPath>()
             .0
             .as_ref()
@@ -170,7 +173,8 @@ impl<'a, 'b> Rts<'a, 'b> {
             src: protos::BACKEND_ENDPOINT,
             dest: protos::AGENT_ENDPOINT,
             specific_msg: Some(protos::scaii_packet::SpecificMsg::EnvDesc(EnvDescription {
-                reward_types: self.world
+                reward_types: self
+                    .world
                     .read_resource::<RewardTypes>()
                     .0
                     .iter()
@@ -190,12 +194,12 @@ impl<'a, 'b> Rts<'a, 'b> {
     /// Resets the game to a clean state, running the scenario
     /// Lua's `reset` function, populating initial entities.
     pub fn reset(&mut self) -> MultiMessage {
-        use rand::Isaac64Rng;
-        use util;
-        use scaii_defs::protos::ScaiiPacket;
-        use scaii_defs::protos;
-        use shred::RunNow;
         use self::resources::COLLISION_MARGIN;
+        use rand::Isaac64Rng;
+        use scaii_defs::protos;
+        use scaii_defs::protos::ScaiiPacket;
+        use shred::RunNow;
+        use util;
 
         if !self.initialized {
             self.init();
@@ -244,7 +248,8 @@ impl<'a, 'b> Rts<'a, 'b> {
                 dest: protos::mod_endpoint("viz"),
                 specific_msg: Some(protos::scaii_packet::SpecificMsg::VizInit(
                     protos::VizInit {
-                        reward_types: self.world
+                        reward_types: self
+                            .world
                             .read_resource::<RewardTypes>()
                             .0
                             .iter()
@@ -290,8 +295,8 @@ impl<'a, 'b> Rts<'a, 'b> {
 
     fn record(&mut self) -> Vec<ScaiiPacket> {
         use scaii_defs::protos;
-        use scaii_defs::protos::{RecorderStep, SerializationFormat};
         use scaii_defs::protos::SerializationResponse as SerResp;
+        use scaii_defs::protos::{RecorderStep, SerializationFormat};
 
         if let Some(_) = self.keyframe_interval {
             let mut out = Vec::with_capacity(2);
@@ -426,9 +431,9 @@ impl<'a, 'b> Rts<'a, 'b> {
     /// recalculating anything like collision that cannot be
     /// serialized.
     pub fn deserialize(&mut self, buf: Vec<u8>) -> MultiMessage {
-        use scaii_defs::protos;
-        use engine::resources::{Deserializing, PLAYER_COLORS};
         use engine::components::Color;
+        use engine::resources::{Deserializing, PLAYER_COLORS};
+        use scaii_defs::protos;
 
         self.world.write_resource::<Deserializing>().0 = true;
 
@@ -519,4 +524,4 @@ mod tests {
         let _mm = rts.reset();
     }
 }
-*/  
+*/

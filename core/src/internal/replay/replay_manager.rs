@@ -1,20 +1,22 @@
 use prost::Message;
-use protos::{scaii_packet, ExplanationPoint, ModuleEndpoint, MultiMessage, RecorderConfig,
-             ReplayControl, ReplayEndpoint, ScaiiPacket};
-use protos::user_command::UserCommandType;
 use protos::endpoint::Endpoint;
+use protos::user_command::UserCommandType;
+use protos::{
+    scaii_packet, ExplanationPoint, ModuleEndpoint, MultiMessage, RecorderConfig, ReplayControl,
+    ReplayEndpoint, ScaiiPacket,
+};
 use scaii_core::{Environment, ReplayAction, ReplayHeader, SerializedProtosScaiiPacket};
 use scaii_defs::protos;
-use std::error::Error;
-use std::rc::Rc;
 use std::cell::RefCell;
-use std::sync::{Arc, Mutex};
+use std::error::Error;
 use std::path::Path;
+use std::rc::Rc;
+use std::sync::{Arc, Mutex};
 use std::{thread, time};
 
+use super::explanations::Explanations;
 use super::pkt_util;
 use super::replay_sequencer::ReplaySequencer;
-use super::explanations::Explanations;
 
 #[derive(Debug)]
 enum GameState {
@@ -62,8 +64,8 @@ impl ReplayManager {
 
     fn load_selected_replay_file(&mut self, filename: String) -> Result<(), Box<Error>> {
         use super::{explanations, replay_util, ReplayError};
-        use std::path::PathBuf;
         use scaii_core;
+        use std::path::PathBuf;
         let mut replay_path = scaii_core::get_default_replay_dir()?;
         replay_path.push(filename.as_str());
         let mut replay_actions: Vec<ReplayAction> = {
@@ -248,8 +250,8 @@ impl ReplayManager {
     }
 
     fn send_pkt_to_backend(&mut self, pkt: ScaiiPacket) -> Result<(), Box<Error>> {
-        use scaii_defs;
         use super::ReplayError;
+        use scaii_defs;
         let mut pkts: Vec<ScaiiPacket> = Vec::new();
         pkts.push(pkt);
         let mm = MultiMessage { packets: pkts };
@@ -466,7 +468,8 @@ impl ReplayManager {
         match result {
             Ok(jump_target_int) => {
                 if self.test_mode {
-                    let keyframe_index = self.replay_sequencer
+                    let keyframe_index = self
+                        .replay_sequencer
                         .get_prior_key_frame_index(jump_target_int);
                     let pkt = test_util::get_test_mode_jump_to_hint_message(keyframe_index as u64);
                     self.send_pkt_to_backend(pkt)?;

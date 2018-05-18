@@ -1,14 +1,16 @@
-use protos::{BackendEndpoint, BarChart, BarGroup, Cfg, CoreEndpoint, ModuleEndpoint, MultiMessage,
-             PluginType, ReplayChoiceConfig, ReplayEndpoint, ReplaySessionConfig, ScaiiPacket};
+use super::*;
 use protos::cfg::WhichModule;
-use protos::plugin_type::PluginType::SkyRts;
 use protos::endpoint::Endpoint;
+use protos::plugin_type::PluginType::SkyRts;
 use protos::scaii_packet::SpecificMsg;
+use protos::{
+    BackendEndpoint, BarChart, BarGroup, Cfg, CoreEndpoint, ModuleEndpoint, MultiMessage,
+    PluginType, ReplayChoiceConfig, ReplayEndpoint, ReplaySessionConfig, ScaiiPacket,
+};
+use scaii_core;
 use scaii_core::{ActionWrapper, ScaiiConfig};
 use scaii_defs::protos;
 use std::error::Error;
-use super::*;
-use scaii_core;
 
 pub fn adjust_cfg_packets(
     cfg_pkts: Vec<ScaiiPacket>,

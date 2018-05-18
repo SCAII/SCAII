@@ -1,6 +1,6 @@
-use specs::prelude::*;
 use engine::components::{Move, MoveBehavior, MoveTarget, MovedFlag, Pos, Speed};
 use engine::DeltaT;
+use specs::prelude::*;
 
 #[derive(SystemData)]
 pub struct MoveSystemData<'a> {

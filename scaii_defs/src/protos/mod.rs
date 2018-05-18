@@ -3,8 +3,8 @@ include!(concat!(env!("OUT_DIR"), "/scaii.common.rs"));
 mod proto_util;
 pub use self::proto_util::*;
 
-use protos::user_command::UserCommandType;
 use protos;
+use protos::user_command::UserCommandType;
 use std;
 use std::fmt;
 /// Merges a bunch of `MultiMessage`s into a new one.

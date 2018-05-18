@@ -2,10 +2,10 @@ use std::fmt::Debug;
 
 use super::Pos;
 
-use specs::prelude::*;
-use specs::storage::HashMapStorage;
-use specs::saveload::SaveLoadComponent;
 use specs::error::NoError;
+use specs::prelude::*;
+use specs::saveload::SaveLoadComponent;
+use specs::storage::HashMapStorage;
 
 use serde::{Deserialize, Serialize};
 

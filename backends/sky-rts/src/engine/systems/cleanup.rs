@@ -1,7 +1,8 @@
-use specs::prelude::*;
-use engine::components::{AttackSensor, CollisionHandle, DealtDamage, Death, Delete, HpChange,
-                         MovedFlag, Spawned};
+use engine::components::{
+    AttackSensor, CollisionHandle, DealtDamage, Death, Delete, HpChange, MovedFlag, Spawned,
+};
 use engine::resources::SkyCollisionWorld;
+use specs::prelude::*;
 
 #[derive(SystemData)]
 pub struct CleanupSystemData<'a> {
@@ -63,7 +64,7 @@ mod tests {
 
     #[test]
     fn cleanup() {
-        use engine::{resources, components};
+        use engine::{components, resources};
 
         let mut world = World::new();
         components::register_world_components(&mut world);
@@ -71,7 +72,10 @@ mod tests {
 
         let test_player = world
             .create_entity()
-            .with(DealtDamage{ val: 100.0, ..Default::default()})
+            .with(DealtDamage {
+                val: 100.0,
+                ..Default::default()
+            })
             .with(MovedFlag(1))
             .with(HpChange(1.0))
             .build();

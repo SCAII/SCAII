@@ -1,15 +1,15 @@
-use protos::ScaiiPacket;
+use super::*;
+use bincode::{deserialize_from, Infinite};
 use protos::cfg::WhichModule;
 use protos::scaii_packet::SpecificMsg;
+use protos::ScaiiPacket;
+use scaii_core;
 use scaii_core::{ReplayAction, SerializedProtosSerializationResponse};
 use scaii_defs::protos;
 use std::error::Error;
 use std::fs::File;
-use std::path::Path;
 use std::io::BufReader;
-use bincode::{deserialize_from, Infinite};
-use super::*;
-use scaii_core;
+use std::path::Path;
 
 pub fn load_replay_file(path: &Path) -> Result<Vec<ReplayAction>, Box<Error>> {
     //use super::ReplayAction;

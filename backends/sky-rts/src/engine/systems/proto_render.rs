@@ -1,8 +1,9 @@
-use specs::prelude::*;
-use engine::components::{Color, Death, Delete, FactionId, Hp, HpChange, MovedFlag, Pos, Shape,
-                         Spawned, UnitTypeTag};
-use engine::{NeedsKeyInfo, Render};
+use engine::components::{
+    Color, Death, Delete, FactionId, Hp, HpChange, MovedFlag, Pos, Shape, Spawned, UnitTypeTag,
+};
 use engine::resources::{CumReward, Skip};
+use engine::{NeedsKeyInfo, Render};
+use specs::prelude::*;
 
 use scaii_defs::protos::Entity as ScaiiEntity;
 
@@ -59,7 +60,8 @@ impl RenderSystem {
         sys_data.out.0.entities.clear();
 
         for (pos, id) in (&sys_data.pos, &*sys_data.ids).join() {
-            if !(sys_data.moved.get(id).is_some() || sys_data.death.get(id).is_some()
+            if !(sys_data.moved.get(id).is_some()
+                || sys_data.death.get(id).is_some()
                 || sys_data.delete.get(id).is_some()
                 || sys_data.hp_change.get(id).is_some()
                 || sys_data.spawn.get(id).is_some())
@@ -181,10 +183,10 @@ mod tests {
 
     #[test]
     fn test_proto_render() {
+        use engine::{components, resources};
         use scaii_defs::protos::Color as ScaiiColor;
         use scaii_defs::protos::Pos as ScaiiPos;
         use scaii_defs::protos::Triangle as ScaiiTriangle;
-        use engine::{resources,components};
 
         let mut world = World::new();
         components::register_world_components(&mut world);

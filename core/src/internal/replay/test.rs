@@ -1,7 +1,9 @@
-use scaii_core::{ActionWrapper, ReplayAction, SerializationInfo, SerializedProtosEndpoint,
-                 SerializedProtosSerializationResponse};
-use protos::{Action, ScaiiPacket, SerializationResponse};
 use super::replay_sequencer::{ReplaySequencer, SequenceState};
+use protos::{Action, ScaiiPacket, SerializationResponse};
+use scaii_core::{
+    ActionWrapper, ReplayAction, SerializationInfo, SerializedProtosEndpoint,
+    SerializedProtosSerializationResponse,
+};
 
 #[test]
 fn test_replay_sequencer() {

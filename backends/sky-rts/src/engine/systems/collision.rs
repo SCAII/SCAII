@@ -1,6 +1,6 @@
-use specs::prelude::*;
-use engine::resources::SkyCollisionWorld;
 use engine::components::{Attack, AttackSensor, CollisionHandle, FactionId, Move, MovedFlag, Pos};
+use engine::resources::SkyCollisionWorld;
+use specs::prelude::*;
 
 #[derive(SystemData)]
 pub struct CollisionSystemData<'a> {
@@ -21,9 +21,9 @@ impl<'a> System<'a> for CollisionSystem {
     type SystemData = CollisionSystemData<'a>;
 
     fn run(&mut self, mut sys_data: Self::SystemData) {
-        use nalgebra::{Isometry2, Vector2};
-        use nalgebra;
         use engine::resources::COLLISION_SCALE;
+        use nalgebra;
+        use nalgebra::{Isometry2, Vector2};
 
         for (_, pos, c_handle, atk_handle) in (
             &sys_data.moved,

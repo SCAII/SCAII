@@ -1,18 +1,20 @@
 #![allow(dead_code)]
 
 use scaii_defs::protos;
-use scaii_defs::{Module, Recorder};
-use scaii_defs::protos::{ExplanationPoint, MultiMessage, RecorderConfig, RecorderStep, ScaiiPacket};
 use scaii_defs::protos::scaii_packet::SpecificMsg;
+use scaii_defs::protos::{
+    ExplanationPoint, MultiMessage, RecorderConfig, RecorderStep, ScaiiPacket,
+};
+use scaii_defs::{Module, Recorder};
 use std::error::Error;
 use std::fmt;
-use std::path::PathBuf;
 use std::fs;
+use std::path::PathBuf;
 
 use bincode::{serialize, Infinite};
-use std::io::prelude::*;
-use std::fs::File;
 use prost::Message;
+use std::fs::File;
+use std::io::prelude::*;
 #[cfg(test)]
 mod test;
 mod test_util;

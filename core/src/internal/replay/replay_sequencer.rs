@@ -1,6 +1,6 @@
-use scaii_core::ReplayAction;
-use protos::ScaiiPacket;
 use super::replay_util;
+use protos::ScaiiPacket;
+use scaii_core::ReplayAction;
 use std::collections::BTreeMap;
 use std::error::Error;
 
@@ -226,7 +226,8 @@ impl ReplaySequencer {
         target: u32,
     ) -> Result<Vec<ScaiiPacket>, Box<Error>> {
         let mut result: Vec<ScaiiPacket> = Vec::new();
-        let key_frame_pkt = self.keyframe_map
+        let key_frame_pkt = self
+            .keyframe_map
             .get(&prior_keyframe_index)
             .unwrap()
             .clone();

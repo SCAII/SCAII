@@ -28,10 +28,10 @@ impl<'a> System<'a> for DeserializeSystem {
 
     fn run(&mut self, mut world: Self::SystemData) {
         use super::SerTarget;
-        use serde::Deserialize;
         use serde::de::DeserializeSeed;
-        use serde_cbor::Deserializer;
+        use serde::Deserialize;
         use serde_cbor::de::SliceRead;
+        use serde_cbor::Deserializer;
 
         let mut de = Deserializer::new(SliceRead::new(&world.decode.0));
 

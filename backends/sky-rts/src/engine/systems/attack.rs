@@ -1,6 +1,6 @@
-use specs::prelude::*;
 use engine::components::{Attack, DealtDamage, Death, FactionId, Hp, HpChange, UnitTypeTag};
 use engine::resources::{DeltaT, UnitTypeMap};
+use specs::prelude::*;
 
 #[derive(SystemData)]
 pub struct AttackSystemData<'a> {
@@ -81,7 +81,7 @@ mod tests {
 
     #[test]
     fn attack() {
-        use engine::{resources, components};
+        use engine::{components, resources};
 
         let max_hp: f64 = 100.0;
 

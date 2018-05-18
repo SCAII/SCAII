@@ -1,14 +1,15 @@
-pub mod ser;
 pub mod de;
 pub mod de_collision;
+pub mod ser;
 
-pub use self::ser::SerializeSystem;
 pub use self::de::DeserializeSystem;
 pub use self::de_collision::RedoCollisionSys;
+pub use self::ser::SerializeSystem;
 
+use engine::components::{
+    Attack, Color, FactionId, Hp, Movable, Move, Pos, Shape, Speed, Static, UnitTypeTag,
+};
 use engine::resources::{CumReward, LuaPath, SpawnBuffer, Terminal};
-use engine::components::{Attack, Color, FactionId, Hp, Movable, Move, Pos, Shape, Speed, Static,
-                         UnitTypeTag};
 use rand::Isaac64Rng;
 
 #[derive(Serialize, Deserialize, Debug)]

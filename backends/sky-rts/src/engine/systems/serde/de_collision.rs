@@ -1,6 +1,6 @@
-use specs::prelude::*;
-use engine::resources::{SkyCollisionWorld, UnitTypeMap};
 use engine::components::{AttackSensor, CollisionHandle, FactionId, Pos, UnitTypeTag};
+use engine::resources::{SkyCollisionWorld, UnitTypeMap};
+use specs::prelude::*;
 
 #[derive(SystemData)]
 pub struct RedoCollisionSysData<'a> {

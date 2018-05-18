@@ -1,9 +1,9 @@
-use scaii_defs::{Agent, Backend, Module, Recorder, Replay};
-use scaii_defs::protos::{ModuleEndpoint, MultiMessage, ScaiiPacket};
 use scaii_defs::protos::endpoint::Endpoint;
+use scaii_defs::protos::{ModuleEndpoint, MultiMessage, ScaiiPacket};
+use scaii_defs::{Agent, Backend, Module, Recorder, Replay};
 
-use std::error::Error;
 use std::collections::HashMap;
+use std::error::Error;
 use std::fmt;
 use std::fmt::{Display, Formatter};
 
@@ -153,7 +153,8 @@ impl Router {
             }
             Endpoint::Core(_) => Ok(Some(msg.clone())),
             Endpoint::Module(ModuleEndpoint { ref name }) => {
-                let res = self.modules
+                let res = self
+                    .modules
                     .get_mut(name)
                     .and_then(|v| Some(v.process_msg(msg)));
                 if let Some(Err(err)) = res {
@@ -175,7 +176,8 @@ impl Router {
                 Ok(None)
             }
             Endpoint::Recorder(_) => {
-                let res = self.recorder
+                let res = self
+                    .recorder
                     .as_mut()
                     .and_then(|v| Some(v.process_msg(msg)));
                 if let Some(Err(err)) = res {

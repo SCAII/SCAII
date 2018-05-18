@@ -27,9 +27,9 @@ impl<'a> System<'a> for SerializeSystem {
     type SystemData = SerializeSystemData<'a>;
 
     fn run(&mut self, mut world: Self::SystemData) {
-        use serde_cbor::Serializer;
-        use serde::Serialize;
         use super::SerTarget;
+        use serde::Serialize;
+        use serde_cbor::Serializer;
 
         let out = &mut world.out.0;
 

@@ -4,13 +4,16 @@ use scaii_defs::protos::Error as ScaiiError;
 use specs::prelude::*;
 
 use std::error::Error;
-use std::path::Path;
 use std::fmt::Debug;
+use std::path::Path;
 
+use engine::components::{
+    DealtDamage, Death, Delete, FactionId, Hp, HpChange, Spawned, UnitTypeTag,
+};
+use engine::resources::{
+    CumReward, MaxStep, Reward, RewardTypes, Skip, SpawnBuffer, Step, Terminal, UnitTypeMap,
+};
 use rand::Isaac64Rng;
-use engine::components::{DealtDamage, Death, Delete, FactionId, Hp, HpChange, Spawned, UnitTypeTag};
-use engine::resources::{CumReward, MaxStep, Reward, RewardTypes, Skip, SpawnBuffer, Step,
-                        Terminal, UnitTypeMap};
 
 pub(crate) mod userdata;
 
@@ -281,10 +284,10 @@ impl LuaSystem {
         world: &mut World,
         path: P,
     ) -> Result<(), Box<Error>> {
-        use std::fs::File;
-        use std::io::prelude::*;
         use self::userdata::UserDataRng;
         use rand::Isaac64Rng;
+        use std::fs::File;
+        use std::io::prelude::*;
 
         let mut file = File::open(&path).or_else(|e| {
             Err(format!(
@@ -313,7 +316,8 @@ impl LuaSystem {
         use engine::components::Pos;
         use engine::resources::UnitTypeMap;
 
-        let units: Table = self.lua
+        let units: Table = self
+            .lua
             .eval("sky_reset(__sky_rts_rng)", Some("Restart function"))?;
 
         for unit in units.sequence_values::<Table>() {
@@ -345,11 +349,13 @@ impl LuaSystem {
 
     pub fn load_scenario(&mut self, world: &mut World) -> Result<(), Box<Error>> {
         use engine::components::{FactionId, Shape};
-        use engine::resources::{CumReward, MaxStep, Player, RewardTypes, UnitType, UnitTypeMap,
-                                PLAYER_COLORS};
+        use engine::resources::{
+            CumReward, MaxStep, Player, RewardTypes, UnitType, UnitTypeMap, PLAYER_COLORS,
+        };
         use std::collections::HashSet;
 
-        let table: Table = self.lua
+        let table: Table = self
+            .lua
             .eval("sky_init()", Some("Initializing in sky_init from Lua"))?;
 
         let r_types = if table.contains_key("reward_types")? {

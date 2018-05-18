@@ -1,8 +1,10 @@
-use specs::prelude::*;
 use engine::components::{FactionId, Hp, UnitTypeTag};
-use engine::resources::{ReplayMode, Reward, RtsState, Skip, SkyCollisionWorld, Terminal,
-                        UnitTypeMap, STATE_SCALE, STATE_SIZE};
+use engine::resources::{
+    ReplayMode, Reward, RtsState, Skip, SkyCollisionWorld, Terminal, UnitTypeMap, STATE_SCALE,
+    STATE_SIZE,
+};
 use ndarray::Array3;
+use specs::prelude::*;
 
 #[derive(SystemData)]
 pub struct StateBuildSystemData<'a> {
@@ -35,9 +37,9 @@ impl<'a> System<'a> for StateBuildSystem {
     type SystemData = StateBuildSystemData<'a>;
 
     fn run(&mut self, mut sys_data: Self::SystemData) {
+        use engine::resources::COLLISION_SCALE;
         use nalgebra::Point2;
         use ncollide::world::CollisionGroups;
-        use engine::resources::COLLISION_SCALE;
         use std::mem;
 
         if sys_data.replay_mode.0 {
