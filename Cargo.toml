@@ -4,3 +4,7 @@ members = [
     "scaii_defs",
     "backends/sky-rts",
 ]
+
+[profile.release]
+codegen-units = 1
+lto = true

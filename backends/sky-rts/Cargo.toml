@@ -36,7 +36,3 @@ glob = "0.2.11"
 
 [dev-dependencies]
 websocket = "0.20"
-
-[profile.release]
-lto = true
-codegen-units = 1
