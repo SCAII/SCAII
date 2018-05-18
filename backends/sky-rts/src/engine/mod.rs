@@ -498,6 +498,7 @@ impl<'a, 'b> Rts<'a, 'b> {
     }
 }
 
+/*
 #[cfg(test)]
 mod tests {
     use super::{Player, Rts};
@@ -518,3 +519,4 @@ mod tests {
         let _mm = rts.reset();
     }
 }
+*/  

@@ -26,7 +26,6 @@ impl<'a> System<'a> for AttackSystem {
         let delta_t = sys_data.delta_t.0;
 
         let mut dead_target = vec![];
-
         for (atk, tag, id) in (&mut sys_data.attack, &sys_data.tag, &*sys_data.entities).join() {
             if !sys_data.entities.is_alive(atk.target) {
                 dead_target.push(id);
@@ -69,5 +68,73 @@ impl<'a> System<'a> for AttackSystem {
         for id in dead_target {
             sys_data.attack.remove(id);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use engine::components::{Attack, Death, Hp, HpChange, UnitTypeTag};
+    use engine::resources::{UnitType, UnitTypeMap};
+
+    use std::collections::HashMap;
+
+    #[test]
+    fn attack() {
+        use engine::{resources, components};
+
+        let max_hp: f64 = 100.0;
+
+        let mut world = World::new();
+        components::register_world_components(&mut world);
+        resources::register_world_resources(&mut world);
+        let mut test_unit_type_map = UnitTypeMap::default();
+        let mut units: HashMap<String, usize> = HashMap::new();
+        let mut unit_types: HashMap<String, UnitType> = HashMap::new();
+
+        units.insert("test_entity".to_string(), 0);
+        test_unit_type_map.typ_ids = units;
+
+        unit_types.insert("test_entity".to_string(), UnitType::default());
+        test_unit_type_map.tag_map = unit_types;
+
+        world.add_resource(test_unit_type_map);
+
+        let test_target = world
+            .create_entity()
+            .with(Hp {
+                max_hp: max_hp,
+                curr_hp: 10.0,
+            })
+            .with(FactionId(0))
+            .with(UnitTypeTag("test_entity".to_string()))
+            .build();
+
+        let test_player = world
+            .create_entity()
+            .with(Hp {
+                max_hp: max_hp,
+                curr_hp: max_hp,
+            })
+            .with(FactionId(1))
+            .with(Attack {
+                target: test_target,
+                time_since_last: 200.0,
+            })
+            .with(UnitTypeTag("test_entity".to_string()))
+            .build();
+
+        let mut sys = AttackSystem;
+        sys.run_now(&world.res);
+
+        let hp_changed = world.read::<HpChange>(); // Verifies component exists because this test
+        assert!(hp_changed.get(test_target).is_some()); // should cause the target to take damage
+
+        let hps = world.read::<Hp>();
+        assert!(hps.get(test_target).unwrap().curr_hp == 0.0); // Verifies that test target has 0 hp
+        assert!(hps.get(test_player).unwrap().curr_hp == max_hp); // Verifies that test player did not take damage
+
+        let dead_units = world.read::<Death>();
+        assert!(dead_units.get(test_target).unwrap().killer == test_player); // Verifies that test player killed test_target
     }
 }

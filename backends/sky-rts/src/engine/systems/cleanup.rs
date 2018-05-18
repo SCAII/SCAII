@@ -55,3 +55,37 @@ impl<'a> System<'a> for CleanupSystem {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use engine::components::{DealtDamage, HpChange, MovedFlag};
+
+    #[test]
+    fn cleanup() {
+        use engine::{resources, components};
+
+        let mut world = World::new();
+        components::register_world_components(&mut world);
+        resources::register_world_resources(&mut world);
+
+        let test_player = world
+            .create_entity()
+            .with(DealtDamage{ val: 100.0, ..Default::default()})
+            .with(MovedFlag(1))
+            .with(HpChange(1.0))
+            .build();
+
+        let mut sys = CleanupSystem;
+        sys.run_now(&world.res);
+
+        let cleared_moved = world.read::<MovedFlag>();
+        assert!(cleared_moved.get(test_player).is_none());
+
+        let cleared_damage = world.read::<DealtDamage>();
+        assert!(cleared_damage.get(test_player).is_none());
+
+        let cleared_hp = world.read::<HpChange>();
+        assert!(cleared_hp.get(test_player).is_none());
+    }
+}

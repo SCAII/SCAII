@@ -22,18 +22,18 @@ pub struct Movable(pub usize);
 #[storage(HashMapStorage)]
 pub struct Static(pub usize);
 
-#[derive(Copy, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Copy, Clone, PartialEq, Serialize, Deserialize, Debug)]
 pub enum MoveBehavior {
     Straight,
 }
 
-#[derive(Copy, Clone, PartialEq)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 pub enum MoveTarget {
     Ground(Pos),
     Unit(Entity),
 }
 
-#[derive(Component, Copy, Clone, PartialEq)]
+#[derive(Component, Copy, Clone, PartialEq, Debug)]
 #[storage(HashMapStorage)]
 pub struct Move {
     pub behavior: MoveBehavior,

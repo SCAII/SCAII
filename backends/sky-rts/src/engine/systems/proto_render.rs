@@ -171,3 +171,91 @@ impl RenderSystem {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use engine::components::{Color, MovedFlag, Pos, Shape};
+    use engine::Render;
+
+    use super::*;
+
+    #[test]
+    fn test_proto_render() {
+        use scaii_defs::protos::Color as ScaiiColor;
+        use scaii_defs::protos::Pos as ScaiiPos;
+        use scaii_defs::protos::Triangle as ScaiiTriangle;
+        use engine::{resources,components};
+
+        let mut world = World::new();
+        components::register_world_components(&mut world);
+        resources::register_world_resources(&mut world);
+
+        let test_target = world
+            .create_entity()
+            .with(Pos::new(3.0, 9.0))
+            .with(Color {
+                r: 23,
+                b: 124,
+                g: 255,
+            })
+            .with(Hp::default())
+            .with(FactionId(0))
+            .with(Shape::Triangle { base_len: 23.0 })
+            .with(MovedFlag(1))
+            .with(UnitTypeTag("Foo".to_string()))
+            .build();
+
+        let mut sys: Dispatcher = DispatcherBuilder::new()
+            .add(RenderSystem {}, "render", &[])
+            .build();
+
+        sys.dispatch(&mut world.res);
+
+        let read_render = world.read_resource::<Render>().0.clone();
+        assert!(read_render.entities.len() == 1); // Check that exactly one entity is created
+
+        assert!(read_render.entities[0].delete == false); // Check that entity is alive
+
+        assert!(read_render.entities[0].id == test_target.id().into()); // Check that entity id matches test_target entity
+
+        assert!(
+            read_render.entities[0].clone().pos.unwrap() == ScaiiPos {
+                x: Some(3.0),
+                y: Some(9.0)
+            }
+        ); // Check that entity positon converted SCAIIPOS correctly
+
+        assert!(read_render.entities[0].clone().shapes[0].id == test_target.id().into()); // Verify that shape entity ID is 0
+
+        assert!(
+            read_render.entities[0].shapes[0]
+                .relative_pos
+                .clone()
+                .unwrap() == ScaiiPos {
+                x: Some(0.0),
+                y: Some(0.0)
+            }
+        ); // Verify that relative_pos offset is 0
+
+        assert!(
+            read_render.entities[0].shapes[0].color.clone().unwrap() == ScaiiColor {
+                r: 23,
+                g: 255,
+                b: 124,
+                a: 255
+            }
+        ); // Verify that entity shape is correct color
+
+        assert!(
+            read_render.entities[0].shapes[0].triangle.clone().unwrap() == ScaiiTriangle {
+                base_len: Some(23.0)
+            }
+        ); // Verify entity created is a trangle with base length of 23
+
+        assert!(read_render.entities[0].shapes[0].tag == None);
+
+        assert!(read_render.entities[0].shapes[0].gradient_color == None);
+
+        assert!(read_render.entities[0].shapes[0].delete == false);
+    }
+}
