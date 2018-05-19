@@ -363,16 +363,35 @@ function drawOctagon(shapeInfo) {
     ctx.rotate(si.rotation_in_radians);
     var x1 = si.x - si.edgeTop/2;
     var y1 = si.y - getOctagonHeight(si)/2;
+    var x2 = si.x + si.edgeTop/2;
+    var y2 = y1;
+
+    var x3 = si.x + getOctagonWidth(si)/2;
+    var y3 = si.y - si.edgeLeft/2;
+    var x4 = x3;
+    var y4 = si.y + si.edgeLeft/2;
+
+    var x5 = x2;
+    var y5 = si.y + getOctagonHeight(si)/2;
+    var x6 = x1;
+    var y6 = y5;
+
+    var x7 = si.x - getOctagonWidth(si)/2;
+    var y7 = y4;
+    var x8 = x7;
+    var y8 = y3;
     
-    var gradient = ctx.createLinearGradient(xBottom, yBottom, xTip, yTip);
-    gradient.addColorStop(0, si.colorRGBA);
-    gradient.addColorStop(1, 'white');
     
     ctx.beginPath();
-    ctx.moveTo(xTip, yTip);
-    ctx.lineTo(xLeftWing, yLeftWing);
-    ctx.lineTo(xBottom, yBottom);
-    ctx.lineTo(xRightWing, yRightWing);
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.lineTo(x3, y3);
+    ctx.lineTo(x4, y4);
+    ctx.lineTo(x5, y5);
+    ctx.lineTo(x6, y6);
+    ctx.lineTo(x7, y7);
+    ctx.lineTo(x8, y8);
+    ctx.lineTo(x1, y1);
     ctx.closePath();
   
     // the outline
@@ -384,8 +403,7 @@ function drawOctagon(shapeInfo) {
     ctx.stroke();
   
     // the fill color
-    //ctx.fillStyle = colorRGBA;
-    ctx.fillStyle = gradient;
+    ctx.fillStyle = si.colorRGBA;
     ctx.fill();
     ctx.restore();
 }
