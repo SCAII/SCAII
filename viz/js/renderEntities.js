@@ -53,13 +53,6 @@ function renderState(ctx, canvas, entities, zoom_factor, xOffset, yOffset, shape
             }
         }
     }
-    var si = {};
-    si.x = 100;
-    si.y = 200;
-    si.radius = 50;
-    var shape = {};
-    shape.
-    renderCircle(si, shape);
 }
   
 
@@ -111,8 +104,44 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
             si.tooltipX = si.x - 10;
             si.tooltipY = si.y - (getOctagonHeight(si) + 6)/2 - 10;
         }
-        createToolTips(si);
+        
+        else if (shape.hasArrow()) {
+            renderArrow(si, shape);
+            si.tooltipX = undefined;
+            si.tooltipY = undefined;
+        }
+        if (si.tooltipX != undefined) {
+            createToolTips(si);
+        }
     }
+}
+
+function renderArrow(si, shape) {
+    var arrow = shape.getArrow();
+    if (!arrow.hasTargetPos()) {
+        return;
+    }
+    var targetPos = arrow.getTargetPos();
+    if (!pos.hasX() || !pos.hasY()) {
+       return;
+    }
+    si.targetX = targetPos.getX();
+    si.targetY = targetPos.getY();
+    si.thickness = 2;
+    si.headlength = 6;
+    si.headwidth = 2;
+    if (arrow.hasThickness()) {
+        si.thickness = arrow.getThickness();
+    }
+    if (arrow.hasHeadLength()) {
+        si.headlength = arrow.getHeadLength();
+    }
+    if (arrow.hasHeadWidth()) {
+        si.headwidth = arrow.getHeadWidth();
+    }
+
+    si.colorRGBA = loadShapeColorAsRGBAString(shape);
+    drawArrow(si);
 }
 
 function renderCircle(si, shape) {
@@ -381,7 +410,6 @@ function drawOctagon(shapeInfo) {
     var x8 = x7;
     var y8 = y3;
     
-    
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
@@ -408,6 +436,44 @@ function drawOctagon(shapeInfo) {
     ctx.restore();
 }
 
+function drawArrow(shapeInfo){
+    var si = shapeInfo;
+    var fromx = si.x;
+    var fromy = si.y;
+    var tox = si.targetX;
+    var toy = si.targetY;
+    //variables to be used when creating the arrow
+    
+    var ctx = si.ctx;
+    var headlen = si.headlength;
 
+    var angle = Math.atan2(toy-fromy,tox-fromx);
+    ctx.save();
+    //starting path of the arrow from the start square to the end square and drawing the stroke
+    ctx.beginPath();
+    ctx.moveTo(fromx, fromy);
+    ctx.lineTo(tox, toy);
+    ctx.strokeStyle = si.colorRGBA;
+    ctx.lineWidth = si.thickness;
+    ctx.stroke();
 
+    //starting a new path from the head of the arrow to one of the sides of the point
+    ctx.beginPath();
+    ctx.moveTo(tox, toy);
+    ctx.lineTo(tox-headlen*Math.cos(angle-Math.PI/7),toy-headlen*Math.sin(angle-Math.PI/7));
 
+    //path from the side point of the arrow, to the other side point
+    ctx.lineTo(tox-headlen*Math.cos(angle+Math.PI/7),toy-headlen*Math.sin(angle+Math.PI/7));
+
+    //path from the side point back to the tip of the arrow, and then again to the opposite side point
+    ctx.lineTo(tox, toy);
+    ctx.lineTo(tox-headlen*Math.cos(angle-Math.PI/7),toy-headlen*Math.sin(angle-Math.PI/7));
+
+    //draws the paths created above
+    ctx.strokeStyle = si.colorRGBA;
+    ctx.lineWidth = si.thickness;
+    ctx.stroke();
+    ctx.fillStyle = si.colorRGBA;
+    ctx.fill();
+    ctx.restore();
+}
