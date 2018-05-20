@@ -87,28 +87,55 @@ function createAllDataToolTip(shapeInfo) {
     $("#scaii-gameboard").append(valuesDiv);
     entityAllDataToolTipIds.push(id);
   
-    var hpLabel = document.createElement("div");
-    var hitPoints = getNumericValueFromFloatStringMap(si.entity,"Hitpoints");
-    hpLabel.innerHTML = 'HP   : ' + hitPoints;
-    valuesDiv.append(hpLabel);
+
+    unfoldMapIntoTooltip(si.entity.stringmetadataMap, valuesDiv, false);
+    unfoldMapIntoTooltip(si.entity.boolstringmetadataMap, valuesDiv, false);
+    unfoldMapIntoTooltip(si.entity.floatstringmetadataMap, valuesDiv, true);
+    unfoldMapIntoTooltip(si.entity.intmetadataMap, valuesDiv, false);
+    unfoldMapIntoTooltip(si.entity.boolmetadataMap, valuesDiv,false);
+    unfoldMapIntoTooltip(si.entity.floatmetadataMap, valuesDiv, true);
     
-    var mhpLabel = document.createElement("div");
-    var maxHitPoints = getNumericValueFromFloatStringMap(si.entity,"Max Hp");
-    mhpLabel.innerHTML = 'Max HP: ' + maxHitPoints;
-    valuesDiv.append(mhpLabel);
+
+    // var hpLabel = document.createElement("div");
+    // var hitPoints = getNumericValueFromFloatStringMap(si.entity,"Hitpoints");
+    // hpLabel.innerHTML = 'HP   : ' + hitPoints;
+    // valuesDiv.append(hpLabel);
     
-    var enemyLabel = document.createElement("div");
-    var isEnemy = getIsEnemy(si.entity);
-    enemyLabel.innerHTML = 'Enemy: ' + isEnemy;
-    valuesDiv.append(enemyLabel);
+    // var mhpLabel = document.createElement("div");
+    // var maxHitPoints = getNumericValueFromFloatStringMap(si.entity,"Max Hp");
+    // mhpLabel.innerHTML = 'Max HP: ' + maxHitPoints;
+    // valuesDiv.append(mhpLabel);
+    
+    // var enemyLabel = document.createElement("div");
+    // var isEnemy = getIsEnemy(si.entity);
+    // enemyLabel.innerHTML = 'Enemy: ' + isEnemy;
+    // valuesDiv.append(enemyLabel);
   
-    var friendLabel = document.createElement("div");
-    var isFriend = getIsFriend(si.entity);
-    friendLabel.innerHTML = 'Friend: ' + isFriend;
-    valuesDiv.append(friendLabel);
+    // var friendLabel = document.createElement("div");
+    // var isFriend = getIsFriend(si.entity);
+    // friendLabel.innerHTML = 'Friend: ' + isFriend;
+    // valuesDiv.append(friendLabel);
     
-    var unitTypeLabel = document.createElement("div");
-    var type = getUnitType(si.entity);
-    unitTypeLabel.innerHTML = 'Unit Type: ' + type;
-    valuesDiv.append(unitTypeLabel);
+    // var unitTypeLabel = document.createElement("div");
+    // var type = getUnitType(si.entity);
+    // unitTypeLabel.innerHTML = 'Unit Type: ' + type;
+    // valuesDiv.append(unitTypeLabel);
+}
+
+function unfoldMapIntoTooltip(map, div, limitToTwoDecimals) {
+    var entryList = map.getEntryList();
+    for (var i in entryList ){
+        var entry = entryList[i];
+        var key = entry[0];
+        var val = entry[1];
+        var label = document.createElement("div");
+        if (limitToTwoDecimals) {
+            label.innerHTML = key + ':' + (Number(val)).toFixed(2);
+        }
+        else {
+            label.innerHTML = key + ':' + val;
+        }
+        
+        div.append(label);
+    }
 }
