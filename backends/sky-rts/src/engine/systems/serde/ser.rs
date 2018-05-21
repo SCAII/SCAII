@@ -6,7 +6,7 @@ use specs::error::NoError;
 
 use rand::Isaac64Rng;
 
-use engine::resources::{CumReward, LuaPath, SerializeBytes, SpawnBuffer, Terminal};
+use engine::resources::{CumReward, DataStore, LuaPath, SerializeBytes, SpawnBuffer, Terminal};
 
 #[derive(SystemData)]
 pub struct SerializeSystemData<'a> {
@@ -17,6 +17,7 @@ pub struct SerializeSystemData<'a> {
     terminal: Fetch<'a, Terminal>,
     spawns: Fetch<'a, SpawnBuffer>,
     cum_reward: Fetch<'a, CumReward>,
+    lua_data: Fetch<'a, DataStore>,
 
     out: FetchMut<'a, SerializeBytes>,
 }
@@ -49,6 +50,7 @@ impl<'a> System<'a> for SerializeSystem {
             spawns: world.spawns.clone(),
             terminal: *world.terminal,
             cum_reward: world.cum_reward.clone(),
+            lua_data: world.lua_data.clone(),
         };
 
         let mut out = Serializer::new(out);

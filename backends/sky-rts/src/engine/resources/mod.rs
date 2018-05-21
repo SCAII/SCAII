@@ -1,9 +1,8 @@
 use std::collections::{HashMap, HashSet};
 
 use super::FactionId;
-use engine::components::{
-    AttackSensor, CollisionHandle, Color, Hp, Movable, Pos, Shape, Speed, Static, UnitTypeTag,
-};
+use engine::components::{AttackSensor, CollisionHandle, Color, DataStoreComponent, Hp, Movable,
+                         Pos, Shape, Speed, Static, UnitTypeTag};
 
 use scaii_defs::protos::{Action, State, Viz};
 
@@ -13,6 +12,7 @@ use specs::world::LazyBuilder;
 pub mod collision;
 
 pub use self::collision::*;
+pub use engine::systems::lua::userdata::DataStore;
 
 // Recommended by ncollide
 pub const COLLISION_MARGIN: f64 = 0.02;
@@ -74,6 +74,7 @@ pub(super) fn register_world_resources(world: &mut World) {
     world.add_resource(SpawnBuffer::default());
     world.add_resource(Deserializing(false));
     world.add_resource(CumReward::default());
+    world.add_resource(DataStore::default());
 }
 
 #[derive(Default, Debug, Clone, PartialEq)]
@@ -211,6 +212,7 @@ impl UnitType {
                 .with(color)
                 .with(FactionId(faction))
                 .with(UnitTypeTag(self.tag.clone()))
+                .with(DataStoreComponent::default())
                 .with(Hp {
                     max_hp: self.max_hp,
                     curr_hp: curr_hp.unwrap_or(self.max_hp),

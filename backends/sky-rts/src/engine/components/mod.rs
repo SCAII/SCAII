@@ -1,5 +1,7 @@
 use nalgebra::Point2;
 
+use engine::resources::DataStore;
+
 use specs::error::NoError;
 use specs::prelude::*;
 use specs::saveload::SaveLoadComponent;
@@ -50,6 +52,7 @@ pub(super) fn register_world_components(world: &mut World) {
     world.register::<Death>();
     world.register::<Delete>();
     world.register::<Spawned>();
+    world.register::<DataStoreComponent>();
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -224,3 +227,7 @@ pub struct Delete;
 #[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Default, Component)]
 #[storage(NullStorage)]
 pub struct Spawned;
+
+#[derive(Clone, Serialize, Deserialize, Default, Component)]
+#[storage(VecStorage)]
+pub struct DataStoreComponent(pub DataStore);

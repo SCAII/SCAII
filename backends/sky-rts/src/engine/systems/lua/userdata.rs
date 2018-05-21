@@ -1,4 +1,6 @@
-use rlua::{UserData, UserDataMethods};
+use rlua::{Lua, UserData, UserDataMethods, Value};
+use rlua::String as LuaString;
+use rlua::Error as LuaError;
 
 use engine::components::{FactionId, Hp, Pos};
 use engine::resources::Spawn;
@@ -11,6 +13,13 @@ use rand::Rng;
 /// and no clear semantics to serialize a `Table` object. This may be reworked
 /// later with a better API based around a custom foreign serialization implementation
 /// for Table and other Lua types.
+///
+/// This is just a heterogeneous collection of hashmaps and primitive types with the
+/// guarantee that if set (from Lua), only one of the underlying maps will have a given
+/// key at a time.
+///
+/// Currently it only supports ints, floats, strings, and bools. Sequence/Vec support
+/// may be added at some point, but this is sufficient for now.
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug, Default)]
 pub struct DataStore {
     int_data: HashMap<String, i64>,
@@ -27,10 +36,14 @@ impl DataStore {
         self.bool_data.remove(idx);
     }
 
+    /// Returns the overall size of the underlying storage
     pub fn len(&self) -> usize {
         self.int_data.len() + self.float_data.len() + self.string_data.len() + self.bool_data.len()
     }
 
+    /// A "display" workaround for the fact that we can't do protobuf maps with Javascript right now
+    ///
+    /// This is just for setting fields in the Viz packet
     pub fn display_all(&self, out: Option<HashMap<String, String>>) -> HashMap<String, String> {
         let mut out = out.unwrap_or_else(|| HashMap::with_capacity(self.len()));
         out.clear();
@@ -55,6 +68,64 @@ impl DataStore {
 
         out
     }
+
+    /// Lua Index metamethods can forward their function calls here
+    /// so the data store can get the appropraite data.
+    ///
+    /// Returns nil if no key exists
+    pub fn handle_index<'lua>(
+        &self,
+        lua: &'lua Lua,
+        idx: LuaString,
+    ) -> Result<Value<'lua>, LuaError> {
+        let idx = idx.to_str()?;
+
+        if let Some(val) = self.int_data.get(idx) {
+            Ok(Value::Integer(*val))
+        } else if let Some(val) = self.float_data.get(idx) {
+            Ok(Value::Number(*val))
+        } else if let Some(val) = self.string_data.get(idx) {
+            Ok(Value::String(lua.create_string(val)?))
+        } else if let Some(val) = self.bool_data.get(idx) {
+            Ok(Value::Boolean(*val))
+        } else {
+            Ok(Value::Nil)
+        }
+    }
+
+    /// Lua IndexNew metamethods can forward their function calls here
+    /// so the data store can store the appropraite data.
+    ///
+    /// Panics on receiving data of an unsupported type
+    ///
+    /// Nil deletes a key
+    pub fn handle_index_write(&mut self, idx: LuaString, val: Value) -> Result<(), LuaError> {
+        let idx = idx.to_str()?;
+
+        self.remove_key(idx);
+
+        match val {
+            Value::Integer(val) => {
+                self.int_data.insert(idx.to_string(), val);
+            }
+            Value::Number(val) => {
+                self.float_data.insert(idx.to_string(), val);
+            }
+            Value::Boolean(val) => {
+                self.bool_data.insert(idx.to_string(), val);
+            }
+            Value::String(val) => {
+                self.string_data
+                    .insert(idx.to_string(), val.to_str()?.to_string());
+            }
+            Value::Nil => {
+                // ... do nothing, we interpret writing nil as deleting a key
+            }
+            _ => panic!("Unsupported type"), // todo, change when we upgrade to failure
+        };
+
+        Ok(())
+    }
 }
 
 impl UserData for DataStore {
@@ -63,50 +134,12 @@ impl UserData for DataStore {
         use rlua::String as LuaString;
 
         methods.add_meta_method(MetaMethod::Index, |lua, this, idx: LuaString| {
-            let idx = idx.to_str()?;
-
-            if let Some(val) = this.int_data.get(idx) {
-                Ok(Value::Integer(*val))
-            } else if let Some(val) = this.float_data.get(idx) {
-                Ok(Value::Number(*val))
-            } else if let Some(val) = this.string_data.get(idx) {
-                Ok(Value::String(lua.create_string(val)?))
-            } else if let Some(val) = this.bool_data.get(idx) {
-                Ok(Value::Boolean(*val))
-            } else {
-                panic!("Lua used unexpected index {:?}", idx);
-            }
+            this.handle_index(lua, idx)
         });
 
         methods.add_meta_method_mut(
             MetaMethod::NewIndex,
-            |_, this, (idx, val): (LuaString, Value)| {
-                let idx = idx.to_str()?;
-
-                this.remove_key(idx);
-
-                match val {
-                    Value::Integer(val) => {
-                        this.int_data.insert(idx.to_string(), val);
-                    }
-                    Value::Number(val) => {
-                        this.float_data.insert(idx.to_string(), val);
-                    }
-                    Value::Boolean(val) => {
-                        this.bool_data.insert(idx.to_string(), val);
-                    }
-                    Value::String(val) => {
-                        this.string_data
-                            .insert(idx.to_string(), val.to_str()?.to_string());
-                    }
-                    Value::Nil => {
-                        // ... do nothing, we interpret writing nil as deleting a key
-                    }
-                    _ => panic!("Unsupported type"), // todo, change when we upgrade to failure
-                };
-
-                Ok(())
-            },
+            |_, this, (idx, val): (LuaString, Value)| this.handle_index_write(idx, val),
         );
     }
 }
@@ -138,10 +171,14 @@ pub struct UserDataWorld<R: Rng + 'static> {
     pub spawn: Vec<Spawn>,
     pub delete_all: bool,
     pub rng: UserDataRng<R>,
+    pub data_store: *mut DataStore,
 }
 
+// TODO: Remove when we properly refactor  to Lua::scoped
+unsafe impl<R: Rng + 'static> Send for UserDataWorld<R> {}
+
 impl<R: Rng + 'static> UserDataWorld<R> {
-    pub fn new(rng: UserDataRng<R>) -> Self {
+    pub fn new(rng: UserDataRng<R>, store: &mut DataStore) -> Self {
         UserDataWorld {
             victory: Default::default(),
             rewards: Default::default(),
@@ -149,13 +186,14 @@ impl<R: Rng + 'static> UserDataWorld<R> {
             spawn: vec![],
             delete_all: false,
             rng,
+            data_store: store,
         }
     }
 }
 
 impl<R: Rng + 'static> UserData for UserDataWorld<R> {
     fn add_methods(methods: &mut UserDataMethods<Self>) {
-        use rlua::Table;
+        use rlua::{MetaMethod, Table};
 
         methods.add_method_mut("victory", |_, this, faction: usize| {
             this.victory = Some(FactionId(faction));
@@ -195,7 +233,18 @@ impl<R: Rng + 'static> UserData for UserDataWorld<R> {
 
         // Don't ask me why, but just returning this.rng doesn't work even though
         // it's Copy.
-        methods.add_method("rng", |_, this, ()| Ok(UserDataRng { rng: this.rng.rng }))
+        methods.add_method("rng", |_, this, ()| Ok(UserDataRng { rng: this.rng.rng }));
+
+        methods.add_meta_method(MetaMethod::Index, |lua, this, idx: LuaString| unsafe {
+            (*this.data_store).handle_index(lua, idx)
+        });
+
+        methods.add_meta_method_mut(
+            MetaMethod::NewIndex,
+            |_, this, (idx, val): (LuaString, Value)| unsafe {
+                (*this.data_store).handle_index_write(idx, val)
+            },
+        );
     }
 }
 
@@ -204,18 +253,49 @@ pub struct UserDataReadWorld;
 
 impl UserData for UserDataReadWorld {}
 
-#[derive(Clone, PartialEq, Default, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct UserDataUnit {
     pub faction: FactionId,
     pub u_type: String,
     pub hp: Hp,
+    pub data_store: *mut DataStore,
+}
+
+// TODO: Remove when we properly refactor  to Lua::scoped
+unsafe impl Send for UserDataUnit {}
+
+impl UserDataUnit {
+    #[cfg(test)]
+    pub fn default_new(data_store: &mut DataStore) -> Self {
+        UserDataUnit {
+            faction: Default::default(),
+            u_type: Default::default(),
+            hp: Default::default(),
+            data_store,
+        }
+    }
 }
 
 impl UserData for UserDataUnit {
     fn add_methods(methods: &mut UserDataMethods<Self>) {
+        use rlua::MetaMethod;
         methods.add_method("faction", |_, this, ()| Ok(this.faction.0));
         methods.add_method("unit_type", |_, this, ()| Ok(this.u_type.clone()));
         methods.add_method("hp", |_, this, ()| Ok(this.hp.curr_hp));
+
+        // TODO: Consider adding HP, faction, and unit_type as overrides into the metamethods
+        // so Lua can change them at will
+
+        methods.add_meta_method(MetaMethod::Index, |lua, this, idx: LuaString| unsafe {
+            (*this.data_store).handle_index(lua, idx)
+        });
+
+        methods.add_meta_method_mut(
+            MetaMethod::NewIndex,
+            |_, this, (idx, val): (LuaString, Value)| unsafe {
+                (*this.data_store).handle_index_write(idx, val)
+            },
+        );
     }
 }
 
@@ -287,6 +367,27 @@ store.pi = 3.14"#;
 
         let pi = lua.exec::<Number>("return store.pi", Some("read")).unwrap();
 
+        assert_eq!(pi, 3.14);
+    }
+
+    #[test]
+    fn lua_data_store_member() {
+        use rlua::{Lua, Number};
+        use super::{DataStore, UserDataUnit};
+        let mut lua = Lua::new();
+
+        let mut store = DataStore::default();
+        let unit = UserDataUnit::default_new(&mut store);
+
+        let unit_ptr = lua.create_userdata(unit).unwrap();
+        lua.globals().set("store", unit_ptr).unwrap();
+
+        lua.exec::<()>(SETUP_PROGRAM, Some("as member")).unwrap();
+
+        assert_eq!(store.int_data.get("x"), Some(&5));
+
+        let pi = lua.exec::<Number>("return store.pi", Some("member read"))
+            .unwrap();
         assert_eq!(pi, 3.14);
     }
 }
