@@ -12,6 +12,8 @@ pub struct UserDataRng<R: Rng + 'static> {
     pub rng: *mut R,
 }
 
+unsafe impl<R: Rng + 'static> Send for UserDataRng<R> {}
+
 impl<R: Rng + 'static> UserData for UserDataRng<R> {
     fn add_methods(methods: &mut UserDataMethods<Self>) {
         methods.add_method("rand_int", |_, this, (min, max): (i64, i64)| unsafe {
