@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='viz.proto',
   package='scaii.common',
   syntax='proto2',
-  serialized_pb=_b('\n\tviz.proto\x12\x0cscaii.common\"\xaf\x01\n\x07VizInit\x12\x11\n\ttest_mode\x18\x01 \x01(\x08\x12\x12\n\nstep_count\x18\x02 \x01(\x03\x12\x17\n\x0fgameboard_width\x18\x03 \x01(\r\x12\x18\n\x10gameboard_height\x18\x04 \x01(\r\x12\x34\n\x0c\x65xplanations\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ExplanationPoint\x12\x14\n\x0creward_types\x18\x06 \x03(\t\"O\n\x11\x45xplanationPoints\x12:\n\x12\x65xplanation_points\x18\x01 \x03(\x0b\x32\x1e.scaii.common.ExplanationPoint\"\xa5\x01\n\x10\x45xplanationPoint\x12\x0c\n\x04step\x18\x01 \x01(\r\x12\n\n\x02id\x18\x02 \x01(\r\x12\r\n\x05title\x18\x03 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x04 \x01(\t\x12(\n\x08saliency\x18\x05 \x01(\x0b\x32\x16.scaii.common.Saliency\x12)\n\tbar_chart\x18\x06 \x01(\x0b\x32\x16.scaii.common.BarChart\"C\n\x05Layer\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05\x63\x65lls\x18\x02 \x03(\x01\x12\r\n\x05width\x18\x03 \x01(\r\x12\x0e\n\x06height\x18\x04 \x01(\r\"-\n\x06Layers\x12#\n\x06layers\x18\x01 \x03(\x0b\x32\x13.scaii.common.Layer\"\x93\x01\n\x08Saliency\x12=\n\x0csaliency_map\x18\x01 \x03(\x0b\x32\'.scaii.common.Saliency.SaliencyMapEntry\x1aH\n\x10SaliencyMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12#\n\x05value\x18\x02 \x01(\x0b\x32\x14.scaii.common.Layers:\x02\x38\x01\"c\n\x08\x42\x61rChart\x12&\n\x06groups\x18\x01 \x03(\x0b\x32\x16.scaii.common.BarGroup\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0f\n\x07v_title\x18\x03 \x01(\t\x12\x0f\n\x07h_title\x18\x04 \x01(\t\"]\n\x08\x42\x61rGroup\x12\r\n\x05value\x18\x01 \x01(\x01\x12\x1f\n\x04\x62\x61rs\x18\x02 \x03(\x0b\x32\x11.scaii.common.Bar\x12\x13\n\x0bsaliency_id\x18\x03 \x01(\t\x12\x0c\n\x04name\x18\x04 \x01(\t\"7\n\x03\x42\x61r\x12\r\n\x05value\x18\x01 \x02(\x01\x12\x13\n\x0bsaliency_id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\"\xad\x01\n\x03Viz\x12&\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\x14.scaii.common.Entity\x12\x44\n\x12\x63umulative_rewards\x18\x02 \x03(\x0b\x32(.scaii.common.Viz.CumulativeRewardsEntry\x1a\x38\n\x16\x43umulativeRewardsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\xb0\x01\n\tChartInfo\x12\x13\n\x0b\x63hart_title\x18\x01 \x01(\t\x12\x14\n\x0ch_axis_title\x18\x02 \x01(\t\x12\x14\n\x0cv_axis_title\x18\x03 \x01(\t\x12+\n\x07\x61\x63tions\x18\x04 \x01(\x0b\x32\x1a.scaii.common.ChartActions\x12\x35\n\rvalue_vectors\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ChartValueVector\";\n\x0c\x43hartActions\x12\x15\n\ractions_label\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63tion_names\x18\x02 \x03(\t\"8\n\x10\x43hartValueVector\x12\r\n\x05label\x18\x01 \x01(\t\x12\x15\n\raction_values\x18\x02 \x03(\x01\"\xf1\x06\n\x06\x45ntity\x12\n\n\x02id\x18\x01 \x02(\x04\x12\x1e\n\x03pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12#\n\x06shapes\x18\x03 \x03(\x0b\x32\x13.scaii.common.Shape\x12\x0e\n\x06\x64\x65lete\x18\x04 \x02(\x08\x12@\n\x0estringMetadata\x18\x05 \x03(\x0b\x32(.scaii.common.Entity.StringMetadataEntry\x12H\n\x12\x62oolStringMetadata\x18\x06 \x03(\x0b\x32,.scaii.common.Entity.BoolStringMetadataEntry\x12J\n\x13\x66loatStringMetadata\x18\x07 \x03(\x0b\x32-.scaii.common.Entity.FloatStringMetadataEntry\x12:\n\x0bintMetadata\x18\x08 \x03(\x0b\x32%.scaii.common.Entity.IntMetadataEntry\x12<\n\x0c\x62oolMetadata\x18\t \x03(\x0b\x32&.scaii.common.Entity.BoolMetadataEntry\x12>\n\rfloatMetadata\x18\n \x03(\x0b\x32\'.scaii.common.Entity.FloatMetadataEntry\x12\x10\n\x08ui_layer\x18\x0b \x01(\x04\x12\x15\n\rnon_clickable\x18\x0c \x01(\x08\x1a\x35\n\x13StringMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x1a\x39\n\x17\x42oolStringMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x1a:\n\x18\x46loatStringMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x1a\x32\n\x10IntMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x03:\x02\x38\x01\x1a\x33\n\x11\x42oolMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x08:\x02\x38\x01\x1a\x34\n\x12\x46loatMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x02:\x02\x38\x01\"\x1b\n\x03Pos\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\"3\n\x05\x43olor\x12\t\n\x01r\x18\x01 \x02(\r\x12\t\n\x01g\x18\x02 \x02(\r\x12\t\n\x01\x62\x18\x03 \x02(\r\x12\t\n\x01\x61\x18\x04 \x02(\r\"\x1c\n\x08Triangle\x12\x10\n\x08\x62\x61se_len\x18\x01 \x01(\x01\"\x18\n\x06\x43ircle\x12\x0e\n\x06radius\x18\x01 \x01(\x01\"%\n\x04Rect\x12\r\n\x05width\x18\x01 \x01(\x01\x12\x0e\n\x06height\x18\x02 \x01(\x01\"%\n\x04Kite\x12\r\n\x05width\x18\x01 \x01(\x01\x12\x0e\n\x06length\x18\x02 \x01(\x01\"j\n\x05\x41rrow\x12%\n\ntarget_pos\x18\x01 \x01(\x0b\x32\x11.scaii.common.Pos\x12\x11\n\tthickness\x18\x02 \x01(\r\x12\x13\n\x0bhead_length\x18\x03 \x01(\r\x12\x12\n\nhead_width\x18\x04 \x01(\r\"C\n\x07Octagon\x12\x10\n\x08\x65\x64ge_top\x18\x01 \x01(\x01\x12\x13\n\x0b\x65\x64ge_corner\x18\x02 \x01(\x01\x12\x11\n\tedge_left\x18\x03 \x01(\x01\"\x9c\x03\n\x05Shape\x12\n\n\x02id\x18\x01 \x02(\x04\x12\'\n\x0crelative_pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12\"\n\x05\x63olor\x18\x03 \x01(\x0b\x32\x13.scaii.common.Color\x12\x10\n\x08rotation\x18\x04 \x02(\x01\x12 \n\x04rect\x18\x14 \x01(\x0b\x32\x12.scaii.common.Rect\x12(\n\x08triangle\x18\x15 \x01(\x0b\x32\x16.scaii.common.Triangle\x12\x0b\n\x03tag\x18\x16 \x01(\t\x12+\n\x0egradient_color\x18\x17 \x01(\x0b\x32\x13.scaii.common.Color\x12 \n\x04kite\x18\x18 \x01(\x0b\x32\x12.scaii.common.Kite\x12&\n\x07octagon\x18\x19 \x01(\x0b\x32\x15.scaii.common.Octagon\x12\"\n\x05\x61rrow\x18\x1a \x01(\x0b\x32\x13.scaii.common.Arrow\x12$\n\x06\x63ircle\x18\x1b \x01(\x0b\x32\x14.scaii.common.Circle\x12\x0e\n\x06\x64\x65lete\x18( \x02(\x08')
+  serialized_pb=_b('\n\tviz.proto\x12\x0cscaii.common\"\xaf\x01\n\x07VizInit\x12\x11\n\ttest_mode\x18\x01 \x01(\x08\x12\x12\n\nstep_count\x18\x02 \x01(\x03\x12\x17\n\x0fgameboard_width\x18\x03 \x01(\r\x12\x18\n\x10gameboard_height\x18\x04 \x01(\r\x12\x34\n\x0c\x65xplanations\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ExplanationPoint\x12\x14\n\x0creward_types\x18\x06 \x03(\t\"O\n\x11\x45xplanationPoints\x12:\n\x12\x65xplanation_points\x18\x01 \x03(\x0b\x32\x1e.scaii.common.ExplanationPoint\"\xa5\x01\n\x10\x45xplanationPoint\x12\x0c\n\x04step\x18\x01 \x01(\r\x12\n\n\x02id\x18\x02 \x01(\r\x12\r\n\x05title\x18\x03 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x04 \x01(\t\x12(\n\x08saliency\x18\x05 \x01(\x0b\x32\x16.scaii.common.Saliency\x12)\n\tbar_chart\x18\x06 \x01(\x0b\x32\x16.scaii.common.BarChart\"C\n\x05Layer\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05\x63\x65lls\x18\x02 \x03(\x01\x12\r\n\x05width\x18\x03 \x01(\r\x12\x0e\n\x06height\x18\x04 \x01(\r\"-\n\x06Layers\x12#\n\x06layers\x18\x01 \x03(\x0b\x32\x13.scaii.common.Layer\"\x93\x01\n\x08Saliency\x12=\n\x0csaliency_map\x18\x01 \x03(\x0b\x32\'.scaii.common.Saliency.SaliencyMapEntry\x1aH\n\x10SaliencyMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12#\n\x05value\x18\x02 \x01(\x0b\x32\x14.scaii.common.Layers:\x02\x38\x01\"c\n\x08\x42\x61rChart\x12&\n\x06groups\x18\x01 \x03(\x0b\x32\x16.scaii.common.BarGroup\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0f\n\x07v_title\x18\x03 \x01(\t\x12\x0f\n\x07h_title\x18\x04 \x01(\t\"]\n\x08\x42\x61rGroup\x12\r\n\x05value\x18\x01 \x01(\x01\x12\x1f\n\x04\x62\x61rs\x18\x02 \x03(\x0b\x32\x11.scaii.common.Bar\x12\x13\n\x0bsaliency_id\x18\x03 \x01(\t\x12\x0c\n\x04name\x18\x04 \x01(\t\"7\n\x03\x42\x61r\x12\r\n\x05value\x18\x01 \x02(\x01\x12\x13\n\x0bsaliency_id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\"\xad\x01\n\x03Viz\x12&\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\x14.scaii.common.Entity\x12\x44\n\x12\x63umulative_rewards\x18\x02 \x03(\x0b\x32(.scaii.common.Viz.CumulativeRewardsEntry\x1a\x38\n\x16\x43umulativeRewardsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\xb0\x01\n\tChartInfo\x12\x13\n\x0b\x63hart_title\x18\x01 \x01(\t\x12\x14\n\x0ch_axis_title\x18\x02 \x01(\t\x12\x14\n\x0cv_axis_title\x18\x03 \x01(\t\x12+\n\x07\x61\x63tions\x18\x04 \x01(\x0b\x32\x1a.scaii.common.ChartActions\x12\x35\n\rvalue_vectors\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ChartValueVector\";\n\x0c\x43hartActions\x12\x15\n\ractions_label\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63tion_names\x18\x02 \x03(\t\"8\n\x10\x43hartValueVector\x12\r\n\x05label\x18\x01 \x01(\t\x12\x15\n\raction_values\x18\x02 \x03(\x01\"\x8d\x07\n\x06\x45ntity\x12\n\n\x02id\x18\x01 \x02(\x04\x12\x1e\n\x03pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12#\n\x06shapes\x18\x03 \x03(\x0b\x32\x13.scaii.common.Shape\x12\x0e\n\x06\x64\x65lete\x18\x04 \x02(\x08\x12@\n\x0estringMetadata\x18\x05 \x03(\x0b\x32(.scaii.common.Entity.StringMetadataEntry\x12H\n\x12\x62oolStringMetadata\x18\x06 \x03(\x0b\x32,.scaii.common.Entity.BoolStringMetadataEntry\x12J\n\x13\x66loatStringMetadata\x18\x07 \x03(\x0b\x32-.scaii.common.Entity.FloatStringMetadataEntry\x12:\n\x0bintMetadata\x18\x08 \x03(\x0b\x32%.scaii.common.Entity.IntMetadataEntry\x12<\n\x0c\x62oolMetadata\x18\t \x03(\x0b\x32&.scaii.common.Entity.BoolMetadataEntry\x12>\n\rfloatMetadata\x18\n \x03(\x0b\x32\'.scaii.common.Entity.FloatMetadataEntry\x12\x10\n\x08ui_layer\x18\x0b \x01(\x04\x12\x15\n\rnon_clickable\x18\x0c \x01(\x08\x12\n\n\x02hp\x18\r \x01(\x02\x12\x0e\n\x06max_hp\x18\x0e \x01(\x02\x1a\x35\n\x13StringMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x1a\x39\n\x17\x42oolStringMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x1a:\n\x18\x46loatStringMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x1a\x32\n\x10IntMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x03:\x02\x38\x01\x1a\x33\n\x11\x42oolMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x08:\x02\x38\x01\x1a\x34\n\x12\x46loatMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x02:\x02\x38\x01\"\x1b\n\x03Pos\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\"3\n\x05\x43olor\x12\t\n\x01r\x18\x01 \x02(\r\x12\t\n\x01g\x18\x02 \x02(\r\x12\t\n\x01\x62\x18\x03 \x02(\r\x12\t\n\x01\x61\x18\x04 \x02(\r\"\x1c\n\x08Triangle\x12\x10\n\x08\x62\x61se_len\x18\x01 \x01(\x01\"\x18\n\x06\x43ircle\x12\x0e\n\x06radius\x18\x01 \x01(\x01\"%\n\x04Rect\x12\r\n\x05width\x18\x01 \x01(\x01\x12\x0e\n\x06height\x18\x02 \x01(\x01\"%\n\x04Kite\x12\r\n\x05width\x18\x01 \x01(\x01\x12\x0e\n\x06length\x18\x02 \x01(\x01\"j\n\x05\x41rrow\x12%\n\ntarget_pos\x18\x01 \x01(\x0b\x32\x11.scaii.common.Pos\x12\x11\n\tthickness\x18\x02 \x01(\r\x12\x13\n\x0bhead_length\x18\x03 \x01(\r\x12\x12\n\nhead_width\x18\x04 \x01(\r\"C\n\x07Octagon\x12\x10\n\x08\x65\x64ge_top\x18\x01 \x01(\x01\x12\x13\n\x0b\x65\x64ge_corner\x18\x02 \x01(\x01\x12\x11\n\tedge_left\x18\x03 \x01(\x01\"\x9c\x03\n\x05Shape\x12\n\n\x02id\x18\x01 \x02(\x04\x12\'\n\x0crelative_pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12\"\n\x05\x63olor\x18\x03 \x01(\x0b\x32\x13.scaii.common.Color\x12\x10\n\x08rotation\x18\x04 \x02(\x01\x12 \n\x04rect\x18\x14 \x01(\x0b\x32\x12.scaii.common.Rect\x12(\n\x08triangle\x18\x15 \x01(\x0b\x32\x16.scaii.common.Triangle\x12\x0b\n\x03tag\x18\x16 \x01(\t\x12+\n\x0egradient_color\x18\x17 \x01(\x0b\x32\x13.scaii.common.Color\x12 \n\x04kite\x18\x18 \x01(\x0b\x32\x12.scaii.common.Kite\x12&\n\x07octagon\x18\x19 \x01(\x0b\x32\x15.scaii.common.Octagon\x12\"\n\x05\x61rrow\x18\x1a \x01(\x0b\x32\x13.scaii.common.Arrow\x12$\n\x06\x63ircle\x18\x1b \x01(\x0b\x32\x14.scaii.common.Circle\x12\x0e\n\x06\x64\x65lete\x18( \x02(\x08')
 )
 
 
@@ -731,8 +731,8 @@ _ENTITY_STRINGMETADATAENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1998,
-  serialized_end=2051,
+  serialized_start=2026,
+  serialized_end=2079,
 )
 
 _ENTITY_BOOLSTRINGMETADATAENTRY = _descriptor.Descriptor(
@@ -768,8 +768,8 @@ _ENTITY_BOOLSTRINGMETADATAENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2053,
-  serialized_end=2110,
+  serialized_start=2081,
+  serialized_end=2138,
 )
 
 _ENTITY_FLOATSTRINGMETADATAENTRY = _descriptor.Descriptor(
@@ -805,8 +805,8 @@ _ENTITY_FLOATSTRINGMETADATAENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2112,
-  serialized_end=2170,
+  serialized_start=2140,
+  serialized_end=2198,
 )
 
 _ENTITY_INTMETADATAENTRY = _descriptor.Descriptor(
@@ -842,8 +842,8 @@ _ENTITY_INTMETADATAENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2172,
-  serialized_end=2222,
+  serialized_start=2200,
+  serialized_end=2250,
 )
 
 _ENTITY_BOOLMETADATAENTRY = _descriptor.Descriptor(
@@ -879,8 +879,8 @@ _ENTITY_BOOLMETADATAENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2224,
-  serialized_end=2275,
+  serialized_start=2252,
+  serialized_end=2303,
 )
 
 _ENTITY_FLOATMETADATAENTRY = _descriptor.Descriptor(
@@ -916,8 +916,8 @@ _ENTITY_FLOATMETADATAENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2277,
-  serialized_end=2329,
+  serialized_start=2305,
+  serialized_end=2357,
 )
 
 _ENTITY = _descriptor.Descriptor(
@@ -1011,6 +1011,20 @@ _ENTITY = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='hp', full_name='scaii.common.Entity.hp', index=12,
+      number=13, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='max_hp', full_name='scaii.common.Entity.max_hp', index=13,
+      number=14, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -1024,7 +1038,7 @@ _ENTITY = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=1448,
-  serialized_end=2329,
+  serialized_end=2357,
 )
 
 
@@ -1061,8 +1075,8 @@ _POS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2331,
-  serialized_end=2358,
+  serialized_start=2359,
+  serialized_end=2386,
 )
 
 
@@ -1113,8 +1127,8 @@ _COLOR = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2360,
-  serialized_end=2411,
+  serialized_start=2388,
+  serialized_end=2439,
 )
 
 
@@ -1144,8 +1158,8 @@ _TRIANGLE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2413,
-  serialized_end=2441,
+  serialized_start=2441,
+  serialized_end=2469,
 )
 
 
@@ -1175,8 +1189,8 @@ _CIRCLE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2443,
-  serialized_end=2467,
+  serialized_start=2471,
+  serialized_end=2495,
 )
 
 
@@ -1213,8 +1227,8 @@ _RECT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2469,
-  serialized_end=2506,
+  serialized_start=2497,
+  serialized_end=2534,
 )
 
 
@@ -1251,8 +1265,8 @@ _KITE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2508,
-  serialized_end=2545,
+  serialized_start=2536,
+  serialized_end=2573,
 )
 
 
@@ -1303,8 +1317,8 @@ _ARROW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2547,
-  serialized_end=2653,
+  serialized_start=2575,
+  serialized_end=2681,
 )
 
 
@@ -1348,8 +1362,8 @@ _OCTAGON = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2655,
-  serialized_end=2722,
+  serialized_start=2683,
+  serialized_end=2750,
 )
 
 
@@ -1463,8 +1477,8 @@ _SHAPE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2725,
-  serialized_end=3137,
+  serialized_start=2753,
+  serialized_end=3165,
 )
 
 _VIZINIT.fields_by_name['explanations'].message_type = _EXPLANATIONPOINT

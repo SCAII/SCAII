@@ -6695,7 +6695,9 @@ proto.scaii.common.Entity.toObject = function(includeInstance, msg) {
     boolmetadataMap: (f = msg.getBoolmetadataMap()) ? f.toObject(includeInstance, undefined) : [],
     floatmetadataMap: (f = msg.getFloatmetadataMap()) ? f.toObject(includeInstance, undefined) : [],
     uiLayer: jspb.Message.getField(msg, 11),
-    nonClickable: jspb.Message.getField(msg, 12)
+    nonClickable: jspb.Message.getField(msg, 12),
+    hp: jspb.Message.getOptionalFloatingPointField(msg, 13),
+    maxHp: jspb.Message.getOptionalFloatingPointField(msg, 14)
   };
 
   if (includeInstance) {
@@ -6794,6 +6796,14 @@ proto.scaii.common.Entity.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setNonClickable(value);
       break;
+    case 13:
+      var value = /** @type {number} */ (reader.readFloat());
+      msg.setHp(value);
+      break;
+    case 14:
+      var value = /** @type {number} */ (reader.readFloat());
+      msg.setMaxHp(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -6888,6 +6898,20 @@ proto.scaii.common.Entity.serializeBinaryToWriter = function(message, writer) {
   if (f != null) {
     writer.writeBool(
       12,
+      f
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 13));
+  if (f != null) {
+    writer.writeFloat(
+      13,
+      f
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 14));
+  if (f != null) {
+    writer.writeFloat(
+      14,
       f
     );
   }
@@ -7180,6 +7204,64 @@ proto.scaii.common.Entity.prototype.clearNonClickable = function() {
  */
 proto.scaii.common.Entity.prototype.hasNonClickable = function() {
   return jspb.Message.getField(this, 12) != null;
+};
+
+
+/**
+ * optional float hp = 13;
+ * @return {number}
+ */
+proto.scaii.common.Entity.prototype.getHp = function() {
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 13, 0.0));
+};
+
+
+/** @param {number} value */
+proto.scaii.common.Entity.prototype.setHp = function(value) {
+  jspb.Message.setField(this, 13, value);
+};
+
+
+proto.scaii.common.Entity.prototype.clearHp = function() {
+  jspb.Message.setField(this, 13, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Entity.prototype.hasHp = function() {
+  return jspb.Message.getField(this, 13) != null;
+};
+
+
+/**
+ * optional float max_hp = 14;
+ * @return {number}
+ */
+proto.scaii.common.Entity.prototype.getMaxHp = function() {
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 14, 0.0));
+};
+
+
+/** @param {number} value */
+proto.scaii.common.Entity.prototype.setMaxHp = function(value) {
+  jspb.Message.setField(this, 14, value);
+};
+
+
+proto.scaii.common.Entity.prototype.clearMaxHp = function() {
+  jspb.Message.setField(this, 14, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Entity.prototype.hasMaxHp = function() {
+  return jspb.Message.getField(this, 14) != null;
 };
 
 
