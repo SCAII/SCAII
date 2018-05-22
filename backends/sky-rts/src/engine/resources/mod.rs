@@ -284,7 +284,8 @@ impl UnitType {
                 let collider = Cuboid::new(Vector2::new(width / 2.0, height / 2.0));
                 let collider = ShapeHandle::new(collider);
 
-                let atk_radius = width.max(height) + (self.attack_range / COLLISION_SCALE);
+                let half_diagonal = (width*width + height*height).sqrt() / 2.0;
+                let atk_radius = half_diagonal + (self.attack_range / COLLISION_SCALE);
                 let atk_sensor = Ball::new(atk_radius);
                 let atk_sensor = ShapeHandle::new(atk_sensor);
 
