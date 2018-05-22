@@ -52,81 +52,16 @@ impl<'a> System<'a> for LuaSystem {
     type SystemData = LuaSystemData<'a>;
 
     fn run(&mut self, mut sys_data: Self::SystemData) {
-        use self::userdata::{UserDataReadWorld, UserDataRng, UserDataUnit, UserDataWorld};
+        use self::userdata::{UserDataReadWorld, UserDataRng, UserDataWorld};
 
         let world = UserDataWorld::new(UserDataRng {
             rng: &mut *sys_data.rng,
         });
         self.lua.globals().set("__sky_world", world).unwrap();
 
-        for (faction, tag, hp, death) in (
-            &sys_data.faction,
-            &sys_data.tag,
-            &sys_data.hp,
-            &sys_data.death,
-        ).join()
-        {
-            let killer_faction = sys_data.faction.get(death.killer).unwrap();
-            let killer_tag = sys_data.tag.get(death.killer).unwrap();
-            let killer_hp = sys_data.hp.get(death.killer).unwrap();
+        set_all_deaths(&mut sys_data, &self.lua);
 
-            let unit1 = UserDataUnit {
-                faction: *faction,
-                u_type: tag.0.clone(),
-                hp: *hp,
-            };
-            let unit2 = UserDataUnit {
-                faction: *killer_faction,
-                u_type: killer_tag.0.clone(),
-                hp: *killer_hp,
-            };
-
-            self.lua.globals().set("__sky_u1", unit1.clone()).unwrap();
-
-            self.lua.globals().set("__sky_u2", unit2).unwrap();
-
-            self.lua
-                .exec::<()>(
-                    "on_death(__sky_world, __sky_u1, __sky_u2)",
-                    Some("calling on_death"),
-                )
-                .unwrap();
-
-            let dead_type = sys_data.unit_type.tag_map.get(&unit1.u_type).unwrap();
-
-            if faction.0 == 0 && dead_type.death_penalty != 0.0 {
-                *sys_data
-                    .reward
-                    .0
-                    .entry(dead_type.death_type.clone())
-                    .or_insert(0.0) += dead_type.death_penalty;
-            } else if faction.0 == 1 && killer_faction.0 == 0 && dead_type.kill_reward != 0.0 {
-                *sys_data
-                    .reward
-                    .0
-                    .entry(dead_type.kill_type.clone())
-                    .or_insert(0.0) += dead_type.kill_reward;
-            }
-        }
-
-        for (faction, u_type, hp, _) in (
-            &sys_data.faction,
-            &sys_data.tag,
-            &sys_data.hp,
-            &sys_data.spawned,
-        ).join()
-        {
-            let unit = UserDataUnit {
-                faction: *faction,
-                u_type: u_type.0.clone(),
-                hp: *hp,
-            };
-
-            self.lua.globals().set("__sky_u1", unit).unwrap();
-            self.lua
-                .exec::<()>("on_spawn(__sky_world, __sky_u1)", Some("calling on_spawn"))
-                .unwrap();
-        }
+        set_all_spawns(&mut sys_data, &self.lua);
 
         for (dmg_dealt, tag, _) in (&sys_data.dmg_dealt, &sys_data.tag, &sys_data.faction)
             .join()
@@ -589,4 +524,78 @@ impl LuaSystem {
 
         Ok(())
     }
+}
+
+fn set_all_deaths(sys_data: &mut LuaSystemData, lua: &Lua) {
+    use engine::systems::lua::userdata::UserDataUnit;
+    for (faction, tag, hp, death) in (
+    &sys_data.faction,
+    &sys_data.tag,
+    &sys_data.hp,
+    &sys_data.death,
+        ).join()
+        {
+            let killer_faction = sys_data.faction.get(death.killer).unwrap();
+            let killer_tag = sys_data.tag.get(death.killer).unwrap();
+            let killer_hp = sys_data.hp.get(death.killer).unwrap();
+
+            let unit1 = UserDataUnit {
+                faction: *faction,
+                u_type: tag.0.clone(),
+                hp: *hp,
+            };
+            let unit2 = UserDataUnit {
+                faction: *killer_faction,
+                u_type: killer_tag.0.clone(),
+                hp: *killer_hp,
+            };
+
+            lua.globals().set("__sky_u1", unit1.clone()).unwrap();
+
+            lua.globals().set("__sky_u2", unit2).unwrap();
+
+            lua.exec::<()>(
+                    "on_death(__sky_world, __sky_u1, __sky_u2)",
+                    Some("calling on_death"),
+                )
+                .unwrap();
+
+            let dead_type = sys_data.unit_type.tag_map.get(&unit1.u_type).unwrap();
+
+            if faction.0 == 0 && dead_type.death_penalty != 0.0 {
+                *sys_data
+                    .reward
+                    .0
+                    .entry(dead_type.death_type.clone())
+                    .or_insert(0.0) += dead_type.death_penalty;
+            } else if faction.0 == 1 && killer_faction.0 == 0 && dead_type.kill_reward != 0.0 {
+                *sys_data
+                    .reward
+                    .0
+                    .entry(dead_type.kill_type.clone())
+                    .or_insert(0.0) += dead_type.kill_reward;
+            }
+        }
+}
+
+fn set_all_spawns(sys_data: &mut LuaSystemData, lua: &Lua) {
+    use self::userdata::UserDataUnit;
+    for (faction, u_type, hp, _) in (
+    &sys_data.faction,
+    &sys_data.tag,
+    &sys_data.hp,
+    &sys_data.spawned,
+        ).join()
+        {
+            let unit = UserDataUnit {
+                faction: *faction,
+                u_type: u_type.0.clone(),
+                hp: *hp,
+            };
+
+            lua.globals().set("__sky_u1", unit).unwrap();
+            lua
+                .exec::<()>("on_spawn(__sky_world, __sky_u1)", Some("calling on_spawn"))
+                .unwrap();
+        }
 }
