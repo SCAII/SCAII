@@ -1,5 +1,6 @@
 use engine::components::{
-    AttackSensor, CollisionHandle, DealtDamage, Death, Delete, HpChange, MovedFlag, Spawned,
+    CollisionHandle, ContactState, ContactStates, DealtDamage, Death, Delete, HpChange, MovedFlag,
+    Sensors, Spawned,
 };
 use engine::resources::SkyCollisionWorld;
 use specs::prelude::*;
@@ -12,11 +13,12 @@ pub struct CleanupSystemData<'a> {
     moved: WriteStorage<'a, MovedFlag>,
     dealt_dmg: WriteStorage<'a, DealtDamage>,
     hp_change: WriteStorage<'a, HpChange>,
+    contact_states: WriteStorage<'a, ContactStates>,
     entities: Entities<'a>,
-    collision_sys: FetchMut<'a, SkyCollisionWorld>,
+    c_world: FetchMut<'a, SkyCollisionWorld>,
 
-    col_handle: ReadStorage<'a, CollisionHandle>,
-    atk_radius: ReadStorage<'a, AttackSensor>,
+    c_handles: ReadStorage<'a, CollisionHandle>,
+    sensors: ReadStorage<'a, Sensors>,
 }
 
 #[derive(Default)]
@@ -31,28 +33,70 @@ impl<'a> System<'a> for CleanupSystem {
         sys_data.hp_change.clear();
         sys_data.spawned.clear();
 
-        for (id, col_handle, atk_radius, _) in (
-            &*sys_data.entities,
-            &sys_data.col_handle,
-            &sys_data.atk_radius,
-            sys_data.death.drain(),
-        ).join()
-        {
-            sys_data.entities.delete(id).unwrap();
-
-            sys_data.collision_sys.remove(&[col_handle.0, atk_radius.0]);
+        for (id, _) in (&*sys_data.entities, sys_data.death.drain()).join() {
+            finalize_entity(
+                id,
+                &sys_data.entities,
+                &sys_data.sensors,
+                &sys_data.c_handles,
+                &mut sys_data.c_world,
+            );
         }
 
-        for (id, col_handle, atk_radius, _) in (
-            &*sys_data.entities,
-            &sys_data.col_handle,
-            &sys_data.atk_radius,
-            sys_data.delete.drain(),
-        ).join()
-        {
-            sys_data.entities.delete(id).unwrap();
+        for (id, _) in (&*sys_data.entities, sys_data.delete.drain()).join() {
+            finalize_entity(
+                id,
+                &sys_data.entities,
+                &sys_data.sensors,
+                &sys_data.c_handles,
+                &mut sys_data.c_world,
+            );
+        }
 
-            sys_data.collision_sys.remove(&[col_handle.0, atk_radius.0]);
+        for states in (&mut sys_data.contact_states).join() {
+            collision_advancements(&mut states.0, &sys_data.entities);
+        }
+    }
+}
+
+/// Removes any Entity and its related children (such as sensors).
+fn finalize_entity(
+    id: Entity,
+    entities: &Entities,
+    sensors: &ReadStorage<Sensors>,
+    c_handles: &ReadStorage<CollisionHandle>,
+    c_world: &mut SkyCollisionWorld,
+) {
+    // Due to the interaction of sensors/child objects in general
+    // and delete_all we need to verify the collision object is actually
+    // being deleted
+    if let Some(sensors) = sensors.get(id) {
+        for &sensor in sensors.0.values() {
+            let handle = c_handles.get(sensor).expect("Sensor has no collision?");
+
+            if c_world.collision_object(handle.0).is_some() {
+                c_world.remove(&[handle.0]);
+            }
+
+            entities.delete(sensor).unwrap();
+        }
+    }
+    entities.delete(id).unwrap();
+
+    if let Some(handle) = c_handles.get(id) {
+        if c_world.collision_object(handle.0).is_some() {
+            c_world.remove(&[handle.0]);
+        }
+    }
+}
+
+/// Filters expired collisions, collisions with dead entities, and then
+/// switches new collisions to ongoing ones
+fn collision_advancements(states: &mut Vec<ContactState>, entities: &Entities) {
+    states.retain(|v| !v.stopped() && entities.is_alive(v.target()));
+    for state in states.iter_mut() {
+        if state.started() {
+            *state = ContactState::Ongoing(state.target());
         }
     }
 }

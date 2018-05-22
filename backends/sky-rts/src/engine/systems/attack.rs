@@ -1,9 +1,13 @@
-use engine::components::{Attack, DealtDamage, Death, FactionId, Hp, HpChange, UnitTypeTag};
+use engine::components::{
+    Attack, ContactStates, DealtDamage, Death, FactionId, Hp, HpChange, Move, Owner, SensorType,
+    UnitTypeTag,
+};
 use engine::resources::{DeltaT, UnitTypeMap};
 use specs::prelude::*;
 
 #[derive(SystemData)]
 pub struct AttackSystemData<'a> {
+    moving: WriteStorage<'a, Move>,
     attack: WriteStorage<'a, Attack>,
     hp: WriteStorage<'a, Hp>,
     death: WriteStorage<'a, Death>,
@@ -14,6 +18,9 @@ pub struct AttackSystemData<'a> {
     unit_type_map: Fetch<'a, UnitTypeMap>,
     tag: ReadStorage<'a, UnitTypeTag>,
     faction: ReadStorage<'a, FactionId>,
+    sensor_type: ReadStorage<'a, SensorType>,
+    contact_states: ReadStorage<'a, ContactStates>,
+    owners: ReadStorage<'a, Owner>,
     entities: Entities<'a>,
 }
 
@@ -24,6 +31,34 @@ impl<'a> System<'a> for AttackSystem {
 
     fn run(&mut self, mut sys_data: Self::SystemData) {
         let delta_t = sys_data.delta_t.0;
+
+        for (states, owner, _) in (
+            &sys_data.contact_states,
+            &sys_data.owners,
+            &sys_data.sensor_type,
+        ).join()
+            .filter(|(_, _, t)| **t == SensorType::Attack)
+        {
+            let id = owner.0;
+
+            for state in &states.0 {
+                if state.started() && !sys_data.attack.get(id).is_some() {
+                    acquire_target(
+                        id,
+                        state.target(),
+                        &mut sys_data.moving,
+                        &mut sys_data.attack,
+                        *sys_data.faction.get(id).unwrap(),
+                        *sys_data.faction.get(state.target()).unwrap(),
+                    )
+                } else if state.stopped() {
+                    sys_data.attack.remove(id);
+                    if sys_data.entities.is_alive(state.target()) {
+                        sys_data.moving.insert(id, Move::attack(state.target()));
+                    }
+                }
+            }
+        }
 
         let mut dead_target = vec![];
         for (atk, tag, id) in (&mut sys_data.attack, &sys_data.tag, &*sys_data.entities).join() {
@@ -68,6 +103,49 @@ impl<'a> System<'a> for AttackSystem {
         for id in dead_target {
             sys_data.attack.remove(id);
         }
+    }
+}
+
+fn acquire_target<'a>(
+    me: Entity,
+    other_id: Entity,
+    moving: &mut WriteStorage<'a, Move>,
+    attack: &mut WriteStorage<'a, Attack>,
+    faction1: FactionId,
+    faction2: FactionId,
+) {
+    use std::f64;
+    let explicit_atk = {
+        let move_order = moving.get_mut(me);
+        if move_order.is_some() {
+            let move_order = move_order.unwrap();
+
+            if (move_order.is_attacking() && move_order.attack_target().unwrap() != other_id)
+                || !move_order.is_attacking()
+            {
+                return;
+            }
+
+            true
+        } else {
+            false
+        }
+    };
+    moving.remove(me);
+
+    if attack.get(me).is_some() {
+        return;
+    }
+
+    // Allows people to attack their own units, but only with an explicit order
+    if explicit_atk || faction1 != faction2 {
+        attack.insert(
+            me,
+            Attack {
+                target: other_id,
+                time_since_last: f64::INFINITY,
+            },
+        );
     }
 }
 

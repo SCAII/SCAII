@@ -1,6 +1,6 @@
-use rlua::{Lua, UserData, UserDataMethods, Value};
-use rlua::String as LuaString;
 use rlua::Error as LuaError;
+use rlua::String as LuaString;
+use rlua::{Lua, UserData, UserDataMethods, Value};
 
 use engine::components::{FactionId, Hp, Pos};
 use engine::resources::Spawn;
@@ -37,6 +37,7 @@ impl DataStore {
     }
 
     /// Returns the overall size of the underlying storage
+    #[allow(dead_code)]
     pub fn len(&self) -> usize {
         self.int_data.len() + self.float_data.len() + self.string_data.len() + self.bool_data.len()
     }
@@ -44,21 +45,25 @@ impl DataStore {
     /// A "display" workaround for the fact that we can't do protobuf maps with Javascript right now
     ///
     /// This is just for setting fields in the Viz packet
+    #[allow(dead_code)]
     pub fn display_all(&self, out: Option<HashMap<String, String>>) -> HashMap<String, String> {
         let mut out = out.unwrap_or_else(|| HashMap::with_capacity(self.len()));
         out.clear();
 
-        let iter = self.int_data
+        let iter = self
+            .int_data
             .iter()
             .map(|(k, v)| (k.clone(), format!("{}", v)));
         out.extend(iter);
 
-        let iter = self.float_data
+        let iter = self
+            .float_data
             .iter()
             .map(|(k, v)| (k.clone(), format!("{}", v)));
         out.extend(iter);
 
-        let iter = self.bool_data
+        let iter = self
+            .bool_data
             .iter()
             .map(|(k, v)| (k.clone(), format!("{}", v)));
         out.extend(iter);
@@ -130,8 +135,8 @@ impl DataStore {
 
 impl UserData for DataStore {
     fn add_methods(methods: &mut UserDataMethods<Self>) {
-        use rlua::{MetaMethod, Value};
         use rlua::String as LuaString;
+        use rlua::{MetaMethod, Value};
 
         methods.add_meta_method(MetaMethod::Index, |lua, this, idx: LuaString| {
             this.handle_index(lua, idx)
@@ -372,8 +377,8 @@ store.pi = 3.14"#;
 
     #[test]
     fn lua_data_store_member() {
-        use rlua::{Lua, Number};
         use super::{DataStore, UserDataUnit};
+        use rlua::{Lua, Number};
         let mut lua = Lua::new();
 
         let mut store = DataStore::default();
@@ -386,7 +391,8 @@ store.pi = 3.14"#;
 
         assert_eq!(store.int_data.get("x"), Some(&5));
 
-        let pi = lua.exec::<Number>("return store.pi", Some("member read"))
+        let pi = lua
+            .exec::<Number>("return store.pi", Some("member read"))
             .unwrap();
         assert_eq!(pi, 3.14);
     }
