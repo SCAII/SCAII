@@ -53,41 +53,41 @@ function updateMasterColor(masterShape, masterColor, updateColor) {
   }
 }
 
-function updateMasterRect(masterShape, masterRect, updateRect) {
-  if (updateRect == undefined) {
-    return;
-  }
-  if (masterRect == undefined) {
-    masterShape.setRect(updateRect);
-    return;
-  }
-  if (updateRect.hasWidth()) {
-    masterRect.setWidth(updateRect.getWidth());
-  }
-  if (updateRect.hasHeight()) {
-    masterRect.setHeight(updateRect.getHeight());
-  }
-}
+// function updateMasterRect(masterShape, masterRect, updateRect) {
+//   if (updateRect == undefined) {
+//     return;
+//   }
+//   if (masterRect == undefined) {
+//     masterShape.setRect(updateRect);
+//     return;
+//   }
+//   if (updateRect.hasWidth()) {
+//     masterRect.setWidth(updateRect.getWidth());
+//   }
+//   if (updateRect.hasHeight()) {
+//     masterRect.setHeight(updateRect.getHeight());
+//   }
+// }
 
-function updateMasterTriangle(masterShape, masterTri, updateTri) {
-  if (updateTri == undefined) {
-    return;
-  }
-  if (masterTri == undefined) {
-    masterShape.setTriangle(updateTri);
-    return;
-  }
+// function updateMasterTriangle(masterShape, masterTri, updateTri) {
+//   if (updateTri == undefined) {
+//     return;
+//   }
+//   if (masterTri == undefined) {
+//     masterShape.setTriangle(updateTri);
+//     return;
+//   }
 
-  if (updateTri.hasBaseLen()) {
-    masterTri.setBaseLen(updateTri.getBaseLen());
-  }
-}
+//   if (updateTri.hasBaseLen()) {
+//     masterTri.setBaseLen(updateTri.getBaseLen());
+//   }
+// }
 
 function transferSpecificShape(masterShape, updateShape){
     var masterShapeType = getShapeType(masterShape);
     var updateShapeType = getShapeType(updateShape);
     clearShape(masterShape, masterShapeType);
-    var specificShape = getShapeOfType(updateShapeType, updateShape);
+    var specificShape = getShapeOfType(updateShape,updateShapeType);
     setShape(masterShape, specificShape, updateShapeType);
 }
 
@@ -107,6 +107,9 @@ function getShapeType(shape){
     else if (shape.hasArrow()) {
         return "arrow";
     }
+    else if (shape.hasTriangle()) {
+        return "triangle";
+    }
 }
 
 function setShape(shape, specificShape, type) {
@@ -124,6 +127,9 @@ function setShape(shape, specificShape, type) {
     }
     else if (type =="arrow") {
         shape.setArrow(specificShape);
+    }
+    else if (type =="triangle") {
+        shape.setTriangle(specificShape);
     }
 }
 
@@ -143,6 +149,9 @@ function clearShape(shape, type) {
     else if (type =="arrow") {
         shape.clearArrow();
     }
+    else if (type =="triangle") {
+        shape.clearTriangle();
+    }
 }
 
 function getShapeOfType(shape, type) {
@@ -160,6 +169,9 @@ function getShapeOfType(shape, type) {
     }
     else if (type =="arrow") {
         return shape.getArrow();
+    }
+    else if (type =="triangle") {
+        return shape.getTriangle();
     }
 }
 function updateMasterShape(master, update) {

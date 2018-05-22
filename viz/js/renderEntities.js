@@ -37,11 +37,38 @@ function handleEntities(entitiesList) {
       //renderState(gameboard_zoom_ctx, gameboard_zoom_canvas, masterEntities, zoomFactor, zoomBoxOriginX, zoomBoxOriginY, shapePositionMapForContext["zoom"]);
 }
 
-  
-function renderState(ctx, canvas, entities, zoom_factor, xOffset, yOffset, shapePositionMap) {
-    clearGameBoard(ctx, canvas);
+function sortEntitiesAsPerUILayer(entities) {
+    var uiLayerEntities = [];
+    var nonUiLayerEntities = [];
     for (var i in entities) {
         var entity = entities[i];
+        if (entity.hasUiLayer()){
+            uiLayerEntities.push(entity);
+        }
+        else {
+            nonUiLayerEntities.push(entity);
+        }
+    }
+    var sortedUiLayerEntities = sortUiLayerEntities(uiLayerEntities);
+    var result = [];
+    result.addValues(nonUILayerEntities);
+    result.addValues(uiLayerEntities);
+}
+
+function sortUiLayerEntities(entities){
+    var layerMap = {};
+    for (var i in entities) {
+        var entity = entities[i];
+        var uiLayer = entity.getUiLayer();
+        //left off here
+    }
+}
+function renderState(ctx, canvas, entities, zoom_factor, xOffset, yOffset, shapePositionMap) {
+    clearGameBoard(ctx, canvas);
+    //var uiLayerSortedEntities = sortEntitiesAsPerUILayer(entities);
+    var uiLayerSortedEntities = entities;
+    for (var i in uiLayerSortedEntities) {
+        var entity = uiLayerSortedEntities[i];
         if (entity != undefined) {
             if (entity.hasPos()) {
                 var pos = entity.getPos();
