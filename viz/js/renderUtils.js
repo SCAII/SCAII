@@ -80,8 +80,14 @@ function setAbsolutePosition(si) {
 }
 
 function setHitPointsInfo(si, entity) {
-    si.hitPoints =getNumericValueFromFloatStringMap(entity, "Hitpoints");
-    si.maxHitPoints = getNumericValueFromFloatStringMap(entity, "Max Hp");
+    if (entity.hasHp() && entity.hasMaxHp()) {
+        si.hitPoints = entity.getHp();
+        si.maxHitPoints = entity.getMaxHp();
+    }
+    else {
+        si.hitPoints =getNumericValueFromFloatStringMap(entity, "Hitpoints");
+        si.maxHitPoints = getNumericValueFromFloatStringMap(entity, "Max Hp");
+    }
     if (si.hitPoints != undefined) {
         si.percentHPRemaining = si.hitPoints / si.maxHitPoints;
     }
