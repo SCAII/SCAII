@@ -20,7 +20,11 @@ pub const COLLISION_MARGIN: f64 = 0.02;
 // we should probably set this as a resource from Lua in the future
 pub const COLLISION_SCALE: f64 = 5.0;
 
-pub const MAX_FACTIONS: usize = 15;
+pub const UNIVERSAL_SENSOR: usize = SENSOR_OFFSET+MAX_FACTIONS;
+pub const SENSOR_OFFSET: usize = MAX_FACTIONS;
+pub const SENSOR_BLACKLIST: [usize; MAX_FACTIONS+1] = [SENSOR_OFFSET, SENSOR_OFFSET+1, SENSOR_OFFSET+2, SENSOR_OFFSET+3, UNIVERSAL_SENSOR];
+
+pub const MAX_FACTIONS: usize = 4;
 
 pub const STATE_SIZE: usize = 40;
 pub const STATE_SCALE: usize = 1;
@@ -263,11 +267,13 @@ impl UnitType {
         use ncollide::world::{CollisionGroups, GeometricQueryType};
 
         let mut collider_group = CollisionGroups::new();
-        collider_group.modify_membership(faction, true);
+        collider_group.set_membership(&[faction]);
 
         let mut sensor_group = CollisionGroups::new();
-        sensor_group.modify_membership(MAX_FACTIONS + faction, true);
-        // sensor_group.set_blacklist(&SENSOR_BLACKLIST);
+        sensor_group.set_membership(&[MAX_FACTIONS + faction]);
+        sensor_group.set_blacklist(&SENSOR_BLACKLIST);
+
+        let atk_radius = self.attack_range / COLLISION_SCALE;
 
         let (collider, atk_radius) = match self.shape {
             Shape::Rect { width, height } => {
