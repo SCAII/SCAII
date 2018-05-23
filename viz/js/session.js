@@ -140,7 +140,10 @@ function loadSelectedReplayFile() {
 function handleReplaySessionConfig(rsc, selectedStep) {
 	if (!rsc.hasStepCount()) {
 		dialog('Error no stepCount carried by ReplaySessionConfig');
-	}
+    }
+    if (rsc.getSuppressInteractivity()) {
+        liveModeInputBlocked = true;
+    }
 	var timelineWidth = expl_ctrl_canvas.width - 2*timelineMargin;
 	sessionIndexManager = getSessionIndexManager(rsc.getStepCount(), timelineWidth);
 	sessionIndexManager.setReplaySequencerIndex(0);

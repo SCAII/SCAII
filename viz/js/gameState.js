@@ -53,36 +53,6 @@ function updateMasterColor(masterShape, masterColor, updateColor) {
   }
 }
 
-// function updateMasterRect(masterShape, masterRect, updateRect) {
-//   if (updateRect == undefined) {
-//     return;
-//   }
-//   if (masterRect == undefined) {
-//     masterShape.setRect(updateRect);
-//     return;
-//   }
-//   if (updateRect.hasWidth()) {
-//     masterRect.setWidth(updateRect.getWidth());
-//   }
-//   if (updateRect.hasHeight()) {
-//     masterRect.setHeight(updateRect.getHeight());
-//   }
-// }
-
-// function updateMasterTriangle(masterShape, masterTri, updateTri) {
-//   if (updateTri == undefined) {
-//     return;
-//   }
-//   if (masterTri == undefined) {
-//     masterShape.setTriangle(updateTri);
-//     return;
-//   }
-
-//   if (updateTri.hasBaseLen()) {
-//     masterTri.setBaseLen(updateTri.getBaseLen());
-//   }
-// }
-
 function transferSpecificShape(masterShape, updateShape){
     var masterShapeType = getShapeType(masterShape);
     var updateShapeType = getShapeType(updateShape);
