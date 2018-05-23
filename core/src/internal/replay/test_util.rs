@@ -92,6 +92,7 @@ impl Module for MockRts {
                 explanation_steps: _,
                 explanation_titles: _,
                 chart_titles: _,
+                suppress_interactivity: false,
             })) => {
                 println!("got replaySessionConfig");
                 self.step_count = steps as u32;
@@ -399,6 +400,7 @@ fn create_cfg_pkt(step_count: u32) -> ScaiiPacket {
                 explanation_steps: explanation_steps,
                 explanation_titles: expl_titles,
                 chart_titles: chart_titles,
+                suppress_interactivity: false,
             },
         )),
     };
