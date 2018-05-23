@@ -37,7 +37,7 @@ impl<'a> System<'a> for StateBuildSystem {
     type SystemData = StateBuildSystemData<'a>;
 
     fn run(&mut self, mut sys_data: Self::SystemData) {
-        use engine::resources::{UNIVERSAL_SENSOR, COLLISION_SCALE};
+        use engine::resources::{COLLISION_SCALE, UNIVERSAL_SENSOR};
         use nalgebra::Point2;
         use ncollide::world::CollisionGroups;
         use std::mem;
@@ -64,7 +64,7 @@ impl<'a> System<'a> for StateBuildSystem {
                 );
                 let intersection = c_world.interferences_with_point(&pt, &c_group);
 
-                if let Some(collider) = intersection.filter(|v| !v.data().detector).next() {
+                if let Some(collider) = intersection.filter(|v| !v.data().sensor).next() {
                     let entity = collider.data().e;
                     // Need to offset by 1 because the default is 0
                     self.state_cache[(i, j, 0)] = (entity.id() + 1) as f64;

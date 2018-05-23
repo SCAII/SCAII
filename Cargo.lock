@@ -1142,7 +1142,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "specs"
 version = "0.10.0"
-source = "git+https://github.com/LinearZoetrope/specs#8b881855146e3e9381abdfff450f6185be329ad1"
+source = "git+https://github.com/LinearZoetrope/specs#be9c1cef1d7f5952203ec1e34cd2e6a7351351ec"
 dependencies = [
  "crossbeam 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "derivative 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",

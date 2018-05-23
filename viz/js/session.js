@@ -157,7 +157,9 @@ function handleVizInit(vizInit) {
 		if (vizInit.getTestMode()) {
 			testingMode = true;
 		}
-	}
+    }
+    // start fresh with entities
+    masterEntities = {};
 	// ignoring gameboard width and height, assume 40 x 40
 }
 function handleViz(vizData) {

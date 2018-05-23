@@ -6,8 +6,10 @@ pub use self::de::DeserializeSystem;
 pub use self::de_collision::RedoCollisionSys;
 pub use self::ser::SerializeSystem;
 
-use engine::components::{Attack, Color, DataStoreComponent, FactionId, Hp, Movable, Move, Pos,
-                         Shape, Speed, Static, UnitTypeTag};
+use engine::components::{
+    Attack, Color, ContactStates, DataStoreComponent, FactionId, Hp, Movable, Move, Owner, Pos,
+    SensorRadius, SensorType, Sensors, Shape, Speed, UnitTypeTag,
+};
 use engine::resources::{CumReward, DataStore, LuaPath, SpawnBuffer, Terminal};
 use rand::Isaac64Rng;
 
@@ -28,7 +30,6 @@ struct SerTarget {
 type SerComponents = (
     Speed,
     Movable,
-    Static,
     Move,
     Pos,
     Hp,
@@ -38,4 +39,9 @@ type SerComponents = (
     Attack,
     UnitTypeTag,
     DataStoreComponent,
+    ContactStates,
+    Sensors,
+    SensorType,
+    SensorRadius,
+    Owner,
 );
