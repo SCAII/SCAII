@@ -51,22 +51,42 @@ function sortEntitiesAsPerUILayer(entities) {
     }
     var sortedUiLayerEntities = sortUiLayerEntities(uiLayerEntities);
     var result = [];
-    result.addValues(nonUILayerEntities);
-    result.addValues(uiLayerEntities);
+    result = result.concat(nonUiLayerEntities);
+    result = result.concat(uiLayerEntities);
+    return result;
 }
 
 function sortUiLayerEntities(entities){
+    var layerList = [];
     var layerMap = {};
     for (var i in entities) {
         var entity = entities[i];
         var uiLayer = entity.getUiLayer();
-        //left off here
+        if (!layerList.includes(uiLayer)){
+            layerList.push(uiLayer);
+        }
+        var entityAtLayerList = layerMap[uiLayer];
+        if (undefined == entityAtLayerList) {
+            entityAtLayerList = [];
+            layerMap[uiLayer] = entityAtLayerList;
+        }
+        entityAtLayerList.push(entity);
     }
+    var entitiesSortedByLayer = [];
+    layerList.sort();
+    for (var i in layerList){
+        var layer = layerList[i];
+        var entityAtLayerList = layerMap[layer];
+        for (var j in entityAtLayerList){
+            var entity = entityAtLayerList[j];
+            entitiesSortedByLayer.push(entity);
+        }
+    }
+    return entitiesSortedByLayer;
 }
 function renderState(ctx, canvas, entities, zoom_factor, xOffset, yOffset, shapePositionMap) {
     clearGameBoard(ctx, canvas);
-    //var uiLayerSortedEntities = sortEntitiesAsPerUILayer(entities);
-    var uiLayerSortedEntities = entities;
+    var uiLayerSortedEntities = sortEntitiesAsPerUILayer(entities);
     for (var i in uiLayerSortedEntities) {
         var entity = uiLayerSortedEntities[i];
         if (entity != undefined) {
