@@ -15358,7 +15358,8 @@ proto.scaii.common.ReplaySessionConfig.toObject = function(includeInstance, msg)
     stepCount: jspb.Message.getField(msg, 1),
     explanationStepsList: jspb.Message.getRepeatedField(msg, 2),
     explanationTitlesList: jspb.Message.getRepeatedField(msg, 3),
-    chartTitlesList: jspb.Message.getRepeatedField(msg, 4)
+    chartTitlesList: jspb.Message.getRepeatedField(msg, 4),
+    suppressInteractivity: jspb.Message.getField(msg, 5)
   };
 
   if (includeInstance) {
@@ -15410,6 +15411,10 @@ proto.scaii.common.ReplaySessionConfig.deserializeBinaryFromReader = function(ms
     case 4:
       var value = /** @type {string} */ (reader.readString());
       msg.addChartTitles(value);
+      break;
+    case 5:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setSuppressInteractivity(value);
       break;
     default:
       reader.skipField();
@@ -15465,6 +15470,13 @@ proto.scaii.common.ReplaySessionConfig.serializeBinaryToWriter = function(messag
   if (f.length > 0) {
     writer.writeRepeatedString(
       4,
+      f
+    );
+  }
+  f = /** @type {boolean} */ (jspb.Message.getField(message, 5));
+  if (f != null) {
+    writer.writeBool(
+      5,
       f
     );
   }
@@ -15584,6 +15596,37 @@ proto.scaii.common.ReplaySessionConfig.prototype.addChartTitles = function(value
 
 proto.scaii.common.ReplaySessionConfig.prototype.clearChartTitlesList = function() {
   this.setChartTitlesList([]);
+};
+
+
+/**
+ * required bool suppress_interactivity = 5;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.scaii.common.ReplaySessionConfig.prototype.getSuppressInteractivity = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 5, false));
+};
+
+
+/** @param {boolean} value */
+proto.scaii.common.ReplaySessionConfig.prototype.setSuppressInteractivity = function(value) {
+  jspb.Message.setField(this, 5, value);
+};
+
+
+proto.scaii.common.ReplaySessionConfig.prototype.clearSuppressInteractivity = function() {
+  jspb.Message.setField(this, 5, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.ReplaySessionConfig.prototype.hasSuppressInteractivity = function() {
+  return jspb.Message.getField(this, 5) != null;
 };
 
 

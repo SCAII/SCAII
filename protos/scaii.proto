@@ -301,6 +301,7 @@ message ReplaySessionConfig {
 	repeated uint32 explanation_steps = 2;
 	repeated string explanation_titles= 3;
 	repeated string chart_titles= 4;
+    required bool suppress_interactivity = 5;
 }
 
 // Configures a module (e.g. backend) to begin recording, logging how often 
