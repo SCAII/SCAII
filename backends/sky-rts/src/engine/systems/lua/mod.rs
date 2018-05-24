@@ -63,55 +63,9 @@ impl<'a> System<'a> for LuaSystem {
 
         set_all_spawns(&mut sys_data, &self.lua);
 
-        for (dmg_dealt, tag, _) in (&sys_data.dmg_dealt, &sys_data.tag, &sys_data.faction)
-            .join()
-            .filter(|&(_, _, faction)| faction.0 == 0)
-        {
-            let u_type = sys_data.unit_type.tag_map.get(&tag.0).unwrap();
+        set_dmg_tags(&mut sys_data);
 
-            if u_type.damage_deal_reward.is_none() {
-                let enemy_dmg: f64 = dmg_dealt
-                    .by_source
-                    .iter()
-                    .filter_map(|d| if (d.1).0 != 0 { Some(d.0) } else { None })
-                    .sum();
-
-                *sys_data
-                    .reward
-                    .0
-                    .entry(u_type.dmg_deal_type.clone())
-                    .or_insert(0.0) += enemy_dmg
-            } else if u_type.damage_deal_reward.unwrap() != 0.0 {
-                let enemy_dmg_ct = dmg_dealt.by_source.iter().filter(|d| (d.1).0 != 0).count();
-
-                *sys_data
-                    .reward
-                    .0
-                    .entry(u_type.dmg_deal_type.clone())
-                    .or_insert(0.0) += (enemy_dmg_ct as f64) * u_type.damage_deal_reward.unwrap();
-            }
-        }
-
-        for (hp_change, tag, _) in (&sys_data.hp_change, &sys_data.tag, &sys_data.faction)
-            .join()
-            .filter(|&(_, _, faction)| faction.0 == 0)
-        {
-            let u_type = sys_data.unit_type.tag_map.get(&tag.0).unwrap();
-
-            if u_type.damage_recv_penalty.is_none() {
-                *sys_data
-                    .reward
-                    .0
-                    .entry(u_type.dmg_recv_type.clone())
-                    .or_insert(0.0) += hp_change.0
-            } else if u_type.damage_recv_penalty.unwrap() != 0.0 {
-                *sys_data
-                    .reward
-                    .0
-                    .entry(u_type.dmg_recv_type.clone())
-                    .or_insert(0.0) += u_type.damage_recv_penalty.unwrap();
-            }
-        }
+        set_hp_change(&mut sys_data);
 
         let mut world: UserDataWorld<Isaac64Rng> = self.lua.globals().get("__sky_world").unwrap();
         if world.victory.is_some() {
@@ -597,5 +551,63 @@ fn set_all_spawns(sys_data: &mut LuaSystemData, lua: &Lua) {
             lua
                 .exec::<()>("on_spawn(__sky_world, __sky_u1)", Some("calling on_spawn"))
                 .unwrap();
+        }
+}
+
+fn set_dmg_tags(sys_data: &mut LuaSystemData) {
+    for (dmg_dealt, tag, _) in (
+        &sys_data.dmg_dealt,
+        &sys_data.tag,
+        &sys_data.faction
+        ).join().filter(|&(_, _, faction)| faction.0 == 0)
+        {
+            let u_type = sys_data.unit_type.tag_map.get(&tag.0).unwrap();
+
+            if u_type.damage_deal_reward.is_none() {
+                let enemy_dmg: f64 = dmg_dealt
+                    .by_source
+                    .iter()
+                    .filter_map(|d| if (d.1).0 != 0 { Some(d.0) } else { None })
+                    .sum();
+
+                *sys_data
+                    .reward
+                    .0
+                    .entry(u_type.dmg_deal_type.clone())
+                    .or_insert(0.0) += enemy_dmg
+            } else if u_type.damage_deal_reward.unwrap() != 0.0 {
+                let enemy_dmg_ct = dmg_dealt.by_source.iter().filter(|d| (d.1).0 != 0).count();
+
+                *sys_data
+                    .reward
+                    .0
+                    .entry(u_type.dmg_deal_type.clone())
+                    .or_insert(0.0) += (enemy_dmg_ct as f64) * u_type.damage_deal_reward.unwrap();
+            }
+        }
+}
+
+fn set_hp_change(sys_data: &mut LuaSystemData) {
+    for (hp_change, tag, _) in (
+        &sys_data.hp_change,
+        &sys_data.tag,
+        &sys_data.faction
+        ).join().filter(|&(_, _, faction)| faction.0 == 0)
+        {
+            let u_type = sys_data.unit_type.tag_map.get(&tag.0).unwrap();
+
+            if u_type.damage_recv_penalty.is_none() {
+                *sys_data
+                    .reward
+                    .0
+                    .entry(u_type.dmg_recv_type.clone())
+                    .or_insert(0.0) += hp_change.0
+            } else if u_type.damage_recv_penalty.unwrap() != 0.0 {
+                *sys_data
+                    .reward
+                    .0
+                    .entry(u_type.dmg_recv_type.clone())
+                    .or_insert(0.0) += u_type.damage_recv_penalty.unwrap();
+            }
         }
 }
