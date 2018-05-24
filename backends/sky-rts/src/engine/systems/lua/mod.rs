@@ -30,21 +30,21 @@ pub struct LuaSystemData<'a> {
     hp: ReadStorage<'a, Hp>,
     spawned: ReadStorage<'a, Spawned>,
     ids: Entities<'a>,
-    global_lua_data: FetchMut<'a, DataStore>,
+    global_lua_data: Write<'a, DataStore>,
     lua_data: WriteStorage<'a, DataStoreComponent>,
 
-    step: Fetch<'a, Step>,
-    max_step: Fetch<'a, MaxStep>,
-    unit_type: Fetch<'a, UnitTypeMap>,
-    r_types: Fetch<'a, RewardTypes>,
+    step: Read<'a, Step>,
+    max_step: Read<'a, MaxStep>,
+    unit_type: Read<'a, UnitTypeMap>,
+    r_types: Read<'a, RewardTypes>,
 
-    skip: FetchMut<'a, Skip>,
-    reward: FetchMut<'a, Reward>,
-    terminal: FetchMut<'a, Terminal>,
-    spawn_buf: FetchMut<'a, SpawnBuffer>,
-    rng: FetchMut<'a, Isaac64Rng>,
+    skip: Write<'a, Skip>,
+    reward: Write<'a, Reward>,
+    terminal: Write<'a, Terminal>,
+    spawn_buf: Write<'a, SpawnBuffer>,
+    rng: Write<'a, Isaac64Rng>,
     delete: WriteStorage<'a, Delete>,
-    cum_reward: FetchMut<'a, CumReward>,
+    cum_reward: Write<'a, CumReward>,
 }
 
 pub struct LuaSystem {

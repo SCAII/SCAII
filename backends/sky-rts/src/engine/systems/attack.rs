@@ -14,8 +14,8 @@ pub struct AttackSystemData<'a> {
     damage: WriteStorage<'a, DealtDamage>,
     hp_change: WriteStorage<'a, HpChange>,
 
-    delta_t: Fetch<'a, DeltaT>,
-    unit_type_map: Fetch<'a, UnitTypeMap>,
+    delta_t: Read<'a, DeltaT>,
+    unit_type_map: Read<'a, UnitTypeMap>,
     tag: ReadStorage<'a, UnitTypeTag>,
     faction: ReadStorage<'a, FactionId>,
     sensor_type: ReadStorage<'a, SensorType>,

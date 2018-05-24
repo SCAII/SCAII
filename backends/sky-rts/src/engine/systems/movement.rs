@@ -8,7 +8,7 @@ pub struct MoveSystemData<'a> {
     speeds: ReadStorage<'a, Speed>,
     moves: WriteStorage<'a, Move>,
     moved: WriteStorage<'a, MovedFlag>,
-    delta_t: Fetch<'a, DeltaT>,
+    delta_t: Read<'a, DeltaT>,
     ids: Entities<'a>,
 }
 

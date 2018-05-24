@@ -9,11 +9,11 @@ use scaii_defs::protos::Action as ScaiiAction;
 #[derive(SystemData)]
 pub struct InputSystemData<'a> {
     movable: ReadStorage<'a, Movable>,
-    input: FetchMut<'a, ActionInput>,
+    input: Write<'a, ActionInput>,
     ids: Entities<'a>,
-    is_replay: Fetch<'a, ReplayMode>,
+    is_replay: Read<'a, ReplayMode>,
 
-    skip: FetchMut<'a, Skip>,
+    skip: Write<'a, Skip>,
     moves: WriteStorage<'a, Move>,
 }
 

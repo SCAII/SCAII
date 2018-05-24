@@ -10,15 +10,15 @@ use specs::prelude::*;
 pub struct StateBuildSystemData<'a> {
     hp: ReadStorage<'a, Hp>,
     faction: ReadStorage<'a, FactionId>,
-    collision_sys: Fetch<'a, SkyCollisionWorld>,
+    collision_sys: Read<'a, SkyCollisionWorld>,
     tag: ReadStorage<'a, UnitTypeTag>,
-    unit_types: Fetch<'a, UnitTypeMap>,
-    terminal: Fetch<'a, Terminal>,
-    skip: Fetch<'a, Skip>,
-    replay_mode: Fetch<'a, ReplayMode>,
+    unit_types: Read<'a, UnitTypeMap>,
+    terminal: Read<'a, Terminal>,
+    skip: Read<'a, Skip>,
+    replay_mode: Read<'a, ReplayMode>,
 
-    state: FetchMut<'a, RtsState>,
-    reward: FetchMut<'a, Reward>,
+    state: Write<'a, RtsState>,
+    reward: Write<'a, Reward>,
 }
 
 pub struct StateBuildSystem {

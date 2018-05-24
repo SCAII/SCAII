@@ -13,7 +13,7 @@ pub struct CollisionSystemData<'a> {
 
     contact_states: WriteStorage<'a, ContactStates>,
 
-    col_world: FetchMut<'a, SkyCollisionWorld>,
+    col_world: Write<'a, SkyCollisionWorld>,
 }
 
 /// The `CollisionSystem` updates a moved entity's collisiion-related

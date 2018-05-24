@@ -12,14 +12,14 @@ use engine::resources::{CumReward, DataStore, LuaPath, SerializeBytes, SpawnBuff
 pub struct DeserializeSystemData<'a> {
     de: WorldDeserialize<'a, U64Marker, NoError, super::SerComponents>,
 
-    rng: FetchMut<'a, Isaac64Rng>,
-    lua_path: FetchMut<'a, LuaPath>,
-    terminal: FetchMut<'a, Terminal>,
-    spawns: FetchMut<'a, SpawnBuffer>,
-    cum_reward: FetchMut<'a, CumReward>,
-    lua_data: FetchMut<'a, DataStore>,
+    rng: Write<'a, Isaac64Rng>,
+    lua_path: Write<'a, LuaPath>,
+    terminal: Write<'a, Terminal>,
+    spawns: Write<'a, SpawnBuffer>,
+    cum_reward: Write<'a, CumReward>,
+    lua_data: Write<'a, DataStore>,
 
-    decode: Fetch<'a, SerializeBytes>,
+    decode: Read<'a, SerializeBytes>,
 }
 
 pub struct DeserializeSystem;

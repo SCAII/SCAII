@@ -9,7 +9,7 @@ use scaii_defs::protos::Entity as ScaiiEntity;
 
 #[derive(SystemData)]
 pub struct RenderSystemData<'a> {
-    complete_rerender: Fetch<'a, NeedsKeyInfo>,
+    complete_rerender: Read<'a, NeedsKeyInfo>,
     color: ReadStorage<'a, Color>,
     pos: ReadStorage<'a, Pos>,
     shape: ReadStorage<'a, Shape>,
@@ -21,11 +21,11 @@ pub struct RenderSystemData<'a> {
     delete: ReadStorage<'a, Delete>,
     u_type: ReadStorage<'a, UnitTypeTag>,
     ids: Entities<'a>,
-    skip: Fetch<'a, Skip>,
+    skip: Read<'a, Skip>,
     spawn: ReadStorage<'a, Spawned>,
-    cum_reward: Fetch<'a, CumReward>,
+    cum_reward: Read<'a, CumReward>,
 
-    out: FetchMut<'a, Render>,
+    out: Write<'a, Render>,
 }
 
 #[derive(Default, Copy, Clone, Debug)]

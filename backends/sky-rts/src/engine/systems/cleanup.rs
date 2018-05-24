@@ -15,7 +15,7 @@ pub struct CleanupSystemData<'a> {
     hp_change: WriteStorage<'a, HpChange>,
     contact_states: WriteStorage<'a, ContactStates>,
     entities: Entities<'a>,
-    c_world: FetchMut<'a, SkyCollisionWorld>,
+    c_world: Write<'a, SkyCollisionWorld>,
 
     c_handles: ReadStorage<'a, CollisionHandle>,
     sensors: ReadStorage<'a, Sensors>,
