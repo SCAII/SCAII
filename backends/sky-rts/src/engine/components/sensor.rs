@@ -1,6 +1,6 @@
 use specs::error::NoError;
 use specs::prelude::*;
-use specs::saveload::SaveLoadComponent;
+use specs::saveload::{FromDeserialize, IntoSerialize};
 use specs::storage::HashMapStorage;
 
 use serde::{Deserialize, Serialize};
@@ -100,36 +100,3 @@ pub struct SensorRadius(pub f64);
 #[derive(Clone, Debug, Default, Component)]
 #[storage(HashMapStorage)]
 pub struct Sensors(pub BTreeMap<SensorType, Entity>);
-
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct SensorsData<M>(pub BTreeMap<SensorType, M>);
-
-impl<M: Debug + Serialize> SaveLoadComponent<M> for Sensors
-where
-    for<'de> M: Deserialize<'de>,
-{
-    type Data = SensorsData<M>;
-    type Error = NoError;
-
-    fn save<F>(&self, mut ids: F) -> Result<Self::Data, Self::Error>
-    where
-        F: FnMut(Entity) -> Option<M>,
-    {
-        let out = self.0.iter().map(|(k, v)| (*k, ids(*v).unwrap())).collect();
-
-        Ok(SensorsData(out))
-    }
-
-    fn load<F>(data: Self::Data, mut ids: F) -> Result<Self, Self::Error>
-    where
-        F: FnMut(M) -> Option<Entity>,
-    {
-        let out = data
-            .0
-            .into_iter()
-            .map(|(k, v)| (k, ids(v).unwrap()))
-            .collect();
-
-        Ok(Sensors(out))
-    }
-}

@@ -1,3 +1,4 @@
+mod component_impls;
 pub mod de;
 pub mod de_collision;
 pub mod ser;

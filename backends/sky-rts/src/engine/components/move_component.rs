@@ -4,7 +4,7 @@ use super::Pos;
 
 use specs::error::NoError;
 use specs::prelude::*;
-use specs::saveload::SaveLoadComponent;
+use specs::saveload::{FromDeserialize, IntoSerialize};
 use specs::storage::HashMapStorage;
 
 use serde::{Deserialize, Serialize};
@@ -55,53 +55,5 @@ impl Move {
             MoveTarget::AttackUnit(id) => Some(id),
             _ => None,
         }
-    }
-}
-
-#[derive(Clone, PartialEq, Serialize, Deserialize)]
-pub enum MarkedMoveTarget<M> {
-    Ground(Pos),
-    AttackUnit(M),
-}
-
-#[derive(Clone, PartialEq, Serialize, Deserialize)]
-pub struct MoveData<M> {
-    pub behavior: MoveBehavior,
-    pub target: MarkedMoveTarget<M>,
-}
-
-impl<M: Debug + Serialize> SaveLoadComponent<M> for Move
-where
-    for<'de> M: Deserialize<'de>,
-{
-    type Data = MoveData<M>;
-    type Error = NoError;
-
-    fn save<F>(&self, mut ids: F) -> Result<MoveData<M>, Self::Error>
-    where
-        F: FnMut(Entity) -> Option<M>,
-    {
-        Ok(MoveData {
-            behavior: self.behavior,
-            target: match self.target {
-                MoveTarget::Ground(pos) => MarkedMoveTarget::Ground(pos),
-                MoveTarget::AttackUnit(entity) => {
-                    MarkedMoveTarget::AttackUnit(ids(entity).unwrap())
-                }
-            },
-        })
-    }
-
-    fn load<F>(data: MoveData<M>, mut ids: F) -> Result<Self, Self::Error>
-    where
-        F: FnMut(M) -> Option<Entity>,
-    {
-        Ok(Move {
-            behavior: data.behavior,
-            target: match data.target {
-                MarkedMoveTarget::Ground(pos) => MoveTarget::Ground(pos),
-                MarkedMoveTarget::AttackUnit(mark) => MoveTarget::AttackUnit(ids(mark).unwrap()),
-            },
-        })
     }
 }

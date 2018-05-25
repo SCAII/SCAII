@@ -4,7 +4,7 @@ use engine::resources::DataStore;
 
 use specs::error::NoError;
 use specs::prelude::*;
-use specs::saveload::SaveLoadComponent;
+use specs::saveload::{FromDeserialize, IntoSerialize};
 use specs::storage::{HashMapStorage, NullStorage};
 
 use std::fmt::Debug;
@@ -212,34 +212,6 @@ pub struct Attack {
     pub time_since_last: f64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct AttackData<M: Debug>(pub M, pub f64);
-
-impl<M: Debug + Serialize> SaveLoadComponent<M> for Attack
-where
-    for<'de> M: Deserialize<'de>,
-{
-    type Data = AttackData<M>;
-    type Error = NoError;
-
-    fn save<F>(&self, mut ids: F) -> Result<AttackData<M>, Self::Error>
-    where
-        F: FnMut(Entity) -> Option<M>,
-    {
-        Ok(AttackData(ids(self.target).unwrap(), self.time_since_last))
-    }
-
-    fn load<F>(data: AttackData<M>, mut ids: F) -> Result<Self, Self::Error>
-    where
-        F: FnMut(M) -> Option<Entity>,
-    {
-        Ok(Attack {
-            target: ids(data.0).unwrap(),
-            time_since_last: data.1,
-        })
-    }
-}
-
 #[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Component)]
 #[storage(HashMapStorage)]
 pub struct Death {
@@ -262,28 +234,3 @@ pub struct DataStoreComponent(pub DataStore);
 #[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Component)]
 #[storage(HashMapStorage)]
 pub struct Owner(pub Entity);
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct OwnerData<M>(pub M);
-
-impl<M: Debug + Serialize> SaveLoadComponent<M> for Owner
-where
-    for<'de> M: Deserialize<'de>,
-{
-    type Data = OwnerData<M>;
-    type Error = NoError;
-
-    fn save<F>(&self, mut ids: F) -> Result<Self::Data, Self::Error>
-    where
-        F: FnMut(Entity) -> Option<M>,
-    {
-        Ok(OwnerData(ids(self.0).unwrap()))
-    }
-
-    fn load<F>(data: Self::Data, mut ids: F) -> Result<Self, Self::Error>
-    where
-        F: FnMut(M) -> Option<Entity>,
-    {
-        Ok(Owner(ids(data.0).unwrap()))
-    }
-}
