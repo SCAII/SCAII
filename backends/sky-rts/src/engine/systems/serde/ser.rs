@@ -4,13 +4,18 @@ use specs::saveload::{U64Marker, WorldSerialize};
 
 use specs::error::NoError;
 
+use super::SerComponents;
 use engine::resources::{
     CumReward, DataStore, LuaPath, SerializeBytes, SpawnBuffer, Terminal, WorldRng,
 };
 
 #[derive(SystemData)]
 pub struct SerializeSystemData<'a> {
-    ser: WorldSerialize<'a, U64Marker, NoError, super::SerComponents>,
+    entities: Entities<'a>,
+    markers: WriteStorage<'a, U64Marker>,
+    alloc: Write<'a, U64MarkerAllocator>,
+
+    components: DeserComponents<'a>,
 
     rng: Write<'a, WorldRng>,
     lua_path: Read<'a, LuaPath>,
@@ -38,8 +43,8 @@ impl<'a> System<'a> for SerializeSystem {
 
         let mut tar = Serializer::new(vec![]);
         world
-            .ser
-            .serialize(&mut tar)
+            .components
+            .serialize(&*world.entities, &mut world.markers, &mut *world.alloc)
             .expect("Could not serialize components");
         let tar = tar.into_inner();
 

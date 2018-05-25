@@ -1,6 +1,6 @@
 use specs::prelude::*;
-// use specs::error::NoError;
-use specs::saveload::{U64Marker, WorldDeserialize};
+
+use specs::saveload::{DeserializeComponents, U64Marker, U64MarkerAllocator};
 
 use specs::error::NoError;
 
@@ -8,9 +8,15 @@ use engine::resources::{
     CumReward, DataStore, LuaPath, SerializeBytes, SpawnBuffer, Terminal, WorldRng,
 };
 
+use super::DeserComponents;
+
 #[derive(SystemData)]
 pub struct DeserializeSystemData<'a> {
-    de: WorldDeserialize<'a, U64Marker, NoError, super::SerComponents>,
+    entities: Entities<'a>,
+    markers: WriteStorage<'a, U64Marker>,
+    alloc: Write<'a, U64MarkerAllocator>,
+
+    components: DeserComponents<'a>,
 
     rng: Write<'a, WorldRng>,
     lua_path: Write<'a, LuaPath>,
@@ -40,7 +46,14 @@ impl<'a> System<'a> for DeserializeSystem {
         de.end().unwrap();
 
         let mut de = Deserializer::new(SliceRead::new(&tar.components));
-        world.de.deserialize(&mut de).unwrap();
+
+        DeserializeComponents::deserialize(
+            &mut world.components,
+            &*world.entities,
+            &mut world.markers,
+            &mut *world.alloc,
+            &mut de,
+        );
         de.end().unwrap();
 
         *world.lua_path = tar.lua_path;
@@ -49,5 +62,7 @@ impl<'a> System<'a> for DeserializeSystem {
         *world.spawns = tar.spawns;
         *world.cum_reward = tar.cum_reward;
         *world.lua_data = tar.lua_data;
+
+        world.markers.clear();
     }
 }
