@@ -915,7 +915,7 @@ dependencies = [
  "lazy_static 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.2.40 (registry+https://github.com/rust-lang/crates.io-index)",
  "num_cpus 1.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "rand 0.3.22 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rand 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -1131,7 +1131,7 @@ dependencies = [
  "serde_derive 1.0.37 (registry+https://github.com/rust-lang/crates.io-index)",
  "shred 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "shred-derive 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "specs 0.11.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "specs 0.11.4 (git+https://github.com/LinearZoetrope/specs?branch=saveload-tweak)",
  "specs-derive 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "websocket 0.20.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -1148,8 +1148,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "specs"
-version = "0.11.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
+version = "0.11.4"
+source = "git+https://github.com/LinearZoetrope/specs?branch=saveload-tweak#1e5e0203773f083ed14e9c3ba238e935b300de74"
 dependencies = [
  "crossbeam 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "derivative 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1678,7 +1678,7 @@ dependencies = [
 "checksum shrev 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)" = "ec60ed6f60a4b3cdc2ceacf57215db3408fbd8990f66a38686a31558cd9da482"
 "checksum slab 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "fdeff4cd9ecff59ec7e3744cbca73dfe5ac35c2aedb2cfba8a1c715a18912e9d"
 "checksum smallvec 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)" = "03dab98ab5ded3a8b43b2c80751194608d0b2aa0f1d46cf95d1c35e192844aa7"
-"checksum specs 0.11.2 (registry+https://github.com/rust-lang/crates.io-index)" = "d4c83d3f2dbe499d2aca1f32ff4e5c781de36aa493d89d6ba9a7a712f6c39904"
+"checksum specs 0.11.4 (git+https://github.com/LinearZoetrope/specs?branch=saveload-tweak)" = "<none>"
 "checksum specs-derive 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "f083b5c48571213f37b78fc8c4012485027f7391c33360643342ef09990b2f68"
 "checksum stable_deref_trait 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)" = "15132e0e364248108c5e2c02e3ab539be8d6f5d52a01ca9bbf27ed657316f02b"
 "checksum syn 0.10.8 (registry+https://github.com/rust-lang/crates.io-index)" = "58fd09df59565db3399efbba34ba8a2fec1307511ebd245d0061ff9d42691673"

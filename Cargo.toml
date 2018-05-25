@@ -8,3 +8,6 @@ members = [
 [profile.release]
 codegen-units = 1
 lto = true
+
+[patch.crates-io]
+specs = {git="https://github.com/LinearZoetrope/specs", branch="saveload-tweak"}
