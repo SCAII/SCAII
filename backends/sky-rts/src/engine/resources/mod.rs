@@ -51,24 +51,6 @@ lazy_static! {
 // actually measuring time elapsed
 const SIXTY_FPS: f64 = 1.0 / 60.0;
 
-pub(super) fn register_world_resources(world: &mut World) {
-    use ndarray::Array3;
-    use specs::saveload::U64MarkerAllocator;
-    use util;
-
-    let rng = util::make_rng();
-    world.add_resource(rng);
-
-    world.add_resource(NeedsKeyInfo(true));
-    world.add_resource(U64MarkerAllocator::new());
-
-    world.add_resource(RtsState(State {
-        features: Array3::zeros([STATE_SIZE, STATE_SIZE, 4]).into_raw_vec(),
-        feature_array_dims: vec![STATE_SIZE as u32, STATE_SIZE as u32, 4],
-        ..Default::default()
-    }));
-}
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WorldRng(pub Isaac64Rng);
 
@@ -79,8 +61,19 @@ impl Default for WorldRng {
     }
 }
 
-#[derive(Default, Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct RtsState(pub State);
+
+impl Default for RtsState {
+    fn default() -> Self {
+        use ndarray::Array3;
+        RtsState(State {
+            features: Array3::zeros([STATE_SIZE, STATE_SIZE, 4]).into_raw_vec(),
+            feature_array_dims: vec![STATE_SIZE as u32, STATE_SIZE as u32, 4],
+            ..Default::default()
+        })
+    }
+}
 
 /// The current episode, only meaningful for sequential runs.
 #[derive(Copy, Clone, PartialEq, Eq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default)]
@@ -120,8 +113,15 @@ pub struct Render(pub Viz);
 
 /// Tracks whether a FULL rerender (or total state, or whatever else)
 /// is needed rather than a delta.
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct NeedsKeyInfo(pub bool);
+
+// Err on the side of safety -- default is rerender
+impl Default for NeedsKeyInfo {
+    fn default() -> Self {
+        NeedsKeyInfo(true)
+    }
+}
 
 /// The actions coming from the Agent (or replay mechanism)
 #[derive(Clone, PartialEq, Default, Debug)]

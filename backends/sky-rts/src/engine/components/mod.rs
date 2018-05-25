@@ -31,36 +31,6 @@ pub use self::{
     collision::*, move_component::*, sensor::{SensorRadius, SensorType, Sensors},
 };
 
-pub(super) fn register_world_components(world: &mut World) {
-    use specs::saveload::U64Marker;
-
-    world.register::<Pos>();
-    world.register::<Heading>();
-    world.register::<Move>();
-    world.register::<Movable>();
-    world.register::<MovedFlag>();
-    world.register::<Hp>();
-    world.register::<DealtDamage>();
-    world.register::<HpChange>();
-    world.register::<Shape>();
-    world.register::<Color>();
-    world.register::<Speed>();
-    world.register::<U64Marker>();
-    world.register::<FactionId>();
-    world.register::<CollisionHandle>();
-    world.register::<UnitTypeTag>();
-    world.register::<Attack>();
-    world.register::<Death>();
-    world.register::<Delete>();
-    world.register::<Spawned>();
-    world.register::<DataStoreComponent>();
-    world.register::<ContactStates>();
-    world.register::<Owner>();
-    world.register::<SensorType>();
-    world.register::<SensorRadius>();
-    world.register::<Sensors>();
-}
-
 #[derive(Copy, Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Pos(pub Point2<f64>);
 

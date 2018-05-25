@@ -57,8 +57,6 @@ impl<'a, 'b> Rts<'a, 'b> {
         use std::sync::Arc;
 
         let mut world = World::new();
-        components::register_world_components(&mut world);
-        resources::register_world_resources(&mut world);
 
         let pool = Arc::new(
             ThreadPoolBuilder::new()
