@@ -12,14 +12,16 @@ pub struct ColliderData {
     pub sensor: bool,
 }
 
-pub type SkyCollisionWorld = CollisionWorld<P2<f64>, I2<f64>, ColliderData>;
+pub struct SkyCollisionWorld(pub CollisionWorld<P2<f64>, I2<f64>, ColliderData>);
 
-pub fn new_collision_world() -> SkyCollisionWorld {
-    let mut c_world = SkyCollisionWorld::new(0.02);
-    c_world.register_broad_phase_pair_filter("entity owner filter", SkyBroadPhaseFilter);
-    c_world.update();
+impl Default for SkyCollisionWorld {
+    fn default() -> Self {
+        let mut c_world = CollisionWorld::new(0.02);
+        c_world.register_broad_phase_pair_filter("entity owner filter", SkyBroadPhaseFilter);
+        c_world.update();
 
-    c_world
+        SkyCollisionWorld(c_world)
+    }
 }
 
 #[doc(hidden)]

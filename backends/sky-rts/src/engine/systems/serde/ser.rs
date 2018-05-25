@@ -4,15 +4,15 @@ use specs::saveload::{U64Marker, WorldSerialize};
 
 use specs::error::NoError;
 
-use rand::Isaac64Rng;
-
-use engine::resources::{CumReward, DataStore, LuaPath, SerializeBytes, SpawnBuffer, Terminal};
+use engine::resources::{
+    CumReward, DataStore, LuaPath, SerializeBytes, SpawnBuffer, Terminal, WorldRng,
+};
 
 #[derive(SystemData)]
 pub struct SerializeSystemData<'a> {
     ser: WorldSerialize<'a, U64Marker, NoError, super::SerComponents>,
 
-    rng: Write<'a, Isaac64Rng>,
+    rng: Write<'a, WorldRng>,
     lua_path: Read<'a, LuaPath>,
     terminal: Read<'a, Terminal>,
     spawns: Read<'a, SpawnBuffer>,

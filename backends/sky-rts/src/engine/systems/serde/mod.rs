@@ -11,14 +11,14 @@ use engine::components::{
     Attack, Color, ContactStates, DataStoreComponent, FactionId, Hp, Movable, Move, Owner, Pos,
     SensorRadius, SensorType, Sensors, Shape, Speed, UnitTypeTag,
 };
-use engine::resources::{CumReward, DataStore, LuaPath, SpawnBuffer, Terminal};
+use engine::resources::{CumReward, DataStore, LuaPath, SpawnBuffer, Terminal, WorldRng};
 use rand::Isaac64Rng;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct SerTarget {
     components: Vec<u8>,
     lua_path: LuaPath,
-    rng: Isaac64Rng,
+    rng: WorldRng,
     terminal: Terminal,
     #[serde(default)]
     spawns: SpawnBuffer,

@@ -169,6 +169,9 @@ where
 struct OwnerData<M>(M);
 
 impl<M: Marker + Serialize> IntoSerialize<M> for Owner {
+    type Data = OwnerData<M>;
+    type Error = NoError;
+
     fn into<F>(&self, mut ids: F) -> Result<Self::Data, Self::Error>
     where
         F: FnMut(Entity) -> Option<M>,

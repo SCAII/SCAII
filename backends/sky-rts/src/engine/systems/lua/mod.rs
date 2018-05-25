@@ -12,8 +12,9 @@ use engine::components::{
 };
 use engine::resources::{
     CumReward, DataStore, MaxStep, Reward, RewardTypes, Skip, SpawnBuffer, Step, Terminal,
-    UnitTypeMap,
+    UnitTypeMap, WorldRng,
 };
+
 use rand::Isaac64Rng;
 
 use std::collections::HashMap;
@@ -42,7 +43,7 @@ pub struct LuaSystemData<'a> {
     reward: Write<'a, Reward>,
     terminal: Write<'a, Terminal>,
     spawn_buf: Write<'a, SpawnBuffer>,
-    rng: Write<'a, Isaac64Rng>,
+    rng: Write<'a, WorldRng>,
     delete: WriteStorage<'a, Delete>,
     cum_reward: Write<'a, CumReward>,
 }
@@ -294,7 +295,7 @@ impl LuaSystem {
         use self::userdata::UserDataRng;
         use rand::Isaac64Rng;
 
-        let rng: *mut Isaac64Rng = &mut *world.write_resource();
+        let rng: *mut Isaac64Rng = &mut *world.write_resource::<WorldRng>().0;
         let rng = UserDataRng { rng: rng };
 
         self.lua
@@ -327,7 +328,7 @@ impl LuaSystem {
             Some(&format!("Lua Scenario Script at path {:?}", path)),
         )?;
 
-        let rng = &mut *world.write_resource::<Isaac64Rng>();
+        let rng = &mut *world.write_resource::<WorldRng>().0;
         let rng = UserDataRng { rng: rng };
 
         self.lua.globals().set("__sky_rts_rng", rng)?;

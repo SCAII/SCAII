@@ -5,6 +5,7 @@ use engine::components::Color;
 
 use scaii_defs::protos::{Action, State, Viz};
 
+use rand::Isaac64Rng;
 use specs::prelude::*;
 
 pub mod collision;
@@ -57,57 +58,53 @@ pub(super) fn register_world_resources(world: &mut World) {
 
     let rng = util::make_rng();
     world.add_resource(rng);
-    world.add_resource(Episode(0));
-    world.add_resource(Terminal(false));
-    world.add_resource(Step(0));
-    world.add_resource(MaxStep(None));
-    world.add_resource(DeltaT(SIXTY_FPS));
-    world.add_resource(Render::default());
+
     world.add_resource(NeedsKeyInfo(true));
-    world.add_resource::<Vec<Player>>(Vec::new());
-    world.add_resource(UnitTypeMap::default());
     world.add_resource(U64MarkerAllocator::new());
-    world.add_resource(ActionInput::default());
-    world.add_resource(new_collision_world());
 
     world.add_resource(RtsState(State {
         features: Array3::zeros([STATE_SIZE, STATE_SIZE, 4]).into_raw_vec(),
         feature_array_dims: vec![STATE_SIZE as u32, STATE_SIZE as u32, 4],
         ..Default::default()
     }));
+}
 
-    world.add_resource(Reward::default());
-    world.add_resource(Skip(false, None));
-    world.add_resource(SerializeBytes::default());
-    world.add_resource(LuaPath(None));
-    world.add_resource(ReplayMode(false));
-    world.add_resource(RewardTypes::default());
-    world.add_resource(SpawnBuffer::default());
-    world.add_resource(Deserializing(false));
-    world.add_resource(CumReward::default());
-    world.add_resource(DataStore::default());
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct WorldRng(pub Isaac64Rng);
+
+impl Default for WorldRng {
+    fn default() -> Self {
+        WorldRng(Isaac64Rng::new())
+    }
 }
 
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct RtsState(pub State);
 
 /// The current episode, only meaningful for sequential runs.
-#[derive(Copy, Clone, PartialEq, Eq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(Copy, Clone, PartialEq, Eq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default)]
 pub struct Episode(pub usize);
 
-#[derive(Copy, Clone, PartialEq, Eq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(Copy, Clone, PartialEq, Eq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default)]
 pub struct Step(pub usize);
 
-#[derive(Copy, Clone, PartialEq, Eq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(Copy, Clone, PartialEq, Eq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default)]
 pub struct MaxStep(pub Option<usize>);
 
 /// Is this the final frame of the scenario?
-#[derive(Copy, Clone, PartialEq, Eq, Ord, PartialOrd, Hash, Debug, Serialize, Deserialize)]
+#[derive(Copy, Clone, PartialEq, Eq, Ord, PartialOrd, Hash, Debug, Serialize, Deserialize,
+         Default)]
 pub struct Terminal(pub bool);
 
 /// Time since the last update, in seconds (fixed to one sixtieth of a second for our purposes).
 #[derive(Copy, Clone, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct DeltaT(pub f64);
+
+impl Default for DeltaT {
+    fn default() -> Self {
+        DeltaT(SIXTY_FPS)
+    }
+}
 
 /// Any associated data with various game factions.
 #[derive(Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -135,13 +132,13 @@ pub struct Reward(pub HashMap<String, f64>);
 #[derive(PartialEq, Default, Clone, Serialize, Deserialize, Debug)]
 pub struct CumReward(pub HashMap<String, f64>);
 
-#[derive(Eq, PartialEq, Default, Clone, Debug, Hash)]
+#[derive(Eq, PartialEq, Clone, Debug, Hash, Default)]
 pub struct Skip(pub bool, pub Option<String>);
 
 #[derive(Clone, Debug, PartialEq, Eq, Default)]
 pub struct SerializeBytes(pub Vec<u8>);
 
-#[derive(Clone, PartialEq, Eq, Serialize, Deserialize, Debug)]
+#[derive(Clone, PartialEq, Eq, Serialize, Deserialize, Debug, Default)]
 pub struct LuaPath(pub Option<String>);
 
 #[derive(Copy, Clone, Eq, PartialEq, Default)]

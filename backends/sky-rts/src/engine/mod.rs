@@ -112,10 +112,10 @@ impl<'a, 'b> Rts<'a, 'b> {
     /// serialized at this state before calling this function,
     /// identical inputs will cause different behavior.
     pub fn diverge(&mut self) {
-        use rand::Isaac64Rng;
+        use engine::resources::WorldRng;
         use util;
 
-        let rng = &mut *self.world.write_resource::<Isaac64Rng>();
+        let rng = &mut *self.world.write_resource::<WorldRng>().0;
         util::diverge(rng);
     }
 
@@ -197,8 +197,7 @@ impl<'a, 'b> Rts<'a, 'b> {
     /// Resets the game to a clean state, running the scenario
     /// Lua's `reset` function, populating initial entities.
     pub fn reset(&mut self) -> MultiMessage {
-        use self::resources::COLLISION_MARGIN;
-        use rand::Isaac64Rng;
+        use self::resources::{WorldRng, COLLISION_MARGIN};
         use scaii_defs::protos;
         use scaii_defs::protos::ScaiiPacket;
         use shred::RunNow;
@@ -219,7 +218,7 @@ impl<'a, 'b> Rts<'a, 'b> {
         // Do a fast reseed so it doesn't start looping the RNG state
         // after too many episodes
         {
-            let rng = &mut *self.world.write_resource::<Isaac64Rng>();
+            let rng = &mut *self.world.write_resource::<WorldRng>().0;
             util::diverge(rng);
 
             self.world.write_resource::<Episode>().0 += 1;

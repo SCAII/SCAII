@@ -1,5 +1,5 @@
 use engine::components::{CollisionHandle, FactionId, Pos, SensorType, UnitTypeTag};
-use engine::resources::{new_collision_world, SkyCollisionWorld, UnitTypeMap};
+use engine::resources::{SkyCollisionWorld, UnitTypeMap};
 use specs::prelude::*;
 
 pub struct RedoCollisionSys;
@@ -8,7 +8,7 @@ impl RedoCollisionSys {
     pub fn redo_collision(&mut self, world: &mut World) {
         use engine::components::sensor;
 
-        *world.write_resource::<SkyCollisionWorld>() = new_collision_world();
+        *world.write_resource::<SkyCollisionWorld>() = Default::default();
 
         for (pos, tag, faction, id) in (
             &world.read::<Pos>(),
