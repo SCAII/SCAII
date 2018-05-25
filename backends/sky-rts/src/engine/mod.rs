@@ -69,17 +69,17 @@ impl<'a, 'b> Rts<'a, 'b> {
 
         let simulation_builder: Dispatcher = DispatcherBuilder::new()
             .with_pool(pool.clone())
-            .add(InputSystem::new(), "input", &[])
-            .add(MoveSystem::new(), "movement", &["input"])
-            .add(CollisionSystem, "collision", &["movement"])
-            .add(AttackSystem, "attack", &["collision"])
+            .with(InputSystem::new(), "input", &[])
+            .with(MoveSystem::new(), "movement", &["input"])
+            .with(CollisionSystem, "collision", &["movement"])
+            .with(AttackSystem, "attack", &["collision"])
             .build();
 
         let output_builder = DispatcherBuilder::new()
             .with_pool(pool)
-            .add(RenderSystem {}, "render", &[])
-            .add(CleanupSystem, "cleanup", &["render"])
-            .add(StateBuildSystem::new(), "state", &["cleanup"])
+            .with(RenderSystem {}, "render", &[])
+            .with(CleanupSystem, "cleanup", &["render"])
+            .with(StateBuildSystem::new(), "state", &["cleanup"])
             .build();
 
         let lua_sys = LuaSystem::new();
@@ -115,7 +115,7 @@ impl<'a, 'b> Rts<'a, 'b> {
         use engine::resources::WorldRng;
         use util;
 
-        let rng = &mut *self.world.write_resource::<WorldRng>().0;
+        let rng = &mut self.world.write_resource::<WorldRng>().0;
         util::diverge(rng);
     }
 
@@ -207,10 +207,8 @@ impl<'a, 'b> Rts<'a, 'b> {
             self.init();
         }
 
-        *self.world.write_resource::<SkyCollisionWorld>() =
-            SkyCollisionWorld::new(COLLISION_MARGIN);
-        self.world.write_resource::<Skip>().0 = false;
-        self.world.write_resource::<Skip>().1 = None;
+        *self.world.write_resource::<SkyCollisionWorld>() = Default::default();
+        *self.world.write_resource::<Skip>() = Default::default();
         self.world.write_resource::<NeedsKeyInfo>().0 = true;
         self.last_action = Default::default();
 
@@ -218,7 +216,7 @@ impl<'a, 'b> Rts<'a, 'b> {
         // Do a fast reseed so it doesn't start looping the RNG state
         // after too many episodes
         {
-            let rng = &mut *self.world.write_resource::<WorldRng>().0;
+            let rng = &mut self.world.write_resource::<WorldRng>().0;
             util::diverge(rng);
 
             self.world.write_resource::<Episode>().0 += 1;
@@ -463,9 +461,9 @@ impl<'a, 'b> Rts<'a, 'b> {
         self.redo_col_sys.redo_collision(&mut self.world);
 
         for id in self.world.entities().join() {
-            if let Some(faction) = self.world.read::<FactionId>().get(id) {
+            if let Some(faction) = self.world.read_storage::<FactionId>().get(id) {
                 self.world
-                    .write::<Color>()
+                    .write_storage::<Color>()
                     .insert(id, PLAYER_COLORS[faction.0]);
             }
         }

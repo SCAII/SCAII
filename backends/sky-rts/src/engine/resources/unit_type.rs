@@ -89,7 +89,7 @@ impl UnitType {
         }.build();
 
         let me = {
-            let mut col_storage = world.write::<CollisionHandle>();
+            let mut col_storage = world.write_storage::<CollisionHandle>();
             let mut c_world = world.write_resource();
 
             self.register_collision(entity, pos, faction, &mut col_storage, &mut *c_world)
@@ -98,7 +98,7 @@ impl UnitType {
         let atk_radius = self.shape.compute_extended_radius(self.attack_range);
         let atk_sensor = sensor::build_attack_sensor(world, me, atk_radius);
         world
-            .write::<Sensors>()
+            .write_storage::<Sensors>()
             .entry(me)
             .unwrap()
             .or_insert(Default::default())
@@ -165,7 +165,7 @@ impl UnitType {
         );
 
         let q_type = GeometricQueryType::Contacts(0.0, 0.0);
-        let collider = c_world.add(
+        let collider = c_world.0.add(
             pos,
             collider,
             collider_group,

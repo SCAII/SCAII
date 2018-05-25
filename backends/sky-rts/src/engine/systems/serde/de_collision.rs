@@ -11,9 +11,9 @@ impl RedoCollisionSys {
         *world.write_resource::<SkyCollisionWorld>() = Default::default();
 
         for (pos, tag, faction, id) in (
-            &world.read::<Pos>(),
-            &world.read::<UnitTypeTag>(),
-            &world.read::<FactionId>(),
+            &world.read_storage::<Pos>(),
+            &world.read_storage::<UnitTypeTag>(),
+            &world.read_storage::<FactionId>(),
             &*world.entities(),
         ).join()
         {
@@ -25,7 +25,7 @@ impl RedoCollisionSys {
                 id,
                 *pos,
                 faction.0,
-                &mut world.write::<CollisionHandle>(),
+                &mut world.write_storage::<CollisionHandle>(),
                 &mut *world.write_resource::<SkyCollisionWorld>(),
             );
         }
@@ -33,7 +33,7 @@ impl RedoCollisionSys {
         // Maybe use one-time allocation bucket approach in the future like other systems
         let mut sensors = Vec::new();
         sensors.extend(
-            (&*world.entities(), &world.read::<SensorType>())
+            (&*world.entities(), &world.read_storage::<SensorType>())
                 .join()
                 .map(|(id, _)| id),
         );
@@ -42,6 +42,6 @@ impl RedoCollisionSys {
             sensor::register_sensor_collision(world, sensor_id);
         }
 
-        world.write_resource::<SkyCollisionWorld>().update();
+        world.write_resource::<SkyCollisionWorld>().0.update();
     }
 }

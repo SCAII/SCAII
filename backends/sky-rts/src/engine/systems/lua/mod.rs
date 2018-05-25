@@ -64,7 +64,7 @@ impl<'a> System<'a> for LuaSystem {
         self.immediate_reward.clear();
         let world = UserDataWorld::new(
             UserDataRng {
-                rng: &mut *sys_data.rng,
+                rng: &mut sys_data.rng.0,
             },
             &mut *sys_data.global_lua_data,
         );
@@ -295,7 +295,7 @@ impl LuaSystem {
         use self::userdata::UserDataRng;
         use rand::Isaac64Rng;
 
-        let rng: *mut Isaac64Rng = &mut *world.write_resource::<WorldRng>().0;
+        let rng: *mut Isaac64Rng = &mut world.write_resource::<WorldRng>().0;
         let rng = UserDataRng { rng: rng };
 
         self.lua
@@ -328,7 +328,7 @@ impl LuaSystem {
             Some(&format!("Lua Scenario Script at path {:?}", path)),
         )?;
 
-        let rng = &mut *world.write_resource::<WorldRng>().0;
+        let rng = &mut world.write_resource::<WorldRng>().0;
         let rng = UserDataRng { rng: rng };
 
         self.lua.globals().set("__sky_rts_rng", rng)?;

@@ -74,7 +74,8 @@ pub struct WorldRng(pub Isaac64Rng);
 
 impl Default for WorldRng {
     fn default() -> Self {
-        WorldRng(Isaac64Rng::new())
+        use rand::NewRng;
+        WorldRng(Isaac64Rng::new().unwrap())
     }
 }
 

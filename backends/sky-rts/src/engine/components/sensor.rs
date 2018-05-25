@@ -43,19 +43,25 @@ pub fn register_sensor_collision(world: &mut World, sensor: Entity) -> Entity {
         shape::{Ball, ShapeHandle}, world::{CollisionGroups, GeometricQueryType},
     };
 
-    let sensor_radius = *world.read::<SensorRadius>().get(sensor).unwrap();
+    let sensor_radius = *world.read_storage::<SensorRadius>().get(sensor).unwrap();
     let c_world = &mut *world.write_resource::<SkyCollisionWorld>();
 
-    let (pos, group_membership) = if let Some(owner) = world.read::<Owner>().get(sensor) {
-        let pos = *world.read::<Pos>().get(owner.0).expect("owner has no pos?");
+    let (pos, group_membership) = if let Some(owner) = world.read_storage::<Owner>().get(sensor) {
+        let pos = *world
+            .read_storage::<Pos>()
+            .get(owner.0)
+            .expect("owner has no pos?");
         let faction = *world
-            .read::<FactionId>()
+            .read_storage::<FactionId>()
             .get(owner.0)
             .expect("owner has no faction ID?");
 
         (pos.0, faction.0 + SENSOR_OFFSET)
     } else {
-        let pos = *world.read::<Pos>().get(sensor).expect("No owner or pos?");
+        let pos = *world
+            .read_storage::<Pos>()
+            .get(sensor)
+            .expect("No owner or pos?");
         let group = UNIVERSAL_SENSOR;
 
         (pos.0, group)
@@ -74,20 +80,20 @@ pub fn register_sensor_collision(world: &mut World, sensor: Entity) -> Entity {
     );
 
     let q_type = GeometricQueryType::Contacts(0.0, 0.0);
-    let collider = c_world.add(
+    let collider = c_world.0.add(
         pos,
         sensor_shape,
         sensor_group,
         q_type,
         ColliderData {
             e: sensor,
-            owner: world.read::<Owner>().get(sensor).map(|v| v.0),
+            owner: world.read_storage::<Owner>().get(sensor).map(|v| v.0),
             sensor: true,
         },
     );
 
     world
-        .write::<CollisionHandle>()
+        .write_storage::<CollisionHandle>()
         .insert(sensor, CollisionHandle(collider));
 
     sensor

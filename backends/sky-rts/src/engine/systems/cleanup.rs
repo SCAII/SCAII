@@ -74,8 +74,8 @@ fn finalize_entity(
         for &sensor in sensors.0.values() {
             let handle = c_handles.get(sensor).expect("Sensor has no collision?");
 
-            if c_world.collision_object(handle.0).is_some() {
-                c_world.remove(&[handle.0]);
+            if c_world.0.collision_object(handle.0).is_some() {
+                c_world.0.remove(&[handle.0]);
             }
 
             entities.delete(sensor).unwrap();
@@ -84,8 +84,8 @@ fn finalize_entity(
     entities.delete(id).unwrap();
 
     if let Some(handle) = c_handles.get(id) {
-        if c_world.collision_object(handle.0).is_some() {
-            c_world.remove(&[handle.0]);
+        if c_world.0.collision_object(handle.0).is_some() {
+            c_world.0.remove(&[handle.0]);
         }
     }
 }
@@ -127,13 +127,13 @@ mod tests {
         let mut sys = CleanupSystem;
         sys.run_now(&world.res);
 
-        let cleared_moved = world.read::<MovedFlag>();
+        let cleared_moved = world.read_storage::<MovedFlag>();
         assert!(cleared_moved.get(test_player).is_none());
 
-        let cleared_damage = world.read::<DealtDamage>();
+        let cleared_damage = world.read_storage::<DealtDamage>();
         assert!(cleared_damage.get(test_player).is_none());
 
-        let cleared_hp = world.read::<HpChange>();
+        let cleared_hp = world.read_storage::<HpChange>();
         assert!(cleared_hp.get(test_player).is_none());
     }
 }

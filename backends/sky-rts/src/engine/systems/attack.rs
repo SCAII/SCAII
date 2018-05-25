@@ -205,14 +205,14 @@ mod tests {
         let mut sys = AttackSystem;
         sys.run_now(&world.res);
 
-        let hp_changed = world.read::<HpChange>(); // Verifies component exists because this test
+        let hp_changed = world.read_storage::<HpChange>(); // Verifies component exists because this test
         assert!(hp_changed.get(test_target).is_some()); // should cause the target to take damage
 
-        let hps = world.read::<Hp>();
+        let hps = world.read_storage::<Hp>();
         assert!(hps.get(test_target).unwrap().curr_hp == 0.0); // Verifies that test target has 0 hp
         assert!(hps.get(test_player).unwrap().curr_hp == max_hp); // Verifies that test player did not take damage
 
-        let dead_units = world.read::<Death>();
+        let dead_units = world.read_storage::<Death>();
         assert!(dead_units.get(test_target).unwrap().killer == test_player); // Verifies that test player killed test_target
     }
 }

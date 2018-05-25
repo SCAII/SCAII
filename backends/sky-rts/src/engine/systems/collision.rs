@@ -48,7 +48,7 @@ impl<'a> System<'a> for CollisionSystem {
                 nalgebra::zero(),
             );
 
-            sys_data.col_world.set_position(c_handle.0, pos);
+            sys_data.col_world.0.set_position(c_handle.0, pos);
 
             if let Some(sensors) = sys_data.sensors.get(id) {
                 for &sensor in sensors.0.values() {
@@ -56,14 +56,14 @@ impl<'a> System<'a> for CollisionSystem {
                         .c_handle
                         .get(sensor)
                         .expect("Sensor has no collision?");
-                    sys_data.col_world.set_position(sensor_ch.0, pos);
+                    sys_data.col_world.0.set_position(sensor_ch.0, pos);
                 }
             }
         }
 
-        sys_data.col_world.update();
+        sys_data.col_world.0.update();
 
-        for event in sys_data.col_world.contact_events() {
+        for event in sys_data.col_world.0.contact_events() {
             match event {
                 ContactEvent::Started(h1, h2) => {
                     handle_started(&sys_data.col_world, &mut sys_data.contact_states, *h1, *h2);
@@ -92,8 +92,8 @@ fn handle_started(
     h1: CollisionObjectHandle,
     h2: CollisionObjectHandle,
 ) {
-    let h1 = col_world.collision_object(h1).unwrap();
-    let h2 = col_world.collision_object(h2).unwrap();
+    let h1 = col_world.0.collision_object(h1).unwrap();
+    let h2 = col_world.0.collision_object(h2).unwrap();
 
     let e1 = h1.data().e;
     let e2 = h2.data().e;
@@ -154,8 +154,8 @@ fn handle_stopped(
     h1: CollisionObjectHandle,
     h2: CollisionObjectHandle,
 ) {
-    let h1 = col_world.collision_object(h1).unwrap();
-    let h2 = col_world.collision_object(h2).unwrap();
+    let h1 = col_world.0.collision_object(h1).unwrap();
+    let h2 = col_world.0.collision_object(h2).unwrap();
 
     let e1 = h1.data().e;
     let e2 = h1.data().e;

@@ -169,7 +169,7 @@ mod tests {
             .build();
 
         sys.dispatch(&mut world.res);
-        let moves = world.read::<Move>();
+        let moves = world.read_storage::<Move>();
         assert!(moves.get(test_player).unwrap().target == MoveTarget::AttackUnit(test_target)); // Verifies that test_player's target is test target
         assert!(moves.get(test_player).unwrap().behavior == MoveBehavior::Straight); // Verifies that test_player's move behavior is straight
     }

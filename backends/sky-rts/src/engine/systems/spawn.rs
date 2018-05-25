@@ -44,7 +44,7 @@ impl SpawnSystem {
                     let entity =
                         u_type.build_entity(world, spawn.pos, spawn.curr_hp, spawn.faction);
 
-                    world.write::<Spawned>().insert(entity, Spawned);
+                    world.write_storage::<Spawned>().insert(entity, Spawned);
 
                     None
                 } else {
