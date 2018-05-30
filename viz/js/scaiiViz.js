@@ -52,15 +52,18 @@ var main = function () {
 	var debug = true;
 	if (debug) {
 		var connectButton = document.createElement("BUTTON");
-		var connectText = document.createTextNode("Connect");
+		var connectText = document.createTextNode("Start");
 		connectButton.setAttribute("class", "connectButton");
 		connectButton.setAttribute("id", "connectButton");
 		connectButton.appendChild(connectText);
 		connectButton.onclick = function () {
 			tryConnect('.', 0);
 		};
-		$("#playback-controls-panel").append(connectButton);
+		$("#userid-row").append(connectButton);
 		$("#connectButton").css("font-size", "14px");
+		$("#connectButton").css("padding-left", "20px");
+		$("#connectButton").css("padding-right", "20px");
+		$("#connectButton").css("width", "15%");
 	} else {
 		tryConnect('.', 0);
 	}
