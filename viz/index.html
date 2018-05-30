@@ -47,11 +47,7 @@
 				<div id="scaii-interface-title" class="bg" >Small Configurable AI Interface</div>
 			</div>-->
 			<div id="game-titled-container" class="titled-container grid r0c0 bg">
-                <div id="userid-row" class="r0c0_1 flex-row">
-                    <div id="userid-prompt" class="user-prompt" style="font-family:Arial;width:30%">Step 1: enter userID</div>
-                    <input id="userid-text" style="font-family:Arial;font-size:16px; width:25%"></select>
-                    <div id="start-prompt" class="user-prompt" style="font-family:Arial;width:30%">Step 2: click "Start"</div>
-                </div>
+                
 				<div id="title-row" class="r1c0_1 flex-row">
 					<div id="scaii-acronym" style="font-family:Arial;">XAI  xACT</div>
 					<div id="game-replay-title" style="font-family:Arial;">replaying game file:</div>
@@ -69,8 +65,19 @@
 				<div id="game-row" class="flex-row r2c0_1">
 					<div id="reward-Values-panel" class="flex-column">
 						<!--<div id="cumulative-rewards-title" class="grid bg" style="text-align:center;margin-left:30px;margin-top:30px;width:200px;font-family:Arial;font-size:16px;">Cumulative Rewards</div>-->
-						<div id="cumulative-rewards" class="grid bg" style="margin-left:30px;margin-top:10px;width:200px;height:125px"></div>
-					</div>
+						<div id="cumulative-rewards" class="grid bg" style="margin-left:30px;margin-top:10px;width:250px;height:125px"></div>
+                        <div id="q-and-a-div" class="flex-column">
+                            <div id="userid-row" class="flex-row">
+                                <div id="userid-prompt" class="user-prompt" style="font-family:Arial; width:40%">Step 1: enter userID</div>
+                                <input id="userid-text" style="font-family:Arial;font-size:16px;width:60%"></select>
+                            </div>
+                            <div id="next-question-row" class="flex-row">
+                                <div id="next-question-spacer-left" style="width:35%"></div>
+                                <input type="button" id="next-question-button" value="next question" style="font-family:Arial; width:30%; margin-top:8px;"></input>
+                                <div id="next-question-spacer-right" style="width:35%"></div>
+                            </div>
+                        </div>
+                    </div>
 					<div id="scaii-gameboard" class="grid-center bg"></div>
 				</div>
 				

@@ -59,7 +59,7 @@ var main = function () {
 		connectButton.onclick = function () {
 			tryConnect('.', 0);
 		};
-		$("#userid-row").append(connectButton);
+		$("#playback-controls-panel").append(connectButton);
 		$("#connectButton").css("font-size", "14px");
 		$("#connectButton").css("padding-left", "20px");
 		$("#connectButton").css("padding-right", "20px");
