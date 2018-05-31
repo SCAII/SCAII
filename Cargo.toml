@@ -11,3 +11,4 @@ lto = true
 
 [patch.crates-io]
 specs = {git="https://github.com/LinearZoetrope/specs", branch="saveload-tweak"}
+specs-derive = {git="https://github.com/LinearZoetrope/specs", branch="saveload-tweak"}
