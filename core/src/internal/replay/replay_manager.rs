@@ -3,7 +3,7 @@ use protos::endpoint::Endpoint;
 use protos::user_command::UserCommandType;
 use protos::{
     scaii_packet, ExplanationPoint, ModuleEndpoint, MultiMessage, RecorderConfig, ReplayControl,
-    ReplayEndpoint, ScaiiPacket,
+    ReplayEndpoint, ScaiiPacket, StudyQuestions,
 };
 use scaii_core::{Environment, ReplayAction, ReplayHeader, SerializedProtosScaiiPacket};
 use scaii_defs::protos;
@@ -62,7 +62,7 @@ impl ReplayManager {
         self.run_and_poll()
     }
 
-    fn load_selected_replay_file(&mut self, filename: String) -> Result<(), Box<Error>> {
+    fn load_selected_replay_file(&mut self, filename: &String) -> Result<(), Box<Error>> {
         use super::{explanations, replay_util, ReplayError};
         use scaii_core;
         use std::path::PathBuf;
@@ -288,6 +288,7 @@ impl ReplayManager {
     fn execute_poll_step(&mut self, mut game_state: GameState) -> Result<GameState, Box<Error>> {
         use super::test_util;
         use scaii_defs;
+        use super::study_util;
         let scaii_pkts: Vec<ScaiiPacket> = self.poll_viz()?;
         for scaii_pkt in &scaii_pkts {
             if scaii_defs::protos::is_user_command_pkt(scaii_pkt) {
@@ -309,7 +310,13 @@ impl ReplayManager {
                         let filename: String = user_command_args[0].clone();
                         println!("load file {}!", filename);
                         game_state = GameState::AwaitingUserPlayRequest;
-                        self.load_selected_replay_file(filename)?;
+                        self.load_selected_replay_file(&filename)?;
+                        let study_questions : Option<StudyQuestions> =  study_util::get_questions_for_replay(&filename)?;
+                        if study_questions != None {
+                            let study_questions_pkt = pkt_util::get_study_questions_pkt(study_questions.unwrap());
+                            self.send_pkt_to_viz(study_questions_pkt)?;
+                        }
+                        
                     }
                     UserCommandType::Explain => {
                         println!(

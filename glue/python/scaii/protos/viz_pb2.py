@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='viz.proto',
   package='scaii.common',
   syntax='proto2',
-  serialized_pb=_b('\n\tviz.proto\x12\x0cscaii.common\"\xaf\x01\n\x07VizInit\x12\x11\n\ttest_mode\x18\x01 \x01(\x08\x12\x12\n\nstep_count\x18\x02 \x01(\x03\x12\x17\n\x0fgameboard_width\x18\x03 \x01(\r\x12\x18\n\x10gameboard_height\x18\x04 \x01(\r\x12\x34\n\x0c\x65xplanations\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ExplanationPoint\x12\x14\n\x0creward_types\x18\x06 \x03(\t\"O\n\x11\x45xplanationPoints\x12:\n\x12\x65xplanation_points\x18\x01 \x03(\x0b\x32\x1e.scaii.common.ExplanationPoint\"\xa5\x01\n\x10\x45xplanationPoint\x12\x0c\n\x04step\x18\x01 \x01(\r\x12\n\n\x02id\x18\x02 \x01(\r\x12\r\n\x05title\x18\x03 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x04 \x01(\t\x12(\n\x08saliency\x18\x05 \x01(\x0b\x32\x16.scaii.common.Saliency\x12)\n\tbar_chart\x18\x06 \x01(\x0b\x32\x16.scaii.common.BarChart\"C\n\x05Layer\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05\x63\x65lls\x18\x02 \x03(\x01\x12\r\n\x05width\x18\x03 \x01(\r\x12\x0e\n\x06height\x18\x04 \x01(\r\"-\n\x06Layers\x12#\n\x06layers\x18\x01 \x03(\x0b\x32\x13.scaii.common.Layer\"\x93\x01\n\x08Saliency\x12=\n\x0csaliency_map\x18\x01 \x03(\x0b\x32\'.scaii.common.Saliency.SaliencyMapEntry\x1aH\n\x10SaliencyMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12#\n\x05value\x18\x02 \x01(\x0b\x32\x14.scaii.common.Layers:\x02\x38\x01\"c\n\x08\x42\x61rChart\x12&\n\x06groups\x18\x01 \x03(\x0b\x32\x16.scaii.common.BarGroup\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0f\n\x07v_title\x18\x03 \x01(\t\x12\x0f\n\x07h_title\x18\x04 \x01(\t\"]\n\x08\x42\x61rGroup\x12\r\n\x05value\x18\x01 \x01(\x01\x12\x1f\n\x04\x62\x61rs\x18\x02 \x03(\x0b\x32\x11.scaii.common.Bar\x12\x13\n\x0bsaliency_id\x18\x03 \x01(\t\x12\x0c\n\x04name\x18\x04 \x01(\t\"7\n\x03\x42\x61r\x12\r\n\x05value\x18\x01 \x02(\x01\x12\x13\n\x0bsaliency_id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\"\xad\x01\n\x03Viz\x12&\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\x14.scaii.common.Entity\x12\x44\n\x12\x63umulative_rewards\x18\x02 \x03(\x0b\x32(.scaii.common.Viz.CumulativeRewardsEntry\x1a\x38\n\x16\x43umulativeRewardsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\xb0\x01\n\tChartInfo\x12\x13\n\x0b\x63hart_title\x18\x01 \x01(\t\x12\x14\n\x0ch_axis_title\x18\x02 \x01(\t\x12\x14\n\x0cv_axis_title\x18\x03 \x01(\t\x12+\n\x07\x61\x63tions\x18\x04 \x01(\x0b\x32\x1a.scaii.common.ChartActions\x12\x35\n\rvalue_vectors\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ChartValueVector\";\n\x0c\x43hartActions\x12\x15\n\ractions_label\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63tion_names\x18\x02 \x03(\t\"8\n\x10\x43hartValueVector\x12\r\n\x05label\x18\x01 \x01(\t\x12\x15\n\raction_values\x18\x02 \x03(\x01\"\xc8\x06\n\x06\x45ntity\x12\n\n\x02id\x18\x01 \x02(\x04\x12\x1e\n\x03pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12#\n\x06shapes\x18\x03 \x03(\x0b\x32\x13.scaii.common.Shape\x12\x0e\n\x06\x64\x65lete\x18\x04 \x02(\x08\x12@\n\x0estringMetadata\x18\x05 \x03(\x0b\x32(.scaii.common.Entity.StringMetadataEntry\x12H\n\x12\x62oolStringMetadata\x18\x06 \x03(\x0b\x32,.scaii.common.Entity.BoolStringMetadataEntry\x12J\n\x13\x66loatStringMetadata\x18\x07 \x03(\x0b\x32-.scaii.common.Entity.FloatStringMetadataEntry\x12:\n\x0bintMetadata\x18\x08 \x03(\x0b\x32%.scaii.common.Entity.IntMetadataEntry\x12<\n\x0c\x62oolMetadata\x18\t \x03(\x0b\x32&.scaii.common.Entity.BoolMetadataEntry\x12>\n\rfloatMetadata\x18\n \x03(\x0b\x32\'.scaii.common.Entity.FloatMetadataEntry\x1a\x35\n\x13StringMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x1a\x39\n\x17\x42oolStringMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x1a:\n\x18\x46loatStringMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x1a\x32\n\x10IntMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x03:\x02\x38\x01\x1a\x33\n\x11\x42oolMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x08:\x02\x38\x01\x1a\x34\n\x12\x46loatMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x02:\x02\x38\x01\"\x1b\n\x03Pos\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\"3\n\x05\x43olor\x12\t\n\x01r\x18\x01 \x02(\r\x12\t\n\x01g\x18\x02 \x02(\r\x12\t\n\x01\x62\x18\x03 \x02(\r\x12\t\n\x01\x61\x18\x04 \x02(\r\"\x1c\n\x08Triangle\x12\x10\n\x08\x62\x61se_len\x18\x01 \x01(\x01\"%\n\x04Rect\x12\r\n\x05width\x18\x01 \x01(\x01\x12\x0e\n\x06height\x18\x02 \x01(\x01\"\x88\x02\n\x05Shape\x12\n\n\x02id\x18\x01 \x02(\x04\x12\'\n\x0crelative_pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12\"\n\x05\x63olor\x18\x03 \x01(\x0b\x32\x13.scaii.common.Color\x12\x10\n\x08rotation\x18\x04 \x02(\x01\x12 \n\x04rect\x18\x14 \x01(\x0b\x32\x12.scaii.common.Rect\x12(\n\x08triangle\x18\x15 \x01(\x0b\x32\x16.scaii.common.Triangle\x12\x0b\n\x03tag\x18\x16 \x01(\t\x12+\n\x0egradient_color\x18\x17 \x01(\x0b\x32\x13.scaii.common.Color\x12\x0e\n\x06\x64\x65lete\x18( \x02(\x08')
+  serialized_pb=_b('\n\tviz.proto\x12\x0cscaii.common\"\xaf\x01\n\x07VizInit\x12\x11\n\ttest_mode\x18\x01 \x01(\x08\x12\x12\n\nstep_count\x18\x02 \x01(\x03\x12\x17\n\x0fgameboard_width\x18\x03 \x01(\r\x12\x18\n\x10gameboard_height\x18\x04 \x01(\r\x12\x34\n\x0c\x65xplanations\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ExplanationPoint\x12\x14\n\x0creward_types\x18\x06 \x03(\t\"O\n\x11\x45xplanationPoints\x12:\n\x12\x65xplanation_points\x18\x01 \x03(\x0b\x32\x1e.scaii.common.ExplanationPoint\"\xa5\x01\n\x10\x45xplanationPoint\x12\x0c\n\x04step\x18\x01 \x01(\r\x12\n\n\x02id\x18\x02 \x01(\r\x12\r\n\x05title\x18\x03 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x04 \x01(\t\x12(\n\x08saliency\x18\x05 \x01(\x0b\x32\x16.scaii.common.Saliency\x12)\n\tbar_chart\x18\x06 \x01(\x0b\x32\x16.scaii.common.BarChart\"C\n\x05Layer\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05\x63\x65lls\x18\x02 \x03(\x01\x12\r\n\x05width\x18\x03 \x01(\r\x12\x0e\n\x06height\x18\x04 \x01(\r\"-\n\x06Layers\x12#\n\x06layers\x18\x01 \x03(\x0b\x32\x13.scaii.common.Layer\"\x93\x01\n\x08Saliency\x12=\n\x0csaliency_map\x18\x01 \x03(\x0b\x32\'.scaii.common.Saliency.SaliencyMapEntry\x1aH\n\x10SaliencyMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12#\n\x05value\x18\x02 \x01(\x0b\x32\x14.scaii.common.Layers:\x02\x38\x01\"c\n\x08\x42\x61rChart\x12&\n\x06groups\x18\x01 \x03(\x0b\x32\x16.scaii.common.BarGroup\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0f\n\x07v_title\x18\x03 \x01(\t\x12\x0f\n\x07h_title\x18\x04 \x01(\t\"]\n\x08\x42\x61rGroup\x12\r\n\x05value\x18\x01 \x01(\x01\x12\x1f\n\x04\x62\x61rs\x18\x02 \x03(\x0b\x32\x11.scaii.common.Bar\x12\x13\n\x0bsaliency_id\x18\x03 \x01(\t\x12\x0c\n\x04name\x18\x04 \x01(\t\"7\n\x03\x42\x61r\x12\r\n\x05value\x18\x01 \x02(\x01\x12\x13\n\x0bsaliency_id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\"\xad\x01\n\x03Viz\x12&\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\x14.scaii.common.Entity\x12\x44\n\x12\x63umulative_rewards\x18\x02 \x03(\x0b\x32(.scaii.common.Viz.CumulativeRewardsEntry\x1a\x38\n\x16\x43umulativeRewardsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\xb0\x01\n\tChartInfo\x12\x13\n\x0b\x63hart_title\x18\x01 \x01(\t\x12\x14\n\x0ch_axis_title\x18\x02 \x01(\t\x12\x14\n\x0cv_axis_title\x18\x03 \x01(\t\x12+\n\x07\x61\x63tions\x18\x04 \x01(\x0b\x32\x1a.scaii.common.ChartActions\x12\x35\n\rvalue_vectors\x18\x05 \x03(\x0b\x32\x1e.scaii.common.ChartValueVector\";\n\x0c\x43hartActions\x12\x15\n\ractions_label\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63tion_names\x18\x02 \x03(\t\"8\n\x10\x43hartValueVector\x12\r\n\x05label\x18\x01 \x01(\t\x12\x15\n\raction_values\x18\x02 \x03(\x01\"\xc8\x06\n\x06\x45ntity\x12\n\n\x02id\x18\x01 \x02(\x04\x12\x1e\n\x03pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12#\n\x06shapes\x18\x03 \x03(\x0b\x32\x13.scaii.common.Shape\x12\x0e\n\x06\x64\x65lete\x18\x04 \x02(\x08\x12@\n\x0estringMetadata\x18\x05 \x03(\x0b\x32(.scaii.common.Entity.StringMetadataEntry\x12H\n\x12\x62oolStringMetadata\x18\x06 \x03(\x0b\x32,.scaii.common.Entity.BoolStringMetadataEntry\x12J\n\x13\x66loatStringMetadata\x18\x07 \x03(\x0b\x32-.scaii.common.Entity.FloatStringMetadataEntry\x12:\n\x0bintMetadata\x18\x08 \x03(\x0b\x32%.scaii.common.Entity.IntMetadataEntry\x12<\n\x0c\x62oolMetadata\x18\t \x03(\x0b\x32&.scaii.common.Entity.BoolMetadataEntry\x12>\n\rfloatMetadata\x18\n \x03(\x0b\x32\'.scaii.common.Entity.FloatMetadataEntry\x1a\x35\n\x13StringMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x1a\x39\n\x17\x42oolStringMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x1a:\n\x18\x46loatStringMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x1a\x32\n\x10IntMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x03:\x02\x38\x01\x1a\x33\n\x11\x42oolMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x08:\x02\x38\x01\x1a\x34\n\x12\x46loatMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x02:\x02\x38\x01\"\x1b\n\x03Pos\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\"3\n\x05\x43olor\x12\t\n\x01r\x18\x01 \x02(\r\x12\t\n\x01g\x18\x02 \x02(\r\x12\t\n\x01\x62\x18\x03 \x02(\r\x12\t\n\x01\x61\x18\x04 \x02(\r\"\x1c\n\x08Triangle\x12\x10\n\x08\x62\x61se_len\x18\x01 \x01(\x01\"%\n\x04Rect\x12\r\n\x05width\x18\x01 \x01(\x01\x12\x0e\n\x06height\x18\x02 \x01(\x01\"\x88\x02\n\x05Shape\x12\n\n\x02id\x18\x01 \x02(\x04\x12\'\n\x0crelative_pos\x18\x02 \x01(\x0b\x32\x11.scaii.common.Pos\x12\"\n\x05\x63olor\x18\x03 \x01(\x0b\x32\x13.scaii.common.Color\x12\x10\n\x08rotation\x18\x04 \x02(\x01\x12 \n\x04rect\x18\x14 \x01(\x0b\x32\x12.scaii.common.Rect\x12(\n\x08triangle\x18\x15 \x01(\x0b\x32\x16.scaii.common.Triangle\x12\x0b\n\x03tag\x18\x16 \x01(\t\x12+\n\x0egradient_color\x18\x17 \x01(\x0b\x32\x13.scaii.common.Color\x12\x0e\n\x06\x64\x65lete\x18( \x02(\x08\"F\n\x0eStudyQuestions\x12\x34\n\x0fstudy_questions\x18\x01 \x03(\x0b\x32\x1b.scaii.common.StudyQuestion\"@\n\rStudyQuestion\x12\x0c\n\x04step\x18\x01 \x02(\t\x12\x10\n\x08question\x18\x02 \x02(\t\x12\x0f\n\x07\x61nswers\x18\x03 \x03(\t')
 )
 
 
@@ -1259,6 +1259,82 @@ _SHAPE = _descriptor.Descriptor(
   serialized_end=2706,
 )
 
+
+_STUDYQUESTIONS = _descriptor.Descriptor(
+  name='StudyQuestions',
+  full_name='scaii.common.StudyQuestions',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='study_questions', full_name='scaii.common.StudyQuestions.study_questions', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2708,
+  serialized_end=2778,
+)
+
+
+_STUDYQUESTION = _descriptor.Descriptor(
+  name='StudyQuestion',
+  full_name='scaii.common.StudyQuestion',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='step', full_name='scaii.common.StudyQuestion.step', index=0,
+      number=1, type=9, cpp_type=9, label=2,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='question', full_name='scaii.common.StudyQuestion.question', index=1,
+      number=2, type=9, cpp_type=9, label=2,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='answers', full_name='scaii.common.StudyQuestion.answers', index=2,
+      number=3, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2780,
+  serialized_end=2844,
+)
+
 _VIZINIT.fields_by_name['explanations'].message_type = _EXPLANATIONPOINT
 _EXPLANATIONPOINTS.fields_by_name['explanation_points'].message_type = _EXPLANATIONPOINT
 _EXPLANATIONPOINT.fields_by_name['saliency'].message_type = _SALIENCY
@@ -1293,6 +1369,7 @@ _SHAPE.fields_by_name['color'].message_type = _COLOR
 _SHAPE.fields_by_name['rect'].message_type = _RECT
 _SHAPE.fields_by_name['triangle'].message_type = _TRIANGLE
 _SHAPE.fields_by_name['gradient_color'].message_type = _COLOR
+_STUDYQUESTIONS.fields_by_name['study_questions'].message_type = _STUDYQUESTION
 DESCRIPTOR.message_types_by_name['VizInit'] = _VIZINIT
 DESCRIPTOR.message_types_by_name['ExplanationPoints'] = _EXPLANATIONPOINTS
 DESCRIPTOR.message_types_by_name['ExplanationPoint'] = _EXPLANATIONPOINT
@@ -1312,6 +1389,8 @@ DESCRIPTOR.message_types_by_name['Color'] = _COLOR
 DESCRIPTOR.message_types_by_name['Triangle'] = _TRIANGLE
 DESCRIPTOR.message_types_by_name['Rect'] = _RECT
 DESCRIPTOR.message_types_by_name['Shape'] = _SHAPE
+DESCRIPTOR.message_types_by_name['StudyQuestions'] = _STUDYQUESTIONS
+DESCRIPTOR.message_types_by_name['StudyQuestion'] = _STUDYQUESTION
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 VizInit = _reflection.GeneratedProtocolMessageType('VizInit', (_message.Message,), dict(
@@ -1510,6 +1589,20 @@ Shape = _reflection.GeneratedProtocolMessageType('Shape', (_message.Message,), d
   # @@protoc_insertion_point(class_scope:scaii.common.Shape)
   ))
 _sym_db.RegisterMessage(Shape)
+
+StudyQuestions = _reflection.GeneratedProtocolMessageType('StudyQuestions', (_message.Message,), dict(
+  DESCRIPTOR = _STUDYQUESTIONS,
+  __module__ = 'viz_pb2'
+  # @@protoc_insertion_point(class_scope:scaii.common.StudyQuestions)
+  ))
+_sym_db.RegisterMessage(StudyQuestions)
+
+StudyQuestion = _reflection.GeneratedProtocolMessageType('StudyQuestion', (_message.Message,), dict(
+  DESCRIPTOR = _STUDYQUESTION,
+  __module__ = 'viz_pb2'
+  # @@protoc_insertion_point(class_scope:scaii.common.StudyQuestion)
+  ))
+_sym_db.RegisterMessage(StudyQuestion)
 
 
 _SALIENCY_SALIENCYMAPENTRY.has_options = True

@@ -30,6 +30,7 @@ mod replay_util;
 use replay_sequencer::ReplaySequencer;
 mod explanations;
 use explanations::Explanations;
+mod study_util;
 
 #[cfg(test)]
 mod test;

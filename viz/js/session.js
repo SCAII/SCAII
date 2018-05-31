@@ -283,7 +283,10 @@ function handleScaiiPacket(sPacket) {
 		//console.log("-----got replayCOntrol");
 		var replayControl = sPacket.getReplayControl();
 		handleReplayControl(replayControl);
-	}
+    }
+    else if(sPacket.hasStudyQuestions()) {
+        console.log("got studyQuestions!!!");
+    }
 	else if (sPacket.hasErr()) {
 		console.log("-----got errorPkt");
 		console.log(sPacket.getErr().getDescription())

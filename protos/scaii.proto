@@ -51,6 +51,7 @@ message ScaiiPacket {
 		ExplanationDetails expl_details = 23;
 		ReplayControl replay_control = 24;
 		ReplayChoiceConfig replay_choice_config = 25;
+        StudyQuestions study_questions = 26;
 		Other other = 29;
 	}
 

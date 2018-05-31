@@ -198,3 +198,13 @@ message Shape {
 	required bool delete = 40;
 
 }
+
+message StudyQuestions {
+    repeated StudyQuestion study_questions = 1;
+}
+
+message StudyQuestion {
+    required string step = 1;
+    required string question = 2;
+    repeated string answers = 3;
+}
