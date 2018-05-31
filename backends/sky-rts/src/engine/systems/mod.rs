@@ -16,6 +16,6 @@ pub use self::input::InputSystem;
 pub use self::lua::LuaSystem;
 pub use self::movement::MoveSystem;
 pub use self::proto_render::RenderSystem;
-pub use self::serde::{DeserializeSystem, SerializeSystem};
+pub(crate) use self::serde::{DeserializeSystem, SerializeSystem};
 pub use self::spawn::SpawnSystem;
 pub use self::state::StateBuildSystem;

@@ -1149,7 +1149,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "specs"
 version = "0.12.0"
-source = "git+https://github.com/LinearZoetrope/specs?branch=saveload-tweak#87ebf154cdd4bc370b59514bd6de1b875d1c3094"
+source = "git+https://github.com/LinearZoetrope/specs?branch=saveload-tweak#faaa5559b9865eedde7d8523e0100d8ccb5751b5"
 dependencies = [
  "crossbeam 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "derivative 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1168,7 +1168,7 @@ dependencies = [
 [[package]]
 name = "specs-derive"
 version = "0.2.0"
-source = "git+https://github.com/LinearZoetrope/specs?branch=saveload-tweak#87ebf154cdd4bc370b59514bd6de1b875d1c3094"
+source = "git+https://github.com/LinearZoetrope/specs?branch=saveload-tweak#faaa5559b9865eedde7d8523e0100d8ccb5751b5"
 dependencies = [
  "quote 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "syn 0.12.15 (registry+https://github.com/rust-lang/crates.io-index)",

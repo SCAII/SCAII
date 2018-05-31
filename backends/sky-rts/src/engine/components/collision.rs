@@ -63,7 +63,8 @@ pub struct ContactStates(pub Vec<ContactState>);
 
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(bound = "")]
-struct ContactStatesData<M: Marker>(Vec<ContactStateSaveloadData<M>>);
+#[doc(hidden)]
+pub struct ContactStatesData<M: Marker>(Vec<ContactStateSaveloadData<M>>);
 
 impl<M: Marker + Serialize> IntoSerialize<M> for ContactStates {
     type Data = ContactStatesData<M>;

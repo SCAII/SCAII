@@ -1,11 +1,12 @@
-mod component_impls;
+#[doc(hidden)]
+pub mod component_impls;
 pub mod de;
 pub mod de_collision;
 pub mod ser;
 
-pub use self::de::DeserializeSystem;
-pub use self::de_collision::RedoCollisionSys;
-pub use self::ser::SerializeSystem;
+pub(crate) use self::de::DeserializeSystem;
+pub(crate) use self::de_collision::RedoCollisionSys;
+pub(crate) use self::ser::SerializeSystem;
 
 use specs::prelude::*;
 
@@ -37,8 +38,7 @@ saveload_components!{
     ],
     De,
     Ser,
-    Data,
-    ::
+    Data
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]

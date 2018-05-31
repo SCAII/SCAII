@@ -13,7 +13,7 @@ use std::collections::BTreeMap;
 /* ---- Impls for Sensors ---- */
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
-struct SensorsData<M>(BTreeMap<SensorType, M>);
+pub struct SensorsData<M>(BTreeMap<SensorType, M>);
 
 impl<M: Marker + Serialize> IntoSerialize<M> for Sensors {
     type Data = SensorsData<M>;
