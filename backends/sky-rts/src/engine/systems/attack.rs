@@ -164,8 +164,6 @@ mod tests {
         let max_hp: f64 = 100.0;
 
         let mut world = World::new();
-        components::register_world_components(&mut world);
-        resources::register_world_resources(&mut world);
         let mut test_unit_type_map = UnitTypeMap::default();
         let mut units: HashMap<String, usize> = HashMap::new();
         let mut unit_types: HashMap<String, UnitType> = HashMap::new();

@@ -16,89 +16,40 @@ use engine::components::{
 use engine::resources::{CumReward, DataStore, LuaPath, SpawnBuffer, Terminal, WorldRng};
 use rand::Isaac64Rng;
 
-macro_rules! serde_comp {
-    ( $( $x:ty ),* ) => {
-        #[derive(SystemData)]
-        struct SerComponents<'a>(
-            $(ReadStorage<'a, $x>,)*
-        );
-
-        #[derive(SystemData)]
-        struct DeserComponents<'a>(
-            $(WriteStorage<'a, $x>,)*
-        );
-    };
+saveload_components!{
+    [
+        Speed,
+        Movable,
+        Move,
+        Pos,
+        Hp,
+        Color,
+        Shape,
+        FactionId,
+        Attack,
+        UnitTypeTag,
+        DataStoreComponent,
+        ContactStates,
+        Sensors,
+        SensorType,
+        SensorRadius,
+        Owner
+    ],
+    De,
+    Ser,
+    Data,
+    ::
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 struct SerTarget {
-    components: Vec<u8>,
-    lua_path: LuaPath,
     rng: WorldRng,
     terminal: Terminal,
-    #[serde(default)]
-    spawns: SpawnBuffer,
-    #[serde(default)]
-    cum_reward: CumReward,
-    #[serde(default)]
+    lua_path: LuaPath,
     lua_data: DataStore,
+    cum_reward: CumReward,
+    spawns: SpawnBuffer,
+    components: Vec<u8>,
 }
 
-serde_comp!(
-    Speed,
-    Movable,
-    Move,
-    Pos,
-    Hp,
-    Color,
-    Shape,
-    FactionId,
-    Attack,
-    UnitTypeTag,
-    DataStoreComponent,
-    ContactStates,
-    Sensors,
-    SensorType,
-    SensorRadius,
-    Owner
-);
-
-// #[derive(SystemData)]
-// struct SerComponents<'a>(
-//     ReadStorage<'a, Speed>,
-//     ReadStorage<'a, Movable>,
-//     ReadStorage<'a, Move>,
-//     ReadStorage<'a, Pos>,
-//     ReadStorage<'a, Hp>,
-//     ReadStorage<'a, Color>,
-//     ReadStorage<'a, Shape>,
-//     ReadStorage<'a, FactionId>,
-//     ReadStorage<'a, Attack>,
-//     ReadStorage<'a, UnitTypeTag>,
-//     ReadStorage<'a, DataStoreComponent>,
-//     ReadStorage<'a, ContactStates>,
-//     ReadStorage<'a, Sensors>,
-//     ReadStorage<'a, SensorType>,
-//     ReadStorage<'a, SensorRadius>,
-//     ReadStorage<'a, Owner>,
-// );
-
-// #[derive(SystemData)]
-// struct DeserComponents<'a>(
-//     WriteStorage<'a, Speed>,
-//     WriteStorage<'a, Movable>,
-//     WriteStorage<'a, Move>,
-//     WriteStorage<'a, Pos>,
-//     WriteStorage<'a, Hp>,
-//     WriteStorage<'a, Color>,
-//     WriteStorage<'a, Shape>,
-//     WriteStorage<'a, FactionId>,
-//     WriteStorage<'a, Attack>,
-//     WriteStorage<'a, UnitTypeTag>,
-//     WriteStorage<'a, DataStoreComponent>,
-//     WriteStorage<'a, ContactStates>,
-//     WriteStorage<'a, Sensors>,
-//     WriteStorage<'a, SensorType>,
-//     WriteStorage<'a, SensorRadius>,
-//     WriteStorage<'a, Owner>,
-// );
+use self::saveload_generated::{De, Ser};

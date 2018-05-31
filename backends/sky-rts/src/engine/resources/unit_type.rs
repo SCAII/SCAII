@@ -61,7 +61,7 @@ impl UnitType {
             components::{sensor, FactionId, Hp, Movable, SensorType, Sensors, Speed, UnitTypeTag},
             resources::PLAYER_COLORS,
         };
-        use specs::saveload::U64Marker;
+        use specs::saveload::{MarkedBuilder, U64Marker};
 
         let color = PLAYER_COLORS[faction];
 

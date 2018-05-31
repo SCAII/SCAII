@@ -175,7 +175,7 @@ pub struct FactionId(pub usize);
 #[storage(VecStorage)]
 pub struct UnitTypeTag(pub String);
 
-#[derive(Clone, PartialEq, Debug, Component)]
+#[derive(Clone, PartialEq, Debug, Component, Saveload)]
 #[storage(HashMapStorage)]
 pub struct Attack {
     pub target: Entity,
@@ -201,6 +201,6 @@ pub struct Spawned;
 #[storage(VecStorage)]
 pub struct DataStoreComponent(pub DataStore);
 
-#[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Component)]
+#[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Component, Saveload)]
 #[storage(HashMapStorage)]
 pub struct Owner(pub Entity);

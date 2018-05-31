@@ -189,8 +189,6 @@ mod tests {
         use scaii_defs::protos::Triangle as ScaiiTriangle;
 
         let mut world = World::new();
-        components::register_world_components(&mut world);
-        resources::register_world_resources(&mut world);
 
         let test_target = world
             .create_entity()

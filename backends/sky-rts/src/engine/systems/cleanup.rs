@@ -111,8 +111,6 @@ mod tests {
         use engine::{components, resources};
 
         let mut world = World::new();
-        components::register_world_components(&mut world);
-        resources::register_world_resources(&mut world);
 
         let test_player = world
             .create_entity()

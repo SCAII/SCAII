@@ -8,15 +8,11 @@ use engine::resources::{
     CumReward, DataStore, LuaPath, SerializeBytes, SpawnBuffer, Terminal, WorldRng,
 };
 
-use super::DeserComponents;
+use super::De;
 
 #[derive(SystemData)]
 pub struct DeserializeSystemData<'a> {
-    entities: Entities<'a>,
-    markers: WriteStorage<'a, U64Marker>,
-    alloc: Write<'a, U64MarkerAllocator>,
-
-    components: DeserComponents<'a>,
+    de: De<'a, U64Marker, U64MarkerAllocator>,
 
     rng: Write<'a, WorldRng>,
     lua_path: Write<'a, LuaPath>,
@@ -48,10 +44,10 @@ impl<'a> System<'a> for DeserializeSystem {
         let mut de = Deserializer::new(SliceRead::new(&tar.components));
 
         DeserializeComponents::deserialize(
-            &mut world.components,
-            &*world.entities,
-            &mut world.markers,
-            &mut *world.alloc,
+            &mut world.de.components,
+            &*world.de.entities,
+            &mut world.de.markers,
+            &mut world.de.alloc,
             &mut de,
         );
         de.end().unwrap();
@@ -63,6 +59,6 @@ impl<'a> System<'a> for DeserializeSystem {
         *world.cum_reward = tar.cum_reward;
         *world.lua_data = tar.lua_data;
 
-        world.markers.clear();
+        world.de.markers.clear();
     }
 }

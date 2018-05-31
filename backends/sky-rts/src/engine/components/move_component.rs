@@ -22,13 +22,13 @@ pub enum MoveBehavior {
     Straight,
 }
 
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug, Saveload)]
 pub enum MoveTarget {
     Ground(Pos),
     AttackUnit(Entity),
 }
 
-#[derive(Component, Copy, Clone, PartialEq, Debug)]
+#[derive(Component, Copy, Clone, PartialEq, Debug, Saveload)]
 #[storage(HashMapStorage)]
 pub struct Move {
     pub behavior: MoveBehavior,

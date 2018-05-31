@@ -136,9 +136,6 @@ mod tests {
         use protos::{ActionList, AttackUnit, UnitAction};
         let mut world = World::new();
 
-        components::register_world_components(&mut world);
-        resources::register_world_resources(&mut world);
-
         let test_player = world.create_entity().with(Movable(0)).build();
 
         let test_target = world.create_entity().build();

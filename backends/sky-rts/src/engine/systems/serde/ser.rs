@@ -1,21 +1,17 @@
 use specs::prelude::*;
 // use specs::error::NoError;
-use specs::saveload::{U64Marker, WorldSerialize};
+use specs::saveload::{SerializeComponents, U64Marker};
 
 use specs::error::NoError;
 
-use super::SerComponents;
+use super::{Ser, SerTarget};
 use engine::resources::{
     CumReward, DataStore, LuaPath, SerializeBytes, SpawnBuffer, Terminal, WorldRng,
 };
 
 #[derive(SystemData)]
 pub struct SerializeSystemData<'a> {
-    entities: Entities<'a>,
-    markers: WriteStorage<'a, U64Marker>,
-    alloc: Write<'a, U64MarkerAllocator>,
-
-    components: DeserComponents<'a>,
+    ser: Ser<'a, U64Marker>,
 
     rng: Write<'a, WorldRng>,
     lua_path: Read<'a, LuaPath>,
@@ -33,7 +29,6 @@ impl<'a> System<'a> for SerializeSystem {
     type SystemData = SerializeSystemData<'a>;
 
     fn run(&mut self, mut world: Self::SystemData) {
-        use super::SerTarget;
         use serde::Serialize;
         use serde_cbor::Serializer;
 
@@ -42,10 +37,13 @@ impl<'a> System<'a> for SerializeSystem {
         out.clear();
 
         let mut tar = Serializer::new(vec![]);
-        world
-            .components
-            .serialize(&*world.entities, &mut world.markers, &mut *world.alloc)
-            .expect("Could not serialize components");
+        SerializeComponents::serialize(
+            &world.ser.components,
+            &*world.ser.entities,
+            &world.ser.markers,
+            &mut tar,
+        );
+
         let tar = tar.into_inner();
 
         let tar = SerTarget {

@@ -15,6 +15,8 @@ pub enum SensorType {
 }
 
 pub fn build_attack_sensor(world: &mut World, owner: Entity, radius: f64) -> Entity {
+    use specs::saveload::MarkedBuilder;
+
     use super::Owner;
     use specs::saveload::U64Marker;
     let entity = world
