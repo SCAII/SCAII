@@ -817,6 +817,8 @@ function showExplanationRewardInfo(stepNumber) {
 	}
 }
 
+var explanationPointBigDiamondHalfWidth = 22;
+var explanationPointSmallDiamondHalfWidth = 16;
 function configureExplanationSelectorDiamond(uiIndex,step){
 	var widthOfTimeline = expl_ctrl_canvas.width - 2*timelineMargin;
 	var value = sessionIndexManager.getPercentIntoGameForStep(step);
@@ -830,8 +832,8 @@ function configureExplanationSelectorDiamond(uiIndex,step){
 	if (currentStep == step) {
 		showingDecisionNumber = uiIndex;
 		ctx.font = "16px Arial bold";
-		halfWidth = 22;
-		halfHeight = 22;
+		halfWidth = explanationPointBigDiamondHalfWidth;
+		halfHeight = explanationPointBigDiamondHalfWidth;
 		var yPositionOfWhyButton = -14;// relative to the next container below
 		var xPositionOfWhyButton = x - 20;
 		addWhyButtonForAction(step, xPositionOfWhyButton,  yPositionOfWhyButton);
@@ -849,8 +851,8 @@ function configureExplanationSelectorDiamond(uiIndex,step){
 	}
 	else {
 		ctx.font = "12px Arial bold";
-		halfWidth = 16;
-		halfHeight = 16;
+		halfWidth = explanationPointSmallDiamondHalfWidth;
+		halfHeight = explanationPointSmallDiamondHalfWidth;
 		unboldThisStepInLegend(step);
 	}
 	

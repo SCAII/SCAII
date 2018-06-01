@@ -3,7 +3,7 @@ var replaySessionConfig;
 var replayChoiceConfig;
 var selectedExplanationStep = undefined;
 var sessionIndexManager = undefined;
-
+var studyQuestionManager = undefined;
 
 // ToDo - when strat jump- turn off incrementing index until receive set position.  Unblock incrementing on jump complete
 // then it will be apparent if we need to correct for ReplaySequencer's index pointing to next-packet-to-send rather than 
@@ -79,6 +79,10 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, progressWidth)
 	}
 	sim.getCurrentIndex = function() {
 		return this.replaySequencerIndex;
+    }
+    
+	sim.getMaxIndex = function() {
+		return this.replaySequencerMaxIndex;
 	}
 
 	sim.incrementReplaySequencerIndex = function() {
@@ -93,6 +97,14 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, progressWidth)
 		return false;
 	}
 	return sim;
+}
+
+function handleStudyQuestions(studyQuestions){
+    var questions = studyQuestions.getStudyQuestionsList();
+    if (questions.length == 0) {
+        return;
+    }
+    studyQuestionManager = getStudyQuestionManager(questions);
 }
 
 function handleReplayControl(replayControl) {
@@ -136,7 +148,6 @@ function loadSelectedReplayFile() {
 }
 
 
-
 function handleReplaySessionConfig(rsc, selectedStep) {
 	if (!rsc.hasStepCount()) {
 		dialog('Error no stepCount carried by ReplaySessionConfig');
@@ -163,8 +174,20 @@ function handleViz(vizData) {
 	handleCumulativeRewards(cumulativeRewardsMap);
 	handleEntities(entitiesList);
 	if (!jumpInProgress) {
-		sessionIndexManager.incrementReplaySequencerIndex();
-	}
+        sessionIndexManager.incrementReplaySequencerIndex();
+        if (isStudyQuestionMode()) {
+            studyQuestionManager.configureForCurrentStep();
+        }
+    }
+    if (isStudyQuestionMode()) {
+        if (studyQuestionManager.hasUserId()){
+            studyQuestionManager.blockClicksOutsideRange();
+        }
+        if (studyQuestionManager.isAtEndOfRange(sessionIndexManager.getCurrentIndex())){
+            pauseGame();
+        }
+    }
+    
 	if (sessionIndexManager.isAtEndOfGame()) {
 		controlsManager.reachedEndOfGame();
 	}
@@ -285,7 +308,7 @@ function handleScaiiPacket(sPacket) {
 		handleReplayControl(replayControl);
     }
     else if(sPacket.hasStudyQuestions()) {
-        console.log("got studyQuestions!!!");
+        handleStudyQuestions(sPacket.getStudyQuestions());
     }
 	else if (sPacket.hasErr()) {
 		console.log("-----got errorPkt");

@@ -55,13 +55,3 @@ fn get_study_question(line : &String) -> Result<StudyQuestion, Box<Error>> {
         answers: answer_vec,
     })
 }
-
-// message StudyQuestions {
-//     repeated StudyQuestion study_questions = 1;
-// }
-
-// message StudyQuestion {
-//     required uint32 step = 1;
-//     required string question = 2;
-//     repeated string answers = 3;
-// }
