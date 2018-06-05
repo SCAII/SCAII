@@ -54,7 +54,10 @@ impl<'a> System<'a> for AttackSystem {
                 } else if state.stopped() {
                     sys_data.attack.remove(id);
                     if sys_data.entities.is_alive(state.target()) {
-                        sys_data.moving.insert(id, Move::attack(state.target()));
+                        sys_data
+                            .moving
+                            .insert(id, Move::attack(state.target()))
+                            .unwrap();
                     }
                 }
             }
@@ -95,7 +98,10 @@ impl<'a> System<'a> for AttackSystem {
                 ));
 
                 if tar_hp.curr_hp <= 0.0 {
-                    sys_data.death.insert(atk.target, Death { killer: id });
+                    sys_data
+                        .death
+                        .insert(atk.target, Death { killer: id })
+                        .unwrap();
                 }
             }
         }
@@ -139,13 +145,15 @@ fn acquire_target<'a>(
 
     // Allows people to attack their own units, but only with an explicit order
     if explicit_atk || faction1 != faction2 {
-        attack.insert(
-            me,
-            Attack {
-                target: other_id,
-                time_since_last: f64::INFINITY,
-            },
-        );
+        attack
+            .insert(
+                me,
+                Attack {
+                    target: other_id,
+                    time_since_last: f64::INFINITY,
+                },
+            )
+            .unwrap();
     }
 }
 
@@ -168,10 +176,12 @@ mod tests {
         let mut units: HashMap<String, usize> = HashMap::new();
         let mut unit_types: HashMap<String, UnitType> = HashMap::new();
 
-        units.insert("test_entity".to_string(), 0);
+        units.insert("test_entity".to_string(), 0).unwrap();
         test_unit_type_map.typ_ids = units;
 
-        unit_types.insert("test_entity".to_string(), UnitType::default());
+        unit_types
+            .insert("test_entity".to_string(), UnitType::default())
+            .unwrap();
         test_unit_type_map.tag_map = unit_types;
 
         world.add_resource(test_unit_type_map);

@@ -56,7 +56,7 @@ impl<'a, 'b> Rts<'a, 'b> {
         use rayon::ThreadPoolBuilder;
         use std::sync::Arc;
 
-        let mut world = World::new();
+        let world = World::new();
 
         let pool = Arc::new(
             ThreadPoolBuilder::new()
@@ -195,7 +195,7 @@ impl<'a, 'b> Rts<'a, 'b> {
     /// Resets the game to a clean state, running the scenario
     /// Lua's `reset` function, populating initial entities.
     pub fn reset(&mut self) -> MultiMessage {
-        use self::resources::{WorldRng, COLLISION_MARGIN};
+        use self::resources::WorldRng;
         use scaii_defs::protos;
         use scaii_defs::protos::ScaiiPacket;
         use shred::RunNow;
@@ -462,7 +462,8 @@ impl<'a, 'b> Rts<'a, 'b> {
             if let Some(faction) = self.world.read_storage::<FactionId>().get(id) {
                 self.world
                     .write_storage::<Color>()
-                    .insert(id, PLAYER_COLORS[faction.0]);
+                    .insert(id, PLAYER_COLORS[faction.0])
+                    .unwrap();
             }
         }
 

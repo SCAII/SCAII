@@ -177,7 +177,9 @@ impl UnitType {
             },
         );
 
-        col_storage.insert(entity, CollisionHandle(collider));
+        col_storage
+            .insert(entity, CollisionHandle(collider))
+            .unwrap();
 
         entity
     }

@@ -1,13 +1,6 @@
-use std::fmt::Debug;
-
 use super::Pos;
 
-use specs::error::NoError;
-use specs::prelude::*;
-use specs::saveload::{FromDeserialize, IntoSerialize};
-use specs::storage::HashMapStorage;
-
-use serde::{Deserialize, Serialize};
+use specs::{prelude::*, storage::HashMapStorage};
 
 #[derive(Copy, Clone, Default, Component, PartialEq, Serialize, Deserialize)]
 #[storage(VecStorage)]

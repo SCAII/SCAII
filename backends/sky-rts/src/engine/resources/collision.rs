@@ -16,7 +16,8 @@ pub struct SkyCollisionWorld(pub CollisionWorld<P2<f64>, I2<f64>, ColliderData>)
 
 impl Default for SkyCollisionWorld {
     fn default() -> Self {
-        let mut c_world = CollisionWorld::new(0.02);
+        use super::COLLISION_MARGIN;
+        let mut c_world = CollisionWorld::new(COLLISION_MARGIN);
         c_world.register_broad_phase_pair_filter("entity owner filter", SkyBroadPhaseFilter);
         c_world.update();
 

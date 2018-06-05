@@ -7,15 +7,16 @@ use rlua::Error;
 use std::fmt::Debug;
 use std::path::Path;
 
-use engine::components::{
-    DataStoreComponent, DealtDamage, Death, Delete, FactionId, Hp, HpChange, Spawned, UnitTypeTag,
+use engine::{
+    components::{
+        DataStoreComponent, DealtDamage, Death, Delete, FactionId, Hp, HpChange, Spawned,
+        UnitTypeTag,
+    },
+    resources::{
+        CumReward, DataStore, MaxStep, Reward, RewardTypes, Skip, SpawnBuffer, Step, Terminal,
+        UnitTypeMap, WorldRng,
+    },
 };
-use engine::resources::{
-    CumReward, DataStore, MaxStep, Reward, RewardTypes, Skip, SpawnBuffer, Step, Terminal,
-    UnitTypeMap, WorldRng,
-};
-
-use rand::Isaac64Rng;
 
 use std::collections::HashMap;
 
@@ -60,6 +61,7 @@ impl<'a> System<'a> for LuaSystem {
 
     fn run(&mut self, mut sys_data: Self::SystemData) {
         use self::userdata::{UserDataReadWorld, UserDataRng, UserDataUnit, UserDataWorld};
+        use rand;
 
         self.immediate_reward.clear();
         let world = UserDataWorld::new(
@@ -196,7 +198,8 @@ impl<'a> System<'a> for LuaSystem {
             }
         }
 
-        let mut world: UserDataWorld<Isaac64Rng> = self.lua.globals().get("__sky_world").unwrap();
+        let mut world: UserDataWorld<rand::Isaac64Rng> =
+            self.lua.globals().get("__sky_world").unwrap();
         if world.victory.is_some() {
             sys_data.terminal.0 = true;
         }
@@ -206,7 +209,7 @@ impl<'a> System<'a> for LuaSystem {
                 if sys_data.death.get(id).is_some() {
                     continue;
                 }
-                sys_data.delete.insert(id, Delete);
+                sys_data.delete.insert(id, Delete).unwrap();
             }
         }
 
@@ -310,7 +313,6 @@ impl LuaSystem {
         path: P,
     ) -> Result<(), Error> {
         use self::userdata::UserDataRng;
-        use rand::Isaac64Rng;
         use std::fs::File;
         use std::io::prelude::*;
 

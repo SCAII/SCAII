@@ -2,12 +2,10 @@ use nalgebra::Point2;
 
 use engine::resources::DataStore;
 
-use specs::error::NoError;
-use specs::prelude::*;
-use specs::saveload::{FromDeserialize, IntoSerialize};
-use specs::storage::{HashMapStorage, NullStorage};
+use specs::{
+    prelude::*, storage::{HashMapStorage, NullStorage},
+};
 
-use std::fmt::Debug;
 use std::ops::{Deref, DerefMut};
 
 use scaii_defs::protos::Circle as ScaiiCircle;
@@ -16,8 +14,6 @@ use scaii_defs::protos::Pos as ScaiiPos;
 use scaii_defs::protos::Rect as ScaiiRect;
 use scaii_defs::protos::Shape as ScaiiShape;
 use scaii_defs::protos::Triangle as ScaiiTriangle;
-
-use serde::{Deserialize, Serialize};
 
 // `move` is a reserved keyword, so we need to
 // extend the name a little. Other submods should probably

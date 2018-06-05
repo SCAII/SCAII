@@ -1,10 +1,8 @@
-use std::fmt::Debug;
-
 use ncollide::world::CollisionObjectHandle;
-use specs::error::NoError;
-use specs::prelude::*;
-use specs::saveload::{FromDeserialize, IntoSerialize, Marker};
-use specs::storage::HashMapStorage;
+use specs::{
+    error::NoError, prelude::*, saveload::{FromDeserialize, IntoSerialize, Marker},
+    storage::HashMapStorage,
+};
 
 use serde::{Deserialize, Serialize};
 

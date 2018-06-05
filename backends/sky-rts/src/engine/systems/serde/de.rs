@@ -1,8 +1,6 @@
-use specs::prelude::*;
-
-use specs::saveload::{DeserializeComponents, U64Marker, U64MarkerAllocator};
-
-use specs::error::NoError;
+use specs::{
+    prelude::*, saveload::{DeserializeComponents, U64Marker, U64MarkerAllocator},
+};
 
 use engine::resources::{
     CumReward, DataStore, LuaPath, SerializeBytes, SpawnBuffer, Terminal, WorldRng,
@@ -31,10 +29,8 @@ impl<'a> System<'a> for DeserializeSystem {
 
     fn run(&mut self, mut world: Self::SystemData) {
         use super::SerTarget;
-        use serde::de::DeserializeSeed;
         use serde::Deserialize;
-        use serde_cbor::de::SliceRead;
-        use serde_cbor::Deserializer;
+        use serde_cbor::{de::SliceRead, Deserializer};
 
         let mut de = Deserializer::new(SliceRead::new(&world.decode.0));
 
@@ -49,7 +45,7 @@ impl<'a> System<'a> for DeserializeSystem {
             &mut world.de.markers,
             &mut world.de.alloc,
             &mut de,
-        );
+        ).unwrap();
         de.end().unwrap();
 
         *world.lua_path = tar.lua_path;

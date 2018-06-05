@@ -1,8 +1,6 @@
-use specs::prelude::*;
-// use specs::error::NoError;
-use specs::saveload::{SerializeComponents, U64Marker};
-
-use specs::error::NoError;
+use specs::{
+    prelude::*, saveload::{SerializeComponents, U64Marker},
+};
 
 use super::{Ser, SerTarget};
 use engine::resources::{
@@ -42,7 +40,7 @@ impl<'a> System<'a> for SerializeSystem {
             &*world.ser.entities,
             &world.ser.markers,
             &mut tar,
-        );
+        ).unwrap();
 
         let tar = tar.into_inner();
 

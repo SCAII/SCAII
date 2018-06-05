@@ -6,7 +6,6 @@ use engine::components::Color;
 use scaii_defs::protos::{Action, State, Viz};
 
 use rand::Isaac64Rng;
-use specs::prelude::*;
 
 pub mod collision;
 mod unit_type;

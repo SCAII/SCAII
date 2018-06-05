@@ -5,11 +5,6 @@ use rand::{Isaac64Rng, SeedableRng};
 
 use scaii_defs::protos::MultiMessage;
 
-/// Create a new seeded RNG.
-pub fn make_rng() -> Isaac64Rng {
-    Isaac64Rng::from_rng(&mut rand::thread_rng()).expect("Could not make RNG")
-}
-
 /// Reseed the RNG so the state diverges.
 pub fn diverge(rng: &mut Isaac64Rng) {
     *rng = Isaac64Rng::from_rng(&mut rand::thread_rng()).expect("Could not reseed RNG");

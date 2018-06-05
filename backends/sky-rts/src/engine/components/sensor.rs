@@ -1,11 +1,6 @@
-use specs::error::NoError;
-use specs::prelude::*;
-use specs::saveload::{FromDeserialize, IntoSerialize};
-use specs::storage::HashMapStorage;
+use specs::{prelude::*, storage::HashMapStorage};
 
-use serde::{Deserialize, Serialize};
-
-use std::{collections::BTreeMap, fmt::Debug};
+use std::collections::BTreeMap;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Component, Serialize,
          Deserialize)]
@@ -96,7 +91,8 @@ pub fn register_sensor_collision(world: &mut World, sensor: Entity) -> Entity {
 
     world
         .write_storage::<CollisionHandle>()
-        .insert(sensor, CollisionHandle(collider));
+        .insert(sensor, CollisionHandle(collider))
+        .unwrap();
 
     sensor
 }

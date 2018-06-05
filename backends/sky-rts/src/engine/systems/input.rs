@@ -70,7 +70,7 @@ impl<'a> System<'a> for InputSystem {
                     }
                 }
             };
-            sys_data.moves.insert(entity, move_order);
+            sys_data.moves.insert(entity, move_order).unwrap();
         }
 
         // for (pos, moves, id) in (&mut sys_data.positions, &sys_data.moves, &*sys_data.ids).join() {}
