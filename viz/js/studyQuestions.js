@@ -2,6 +2,12 @@
     return studyQuestionManager != undefined;
 }
 
+function clearStudyQuestionMode() {
+    $('#q-and-a-div').empty();
+    $("#left-block-div").remove();
+    $("#right-block-div").remove();
+    studyQuestionManager = undefined;
+}
 function getStudyQuestionManager(questions) {
     var sqm = {};
     sqm.renderer = getStudyQuestionRenderer();

@@ -132,6 +132,7 @@ function handleReplayChoiceConfig(config){
 }
 
 function loadSelectedReplayFile() {
+    clearStudyQuestionMode();
 	controlsManager.startLoadReplayFile();
 	var chosenFile = $( "#replay-file-selector option:selected" ).text();
 	//console.log("    file selected: " + chosenFile);
@@ -139,7 +140,7 @@ function loadSelectedReplayFile() {
 	var userCommand = new proto.scaii.common.UserCommand;
 	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE);
 	userCommand.setArgsList(args);
-	stageUserCommand(userCommand);
+    stageUserCommand(userCommand);
 	$("#action-list").empty();
 	$("#explanation-control-panel").empty();
 	drawExplanationTimeline();
