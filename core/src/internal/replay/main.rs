@@ -204,6 +204,7 @@ fn run_replay(run_mode: RunMode) -> Result<(), Box<Error>> {
         poll_timer_count: 5,
         //step_timer_count: 25,
         step_timer_count: 10,
+        user_study_questions: None,
     };
     let result = replay_manager.start();
     match result {

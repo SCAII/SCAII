@@ -208,3 +208,11 @@ message StudyQuestion {
     required string question = 2;
     repeated string answers = 3;
 }
+
+message StudyQuestionAnswer {
+    required string step = 1;
+    required string question_number = 2;
+    required string question = 3;
+    required string answer = 4;
+    required string user_id = 5;
+}

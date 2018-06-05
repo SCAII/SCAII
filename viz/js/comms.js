@@ -1,6 +1,7 @@
 var dealer;
 var sessionState = "pending";
 var userCommandScaiiPackets = [];
+var userInfoScaiiPackets = [];
 
 
 // calls connect and paints "working" dots.  If connect fails, it calls tryConnect again

@@ -17,6 +17,7 @@ use std::{thread, time};
 use super::explanations::Explanations;
 use super::pkt_util;
 use super::replay_sequencer::ReplaySequencer;
+use super::study_util;
 
 #[derive(Debug)]
 enum GameState {
@@ -36,6 +37,7 @@ pub struct ReplayManager {
     pub test_mode: bool,
     pub poll_timer_count: u32,
     pub step_timer_count: u32,
+    pub user_study_questions: Option<study_util::UserStudyQuestions>
 }
 
 impl ReplayManager {
@@ -288,7 +290,6 @@ impl ReplayManager {
     fn execute_poll_step(&mut self, mut game_state: GameState) -> Result<GameState, Box<Error>> {
         use super::test_util;
         use scaii_defs;
-        use super::study_util;
         let scaii_pkts: Vec<ScaiiPacket> = self.poll_viz()?;
         for scaii_pkt in &scaii_pkts {
             if scaii_defs::protos::is_user_command_pkt(scaii_pkt) {
@@ -311,8 +312,14 @@ impl ReplayManager {
                         println!("load file {}!", filename);
                         game_state = GameState::AwaitingUserPlayRequest;
                         self.load_selected_replay_file(&filename)?;
-                        let study_questions : Option<StudyQuestions> =  study_util::get_questions_for_replay(&filename)?;
+                        let mut user_study_questions = study_util::UserStudyQuestions {
+                            replay_filename: filename,
+                            answer_lines: Vec::new(),
+                        };
+                        let study_questions : Option<StudyQuestions> =  user_study_questions.get_questions()?;
+                        //let study_questions : Option<StudyQuestions> =  study_util::get_questions_for_replay(&filename)?;
                         if study_questions != None {
+                            self.user_study_questions= Some(user_study_questions);
                             let study_questions_pkt = pkt_util::get_study_questions_pkt(study_questions.unwrap());
                             self.send_pkt_to_viz(study_questions_pkt)?;
                         }
@@ -388,6 +395,13 @@ impl ReplayManager {
                 }
             } else if scaii_defs::protos::is_error_pkt(scaii_pkt) {
                 // Error would have already been shown to user at UI
+            }
+            else if scaii_defs::protos::is_study_question_answer_pkt(scaii_pkt) {
+                use scaii_defs::protos::StudyQuestionAnswer;
+                let sqa : StudyQuestionAnswer = scaii_defs::protos::get_study_question_answer_from_pkt(scaii_pkt).unwrap();
+                if let Some(ref mut user_study_questions) = self.user_study_questions {
+                    user_study_questions.persist_study_question_answer(sqa)?;
+                }
             } else {
                 println!(
                     "REPLAY unexpected pkt received by Viz polling {:?}",

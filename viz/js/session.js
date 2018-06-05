@@ -181,6 +181,7 @@ function handleViz(vizData) {
     }
     if (isStudyQuestionMode()) {
         if (studyQuestionManager.hasUserId()){
+            studyQuestionManager.clearTimelineBlocks();
             studyQuestionManager.blockClicksOutsideRange();
         }
         if (studyQuestionManager.isAtEndOfRange(sessionIndexManager.getCurrentIndex())){
@@ -318,15 +319,20 @@ function handleScaiiPacket(sPacket) {
 		var userCommand = sPacket.getUserCommand();
 		var commandType = userCommand.getCommandType();
 		if (commandType == proto.scaii.common.UserCommand.UserCommandType.POLL_FOR_COMMANDS) {
+            if (userInfoScaiiPackets.length > 0){
+                result = buildResponseToReplay(userInfoScaiiPackets);
+                userInfoScaiiPackets = [];
+            }
 			//console.log("-----got pollForCommands");
-			if (userCommandScaiiPackets.length > 0) {
+			else if (userCommandScaiiPackets.length > 0) {
 				result = buildResponseToReplay(userCommandScaiiPackets);
-				controlsManager.userCommandSent();
+                controlsManager.userCommandSent();
+                userCommandScaiiPackets = [];
 			}
 			else {
 				result = new proto.scaii.common.MultiMessage;
 			}
-			userCommandScaiiPackets = [];
+			
 		}
 		else if (commandType == proto.scaii.common.UserCommand.UserCommandType.JUMP_COMPLETED) {
 			//console.log("-----got jump completed message");

@@ -4,13 +4,15 @@
 
 function getStudyQuestionManager(questions) {
     var sqm = {};
+    sqm.renderer = getStudyQuestionRenderer();
     sqm.userID = undefined;
     sqm.questionForStepMap = {};
     sqm.steps = [];
     sqm.windowRangeForStep = {};
     sqm.summaryQuestion = undefined;
     sqm.summaryAnswers = undefined;
-    sqm.currentStepIndex = 0;
+    // init to -1 so step at index 0 will be ref'd after incrementing first time
+    sqm.currentStepIndex = -1;
     sqm.stepIndexPriorToSummaryQuestion = undefined;
     sqm.activeRange = undefined;
 
@@ -26,6 +28,7 @@ function getStudyQuestionManager(questions) {
         else {
             sqm.steps.push(step);
             var qu = {};
+            qu.step = step;
             qu.questionText= questionText;
             qu.answers = answers;
             sqm.questionForStepMap['step_' + step] = qu;
@@ -69,63 +72,53 @@ function getStudyQuestionManager(questions) {
     sqm.configureForCurrentStep = function() {
         var currentStep = sessionIndexManager.getCurrentIndex();
         if (this.userID == undefined) {
-            this.poseUserIdQuestion();
+            this.renderer.poseUserIdQuestion();
         }
         else if (this.hasQuestionForStep(currentStep)) {
-            this.poseNextQuestion();
+            this.poseCurrentQuestion();
         }
     }
 
-    sqm.poseUserIdQuestion = function() {
-        var userIdDiv = document.createElement("DIV");
-        userIdDiv.setAttribute("id", "user-id-div");
-        userIdDiv.setAttribute("class", "flex-column");
-        userIdDiv.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:500;background-color:#eeeeee;margin:auto;font-family:Arial;padding:10px;width:600px;height:600px;");
-        $('body').append(userIdDiv);
-
-        var questionRow = document.createElement("DIV");
-        questionRow.setAttribute("id", "user-id-question-row");
-        questionRow.setAttribute("class", "flex-row");
-        questionRow.setAttribute("style", "margin-top:200px;font-family:Arial;padding:10px;");
-        $("#user-id-div").append(questionRow);
-        
-        var question = document.createElement("DIV");
-        question.setAttribute("id", "user-id-question");
-        question.setAttribute("style", "margin:auto;font-family:Arial;font-size:18px;padding:10px;");
-        question.innerHTML = "Please enter your user study ID:";
-        $("#user-id-question-row").append(question);
-
-        var userIdText = document.createElement("INPUT");
-        userIdText.setAttribute("id", "user-id-answer");
-        userIdText.setAttribute("style", "margin:auto;font-family:Arial;font-size:18px;padding:10px;");
-        userIdText.onkeyup = function() {
-            var value = $( this ).val();
-            studyQuestionManager.userID = value;
-        }
-        $("#user-id-question-row").append(userIdText);
-
-        var buttonRow = document.createElement("DIV");
-        buttonRow.setAttribute("id", "user-id-button-row");
-        buttonRow.setAttribute("class", "flex-row");
-        buttonRow.setAttribute("style", "margin-top:100px;font-family:Arial;padding:10px;");
-        $("#user-id-div").append(buttonRow);
-
-        var next = document.createElement("BUTTON");
-        next.setAttribute("id", "user-id-button-next");
-        next.setAttribute("style", "margin-left:280px;font-family:Arial;font-size:18px;padding:10px;");
-        next.innerHTML = "Next";
-        next.onclick = function() {
-            $("#user-id-div").remove();
-            studyQuestionManager.poseNextQuestion();
-        }
-        $("#user-id-button-row").append(next);
+    sqm.isDoneWithStepRelatedQuestions = function(){
+        return this.currentStepIndex == this.steps.length;
     }
+
+    
     sqm.poseNextQuestion = function() {
-        this.blockClicksOutsideRange();
+        this.currentStepIndex = this.currentStepIndex + 1;
+        if (this.isDoneWithStepRelatedQuestions()){
+            // we've asked the last "true-step" question, ask summary instead
+            this.renderer.poseSummaryQuestion(this.currentStepIndex, this.summaryQuestion, this.summaryAnswers);
+        }
+        else {
+            var nextStep = this.steps[this.currentStepIndex];
+            var args = ["" + nextStep];
+            var userCommand = new proto.scaii.common.UserCommand;
+            userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+            userCommand.setArgsList(args);
+            stageUserCommand(userCommand);
+            this.poseCurrentQuestion();
+        }
     }
-    sqm.blockClicksOutsideRange = function() {
+    
+
+    sqm.poseCurrentQuestion = function() {
+        var curStep = this.steps[this.currentStepIndex];
+        var qu = sqm.questionForStepMap['step_' + curStep];
+        this.renderer.poseQuestion(qu, this.currentStepIndex, curStep);
+    }
+
+    sqm.clearTimelineBlocks = function() {
         $("#left-block-div").remove();
         $("#right-block-div").remove();
+    }
+
+    sqm.leftBoundaryOfRightBlockHasDiamond = function(){
+        var indexOfLastDecisionPoint = this.steps.length - 1
+        return this.currentStepIndex != indexOfLastDecisionPoint;
+    } 
+
+    sqm.blockClicksOutsideRange = function() {
         var step = this.steps[this.currentStepIndex];
         var rangePair = this.windowRangeForStep[step];
         this.activeRange = rangePair;
@@ -147,29 +140,32 @@ function getStudyQuestionManager(questions) {
             x2 = x2 - explanationPointSmallDiamondHalfWidth;
         }
         
-
         // calculate right window edge position
         var rightValueOnTimeline = Math.floor((rangePair[1] / maxIndex ) * 100);
         var x3 = ecpOffset.left + timelineMargin + (rightValueOnTimeline / 100) * widthOfTimeline;
         // shift x3 to the left to fully cover the next DecisionPoint
-        x3 = x3 - explanationPointSmallDiamondHalfWidth;
+        if (this.leftBoundaryOfRightBlockHasDiamond()) {
+            x3 = x3 - explanationPointSmallDiamondHalfWidth;
+        }
         var x4 = expl_ctrl_canvas.width;
         
 
         var y = ecpOffset.top;
         var width1 = x2 - x1;
         var width2 = x4 - x3;
-        var height = expl_ctrl_canvas.height;
+        var height = $("#explanation-control-panel").height();
         // make blocking div from 0 -> rightXofLeftBlock
+        var gradientBars = "repeating-linear-gradient(135deg,rgba(100, 100, 100, 0.1),rgba(100, 100, 100, 0.3) 20px,rgba(100, 100, 100, 0.6) 20px,rgba(100, 100, 100, 0.7) 20px)";
         var leftBlockDiv = document.createElement("DIV");
-        leftBlockDiv.setAttribute("id", "left-block-div" + step);
-        leftBlockDiv.setAttribute("style", "position:absolute;left:" + x1 + "px;top:" + y + "px;z-index:500;background-color:red;width:" + width1 + "px;height:" + height + "px;");
+        leftBlockDiv.setAttribute("id", "left-block-div");
+        leftBlockDiv.setAttribute("style", "position:absolute;left:" + x1 + "px;top:" + y + "px;z-index:500;background:" + gradientBars + ";width:" + width1 + "px;height:" + height + "px;");
         $("body").append(leftBlockDiv);
+
 
         // make blocking div from leftXofRightBlock -> expl_ctrl_canvas.width
         var rightBlockDiv = document.createElement("DIV");
-        rightBlockDiv.setAttribute("id", "right-block-div" + step);
-        rightBlockDiv.setAttribute("style", "position:absolute;left:" + x3 + "px;top:" + y + "px;z-index:500;background-color:green;width:" + width2 + "px;height:" + height + "px;");
+        rightBlockDiv.setAttribute("id", "right-block-div");
+        rightBlockDiv.setAttribute("style", "position:absolute;left:" + x3 + "px;top:" + y + "px;z-index:500;background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
         $("body").append(rightBlockDiv);
     }
     return sqm;
@@ -190,4 +186,50 @@ function getRanges(steps) {
         }
     }
     return step_range_pairs;
+}
+
+function acceptUserId() {
+    var userId = studyQuestionManager.userID;
+    if (userId == undefined || userId == "") {
+        alert('No userID specified.  Please specify a userID and then click "Next".');
+    }
+    else {
+        $("#user-id-div").remove();
+        studyQuestionManager.poseNextQuestion();
+    }
+    
+}
+function acceptAnswer() {
+    // block if no answer specified
+    var renderer = studyQuestionManager.renderer;
+    var answer = renderer.getCurrentAnswer();
+    if (answer == undefined || answer == '') {
+        alert('No answer chosen for the current question.  Please specify an answer and then click "Next Question".');
+        return;
+    }
+    // gather answer, send to backend
+    var pkt = new proto.scaii.common.ScaiiPacket;
+    var sqa = new proto.scaii.common.StudyQuestionAnswer;
+    var step = renderer.currentQuestionStep;
+    var questionNumber = renderer.currentQuestionNumber;
+    var questionText = renderer.currentQuestionText;
+    sqa.setUserId(studyQuestionManager.userID);
+    sqa.setStep(step);
+    console.log('saving question number ' + questionNumber + ' step ' + step);
+    sqa.setQuestionNumber('' + questionNumber);
+    sqa.setQuestion(questionText);
+    sqa.setAnswer(answer);
+    pkt.setStudyQuestionAnswer(sqa);
+    userInfoScaiiPackets.push(pkt);
+
+    // clear current question
+    $('#q-and-a-div').empty();
+
+    if (step == 'summary'){
+        renderer.poseThankYouScreen();
+    } 
+    else {
+        // pose next question
+        studyQuestionManager.poseNextQuestion();
+    }
 }
