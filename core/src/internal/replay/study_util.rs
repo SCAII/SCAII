@@ -18,7 +18,9 @@ impl UserStudyQuestions {
         println!("question_filename is {}", question_filename);
         questionfile_path.push(question_filename.as_str());
         println!("path is {:?}", questionfile_path);
-
+        if !questionfile_path.exists() {
+            return Ok(None);
+        }
         let f = File::open(questionfile_path)?;
         let reader = BufReader::new(f);
 
