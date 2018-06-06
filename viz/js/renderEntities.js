@@ -401,8 +401,10 @@ function createHPToolTip(z_index, shapeId, absX, absY, hitPoints, maxHitPoints, 
      // position it relative to where origin of bounding box of gameboard is
     var y = absY + canvas_bounds.top;
     var x = absX + canvas_bounds.left;
+    //var hpWidgetWidth = 20;
+    //var hpWidgetHeight = 3;
     var hpWidgetWidth = 20;
-    var hpWidgetHeight = 3;
+    var hpWidgetHeight = 5;
     hpDiv.setAttribute("class", "flex-row");
     hpDiv.setAttribute("style", 'background-color:black;zIndex:' + z_index + ';position:absolute;left:' + x + 'px;top:' + y + 'px;color:' + color + ';height:' + hpWidgetHeight + 'px;width:' + hpWidgetWidth + 'px');
     $("#scaii-gameboard").append(hpDiv);
