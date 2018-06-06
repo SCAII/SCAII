@@ -71,7 +71,7 @@ function getStudyQuestionRenderer(questions) {
         this.currentRadioName = radioSetName;
     }
 
-    sqr.renderNextButton = function(onclickFunction, step){
+    sqr.renderSaveButton = function(onclickFunction, step){
         var nextButtonRowId = "next-button-row-" + step;
         var buttonRow = document.createElement("DIV");
         buttonRow.setAttribute("id", nextButtonRowId);
@@ -82,7 +82,7 @@ function getStudyQuestionRenderer(questions) {
         var next = document.createElement("BUTTON");
         next.setAttribute("id", "button-next-"+ step);
         next.setAttribute("style", "margin-left:250px;font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px");
-        next.innerHTML = "Next Question";
+        next.innerHTML = "Save";
         next.onclick = onclickFunction;
         $("#"+ nextButtonRowId).append(next);
     }
@@ -112,7 +112,7 @@ function getStudyQuestionRenderer(questions) {
         var quText = document.createElement("DIV");
         quText.setAttribute("id", "user-id-question");
         quText.setAttribute("style", "margin-left:50px;font-family:Arial;font-weight:bold;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
-        quText.innerHTML =  "Question " + questionNumber  + ": " + text;
+        quText.innerHTML =  "D" + questionNumber  + ": " + text;
         $("#q-and-a-div").append(quText);
 
         if (answers.length == 0){
@@ -127,7 +127,7 @@ function getStudyQuestionRenderer(questions) {
         // add a div with next button
         onclickFunction = acceptAnswer;
         
-        this.renderNextButton(onclickFunction);
+        this.renderSaveButton(onclickFunction);
     }
 
     sqr.poseThankYouScreen = function(){
