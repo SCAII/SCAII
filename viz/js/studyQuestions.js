@@ -165,7 +165,7 @@ function getStudyQuestionManager(questions) {
         var leftBlockDiv = document.createElement("DIV");
         leftBlockDiv.setAttribute("id", "left-block-div");
         leftBlockDiv.setAttribute("style", "position:absolute;left:" + x1 + "px;top:" + y + "px;z-index:500;background:" + gradientBars + ";width:" + width1 + "px;height:" + height + "px;");
-        $("body").append(leftBlockDiv);
+        //$("body").append(leftBlockDiv);
 
 
         // make blocking div from leftXofRightBlock -> expl_ctrl_canvas.width
