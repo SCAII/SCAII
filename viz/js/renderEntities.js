@@ -440,13 +440,9 @@ function createAllDataToolTip(z_index, shapeId, absX, absY, entity, color) {
 
   var hpLabel = document.createElement("div");
   var hitPoints = getNumericValueFromFloatStringMap(entity,"Hitpoints");
-  hpLabel.innerHTML = 'HP   : ' + hitPoints;
-  valuesDiv.append(hpLabel);
-  
-  var mhpLabel = document.createElement("div");
   var maxHitPoints = getNumericValueFromFloatStringMap(entity,"Max Hp");
-  mhpLabel.innerHTML = 'Max HP: ' + maxHitPoints;
-  valuesDiv.append(mhpLabel);
+  hpLabel.innerHTML = 'HP   : ' + hitPoints + ' of ' + maxHitPoints;
+  valuesDiv.append(hpLabel);
   
   var enemyLabel = document.createElement("div");
   var isEnemy = getIsEnemy(entity);
