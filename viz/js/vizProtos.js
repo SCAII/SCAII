@@ -8483,7 +8483,9 @@ proto.scaii.common.StudyQuestions.prototype.toObject = function(opt_includeInsta
 proto.scaii.common.StudyQuestions.toObject = function(includeInstance, msg) {
   var f, obj = {
     studyQuestionsList: jspb.Message.toObjectList(msg.getStudyQuestionsList(),
-    proto.scaii.common.StudyQuestion.toObject, includeInstance)
+    proto.scaii.common.StudyQuestion.toObject, includeInstance),
+    userId: jspb.Message.getField(msg, 2),
+    treatmentId: jspb.Message.getField(msg, 3)
   };
 
   if (includeInstance) {
@@ -8525,6 +8527,14 @@ proto.scaii.common.StudyQuestions.deserializeBinaryFromReader = function(msg, re
       reader.readMessage(value,proto.scaii.common.StudyQuestion.deserializeBinaryFromReader);
       msg.addStudyQuestions(value);
       break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setUserId(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTreatmentId(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -8562,6 +8572,20 @@ proto.scaii.common.StudyQuestions.serializeBinaryToWriter = function(message, wr
       proto.scaii.common.StudyQuestion.serializeBinaryToWriter
     );
   }
+  f = /** @type {string} */ (jspb.Message.getField(message, 2));
+  if (f != null) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 3));
+  if (f != null) {
+    writer.writeString(
+      3,
+      f
+    );
+  }
 };
 
 
@@ -8593,6 +8617,64 @@ proto.scaii.common.StudyQuestions.prototype.addStudyQuestions = function(opt_val
 
 proto.scaii.common.StudyQuestions.prototype.clearStudyQuestionsList = function() {
   this.setStudyQuestionsList([]);
+};
+
+
+/**
+ * required string user_id = 2;
+ * @return {string}
+ */
+proto.scaii.common.StudyQuestions.prototype.getUserId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.StudyQuestions.prototype.setUserId = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+proto.scaii.common.StudyQuestions.prototype.clearUserId = function() {
+  jspb.Message.setField(this, 2, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.StudyQuestions.prototype.hasUserId = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * required string treatment_id = 3;
+ * @return {string}
+ */
+proto.scaii.common.StudyQuestions.prototype.getTreatmentId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.StudyQuestions.prototype.setTreatmentId = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+proto.scaii.common.StudyQuestions.prototype.clearTreatmentId = function() {
+  jspb.Message.setField(this, 3, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.StudyQuestions.prototype.hasTreatmentId = function() {
+  return jspb.Message.getField(this, 3) != null;
 };
 
 
@@ -8892,7 +8974,8 @@ proto.scaii.common.StudyQuestionAnswer.toObject = function(includeInstance, msg)
     questionNumber: jspb.Message.getField(msg, 2),
     question: jspb.Message.getField(msg, 3),
     answer: jspb.Message.getField(msg, 4),
-    userId: jspb.Message.getField(msg, 5)
+    userId: jspb.Message.getField(msg, 5),
+    treatmentId: jspb.Message.getField(msg, 6)
   };
 
   if (includeInstance) {
@@ -8948,6 +9031,10 @@ proto.scaii.common.StudyQuestionAnswer.deserializeBinaryFromReader = function(ms
     case 5:
       var value = /** @type {string} */ (reader.readString());
       msg.setUserId(value);
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTreatmentId(value);
       break;
     default:
       reader.skipField();
@@ -9010,6 +9097,13 @@ proto.scaii.common.StudyQuestionAnswer.serializeBinaryToWriter = function(messag
   if (f != null) {
     writer.writeString(
       5,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 6));
+  if (f != null) {
+    writer.writeString(
+      6,
       f
     );
   }
@@ -9158,6 +9252,35 @@ proto.scaii.common.StudyQuestionAnswer.prototype.clearUserId = function() {
  */
 proto.scaii.common.StudyQuestionAnswer.prototype.hasUserId = function() {
   return jspb.Message.getField(this, 5) != null;
+};
+
+
+/**
+ * required string treatment_id = 6;
+ * @return {string}
+ */
+proto.scaii.common.StudyQuestionAnswer.prototype.getTreatmentId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.StudyQuestionAnswer.prototype.setTreatmentId = function(value) {
+  jspb.Message.setField(this, 6, value);
+};
+
+
+proto.scaii.common.StudyQuestionAnswer.prototype.clearTreatmentId = function() {
+  jspb.Message.setField(this, 6, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.StudyQuestionAnswer.prototype.hasTreatmentId = function() {
+  return jspb.Message.getField(this, 6) != null;
 };
 
 

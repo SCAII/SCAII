@@ -101,10 +101,12 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, progressWidth)
 
 function handleStudyQuestions(studyQuestions){
     var questions = studyQuestions.getStudyQuestionsList();
+    var userId = studyQuestions.getUserId();
+    var treatmentId = studyQuestions.getTreatmentId();
     if (questions.length == 0) {
         return;
     }
-    studyQuestionManager = getStudyQuestionManager(questions);
+    studyQuestionManager = getStudyQuestionManager(questions, userId, treatmentId);
 }
 
 function handleReplayControl(replayControl) {
@@ -181,7 +183,7 @@ function handleViz(vizData) {
         }
     }
     if (isStudyQuestionMode()) {
-        if (studyQuestionManager.hasUserId()){
+        if (studyQuestionManager.hasShownUserId()){
             studyQuestionManager.clearTimelineBlocks();
             studyQuestionManager.blockClicksOutsideRange();
         }

@@ -166,16 +166,14 @@ function getStudyQuestionRenderer(questions) {
         var question = document.createElement("DIV");
         question.setAttribute("id", "user-id-question");
         question.setAttribute("style", "margin:auto;font-family:Arial;font-size:18px;padding:10px;");
-        question.innerHTML = "Please enter your user study ID:";
+        question.innerHTML = "Welcome to the XAI User Study.  Your study ID is :";
         $("#user-id-question-row").append(question);
 
-        var userIdText = document.createElement("INPUT");
+        var userIdText = document.createElement("DIV");
         userIdText.setAttribute("id", "user-id-answer");
         userIdText.setAttribute("style", "margin:auto;font-family:Arial;font-size:18px;padding:10px;");
-        userIdText.onkeyup = function() {
-            var value = $( this ).val();
-            studyQuestionManager.userID = value;
-        }
+        userIdText.innerHTML = studyQuestionManager.userId;
+        
         $("#user-id-question-row").append(userIdText);
 
         var buttonRow = document.createElement("DIV");
@@ -187,7 +185,7 @@ function getStudyQuestionRenderer(questions) {
         var next = document.createElement("BUTTON");
         next.setAttribute("id", "user-id-button-next");
         next.setAttribute("style", "margin-left:280px;font-family:Arial;font-size:18px;padding:10px;");
-        next.innerHTML = "Next";
+        next.innerHTML = "Start";
         next.onclick = function() {
             acceptUserId();
         }

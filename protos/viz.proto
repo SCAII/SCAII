@@ -201,6 +201,8 @@ message Shape {
 
 message StudyQuestions {
     repeated StudyQuestion study_questions = 1;
+    required string user_id = 2;
+    required string treatment_id = 3;
 }
 
 message StudyQuestion {
@@ -215,4 +217,5 @@ message StudyQuestionAnswer {
     required string question = 3;
     required string answer = 4;
     required string user_id = 5;
+    required string treatment_id = 6;
 }

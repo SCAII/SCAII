@@ -8,10 +8,12 @@ function clearStudyQuestionMode() {
     $("#right-block-div").remove();
     studyQuestionManager = undefined;
 }
-function getStudyQuestionManager(questions) {
+function getStudyQuestionManager(questions, userId, treatmentId) {
     var sqm = {};
     sqm.renderer = getStudyQuestionRenderer();
-    sqm.userID = undefined;
+    sqm.userId = userId;
+    sqm.hasShownUserID = false;
+    sqm.treatmentId = treatmentId;
     sqm.questionForStepMap = {};
     sqm.steps = [];
     sqm.windowRangeForStep = {};
@@ -67,8 +69,8 @@ function getStudyQuestionManager(questions) {
         return result;
     }
     
-    sqm.hasUserId = function() {
-        return this.userID != undefined;
+    sqm.hasShownUserId = function() {
+        return this.hasShownUserID;
     }
     sqm.getAnswersForStep = function(step) {
         var qu = this.questionForStepMap['step_'+step];
@@ -77,7 +79,7 @@ function getStudyQuestionManager(questions) {
 
     sqm.configureForCurrentStep = function() {
         var currentStep = sessionIndexManager.getCurrentIndex();
-        if (this.userID == undefined) {
+        if (!this.hasShownUserId()) {
             this.renderer.poseUserIdQuestion();
         }
         else if (this.hasQuestionForStep(currentStep)) {
@@ -195,12 +197,13 @@ function getRanges(steps) {
 }
 
 function acceptUserId() {
-    var userId = studyQuestionManager.userID;
+    var userId = studyQuestionManager.userId;
     if (userId == undefined || userId == "") {
-        alert('No userID specified.  Please specify a userID and then click "Next".');
+        alert('No userId specified.  Please specify a userId and then click "Next".');
     }
     else {
         $("#user-id-div").remove();
+        studyQuestionManager.hasShownUserID = true;
         studyQuestionManager.poseNextQuestion();
     }
     
@@ -219,7 +222,8 @@ function acceptAnswer() {
     var step = renderer.currentQuestionStep;
     var questionNumber = renderer.currentQuestionNumber;
     var questionText = renderer.currentQuestionText;
-    sqa.setUserId(studyQuestionManager.userID);
+    sqa.setUserId(studyQuestionManager.userId);
+    sqa.setTreatmentId(studyQuestionManager.treatmentId);
     sqa.setStep(step);
     console.log('saving question number ' + questionNumber + ' step ' + step);
     sqa.setQuestionNumber('' + questionNumber);
