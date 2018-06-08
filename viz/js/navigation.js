@@ -46,7 +46,8 @@ function processTimelineClick(e) {
 	controlsManager.userJumped();
 	var clickX = e.offsetX - timelineMargin;
 	var replaySequenceTargetStep = sessionIndexManager.getReplaySequencerIndexForClick(clickX);
-	var targetStepString = "" + replaySequenceTargetStep;
+    var targetStepString = "" + replaySequenceTargetStep;
+    stateMonitor.setUserAction("timelineClick;" + targetStepString);
 	var args = [targetStepString];
 	var userCommand = new proto.scaii.common.UserCommand;
 	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
@@ -86,7 +87,13 @@ function resumeGame() {
 		controlsManager.userClickedResume();
 		var userCommand = new proto.scaii.common.UserCommand;
 		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.RESUME);
-		stageUserCommand(userCommand);
+        stageUserCommand(userCommand);
+        // if play button cue arrow present, remove it
+        $("#cue-arrow-div").remove();
+        if (studyQuestionManager.questionWasAnswered){
+            $('#q-and-a-div').empty();
+        }
+        
 	}
 	catch (err) {
 		alert(err.message);

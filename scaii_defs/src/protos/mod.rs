@@ -99,11 +99,29 @@ pub fn is_study_question_answer_pkt(scaii_pkt: &ScaiiPacket) -> bool {
 }
 
 
+pub fn is_log_file_entry_pkt(scaii_pkt: &ScaiiPacket) -> bool {
+    let specific_msg = &scaii_pkt.specific_msg;
+    match specific_msg {
+        &Some(scaii_packet::SpecificMsg::LogFileEntry(LogFileEntry {..})) => true,
+        _ => false,
+    }
+}
+
+
 pub fn get_study_question_answer_from_pkt(scaii_pkt: &ScaiiPacket) -> Result<protos::StudyQuestionAnswer, &'static str> {
     let specific_msg = scaii_pkt.specific_msg.clone();
     match specific_msg {
         Some(scaii_packet::SpecificMsg::StudyQuestionAnswer(x)) => Ok(x),
         _ => Err("Asked for protos::StudyQuestionAnswer from non StudyQuestionAnswer ScaiiPacket.Backend"),
+    }
+}
+
+
+pub fn get_log_file_entry_from_pkt(scaii_pkt: &ScaiiPacket) -> Result<protos::LogFileEntry, &'static str> {
+    let specific_msg = scaii_pkt.specific_msg.clone();
+    match specific_msg {
+        Some(scaii_packet::SpecificMsg::LogFileEntry(x)) => Ok(x),
+        _ => Err("Asked for protos::LogFilentry from non LogFileEntry ScaiiPacket.Backend"),
     }
 }
 

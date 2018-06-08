@@ -12,10 +12,18 @@ function getStudyQuestionRenderer(questions) {
     sqr.currentQuestionStep = undefined;
     sqr.currentQuestionNumber = undefined;
     sqr.currentQuestionText = undefined;
+    sqr.arrowCueNeeded = true;
 
+    sqr.forgetQuestion = function(){
+        this.questionType = undefined;
+        this.currentRadioName = undefined;
+        this.currentTextBox = undefined;
+        this.currentQuestionText = undefined;
+        $('#q-and-a-div').empty();
+    }
     sqr.renderTextInputBox = function(step, index) {
         this.questionType = 'text';
-        var textBoxId = "text-box-" + step + "-" + index;
+        var textBoxId = "question-text-box";
         var ta = document.createElement("textarea");
         ta.setAttribute("id", textBoxId);
         ta.setAttribute("style","font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px;height:140px");
@@ -63,7 +71,7 @@ function getStudyQuestionRenderer(questions) {
 
     sqr.renderRadioButtons = function(step, answers) {
         this.questionType = 'radio';
-        var radioSetName = "radio-for-step-" + step;
+        var radioSetName = "question-radio";
         for (var i in answers){
             var answer = answers[i];
             this.renderRadioButton(radioSetName, answer, step, i);
@@ -72,19 +80,19 @@ function getStudyQuestionRenderer(questions) {
     }
 
     sqr.renderSaveButton = function(onclickFunction, step){
-        var nextButtonRowId = "next-button-row-" + step;
+        var saveButtonRowId = "save-button-row";
         var buttonRow = document.createElement("DIV");
-        buttonRow.setAttribute("id", nextButtonRowId);
+        buttonRow.setAttribute("id", saveButtonRowId);
         buttonRow.setAttribute("class", "flex-row");
         buttonRow.setAttribute("style", "margin-top:10px;font-family:Arial;background-color:" + this.bg + ";width:100%;");
         $("#q-and-a-div").append(buttonRow);
 
-        var next = document.createElement("BUTTON");
-        next.setAttribute("id", "button-next-"+ step);
-        next.setAttribute("style", "margin-left:250px;font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px");
-        next.innerHTML = "Save";
-        next.onclick = onclickFunction;
-        $("#"+ nextButtonRowId).append(next);
+        var save = document.createElement("BUTTON");
+        save.setAttribute("id", "button-save");
+        save.setAttribute("style", "margin-left:250px;font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px");
+        save.innerHTML = "Save";
+        save.onclick = onclickFunction;
+        $("#"+ saveButtonRowId).append(save);
     }
     
     sqr.poseQuestion = function(qu, questionIndex, curStep){
@@ -110,7 +118,7 @@ function getStudyQuestionRenderer(questions) {
         $("#q-and-a-div").css("padding","20px");
         // add a textArea for the question
         var quText = document.createElement("DIV");
-        quText.setAttribute("id", "user-id-question");
+        quText.setAttribute("id", "current-question");
         quText.setAttribute("style", "margin-left:50px;font-family:Arial;font-weight:bold;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
         quText.innerHTML =  "D" + questionNumber  + ": " + text;
         $("#q-and-a-div").append(quText);
@@ -191,5 +199,90 @@ function getStudyQuestionRenderer(questions) {
         }
         $("#user-id-button-row").append(next);
     }
+
+    sqr.renderCueToPlayButton = function(){
+        var arrowText = document.createElement("DIV");
+        arrowText.setAttribute("id", "arrow-text");
+        arrowText.setAttribute("style", "margin:auto;font-family:Arial;font-size:18px;padding:10px;");
+        arrowText.innerHTML = "Click the play button to have the game play until the next decision point.";
+        $("#q-and-a-div").append(arrowText);
+
+    }
+    
+    sqr.renderCueAndArrowToPlayButton = function(){
+        var arrowText = document.createElement("DIV");
+        arrowText.setAttribute("id", "arrow-text");
+        arrowText.setAttribute("style", "margin:auto;font-family:Arial;font-size:18px;padding:10px;");
+        arrowText.innerHTML = "Click the play button to have the game play until the next decision point.";
+        $("#q-and-a-div").append(arrowText);
+
+        var startCoords = getCoordForStartOfArrowText();
+        var endCoords = getCoordsForPlayButton();
+        drawArrow(startCoords, endCoords);
+        this.arrowCueNeeded = false;
+    }
+
     return sqr;
+}
+
+function getCoordForStartOfArrowText() {
+    var pos = $("#arrow-text").offset();
+    var result = {};
+    result.x = pos.left + 200;
+    result.y = pos.top;
+    return result;
+}
+
+function getCoordsForPlayButton() {
+    var pos = $("#pauseResumeButton").offset();
+    var result = {};
+    result.x = pos.left;
+    result.y = pos.top + $("#pauseResumeButton").height();
+    return result;
+}
+function drawArrow(startCoords, endCoords){
+    var fromx = startCoords.x;
+    var fromy = startCoords.y;
+    var tox = endCoords.x;
+    var toy = endCoords.y;
+    var width = $("#game-titled-container").width();
+    var height = $("#game-titled-container").height();
+    //variables to be used when creating the arrow
+    var c = document.createElement("canvas");
+    c.setAttribute("id", "cue-arrow-div");
+    c.setAttribute("width", width + "px");
+    c.setAttribute("height", height + "px");
+    c.setAttribute("style", "position:absolute;z-index:10000;top:0px;left:0px;pointer-events: none;");
+    $("body").append(c);
+    var ctx = c.getContext("2d");
+    var headlen = 10;
+
+    var angle = Math.atan2(toy-fromy,tox-fromx);
+
+    //starting path of the arrow from the start square to the end square and drawing the stroke
+    ctx.beginPath();
+    ctx.moveTo(fromx, fromy);
+    ctx.lineTo(tox, toy);
+    ctx.strokeStyle = "#cc0000";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    //starting a new path from the head of the arrow to one of the sides of the point
+    ctx.beginPath();
+    ctx.moveTo(tox, toy);
+    ctx.lineTo(tox-headlen*Math.cos(angle-Math.PI/7),toy-headlen*Math.sin(angle-Math.PI/7));
+
+    //path from the side point of the arrow, to the other side point
+    ctx.lineTo(tox-headlen*Math.cos(angle+Math.PI/7),toy-headlen*Math.sin(angle+Math.PI/7));
+
+    //path from the side point back to the tip of the arrow, and then again to the opposite side point
+    ctx.lineTo(tox, toy);
+    ctx.lineTo(tox-headlen*Math.cos(angle-Math.PI/7),toy-headlen*Math.sin(angle-Math.PI/7));
+
+    //draws the paths created above
+    ctx.strokeStyle = "#cc0000";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.fillStyle = "#cc0000";
+    ctx.fill();
 }

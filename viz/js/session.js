@@ -4,6 +4,7 @@ var replayChoiceConfig;
 var selectedExplanationStep = undefined;
 var sessionIndexManager = undefined;
 var studyQuestionManager = undefined;
+var stateMonitor = undefined;
 
 // ToDo - when strat jump- turn off incrementing index until receive set position.  Unblock incrementing on jump complete
 // then it will be apparent if we need to correct for ReplaySequencer's index pointing to next-packet-to-send rather than 
@@ -103,10 +104,12 @@ function handleStudyQuestions(studyQuestions){
     var questions = studyQuestions.getStudyQuestionsList();
     var userId = studyQuestions.getUserId();
     var treatmentId = studyQuestions.getTreatmentId();
+    var answerFilename = studyQuestions.getAnswerFilename();
     if (questions.length == 0) {
         return;
     }
     studyQuestionManager = getStudyQuestionManager(questions, userId, treatmentId);
+    stateMonitor.logFileName = answerFilename;
 }
 
 function handleReplayControl(replayControl) {
@@ -122,6 +125,7 @@ function handleReplayControl(replayControl) {
 
 
 function handleReplayChoiceConfig(config){
+    stateMonitor = getStateMonitor();
 	var replayNames = config.getReplayFilenamesList();
 	for (var i in replayNames) {
 		var name = replayNames[i];
@@ -171,6 +175,7 @@ function handleVizInit(vizInit) {
 	}
 	// ignoring gameboard width and height, assume 40 x 40
 }
+
 function handleViz(vizData) {
 	entitiesList = vizData.getEntitiesList();
 	cumulativeRewardsMap = vizData.getCumulativeRewardsMap();
@@ -188,7 +193,16 @@ function handleViz(vizData) {
             studyQuestionManager.blockClicksOutsideRange();
         }
         if (studyQuestionManager.isAtEndOfRange(sessionIndexManager.getCurrentIndex())){
-            pauseGame();
+            if (studyQuestionManager.questionWasAnswered) {
+                studyQuestionManager.questionWasAnswered = false;
+                // we're ready to move forward to next Decision Point
+                studyQuestionManager.poseNextQuestion();
+                //chooseNextQuestionAfterStep(sessionIndexManager.getCurrentIndex());
+            }
+            else {
+                pauseGame();
+		        controlsManager.disablePauseResume();
+            }
         }
     }
     

@@ -1,5 +1,5 @@
 
-use protos::{StudyQuestion, StudyQuestions, StudyQuestionAnswer};
+use protos::{LogFileEntry, StudyQuestion, StudyQuestions, StudyQuestionAnswer};
 use std::error::Error;
 
 pub struct UserStudyQuestions {
@@ -20,11 +20,15 @@ impl UserStudyQuestions {
         let question_filename = get_filename_for_root(question_filename_root)?;
         let mut user_id = "".to_string();
         let mut treatment_id = "".to_string();
+        let mut answer_filename = "".to_string();
         match question_filename  {
             None => { return Ok(None); },
             Some(ref filename)  => {
                 user_id = get_field_from_filename(filename, 2 as u32);
                 treatment_id = get_field_from_filename(filename, 3 as u32);
+                answer_filename = filename.replace("question", "answer");
+                let result = str::replace("Hello World!", "!", "?");
+println!("{}", result); // => "Hello World!"
                 println!("user_id {} ", user_id);
                 println!("treatment_id {}", treatment_id);
             },
@@ -45,6 +49,7 @@ impl UserStudyQuestions {
             user_id: user_id,
             treatment_id: treatment_id,
             study_questions: questions_vec,
+            answer_filename: answer_filename,
         };
         Ok(Some(study_questions))
     }
@@ -67,6 +72,37 @@ impl UserStudyQuestions {
             question: question,
             answers: answer_vec,
         })
+    }
+
+
+    pub fn persist_log_entry(&mut self, lfe: LogFileEntry) -> Result<(), Box<Error>> {
+        use std::fs::{File, OpenOptions,remove_file};
+        use std::io::Write;
+        use scaii_core;
+        println!("{:?}", &lfe);
+        let output_line = lfe.entry;
+        self.answer_lines.push(output_line);
+
+        if lfe.is_last_line {
+            let mut answerfile_path = scaii_core::get_default_replay_dir()?;
+            // append to file called replayX_answers_userID_treatmentID.txt
+            // or ??? replayX_answers_userID_sessionID_treatmentID.txt
+            let filename = lfe.filename;
+            answerfile_path.push(filename);
+            if answerfile_path.exists(){
+                remove_file(&answerfile_path)?;
+            }
+            println!("answerfile_path is {:?}", answerfile_path);
+            File::create(&answerfile_path)?;
+            let mut file = OpenOptions::new().append(true).open(answerfile_path).unwrap();
+            for line in &self.answer_lines {
+                file.write_all(line.as_bytes())?;
+                file.write_all("\n".to_string().as_bytes())?;
+                //writeln!(file, format!("{}",line))?;
+            }
+        }
+        
+        Ok(())
     }
 
     pub fn persist_study_question_answer(&mut self, sqa: StudyQuestionAnswer) -> Result<(), Box<Error>> {
@@ -114,6 +150,7 @@ fn get_field_from_filename(filename : &String, index : u32) -> String {
     let vec:Vec<&str> = root_parts_iterator.collect();
     vec[index as usize].to_string()
 }
+
 fn get_filename_for_root(root: String) -> Result<Option<String>, Box<Error>>  {
     use scaii_core;
     use std::fs;

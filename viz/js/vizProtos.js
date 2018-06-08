@@ -39,6 +39,7 @@ goog.provide('proto.scaii.common.GameComplete');
 goog.provide('proto.scaii.common.InitAs');
 goog.provide('proto.scaii.common.Layer');
 goog.provide('proto.scaii.common.Layers');
+goog.provide('proto.scaii.common.LogFileEntry');
 goog.provide('proto.scaii.common.ModuleCfg');
 goog.provide('proto.scaii.common.ModuleEndpoint');
 goog.provide('proto.scaii.common.ModuleInit');
@@ -8485,7 +8486,8 @@ proto.scaii.common.StudyQuestions.toObject = function(includeInstance, msg) {
     studyQuestionsList: jspb.Message.toObjectList(msg.getStudyQuestionsList(),
     proto.scaii.common.StudyQuestion.toObject, includeInstance),
     userId: jspb.Message.getField(msg, 2),
-    treatmentId: jspb.Message.getField(msg, 3)
+    treatmentId: jspb.Message.getField(msg, 3),
+    answerFilename: jspb.Message.getField(msg, 4)
   };
 
   if (includeInstance) {
@@ -8535,6 +8537,10 @@ proto.scaii.common.StudyQuestions.deserializeBinaryFromReader = function(msg, re
       var value = /** @type {string} */ (reader.readString());
       msg.setTreatmentId(value);
       break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setAnswerFilename(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -8583,6 +8589,13 @@ proto.scaii.common.StudyQuestions.serializeBinaryToWriter = function(message, wr
   if (f != null) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 4));
+  if (f != null) {
+    writer.writeString(
+      4,
       f
     );
   }
@@ -8675,6 +8688,35 @@ proto.scaii.common.StudyQuestions.prototype.clearTreatmentId = function() {
  */
 proto.scaii.common.StudyQuestions.prototype.hasTreatmentId = function() {
   return jspb.Message.getField(this, 3) != null;
+};
+
+
+/**
+ * required string answer_filename = 4;
+ * @return {string}
+ */
+proto.scaii.common.StudyQuestions.prototype.getAnswerFilename = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.StudyQuestions.prototype.setAnswerFilename = function(value) {
+  jspb.Message.setField(this, 4, value);
+};
+
+
+proto.scaii.common.StudyQuestions.prototype.clearAnswerFilename = function() {
+  jspb.Message.setField(this, 4, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.StudyQuestions.prototype.hasAnswerFilename = function() {
+  return jspb.Message.getField(this, 4) != null;
 };
 
 
@@ -9295,6 +9337,246 @@ proto.scaii.common.StudyQuestionAnswer.prototype.hasTreatmentId = function() {
  * @extends {jspb.Message}
  * @constructor
  */
+proto.scaii.common.LogFileEntry = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.scaii.common.LogFileEntry, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.LogFileEntry.displayName = 'proto.scaii.common.LogFileEntry';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.LogFileEntry.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.LogFileEntry.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.LogFileEntry} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.LogFileEntry.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    filename: jspb.Message.getField(msg, 1),
+    entry: jspb.Message.getField(msg, 2),
+    isLastLine: jspb.Message.getField(msg, 3)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.LogFileEntry}
+ */
+proto.scaii.common.LogFileEntry.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.LogFileEntry;
+  return proto.scaii.common.LogFileEntry.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.LogFileEntry} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.LogFileEntry}
+ */
+proto.scaii.common.LogFileEntry.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setFilename(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setEntry(value);
+      break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIsLastLine(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.LogFileEntry.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.scaii.common.LogFileEntry.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.LogFileEntry} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.LogFileEntry.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = /** @type {string} */ (jspb.Message.getField(message, 1));
+  if (f != null) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 2));
+  if (f != null) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
+  f = /** @type {boolean} */ (jspb.Message.getField(message, 3));
+  if (f != null) {
+    writer.writeBool(
+      3,
+      f
+    );
+  }
+};
+
+
+/**
+ * required string filename = 1;
+ * @return {string}
+ */
+proto.scaii.common.LogFileEntry.prototype.getFilename = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.LogFileEntry.prototype.setFilename = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+proto.scaii.common.LogFileEntry.prototype.clearFilename = function() {
+  jspb.Message.setField(this, 1, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.LogFileEntry.prototype.hasFilename = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * required string entry = 2;
+ * @return {string}
+ */
+proto.scaii.common.LogFileEntry.prototype.getEntry = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.LogFileEntry.prototype.setEntry = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+proto.scaii.common.LogFileEntry.prototype.clearEntry = function() {
+  jspb.Message.setField(this, 2, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.LogFileEntry.prototype.hasEntry = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * required bool is_last_line = 3;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.scaii.common.LogFileEntry.prototype.getIsLastLine = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 3, false));
+};
+
+
+/** @param {boolean} value */
+proto.scaii.common.LogFileEntry.prototype.setIsLastLine = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+proto.scaii.common.LogFileEntry.prototype.clearIsLastLine = function() {
+  jspb.Message.setField(this, 3, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.LogFileEntry.prototype.hasIsLastLine = function() {
+  return jspb.Message.getField(this, 3) != null;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
 proto.scaii.common.MultiMessage = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, proto.scaii.common.MultiMessage.repeatedFields_, null);
 };
@@ -9478,7 +9760,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.scaii.common.ScaiiPacket.oneofGroups_ = [[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,29]];
+proto.scaii.common.ScaiiPacket.oneofGroups_ = [[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]];
 
 /**
  * @enum {number}
@@ -9512,6 +9794,7 @@ proto.scaii.common.ScaiiPacket.SpecificMsgCase = {
   REPLAY_CHOICE_CONFIG: 25,
   STUDY_QUESTIONS: 26,
   STUDY_QUESTION_ANSWER: 27,
+  LOG_FILE_ENTRY: 28,
   OTHER: 29
 };
 
@@ -9578,6 +9861,7 @@ proto.scaii.common.ScaiiPacket.toObject = function(includeInstance, msg) {
     replayChoiceConfig: (f = msg.getReplayChoiceConfig()) && proto.scaii.common.ReplayChoiceConfig.toObject(includeInstance, f),
     studyQuestions: (f = msg.getStudyQuestions()) && proto.scaii.common.StudyQuestions.toObject(includeInstance, f),
     studyQuestionAnswer: (f = msg.getStudyQuestionAnswer()) && proto.scaii.common.StudyQuestionAnswer.toObject(includeInstance, f),
+    logFileEntry: (f = msg.getLogFileEntry()) && proto.scaii.common.LogFileEntry.toObject(includeInstance, f),
     other: (f = msg.getOther()) && proto.scaii.common.Other.toObject(includeInstance, f),
     src: (f = msg.getSrc()) && proto.scaii.common.Endpoint.toObject(includeInstance, f),
     dest: (f = msg.getDest()) && proto.scaii.common.Endpoint.toObject(includeInstance, f)
@@ -9748,6 +10032,11 @@ proto.scaii.common.ScaiiPacket.deserializeBinaryFromReader = function(msg, reade
       var value = new proto.scaii.common.StudyQuestionAnswer;
       reader.readMessage(value,proto.scaii.common.StudyQuestionAnswer.deserializeBinaryFromReader);
       msg.setStudyQuestionAnswer(value);
+      break;
+    case 28:
+      var value = new proto.scaii.common.LogFileEntry;
+      reader.readMessage(value,proto.scaii.common.LogFileEntry.deserializeBinaryFromReader);
+      msg.setLogFileEntry(value);
       break;
     case 29:
       var value = new proto.scaii.common.Other;
@@ -10004,6 +10293,14 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       27,
       f,
       proto.scaii.common.StudyQuestionAnswer.serializeBinaryToWriter
+    );
+  }
+  f = message.getLogFileEntry();
+  if (f != null) {
+    writer.writeMessage(
+      28,
+      f,
+      proto.scaii.common.LogFileEntry.serializeBinaryToWriter
     );
   }
   f = message.getOther();
@@ -10843,6 +11140,36 @@ proto.scaii.common.ScaiiPacket.prototype.clearStudyQuestionAnswer = function() {
  */
 proto.scaii.common.ScaiiPacket.prototype.hasStudyQuestionAnswer = function() {
   return jspb.Message.getField(this, 27) != null;
+};
+
+
+/**
+ * optional LogFileEntry log_file_entry = 28;
+ * @return {?proto.scaii.common.LogFileEntry}
+ */
+proto.scaii.common.ScaiiPacket.prototype.getLogFileEntry = function() {
+  return /** @type{?proto.scaii.common.LogFileEntry} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.LogFileEntry, 28));
+};
+
+
+/** @param {?proto.scaii.common.LogFileEntry|undefined} value */
+proto.scaii.common.ScaiiPacket.prototype.setLogFileEntry = function(value) {
+  jspb.Message.setOneofWrapperField(this, 28, proto.scaii.common.ScaiiPacket.oneofGroups_[0], value);
+};
+
+
+proto.scaii.common.ScaiiPacket.prototype.clearLogFileEntry = function() {
+  this.setLogFileEntry(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.ScaiiPacket.prototype.hasLogFileEntry = function() {
+  return jspb.Message.getField(this, 28) != null;
 };
 
 

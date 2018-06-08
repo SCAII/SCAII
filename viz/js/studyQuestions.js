@@ -19,6 +19,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     sqm.windowRangeForStep = {};
     sqm.summaryQuestion = undefined;
     sqm.summaryAnswers = undefined;
+    sqm.questionWasAnswered = false;
     // init to -1 so step at index 0 will be ref'd after incrementing first time
     sqm.currentStepIndex = -1;
     sqm.stepIndexPriorToSummaryQuestion = undefined;
@@ -49,7 +50,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     sqm.isAtEndOfRange = function(step) {
         if (this.activeRange != undefined){
             var endOfRange = this.activeRange[1];
-            if (step == endOfRange + 1) {
+            if (step >= endOfRange - 1) { 
                 return true;
             }
         }
@@ -109,6 +110,14 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         }
     }
     
+    sqm.jumpBackToCurrentDecisionPoint = function() {
+        var targetStep = this.steps[this.currentStepIndex];
+        var args = ["" + nextStep];
+        var userCommand = new proto.scaii.common.UserCommand;
+        userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+        userCommand.setArgsList(args);
+        stageUserCommand(userCommand);
+    }
 
     sqm.poseCurrentQuestion = function() {
         var curStep = this.steps[this.currentStepIndex];
@@ -128,6 +137,9 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
 
     sqm.blockClicksOutsideRange = function() {
         var step = this.steps[this.currentStepIndex];
+        if (step == undefined){
+            return;
+        }
         var rangePair = this.windowRangeForStep[step];
         this.activeRange = rangePair;
         var maxIndex = sessionIndexManager.getMaxIndex();
@@ -180,20 +192,21 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
 }
 
 function getRanges(steps) {
-    var step_range_pairs = {};
+    var stepRangePairs = {};
     for (var i = 0; i < steps.length; i++) {
         if (i == steps.length - 1) {
             // looking at the final entry - pair this one with the max index
             var range_pair = [ Number(steps[i]), Number(sessionIndexManager.getMaxIndex()) ];
-            step_range_pairs[steps[i]] = range_pair;
+            stepRangePairs[steps[i]] = range_pair;
         }
         else {
             // prior to last one, we make a pair with the step prior to the next question's step
             var range_pair = [ Number(steps[i]), Number(steps[i+1]) - 1 ];
-            step_range_pairs[steps[i]] = range_pair;
+            stepRangePairs[steps[i]] = range_pair;
         }
     }
-    return step_range_pairs;
+    console.log(stepRangePairs)
+    return stepRangePairs;
 }
 
 function acceptUserId() {
@@ -232,6 +245,25 @@ function acceptAnswer() {
     pkt.setStudyQuestionAnswer(sqa);
     userInfoScaiiPackets.push(pkt);
 
+    renderer.forgetQuestion();
+    if (renderer.arrowCueNeeded) {
+        renderer.renderCueAndArrowToPlayButton();
+    }
+    else {
+        renderer.renderCueToPlayButton();
+    }
+    studyQuestionManager.questionWasAnswered = true;
+
+    if (step == 'summary'){
+        renderer.poseThankYouScreen();
+    } 
+    else {
+        controlsManager.enablePauseResume();
+    }
+}
+
+
+function chooseNextQuestionAfterStep(step) {
     // clear current question
     $('#q-and-a-div').empty();
 

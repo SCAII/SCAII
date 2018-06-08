@@ -395,12 +395,17 @@ impl ReplayManager {
                 }
             } else if scaii_defs::protos::is_error_pkt(scaii_pkt) {
                 // Error would have already been shown to user at UI
-            }
-            else if scaii_defs::protos::is_study_question_answer_pkt(scaii_pkt) {
+            } else if scaii_defs::protos::is_study_question_answer_pkt(scaii_pkt) {
                 use scaii_defs::protos::StudyQuestionAnswer;
                 let sqa : StudyQuestionAnswer = scaii_defs::protos::get_study_question_answer_from_pkt(scaii_pkt).unwrap();
                 if let Some(ref mut user_study_questions) = self.user_study_questions {
                     user_study_questions.persist_study_question_answer(sqa)?;
+                }
+            } else if scaii_defs::protos::is_log_file_entry_pkt(scaii_pkt) {
+                use scaii_defs::protos::LogFileEntry;
+                let lfe : LogFileEntry = scaii_defs::protos::get_log_file_entry_from_pkt(scaii_pkt).unwrap();
+                if let Some(ref mut user_study_questions) = self.user_study_questions {
+                    user_study_questions.persist_log_entry(lfe)?;
                 }
             } else {
                 println!(
