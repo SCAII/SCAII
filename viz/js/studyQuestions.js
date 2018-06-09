@@ -143,7 +143,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         var rightValueOnTimeline = Math.floor((rangePair[1] / maxIndex ) * 100);
         var x3 = ecpOffset.left + timelineMargin + (rightValueOnTimeline / 100) * widthOfTimeline;
         // shift x3 to the left to fully cover the next DecisionPoint
-        if (this.squim.isAtLastDecisionPoint()) {
+        if (!this.squim.isAtLastDecisionPoint()) {
             x3 = x3 - explanationPointSmallDiamondHalfWidth;
         }
         var x4 = expl_ctrl_canvas.width;
