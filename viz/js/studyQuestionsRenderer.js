@@ -9,16 +9,12 @@ function getStudyQuestionRenderer(questions) {
     sqr.questionType = undefined;
     sqr.currentRadioName = undefined;
     sqr.currentTextBox = undefined;
-    sqr.currentQuestionStep = undefined;
-    sqr.currentQuestionNumber = undefined;
-    sqr.currentQuestionText = undefined;
     sqr.arrowCueNeeded = true;
 
     sqr.forgetQuestion = function(){
         this.questionType = undefined;
         this.currentRadioName = undefined;
         this.currentTextBox = undefined;
-        this.currentQuestionText = undefined;
         $('#q-and-a-div').empty();
     }
     sqr.renderTextInputBox = function(step, index) {
@@ -95,20 +91,11 @@ function getStudyQuestionRenderer(questions) {
         $("#"+ saveButtonRowId).append(save);
     }
     
-    sqr.poseQuestion = function(qu, questionIndex, curStep){
-        this.currentQuestionNumber = questionIndex + 1;
-        this.currentQuestionStep = curStep;
-        this.currentQuestionText =  qu.questionText;
-        var answers = qu.answers;
-        this.poseGivenQuestion(this.currentQuestionNumber, curStep, this.currentQuestionText, answers);
-    }
-    
-    sqr.poseSummaryQuestion = function(questionIndex, questionText, answers){
-        this.currentQuestionNumber = questionIndex + 1;
-        this.currentQuestionStep = 'summary';
-        studyQuestionManager.clearTimelineBlocks();
-        this.currentQuestionText =  questionText;
-        this.poseGivenQuestion(this.currentQuestionNumber, 'summary', questionText, answers);
+    sqr.poseQuestion = function(qu, currentDecisionPointNumber, curStep){
+        if (currentDecisionPointNumber == undefined) {
+            studyQuestionManager.clearTimelineBlocks();
+        }
+        this.poseGivenQuestion(currentDecisionPointNumber, curStep, qu.questionText, qu.answers);
     }
 
     sqr.poseGivenQuestion = function(questionNumber, step, text, answers){
@@ -120,7 +107,13 @@ function getStudyQuestionRenderer(questions) {
         var quText = document.createElement("DIV");
         quText.setAttribute("id", "current-question");
         quText.setAttribute("style", "margin-left:50px;font-family:Arial;font-weight:bold;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
-        quText.innerHTML =  "D" + questionNumber  + ": " + text;
+        if (questionNumber == undefined) {
+            quText.innerHTML =  text;
+        }
+        else {
+            quText.innerHTML =  "D" + questionNumber  + ": " + text;
+        }
+        
         $("#q-and-a-div").append(quText);
 
         if (answers.length == 0){

@@ -25,7 +25,12 @@ function getStateMonitor() {
             var logLine = this.getStateLogEntry(date, time);
             lfe.setEntry(logLine);
             lfe.setFilename(this.logFileName);
-            lfe.setIsLastLine(true);
+            if (studyQuestionIndexManager.hasMoreQuestions()) {
+                lfe.setIsLastLine(false);
+            }
+            else {
+                lfe.setIsLastLine(true);
+            }
             pkt.setLogFileEntry(lfe);
             userInfoScaiiPackets.push(pkt);
         }

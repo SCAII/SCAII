@@ -58,19 +58,21 @@ println!("{}", result); // => "Hello World!"
         use super::ReplayError;
         let line_parts_iterator = line.split(";");
         let vec: Vec<&str> = line_parts_iterator.collect();
-        if vec.len() < 2 {
-            return Err(Box::new(ReplayError::new(&format!("study question line needs at least two fields: <step>;<question>;<answer1>..."))));
+        if vec.len() < 3 {
+            return Err(Box::new(ReplayError::new(&format!("study question line needs at least three fields: <step>;<questionIndex>;<question>;<answer1>..."))));
         }
         let step: String = vec[0].to_string();
-        let question : String = vec[1].to_string();
+        let question_index: String = vec[1].to_string();
+        let question : String = vec[2].to_string();
         let mut answer_vec : Vec<String> = Vec::new();
-        for x in 2..vec.len() {
+        for x in 3..vec.len() {
             answer_vec.push(vec[x].to_string());
         }
         Ok(StudyQuestion {
             step: step,
             question: question,
             answers: answer_vec,
+            question_id_for_step: question_index,
         })
     }
 

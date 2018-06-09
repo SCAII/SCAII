@@ -12,117 +12,101 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     var sqm = {};
     sqm.renderer = getStudyQuestionRenderer();
     sqm.userId = userId;
-    sqm.hasShownUserID = false;
+    sqm.userIdHasBeenSet = false;
     sqm.treatmentId = treatmentId;
-    sqm.questionForStepMap = {};
-    sqm.steps = [];
+
+    sqm.questionMap = {};
+    sqm.questionIds = [];
+
     sqm.windowRangeForStep = {};
-    sqm.summaryQuestion = undefined;
-    sqm.summaryAnswers = undefined;
     sqm.questionWasAnswered = false;
-    // init to -1 so step at index 0 will be ref'd after incrementing first time
-    sqm.currentStepIndex = -1;
-    sqm.stepIndexPriorToSummaryQuestion = undefined;
     sqm.activeRange = undefined;
 
     for (var i in questions){
         var question = questions[i];
         var step = question.getStep();
+        var questionIndexForStep = question.getQuestionIdForStep();;
+        var questionId = getQuestionId(step, questionIndexForStep);
         var questionText = question.getQuestion();
         var answers = question.getAnswersList();
-        if (step == 'summary'){
-            sqm.summaryQuestion = questionText;
-            sqm.summaryAnswers = answers;
-        }
-        else {
-            sqm.steps.push(step);
-            var qu = {};
-            qu.step = step;
-            qu.questionText= questionText;
-            qu.answers = answers;
-            sqm.questionForStepMap['step_' + step] = qu;
-        }
-        
+        var qu = {};
+        qu.step = step;
+        qu.questionIndexForStep = questionIndexForStep;
+        qu.questionId = questionId;
+        qu.questionText= questionText;
+        qu.answers = answers;
+        sqm.questionIds.push(questionId);
+        sqm.questionMap[questionId] = qu;
     }
-    sqm.windowRangeForStep = getRanges(sqm.steps);
-    sqm.stepIndexPriorToSummaryQuestion = sqm.steps.length - 2;
+    sqm.squim = getStudyQuestionIndexManager(sqm.questionIds);
+    studyQuestionIndexManager = sqm.squim;
+    sqm.windowRangeForStep = getRanges(sqm.squim.getDecisionPointSteps());
 
     sqm.isAtEndOfRange = function(step) {
         if (this.activeRange != undefined){
             var endOfRange = this.activeRange[1];
-            if (step >= endOfRange - 1) { 
+            //if (step >= endOfRange - 1) { 
+            if (step >= endOfRange) { 
                 return true;
             }
         }
         return false;
     }
-    sqm.hasQuestionForStep = function(step) {
-        return this.questionForStepMap['step_'+step] != undefined;
-    }
-    
-    sqm.getQuestionForStep = function(step) {
-        return this.questionForStepMap['step_'+step];
-    }
-    
-    sqm.hasAnswersForStep = function(step) {
-        var qu = this.questionForStepMap['step_'+step];
-        var result =  qu.answers.length != 0;
-        return result;
-    }
     
     sqm.hasShownUserId = function() {
-        return this.hasShownUserID;
+        return this.userIdHasBeenSet;
     }
-    sqm.getAnswersForStep = function(step) {
-        var qu = this.questionForStepMap['step_'+step];
-        return  qu.answers;
-    }
-
+  
     sqm.configureForCurrentStep = function() {
         var currentStep = sessionIndexManager.getCurrentIndex();
         if (!this.hasShownUserId()) {
             this.renderer.poseUserIdQuestion();
         }
-        else if (this.hasQuestionForStep(currentStep)) {
+        else if (this.squim.hasQuestionForStep(currentStep)) {
             this.poseCurrentQuestion();
         }
     }
 
-    sqm.isDoneWithStepRelatedQuestions = function(){
-        return this.currentStepIndex == this.steps.length;
-    }
-
-    
-    sqm.poseNextQuestion = function() {
-        this.currentStepIndex = this.currentStepIndex + 1;
-        if (this.isDoneWithStepRelatedQuestions()){
-            // we've asked the last "true-step" question, ask summary instead
-            this.renderer.poseSummaryQuestion(this.currentStepIndex, this.summaryQuestion, this.summaryAnswers);
-        }
-        else {
-            var nextStep = this.steps[this.currentStepIndex];
-            var args = ["" + nextStep];
-            var userCommand = new proto.scaii.common.UserCommand;
-            userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-            userCommand.setArgsList(args);
-            stageUserCommand(userCommand);
-            this.poseCurrentQuestion();
-        }
-    }
-    
-    sqm.jumpBackToCurrentDecisionPoint = function() {
-        var targetStep = this.steps[this.currentStepIndex];
-        var args = ["" + nextStep];
+    sqm.poseFirstQuestion = function() {
+        var step = this.squim.getCurrentStep();
+        var args = ["" + step];
         var userCommand = new proto.scaii.common.UserCommand;
         userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
         userCommand.setArgsList(args);
         stageUserCommand(userCommand);
+        controlsManager.userJumped();
+        this.poseCurrentQuestion();
     }
+    
+    sqm.poseNextQuestion = function() {
+        var priorStep = this.squim.getCurrentStep();
+        this.squim.next();
+        var newStep = this.squim.getCurrentStep();
+        if (priorStep != newStep && !this.squim.isCurrentQuestionSummary()) {
+            // move to next step
+            var args = ["" + newStep];
+            var userCommand = new proto.scaii.common.UserCommand;
+            userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+            userCommand.setArgsList(args);
+            stageUserCommand(userCommand);
+            controlsManager.userJumped();
+        }
+        this.poseCurrentQuestion();
+    }
+    
+    // sqm.jumpBackToCurrentDecisionPoint = function() {
+    //     var targetStep = this.steps[this.currentStepIndex];
+    //     var args = ["" + nextStep];
+    //     var userCommand = new proto.scaii.common.UserCommand;
+    //     userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+    //     userCommand.setArgsList(args);
+    //     stageUserCommand(userCommand);
+    //     controlsManager.userJumped();
+    // }
 
     sqm.poseCurrentQuestion = function() {
-        var curStep = this.steps[this.currentStepIndex];
-        var qu = sqm.questionForStepMap['step_' + curStep];
-        this.renderer.poseQuestion(qu, this.currentStepIndex, curStep);
+        var qu = this.questionMap[this.squim.getCurrentQuestionId()];
+        this.renderer.poseQuestion(qu, this.squim.getCurrentDecisionPointNumber(), this.squim.getCurrentStep());
     }
 
     sqm.clearTimelineBlocks = function() {
@@ -130,13 +114,8 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         $("#right-block-div").remove();
     }
 
-    sqm.leftBoundaryOfRightBlockHasDiamond = function(){
-        var indexOfLastDecisionPoint = this.steps.length - 1
-        return this.currentStepIndex != indexOfLastDecisionPoint;
-    } 
-
     sqm.blockClicksOutsideRange = function() {
-        var step = this.steps[this.currentStepIndex];
+        var step = this.squim.getCurrentStep();
         if (step == undefined){
             return;
         }
@@ -164,7 +143,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         var rightValueOnTimeline = Math.floor((rangePair[1] / maxIndex ) * 100);
         var x3 = ecpOffset.left + timelineMargin + (rightValueOnTimeline / 100) * widthOfTimeline;
         // shift x3 to the left to fully cover the next DecisionPoint
-        if (this.leftBoundaryOfRightBlockHasDiamond()) {
+        if (this.squim.isAtLastDecisionPoint()) {
             x3 = x3 - explanationPointSmallDiamondHalfWidth;
         }
         var x4 = expl_ctrl_canvas.width;
@@ -216,8 +195,8 @@ function acceptUserId() {
     }
     else {
         $("#user-id-div").remove();
-        studyQuestionManager.hasShownUserID = true;
-        studyQuestionManager.poseNextQuestion();
+        studyQuestionManager.userIdHasBeenSet = true;
+        studyQuestionManager.poseFirstQuestion();
     }
     
 }
@@ -230,48 +209,45 @@ function acceptAnswer() {
         return;
     }
     // gather answer, send to backend
-    var pkt = new proto.scaii.common.ScaiiPacket;
-    var sqa = new proto.scaii.common.StudyQuestionAnswer;
-    var step = renderer.currentQuestionStep;
-    var questionNumber = renderer.currentQuestionNumber;
-    var questionText = renderer.currentQuestionText;
-    sqa.setUserId(studyQuestionManager.userId);
-    sqa.setTreatmentId(studyQuestionManager.treatmentId);
-    sqa.setStep(step);
-    console.log('saving question number ' + questionNumber + ' step ' + step);
-    sqa.setQuestionNumber('' + questionNumber);
-    sqa.setQuestion(questionText);
-    sqa.setAnswer(answer);
-    pkt.setStudyQuestionAnswer(sqa);
-    userInfoScaiiPackets.push(pkt);
+    var currentStep = studyQuestionIndexManager.getCurrentStep();
+    var questionId = studyQuestionIndexManager.getCurrentQuestionId();
+    var currentQuestionIndexAtStep = getQuestionIndexFromQuestionId(questionId);
+    stateMonitor.setUserAction("answerQuestion;"+ currentStep + ";" + currentQuestionIndexAtStep + ":" + answer);
 
     renderer.forgetQuestion();
-    if (renderer.arrowCueNeeded) {
-        renderer.renderCueAndArrowToPlayButton();
-    }
-    else {
-        renderer.renderCueToPlayButton();
-    }
-    studyQuestionManager.questionWasAnswered = true;
-
-    if (step == 'summary'){
-        renderer.poseThankYouScreen();
-    } 
-    else {
-        controlsManager.enablePauseResume();
-    }
-}
-
-
-function chooseNextQuestionAfterStep(step) {
-    // clear current question
-    $('#q-and-a-div').empty();
-
-    if (step == 'summary'){
-        renderer.poseThankYouScreen();
-    } 
-    else {
-        // pose next question
+    if (studyQuestionIndexManager.hasMoreQuestionsAtThisStep()) {
         studyQuestionManager.poseNextQuestion();
     }
+    else {
+        if (renderer.arrowCueNeeded) {
+            renderer.renderCueAndArrowToPlayButton();
+        }
+        else {
+            if (studyQuestionIndexManager.hasMoreQuestions()){
+                renderer.renderCueToPlayButton();
+            }
+        }
+        studyQuestionManager.questionWasAnswered = true;
+        if (studyQuestionIndexManager.hasMoreQuestions()){
+            // wait for play button to take us to next Decision Point
+            controlsManager.enablePauseResume();
+        } 
+        else {
+            renderer.poseThankYouScreen();
+        }
+    }
 }
+
+
+// function chooseNextQuestionAfterStep(step) {
+//     // clear current question
+//     $('#q-and-a-div').empty();
+
+//     if (step == 'summary'){
+//         renderer.poseThankYouScreen();
+//     } 
+//     else {
+//         // pose next question
+//         studyQuestionManager.poseNextQuestion();
+//     }
+// }

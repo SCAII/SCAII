@@ -4,6 +4,7 @@ var replayChoiceConfig;
 var selectedExplanationStep = undefined;
 var sessionIndexManager = undefined;
 var studyQuestionManager = undefined;
+var studyQuestionIndexManager = undefined;
 var stateMonitor = undefined;
 
 // ToDo - when strat jump- turn off incrementing index until receive set position.  Unblock incrementing on jump complete

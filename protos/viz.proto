@@ -210,6 +210,7 @@ message StudyQuestion {
     required string step = 1;
     required string question = 2;
     repeated string answers = 3;
+    required string question_id_for_step = 4;
 }
 
 message StudyQuestionAnswer {

@@ -8776,7 +8776,8 @@ proto.scaii.common.StudyQuestion.toObject = function(includeInstance, msg) {
   var f, obj = {
     step: jspb.Message.getField(msg, 1),
     question: jspb.Message.getField(msg, 2),
-    answersList: jspb.Message.getRepeatedField(msg, 3)
+    answersList: jspb.Message.getRepeatedField(msg, 3),
+    questionIdForStep: jspb.Message.getField(msg, 4)
   };
 
   if (includeInstance) {
@@ -8825,6 +8826,10 @@ proto.scaii.common.StudyQuestion.deserializeBinaryFromReader = function(msg, rea
       var value = /** @type {string} */ (reader.readString());
       msg.addAnswers(value);
       break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setQuestionIdForStep(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -8872,6 +8877,13 @@ proto.scaii.common.StudyQuestion.serializeBinaryToWriter = function(message, wri
   if (f.length > 0) {
     writer.writeRepeatedString(
       3,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 4));
+  if (f != null) {
+    writer.writeString(
+      4,
       f
     );
   }
@@ -8962,6 +8974,35 @@ proto.scaii.common.StudyQuestion.prototype.addAnswers = function(value, opt_inde
 
 proto.scaii.common.StudyQuestion.prototype.clearAnswersList = function() {
   this.setAnswersList([]);
+};
+
+
+/**
+ * required string question_id_for_step = 4;
+ * @return {string}
+ */
+proto.scaii.common.StudyQuestion.prototype.getQuestionIdForStep = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.StudyQuestion.prototype.setQuestionIdForStep = function(value) {
+  jspb.Message.setField(this, 4, value);
+};
+
+
+proto.scaii.common.StudyQuestion.prototype.clearQuestionIdForStep = function() {
+  jspb.Message.setField(this, 4, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.StudyQuestion.prototype.hasQuestionIdForStep = function() {
+  return jspb.Message.getField(this, 4) != null;
 };
 
 
