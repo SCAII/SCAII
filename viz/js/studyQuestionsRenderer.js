@@ -23,6 +23,9 @@ function getStudyQuestionRenderer(questions) {
         var ta = document.createElement("textarea");
         ta.setAttribute("id", textBoxId);
         ta.setAttribute("style","font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px;height:140px");
+        ta.onkeyup = function() {
+            $("#button-save").attr("disabled",this.value == "");
+        }
         this.currentTextBox = ta;
         $("#q-and-a-div").append(ta);
     }
@@ -57,6 +60,9 @@ function getStudyQuestionRenderer(questions) {
         radio.setAttribute("style", "margin-left:80px;font-family:Arial;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
         radio.setAttribute("name", radioSetName);
         radio.setAttribute("value", answerText);
+        radio.onchange = function() {
+            $("#button-save").attr("disabled",false);
+        }
         $("#"+radioRowId).append(radio);
 
         var radioLabel = document.createElement("DIV");
@@ -84,6 +90,7 @@ function getStudyQuestionRenderer(questions) {
         $("#q-and-a-div").append(buttonRow);
 
         var save = document.createElement("BUTTON");
+        save.disabled = true;
         save.setAttribute("id", "button-save");
         save.setAttribute("style", "margin-left:250px;font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px");
         save.innerHTML = "Save";
