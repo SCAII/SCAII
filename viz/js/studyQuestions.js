@@ -165,6 +165,14 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         var rightBlockDiv = document.createElement("DIV");
         rightBlockDiv.setAttribute("id", "right-block-div");
         rightBlockDiv.setAttribute("style", "position:absolute;left:" + x3 + "px;top:" + y + "px;z-index:500;background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
+        rightBlockDiv.onclick = function(e) {
+            if (isStudyQuestionMode()){
+                targetClickHandler(e,"clickTimelineBlocker:NA");
+                regionClickHandlerGameArea(e);
+                userActionMonitor.globalClick(e.clientX, e.clientY);
+            }
+        }
+        
         $("body").append(rightBlockDiv);
     }
     return sqm;
@@ -200,7 +208,7 @@ function acceptUserId() {
     }
     
 }
-function acceptAnswer() {
+function acceptAnswer(e) {
     // block if no answer specified
     var renderer = studyQuestionManager.renderer;
     var answer = renderer.getCurrentAnswer();
@@ -212,7 +220,7 @@ function acceptAnswer() {
     var currentStep = studyQuestionIndexManager.getCurrentStep();
     var questionId = studyQuestionIndexManager.getCurrentQuestionId();
     var currentQuestionIndexAtStep = getQuestionIndexFromQuestionId(questionId);
-    stateMonitor.setUserAction("answerQuestion;"+ currentStep + ";" + currentQuestionIndexAtStep + ":" + answer);
+    targetClickHandler(e,"answerQuestion;"+ currentStep + ";" + currentQuestionIndexAtStep + ":" + answer);
 
     renderer.forgetQuestion();
     if (studyQuestionIndexManager.hasMoreQuestionsAtThisStep()) {

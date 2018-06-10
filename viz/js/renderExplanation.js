@@ -149,7 +149,7 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
 	if (!userInputBlocked){
 		var matchingStep = getMatchingExplanationStep(expl_ctrl_ctx, event.offsetX, event.offsetY);
 		if (matchingStep == undefined){
-			processTimelineClick(event);
+            processTimelineClick(event);
 		}
 		else{
 			if (matchingStep == sessionIndexManager.getCurrentIndex()) {
@@ -161,9 +161,11 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
 				// same args as above
 				var args = ['' +matchingStep];
 				userCommand.setArgsList(args);
-				stageUserCommand(userCommand);
+                stageUserCommand(userCommand);
+                targetClickHandler(event, "jumpToDecisionPoint:" + matchingStep);
 			}
-		}	
+        }
+        	
 	}
 });
 
@@ -389,7 +391,7 @@ function createRewardChartContainer() {
 function createSaliencyContainers() {
 	var scaiiExplanations = document.createElement("DIV");
 	scaiiExplanations.setAttribute("id", "scaii-explanations");
-	scaiiExplanations.setAttribute("class", "r1c0_2 saliencies-bg");
+    scaiiExplanations.setAttribute("class", "r1c0_2 saliencies-bg");
 	$("#scaii-interface").append(scaiiExplanations);
 
 	var saliencyGroup = document.createElement("DIV");
@@ -617,6 +619,14 @@ function addWhyButtonForAction(step, x,  y) {
 	
 	$("#explanation-control-panel").append(whyButton);
 	$("#" + buttonId).click(function(e) {
+        
+        if (rewardsAreShowing) {
+            targetClickHandler(e,"hideWhy:NA");
+        }
+        else {
+            targetClickHandler(e,"showWhy:NA");
+        }
+        
 		 e.preventDefault();
 		 processWhyClick(step);
 	})
@@ -633,8 +643,14 @@ function addWhatButton() {
 	
 	$("#what-button-div").append(whatButton);
 	$("#" + buttonId).click(function(e) {
-		 e.preventDefault();
-		 processWhatClick();
+        if (salienciesAreShowing){
+            targetClickHandler(e,"hideWhat:NA");
+        }
+        else {
+            targetClickHandler(e,"showWhat:NA");
+        }
+		e.preventDefault();
+		processWhatClick();
 	})
 }
 function convertNameToLegalId(name) {
@@ -697,25 +713,25 @@ function addLabelForAction(title, index, step){
 	$("#action-list").append(actionLabel);
 }
 
-function configureExplanationSelectorButton(step_count, step) {
-	var totalWidth = expl_ctrl_canvas.width - 2*timelineMargin;
-	var rectWidth = totalWidth / step_count;
-	var leftX = timelineMargin + rectWidth * (step - 1);
-	var y = explanationControlYPosition;
-	var qmButton = document.createElement("BUTTON");
-	var buttonId = getQmButtonId(step);
-	questionMarkButtonIds.push(buttonId);
-	qmButton.setAttribute("id", buttonId);
-	var qm = document.createTextNode("?");
-	qmButton.appendChild(qm);          
-	qmButton.setAttribute("style", 'z-index:2; position:relative; left:' + leftX + 'px; top: -30px; padding-left:2px; padding-right:2px;font-family:Arial;');
+// function configureExplanationSelectorButton(step_count, step) {
+// 	var totalWidth = expl_ctrl_canvas.width - 2*timelineMargin;
+// 	var rectWidth = totalWidth / step_count;
+// 	var leftX = timelineMargin + rectWidth * (step - 1);
+// 	var y = explanationControlYPosition;
+// 	var qmButton = document.createElement("BUTTON");
+// 	var buttonId = getQmButtonId(step);
+// 	questionMarkButtonIds.push(buttonId);
+// 	qmButton.setAttribute("id", buttonId);
+// 	var qm = document.createTextNode("?");
+// 	qmButton.appendChild(qm);          
+// 	qmButton.setAttribute("style", 'z-index:2; position:relative; left:' + leftX + 'px; top: -30px; padding-left:2px; padding-right:2px;font-family:Arial;');
 	
-	$("#explanation-control-panel").append(qmButton);
-	$("#" + buttonId).click(function(e) {
-		 e.preventDefault();
-		 processWhyClick(step);
-	})
-}
+// 	$("#explanation-control-panel").append(qmButton);
+// 	$("#" + buttonId).click(function(e) {
+// 		 e.preventDefault();
+// 		 processWhyClick(step);
+// 	})
+// }
 
 var selectedWhyButtonId = undefined;
 var selectedQmButtonId = undefined;

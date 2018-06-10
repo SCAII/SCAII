@@ -168,3 +168,9 @@ function getStateMonitor() {
     }
     return sm;
 }
+
+function trySetUserAction(s){
+    if (isStudyQuestionMode()){
+        stateMonitor.setUserAction(s);
+    }
+}

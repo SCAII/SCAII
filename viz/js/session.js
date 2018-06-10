@@ -6,6 +6,7 @@ var sessionIndexManager = undefined;
 var studyQuestionManager = undefined;
 var studyQuestionIndexManager = undefined;
 var stateMonitor = undefined;
+var userActionMonitor = undefined;
 
 // ToDo - when strat jump- turn off incrementing index until receive set position.  Unblock incrementing on jump complete
 // then it will be apparent if we need to correct for ReplaySequencer's index pointing to next-packet-to-send rather than 
@@ -110,7 +111,10 @@ function handleStudyQuestions(studyQuestions){
         return;
     }
     studyQuestionManager = getStudyQuestionManager(questions, userId, treatmentId);
+    userActionMonitor = getUserActionMonitor();
+    stateMonitor = getStateMonitor();
     stateMonitor.logFileName = answerFilename;
+
 }
 
 function handleReplayControl(replayControl) {
@@ -126,7 +130,6 @@ function handleReplayControl(replayControl) {
 
 
 function handleReplayChoiceConfig(config){
-    stateMonitor = getStateMonitor();
 	var replayNames = config.getReplayFilenamesList();
 	for (var i in replayNames) {
 		var name = replayNames[i];
@@ -262,7 +265,8 @@ function addCumRewardPair(index, key, val){
 		rewardKeyDiv.setAttribute("style", "height:15px;font-family:Arial;font-size:14px;");
 	}
 	
-	rewardKeyDiv.innerHTML = key;
+    rewardKeyDiv.innerHTML = key;
+    rewardKeyDiv.onclick = function(e) {targetClickHandler(e,"touchCumRewardLabel:" + key);};
 	$("#cumulative-rewards").append(rewardKeyDiv);
 
 	var rewardValDiv = document.createElement("DIV");
@@ -279,6 +283,7 @@ function addCumRewardPair(index, key, val){
 	}
 	
 	rewardValDiv.innerHTML = val;
+    rewardValDiv.onclick = function(e) {targetClickHandler(e,"touchCumRewardValueFor:" + key);};
     $("#cumulative-rewards").append(rewardValDiv);
 }
 

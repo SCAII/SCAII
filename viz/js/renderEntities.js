@@ -3,6 +3,7 @@ var selectedToolTipIds = {};
 var entityAllDataToolTipIds = [];
 var hoveredAllDataToolTipIds = {};
 var masterEntities = {};
+var shapeLogStrings = {};
 
 
 function removeFullShapeIdFromTrackingLists(fullShapeId){
@@ -30,7 +31,8 @@ function cleanToolTips(){
 }
 
 function handleEntities(entitiesList) {
-  cleanToolTips();
+    shapeLogStrings = {};
+    cleanToolTips();
 	for (var i in entitiesList) {
 		var entity = entitiesList[i];
 		if (entity.hasId()) {
@@ -458,7 +460,10 @@ function createAllDataToolTip(z_index, shapeId, absX, absY, entity, color) {
   var type = getUnitType(entity);
   unitTypeLabel.innerHTML = 'Unit Type: ' + type;
   valuesDiv.append(unitTypeLabel);
+
+  shapeLogStrings[shapeId] = getShapeLogString(isFriend, type,hitPoints, maxHitPoints);
 }
+
 
 function getColorRGBA(r,g,b,a) {
   color = {};

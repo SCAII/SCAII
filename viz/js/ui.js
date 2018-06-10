@@ -68,7 +68,8 @@ function getTrueGameHeight() {
 
 function configureGameboardCanvas(){
 	gameboard_canvas.width = getTrueGameWidth();
-	gameboard_canvas.height = getTrueGameHeight();
+    gameboard_canvas.height = getTrueGameHeight();
+    gameboard_canvas.setAttribute("id","gameboard");
 	$("#scaii-gameboard").css("width", gameboard_canvas.width);
 	$("#scaii-gameboard").css("height", gameboard_canvas.height);
 	$("#scaii-gameboard").css("background-color", game_background_color);
@@ -161,6 +162,7 @@ function toggleCheckboxVisibility(){
 		}
 	}
 }
+
 function initUI() {
 	//configureSpeedSlider();
 	//configureZoomBox
@@ -179,8 +181,32 @@ function initUI() {
 	configureNavigationButtons();
 	configureQuestionArea();
 	setUpMetadataToolTipEventHandlers();
-	drawExplanationTimeline();
+    drawExplanationTimeline(); 
 }
+
+function getQuadrantName(x,y){
+    var totalWidth = $("#scaii-gameboard").width();
+    var totalHeight = $("#scaii-gameboard").height();
+    var halfWidth = totalWidth / 2;
+    var halfHeight = totalHeight / 2;
+    if (x < halfWidth) {
+        if (y < halfHeight) {
+            return "upperLeft";
+        }
+        else {
+            return "lowerLeft";
+        }
+    }
+    else {
+        if (y < halfHeight) {
+            return "upperRight";
+        }
+        else {
+            return "lowerRight";
+        }
+    }
+}
+
 function setUpMetadataToolTipEventHandlers() {
 	// for hiding/showing tooltips
 	gameboard_canvas.addEventListener('click', function(evt) {
@@ -188,14 +214,16 @@ function setUpMetadataToolTipEventHandlers() {
 		var y = event.offsetY;
 		var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y, shapePositionMapForContext['game'])
 		if (shapeId != undefined){
-			$("#metadata_hp" + shapeId).toggleClass('tooltip-invisible');
-			if (selectedToolTipIds[shapeId] == "show") {
-				selectedToolTipIds[shapeId] = "hide";
-			}
-			else {
-				selectedToolTipIds[shapeId] = "show";
-			}
-		}
+            targetClickHandler(evt, "clickEntity:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
+			// $("#metadata_hp" + shapeId).toggleClass('tooltip-invisible');
+			// if (selectedToolTipIds[shapeId] == "show") {
+			// 	selectedToolTipIds[shapeId] = "hide";
+			// }
+			// else {
+			// 	selectedToolTipIds[shapeId] = "show";
+			// }
+        }
+        targetClickHandler(evt, "clickGameQuadrant:" + getQuadrantName(x,y));
 	  });
 	  
 	  gameboard_canvas.addEventListener('mousemove', function(evt) {
@@ -226,8 +254,8 @@ function sizeNonGeneratedElements() {
 	$("#scaii-acronym").css("padding-right", "20px");
 
 	// 150
-	$("#game-replay-title").css("width", "140px");
-	$("#game-replay-title").css("padding-right", "10px");
+	$("#game-replay-label").css("width", "140px");
+	$("#game-replay-label").css("padding-right", "10px");
 
 	// 300
 	$("#replay-file-selector").css("width", "300px");
@@ -235,8 +263,8 @@ function sizeNonGeneratedElements() {
 	
 	$("#scaii-acronym").css("padding-top", "10px");
 	$("#scaii-acronym").css("padding-bottom", "10px");
-	$("#game-replay-title").css("padding-top", "10px");
-	$("#game-replay-title").css("padding-bottom", "10px");
+	$("#game-replay-label").css("padding-top", "10px");
+	$("#game-replay-label").css("padding-bottom", "10px");
 
 }
 

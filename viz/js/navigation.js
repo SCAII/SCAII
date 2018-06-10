@@ -47,7 +47,7 @@ function processTimelineClick(e) {
 	var clickX = e.offsetX - timelineMargin;
 	var replaySequenceTargetStep = sessionIndexManager.getReplaySequencerIndexForClick(clickX);
     var targetStepString = "" + replaySequenceTargetStep;
-    stateMonitor.setUserAction("timelineClick;" + targetStepString);
+    targetClickHandler(e, "timelineClick:" + targetStepString);
 	var args = [targetStepString];
 	var userCommand = new proto.scaii.common.UserCommand;
 	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
@@ -59,8 +59,9 @@ function stageUserCommand(userCommand) {
 	scaiiPkt.setUserCommand(userCommand);
 	userCommandScaiiPackets.push(scaiiPkt);
 }
-var tryPause = function () {
+var tryPause = function (e) {
 	if (!userInputBlocked) {
+        targetClickHandler(e, "pause:NA");
 		pauseGame();
 	}
 }
@@ -76,8 +77,9 @@ function pauseGame() {
 	}
 }
 
-var tryResume = function () {
+var tryResume = function (e) {
 	if (!userInputBlocked) {
+        targetClickHandler(e, "play:NA");
 		resumeGame();
 	}
 }
@@ -100,8 +102,9 @@ function resumeGame() {
 	}
 }
 
-var tryRewind = function () {
+var tryRewind = function (e) {
 	if (!userInputBlocked) {
+        targetClickHandler(e, "rewind:NA");
 		rewindGame();
 	}
 }

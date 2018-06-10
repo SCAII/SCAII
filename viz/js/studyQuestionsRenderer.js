@@ -1,5 +1,3 @@
-
-
 function getStudyQuestionRenderer(questions) {
     var sqr = {};
     //sqr.bg = "#f4f4f4";
@@ -17,6 +15,7 @@ function getStudyQuestionRenderer(questions) {
         this.currentTextBox = undefined;
         $('#q-and-a-div').empty();
     }
+
     sqr.renderTextInputBox = function(step, index) {
         this.questionType = 'text';
         var textBoxId = "question-text-box";
@@ -81,7 +80,7 @@ function getStudyQuestionRenderer(questions) {
         this.currentRadioName = radioSetName;
     }
 
-    sqr.renderSaveButton = function(onclickFunction, step){
+    sqr.renderSaveButton = function(step){
         var saveButtonRowId = "save-button-row";
         var buttonRow = document.createElement("DIV");
         buttonRow.setAttribute("id", saveButtonRowId);
@@ -94,7 +93,7 @@ function getStudyQuestionRenderer(questions) {
         save.setAttribute("id", "button-save");
         save.setAttribute("style", "margin-left:250px;font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px");
         save.innerHTML = "Save";
-        save.onclick = onclickFunction;
+        save.onclick = acceptAnswer;
         $("#"+ saveButtonRowId).append(save);
     }
     
@@ -131,11 +130,7 @@ function getStudyQuestionRenderer(questions) {
             // add a div with radio button and label for each answer
             this.renderRadioButtons(step, answers);
         }
-        var onclickFunction;
-        // add a div with next button
-        onclickFunction = acceptAnswer;
-        
-        this.renderSaveButton(onclickFunction);
+        this.renderSaveButton();
     }
 
     sqr.poseThankYouScreen = function(){
