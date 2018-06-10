@@ -233,14 +233,22 @@ function setUpMetadataToolTipEventHandlers() {
 		if (shapeId == undefined) {
 			// we're not inside an object, so hide all the "all_metadata" tooltips
 			for (var sId in hoveredAllDataToolTipIds) {
+                if (hoveredAllDataToolTipIds[sId] != "hide") {
+                    shapeId = sId.replace("#metadata_all","");
+                    console.log("shapeId is " + shapeId);
+                    targetHoverHandler(evt, "hideEntityTooltip:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
+                }
 				hoveredAllDataToolTipIds[sId] = "hide";
 				$("#" + sId).addClass('tooltip-invisible');
 			}
 		}
 		else {
 			//we're inside one, keep it visible
-			$("#metadata_all" + shapeId).removeClass('tooltip-invisible');
-			hoveredAllDataToolTipIds[shapeId] == "show";
+            $("#metadata_all" + shapeId).removeClass('tooltip-invisible');
+            if (hoveredAllDataToolTipIds[shapeId] != "show") {
+                targetHoverHandler(evt, "showEntityTooltip:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
+            }
+			hoveredAllDataToolTipIds[shapeId] = "show";
 		}
   	});
 }

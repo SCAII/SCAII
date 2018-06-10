@@ -10,10 +10,18 @@ function getUserActionMonitor() {
 
     
     uam.setUserActionSemantics = function(info) {
+        // only accept the first one in this click event bubbling epoch.
+        // this lets us keep the most specific click info
         if (this.userActionSemantics == undefined) {
             this.userActionSemantics = info;
         }
     }
+    
+    uam.setUserActionHoverSemantics = function(info) {
+        // always accept the most recent one
+        this.userActionSemantics = info;
+    }
+
     uam.regionClick = function(info) {
         if (this.clickRegionDetails == undefined) {
             this.clickRegionDetails = info;
@@ -23,6 +31,10 @@ function getUserActionMonitor() {
         if (this.clickTargetDetails == undefined) {
             this.clickTargetDetails = info;
         }
+    }
+    
+    uam.targetHover = function(info) {
+        this.clickTargetDetails = info;
     }
 
     uam.globalClick = function(x,y) {
@@ -57,6 +69,23 @@ function getUserActionMonitor() {
         this.clickTargetDetails = undefined;
         this.userActionSemantics = undefined;
     }
+
+    uam.forwardHoverEvent = function() {
+        var hoverText = "";
+        if (this.userActionSemantics != undefined) {
+            hoverText = hoverText + this.userActionSemantics;
+            userActionSemantics = undefined;
+        }
+        else {
+            hoverText = hoverText + "NA";
+        }
+        console.log("hoverText... " + hoverText);
+        stateMonitor.setUserAction(hoverText);
+        
+        this.clickRegionDetails = undefined;
+        this.clickTargetDetails = undefined;
+        this.userActionSemantics = undefined;
+    } 
     return uam;
 }
 
@@ -74,6 +103,15 @@ function targetClickHandler(e, userActionSemantics) {
         var targetId = e.currentTarget.getAttribute("id");
         userActionMonitor.targetClick("target:" + targetId);
         userActionMonitor.setUserActionSemantics(userActionSemantics);
+    }
+}
+
+function targetHoverHandler(e, userActionSemantics) {
+    if (isStudyQuestionMode()){
+        var targetId = e.currentTarget.getAttribute("id");
+        userActionMonitor.targetHover("target:" + targetId);
+        userActionMonitor.setUserActionHoverSemantics(userActionSemantics);
+        userActionMonitor.forwardHoverEvent();
     }
 }
 
