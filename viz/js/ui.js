@@ -168,10 +168,12 @@ function initUI() {
 	//configureZoomBox
 	var scaiiInterface = document.getElementById("scaii-interface");
 	scaiiInterface.addEventListener('click', function(evt) {
-		mostRecentClickHadCtrlKeyDepressed = evt.ctrlKey;
-		if (evt.altKey){
-			toggleCheckboxVisibility();
-		}
+        mostRecentClickHadCtrlKeyDepressed = evt.ctrlKey;
+        if (!isStudyQuestionMode()){
+            if (evt.altKey){
+                toggleCheckboxVisibility();
+            }
+        }
 	}, true);
 	
 	configureGameboardCanvas();

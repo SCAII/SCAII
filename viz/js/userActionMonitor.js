@@ -1,3 +1,6 @@
+chartClickProcessing = false;
+rememberedGlobalChartClick = undefined;
+
 function getUserActionMonitor() {
     uam = {};
 
@@ -38,38 +41,70 @@ function getUserActionMonitor() {
     }
 
     uam.globalClick = function(x,y) {
+        if (chartClickProcessing) {
+            rememberedGlobalChartClick = [x,y];
+            return;
+        }
         var clickText = "userClick:" + x + "_" + y+ ";";
-        if (this.clickRegionDetails != undefined) {
-            clickText = clickText + this.clickRegionDetails + ";";
-            clickReqionDetails = undefined;
-        }
-        else {
-            clickText = clickText + "NA;";
-        }
 
-        if (this.clickTargetDetails != undefined) {
-            clickText = clickText + this.clickTargetDetails + ";";
-            clickTargetDetails = undefined;
-        }
-        else {
-            clickText = clickText + "NA;";
-        }
+       
+        clickText = this.appendClickRegionDetails(clickText);
+        clickText = this.appendClickTargetDetails(clickText);
+        clickText = this.appendUserActionSemantics(clickText);
         
-        if (this.userActionSemantics != undefined) {
-            clickText = clickText + this.userActionSemantics;
-            userActionSemantics = undefined;
-        }
-        else {
-            clickText = clickText + "NA";
-        }
         console.log("clickText... " + clickText);
         stateMonitor.setUserAction(clickText);
-        
+        this.clear();
+    }
+
+    uam.clear = function() {
         this.clickRegionDetails = undefined;
         this.clickTargetDetails = undefined;
         this.userActionSemantics = undefined;
+        rememberedGlobalChartClick = undefined;
+    }
+    uam.compileChartClickEvent = function(){
+        var clickText = "userClick:" + rememberedGlobalChartClick[0] + "_" + rememberedGlobalChartClick[1]+ ";";
+        clickText = this.appendClickRegionDetails(clickText);
+        clickText = this.appendClickTargetDetails(clickText);
+        clickText = this.appendUserActionSemantics(clickText);
+        
+        console.log("clickText... " + clickText);
+        stateMonitor.setUserAction(clickText);
+        this.clear();
     }
 
+    uam.appendClickRegionDetails = function(s) {
+        if (this.clickRegionDetails != undefined) {
+            s = s + this.clickRegionDetails + ";";
+            clickReqionDetails = undefined;
+        }
+        else {
+            s = s + "NA;";
+        }
+        return s;
+    }
+    uam.appendClickTargetDetails = function(s) {
+        if (this.clickTargetDetails != undefined) {
+            s = s + this.clickTargetDetails + ";";
+            clickTargetDetails = undefined;
+        }
+        else {
+            s = s + "NA;";
+        }
+        return s;
+    }
+
+    uam.appendUserActionSemantics = function(s) {
+        if (this.userActionSemantics != undefined) {
+            s = s + this.userActionSemantics;
+            userActionSemantics = undefined;
+        }
+        else {
+            s = s + "NA";
+        }
+        return s;
+    }
     uam.forwardHoverEvent = function() {
         var hoverText = "";
         if (this.userActionSemantics != undefined) {
@@ -106,6 +141,14 @@ function targetClickHandler(e, userActionSemantics) {
     }
 }
 
+function chartTargetClickHandler(targetName , userActionSemantics) {
+    if (isStudyQuestionMode()){
+        userActionMonitor.targetClick("target:" + targetName);
+        userActionMonitor.setUserActionSemantics(userActionSemantics);
+        userActionMonitor.compileChartClickEvent();
+    }
+}
+
 function targetHoverHandler(e, userActionSemantics) {
     if (isStudyQuestionMode()){
         var targetId = e.currentTarget.getAttribute("id");
@@ -125,8 +168,25 @@ function setHandlers() {
     $("#game-replay-label")       .on("click",function(e) {targetClickHandler(e,"touchReplayingGameFileLabel:NA");});
     $("#replay-file-selector")    .on("click",function(e) {targetClickHandler(e,"touchReplayFileSelector:NA");});
     $("#step-value")              .on("click",function(e) {targetClickHandler(e,"touchStepProgressLabel:NA");});
-
-    
+    $("#scaii-interface")         .on("mousemove", function(e) { 
+        var div = document.getElementById("explanations-rewards");
+        if (div == undefined) { return;}
+        var rect = div.getBoundingClientRect();
+        var x = e.clientX;
+        var y = e.clientY;
+        if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom) {
+            chartClickProcessing = true;
+            if (rememberedGlobalChartClick != undefined) {
+                userActionMonitor.regionClick("region:rewards");
+                userActionMonitor.compileChartClickEvent();
+            }
+        }
+        else {
+            chartClickProcessing = false;
+        }
+        
+    })
+   
 }
 function getShapeLogString(isFriend, type,hitPoints, maxHitPoints){
     var result;
