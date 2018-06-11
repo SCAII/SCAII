@@ -405,7 +405,7 @@ impl ReplayManager {
                 use scaii_defs::protos::LogFileEntry;
                 let lfe : LogFileEntry = scaii_defs::protos::get_log_file_entry_from_pkt(scaii_pkt).unwrap();
                 if let Some(ref mut user_study_questions) = self.user_study_questions {
-                    user_study_questions.persist_log_entry(lfe)?;
+                    user_study_questions.persist_log_entry_incremental(lfe)?;
                 }
             } else {
                 println!(

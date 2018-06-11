@@ -78,7 +78,22 @@ println!("{}", result); // => "Hello World!"
         })
     }
 
+    pub fn persist_log_entry_incremental(&mut self, lfe: LogFileEntry) -> Result<(), Box<Error>> {
+        use std::fs::{File, OpenOptions,remove_file};
+        use std::io::Write;
+        use scaii_core;
+        println!("{:?}", &lfe);
+        let output_line = lfe.entry;
 
+        let mut answerfile_path = scaii_core::get_default_replay_dir()?;
+        let filename = lfe.filename;
+        answerfile_path.push(filename);
+        
+        let mut file = OpenOptions::new().append(true).open(answerfile_path).unwrap();
+        file.write_all(output_line.as_bytes())?;
+        file.write_all("\n".to_string().as_bytes())?;
+        Ok(())
+    }
     pub fn persist_log_entry(&mut self, lfe: LogFileEntry) -> Result<(), Box<Error>> {
         use std::fs::{File, OpenOptions,remove_file};
         use std::io::Write;
