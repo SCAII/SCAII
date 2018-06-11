@@ -20,7 +20,7 @@ class SkyState(State):
             (state.shape[0], state.shape[1], 6), dtype=np.float)
 
         # Normalize HP
-        self.state[:, :, 0] = state[:, :, 1] / 500.0
+        self.state[:, :, 0] = state[:, :, 1] / 70.0
         self.hps = np.unique(state[:, :, 0])
 
         unit_ids = state[:, :, 2].astype(np.int)
