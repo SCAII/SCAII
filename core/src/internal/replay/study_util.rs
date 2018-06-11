@@ -63,9 +63,10 @@ println!("{}", result); // => "Hello World!"
         }
         let step: String = vec[0].to_string();
         let question_index: String = vec[1].to_string();
-        let question : String = vec[2].to_string();
+        let question_type: String = vec[2].to_string();
+        let question : String = vec[3].to_string();
         let mut answer_vec : Vec<String> = Vec::new();
-        for x in 3..vec.len() {
+        for x in 4..vec.len() {
             answer_vec.push(vec[x].to_string());
         }
         Ok(StudyQuestion {
@@ -73,6 +74,7 @@ println!("{}", result); // => "Hello World!"
             question: question,
             answers: answer_vec,
             question_id_for_step: question_index,
+            question_type: question_type,
         })
     }
 

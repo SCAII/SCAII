@@ -8,6 +8,8 @@ function getStudyQuestionRenderer(questions) {
     sqr.currentRadioName = undefined;
     sqr.currentTextBox = undefined;
     sqr.arrowCueNeeded = true;
+    sqr.clickInfoFromUserActionMonitor = undefined;
+    sqr.controlsWaitingForClick = [];
 
     sqr.forgetQuestion = function(){
         this.questionType = undefined;
@@ -16,7 +18,12 @@ function getStudyQuestionRenderer(questions) {
         $('#q-and-a-div').empty();
     }
 
-    sqr.renderTextInputBox = function(step, index) {
+    sqr.collectClickInfo = function(){
+        var result = this.clickInfoFromUserActionMonitor;
+        this.clickInfoFromUserActionMonitor = undefined;
+        return result;
+    }
+    sqr.renderTextInputBox = function(step, index, type) {
         this.questionType = 'text';
         var textBoxId = "question-text-box";
         var ta = document.createElement("textarea");
@@ -26,6 +33,10 @@ function getStudyQuestionRenderer(questions) {
             $("#button-save").attr("disabled",this.value == "");
         }
         this.currentTextBox = ta;
+        if (type == "waitForClick"){
+            ta.setAttribute("disabled", true);
+            this.controlsWaitingForClick.push(ta);
+        }
         $("#q-and-a-div").append(ta);
     }
 
@@ -44,7 +55,7 @@ function getStudyQuestionRenderer(questions) {
         }
     }
 
-    sqr.renderRadioButton = function(radioSetName, answerText, step, index){
+    sqr.renderRadioButton = function(radioSetName, answerText, step, index, type){
         var radioRowId = "radio-button-row-" + step + "-" + index;
         var buttonRow = document.createElement("DIV");
         buttonRow.setAttribute("id", radioRowId);
@@ -59,6 +70,10 @@ function getStudyQuestionRenderer(questions) {
         radio.setAttribute("style", "margin-left:80px;font-family:Arial;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
         radio.setAttribute("name", radioSetName);
         radio.setAttribute("value", answerText);
+        if (type == "waitForClick"){
+            radio.setAttribute("disabled", true);
+            this.controlsWaitingForClick.push(radio);
+        }
         radio.onchange = function() {
             $("#button-save").attr("disabled",false);
         }
@@ -70,12 +85,12 @@ function getStudyQuestionRenderer(questions) {
         $("#"+radioRowId).append(radioLabel);
     }
 
-    sqr.renderRadioButtons = function(step, answers) {
+    sqr.renderRadioButtons = function(step, answers, type) {
         this.questionType = 'radio';
         var radioSetName = "question-radio";
         for (var i in answers){
             var answer = answers[i];
-            this.renderRadioButton(radioSetName, answer, step, i);
+            this.renderRadioButton(radioSetName, answer, step, i, type);
         }
         this.currentRadioName = radioSetName;
     }
@@ -101,10 +116,10 @@ function getStudyQuestionRenderer(questions) {
         if (currentDecisionPointNumber == undefined) {
             studyQuestionManager.clearTimelineBlocks();
         }
-        this.poseGivenQuestion(currentDecisionPointNumber, curStep, qu.questionText, qu.answers);
+        this.poseGivenQuestion(currentDecisionPointNumber, curStep, qu.questionText, qu.answers, qu.questionType);
     }
 
-    sqr.poseGivenQuestion = function(questionNumber, step, text, answers){
+    sqr.poseGivenQuestion = function(questionNumber, step, text, answers, type){
         $("#q-and-a-div").empty();
         $("#q-and-a-div").css("background-color",this.bg);
         $("#q-and-a-div").css("margin-top","20px");
@@ -124,13 +139,31 @@ function getStudyQuestionRenderer(questions) {
 
         if (answers.length == 0){
             // provide area for user to type text answer
-            this.renderTextInputBox();
+            this.renderTextInputBox(type);
         }
         else {
             // add a div with radio button and label for each answer
-            this.renderRadioButtons(step, answers);
+            this.renderRadioButtons(step, answers, type);
         }
         this.renderSaveButton();
+        if (type == "waitForClick"){
+            var listener = {};
+            listener.acceptClickInfo = function(clickInfo){
+                var renderer = studyQuestionManager.renderer;
+                for (var i in renderer.controlsWaitingForClick) {
+                    var c = renderer.controlsWaitingForClick[i];
+                    c.disabled = false;
+                    //c.setAttribute("disabled", false);
+                }
+                renderer.controlsWaitingForClick = [];
+                renderer.clickInfoFromUserActionMonitor = clickInfo;
+                var clickAckDiv = document.createElement("DIV");
+                clickAckDiv.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px");
+                clickAckDiv.innerHTML = "(click information has been collected)";
+                $("#save-button-row").append(clickAckDiv);
+            };
+            userActionMonitor.setClickListener(listener);
+        }
     }
 
     sqr.poseThankYouScreen = function(){

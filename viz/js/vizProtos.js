@@ -8777,7 +8777,8 @@ proto.scaii.common.StudyQuestion.toObject = function(includeInstance, msg) {
     step: jspb.Message.getField(msg, 1),
     question: jspb.Message.getField(msg, 2),
     answersList: jspb.Message.getRepeatedField(msg, 3),
-    questionIdForStep: jspb.Message.getField(msg, 4)
+    questionIdForStep: jspb.Message.getField(msg, 4),
+    questionType: jspb.Message.getField(msg, 5)
   };
 
   if (includeInstance) {
@@ -8829,6 +8830,10 @@ proto.scaii.common.StudyQuestion.deserializeBinaryFromReader = function(msg, rea
     case 4:
       var value = /** @type {string} */ (reader.readString());
       msg.setQuestionIdForStep(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setQuestionType(value);
       break;
     default:
       reader.skipField();
@@ -8884,6 +8889,13 @@ proto.scaii.common.StudyQuestion.serializeBinaryToWriter = function(message, wri
   if (f != null) {
     writer.writeString(
       4,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 5));
+  if (f != null) {
+    writer.writeString(
+      5,
       f
     );
   }
@@ -9003,6 +9015,35 @@ proto.scaii.common.StudyQuestion.prototype.clearQuestionIdForStep = function() {
  */
 proto.scaii.common.StudyQuestion.prototype.hasQuestionIdForStep = function() {
   return jspb.Message.getField(this, 4) != null;
+};
+
+
+/**
+ * required string question_type = 5;
+ * @return {string}
+ */
+proto.scaii.common.StudyQuestion.prototype.getQuestionType = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.StudyQuestion.prototype.setQuestionType = function(value) {
+  jspb.Message.setField(this, 5, value);
+};
+
+
+proto.scaii.common.StudyQuestion.prototype.clearQuestionType = function() {
+  jspb.Message.setField(this, 5, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.StudyQuestion.prototype.hasQuestionType = function() {
+  return jspb.Message.getField(this, 5) != null;
 };
 
 

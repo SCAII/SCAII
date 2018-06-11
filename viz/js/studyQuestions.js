@@ -28,12 +28,14 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         var questionIndexForStep = question.getQuestionIdForStep();;
         var questionId = getQuestionId(step, questionIndexForStep);
         var questionText = question.getQuestion();
+        var questionType = question.getQuestionType();
         var answers = question.getAnswersList();
         var qu = {};
         qu.step = step;
         qu.questionIndexForStep = questionIndexForStep;
         qu.questionId = questionId;
         qu.questionText= questionText;
+        qu.questionType = questionType;
         qu.answers = answers;
         sqm.questionIds.push(questionId);
         sqm.questionMap[questionId] = qu;
@@ -221,7 +223,11 @@ function acceptAnswer(e) {
     var currentStep = studyQuestionIndexManager.getCurrentStep();
     var questionId = studyQuestionIndexManager.getCurrentQuestionId();
     var currentQuestionIndexAtStep = getQuestionIndexFromQuestionId(questionId);
-    targetClickHandler(e,"answerQuestion;"+ currentStep + ";" + currentQuestionIndexAtStep + ":" + answer);
+    var clickInfo = renderer.collectClickInfo();
+    if (clickInfo == undefined){
+        clickInfo = "NA";
+    }
+    targetClickHandler(e,"answerQuestion:"+ currentStep + "." + currentQuestionIndexAtStep + "_" + answer + "_(" + clickInfo + ")");
 
     renderer.forgetQuestion();
     if (studyQuestionIndexManager.hasMoreQuestionsAtThisStep()) {
