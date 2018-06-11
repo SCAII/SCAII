@@ -104,7 +104,8 @@ function handleExplDetails(explDetails){
 
 function getSelectionManager() {
 	var sm = {};
-	sm.selections = [];
+    sm.selections = [];
+    sm.defaultSelectionMade = false;
 	
 	sm.setSelections = function(info) {
 		this.selections = info;
@@ -113,7 +114,10 @@ function getSelectionManager() {
 	sm.addSelection = function(selection) {
         var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
         var targetArg = selection[0] + "/" + selection[1];
-        chartTargetClickHandler(targetName, "selectRewardBar:" + targetArg);
+        if (this.defaultSelectionMade) {
+            chartTargetClickHandler(targetName, "selectRewardBar:" + targetArg);
+        }
+        this.defaultSelectionMade = true;
 		this.selections.push(selection);
 	}
 
@@ -306,9 +310,12 @@ function renderWhyInfo(explPoint) {
 	
 	saliencyDisplayManagerRewardsDetailed.populateActionBarCheckBoxes();
 	saliencyDisplayManagerAdvantageDetailed.populateActionBarCheckBoxes();
-	activeSaliencyDisplayManager = getSaliencyDisplayManagerForSituation(true, true);
+    activeSaliencyDisplayManager = getSaliencyDisplayManagerForSituation(true, true);
 	configureRewardChart(true, true);
-
+    if (isStudyQuestionMode()) {
+        stateMonitor.showedCombinedRewards();
+        stateMonitor.showedCombinedSaliency();
+    }
 	var actionName =  activeBarChartManager.getChosenActionName();
 	var fullName = 'D' + showingDecisionNumber + ': ' + actionName;
 	var whyPrompt = " had highest predicted reward. ";
@@ -461,6 +468,9 @@ function populateSaliencyQuestionSelector(){
 	radioCombinedSaliency.onclick = function(e) {
         saliencyCombined = true;
         targetClickHandler(e, "setSaliencyView:combinedSaliency");
+        if (isStudyQuestionMode()) {
+            stateMonitor.showedCombinedSaliency();
+        }
 		activeSaliencyDisplayManager.setSaliencyMode(saliencyModeAggregate);
 		activeSaliencyDisplayManager.renderExplanationSaliencyMaps();
 	};
@@ -479,6 +489,9 @@ function populateSaliencyQuestionSelector(){
 	radioDetailedSaliency.onclick = function(e) {
         saliencyCombined = false;
         targetClickHandler(e, "setSaliencyView:detailedSaliency");
+        if (isStudyQuestionMode()) {
+            stateMonitor.showedDetailedSaliency();
+        }
 		activeSaliencyDisplayManager.setSaliencyMode(saliencyModeDetailed);
 		activeSaliencyDisplayManager.renderExplanationSaliencyMaps();
 	};
@@ -508,6 +521,9 @@ function populateRewardQuestionSelector(){
 	radioCombinedRewards.setAttribute("checked", "true");
 	radioCombinedRewards.onclick = function(e) {
         targetClickHandler(e, "setRewardView:combinedRewards");
+        if (isStudyQuestionMode()) {
+            stateMonitor.showedCombinedRewards();
+        }
 		showRewards(true, true);
 	};
 
@@ -523,6 +539,9 @@ function populateRewardQuestionSelector(){
 	radioDetailedRewards.setAttribute("style", "margin-left:20px; ");
 	radioDetailedRewards.onclick = function(e) {
         targetClickHandler(e, "setRewardView:detailedRewards");
+        if (isStudyQuestionMode()) {
+            stateMonitor.showedDetailedRewards();
+        }
 		showRewards(false, true);
 	};
 
@@ -544,6 +563,9 @@ function populateRewardQuestionSelector(){
 	radioCombinedAdvantage.setAttribute("style", "margin-left:20px;");
 	radioCombinedAdvantage.onclick = function(e) {
         targetClickHandler(e, "setRewardView:combinedAdvantage");
+        if (isStudyQuestionMode()) {
+            stateMonitor.showedCombinedAdvantage();
+        }
 		showRewards(true, false);
 	};
 
@@ -559,6 +581,9 @@ function populateRewardQuestionSelector(){
 	radioDetailedAdvantage.setAttribute("style", "margin-left:20px; ");
 	radioDetailedAdvantage.onclick = function(e) {
         targetClickHandler(e, "setRewardView:detailedAdvantage");
+        if (isStudyQuestionMode()) {
+            stateMonitor.showedDetailedAdvantage();
+        }
 		showRewards(false, false);
 	};
 
@@ -869,7 +894,11 @@ function configureExplanationSelectorDiamond(uiIndex,step){
 		var yPositionOfWhyButton = -14;// relative to the next container below
 		var xPositionOfWhyButton = x - 20;
 		addWhyButtonForAction(step, xPositionOfWhyButton,  yPositionOfWhyButton);
-		boldThisStepInLegend(step);
+        boldThisStepInLegend(step);
+        if (isStudyQuestionMode()){
+            userActionMonitor.stepToDecisionPoint(step);
+            stateMonitor.setDecisionPoint(step);
+        }
 		if (rewardsAreShowing){
 			// send a request to back end for focusing on this new step
 			processWhyClick(step);

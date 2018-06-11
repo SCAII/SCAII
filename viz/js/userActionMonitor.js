@@ -138,6 +138,10 @@ function getUserActionMonitor() {
         this.clickTargetDetails = undefined;
         this.userActionSemantics = undefined;
     } 
+
+    uam.stepToDecisionPoint = function(dp) {
+        stateMonitor.setUserAction('stepIntoDecisionPoint:' + dp);
+    }
     return uam;
 }
 

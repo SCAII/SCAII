@@ -22,7 +22,8 @@ function getStateMonitor() {
             var lfe = new proto.scaii.common.LogFileEntry;
             var date = this.getDate();
             var time = this.getTime();
-            var logLine = this.getStateLogEntry(date, time);
+            var sec = this.getSecondsSince1970();
+            var logLine = this.getStateLogEntry(date, time, sec);
             lfe.setEntry(logLine);
             lfe.setFilename(this.logFileName);
             if (studyQuestionIndexManager.hasMoreQuestions()) {
@@ -37,10 +38,20 @@ function getStateMonitor() {
     }
 
     sm.getDate = function() {
-        return "20180607";
+        var dt = new Date();  
+        var month = dt.getMonth()+1;  
+        var day = dt.getDate();  
+        var year = dt.getFullYear();  
+        return month + '-' + day + '-' + year;  
     }
     sm.getTime = function() {
-        return "noon";
+        var d = new Date();
+        return d.getHours() + ":"  + d.getMinutes() + ":" + d.getSeconds() + ":" + d.getMilliseconds();
+    }
+
+    sm.getSecondsSince1970 = function() {
+        var d = new Date();
+        return d.getTime();
     }
     //
     // saliency
@@ -48,18 +59,14 @@ function getStateMonitor() {
     sm.combinedSaliency = false;
     sm.detailedSaliency = false;
 
-    sm.showCombinedSaliency = function(){
+    sm.showedCombinedSaliency = function(){
         this.combinedSaliency = true;
         this.detailedSaliency = false;
-        this.setUserAction("showCombinedSaliency");
-        this.emitLogLine(); 
     }
     
-    sm.showDetailedSaliency = function(){
+    sm.showedDetailedSaliency = function(){
         this.combinedSaliency = false;
         this.detailedSaliency = true;
-        this.setUserAction("showDetailedSaliency");
-        this.emitLogLine(); 
     }
 
     
@@ -85,32 +92,24 @@ function getStateMonitor() {
         this.detailedAdvantage = false;
     }
 
-    sm.showCombinedReward = function() {
+    sm.showedCombinedRewards = function() {
         this.clearRewards();
         this.combinedReward = true;
-        this.setUserAction("showCombinedReward");
-        this.emitLogLine(); 
     }
     
-    sm.showDetailedReward = function() {
+    sm.showedDetailedRewards = function() {
         this.clearRewards();
         this.detailedReward = true;
-        this.setUserAction("showDetailedReward");
-        this.emitLogLine(); 
     }
     
-    sm.showCombinedAdvantage = function() {
+    sm.showedCombinedAdvantage = function() {
         this.clearRewards();
         this.combinedAdvantage = true;
-        this.setUserAction("showCombinedAdvantage");
-        this.emitLogLine(); 
     }
     
-    sm.showDetailedAdvantage = function() {
+    sm.showedDetailedAdvantage = function() {
         this.clearRewards();
         this.detailedAdvantage = true;
-        this.setUserAction("showDetailedAdvantage");
-        this.emitLogLine(); 
     }
 
     sm.getRewardHeader = function() {
@@ -135,17 +134,13 @@ function getStateMonitor() {
 
     sm.setQuestionId = function(qid) {
         this.questionId = qid;
-        this.setUserAction("showQuestion;" + qid);
-        this.emitLogLine(); 
     }
 
     sm.setDecisionPoint = function(dp) {
         this.decisionPoint = dp;
-        this.setUserAction("setDecisionPoint;" + dp);
-        this.emitLogLine(); 
     }
     sm.getGeneralHeader = function() {
-        return "date,time,decisionPoint,questionId,userAction,";
+        return "date,time,secSince1970,decisionPoint,questionId,userAction,";
     }
 
     sm.getGeneralState = function() {
@@ -163,8 +158,8 @@ function getStateMonitor() {
         return this.getGeneralState() + this.getRewardState() + this.getSaliencyState();
     }
 
-    sm.getStateLogEntry = function(date, time) {
-        return date + "," + time + ',' + this.getState();
+    sm.getStateLogEntry = function(date, time, sec) {
+        return date + "," + time + ',' + sec + "," + this.getState();
     }
     return sm;
 }

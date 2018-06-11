@@ -107,8 +107,10 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     // }
 
     sqm.poseCurrentQuestion = function() {
-        stateMonitor.setUserAction("showQuestion:"+ this.squim.getCurrentQuestionId());
-        var qu = this.questionMap[this.squim.getCurrentQuestionId()];
+        var qid = this.squim.getCurrentQuestionId();
+        stateMonitor.setUserAction("showQuestion:"+ qid);
+        stateMonitor.setQuestionId(qid);
+        var qu = this.questionMap[qid];
         this.renderer.poseQuestion(qu, this.squim.getCurrentDecisionPointNumber(), this.squim.getCurrentStep());
     }
 
