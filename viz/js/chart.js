@@ -280,11 +280,13 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 			//chartArea: {width: '50%', left:70},
 			chartArea: {width: '50%', left:"15%"},
 			hAxis: {
-			  title: this.barChartMessage.getVTitle(),
+              title: this.barChartMessage.getVTitle(),
+              
 			  //minValue: 0
 			},
 			vAxis: {
-			  title: vAxisString,
+              textPosition: 'none',
+			  //title: vAxisString,
 			},
 			'width':700,
             'height':400,
