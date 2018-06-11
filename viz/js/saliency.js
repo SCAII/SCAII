@@ -253,8 +253,22 @@ function getSaliencyDisplayManager(selectionManager) {
 		var nameNoSpaces = saliencyNameForId.replace(/ /g,"");
 		var nameForId = nameNoSpaces.replace(/,/g,"");
 		var explCanvas = document.createElement("canvas");
-		explCanvas.setAttribute("class", "explanation-canvas");
-		
+        explCanvas.setAttribute("class", "explanation-canvas");
+        explCanvas.setAttribute("id", "saliencyMap_" + nameForId);
+        explCanvas.onclick = function(e) {
+            var x = e.offsetX;
+            var y = e.offsetY;
+            var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y, shapePositionMapForContext['game']);
+            if (shapeId != undefined){
+                //targetClickHandler(e, "clickEntity:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
+                targetClickHandler(e, "clickSaliencyMap:" + saliencyUIName + "_(" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y)+ ")");
+            }
+            //targetClickHandler(e, "clickGameQuadrant:" + getQuadrantName(x,y));
+            targetClickHandler(e, "clickSaliencyMap:" + saliencyUIName + "_(" + getQuadrantName(x,y) + ")");
+        }
+        
+            
+       
 		// explCanvas.addEventListener("mouseenter", function() {
 		// 	console.log("entered! " + saliencyUIName);
 		// 	//clear and redraw gameboard
@@ -316,10 +330,12 @@ function getSaliencyDisplayManager(selectionManager) {
 		$(mapDivSelector).append(valueSpan);
 		
 		explCanvas.addEventListener('mouseenter', function(evt) {
-			valueSpan.setAttribute("style", 'visibility:hidden;');
+            valueSpan.setAttribute("style", 'visibility:hidden;');
+            targetHoverHandler(evt, "startMouseOverSaliencyMap:" + saliencyUIName);
 		});
 		explCanvas.addEventListener('mouseleave', function(evt) {
-			valueSpan.setAttribute("style", 'visibility:hidden;');
+            valueSpan.setAttribute("style", 'visibility:hidden;');
+            targetHoverHandler(evt, "endMouseOverSaliencyMap:" + saliencyUIName);
 		});
 		explCanvas.addEventListener('mousemove', function(evt) {
 			var mousePos = getMousePos(explCanvas, evt);

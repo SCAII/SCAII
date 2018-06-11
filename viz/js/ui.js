@@ -193,18 +193,18 @@ function getQuadrantName(x,y){
     var halfHeight = totalHeight / 2;
     if (x < halfWidth) {
         if (y < halfHeight) {
-            return "upperLeft";
+            return "upperLeftQuadrant";
         }
         else {
-            return "lowerLeft";
+            return "lowerLeftQuadrant";
         }
     }
     else {
         if (y < halfHeight) {
-            return "upperRight";
+            return "upperRightQuadrant";
         }
         else {
-            return "lowerRight";
+            return "lowerRightQuadrant";
         }
     }
 }
@@ -212,9 +212,9 @@ function getQuadrantName(x,y){
 function setUpMetadataToolTipEventHandlers() {
 	// for hiding/showing tooltips
 	gameboard_canvas.addEventListener('click', function(evt) {
-		var x = event.offsetX;
-		var y = event.offsetY;
-		var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y, shapePositionMapForContext['game'])
+		var x = evt.offsetX;
+		var y = evt.offsetY;
+		var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y, shapePositionMapForContext['game']);
 		if (shapeId != undefined){
             targetClickHandler(evt, "clickEntity:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
 			// $("#metadata_hp" + shapeId).toggleClass('tooltip-invisible');
@@ -226,11 +226,11 @@ function setUpMetadataToolTipEventHandlers() {
 			// }
         }
         targetClickHandler(evt, "clickGameQuadrant:" + getQuadrantName(x,y));
-	  });
+	});
 	  
-	  gameboard_canvas.addEventListener('mousemove', function(evt) {
-		var x = event.offsetX;
-		var y = event.offsetY;
+	gameboard_canvas.addEventListener('mousemove', function(evt) {
+		var x = evt.offsetX;
+		var y = evt.offsetY;
 		var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y, shapePositionMapForContext['game'])
 		if (shapeId == undefined) {
 			// we're not inside an object, so hide all the "all_metadata" tooltips

@@ -111,10 +111,16 @@ function getSelectionManager() {
 	}
 	
 	sm.addSelection = function(selection) {
+        var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
+        var targetArg = selection[0] + "/" + selection[1];
+        chartTargetClickHandler(targetName, "selectRewardBar:" + targetArg);
 		this.selections.push(selection);
 	}
 
 	sm.removeSelection = function (selection) {
+        var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
+        var targetArg = selection[0] + "/" + selection[1];
+        chartTargetClickHandler(targetName, "unselectRewardBar:" + targetArg);
 		var newList = [];
 		for (var i in this.selections) {
 			var curSel = this.selections[i];
@@ -452,8 +458,9 @@ function populateSaliencyQuestionSelector(){
 	radioCombinedSaliency.setAttribute("value","saliencyCombined");
 	radioCombinedSaliency.setAttribute("style", "margin-left:20px;");
 	radioCombinedSaliency.setAttribute("checked", "true");
-	radioCombinedSaliency.onclick = function() {
-		saliencyCombined = true;
+	radioCombinedSaliency.onclick = function(e) {
+        saliencyCombined = true;
+        targetClickHandler(e, "setSaliencyView:combinedSaliency");
 		activeSaliencyDisplayManager.setSaliencyMode(saliencyModeAggregate);
 		activeSaliencyDisplayManager.renderExplanationSaliencyMaps();
 	};
@@ -469,8 +476,9 @@ function populateSaliencyQuestionSelector(){
 	radioDetailedSaliency.setAttribute("id","relevance-detailed-radio");
 	radioDetailedSaliency.setAttribute("value","saliencyDetailed");
 	radioDetailedSaliency.setAttribute("style", "margin-left:20px; ");
-	radioDetailedSaliency.onclick = function() {
-		saliencyCombined = false;
+	radioDetailedSaliency.onclick = function(e) {
+        saliencyCombined = false;
+        targetClickHandler(e, "setSaliencyView:detailedSaliency");
 		activeSaliencyDisplayManager.setSaliencyMode(saliencyModeDetailed);
 		activeSaliencyDisplayManager.renderExplanationSaliencyMaps();
 	};
@@ -493,11 +501,13 @@ function populateRewardQuestionSelector(){
 	// REWARDS SECTION
 	var radioCombinedRewards = document.createElement("input");
 	radioCombinedRewards.setAttribute("type","radio");
+	radioCombinedRewards.setAttribute("id","radio-combined-rewards");
 	radioCombinedRewards.setAttribute("name","rewardView");
 	radioCombinedRewards.setAttribute("value","rewardCombined");
 	radioCombinedRewards.setAttribute("style", "margin-left:20px;");
 	radioCombinedRewards.setAttribute("checked", "true");
-	radioCombinedRewards.onclick = function() {
+	radioCombinedRewards.onclick = function(e) {
+        targetClickHandler(e, "setRewardView:combinedRewards");
 		showRewards(true, true);
 	};
 
@@ -507,10 +517,12 @@ function populateRewardQuestionSelector(){
 
 	var radioDetailedRewards = document.createElement("input");
 	radioDetailedRewards.setAttribute("type","radio");
+	radioDetailedRewards.setAttribute("id","radio-detailed-rewards");
 	radioDetailedRewards.setAttribute("name","rewardView");
 	radioDetailedRewards.setAttribute("value","rewardDetailed");
 	radioDetailedRewards.setAttribute("style", "margin-left:20px; ");
-	radioDetailedRewards.onclick = function() {
+	radioDetailedRewards.onclick = function(e) {
+        targetClickHandler(e, "setRewardView:detailedRewards");
 		showRewards(false, true);
 	};
 
@@ -526,10 +538,12 @@ function populateRewardQuestionSelector(){
 	// ADVANTAGE SECTION
 	var radioCombinedAdvantage = document.createElement("input");
 	radioCombinedAdvantage.setAttribute("type","radio");
+	radioCombinedAdvantage.setAttribute("id","radio-combined-advantage");
 	radioCombinedAdvantage.setAttribute("name","rewardView");
 	radioCombinedAdvantage.setAttribute("value","advantageCombined");
 	radioCombinedAdvantage.setAttribute("style", "margin-left:20px;");
-	radioCombinedAdvantage.onclick = function() {
+	radioCombinedAdvantage.onclick = function(e) {
+        targetClickHandler(e, "setRewardView:combinedAdvantage");
 		showRewards(true, false);
 	};
 
@@ -539,10 +553,12 @@ function populateRewardQuestionSelector(){
 
 	var radioDetailedAdvantage = document.createElement("input");
 	radioDetailedAdvantage.setAttribute("type","radio");
+	radioDetailedAdvantage.setAttribute("id","radio-detailed-advantage");
 	radioDetailedAdvantage.setAttribute("name","rewardView");
 	radioDetailedAdvantage.setAttribute("value","advantageDetailed");
 	radioDetailedAdvantage.setAttribute("style", "margin-left:20px; ");
-	radioDetailedAdvantage.onclick = function() {
+	radioDetailedAdvantage.onclick = function(e) {
+        targetClickHandler(e, "setRewardView:detailedAdvantage");
 		showRewards(false, false);
 	};
 
@@ -644,10 +660,10 @@ function addWhatButton() {
 	$("#what-button-div").append(whatButton);
 	$("#" + buttonId).click(function(e) {
         if (salienciesAreShowing){
-            targetClickHandler(e,"hideWhat:NA");
+            targetClickHandler(e,"hideSaliency:NA");
         }
         else {
-            targetClickHandler(e,"showWhat:NA");
+            targetClickHandler(e,"showSaliency:NA");
         }
 		e.preventDefault();
 		processWhatClick();

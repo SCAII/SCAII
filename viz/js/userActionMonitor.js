@@ -7,9 +7,14 @@ function getUserActionMonitor() {
     uam.clickRegionDetails = undefined;
     uam.clickTargetDetails = undefined;
     uam.userActionSemantics = undefined;
+    uam.clickListener = undefined;
+
+    uam.setClickListener = function(cl){
+        this.clickListener = cl;
+    }
 
     setHandlers();
-   
+    deleteUnwantedControls();
 
     
     uam.setUserActionSemantics = function(info) {
@@ -53,6 +58,10 @@ function getUserActionMonitor() {
         clickText = this.appendUserActionSemantics(clickText);
         
         console.log("clickText... " + clickText);
+        if (this.clickListener != undefined) {
+            this.clickListener.acceptClickInfo(clickText);
+            this.clickListener = undefined;
+        }
         stateMonitor.setUserAction(clickText);
         this.clear();
     }
@@ -64,12 +73,20 @@ function getUserActionMonitor() {
         rememberedGlobalChartClick = undefined;
     }
     uam.compileChartClickEvent = function(){
+        if (rememberedGlobalChartClick == undefined) {
+            // this can happend because we can get here without clicking due to the way the chart had to be instrumented
+            return;
+        }
         var clickText = "userClick:" + rememberedGlobalChartClick[0] + "_" + rememberedGlobalChartClick[1]+ ";";
         clickText = this.appendClickRegionDetails(clickText);
         clickText = this.appendClickTargetDetails(clickText);
         clickText = this.appendUserActionSemantics(clickText);
         
         console.log("clickText... " + clickText);
+        if (this.clickListener != undefined) {
+            this.clickListener.acceptClickInfo(clickText);
+            this.clickListener = undefined;
+        }
         stateMonitor.setUserAction(clickText);
         this.clear();
     }
@@ -128,7 +145,7 @@ function globalClickHandler(e) {
     userActionMonitor.globalClick(e.clientX, e.clientY);
 }
 
-function regionClickHandlerSaliency(e) { userActionMonitor.regionClick("region:saliency;");}
+function regionClickHandlerSaliency(e) { userActionMonitor.regionClick("region:saliency");}
 function regionClickHandlerRewards(e)  { userActionMonitor.regionClick("region:rewards"  );}
 function regionClickHandlerGameArea(e) { userActionMonitor.regionClick("region:gameArea");}
 function regionClickHandlerQnAArea(e)  { userActionMonitor.regionClick("region:QnA"     );}
@@ -158,6 +175,10 @@ function targetHoverHandler(e, userActionSemantics) {
     }
 }
 
+function deleteUnwantedControls(){
+    $("#action-list").empty();
+    $("#action-list").css("height","20px");
+}
 function setHandlers() {
     $("#scaii-interface")         .on("click",globalClickHandler);
     $("#scaii-explanations")      .on("click",regionClickHandlerSaliency);

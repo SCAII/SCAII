@@ -448,10 +448,7 @@ var drawBarChart = function(chartData, options) {
 function selectHandler(e) {
 	var googleChartSelections = googleChart.getSelection();
     var selectionsByName = activeBarChartManager.convertGoogleChartSelectionsToSelectionsByName(googleChartSelections);
-    var targetName = "rewardBar(" + selectionsByName[0][0] + "/" + selectionsByName[0][1] + ")";
-    var targetArg = selectionsByName[0][0] + "/" + selectionsByName[0][1];
 	if (mostRecentClickHadCtrlKeyDepressed){
-        chartTargetClickHandler(targetName, "ctrlClickRewardBar:" + targetArg);
 		for (var i in selectionsByName){
 			var selection = selectionsByName[i];
 			if (activeBarChartManager.isSelected(selection)) {
@@ -465,7 +462,6 @@ function selectHandler(e) {
 		activeSaliencyDisplayManager.adjustCheckboxes(activeBarChartManager.getSelections());
 	}
 	else {
-        chartTargetClickHandler(targetName, "clickRewardBar:" + targetArg);
 		activeSaliencyDisplayManager.adjustCheckboxes(selectionsByName);
 		console.log('selections after click: ' + activeBarChartManager.getSelections());
 		
