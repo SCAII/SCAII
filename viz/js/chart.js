@@ -287,7 +287,8 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 			  title: vAxisString,
 			},
 			'width':700,
-			'height':400
+            'height':400,
+            colors: ['#00AAAA','#0055CC',  '#00CC00','#004400', '#0000AA', '#006666',  '#002222',  '#000044']
 		  };
 		  return options;
 	}
