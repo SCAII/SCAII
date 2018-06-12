@@ -216,11 +216,12 @@ function setHandlers() {
 function getShapeLogString(isFriend, type,hitPoints, maxHitPoints){
     var result;
     if (isFriend){
-        result = "friendly_";
+        result = "friendly-";
     }
     else {
-        result = "enemy_";
+        result = "enemy-";
     }
-    result = result + type + "_" + hitPoints + "_" + maxHitPoints;
+    //result = result + type + "-" + hitPoints + "-" + maxHitPoints;
+    result = result + type;
     return result;
 }

@@ -327,8 +327,8 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
       drawRect(ctx, absX, absY, final_width, final_height, orientation, colorRGBA);
       var tooltipX = absX - final_width/2 - 10;
       var tooltipY = absY - final_height/2 - 10;
-      createHPToolTip(entityIndex+2, shapeId, tooltipX, tooltipY, hitPoints, maxHitPoints, colorRGBA);
       createAllDataToolTip(entityIndex+2000, shapeId, absX, absY, entity, colorRGBA);
+      createHPToolTip(entityIndex+2, shapeId, tooltipX, tooltipY, hitPoints, maxHitPoints, colorRGBA);
     }
     else if (shape.hasTriangle()) {
       var triangle = shape.getTriangle();
@@ -342,8 +342,8 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
       drawDiamond(ctx, absX, absY, finalBaseLen, orientation, colorRGBA);
       var tooltipX = absX - (finalBaseLen + 6)/2 - 10;
       var tooltipY = absY - (finalBaseLen + 6)/2 - 10;
-      createHPToolTip(entityIndex+2, shapeId, tooltipX, tooltipY , hitPoints, maxHitPoints, colorRGBA);
       createAllDataToolTip(entityIndex+2000, shapeId, absX, absY, entity, colorRGBA);
+      createHPToolTip(entityIndex+2, shapeId, tooltipX, tooltipY , hitPoints, maxHitPoints, colorRGBA);
     }
   }
 }
@@ -393,13 +393,17 @@ function createHPToolTip(z_index, shapeId, absX, absY, hitPoints, maxHitPoints, 
   if (undefined != hitPoints) {
     var canvas_bounds = gameboard_canvas.getBoundingClientRect();
     var hpDiv = document.createElement("div");
+    var id = "metadata_hp" + shapeId;
+    hpDiv.setAttribute("id", id );
     var setToShow = selectedToolTipIds[shapeId];
     if (setToShow == undefined || setToShow == "hide"){
       hpDiv.setAttribute("class","tooltip-invisible");
     }
+    hpDiv.onclick = function(e) {
+        var targetName = "hitpoints-" + getQuadrantName() + "-" + shapeLogStrings[shapeId];
+        targetClickHandler(e, "clickHitPoints:" + targetName);
+    };
     
-    var id = "metadata_hp" + shapeId;
-    hpDiv.setAttribute("id",id);
      // position it relative to where origin of bounding box of gameboard is
     var y = absY + canvas_bounds.top;
     var x = absX + canvas_bounds.left;
