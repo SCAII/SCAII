@@ -89,6 +89,9 @@ println!("{}", result); // => "Hello World!"
         let filename = lfe.filename;
         answerfile_path.push(filename);
         
+        if !answerfile_path.exists(){
+            File::create(&answerfile_path)?;
+        }
         let mut file = OpenOptions::new().append(true).open(answerfile_path).unwrap();
         file.write_all(output_line.as_bytes())?;
         file.write_all("\n".to_string().as_bytes())?;
