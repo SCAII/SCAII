@@ -170,18 +170,18 @@ function getStudyQuestionRenderer(questions) {
         var div = document.createElement("DIV");
         div.setAttribute("id", "thank-you-div");
         div.setAttribute("class", "flex-column");
-        div.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:500;margin:auto;font-family:Arial;padding:10px;width:600px;height:600px;background-color:" + this.bg + ";");
+        div.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:500;margin:auto;font-family:Arial;padding:10px;width:1800px;height:1600px;background-color:" + this.bg + ";");
         $('body').append(div);
 
         var row = document.createElement("DIV");
         row.setAttribute("id", "thank-you-row");
         row.setAttribute("class", "flex-row");
-        row.setAttribute("style", "margin-top:200px;font-family:Arial;padding:10px;");
+        row.setAttribute("style", "margin-top:150px;font-family:Arial;padding:10px;");
         $("#thank-you-div").append(row);
         
         var thanks = document.createElement("DIV");
         thanks.setAttribute("id", "thanks");
-        thanks.setAttribute("style", "margin:auto;font-family:Arial;font-size:18px;padding:10px;");
+        thanks.setAttribute("style", "margin-left:100px;font-family:Arial;font-size:18px;padding:10px;");
         thanks.innerHTML = "Thank you for your participation in this study!";
         $("#thank-you-row").append(thanks);
     }
@@ -190,32 +190,32 @@ function getStudyQuestionRenderer(questions) {
         var userIdDiv = document.createElement("DIV");
         userIdDiv.setAttribute("id", "user-id-div");
         userIdDiv.setAttribute("class", "flex-column");
-        userIdDiv.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:500;margin:auto;font-family:Arial;padding:10px;width:600px;height:600px;background-color:" + this.bg + ";");
+        userIdDiv.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:500;margin:auto;font-family:Arial;padding:10px;width:1800px;height:1600px;background-color:" + this.bg + ";");
         $('body').append(userIdDiv);
 
         var questionRow = document.createElement("DIV");
         questionRow.setAttribute("id", "user-id-question-row");
         questionRow.setAttribute("class", "flex-row");
-        questionRow.setAttribute("style", "margin-top:200px;font-family:Arial;padding:10px;");
+        questionRow.setAttribute("style", "margin-top:150px;font-family:Arial;padding:10px;");
         $("#user-id-div").append(questionRow);
         
         var question = document.createElement("DIV");
         question.setAttribute("id", "user-id-question");
-        question.setAttribute("style", "margin:auto;font-family:Arial;font-size:18px;padding:10px;");
-        question.innerHTML = "Welcome to the XAI User Study.  Your study ID is :";
+        question.setAttribute("style", "margin-left:100px;font-family:Arial;font-size:18px;padding:10px;");
+        question.innerHTML = "Welcome to the XAI User Study.  Your study ID is:  " + studyQuestionManager.userId;
         $("#user-id-question-row").append(question);
 
-        var userIdText = document.createElement("DIV");
-        userIdText.setAttribute("id", "user-id-answer");
-        userIdText.setAttribute("style", "margin:auto;font-family:Arial;font-size:18px;padding:10px;");
-        userIdText.innerHTML = studyQuestionManager.userId;
+        // var userIdText = document.createElement("DIV");
+        // userIdText.setAttribute("id", "user-id-answer");
+        // userIdText.setAttribute("style", "margin:auto;font-family:Arial;font-size:18px;padding:10px;");
+        // userIdText.innerHTML = ;
         
-        $("#user-id-question-row").append(userIdText);
+        // $("#user-id-question-row").append(userIdText);
 
         var buttonRow = document.createElement("DIV");
         buttonRow.setAttribute("id", "user-id-button-row");
         buttonRow.setAttribute("class", "flex-row");
-        buttonRow.setAttribute("style", "margin-top:100px;font-family:Arial;padding:10px;");
+        buttonRow.setAttribute("style", "margin-top:60px;font-family:Arial;padding:10px;");
         $("#user-id-div").append(buttonRow);
 
         var next = document.createElement("BUTTON");

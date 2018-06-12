@@ -7,6 +7,7 @@ var studyQuestionManager = undefined;
 var studyQuestionIndexManager = undefined;
 var stateMonitor = undefined;
 var userActionMonitor = undefined;
+var studyTreatment = undefined;
 
 // ToDo - when strat jump- turn off incrementing index until receive set position.  Unblock incrementing on jump complete
 // then it will be apparent if we need to correct for ReplaySequencer's index pointing to next-packet-to-send rather than 
@@ -113,6 +114,7 @@ function handleStudyQuestions(studyQuestions){
     studyQuestionManager = getStudyQuestionManager(questions, userId, treatmentId);
     userActionMonitor = getUserActionMonitor();
     stateMonitor = getStateMonitor();
+    studyTreatment = getTreatmentManager(treatmentId);
     stateMonitor.logFileName = answerFilename;
 
 }

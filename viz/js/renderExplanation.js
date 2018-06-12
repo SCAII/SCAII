@@ -272,7 +272,14 @@ function getBarChartManagerForSituation(isAggregate, isRewardMode) {
 
 function showRewards(isAggregate, isRewardMode) {
 	activeSaliencyDisplayManager = getSaliencyDisplayManagerForSituation(isAggregate, isRewardMode);
-	configureRewardChart(isAggregate, isRewardMode);
+    configureRewardChart(isAggregate, isRewardMode);
+    if (isStudyQuestionMode()) {
+        if (!studyTreatment.showSaliencyAll){
+            // bypass showing saliency 
+            return;
+        }
+    }
+
 	if (salienciesAreShowing){
 		if (saliencyCombined) {
 			activeSaliencyDisplayManager.setSaliencyMode(saliencyModeAggregate);
@@ -287,6 +294,18 @@ function showRewards(isAggregate, isRewardMode) {
 	}
 }
 
+function configureInvisibleRewardChart(isAggregate, isRewardView) {
+	isCombinedView = isAggregate;
+	isRewardMode = isRewardView;
+	activeBarChartManager = getBarChartManagerForSituation(isAggregate,isRewardMode);
+	if (!wasDefaultSelectionDone(isAggregate, isRewardView)){
+		activeBarChartManager.setDefaultSelections();
+		rememberDefaultSelection(isAggregate, isRewardView);
+	}
+	rewardsAreShowing = false;
+}
+
+
 function configureRewardChart(isAggregate, isRewardView) {
 	isCombinedView = isAggregate;
 	isRewardMode = isRewardView;
@@ -299,7 +318,34 @@ function configureRewardChart(isAggregate, isRewardView) {
 	rewardsAreShowing = true;
 }
 
+
+function prepareForSaliencyOnlyView(explPoint){
+    clearExplanationInfo();
+	clearDefaultSelections();
+	//createRewardChartContainer();
+	activeExplanationPoint = explPoint;
+
+	saliencyDisplayManagerRewardsCombined.populateActionCheckBoxes();
+	saliencyDisplayManagerAdvantageCombined.populateActionCheckBoxes();
+	
+	saliencyDisplayManagerRewardsDetailed.populateActionBarCheckBoxes();
+	saliencyDisplayManagerAdvantageDetailed.populateActionBarCheckBoxes();
+    activeSaliencyDisplayManager = getSaliencyDisplayManagerForSituation(true, true);
+	configureInvisibleRewardChart(true, true);
+    if (isStudyQuestionMode()) {
+        stateMonitor.showedCombinedRewards();
+        stateMonitor.showedCombinedSaliency();
+    }
+	var actionName =  activeBarChartManager.getChosenActionName();
+	processWhatClick();
+}
 function renderWhyInfo(explPoint) {
+    if (isStudyQuestionMode()) {
+        if (studyTreatment.showSaliencyForDecisionMadeOnly){
+            prepareForSaliencyOnlyView(explPoint);
+            return;
+        }
+    }
 	clearExplanationInfo();
 	clearDefaultSelections();
 	createRewardChartContainer();
@@ -326,8 +372,15 @@ function renderWhyInfo(explPoint) {
 	$("#why-label").html(whyPrompt);
 	$("#why-label").css("font-size", 14);
 	$("#why-label").css("padding-right", 20);
-	populateRewardQuestionSelector();
-	addWhatButton();
+    populateRewardQuestionSelector();
+    if (isStudyQuestionMode()){
+        if (studyTreatment.showSaliencyAll){
+            addWhatButton();
+        }
+    }
+    else {
+        addWhatButton();
+    }
 	if (salienciesAreShowing || saliencyKeepAlive){
 		processWhatClick();
 	}
@@ -338,8 +391,14 @@ function initSaliencyContainers(){
     saliencyLookupMap = saliency.getSaliencyMapMap();
 	populateSaliencyQuestionSelector();
 	createSaliencyContainers();
-	activeSaliencyDisplayManager = getSaliencyDisplayManagerForSituation(isCombinedView, isRewardMode);
-	activeSaliencyDisplayManager.setSaliencyMode(saliencyModeAggregate);
+    activeSaliencyDisplayManager = getSaliencyDisplayManagerForSituation(isCombinedView, isRewardMode);
+    var chosenSaliencyMode = saliencyModeAggregate;
+    if (isStudyQuestionMode()) {
+        if (studyTreatment.showSaliencyForDecisionMadeOnly){
+            chosenSaliencyMode = saliencyModeDetailed;
+        }
+    }
+	activeSaliencyDisplayManager.setSaliencyMode(chosenSaliencyMode);
 }
 function updateSaliencyContainers(){
 	activeSaliencyDisplayManager.renderExplanationSaliencyMaps();
@@ -892,8 +951,20 @@ function configureExplanationSelectorDiamond(uiIndex,step){
 		halfWidth = explanationPointBigDiamondHalfWidth;
 		halfHeight = explanationPointBigDiamondHalfWidth;
 		var yPositionOfWhyButton = -14;// relative to the next container below
-		var xPositionOfWhyButton = x - 20;
-		addWhyButtonForAction(step, xPositionOfWhyButton,  yPositionOfWhyButton);
+        var xPositionOfWhyButton = x - 20;
+        if (isStudyQuestionMode()){
+            if (studyTreatment.showReward) {
+                addWhyButtonForAction(step, xPositionOfWhyButton,  yPositionOfWhyButton);
+            }
+            if (studyTreatment.showSaliencyForDecisionMadeOnly){
+                // send explain command to back end
+                showExplanationRewardInfo(step);
+            }
+        }
+        else {
+            addWhyButtonForAction(step, xPositionOfWhyButton,  yPositionOfWhyButton);
+        }
+		
         boldThisStepInLegend(step);
         if (isStudyQuestionMode()){
             userActionMonitor.stepToDecisionPoint(step);

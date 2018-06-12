@@ -5,8 +5,8 @@ const saliencyQuestionAggregate = "(Showing areas of greatest attention)";
 const saliencyQuestionDetailed  = "(Showing areas of greatest attention by feature)";
 
 function getSaliencyDisplayManager(selectionManager) {
-	var sdm = {};
-	sdm.saliencyMode = saliencyModeAggregate;
+    var sdm = {};
+    sdm.saliencyMode = saliencyModeAggregate;
 	sdm.saliencyMapPercentSize = 1.0;
 	sdm.activeCheckBoxes = [];
 	sdm.activeCheckBoxLabels = [];
@@ -72,7 +72,13 @@ function getSaliencyDisplayManager(selectionManager) {
 		}
 		else {
 			this.renderAllExplanationSaliencyMaps();
-		}
+        }
+        if (isStudyQuestionMode()) {
+            if (studyTreatment.showSaliencyForDecisionMadeOnly){
+                // don't try to interact with the chart
+                return;
+            }
+        }
 		var currentSelections = this.xaiSelectionManager.getSelections();
 		var googleChartSelections = activeBarChartManager.convertSelectionsByNameToGoogleChartSelections(currentSelections);
 		googleChart.setSelection(googleChartSelections);
