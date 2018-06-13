@@ -156,7 +156,7 @@ function getSelectionManager() {
 
 
 expl_ctrl_canvas.addEventListener('click', function (event) {
-	if (!userInputBlocked){
+	if (!isUserInputBlocked()){
 		var matchingStep = getMatchingExplanationStep(expl_ctrl_ctx, event.offsetX, event.offsetY);
 		if (matchingStep == undefined){
             processTimelineClick(event);
@@ -787,7 +787,7 @@ function addLabelForAction(title, index, step){
 	actionLabel.setAttribute("id", id);
 
 	actionLabel.addEventListener("click", function(evt) {
-		if (!userInputBlocked){
+		if (!isUserInputBlocked()){
 			var userCommand = new proto.scaii.common.UserCommand;
 			userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
 			// same args as above

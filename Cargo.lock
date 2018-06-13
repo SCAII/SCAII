@@ -936,9 +936,10 @@ dependencies = [
 
 [[package]]
 name = "rlua"
-version = "0.9.7"
+version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
+ "failure 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "gcc 0.3.54 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.2.40 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -965,7 +966,7 @@ dependencies = [
  "bincode 0.9.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.2.40 (registry+https://github.com/rust-lang/crates.io-index)",
  "prost 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "scaii_defs 0.10.0",
+ "scaii_defs 0.11.0",
  "serde 1.0.37 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_derive 1.0.37 (registry+https://github.com/rust-lang/crates.io-index)",
  "sky-rts 0.1.0",
@@ -976,7 +977,7 @@ dependencies = [
 
 [[package]]
 name = "scaii_defs"
-version = "0.10.0"
+version = "0.11.0"
 dependencies = [
  "bytes 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "glob 0.2.11 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1116,8 +1117,8 @@ dependencies = [
  "prost-derive 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.4.2 (git+https://github.com/rust-lang-nursery/rand?rev=1591eadd954)",
  "rayon 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "rlua 0.9.7 (registry+https://github.com/rust-lang/crates.io-index)",
- "scaii_defs 0.10.0",
+ "rlua 0.13.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "scaii_defs 0.11.0",
  "serde 1.0.37 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_cbor 0.8.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_derive 1.0.37 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1141,7 +1142,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "specs"
 version = "0.10.0"
-source = "git+https://github.com/LinearZoetrope/specs#8b881855146e3e9381abdfff450f6185be329ad1"
+source = "git+https://github.com/LinearZoetrope/specs#be9c1cef1d7f5952203ec1e34cd2e6a7351351ec"
 dependencies = [
  "crossbeam 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "derivative 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1644,7 +1645,7 @@ dependencies = [
 "checksum redox_syscall 0.1.37 (registry+https://github.com/rust-lang/crates.io-index)" = "0d92eecebad22b767915e4d529f89f28ee96dbbf5a4810d2b844373f136417fd"
 "checksum redox_termios 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "7e891cfe48e9100a70a3b6eb652fef28920c117d366339687bd5576160db0f76"
 "checksum remove_dir_all 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "dfc5b3ce5d5ea144bb04ebd093a9e14e9765bcfec866aecda9b6dec43b3d1e24"
-"checksum rlua 0.9.7 (registry+https://github.com/rust-lang/crates.io-index)" = "fb7eec2f28b4812553f10b2e69888a5a674b2e761f5a39731c14541c32bdb6d8"
+"checksum rlua 0.13.0 (registry+https://github.com/rust-lang/crates.io-index)" = "9f4876476bf0ac0bb596c60153c5ba11ddfc5738df991baa9ec35b303dffb1ff"
 "checksum rustc-demangle 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)" = "11fb43a206a04116ffd7cfcf9bcb941f8eb6cc7ff667272246b0a1c74259a3cb"
 "checksum rustc-serialize 0.3.24 (registry+https://github.com/rust-lang/crates.io-index)" = "dcf128d1287d2ea9d80910b5f1120d0b8eede3fbf1abe91c40d39ea7d51e6fda"
 "checksum safemem 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "e27a8b19b835f7aea908818e871f5cc3a5a186550c30773be987e155e8163d8f"
