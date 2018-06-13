@@ -37,7 +37,7 @@ impl<'a> System<'a> for StateBuildSystem {
     type SystemData = StateBuildSystemData<'a>;
 
     fn run(&mut self, mut sys_data: Self::SystemData) {
-        use engine::resources::COLLISION_SCALE;
+        use engine::resources::{COLLISION_SCALE, UNIVERSAL_SENSOR};
         use nalgebra::Point2;
         use ncollide::world::CollisionGroups;
         use std::mem;
@@ -53,9 +53,7 @@ impl<'a> System<'a> for StateBuildSystem {
         let c_world = &*sys_data.collision_sys;
 
         let mut c_group = CollisionGroups::new();
-        for i in 0..15 {
-            c_group.modify_membership(i, true);
-        }
+        c_group.set_membership(&[UNIVERSAL_SENSOR]);
 
         /* This is probably speed uppable using the Dead and Moved marker components */
         for i in 0..STATE_SIZE {
@@ -66,7 +64,7 @@ impl<'a> System<'a> for StateBuildSystem {
                 );
                 let intersection = c_world.interferences_with_point(&pt, &c_group);
 
-                if let Some(collider) = intersection.filter(|v| !v.data().detector).next() {
+                if let Some(collider) = intersection.filter(|v| !v.data().sensor).next() {
                     let entity = collider.data().e;
                     // Need to offset by 1 because the default is 0
                     self.state_cache[(i, j, 0)] = (entity.id() + 1) as f64;

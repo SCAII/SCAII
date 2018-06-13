@@ -3,15 +3,16 @@ use scaii_defs::protos::Error as ScaiiError;
 
 use specs::prelude::*;
 
-use std::error::Error;
+use rlua::Error;
 use std::fmt::Debug;
 use std::path::Path;
 
 use engine::components::{
-    DealtDamage, Death, Delete, FactionId, Hp, HpChange, Spawned, UnitTypeTag,
+    DataStoreComponent, DealtDamage, Death, Delete, FactionId, Hp, HpChange, Spawned, UnitTypeTag,
 };
 use engine::resources::{
-    CumReward, MaxStep, Reward, RewardTypes, Skip, SpawnBuffer, Step, Terminal, UnitTypeMap,
+    CumReward, DataStore, MaxStep, Reward, RewardTypes, Skip, SpawnBuffer, Step, Terminal,
+    UnitTypeMap,
 };
 use rand::Isaac64Rng;
 
@@ -29,6 +30,8 @@ pub struct LuaSystemData<'a> {
     hp: ReadStorage<'a, Hp>,
     spawned: ReadStorage<'a, Spawned>,
     ids: Entities<'a>,
+    global_lua_data: FetchMut<'a, DataStore>,
+    lua_data: WriteStorage<'a, DataStoreComponent>,
 
     step: Fetch<'a, Step>,
     max_step: Fetch<'a, MaxStep>,
@@ -58,32 +61,45 @@ impl<'a> System<'a> for LuaSystem {
         use self::userdata::{UserDataReadWorld, UserDataRng, UserDataUnit, UserDataWorld};
 
         self.immediate_reward.clear();
-
-        let world = UserDataWorld::new(UserDataRng {
-            rng: &mut *sys_data.rng,
-        });
+        let world = UserDataWorld::new(
+            UserDataRng {
+                rng: &mut *sys_data.rng,
+            },
+            &mut *sys_data.global_lua_data,
+        );
         self.lua.globals().set("__sky_world", world).unwrap();
 
-        for (faction, tag, hp, death) in (
+        // Need to do a borrow checker workaround because we're
+        // doing a disjoint borrow of the same component mutable on two
+        // entities
+        //
+        // Specs may have a better fix later
+        for (faction, tag, hp, death, id) in (
             &sys_data.faction,
             &sys_data.tag,
             &sys_data.hp,
             &sys_data.death,
+            &*sys_data.ids,
         ).join()
         {
+            let lua_data: *mut _ = &mut sys_data.lua_data.get_mut(id).unwrap().0;
+
             let killer_faction = sys_data.faction.get(death.killer).unwrap();
             let killer_tag = sys_data.tag.get(death.killer).unwrap();
             let killer_hp = sys_data.hp.get(death.killer).unwrap();
+            let killer_lua_data: *mut _ = &mut sys_data.lua_data.get_mut(death.killer).unwrap().0;
 
             let unit1 = UserDataUnit {
                 faction: *faction,
                 u_type: tag.0.clone(),
                 hp: *hp,
+                data_store: lua_data,
             };
             let unit2 = UserDataUnit {
                 faction: *killer_faction,
                 u_type: killer_tag.0.clone(),
                 hp: *killer_hp,
+                data_store: killer_lua_data,
             };
 
             self.lua.globals().set("__sky_u1", unit1.clone()).unwrap();
@@ -112,17 +128,19 @@ impl<'a> System<'a> for LuaSystem {
             }
         }
 
-        for (faction, u_type, hp, _) in (
+        for (faction, u_type, hp, _, lua_data) in (
             &sys_data.faction,
             &sys_data.tag,
             &sys_data.hp,
             &sys_data.spawned,
+            &mut sys_data.lua_data,
         ).join()
         {
             let unit = UserDataUnit {
                 faction: *faction,
                 u_type: u_type.0.clone(),
                 hp: *hp,
+                data_store: &mut lua_data.0,
             };
 
             self.lua.globals().set("__sky_u1", unit).unwrap();
@@ -289,17 +307,16 @@ impl LuaSystem {
         &mut self,
         world: &mut World,
         path: P,
-    ) -> Result<(), Box<Error>> {
+    ) -> Result<(), Error> {
         use self::userdata::UserDataRng;
         use rand::Isaac64Rng;
         use std::fs::File;
         use std::io::prelude::*;
 
         let mut file = File::open(&path).or_else(|e| {
-            Err(format!(
-                "Could not load Lua file, is the path right?:\n\t{}",
-                e
-            ))
+            Err(Error::external(e))
+            // TODO: Fix after we can import the failure crate directly
+            // "Could not load Lua file, is the path right?:\n\t{}"
         })?;
         let mut contents = String::new();
         file.read_to_string(&mut contents)
@@ -318,7 +335,7 @@ impl LuaSystem {
         Ok(())
     }
 
-    pub fn reset(&mut self, world: &mut World) -> Result<(), Box<Error>> {
+    pub fn reset(&mut self, world: &mut World) -> Result<(), Error> {
         use engine::components::Pos;
         use engine::resources::UnitTypeMap;
 
@@ -343,7 +360,9 @@ impl LuaSystem {
                 unit_types
                     .tag_map
                     .get(&template)
-                    .ok_or_else(|| format!("Could not get unit type template {}", template))?
+                    .unwrap()
+                    // TODO fix after we add the failure crate
+                    // .ok_or_else(|| format!("Could not get unit type template {}", template))?
                     .clone()
             };
 
@@ -353,7 +372,7 @@ impl LuaSystem {
         Ok(())
     }
 
-    pub fn load_scenario(&mut self, world: &mut World) -> Result<(), Box<Error>> {
+    pub fn load_scenario(&mut self, world: &mut World) -> Result<(), Error> {
         use engine::components::{FactionId, Shape};
         use engine::resources::{
             CumReward, MaxStep, Player, RewardTypes, UnitType, UnitTypeMap, PLAYER_COLORS,

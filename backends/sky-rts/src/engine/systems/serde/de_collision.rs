@@ -1,49 +1,47 @@
-use engine::components::{AttackSensor, CollisionHandle, FactionId, Pos, UnitTypeTag};
-use engine::resources::{SkyCollisionWorld, UnitTypeMap};
+use engine::components::{CollisionHandle, FactionId, Pos, SensorType, UnitTypeTag};
+use engine::resources::{new_collision_world, SkyCollisionWorld, UnitTypeMap};
 use specs::prelude::*;
-
-#[derive(SystemData)]
-pub struct RedoCollisionSysData<'a> {
-    tag: ReadStorage<'a, UnitTypeTag>,
-    pos: ReadStorage<'a, Pos>,
-    ids: Entities<'a>,
-    faction: ReadStorage<'a, FactionId>,
-    c_handle: WriteStorage<'a, CollisionHandle>,
-    atk_radius: WriteStorage<'a, AttackSensor>,
-
-    u_types: Fetch<'a, UnitTypeMap>,
-
-    col_world: FetchMut<'a, SkyCollisionWorld>,
-}
 
 pub struct RedoCollisionSys;
 
-impl<'a> System<'a> for RedoCollisionSys {
-    type SystemData = RedoCollisionSysData<'a>;
+impl RedoCollisionSys {
+    pub fn redo_collision(&mut self, world: &mut World) {
+        use engine::components::sensor;
 
-    fn run(&mut self, mut sys_data: Self::SystemData) {
-        *sys_data.col_world = SkyCollisionWorld::new(0.02);
-        let type_map = &*sys_data.u_types;
+        *world.write_resource::<SkyCollisionWorld>() = new_collision_world();
 
         for (pos, tag, faction, id) in (
-            &sys_data.pos,
-            &sys_data.tag,
-            &sys_data.faction,
-            &*sys_data.ids,
+            &world.read::<Pos>(),
+            &world.read::<UnitTypeTag>(),
+            &world.read::<FactionId>(),
+            &*world.entities(),
         ).join()
         {
-            let u_type = type_map.tag_map.get(&tag.0).unwrap();
+            // Borrow checker won't let us one line this
+            let u_type = world.read_resource::<UnitTypeMap>();
+            let u_type = u_type.tag_map.get(&tag.0).unwrap();
 
             u_type.register_collision(
                 id,
                 *pos,
                 faction.0,
-                &mut sys_data.c_handle,
-                &mut sys_data.atk_radius,
-                &mut *sys_data.col_world,
+                &mut world.write::<CollisionHandle>(),
+                &mut *world.write_resource::<SkyCollisionWorld>(),
             );
         }
 
-        sys_data.col_world.update();
+        // Maybe use one-time allocation bucket approach in the future like other systems
+        let mut sensors = Vec::new();
+        sensors.extend(
+            (&*world.entities(), &world.read::<SensorType>())
+                .join()
+                .map(|(id, _)| id),
+        );
+
+        for sensor_id in sensors {
+            sensor::register_sensor_collision(world, sensor_id);
+        }
+
+        world.write_resource::<SkyCollisionWorld>().update();
     }
 }

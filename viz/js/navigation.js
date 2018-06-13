@@ -1,5 +1,6 @@
 var jumpInProgress = false;
 var userInputBlocked = false;
+var liveModeInputBlocked = false;
 
 function paintProgress(value) {
 	showPositionOnTimeline(value);
@@ -59,7 +60,7 @@ function stageUserCommand(userCommand) {
 	userCommandScaiiPackets.push(scaiiPkt);
 }
 var tryPause = function () {
-	if (!userInputBlocked) {
+	if (!isUserInputBlocked()) {
 		pauseGame();
 	}
 }
@@ -76,7 +77,7 @@ function pauseGame() {
 }
 
 var tryResume = function () {
-	if (!userInputBlocked) {
+	if (!isUserInputBlocked()) {
 		resumeGame();
 	}
 }
@@ -94,7 +95,7 @@ function resumeGame() {
 }
 
 var tryRewind = function () {
-	if (!userInputBlocked) {
+	if (!isUserInputBlocked()) {
 		rewindGame();
 	}
 }
@@ -274,7 +275,9 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	return manager;
 }
 
-
+function isUserInputBlocked() {
+    return userInputBlocked || liveModeInputBlocked;
+}
 function updateButtonsAfterJump() {
 	if (sessionIndexManager.isAtGameStart()) {
 		controlsManager.expressResumeButton();

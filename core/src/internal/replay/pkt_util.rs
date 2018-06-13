@@ -361,6 +361,7 @@ pub fn create_replay_session_config_message(
             explanation_steps: expl_steps,
             explanation_titles: expl_titles,
             chart_titles: chart_titles,
+            suppress_interactivity: false,
         })),
     }
 }
