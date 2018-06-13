@@ -7,11 +7,16 @@ use rlua::Error;
 use std::fmt::Debug;
 use std::path::Path;
 
-use engine::components::{DataStoreComponent, DealtDamage, Death, Delete, FactionId, Hp, HpChange,
-                         Spawned, UnitTypeTag};
-use engine::resources::{CumReward, DataStore, MaxStep, Reward, RewardTypes, Skip, SpawnBuffer,
-                        Step, Terminal, UnitTypeMap};
+use engine::components::{
+    DataStoreComponent, DealtDamage, Death, Delete, FactionId, Hp, HpChange, Spawned, UnitTypeTag,
+};
+use engine::resources::{
+    CumReward, DataStore, MaxStep, Reward, RewardTypes, Skip, SpawnBuffer, Step, Terminal,
+    UnitTypeMap,
+};
 use rand::Isaac64Rng;
+
+use std::collections::HashMap;
 
 pub(crate) mod userdata;
 
@@ -44,6 +49,7 @@ pub struct LuaSystemData<'a> {
 
 pub struct LuaSystem {
     lua: Lua,
+    immediate_reward: HashMap<String, f64>,
 }
 
 unsafe impl Send for LuaSystem {}
@@ -54,6 +60,7 @@ impl<'a> System<'a> for LuaSystem {
     fn run(&mut self, mut sys_data: Self::SystemData) {
         use self::userdata::{UserDataReadWorld, UserDataRng, UserDataUnit, UserDataWorld};
 
+        self.immediate_reward.clear();
         let world = UserDataWorld::new(
             UserDataRng {
                 rng: &mut *sys_data.rng,
@@ -109,15 +116,13 @@ impl<'a> System<'a> for LuaSystem {
             let dead_type = sys_data.unit_type.tag_map.get(&unit1.u_type).unwrap();
 
             if faction.0 == 0 && dead_type.death_penalty != 0.0 {
-                *sys_data
-                    .reward
-                    .0
+                *self
+                    .immediate_reward
                     .entry(dead_type.death_type.clone())
                     .or_insert(0.0) += dead_type.death_penalty;
             } else if faction.0 == 1 && killer_faction.0 == 0 && dead_type.kill_reward != 0.0 {
-                *sys_data
-                    .reward
-                    .0
+                *self
+                    .immediate_reward
                     .entry(dead_type.kill_type.clone())
                     .or_insert(0.0) += dead_type.kill_reward;
             }
@@ -157,17 +162,15 @@ impl<'a> System<'a> for LuaSystem {
                     .filter_map(|d| if (d.1).0 != 0 { Some(d.0) } else { None })
                     .sum();
 
-                *sys_data
-                    .reward
-                    .0
+                *self
+                    .immediate_reward
                     .entry(u_type.dmg_deal_type.clone())
                     .or_insert(0.0) += enemy_dmg
             } else if u_type.damage_deal_reward.unwrap() != 0.0 {
                 let enemy_dmg_ct = dmg_dealt.by_source.iter().filter(|d| (d.1).0 != 0).count();
 
-                *sys_data
-                    .reward
-                    .0
+                *self
+                    .immediate_reward
                     .entry(u_type.dmg_deal_type.clone())
                     .or_insert(0.0) += (enemy_dmg_ct as f64) * u_type.damage_deal_reward.unwrap();
             }
@@ -180,15 +183,13 @@ impl<'a> System<'a> for LuaSystem {
             let u_type = sys_data.unit_type.tag_map.get(&tag.0).unwrap();
 
             if u_type.damage_recv_penalty.is_none() {
-                *sys_data
-                    .reward
-                    .0
+                *self
+                    .immediate_reward
                     .entry(u_type.dmg_recv_type.clone())
                     .or_insert(0.0) += hp_change.0
             } else if u_type.damage_recv_penalty.unwrap() != 0.0 {
-                *sys_data
-                    .reward
-                    .0
+                *self
+                    .immediate_reward
                     .entry(u_type.dmg_recv_type.clone())
                     .or_insert(0.0) += u_type.damage_recv_penalty.unwrap();
             }
@@ -211,7 +212,7 @@ impl<'a> System<'a> for LuaSystem {
         let r_types = &sys_data.r_types.0;
         for (r_type, reward) in world.rewards {
             assert!(r_types.contains(&r_type));
-            *sys_data.reward.0.entry(r_type).or_insert(0.0) += reward;
+            *self.immediate_reward.entry(r_type).or_insert(0.0) += reward;
         }
 
         sys_data.spawn_buf.0.extend(world.spawn.drain(..));
@@ -243,7 +244,8 @@ impl<'a> System<'a> for LuaSystem {
             }
         }
 
-        for (r_type, reward) in sys_data.reward.0.iter() {
+        for (r_type, reward) in &self.immediate_reward {
+            *sys_data.reward.0.entry(r_type.clone()).or_insert(0.0) += reward;
             *sys_data
                 .cum_reward
                 .0
@@ -255,13 +257,19 @@ impl<'a> System<'a> for LuaSystem {
 impl LuaSystem {
     /// Creates a new `LuaSystem` with a new context.
     pub fn new() -> Self {
-        LuaSystem { lua: Lua::new() }
+        LuaSystem {
+            lua: Lua::new(),
+            immediate_reward: HashMap::default(),
+        }
     }
 
     /// Creates a new Lua system from the given context
     #[allow(dead_code)]
     pub fn from_lua(lua: Lua) -> Self {
-        LuaSystem { lua: lua }
+        LuaSystem {
+            lua: lua,
+            immediate_reward: HashMap::default(),
+        }
     }
 
     /// Executes a Lua script in the current Lua context, loading any
@@ -331,7 +339,8 @@ impl LuaSystem {
         use engine::components::Pos;
         use engine::resources::UnitTypeMap;
 
-        let units: Table = self.lua
+        let units: Table = self
+            .lua
             .eval("sky_reset(__sky_rts_rng)", Some("Restart function"))?;
 
         for unit in units.sequence_values::<Table>() {
@@ -365,11 +374,13 @@ impl LuaSystem {
 
     pub fn load_scenario(&mut self, world: &mut World) -> Result<(), Error> {
         use engine::components::{FactionId, Shape};
-        use engine::resources::{CumReward, MaxStep, Player, RewardTypes, UnitType, UnitTypeMap,
-                                PLAYER_COLORS};
+        use engine::resources::{
+            CumReward, MaxStep, Player, RewardTypes, UnitType, UnitTypeMap, PLAYER_COLORS,
+        };
         use std::collections::HashSet;
 
-        let table: Table = self.lua
+        let table: Table = self
+            .lua
             .eval("sky_init()", Some("Initializing in sky_init from Lua"))?;
 
         let r_types = if table.contains_key("reward_types")? {
