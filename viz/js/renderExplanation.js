@@ -678,6 +678,7 @@ function getExplanationBox(left_x,right_x, upper_y, lower_y, step){
 	return eBox;
 }
 
+var winningActionForStep = {};
 function renderDecisionPointLegend() {
 	$("#action-list").empty();
 	decisionPointIds = {};
@@ -694,7 +695,8 @@ function renderDecisionPointLegend() {
 	while (index < expl_count){
 		var title = explanation_titles[index];
 		var uiIndex =index + 1;
-		var step = explanation_steps[index];
+        var step = explanation_steps[index];
+        winningActionForStep[step] = title;
 		addLabelForAction(title, uiIndex, step);
 		index = index + 1;
 	}
@@ -951,6 +953,7 @@ function configureExplanationSelectorDiamond(uiIndex,step){
 	var ctx = expl_ctrl_ctx;
 	if (currentStep == step) {
 		showingDecisionNumber = uiIndex;
+        $("#winning-action-label").html("Chosen move at D" + uiIndex + ": " + winningActionForStep[step]);
 		ctx.font = "16px Arial bold";
 		halfWidth = explanationPointBigDiamondHalfWidth;
 		halfHeight = explanationPointBigDiamondHalfWidth;

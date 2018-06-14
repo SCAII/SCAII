@@ -117,6 +117,12 @@ function handleStudyQuestions(studyQuestions){
     studyTreatment = getTreatmentManager(treatmentId);
     stateMonitor.logFileName = answerFilename;
     $("#action-list").remove();
+    // make div to hold the winning action name
+    var winningActionLabel = document.createElement("div");
+	winningActionLabel.setAttribute("style", "margin-top:8px;margin-left:30px;font-family:Arial;font-weight:bold;font-size:14px;");
+	winningActionLabel.setAttribute("id", "winning-action-label");
+    winningActionLabel.innerHTML = "";
+    $("#reward-Values-panel").append(winningActionLabel);
 }
 
 function handleReplayControl(replayControl) {
