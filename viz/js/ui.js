@@ -209,6 +209,7 @@ function getQuadrantName(x,y){
     }
 }
 
+
 function setUpMetadataToolTipEventHandlers() {
 	// for hiding/showing tooltips
 	gameboard_canvas.addEventListener('click', function(evt) {
@@ -216,6 +217,7 @@ function setUpMetadataToolTipEventHandlers() {
 		var y = evt.offsetY;
 		var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y, shapePositionMapForContext['game']);
 		if (shapeId != undefined){
+            highlightShapeForIdForClickCollectionFeedback(shapeId);
             targetClickHandler(evt, "clickEntity:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
 			// $("#metadata_hp" + shapeId).toggleClass('tooltip-invisible');
 			// if (selectedToolTipIds[shapeId] == "show") {

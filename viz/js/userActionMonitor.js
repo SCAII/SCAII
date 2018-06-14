@@ -1,6 +1,5 @@
 chartClickProcessing = false;
 rememberedGlobalChartClick = undefined;
-
 function getUserActionMonitor() {
     uam = {};
 
@@ -60,7 +59,6 @@ function getUserActionMonitor() {
         console.log("clickText... " + clickText);
         if (this.clickListener != undefined) {
             this.clickListener.acceptClickInfo(clickText);
-            this.clickListener = undefined;
         }
         stateMonitor.setUserAction(clickText);
         this.clear();
@@ -85,7 +83,6 @@ function getUserActionMonitor() {
         console.log("clickText... " + clickText);
         if (this.clickListener != undefined) {
             this.clickListener.acceptClickInfo(clickText);
-            this.clickListener = undefined;
         }
         stateMonitor.setUserAction(clickText);
         this.clear();

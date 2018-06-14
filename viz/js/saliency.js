@@ -361,7 +361,7 @@ function getSaliencyDisplayManager(selectionManager) {
 
 		
 	sdm.renderSaliencyMap = function(canvas, ctx, cells, width, height, normalizationFactor){
-		renderState(ctx, canvas, masterEntities, gameScaleFactor, 0, 0, shapePositionMapForContext["game"]);
+		renderState(ctx, canvas, masterEntities, gameScaleFactor, 0, 0, shapePositionMapForContext["game"],false);
 		this.overlaySaliencyMapOntoGameReplica(ctx, cells, width, height, normalizationFactor);
 	}	
 	sdm.renderSaliencyMapOrig = function(canvas, ctx, cells, width, height, normalizationFactor){

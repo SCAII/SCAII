@@ -27,15 +27,19 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         var step = question.getStep();
         var questionIndexForStep = question.getQuestionIdForStep();;
         var questionId = getQuestionId(step, questionIndexForStep);
-        var questionText = question.getQuestion();
-        var questionType = question.getQuestionType();
         var answers = question.getAnswersList();
         var qu = {};
         qu.step = step;
         qu.questionIndexForStep = questionIndexForStep;
         qu.questionId = questionId;
-        qu.questionText= questionText;
-        qu.questionType = questionType;
+        qu.questionText= question.getQuestion();;
+        var allTypeInfo = question.getQuestionType();
+        var typeParts = allTypeInfo.split(":");
+        qu.questionType = typeParts[0];
+        if (qu.questionType == "waitForClick"){
+            qu.regionsToAllow = typeParts[1].split("_");
+            qu.clickQuestionText = typeParts[2];
+        }
         qu.answers = answers;
         sqm.questionIds.push(questionId);
         sqm.questionMap[questionId] = qu;
@@ -214,8 +218,15 @@ function acceptUserId() {
     
 }
 function acceptAnswer(e) {
-    // block if no answer specified
     var renderer = studyQuestionManager.renderer;
+    renderer.removeMissingClickInfoMessage();
+    // block if no answer specified
+    if (renderer.controlsWaitingForClick.length != 0) {
+        if (renderer.clickInfoFromUserActionMonitor == undefined) {
+            renderer.expressMissingClickInfoMessage();
+            return;
+        }
+    }
     var answer = renderer.getCurrentAnswer();
     if (answer == undefined || answer == '') {
         alert('No answer chosen for the current question.  Please specify an answer and then click "Next Question".');
@@ -226,6 +237,7 @@ function acceptAnswer(e) {
     var questionId = studyQuestionIndexManager.getCurrentQuestionId();
     var currentQuestionIndexAtStep = getQuestionIndexFromQuestionId(questionId);
     var clickInfo = renderer.collectClickInfo();
+    userActionMonitor.clickListener = undefined;
     if (clickInfo == undefined){
         clickInfo = "NA";
     }

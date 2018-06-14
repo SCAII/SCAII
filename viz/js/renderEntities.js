@@ -4,6 +4,7 @@ var entityAllDataToolTipIds = [];
 var hoveredAllDataToolTipIds = {};
 var masterEntities = {};
 var shapeLogStrings = {};
+var shapeInfoForHighlighting = {};
 
 
 function removeFullShapeIdFromTrackingLists(fullShapeId){
@@ -60,7 +61,7 @@ function handleEntities(entitiesList) {
 			console.log('-----ERROR----- no entity ID on entity');
 		}
 	}
-	renderState(gameboard_ctx, gameboard_canvas, masterEntities, gameScaleFactor, 0, 0, shapePositionMapForContext["game"]);
+	renderState(gameboard_ctx, gameboard_canvas, masterEntities, gameScaleFactor, 0, 0, shapePositionMapForContext["game"], true);
 	// disable zoom box for now
 	//drawZoomBox(gameboard_ctx, gameboard_canvas, zoomBoxOriginX, zoomBoxOriginY, zoomFactor);
 	//renderState(gameboard_zoom_ctx, gameboard_zoom_canvas, masterEntities, zoomFactor, zoomBoxOriginX, zoomBoxOriginY, shapePositionMapForContext["zoom"]);
@@ -282,8 +283,9 @@ function getShapeId(entity, shape) {
   return entity.getId() + "_" + shape.getId();
 }
 
-function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOffset, yOffset, shapePositionMap) {
-  var final_x = (x - xOffset) * zoom_factor;
+function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOffset, yOffset, shapePositionMap, generateTooltips) {
+    console.log("called layout entities " + x + " " + y);
+    var final_x = (x - xOffset) * zoom_factor;
   var final_y = (y - yOffset) * zoom_factor;
   var shapesList = entity.getShapesList();
   for (var j in shapesList) {
@@ -325,10 +327,13 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
   //	highlightShape(ctx,shapeId,shapePositionMap);
       var colorRGBA = loadShapeColorAsRGBAString(shape);
       drawRect(ctx, absX, absY, final_width, final_height, orientation, colorRGBA);
+      rememberRectForHighlighting(shapeId, absX, absY, final_width, final_height, orientation);
       var tooltipX = absX - final_width/2 - 10;
       var tooltipY = absY - final_height/2 - 10;
-      createAllDataToolTip(entityIndex+2000, shapeId, absX, absY, entity, colorRGBA);
-      createHPToolTip(entityIndex+2, shapeId, tooltipX, tooltipY, hitPoints, maxHitPoints, colorRGBA);
+      if (generateTooltips) {
+        createAllDataToolTip(entityIndex+2000, shapeId, absX, absY, entity, colorRGBA);
+        createHPToolTip(entityIndex+2, shapeId, tooltipX, tooltipY, hitPoints, maxHitPoints, colorRGBA);
+      }
     }
     else if (shape.hasTriangle()) {
       var triangle = shape.getTriangle();
@@ -340,12 +345,122 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
       var colorRGBA = loadShapeColorAsRGBAString(shape);
       //drawTriangle(ctx, x, y, baseLen, orientation, colorRGBA);
       drawDiamond(ctx, absX, absY, finalBaseLen, orientation, colorRGBA);
+      rememberKiteForHighlighting(shapeId, absX, absY, finalBaseLen, orientation);
       var tooltipX = absX - (finalBaseLen + 6)/2 - 10;
       var tooltipY = absY - (finalBaseLen + 6)/2 - 10;
-      createAllDataToolTip(entityIndex+2000, shapeId, absX, absY, entity, colorRGBA);
-      createHPToolTip(entityIndex+2, shapeId, tooltipX, tooltipY , hitPoints, maxHitPoints, colorRGBA);
+      if (generateTooltips) {
+        createAllDataToolTip(entityIndex+2000, shapeId, absX, absY, entity, colorRGBA);
+        createHPToolTip(entityIndex+2, shapeId, tooltipX, tooltipY , hitPoints, maxHitPoints, colorRGBA);
+      }
     }
   }
+}
+
+function highlightShapeForIdForClickCollectionFeedback(shapeId){
+    var info = shapeInfoForHighlighting[shapeId];
+    if (info != undefined) {
+        highlightShapeForClickCollectionFeedback(info);
+    }
+}
+
+function rememberRectForHighlighting(shapeId, x, y, width, height, orientation) {
+    var info = {};
+    info.type = "rect";
+    info.x = x;
+    info.y = y;
+    info.width = width;
+    info.height = height;
+    info.orientation = orientation;
+    shapeInfoForHighlighting[shapeId] = info;
+}
+
+function rememberKiteForHighlighting(shapeId, x, y, baseLen, orientation){
+    var info = {};
+    info.type = "kite";
+    info.x = x;
+    info.y = y;
+    info.baseLen = baseLen;
+    info.orientation = orientation;
+    shapeInfoForHighlighting[shapeId] = info;
+}
+function highlightShapeForClickCollectionFeedback(info){
+    if (studyQuestionManager.renderer.controlsWaitingForClick.length == 0) {
+        return;
+    }
+    // redraw from scratch in case this is our second click andwe have to delete evidence of prior click
+    handleEntities(entitiesList);
+    //$("#click-highlight-layer").remove();
+    //var highlight_canvas = document.createElement("canvas");
+    //highlight_canvas.setAttribute("id","click-highlight-layer");
+    //var offset = $("#scaii-gameboard").offset();
+    //highlight_canvas.setAttribute("style", "pointer-events:none;position:absolute;left:" + offset.left + "px;top:" + offset.top + "px;z-index:10;width:" + gameboard_canvas.width + "px;height:" + gameboard_canvas.height + "px;");
+    //$("#scaii-interface").append(highlight_canvas);
+    if (info.type == "rect") {
+        highlightRect(info);
+    }
+    else {
+        highlightKite(info);
+    }
+}
+
+function highlightRect(info) {
+    var x = info.x;
+    var y = info.y;
+    var ctx = gameboard_canvas.getContext("2d");
+    var height = info.height;
+    var width = info.width;
+    var rotation_in_radians = info.orientation;
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.rotate(rotation_in_radians);
+    var x_orig = x;
+    var y_orig = y;
+    x = 0; 
+    y = 0;
+    var x1 = x - (height / 2);
+    var y1 = y - (width / 2);
+    var x2 = x + (height / 2);
+    var y2 = y + (width / 2);
+    ctx.beginPath();
+    ctx.lineWidth = shape_outline_width + 3;
+    ctx.strokeStyle = "white";
+    ctx.strokeRect(x1, y1, height, width);
+    ctx.restore();
+}
+
+function highlightKite(info) {
+    var ctx = gameboard_canvas.getContext("2d");
+    var sizeFudgeFactor = 2.5;
+    baseLen = info.baseLen * sizeFudgeFactor;
+    ctx.save();
+    ctx.translate(info.x,info.y);
+    var rotation_in_radians = info.orientation;
+    ctx.rotate(rotation_in_radians);
+    x = 0;
+    y = 0;
+    var radians = 60 * Math.PI / 180;
+    var height = (Math.tan(radians) * baseLen) / 2;
+    var yTip = y;
+    var yBottom = y;
+    var xTip = x + height / 2;
+    var xBottom = x - height / 2;
+    var xLeftWing = x - height / 4;
+    var yLeftWing = y - baseLen / 3;
+    var xRightWing = x - height / 4;
+    var yRightWing = y + baseLen / 3;
+    
+    ctx.beginPath();
+    ctx.moveTo(xTip, yTip);
+    ctx.lineTo(xLeftWing, yLeftWing);
+    ctx.lineTo(xBottom, yBottom);
+    ctx.lineTo(xRightWing, yRightWing);
+    ctx.closePath();
+  
+    // the outline
+    ctx.lineWidth = shape_outline_width + 3;
+    ctx.strokeStyle = "white";
+    ctx.stroke();
+    ctx.restore();
 }
 
 function getNumericValueFromFloatStringMap(entity, key){
@@ -400,6 +515,7 @@ function createHPToolTip(z_index, shapeId, absX, absY, hitPoints, maxHitPoints, 
       hpDiv.setAttribute("class","tooltip-invisible");
     }
     hpDiv.onclick = function(e) {
+        highlightShapeForIdForClickCollectionFeedback(shapeId);
         var targetName = "hitpoints-" + getQuadrantName() + "-" + shapeLogStrings[shapeId];
         targetClickHandler(e, "clickHitPoints:" + targetName);
     };
@@ -422,7 +538,6 @@ function createHPToolTip(z_index, shapeId, absX, absY, hitPoints, maxHitPoints, 
     var remainingHpDiv = document.createElement("div");
     remainingHpDiv.setAttribute("style", 'background-color:white;height:' + hpWidgetHeight + 'px;width:' + hpRemainingDivWidth + 'px');
     hpDiv.append(remainingHpDiv);
-
     entityHPToolTipIds.push(id);
   }
 }
@@ -539,7 +654,7 @@ function limitFilterColorValue(value) {
   else return value;
 }
 
-function renderState(ctx, canvas, entities, zoom_factor, xOffset, yOffset, shapePositionMap) {
+function renderState(ctx, canvas, entities, zoom_factor, xOffset, yOffset, shapePositionMap, generateTooltips) {
   clearGameBoard(ctx, canvas);
   for (var i in entities) {
     var entity = entities[i];
@@ -549,7 +664,7 @@ function renderState(ctx, canvas, entities, zoom_factor, xOffset, yOffset, shape
         if (pos.hasX() && pos.hasY()) {
           var x = pos.getX();
           var y = pos.getY();
-          layoutEntityAtPosition(Number(i), ctx, x , y , entity, zoom_factor, xOffset, yOffset, shapePositionMap);
+          layoutEntityAtPosition(Number(i), ctx, x , y , entity, zoom_factor, xOffset, yOffset, shapePositionMap, generateTooltips);
         }
       }
     }

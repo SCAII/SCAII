@@ -216,7 +216,7 @@ function handleViz(vizData) {
 		controlsManager.reachedEndOfGame();
 	}
 }
-var totalsString = "total HP";
+var totalsString = "total score";
 var rewardsDivMap = {};
 function handleCumulativeRewards(crm) {
 	var entryList = crm.getEntryList();
@@ -235,7 +235,10 @@ function handleCumulativeRewards(crm) {
 	else {
 		$("#" + valId).html(total);
 	}  
-	// add individual values
+    // add individual values
+    if (isStudyQuestionMode()) {
+        return;
+    }
   	for (var i in entryList ){
     	var entry = entryList[i];
     	var key = entry[0];
