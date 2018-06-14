@@ -457,12 +457,16 @@ impl LuaSystem {
                                 width: shape_table.get("width")?,
                                 height: shape_table.get("height")?,
                             }
-                        } else
-                        /* i.e. triangle */
-                        {
+                        } else if body == "triangle" {
                             Shape::Triangle {
                                 base_len: shape_table.get("base_len")?,
                             }
+                        } else if body == "circle" {
+                            Shape::Circle {
+                                radius: shape_table.get("radius")?,
+                            }
+                        } else {
+                            panic!("Unknown shape {}", body)
                         }
                     } else {
                         default.shape

@@ -99,8 +99,6 @@ fn handle_started(
     let e1 = h1.data().e;
     let e2 = h2.data().e;
 
-    println!("Data1: {:?} Data2: {:?} ", h1.data(), h2.data());
-
     debug_assert!(!(h1.data().sensor && h2.data().sensor));
 
     if h1.data().sensor {
@@ -162,8 +160,6 @@ fn handle_stopped(
 
     let e1 = h1.data().e;
     let e2 = h1.data().e;
-
-    println!("Data1: {:?} Data2: {:?} ", h1.data(), h2.data());
 
     if e1 == e2 {
         return;

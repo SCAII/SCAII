@@ -1,4 +1,4 @@
-from scaii.env.sky_rts.env import SkyRtsEnv, MoveList
+from scaii.env.sky_rts.env import SkyRtsEnv, MoveList, SkyState
 
 
 class TowerAction(MoveList):
@@ -20,9 +20,36 @@ class TowerAction(MoveList):
         super().to_proto(packet, self.skip, skip_lua=None)
 
 
+class TowerState(SkyState):
+    def __init__(self, typed_reward=None, reward=None, terminal=False, state=None, env_state=None):
+        import numpy as np
+
+        super().__init__(typed_reward, reward, terminal, state, env_state)
+        state = self.state
+        self.state = np.empty(
+            (state.shape[0], state.shape[1], 6), dtype=np.float)
+
+        # Normalize HP
+        self.state[:, :, 0] = state[:, :, 1] / 70.0
+        self.hps = np.unique(state[:, :, 0])
+
+        unit_ids = state[:, :, 2].astype(np.int)
+        self.id_types = [1, 2, 3]
+
+        self.state[:, :, 1:4] = np.equal.outer(unit_ids, [0, 1, 2, 3]).astype(np.float)[
+            :, :, 1:]
+
+        faction_ids = state[:, :, 3].astype(np.int)
+        self.factions = [1, 2]
+        self.state[:, :, 4:] = np.equal.outer(
+            faction_ids, [0, 1, 2]).astype(np.float)[:, :, 1:]
+
+        self.old_state = state
+
+
 class TowerExample(SkyRtsEnv):
     def __init__(self, map_name="tower_example"):
-        super().__init__(action_type=TowerAction)
+        super().__init__(action_type=TowerAction, state_type=TowerState)
 
         super().load_scenario(map_name)
 
@@ -35,10 +62,10 @@ class TowerExample(SkyRtsEnv):
     def actions(self):
         return {
             'actions': {
-                'bottom_right': 1,
-                'top_right': 2,
-                'bottom_left': 3,
-                'top_left': 4,
+                'Bottom Right (Q1)': 1,
+                'Top Right (Q2)': 2,
+                'Bottom Left (Q3)': 3,
+                'Top left (Q4)': 4,
             },
             'desc': "Use action.attack_quadrant(1-4) to select "
             "a quadrant to attack"
