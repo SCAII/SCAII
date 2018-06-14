@@ -53,7 +53,7 @@ function createHPToolTip(shapeInfo) {
         var hpWidgetWidth = 20;
         var hpWidgetHeight = 3;
         hpDiv.setAttribute("class", "flex-row");
-        hpDiv.setAttribute("style", 'background-color:black;z-index:' + zIndexMap["tooltip"] + ';position:absolute;left:' + x + 'px;top:' + y + 'px;color:' + si.colorRGBA + ';height:' + hpWidgetHeight + 'px;width:' + hpWidgetWidth + 'px');
+        hpDiv.setAttribute("style", 'background-color:black;position:absolute;left:' + x + 'px;top:' + y + 'px;color:' + si.colorRGBA + ';height:' + hpWidgetHeight + 'px;width:' + hpWidgetWidth + 'px');
         $("#scaii-gameboard").append(hpDiv);
     
         hpDiv.onclick = function(e) {
