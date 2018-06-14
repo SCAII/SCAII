@@ -379,7 +379,7 @@ store.pi = 3.14"#;
     fn lua_data_store_member() {
         use super::{DataStore, UserDataUnit};
         use rlua::{Lua, Number};
-        let mut lua = Lua::new();
+        let lua = Lua::new();
 
         let mut store = DataStore::default();
         let unit = UserDataUnit::default_new(&mut store);
