@@ -92,11 +92,12 @@ function resumeGame() {
 		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.RESUME);
 		stageUserCommand(userCommand);
 		// if play button cue arrow present, remove it
-		$("#cue-arrow-div").remove();
-		if (studyQuestionManager.questionWasAnswered) {
-			$('#q-and-a-div').empty();
-		}
-
+        $("#cue-arrow-div").remove();
+        if (isStudyQuestionMode()){
+            if (studyQuestionManager.questionWasAnswered) {
+                $('#q-and-a-div').empty();
+            }
+        }
 	}
 	catch (err) {
 		alert(err.message);
