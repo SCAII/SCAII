@@ -116,7 +116,7 @@ function handleStudyQuestions(studyQuestions){
     stateMonitor = getStateMonitor();
     studyTreatment = getTreatmentManager(treatmentId);
     stateMonitor.logFileName = answerFilename;
-
+    $("#action-list").remove();
 }
 
 function handleReplayControl(replayControl) {

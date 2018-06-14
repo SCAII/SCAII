@@ -7,7 +7,6 @@ function getStudyQuestionRenderer(questions) {
     sqr.questionFormat = undefined;
     sqr.currentRadioName = undefined;
     sqr.currentTextBox = undefined;
-    sqr.arrowCueNeeded = true;
     sqr.clickInfoFromUserActionMonitor = undefined;
     sqr.controlsWaitingForClick = [];
 
@@ -21,6 +20,7 @@ function getStudyQuestionRenderer(questions) {
     sqr.collectClickInfo = function(){
         var result = this.clickInfoFromUserActionMonitor;
         this.clickInfoFromUserActionMonitor = undefined;
+        this.controlsWaitingForClick = [];
         return result;
     }
     sqr.renderTextInputBox = function(step, index) {
@@ -28,7 +28,7 @@ function getStudyQuestionRenderer(questions) {
         var textBoxId = "question-text-box";
         var ta = document.createElement("textarea");
         ta.setAttribute("id", textBoxId);
-        ta.setAttribute("style","font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px;height:140px");
+        ta.setAttribute("style","font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px;height:70px");
         ta.onkeyup = function() {
             $("#button-save").attr("disabled",this.value == "");
         }
@@ -171,7 +171,7 @@ function getStudyQuestionRenderer(questions) {
                 if (renderer.isLegalRegionToClickOn(clickInfo, qu.regionsToAllow)){
                     renderer.clickInfoFromUserActionMonitor = clickInfo;
                     renderer.removeMissingClickInfoMessage();
-                    $("#click-prompt").html("Click received.");
+                    $("#click-prompt").html("Most recent click logged.");
                 }
                 // var clickAckDiv = document.createElement("DIV");
                 // clickAckDiv.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px");
@@ -282,7 +282,6 @@ function getStudyQuestionRenderer(questions) {
         var startCoords = getCoordForStartOfArrowText();
         var endCoords = getCoordsForPlayButton();
         drawArrow(startCoords, endCoords);
-        this.arrowCueNeeded = false;
     }
 
     return sqr;

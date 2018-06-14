@@ -7,8 +7,21 @@ var hoveredAllDataToolTipIds = {};
 function createToolTips(shapeInfo) {
     createHPToolTip(shapeInfo);
     createAllDataToolTip(shapeInfo);
+    gameboard_canvas.onmouseleave = function(evt) {
+		hideAllTooltips();
+	};
 }
 
+function hideAllTooltips(evt) {
+    for (var sId in hoveredAllDataToolTipIds) {
+        if (hoveredAllDataToolTipIds[sId] != "hide") {
+            shapeId = sId.replace("#metadata_all","");
+            targetHoverHandler(evt, "hideEntityTooltip:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
+        }
+        hoveredAllDataToolTipIds[sId] = "hide";
+        $("#" + sId).addClass('tooltip-invisible');
+    }
+}
 function removeFullShapeIdFromTrackingLists(fullShapeId){
     removeMemoryOfToolTip(selectedToolTipIds, entityHPToolTipIds, fullShapeId);
     removeMemoryOfToolTip(hoveredAllDataToolTipIds, entityAllDataToolTipIds, fullShapeId);

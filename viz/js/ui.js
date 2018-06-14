@@ -244,15 +244,7 @@ function setUpMetadataToolTipEventHandlers() {
 		var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y, shapePositionMapForContext['game'])
 		if (shapeId == undefined) {
 			// we're not inside an object, so hide all the "all_metadata" tooltips
-			for (var sId in hoveredAllDataToolTipIds) {
-                if (hoveredAllDataToolTipIds[sId] != "hide") {
-                    shapeId = sId.replace("#metadata_all","");
-                    console.log("shapeId is " + shapeId);
-                    targetHoverHandler(evt, "hideEntityTooltip:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
-                }
-				hoveredAllDataToolTipIds[sId] = "hide";
-				$("#" + sId).addClass('tooltip-invisible');
-			}
+			hideAllTooltips(evt);
 		}
 		else {
 			//we're inside one, keep it visible

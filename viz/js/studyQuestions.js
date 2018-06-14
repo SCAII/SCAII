@@ -238,6 +238,7 @@ function acceptAnswer(e) {
     var currentQuestionIndexAtStep = getQuestionIndexFromQuestionId(questionId);
     var clickInfo = renderer.collectClickInfo();
     userActionMonitor.clickListener = undefined;
+    
     if (clickInfo == undefined){
         clickInfo = "NA";
     }
@@ -248,13 +249,8 @@ function acceptAnswer(e) {
         studyQuestionManager.poseNextQuestion();
     }
     else {
-        if (renderer.arrowCueNeeded) {
+        if (studyQuestionIndexManager.hasMoreQuestions()){
             renderer.renderCueAndArrowToPlayButton();
-        }
-        else {
-            if (studyQuestionIndexManager.hasMoreQuestions()){
-                renderer.renderCueToPlayButton();
-            }
         }
         studyQuestionManager.questionWasAnswered = true;
         if (studyQuestionIndexManager.hasMoreQuestions()){
