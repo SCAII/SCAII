@@ -156,7 +156,7 @@ function getSelectionManager() {
 
 
 expl_ctrl_canvas.addEventListener('click', function (event) {
-	if (!userInputBlocked){
+	if (!isUserInputBlocked()){
 		var matchingStep = getMatchingExplanationStep(expl_ctrl_ctx, event.offsetX, event.offsetY);
 		if (matchingStep == undefined){
             processTimelineClick(event);
@@ -715,7 +715,7 @@ function addWhyButtonForAction(step, x,  y) {
 	whyButton.setAttribute("id", buttonId);
 	var why = document.createTextNode("why?");
 	whyButton.appendChild(why);          
-	whyButton.setAttribute("style", 'z-index:2;position:relative;left:' + x + 'px;top:' + y + 'px;font-family:Arial;');
+	whyButton.setAttribute("style", 'z-index:' + zIndexMap["whyButton"] + ';position:relative;left:' + x + 'px;top:' + y + 'px;font-family:Arial;');
 	
 	$("#explanation-control-panel").append(whyButton);
 	$("#" + buttonId).click(function(e) {
@@ -787,7 +787,7 @@ function addLabelForAction(title, index, step){
 	actionLabel.setAttribute("id", id);
 
 	actionLabel.addEventListener("click", function(evt) {
-		if (!userInputBlocked){
+		if (!isUserInputBlocked()){
 			var userCommand = new proto.scaii.common.UserCommand;
 			userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
 			// same args as above

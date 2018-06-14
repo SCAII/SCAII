@@ -5,7 +5,7 @@ authors = ["Zoe Juozapaitis <Jragonmiris@gmail.com>"]
 
 [dependencies]
 scaii_defs = { path="../../scaii_defs" }
-rlua  = "0.9"
+rlua  = "0.13"
 serde = "1"
 serde_derive = "1"
 

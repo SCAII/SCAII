@@ -205,7 +205,7 @@ function getStudyQuestionRenderer(questions) {
         var div = document.createElement("DIV");
         div.setAttribute("id", "thank-you-div");
         div.setAttribute("class", "flex-column");
-        div.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:500;margin:auto;font-family:Arial;padding:10px;width:1800px;height:1600px;background-color:" + this.bg + ";");
+        div.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:" + zIndexMap["allTheWayToFront"] + ";margin:auto;font-family:Arial;padding:10px;width:1800px;height:1600px;background-color:" + this.bg + ";");
         $('body').append(div);
 
         var row = document.createElement("DIV");
@@ -225,7 +225,7 @@ function getStudyQuestionRenderer(questions) {
         var userIdDiv = document.createElement("DIV");
         userIdDiv.setAttribute("id", "user-id-div");
         userIdDiv.setAttribute("class", "flex-column");
-        userIdDiv.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:500;margin:auto;font-family:Arial;padding:10px;width:1800px;height:1600px;background-color:" + this.bg + ";");
+        userIdDiv.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:" + zIndexMap["allTheWayToFront"] + ";margin:auto;font-family:Arial;padding:10px;width:1800px;height:1600px;background-color:" + this.bg + ";");
         $('body').append(userIdDiv);
 
         var questionRow = document.createElement("DIV");
@@ -315,7 +315,7 @@ function drawArrow(startCoords, endCoords){
     c.setAttribute("id", "cue-arrow-div");
     c.setAttribute("width", width + "px");
     c.setAttribute("height", height + "px");
-    c.setAttribute("style", "position:absolute;z-index:10000;top:0px;left:0px;pointer-events: none;");
+    c.setAttribute("style", "position:absolute;z-index:" + zIndexMap["arrow"] + ";top:0px;left:0px;pointer-events: none;");
     $("body").append(c);
     var ctx = c.getContext("2d");
     var headlen = 10;

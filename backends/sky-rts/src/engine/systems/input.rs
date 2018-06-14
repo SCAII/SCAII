@@ -66,7 +66,7 @@ impl<'a> System<'a> for InputSystem {
 
                     Move {
                         behavior: MoveBehavior::Straight,
-                        target: MoveTarget::Unit(target),
+                        target: MoveTarget::AttackUnit(target),
                     }
                 }
             };
@@ -170,7 +170,7 @@ mod tests {
 
         sys.dispatch(&mut world.res);
         let moves = world.read::<Move>();
-        assert!(moves.get(test_player).unwrap().target == MoveTarget::Unit(test_target)); // Verifies that test_player's target is test target
+        assert!(moves.get(test_player).unwrap().target == MoveTarget::AttackUnit(test_target)); // Verifies that test_player's target is test target
         assert!(moves.get(test_player).unwrap().behavior == MoveBehavior::Straight); // Verifies that test_player's move behavior is straight
     }
 

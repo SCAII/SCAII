@@ -1,5 +1,6 @@
 var jumpInProgress = false;
 var userInputBlocked = false;
+var liveModeInputBlocked = false;
 
 function paintProgress(value) {
 	showPositionOnTimeline(value);
@@ -10,17 +11,17 @@ var cursorHeight = 60;
 var cursorWidth = 4;
 function showPositionOnTimeline(value) {
 	drawExplanationTimeline();
-	var widthOfTimeline = expl_ctrl_canvas.width - 2*timelineMargin;
+	var widthOfTimeline = expl_ctrl_canvas.width - 2 * timelineMargin;
 	var x = timelineMargin + (value / 100) * widthOfTimeline;
 	var y = explanationControlYPosition;
-	
-	var xLeft = x - cursorWidth/2;
-	var xRight = x + cursorWidth/2;
-	var yBottom = y + cursorHeight/2;
-	var yTop = y - cursorHeight/2;
+
+	var xLeft = x - cursorWidth / 2;
+	var xRight = x + cursorWidth / 2;
+	var yBottom = y + cursorHeight / 2;
+	var yTop = y - cursorHeight / 2;
 	var ctx = expl_ctrl_ctx;
 	ctx.beginPath();
-	
+
 	ctx.fillStyle = 'darkgrey';
 	ctx.lineWidth = 1;
 	ctx.strokeStyle = 'darkgray';
@@ -29,12 +30,12 @@ function showPositionOnTimeline(value) {
 	var upperRightVertexX = xRight;
 	var upperRightVertexY = yTop;
 	var lowerLeftVertexX = xLeft;
-	var lowerLeftVertexY =  yBottom;
+	var lowerLeftVertexY = yBottom;
 	var lowerRightVertexX = xRight;
 	var lowerRightVertexY = yBottom;
 
 	ctx.moveTo(upperLeftVertexX, upperLeftVertexY);
-	ctx.lineTo(upperRightVertexX,upperRightVertexY);
+	ctx.lineTo(upperRightVertexX, upperRightVertexY);
 	ctx.lineTo(lowerRightVertexX, lowerRightVertexY);
 	ctx.lineTo(lowerLeftVertexX, lowerLeftVertexY);
 	ctx.lineTo(upperLeftVertexX, upperLeftVertexY);
@@ -46,8 +47,8 @@ function processTimelineClick(e) {
 	controlsManager.userJumped();
 	var clickX = e.offsetX - timelineMargin;
 	var replaySequenceTargetStep = sessionIndexManager.getReplaySequencerIndexForClick(clickX);
-    var targetStepString = "" + replaySequenceTargetStep;
-    targetClickHandler(e, "timelineClick:" + targetStepString);
+	var targetStepString = "" + replaySequenceTargetStep;
+	targetClickHandler(e, "timelineClick:" + targetStepString);
 	var args = [targetStepString];
 	var userCommand = new proto.scaii.common.UserCommand;
 	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
@@ -61,7 +62,7 @@ function stageUserCommand(userCommand) {
 }
 var tryPause = function (e) {
 	if (!userInputBlocked) {
-        targetClickHandler(e, "pause:NA");
+		targetClickHandler(e, "pause:NA");
 		pauseGame();
 	}
 }
@@ -79,7 +80,7 @@ function pauseGame() {
 
 var tryResume = function (e) {
 	if (!userInputBlocked) {
-        targetClickHandler(e, "play:NA");
+		targetClickHandler(e, "play:NA");
 		resumeGame();
 	}
 }
@@ -89,13 +90,13 @@ function resumeGame() {
 		controlsManager.userClickedResume();
 		var userCommand = new proto.scaii.common.UserCommand;
 		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.RESUME);
-        stageUserCommand(userCommand);
-        // if play button cue arrow present, remove it
-        $("#cue-arrow-div").remove();
-        if (studyQuestionManager.questionWasAnswered){
-            $('#q-and-a-div').empty();
-        }
-        
+		stageUserCommand(userCommand);
+		// if play button cue arrow present, remove it
+		$("#cue-arrow-div").remove();
+		if (studyQuestionManager.questionWasAnswered) {
+			$('#q-and-a-div').empty();
+		}
+
 	}
 	catch (err) {
 		alert(err.message);
@@ -104,7 +105,7 @@ function resumeGame() {
 
 var tryRewind = function (e) {
 	if (!userInputBlocked) {
-        targetClickHandler(e, "rewind:NA");
+		targetClickHandler(e, "rewind:NA");
 		rewindGame();
 	}
 }
@@ -127,7 +128,7 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	manager.pauseResumeButton = pauseResumeButton;
 	manager.rewindButton = rewindButton;
 
-	manager.registerJQueryHandleForWaitCursor = function(item) {
+	manager.registerJQueryHandleForWaitCursor = function (item) {
 		manager.registeredItems.push(item)
 	}
 	manager.setControlsNotReady = function () {
@@ -146,7 +147,7 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 		this.disableRewind();
 		this.setWaitCursor();
 	}
-	
+
 	manager.doneLoadReplayFile = function () {
 		userInputBlocked = false;
 		this.expressResumeButton();
@@ -154,25 +155,25 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 		this.enableRewind();
 		this.clearWaitCursor();
 	}
-	
+
 	manager.gameSteppingForward = function () {
 		this.enableRewind();
 	}
-	
+
 	manager.reachedEndOfGame = function () {
 		this.expressResumeButton();
 		this.disablePauseResume();
 	}
 
 	manager.setWaitCursor = function () {
-		for (var i in this.registeredItems){
+		for (var i in this.registeredItems) {
 			var item = this.registeredItems[i];
 			item.css("cursor", "wait");
 		}
 	}
-	
+
 	manager.clearWaitCursor = function () {
-		for (var i in this.registeredItems){
+		for (var i in this.registeredItems) {
 			var item = this.registeredItems[i];
 			item.css("cursor", "default");
 		}
@@ -284,7 +285,9 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	return manager;
 }
 
-
+function isUserInputBlocked() {
+	return userInputBlocked || liveModeInputBlocked;
+}
 function updateButtonsAfterJump() {
 	if (sessionIndexManager.isAtGameStart()) {
 		controlsManager.expressResumeButton();

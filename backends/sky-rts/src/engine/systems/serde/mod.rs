@@ -7,9 +7,10 @@ pub use self::de_collision::RedoCollisionSys;
 pub use self::ser::SerializeSystem;
 
 use engine::components::{
-    Attack, Color, FactionId, Hp, Movable, Move, Pos, Shape, Speed, Static, UnitTypeTag,
+    Attack, Color, ContactStates, DataStoreComponent, FactionId, Hp, Movable, Move, Owner, Pos,
+    SensorRadius, SensorType, Sensors, Shape, Speed, UnitTypeTag,
 };
-use engine::resources::{CumReward, LuaPath, SpawnBuffer, Terminal};
+use engine::resources::{CumReward, DataStore, LuaPath, SpawnBuffer, Terminal};
 use rand::Isaac64Rng;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -18,14 +19,17 @@ struct SerTarget {
     lua_path: LuaPath,
     rng: Isaac64Rng,
     terminal: Terminal,
+    #[serde(default)]
     spawns: SpawnBuffer,
+    #[serde(default)]
     cum_reward: CumReward,
+    #[serde(default)]
+    lua_data: DataStore,
 }
 
 type SerComponents = (
     Speed,
     Movable,
-    Static,
     Move,
     Pos,
     Hp,
@@ -34,4 +38,10 @@ type SerComponents = (
     FactionId,
     Attack,
     UnitTypeTag,
+    DataStoreComponent,
+    ContactStates,
+    Sensors,
+    SensorType,
+    SensorRadius,
+    Owner,
 );

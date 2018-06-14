@@ -132,6 +132,10 @@ message Entity {
 	map<string,int64> intMetadata = 8;
 	map<string,bool> boolMetadata = 9;
 	map<string,float> floatMetadata = 10;
+	optional uint64 ui_layer = 11;
+	optional bool non_clickable = 12;
+    optional float hp = 13;
+    optional float max_hp = 14;
 }
 	
 // A position.
@@ -162,11 +166,47 @@ message Triangle {
 	optional double base_len = 1;
 }
 
+// A circle
+message Circle {
+	optional double radius = 1;
+}
 
 // A rectangle
 message Rect {
 	optional double width = 1;
 	optional double height = 2;
+}
+
+
+// A kite : length has enpoints forward and back
+message Kite {
+	optional double width = 1;
+	optional double length = 2;
+}
+
+
+// An arrow will be drawn with back of arrow at Entity.Pos and tip of arrow drawn at Arrow.target_pos
+// thickness is how many pixels wide
+// head_length will be obeyed up until 1/3 length of shaft
+// Ex. for arrow length 50, head_length could be 10 and head width could be 5 
+message Arrow {
+	optional Pos target_pos = 1;
+	optional uint32 thickness = 2;
+	optional uint32 head_length = 3; 
+	optional uint32 head_width = 4; 
+}
+
+
+// An octagon.  If all three dimensions are equal, it will be a regular octagon,
+// otherwise it will be elongated. 
+// - edge_bottom will always be same as edge_top
+// - edge_right will always be same as edge_left
+// - edge_corner will be used for all corner segments
+// angle at edge connections all == 135 degrees
+message Octagon {
+	optional double edge_top = 1;
+	optional double edge_corner = 2;
+	optional double edge_left = 3;
 }
 
 // An arbitrary shape relative to the center
@@ -186,8 +226,13 @@ message Shape {
 	// and may not be consistent between packets
 	optional Rect rect = 20;
 	optional Triangle triangle = 21;
+	
 	optional string tag = 22;
 	optional Color gradient_color = 23;
+	optional Kite kite = 24;
+	optional Octagon octagon = 25;
+	optional Arrow arrow = 26;
+	optional Circle circle = 27;
 
 	// delete this shape from the entity
 	// if this ID is not registered, it is a

@@ -353,7 +353,7 @@ function getSaliencyDisplayManager(selectionManager) {
 			var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y + ' val: ' + normValue.toFixed(2);
 			var top = (mousePos.y + 10 - (40 * gameScaleFactor)) + 'px'; // shift it to canvas above
 			var left = (mousePos.x + 10) + 'px';
-			valueSpan.setAttribute("style", 'z-index:2; position:relative; left:' + left + '; top: ' + top + '; color:#D73F09;font-family:Arial;'); // OSU orange
+			valueSpan.setAttribute("style", 'z-index:' + zIndexMap["saliencyHoverValue"] + '; position:relative; left:' + left + '; top: ' + top + '; color:#D73F09;font-family:Arial;'); // OSU orange
 			valueSpan.innerHTML = normValue.toFixed(2);
 			//console.log(message);
 		  }, false);

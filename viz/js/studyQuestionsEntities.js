@@ -1,0 +1,31 @@
+
+function highlightShapeForIdForClickCollectionFeedback(shapeId){
+    var info = shapeInfoForHighlighting[shapeId];
+    if (info != undefined) {
+        highlightShapeForClickCollectionFeedback(info);
+    }
+}
+
+function highlightShapeForClickCollectionFeedback(info){
+    if (studyQuestionManager.renderer.controlsWaitingForClick.length == 0) {
+        return;
+    }
+    // redraw from scratch in case this is our second click andwe have to delete evidence of prior click
+    handleEntities(entitiesList);
+    if (info.type == "rect") {
+        drawRect(info, "outline");
+    }
+    else if (info.type == "kite") {
+        drawKite(info, "outline");
+    }
+    else if (info.type == "circle"){
+        drawCircle(info, "outline");
+    }
+    else if (info.type == "octagon"){
+        drawOctagon(info, "outline");
+    }
+    else if (info.type == "triangle"){
+        drawTriangle(info, "outline");
+    }
+}
+

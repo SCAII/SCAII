@@ -3,17 +3,20 @@ use scaii_defs::protos::Error as ScaiiError;
 
 use specs::prelude::*;
 
-use std::error::Error;
+use rlua::Error;
 use std::fmt::Debug;
 use std::path::Path;
 
 use engine::components::{
-    DealtDamage, Death, Delete, FactionId, Hp, HpChange, Spawned, UnitTypeTag,
+    DataStoreComponent, DealtDamage, Death, Delete, FactionId, Hp, HpChange, Spawned, UnitTypeTag,
 };
 use engine::resources::{
-    CumReward, MaxStep, Reward, RewardTypes, Skip, SpawnBuffer, Step, Terminal, UnitTypeMap,
+    CumReward, DataStore, MaxStep, Reward, RewardTypes, Skip, SpawnBuffer, Step, Terminal,
+    UnitTypeMap,
 };
 use rand::Isaac64Rng;
+
+use std::collections::HashMap;
 
 pub(crate) mod userdata;
 
@@ -27,6 +30,8 @@ pub struct LuaSystemData<'a> {
     hp: ReadStorage<'a, Hp>,
     spawned: ReadStorage<'a, Spawned>,
     ids: Entities<'a>,
+    global_lua_data: FetchMut<'a, DataStore>,
+    lua_data: WriteStorage<'a, DataStoreComponent>,
 
     step: Fetch<'a, Step>,
     max_step: Fetch<'a, MaxStep>,
@@ -44,6 +49,7 @@ pub struct LuaSystemData<'a> {
 
 pub struct LuaSystem {
     lua: Lua,
+    immediate_reward: HashMap<String, f64>,
 }
 
 unsafe impl Send for LuaSystem {}
@@ -54,31 +60,46 @@ impl<'a> System<'a> for LuaSystem {
     fn run(&mut self, mut sys_data: Self::SystemData) {
         use self::userdata::{UserDataReadWorld, UserDataRng, UserDataUnit, UserDataWorld};
 
-        let world = UserDataWorld::new(UserDataRng {
-            rng: &mut *sys_data.rng,
-        });
+        self.immediate_reward.clear();
+        let world = UserDataWorld::new(
+            UserDataRng {
+                rng: &mut *sys_data.rng,
+            },
+            &mut *sys_data.global_lua_data,
+        );
         self.lua.globals().set("__sky_world", world).unwrap();
 
-        for (faction, tag, hp, death) in (
+        // Need to do a borrow checker workaround because we're
+        // doing a disjoint borrow of the same component mutable on two
+        // entities
+        //
+        // Specs may have a better fix later
+        for (faction, tag, hp, death, id) in (
             &sys_data.faction,
             &sys_data.tag,
             &sys_data.hp,
             &sys_data.death,
+            &*sys_data.ids,
         ).join()
         {
+            let lua_data: *mut _ = &mut sys_data.lua_data.get_mut(id).unwrap().0;
+
             let killer_faction = sys_data.faction.get(death.killer).unwrap();
             let killer_tag = sys_data.tag.get(death.killer).unwrap();
             let killer_hp = sys_data.hp.get(death.killer).unwrap();
+            let killer_lua_data: *mut _ = &mut sys_data.lua_data.get_mut(death.killer).unwrap().0;
 
             let unit1 = UserDataUnit {
                 faction: *faction,
                 u_type: tag.0.clone(),
                 hp: *hp,
+                data_store: lua_data,
             };
             let unit2 = UserDataUnit {
                 faction: *killer_faction,
                 u_type: killer_tag.0.clone(),
                 hp: *killer_hp,
+                data_store: killer_lua_data,
             };
 
             self.lua.globals().set("__sky_u1", unit1.clone()).unwrap();
@@ -95,31 +116,31 @@ impl<'a> System<'a> for LuaSystem {
             let dead_type = sys_data.unit_type.tag_map.get(&unit1.u_type).unwrap();
 
             if faction.0 == 0 && dead_type.death_penalty != 0.0 {
-                *sys_data
-                    .reward
-                    .0
+                *self
+                    .immediate_reward
                     .entry(dead_type.death_type.clone())
                     .or_insert(0.0) += dead_type.death_penalty;
             } else if faction.0 == 1 && killer_faction.0 == 0 && dead_type.kill_reward != 0.0 {
-                *sys_data
-                    .reward
-                    .0
+                *self
+                    .immediate_reward
                     .entry(dead_type.kill_type.clone())
                     .or_insert(0.0) += dead_type.kill_reward;
             }
         }
 
-        for (faction, u_type, hp, _) in (
+        for (faction, u_type, hp, _, lua_data) in (
             &sys_data.faction,
             &sys_data.tag,
             &sys_data.hp,
             &sys_data.spawned,
+            &mut sys_data.lua_data,
         ).join()
         {
             let unit = UserDataUnit {
                 faction: *faction,
                 u_type: u_type.0.clone(),
                 hp: *hp,
+                data_store: &mut lua_data.0,
             };
 
             self.lua.globals().set("__sky_u1", unit).unwrap();
@@ -141,17 +162,15 @@ impl<'a> System<'a> for LuaSystem {
                     .filter_map(|d| if (d.1).0 != 0 { Some(d.0) } else { None })
                     .sum();
 
-                *sys_data
-                    .reward
-                    .0
+                *self
+                    .immediate_reward
                     .entry(u_type.dmg_deal_type.clone())
                     .or_insert(0.0) += enemy_dmg
             } else if u_type.damage_deal_reward.unwrap() != 0.0 {
                 let enemy_dmg_ct = dmg_dealt.by_source.iter().filter(|d| (d.1).0 != 0).count();
 
-                *sys_data
-                    .reward
-                    .0
+                *self
+                    .immediate_reward
                     .entry(u_type.dmg_deal_type.clone())
                     .or_insert(0.0) += (enemy_dmg_ct as f64) * u_type.damage_deal_reward.unwrap();
             }
@@ -164,15 +183,13 @@ impl<'a> System<'a> for LuaSystem {
             let u_type = sys_data.unit_type.tag_map.get(&tag.0).unwrap();
 
             if u_type.damage_recv_penalty.is_none() {
-                *sys_data
-                    .reward
-                    .0
+                *self
+                    .immediate_reward
                     .entry(u_type.dmg_recv_type.clone())
                     .or_insert(0.0) += hp_change.0
             } else if u_type.damage_recv_penalty.unwrap() != 0.0 {
-                *sys_data
-                    .reward
-                    .0
+                *self
+                    .immediate_reward
                     .entry(u_type.dmg_recv_type.clone())
                     .or_insert(0.0) += u_type.damage_recv_penalty.unwrap();
             }
@@ -195,7 +212,7 @@ impl<'a> System<'a> for LuaSystem {
         let r_types = &sys_data.r_types.0;
         for (r_type, reward) in world.rewards {
             assert!(r_types.contains(&r_type));
-            *sys_data.reward.0.entry(r_type).or_insert(0.0) += reward;
+            *self.immediate_reward.entry(r_type).or_insert(0.0) += reward;
         }
 
         sys_data.spawn_buf.0.extend(world.spawn.drain(..));
@@ -227,7 +244,8 @@ impl<'a> System<'a> for LuaSystem {
             }
         }
 
-        for (r_type, reward) in sys_data.reward.0.iter() {
+        for (r_type, reward) in &self.immediate_reward {
+            *sys_data.reward.0.entry(r_type.clone()).or_insert(0.0) += reward;
             *sys_data
                 .cum_reward
                 .0
@@ -239,13 +257,19 @@ impl<'a> System<'a> for LuaSystem {
 impl LuaSystem {
     /// Creates a new `LuaSystem` with a new context.
     pub fn new() -> Self {
-        LuaSystem { lua: Lua::new() }
+        LuaSystem {
+            lua: Lua::new(),
+            immediate_reward: HashMap::default(),
+        }
     }
 
     /// Creates a new Lua system from the given context
     #[allow(dead_code)]
     pub fn from_lua(lua: Lua) -> Self {
-        LuaSystem { lua: lua }
+        LuaSystem {
+            lua: lua,
+            immediate_reward: HashMap::default(),
+        }
     }
 
     /// Executes a Lua script in the current Lua context, loading any
@@ -283,17 +307,16 @@ impl LuaSystem {
         &mut self,
         world: &mut World,
         path: P,
-    ) -> Result<(), Box<Error>> {
+    ) -> Result<(), Error> {
         use self::userdata::UserDataRng;
         use rand::Isaac64Rng;
         use std::fs::File;
         use std::io::prelude::*;
 
         let mut file = File::open(&path).or_else(|e| {
-            Err(format!(
-                "Could not load Lua file, is the path right?:\n\t{}",
-                e
-            ))
+            Err(Error::external(e))
+            // TODO: Fix after we can import the failure crate directly
+            // "Could not load Lua file, is the path right?:\n\t{}"
         })?;
         let mut contents = String::new();
         file.read_to_string(&mut contents)
@@ -312,7 +335,7 @@ impl LuaSystem {
         Ok(())
     }
 
-    pub fn reset(&mut self, world: &mut World) -> Result<(), Box<Error>> {
+    pub fn reset(&mut self, world: &mut World) -> Result<(), Error> {
         use engine::components::Pos;
         use engine::resources::UnitTypeMap;
 
@@ -337,7 +360,9 @@ impl LuaSystem {
                 unit_types
                     .tag_map
                     .get(&template)
-                    .ok_or_else(|| format!("Could not get unit type template {}", template))?
+                    .unwrap()
+                    // TODO fix after we add the failure crate
+                    // .ok_or_else(|| format!("Could not get unit type template {}", template))?
                     .clone()
             };
 
@@ -347,7 +372,7 @@ impl LuaSystem {
         Ok(())
     }
 
-    pub fn load_scenario(&mut self, world: &mut World) -> Result<(), Box<Error>> {
+    pub fn load_scenario(&mut self, world: &mut World) -> Result<(), Error> {
         use engine::components::{FactionId, Shape};
         use engine::resources::{
             CumReward, MaxStep, Player, RewardTypes, UnitType, UnitTypeMap, PLAYER_COLORS,

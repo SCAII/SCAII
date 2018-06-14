@@ -20,8 +20,9 @@ use scaii_defs::protos::{Action, MultiMessage, ScaiiPacket};
 use specs::prelude::*;
 
 use self::components::FactionId;
-use self::systems::lua::LuaSystem;
-use self::systems::serde::{DeserializeSystem, RedoCollisionSys, SerializeSystem};
+use self::systems::{
+    lua::LuaSystem, serde::{DeserializeSystem, RedoCollisionSys, SerializeSystem}, SpawnSystem,
+};
 
 /// This contains the `specs` system and world context
 /// for running an RTS game, as well as a few flags controlling
@@ -34,6 +35,7 @@ pub struct Rts<'a, 'b> {
     sim_systems: Dispatcher<'a, 'b>,
     lua_sys: LuaSystem,
     out_systems: Dispatcher<'a, 'b>,
+    spawn_sys: SpawnSystem,
 
     ser_system: SerializeSystem,
     de_system: DeserializeSystem,
@@ -67,7 +69,6 @@ impl<'a, 'b> Rts<'a, 'b> {
 
         let simulation_builder: Dispatcher = DispatcherBuilder::new()
             .with_pool(pool.clone())
-            .add(SpawnSystem::default(), "spawn", &[])
             .add(InputSystem::new(), "input", &[])
             .add(MoveSystem::new(), "movement", &["input"])
             .add(CollisionSystem, "collision", &["movement"])
@@ -82,10 +83,12 @@ impl<'a, 'b> Rts<'a, 'b> {
             .build();
 
         let lua_sys = LuaSystem::new();
+        let spawn_sys = SpawnSystem::default();
 
         Rts {
             world,
             lua_sys,
+            spawn_sys,
             initialized: false,
             render: false,
             sim_systems: simulation_builder,
@@ -230,6 +233,7 @@ impl<'a, 'b> Rts<'a, 'b> {
 
         // Ensure changes and render
         self.world.maintain();
+        self.spawn_sys.update(&mut self.world);
         self.sim_systems.dispatch_seq(&self.world.res);
         self.world.maintain(); // for spawn
         self.lua_sys.run_now(&self.world.res);
@@ -363,6 +367,7 @@ impl<'a, 'b> Rts<'a, 'b> {
             mm.packets.append(&mut packets);
         }
 
+        self.spawn_sys.update(&mut self.world);
         self.sim_systems.dispatch_seq(&self.world.res);
         self.world.maintain();
         self.lua_sys.run_now(&self.world.res);
@@ -449,11 +454,14 @@ impl<'a, 'b> Rts<'a, 'b> {
                 .expect("Could not delete");
         }
         self.world.maintain();
+        for entity in self.world.entities().join() {
+            println!("{:?} still alive?", entity);
+        }
 
         self.world.write_resource::<SerializeBytes>().0 = buf;
 
         self.de_system.run_now(&self.world.res);
-        self.redo_col_sys.run_now(&self.world.res);
+        self.redo_col_sys.redo_collision(&mut self.world);
 
         for id in self.world.entities().join() {
             if let Some(faction) = self.world.read::<FactionId>().get(id) {

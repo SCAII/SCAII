@@ -1,5 +1,7 @@
 use nalgebra::Point2;
 
+use engine::resources::DataStore;
+
 use specs::error::NoError;
 use specs::prelude::*;
 use specs::saveload::SaveLoadComponent;
@@ -20,11 +22,13 @@ use serde::{Deserialize, Serialize};
 // extend the name a little. Other submods should probably
 // just be named things like `render` rather than
 // `render_component`.
-mod collision;
-mod move_component;
+pub(crate) mod collision;
+pub(crate) mod move_component;
+pub(crate) mod sensor;
 
-pub use self::collision::*;
-pub use self::move_component::*;
+pub use self::{
+    collision::*, move_component::*, sensor::{SensorRadius, SensorType, Sensors},
+};
 
 pub(super) fn register_world_components(world: &mut World) {
     use specs::saveload::U64Marker;
@@ -33,7 +37,6 @@ pub(super) fn register_world_components(world: &mut World) {
     world.register::<Heading>();
     world.register::<Move>();
     world.register::<Movable>();
-    world.register::<Static>();
     world.register::<MovedFlag>();
     world.register::<Hp>();
     world.register::<DealtDamage>();
@@ -43,13 +46,18 @@ pub(super) fn register_world_components(world: &mut World) {
     world.register::<Speed>();
     world.register::<U64Marker>();
     world.register::<FactionId>();
-    world.register::<AttackSensor>();
     world.register::<CollisionHandle>();
     world.register::<UnitTypeTag>();
     world.register::<Attack>();
     world.register::<Death>();
     world.register::<Delete>();
     world.register::<Spawned>();
+    world.register::<DataStoreComponent>();
+    world.register::<ContactStates>();
+    world.register::<Owner>();
+    world.register::<SensorType>();
+    world.register::<SensorRadius>();
+    world.register::<Sensors>();
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -164,6 +172,19 @@ impl Shape {
             ..ScaiiShape::default()
         }
     }
+
+    pub fn compute_extended_radius(&self, range: f64) -> f64 {
+        match self {
+            Shape::Triangle { base_len } => {
+                let half_height = base_len / (2.0 as f64).sqrt() / 2.0;
+                half_height + range
+            }
+            Shape::Rect { width, height } => {
+                let half_diagonal = (width * width + height * height).sqrt() / 2.0;
+                half_diagonal + range
+            }
+        }
+    }
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug, Serialize,
@@ -224,3 +245,36 @@ pub struct Delete;
 #[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Default, Component)]
 #[storage(NullStorage)]
 pub struct Spawned;
+
+#[derive(Clone, Serialize, Deserialize, Default, Component)]
+#[storage(VecStorage)]
+pub struct DataStoreComponent(pub DataStore);
+
+#[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Component)]
+#[storage(HashMapStorage)]
+pub struct Owner(pub Entity);
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OwnerData<M>(pub M);
+
+impl<M: Debug + Serialize> SaveLoadComponent<M> for Owner
+where
+    for<'de> M: Deserialize<'de>,
+{
+    type Data = OwnerData<M>;
+    type Error = NoError;
+
+    fn save<F>(&self, mut ids: F) -> Result<Self::Data, Self::Error>
+    where
+        F: FnMut(Entity) -> Option<M>,
+    {
+        Ok(OwnerData(ids(self.0).unwrap()))
+    }
+
+    fn load<F>(data: Self::Data, mut ids: F) -> Result<Self, Self::Error>
+    where
+        F: FnMut(M) -> Option<Entity>,
+    {
+        Ok(Owner(ids(data.0).unwrap()))
+    }
+}

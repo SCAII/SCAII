@@ -166,14 +166,14 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         var gradientBars = "repeating-linear-gradient(135deg,rgba(100, 100, 100, 0.1),rgba(100, 100, 100, 0.3) 20px,rgba(100, 100, 100, 0.6) 20px,rgba(100, 100, 100, 0.7) 20px)";
         var leftBlockDiv = document.createElement("DIV");
         leftBlockDiv.setAttribute("id", "left-block-div");
-        leftBlockDiv.setAttribute("style", "position:absolute;left:" + x1 + "px;top:" + y + "px;z-index:500;background:" + gradientBars + ";width:" + width1 + "px;height:" + height + "px;");
+        leftBlockDiv.setAttribute("style", "position:absolute;left:" + x1 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] + ";background:" + gradientBars + ";width:" + width1 + "px;height:" + height + "px;");
         //$("body").append(leftBlockDiv);
 
 
         // make blocking div from leftXofRightBlock -> expl_ctrl_canvas.width
         var rightBlockDiv = document.createElement("DIV");
         rightBlockDiv.setAttribute("id", "right-block-div");
-        rightBlockDiv.setAttribute("style", "position:absolute;left:" + x3 + "px;top:" + y + "px;z-index:500;background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
+        rightBlockDiv.setAttribute("style", "position:absolute;left:" + x3 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] + ";background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
         rightBlockDiv.onclick = function(e) {
             if (isStudyQuestionMode()){
                 targetClickHandler(e,"clickTimelineBlocker:NA");

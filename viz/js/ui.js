@@ -6,6 +6,14 @@ var gameboardHeight;
 var gameboard_canvas = document.createElement("canvas");
 var gameboard_ctx = gameboard_canvas.getContext("2d");
 
+var zIndexMap = {};
+zIndexMap["explControl"] = 2;
+zIndexMap["saliencyHoverValue"] = 5;
+zIndexMap["clickBlockerRectangle"] = 10;
+zIndexMap["whyButton"] = 11;
+zIndexMap["arrow"] = 20;
+zIndexMap["tooltip"] = 30;
+zIndexMap["allTheWayToFront"] = 40;
 //var game_background_color = "#123456";
 //var game_background_color = "#000000";
 //var game_background_color = "#f0f0f0";
@@ -25,7 +33,7 @@ pauseResumeButton.setAttribute("id", "pauseResumeButton");
 
 // explanation controls
 var expl_ctrl_canvas = document.createElement("canvas");
-expl_ctrl_canvas.setAttribute("style", "z-index:1")
+expl_ctrl_canvas.setAttribute("style", "z-index:" + zIndexMap["explControl"]);
 expl_ctrl_canvas.setAttribute("id", "expl-control-canvas");
 var expl_ctrl_ctx = expl_ctrl_canvas.getContext("2d");
 expl_ctrl_ctx.imageSmoothingEnabled = false;
