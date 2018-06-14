@@ -57,7 +57,7 @@ function getSaliencyDisplayManager(selectionManager) {
 	// use checkboxes (which may have changed) to adjust the selection
 
 	sdm.renderExplanationSaliencyMaps = function() {
-		this.xaiSelectionManager.setSelections([]);
+        this.xaiSelectionManager.setSelections([]);
 		for (var i in this.activeCheckBoxes){
 			var cb = this.activeCheckBoxes[i];
 			var isChecked = cb.checked;
@@ -66,7 +66,21 @@ function getSaliencyDisplayManager(selectionManager) {
 				var rowInfo = this.getRowInfoForRowInfoString(name);
 				this.xaiSelectionManager.addSelection(rowInfo);
 			}
-		}
+        }
+        
+        if (isStudyQuestionMode()) {  // show all the move's saliencies if treatment 1
+            if (studyTreatment.showAllSaliencyForTreatment1){
+                this.xaiSelectionManager.clearSelections();
+                // select all the checkboxes
+                for (var i in this.activeCheckBoxes){
+                    var cb = this.activeCheckBoxes[i];
+                    cb.checked = true;
+                    var name = cb.name;
+                    var rowInfo = this.getRowInfoForRowInfoString(name);
+                    this.xaiSelectionManager.addSelection(rowInfo);
+                }
+            }
+        } 
 		if (this.saliencyMode == saliencyModeAggregate){
 			this.renderCombinedExplanationSaliencyMaps();
 		}
@@ -74,7 +88,7 @@ function getSaliencyDisplayManager(selectionManager) {
 			this.renderAllExplanationSaliencyMaps();
         }
         if (isStudyQuestionMode()) {
-            if (studyTreatment.showSaliencyForDecisionMadeOnly){
+            if (studyTreatment.showAllSaliencyForTreatment1){
                 // don't try to interact with the chart
                 return;
             }

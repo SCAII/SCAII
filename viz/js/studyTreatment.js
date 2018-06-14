@@ -1,7 +1,7 @@
 function getTreatmentManager(treatment) {
     tm = {};
 
-    tm.showSaliencyForDecisionMadeOnly = false;
+    tm.showAllSaliencyForTreatment1 = false;
     tm.showSaliencyAll = false;
     tm.showReward = false;
 
@@ -9,7 +9,7 @@ function getTreatmentManager(treatment) {
         // keep everything hidden
     }
     else if (treatment == "1"){
-        tm.showSaliencyForDecisionMadeOnly = true;
+        tm.showAllSaliencyForTreatment1 = true;
     }
     else if (treatment == "2"){
         tm.showReward = true;

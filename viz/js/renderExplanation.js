@@ -110,7 +110,11 @@ function getSelectionManager() {
 	sm.setSelections = function(info) {
 		this.selections = info;
 	}
-	
+    
+    sm.clearSelections = function() {
+        this.selections = [];
+    }
+    
 	sm.addSelection = function(selection) {
         var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
         var targetArg = selection[0] + "/" + selection[1];
@@ -341,7 +345,7 @@ function prepareForSaliencyOnlyView(explPoint){
 }
 function renderWhyInfo(explPoint) {
     if (isStudyQuestionMode()) {
-        if (studyTreatment.showSaliencyForDecisionMadeOnly){
+        if (studyTreatment.showAllSaliencyForTreatment1){
             prepareForSaliencyOnlyView(explPoint);
             return;
         }
@@ -394,7 +398,7 @@ function initSaliencyContainers(){
     activeSaliencyDisplayManager = getSaliencyDisplayManagerForSituation(isCombinedView, isRewardMode);
     var chosenSaliencyMode = saliencyModeAggregate;
     if (isStudyQuestionMode()) {
-        if (studyTreatment.showSaliencyForDecisionMadeOnly){
+        if (studyTreatment.showAllSaliencyForTreatment1){
             chosenSaliencyMode = saliencyModeDetailed;
         }
     }
@@ -956,7 +960,7 @@ function configureExplanationSelectorDiamond(uiIndex,step){
             if (studyTreatment.showReward) {
                 addWhyButtonForAction(step, xPositionOfWhyButton,  yPositionOfWhyButton);
             }
-            if (studyTreatment.showSaliencyForDecisionMadeOnly){
+            if (studyTreatment.showAllSaliencyForTreatment1){
                 // send explain command to back end
                 showExplanationRewardInfo(step);
             }
