@@ -64,7 +64,6 @@ impl<'a> System<'a> for CollisionSystem {
         sys_data.col_world.update();
 
         for event in sys_data.col_world.contact_events() {
-            print!("Collision event: {:?} :::  ", event);
             match event {
                 ContactEvent::Started(h1, h2) => {
                     handle_started(&sys_data.col_world, &mut sys_data.contact_states, *h1, *h2);
