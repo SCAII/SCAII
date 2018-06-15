@@ -449,12 +449,6 @@ var drawBarChart = function(chartData, options) {
 }
 
 function selectHandler(e) {
-    if (isStudyQuestionMode()) {
-        if (!studyTreatment.showSaliencyAll){
-            // bypass showing saliency 
-            return;
-        }
-    }
 	var googleChartSelections = googleChart.getSelection();
     var selectionsByName = activeBarChartManager.convertGoogleChartSelectionsToSelectionsByName(googleChartSelections);
 	if (mostRecentClickHadCtrlKeyDepressed){
@@ -479,6 +473,13 @@ function selectHandler(e) {
 	var selection = activeBarChartManager.createGoogleChartSelections();
     googleChart.setSelection(selection);
     
+    
+    if (isStudyQuestionMode()) {
+        if (!studyTreatment.showSaliencyAll){
+            // bypass showing saliency 
+            return;
+        }
+    }
 	if (salienciesAreShowing) {
 		updateSaliencyContainers();
 	}
