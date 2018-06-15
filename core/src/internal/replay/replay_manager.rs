@@ -24,6 +24,7 @@ enum GameState {
     AwaitingUserPlayRequest,
     Running,
     Paused,
+    BrokenLink,
 }
 
 pub struct ReplayManager {
@@ -42,26 +43,28 @@ pub struct ReplayManager {
 
 impl ReplayManager {
     pub fn start(&mut self) -> Result<(), Box<Error>> {
-        use super::{replay_util, test_util};
-        // startup viz via rpc
-        let mm = pkt_util::wrap_packet_in_multi_message(pkt_util::create_rpc_config_message()?);
-        self.env.route_messages(&mm);
-        self.env.update();
-        if self.test_mode {
-            let step_count: u32 = 300;
-            let interval: u32 = 5;
-            let replay_actions = test_util::concoct_replay_info(step_count, interval)
-                .expect("Error - problem generating test replay_info");
-            let replay_sequencer = ReplaySequencer::new(&replay_actions, false)?;
-            self.replay_sequencer = replay_sequencer;
-        } else {
-            let replay_filenames = replay_util::get_replay_filenames()?;
-            let replay_choice_config = pkt_util::get_replay_choice_config_message(replay_filenames);
-            let mm = pkt_util::wrap_packet_in_multi_message(replay_choice_config);
+        loop {
+            use super::{replay_util, test_util};
+            // startup viz via rpc
+            let mm = pkt_util::wrap_packet_in_multi_message(pkt_util::create_rpc_config_message()?);
             self.env.route_messages(&mm);
             self.env.update();
+            if self.test_mode {
+                let step_count: u32 = 300;
+                let interval: u32 = 5;
+                let replay_actions = test_util::concoct_replay_info(step_count, interval)
+                    .expect("Error - problem generating test replay_info");
+                let replay_sequencer = ReplaySequencer::new(&replay_actions, false)?;
+                self.replay_sequencer = replay_sequencer;
+            } else {
+                let replay_filenames = replay_util::get_replay_filenames()?;
+                let replay_choice_config = pkt_util::get_replay_choice_config_message(replay_filenames);
+                let mm = pkt_util::wrap_packet_in_multi_message(replay_choice_config);
+                self.env.route_messages(&mm);
+                self.env.update();
+            }
+            self.run_and_poll();
         }
-        self.run_and_poll()
     }
 
     fn load_selected_replay_file(&mut self, filename: &String) -> Result<(), Box<Error>> {
@@ -234,6 +237,14 @@ impl ReplayManager {
             )),
         };
         let result = self.send_pkt_to_viz(pkt)?;
+       /* match result {
+            Ok(ref vec) => {
+                println!("Size of result: {:?}", vec.len())
+            } 
+            _ => {
+                
+            }
+        }*/
         Ok(result)
     }
 
@@ -394,7 +405,7 @@ impl ReplayManager {
                     }
                 }
             } else if scaii_defs::protos::is_error_pkt(scaii_pkt) {
-                // Error would have already been shown to user at UI
+                game_state = GameState::BrokenLink;
             } else if scaii_defs::protos::is_study_question_answer_pkt(scaii_pkt) {
                 use scaii_defs::protos::StudyQuestionAnswer;
                 let sqa : StudyQuestionAnswer = scaii_defs::protos::get_study_question_answer_from_pkt(scaii_pkt).unwrap();
@@ -538,12 +549,26 @@ impl ReplayManager {
             poll_timer_count = poll_timer_count - 1;
             if 0 == poll_timer_count {
                 game_state = self.execute_poll_step(game_state)?;
+                match game_state {
+                    GameState::BrokenLink => {
+                        return Ok(());
+                    }
+                    _ => {
+                    }
+                }
                 poll_timer_count = self.poll_timer_count.clone();
             }
             step_timer_count = step_timer_count - 1;
             if 0 == step_timer_count {
                 step_timer_count = self.step_timer_count.clone();
                 game_state = self.handle_step_nudge(game_state)?;
+                match game_state {
+                    GameState::BrokenLink => {
+                        return Ok(());
+                    }
+                    _ => {
+                    }
+                }
             }
         }
         Ok(())
@@ -560,7 +585,6 @@ impl ReplayManager {
                 self.tell_viz_load_complete()?;
             }
             GameState::Running => {
-                println!("executing run step");
                 game_state = self.execute_run_step()?;
             }
             GameState::Paused => {
@@ -569,6 +593,9 @@ impl ReplayManager {
               //     let _ignore_game_state = self.execute_run_step()?;
               //     game_state = GameState::Paused;
               // }
+            GameState::BrokenLink => {
+                // do nothing
+            }
         }
         Ok(game_state)
     }
