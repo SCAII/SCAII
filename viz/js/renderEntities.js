@@ -148,13 +148,13 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
         else if (shape.hasTriangle()) {
            // renderTriangle(si, shape);
             renderTriangleAsKite(si, shape);
-            si.tooltipX = si.x - (si.baseLen + 6) / 2 - 10;
-            si.tooltipY = si.y - (si.baseLen + 6) / 2 - 10;
+            si.tooltipX = si.x - (si.baseLen + 6) / 2;
+            si.tooltipY = si.y - (si.baseLen + 6) / 2;
         }
         else if (shape.hasKite()) {
             renderKite(si, shape);
-            si.tooltipX = si.x - (si.baseLen + 6) / 2 - 10;
-            si.tooltipY = si.y - (si.baseLen + 6) / 2 - 10;
+            si.tooltipX = si.x - (si.baseLen + 6) / 2;
+            si.tooltipY = si.y - (si.baseLen + 6) / 2;
         }
         else if (shape.hasCircle()) {
             renderCircle(si, shape);
