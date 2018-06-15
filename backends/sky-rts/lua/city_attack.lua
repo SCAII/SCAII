@@ -244,7 +244,8 @@ end
 function on_death(world, dead, cause)
     -- Filter out the enemy ship killing a tower/being killed by a tower 
     if (cause:unit_type() == "Ship" and cause:faction() == 1 and dead:unit_type() ~= "Ship") or
-       (dead:unit_type() == "Ship" and dead:faction() == 1 and cause:unit_type() ~= "Ship")
+    --    (dead:unit_type() == "Ship" and dead:faction() == 1 and cause:unit_type() ~= "Ship")
+    -- Note: we need to actually filter this out because otherwise games can stall indefinitely
     then 
         return 
     end
