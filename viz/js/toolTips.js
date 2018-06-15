@@ -120,8 +120,11 @@ function gatherMapInfo(ttInfo, map, limitToTwoDecimals) {
         var entry = entryList[i];
         var key = entry[0];
         var val = entry[1];
-        if (limitToTwoDecimals) {
-            val = (Number(val)).toFixed(2);
+        // not sure why true/false were being handled as numbers given the limitToTwoDecimals should have caught it
+        if (val != "true"  && val != "false") {
+            if (limitToTwoDecimals) {
+                val = (Number(val)).toFixed(2);
+            }
         }
         ttInfo[key] = val;
     }
