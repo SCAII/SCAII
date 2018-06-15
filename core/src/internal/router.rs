@@ -100,7 +100,6 @@ impl Router {
                     "FATAL CORE ERROR:\
                      Core should not be using decode_and_route to send its messages."
                 )
-                //continue;
             }
 
             if dest == src {
