@@ -228,6 +228,7 @@ function acceptAnswer(e) {
         }
     }
     var answer = renderer.getCurrentAnswer();
+    
     if (answer == undefined || answer == '') {
         alert('No answer chosen for the current question.  Please specify an answer and then click "Next Question".');
         return;
@@ -242,7 +243,11 @@ function acceptAnswer(e) {
     if (clickInfo == undefined){
         clickInfo = "NA";
     }
-    targetClickHandler(e,"answerQuestion:"+ currentStep + "." + currentQuestionIndexAtStep + "_" + answer + "_(" + clickInfo + ")");
+    var followupAnswer;
+    if (!(currentStep == 'summary')){
+        followupAnswer = renderer.getCurrentFollowupAnswer();
+    }
+    targetClickHandler(e,"answerQuestion:"+ currentStep + "." + currentQuestionIndexAtStep + "_" + answer + "_" + followupAnswer + "_(" + clickInfo + ")");
 
     renderer.forgetQuestion();
     if (studyQuestionIndexManager.hasMoreQuestionsAtThisStep()) {

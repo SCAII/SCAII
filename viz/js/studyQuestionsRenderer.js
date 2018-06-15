@@ -7,6 +7,7 @@ function getStudyQuestionRenderer(questions) {
     sqr.questionFormat = undefined;
     sqr.currentRadioName = undefined;
     sqr.currentTextBox = undefined;
+    sqr.currentFollowupTextBox = undefined;
     sqr.clickInfoFromUserActionMonitor = undefined;
     sqr.controlsWaitingForClick = [];
 
@@ -14,6 +15,7 @@ function getStudyQuestionRenderer(questions) {
         this.questionFormat = undefined;
         this.currentRadioName = undefined;
         this.currentTextBox = undefined;
+        this.currentFollowupTextBox = undefined;
         $('#q-and-a-div').empty();
     }
 
@@ -28,7 +30,7 @@ function getStudyQuestionRenderer(questions) {
         var textBoxId = "question-text-box";
         var ta = document.createElement("textarea");
         ta.setAttribute("id", textBoxId);
-        ta.setAttribute("style","font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px;height:70px");
+        ta.setAttribute("style","font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px;height:50px");
         ta.onkeyup = function() {
             $("#button-save").attr("disabled",this.value == "");
         }
@@ -36,10 +38,29 @@ function getStudyQuestionRenderer(questions) {
         $("#q-and-a-div").append(ta);
     }
 
+    sqr.renderFollowupQuestion = function() {
+        var fuText = document.createElement("DIV");
+        fuText.setAttribute("id", "followup-text");
+        fuText.setAttribute("style", "margin-left:0px;margin-top:14px;font-family:Arial;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
+        fuText.innerHTML =  "What, if anything, would you ask the intelligent agent at this point?";
+        $("#q-and-a-div").append(fuText);
+        var ta = document.createElement("textarea");
+        ta.setAttribute("id", "followup-textarea");
+        ta.setAttribute("style","font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px;height:50px");
+        this.currentFollowupTextBox = ta;
+        $("#q-and-a-div").append(ta);
+    }
+
+    sqr.getCurrentFollowupAnswer = function(){
+        var answer = '"' + this.currentFollowupTextBox.value + '"';
+        answer = escapeAnswerFileDelimetersFromTextString(answer);
+        return answer;
+    }
+
     sqr.getCurrentAnswer = function(){
         if (this.questionFormat == 'text') {
             var answer = '"' + this.currentTextBox.value + '"';
-            answer = answer.replace(/,/g, "ESCAPED_COMMA");
+            aanswer = escapeAnswerFileDelimetersFromTextString(answer);
             return answer;
         }
         else if (this.questionFormat == 'radio') {
@@ -122,7 +143,7 @@ function getStudyQuestionRenderer(questions) {
     sqr.expressMissingClickInfoMessage  = function () {
         var missingClickInfoDiv = document.createElement("DIV");
         missingClickInfoDiv.setAttribute("id", "missing-click-info-message");
-        missingClickInfoDiv.setAttribute("style", "margin-left:50px;font-family:Arial;font-weight:bold;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
+        missingClickInfoDiv.setAttribute("style", "margin-left:0px;font-family:Arial;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
         missingClickInfoDiv.innerHTML =  "Please click on one of the designated areas";
         $("#save-button-row").append(missingClickInfoDiv);
     }
@@ -138,14 +159,14 @@ function getStudyQuestionRenderer(questions) {
         if (type == "waitForClick"){
             var clickPrompt = document.createElement("DIV");
             clickPrompt.setAttribute("id", "click-prompt");
-            clickPrompt.setAttribute("style", "margin-bottom:20px;margin-left:50px;font-family:Arial;font-weight:bold;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
+            clickPrompt.setAttribute("style", "margin-bottom:8px;margin-left:0px;font-family:Arial;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
             clickPrompt.innerHTML =  qu.clickQuestionText;
             $("#q-and-a-div").append(clickPrompt);
         }
         // add a textArea for the question
         var quText = document.createElement("DIV");
         quText.setAttribute("id", "current-question");
-        quText.setAttribute("style", "margin-left:50px;font-family:Arial;font-weight:bold;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
+        quText.setAttribute("style", "margin-top:8px;font-family:Arial;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
         if (questionNumber == undefined) {
             quText.innerHTML =  text;
         }
@@ -154,7 +175,7 @@ function getStudyQuestionRenderer(questions) {
         }
         
         $("#q-and-a-div").append(quText);
-
+        
         if (answers.length == 0){
             // provide area for user to type text answer
             this.renderTextInputBox();
@@ -163,6 +184,10 @@ function getStudyQuestionRenderer(questions) {
             // add a div with radio button and label for each answer
             this.renderRadioButtons(step, answers);
         }
+        if (!(step == 'summary')){
+            this.renderFollowupQuestion();
+        }
+        // add the ever present - follow up question, except on summary questions
         this.renderSaveButton(type);
         if (type == "waitForClick"){
             var listener = {};
@@ -285,6 +310,14 @@ function getStudyQuestionRenderer(questions) {
     }
 
     return sqr;
+}
+
+function escapeAnswerFileDelimetersFromTextString(s) {
+    s = s.replace(/,/g, "ESCAPED-COMMA");
+    s = s.replace(/_/g, "ESCAPED-UNDERSCORE");
+    s = s.replace(/:/g, "ESCAPED-COLON");
+    s = s.replace(/;/g, "ESCAPED-SEMICOLON");
+    return s;
 }
 
 function getCoordForStartOfArrowText() {
