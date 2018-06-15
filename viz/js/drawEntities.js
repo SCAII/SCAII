@@ -21,6 +21,7 @@ function drawCircle(shapeInfo, mode) {
     }
     else {
         ctx.stroke();
+        ctx.fillStyle = si.colorRGBA;
         ctx.fill();
     }
     ctx.restore();
