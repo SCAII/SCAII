@@ -760,8 +760,10 @@ function addWhatButton() {
 	})
 }
 function convertNameToLegalId(name) {
-	var nameNoSpaces = name.replace(/ /g,"");
-	var nameForId = nameNoSpaces.replace(/,/g,"");
+	name = name.replace(/ /g,"");
+	name = name.replace(/,/g,"");
+	name = name.replace(/\(/g,"");
+	var nameForId = name.replace(/\)/g,"");
 	return nameForId;
 }
 var decisionPointIds = {};
