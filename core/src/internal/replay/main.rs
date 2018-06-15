@@ -118,7 +118,7 @@ impl Module for ReplayMessageQueue {
 impl Replay for ReplayMessageQueue {}
 
 #[allow(dead_code)]
-enum RunMode {
+pub enum RunMode {
     Live,
     Test,
 }
@@ -156,7 +156,7 @@ fn try_main() -> Result<(), Box<Error>> {
 }
 
 #[allow(unused_assignments)]
-fn run_replay(run_mode: RunMode) -> Result<(), Box<Error>> {
+pub fn run_replay(run_mode: RunMode) -> Result<(), Box<Error>> {
     let mut mode_is_test = true;
     let mut environment: Environment = Environment::new();
 
