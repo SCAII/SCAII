@@ -10,6 +10,7 @@ use specs::storage::{HashMapStorage, NullStorage};
 use std::fmt::Debug;
 use std::ops::{Deref, DerefMut};
 
+use scaii_defs::protos::Circle as ScaiiCircle;
 use scaii_defs::protos::Color as ScaiiColor;
 use scaii_defs::protos::Pos as ScaiiPos;
 use scaii_defs::protos::Rect as ScaiiRect;
@@ -146,6 +147,7 @@ impl Color {
 pub enum Shape {
     Triangle { base_len: f64 },
     Rect { width: f64, height: f64 },
+    Circle { radius: f64 },
 }
 
 impl Shape {
@@ -169,6 +171,12 @@ impl Shape {
                 }),
                 _ => None,
             },
+            circle: match *self {
+                Shape::Circle { ref radius } => Some(ScaiiCircle {
+                    radius: Some(*radius),
+                }),
+                _ => None,
+            },
             ..ScaiiShape::default()
         }
     }
@@ -183,6 +191,7 @@ impl Shape {
                 let half_diagonal = (width * width + height * height).sqrt() / 2.0;
                 half_diagonal + range
             }
+            Shape::Circle { radius } => radius + range,
         }
     }
 }

@@ -215,7 +215,7 @@ function renderCircle(si, shape) {
     var circ = shape.getCircle();
     si.radius = zoom(40);
     if (circ.hasRadius()) {
-        si.radius = zoom(rect.getRadius());
+        si.radius = zoom(circ.getRadius());
     }
 
     var shapePoints = getShapePoints(si.x, si.y, si.radius + 6, si.shapeId);

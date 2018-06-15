@@ -64,7 +64,6 @@ impl<'a> System<'a> for CollisionSystem {
         sys_data.col_world.update();
 
         for event in sys_data.col_world.contact_events() {
-            print!("Collision event: {:?} :::  ", event);
             match event {
                 ContactEvent::Started(h1, h2) => {
                     handle_started(&sys_data.col_world, &mut sys_data.contact_states, *h1, *h2);
@@ -98,8 +97,6 @@ fn handle_started(
 
     let e1 = h1.data().e;
     let e2 = h2.data().e;
-
-    println!("Data1: {:?} Data2: {:?} ", h1.data(), h2.data());
 
     debug_assert!(!(h1.data().sensor && h2.data().sensor));
 
@@ -162,8 +159,6 @@ fn handle_stopped(
 
     let e1 = h1.data().e;
     let e2 = h1.data().e;
-
-    println!("Data1: {:?} Data2: {:?} ", h1.data(), h2.data());
 
     if e1 == e2 {
         return;

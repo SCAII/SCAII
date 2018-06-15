@@ -124,7 +124,8 @@ impl UnitType {
         use nalgebra;
         use nalgebra::{Isometry2, Vector2};
         use ncollide::{
-            shape::{Cuboid, Cylinder, ShapeHandle}, world::{CollisionGroups, GeometricQueryType},
+            shape::{Ball, Cuboid, Cylinder, ShapeHandle},
+            world::{CollisionGroups, GeometricQueryType},
         };
 
         let mut collider_group = CollisionGroups::new();
@@ -154,6 +155,7 @@ impl UnitType {
 
                 collider
             }
+            Shape::Circle { radius } => ShapeHandle::new(Ball::new(radius / COLLISION_SCALE)),
         };
 
         // We need the entity ID for this, so do it after building the entity and then add the component.
