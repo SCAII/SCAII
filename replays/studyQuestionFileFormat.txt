@@ -1,3 +1,18 @@
+Question filename has format:
+
+assuming the replay file has the name "replayXYZ.scr", the system will look for a file that starts with "replayXYZ_questions_" and then parse that name as follows:
+
+<replayFilenameRoot>_questions_<studyParticipantId>_<treatmentNumber>.txt
+
+For example, 
+
+replayXYZ_questions_user1_2.txt    for user1 doing treatment 2   
+
+valid treatments are 0,1,2,3
+
+
+
+
 
 Question format specification
 
