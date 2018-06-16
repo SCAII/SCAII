@@ -51,8 +51,9 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     sqm.isAtEndOfRange = function(step) {
         if (this.activeRange != undefined){
             var endOfRange = this.activeRange[1];
-            //if (step >= endOfRange - 1) { 
-            if (step >= endOfRange) { 
+            // stop one prior to the true end to avoid showing the blank gameboard
+            if (step >= endOfRange - 1) { 
+            //if (step >= endOfRange) { 
                 return true;
             }
         }

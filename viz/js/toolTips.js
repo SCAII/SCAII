@@ -15,7 +15,8 @@ function createToolTips(shapeInfo) {
 function hideAllTooltips(evt) {
     for (var sId in hoveredAllDataToolTipIds) {
         if (hoveredAllDataToolTipIds[sId] != "hide") {
-            shapeId = sId.replace("#metadata_all","");
+            var shapeId = sId;
+            shapeId.replace("metadata_all","");
             targetHoverHandler(evt, "hideEntityTooltip:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
         }
         hoveredAllDataToolTipIds[sId] = "hide";

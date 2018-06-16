@@ -247,7 +247,8 @@ function setUpMetadataToolTipEventHandlers() {
 			hideAllTooltips(evt);
 		}
 		else {
-			//we're inside one, keep it visible
+            //we're inside one, keep it visible
+            hideAllTooltips();
             $("#metadata_all" + shapeId).removeClass('tooltip-invisible');
             if (hoveredAllDataToolTipIds[shapeId] != "show") {
                 targetHoverHandler(evt, "showEntityTooltip:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));

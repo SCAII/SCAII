@@ -14,9 +14,7 @@ message VizInit {
 	optional int64 step_count = 2;
     optional uint32 gameboard_width = 3;
     optional uint32 gameboard_height = 4;
-	
 	repeated ExplanationPoint explanations = 5;
-	
 	repeated string reward_types = 6;
 }
 
@@ -272,4 +270,7 @@ message LogFileEntry {
     required string filename = 1;
     required string entry = 2;
     required bool is_last_line = 3;
+}
+message JedTest {
+    required string ignore_this = 1;
 }

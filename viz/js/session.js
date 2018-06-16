@@ -55,15 +55,12 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, progressWidth)
 	sim.setReplaySequencerIndex = function(index) {
 		$("#why-button").remove();
 		this.replaySequencerIndex = index;
-		//console.log('');
-		//console.log('');
-		//console.log('replaySequencerIndex is now ' + index);
-		//console.log('');
-		//console.log('');
-		var displayVal = this.getStepCountToDisplay();
+        //console.log('');
+        //console.log('replaySequencerIndex is now ' + index);
+        var displayVal = this.getStepCountToDisplay();
+        //console.log('display Step value : ' + displayVal);
 		if (displayVal == undefined){
 			$("#step-value").html('');
-			//$("#step-value").html(this.progressBarSegmentCount + " steps");
 		}
 		else {
 			$("#step-value").html('step ' + displayVal + ' / ' + this.progressBarSegmentCount);
@@ -214,6 +211,7 @@ function handleViz(vizData) {
                 studyQuestionManager.questionWasAnswered = false;
                 // we're ready to move forward to next Decision Point
                 studyQuestionManager.poseNextQuestion();
+                controlsManager.expressResumeButton();
                 //chooseNextQuestionAfterStep(sessionIndexManager.getCurrentIndex());
             }
             else {

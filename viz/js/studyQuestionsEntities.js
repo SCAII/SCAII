@@ -11,7 +11,7 @@ function highlightShapeForClickCollectionFeedback(info){
         return;
     }
     // redraw from scratch in case this is our second click andwe have to delete evidence of prior click
-    handleEntities(entitiesList);
+    renderState(gameboard_ctx, gameboard_canvas, masterEntities, gameScaleFactor, 0, 0, shapePositionMapForContext["game"], false);
     if (info.type == "rect") {
         drawRect(info, "outline");
     }
