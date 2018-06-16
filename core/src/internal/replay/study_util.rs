@@ -2,6 +2,9 @@
 use protos::{LogFileEntry, StudyQuestion, StudyQuestions, StudyQuestionAnswer};
 use std::error::Error;
 
+extern crate regex;
+use self::regex::Regex;
+
 pub struct UserStudyQuestions {
     pub replay_filename: String,
     pub answer_lines: Vec<String>,
@@ -39,11 +42,13 @@ println!("{}", result); // => "Hello World!"
         let reader = BufReader::new(f);
 
         let mut questions_vec: Vec<StudyQuestion> = Vec::new();
+        let mut line_num: u8 = 0;
         for line in reader.lines() {
+            line_num = line_num + 1;
             let question_string = line.unwrap();
-            if check_line(&question_string) {
+            if check_line(&question_string, &line_num) {
                 println!("STUDY QUESTION: {}", question_string);
-                let question: StudyQuestion = self.get_study_question(&question_string)?;
+                let question: StudyQuestion = self.get_study_question(&question_string, &line_num)?;
                 questions_vec.push(question);
             }else {
                 continue;   // If something in the line is invalid, print error to
@@ -59,21 +64,31 @@ println!("{}", result); // => "Hello World!"
         Ok(Some(study_questions))
     }
     
-    fn get_study_question(&mut self, line : &String) -> Result<StudyQuestion, Box<Error>> {
+    fn get_study_question(&mut self, line : &String, line_num : &u8) -> Result<StudyQuestion, Box<Error>> {
         use super::ReplayError;
         let line_parts_iterator = line.split(";");
         let vec: Vec<&str> = line_parts_iterator.collect();
         if vec.len() < 3 {
             return Err(Box::new(ReplayError::new(&format!("study question line needs at least three fields: <step>;<questionIndex>;<question>;<answer1>..."))));
         }
+
         let step: String = vec[0].to_string();
+        check_regex("^[0-9]+$|^summary$".to_string(), "STEP REGEX FAIL".to_string(), &step, &line_num);
+
         let question_index: String = vec[1].to_string();
+        check_regex("^[0-9]+$".to_string(), "INDEX REGEX FAIL".to_string(), &question_index, &line_num);
+        
         let question_type: String = vec[2].to_string();
+        check_regex("^plain:NA:NA$|^waitForClick:(gameboard_|rewardBar_|saliencyMap_){0, 2}(gameboard|rewardBar|saliencyMap){0, 1}:.+".to_string(), "QUESTION TYPE REGEX FAIL".to_string(), &question_type, &line_num);
+
         let question : String = vec[3].to_string();
+        // println!("\t{:?} Question: {:?}", line_num, question);
+        
         let mut answer_vec : Vec<String> = Vec::new();
         for x in 4..vec.len() {
             answer_vec.push(vec[x].to_string());
         }
+
         Ok(StudyQuestion {
             step: step,
             question: question,
@@ -209,17 +224,38 @@ fn get_answer_filename(filename : &String, user_id: &String, treatment_id: &Stri
     format!("{}_answers_{}_{}.txt", vec[0], user_id, treatment_id)
 }
 
-fn check_line(line: &String) -> bool {
+fn check_line(line: &String, line_num: &u8) -> bool {
     let line_arr: Vec<char> = line.chars().collect();
-    println!("\t\tLine: {:?}", line_arr);
-    
-    if (line_arr.len() == 0) {      // Check for newline
+    if line_arr.len() == 0 {      // Check for newline
+        // println!("LINE\t{:?}\tWARNING: Newline/Empty line", line_num);
         return false;
     }
 
     if line_arr[0] == '#' {         // Check for comments
-        println!("\tComment: {:?}", line);
+        println!("LINE\t{:?}\t{:?}", line_num, line);
         return false;
     }
+
+    if line.chars().filter(|&c| c == ';').count() < 3 {
+        panic!("\n\tERROR: line {:?}\t Missing \';\' delimiter.", line_num);
+    }       
     true
+}
+
+fn check_regex(regex: String, msg: String, line: &String, line_num: &u8) {
+    let step_reg = Regex::new(&regex).unwrap();
+    if !step_reg.is_match(&line) {                      // on Regex no match, panic
+        panic!("LINE\t{:?}\t{:?}", line_num, msg);
+    }
+}
+
+#[test]
+fn test_regex() {
+    use std::panic;
+
+    let result = panic::catch_unwind(|| {
+        check_regex("^[0-9]+$|^summary$".to_string(), "STEP REGEX FAIL".to_string(), &";;;".to_string(), &0);
+    });
+    assert!(result.is_err());
+
 }
