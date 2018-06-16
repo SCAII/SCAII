@@ -41,9 +41,14 @@ println!("{}", result); // => "Hello World!"
         let mut questions_vec: Vec<StudyQuestion> = Vec::new();
         for line in reader.lines() {
             let question_string = line.unwrap();
-            println!("STUDY QUESTION: {}", question_string);
-            let question: StudyQuestion = self.get_study_question(&question_string)?;
-            questions_vec.push(question);
+            if check_line(&question_string) {
+                println!("STUDY QUESTION: {}", question_string);
+                let question: StudyQuestion = self.get_study_question(&question_string)?;
+                questions_vec.push(question);
+            }else {
+                continue;   // If something in the line is invalid, print error to
+                            // terminal and continue loop.
+            }
         }
         let study_questions = StudyQuestions {
             user_id: user_id,
@@ -204,5 +209,17 @@ fn get_answer_filename(filename : &String, user_id: &String, treatment_id: &Stri
     format!("{}_answers_{}_{}.txt", vec[0], user_id, treatment_id)
 }
 
+fn check_line(line: &String) -> bool {
+    let line_arr: Vec<char> = line.chars().collect();
+    println!("\t\tLine: {:?}", line_arr);
+    
+    if (line_arr.len() == 0) {      // Check for newline
+        return false;
+    }
 
-
+    if line_arr[0] == '#' {         // Check for comments
+        println!("\tComment: {:?}", line);
+        return false;
+    }
+    true
+}
