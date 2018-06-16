@@ -38,11 +38,11 @@ function getStudyQuestionRenderer(questions) {
         $("#q-and-a-div").append(ta);
     }
 
-    sqr.renderFollowupQuestion = function() {
+    sqr.renderFollowupQuestion = function(prefix) {
         var fuText = document.createElement("DIV");
         fuText.setAttribute("id", "followup-text");
         fuText.setAttribute("style", "margin-left:0px;margin-top:14px;font-family:Arial;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
-        fuText.innerHTML =  "What, if anything, would you ask the intelligent agent at this point?";
+        fuText.innerHTML =  prefix + "What, if anything, would you ask the intelligent agent at this point?";
         $("#q-and-a-div").append(fuText);
         var ta = document.createElement("textarea");
         ta.setAttribute("id", "followup-textarea");
@@ -149,6 +149,14 @@ function getStudyQuestionRenderer(questions) {
     }
 
     sqr.poseGivenQuestion = function(questionNumber, step, qu){
+        questionLetterMap = {}
+        questionLetterMap[1] = 'a';
+        questionLetterMap[2] = 'b';
+        questionLetterMap[3] = 'c';
+        questionLetterMap[4] = 'd';
+        questionLetterMap[5] = '5';
+        var questionLetterIndex = 1;
+        var questionIndicator = "D" + questionNumber;
         var text = qu.questionText;
         var answers = qu.answers;
         var type = qu.questionType;
@@ -160,7 +168,8 @@ function getStudyQuestionRenderer(questions) {
             var clickPrompt = document.createElement("DIV");
             clickPrompt.setAttribute("id", "click-prompt");
             clickPrompt.setAttribute("style", "margin-bottom:8px;margin-left:0px;font-family:Arial;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
-            clickPrompt.innerHTML =  qu.clickQuestionText;
+            clickPrompt.innerHTML =  questionIndicator + "(" + questionLetterMap[questionLetterIndex] + ")" + " " + qu.clickQuestionText;
+            questionLetterIndex = questionLetterIndex + 1;
             $("#q-and-a-div").append(clickPrompt);
         }
         // add a textArea for the question
@@ -171,7 +180,8 @@ function getStudyQuestionRenderer(questions) {
             quText.innerHTML =  text;
         }
         else {
-            quText.innerHTML =  "D" + questionNumber  + ": " + text;
+            quText.innerHTML =  questionIndicator + "(" + questionLetterMap[questionLetterIndex] + ")"  + " " + text;
+            questionLetterIndex = questionLetterIndex + 1;
         }
         
         $("#q-and-a-div").append(quText);
@@ -185,7 +195,7 @@ function getStudyQuestionRenderer(questions) {
             this.renderRadioButtons(step, answers);
         }
         if (!(step == 'summary')){
-            this.renderFollowupQuestion();
+            this.renderFollowupQuestion(questionIndicator + "(" + questionLetterMap[questionLetterIndex] + ")"  + " ");
         }
         // add the ever present - follow up question, except on summary questions
         this.renderSaveButton(type);
