@@ -228,6 +228,7 @@ function handleViz(vizData) {
 var totalsString = "total score";
 var rewardsDivMap = {};
 function handleCumulativeRewards(crm) {
+    $("#cumulative-rewards").empty();
 	var entryList = crm.getEntryList();
 	var total = 0;
 	//compute totals
