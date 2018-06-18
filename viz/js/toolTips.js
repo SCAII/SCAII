@@ -8,7 +8,7 @@ function createToolTips(shapeInfo) {
     createHPToolTip(shapeInfo);
     createAllDataToolTip(shapeInfo);
     gameboard_canvas.onmouseleave = function(evt) {
-		hideAllTooltips();
+		hideAllTooltips(evt);
 	};
 }
 
@@ -17,7 +17,6 @@ function hideAllTooltips(evt) {
         if (hoveredAllDataToolTipIds[sId] != "hide") {
             var shapeId = sId;
             shapeId.replace("metadata_all","");
-            targetHoverHandler(evt, "hideEntityTooltip:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
         }
         hoveredAllDataToolTipIds[sId] = "hide";
         $("#" + sId).addClass('tooltip-invisible');
@@ -113,6 +112,7 @@ function createAllDataToolTip(shapeInfo) {
     gatherMapInfo(tooltipInfo, si.entity.boolmetadataMap, valuesDiv,false);
     gatherMapInfo(tooltipInfo, si.entity.floatmetadataMap, valuesDiv, true);
     renderTooltipInfo(tooltipInfo, valuesDiv);
+    //shapeLogStrings[id] = 
 }
 
 function gatherMapInfo(ttInfo, map, limitToTwoDecimals) {

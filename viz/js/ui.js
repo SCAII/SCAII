@@ -244,16 +244,19 @@ function setUpMetadataToolTipEventHandlers() {
 		var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y, shapePositionMapForContext['game'])
 		if (shapeId == undefined) {
 			// we're not inside an object, so hide all the "all_metadata" tooltips
-			hideAllTooltips(evt);
+            hideAllTooltips(evt);
+            targetHoverHandler(evt, "hideEntityTooltips:all");
 		}
 		else {
+            var tooltipId = "metadata_all" + shapeId;
             //we're inside one, keep it visible
-            hideAllTooltips();
-            $("#metadata_all" + shapeId).removeClass('tooltip-invisible');
-            if (hoveredAllDataToolTipIds[shapeId] != "show") {
+            hideAllTooltips(evt);
+            console.log("show tt for " + tooltipId);
+            $("#" + tooltipId).removeClass('tooltip-invisible');
+            if (hoveredAllDataToolTipIds[tooltipId] != "show") {
                 targetHoverHandler(evt, "showEntityTooltip:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
             }
-			hoveredAllDataToolTipIds[shapeId] = "show";
+			hoveredAllDataToolTipIds[tooltipId] = "show";
 		}
   	});
 }
