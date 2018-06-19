@@ -250,12 +250,11 @@ function setUpMetadataToolTipEventHandlers() {
 		else {
             var tooltipId = "metadata_all" + shapeId;
             //we're inside one, keep it visible
-            hideAllTooltips(evt);
-            console.log("show tt for " + tooltipId);
-            $("#" + tooltipId).removeClass('tooltip-invisible');
             if (hoveredAllDataToolTipIds[tooltipId] != "show") {
-                targetHoverHandler(evt, "showEntityTooltip:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
+                targetHoverHandler(evt, "showEntityTooltip:" + shapeLogStrings[tooltipId] + "_" + getQuadrantName(x,y));
             }
+            hideAllTooltips(evt);
+            $("#" + tooltipId).removeClass('tooltip-invisible');
 			hoveredAllDataToolTipIds[tooltipId] = "show";
 		}
   	});

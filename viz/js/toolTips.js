@@ -112,9 +112,21 @@ function createAllDataToolTip(shapeInfo) {
     gatherMapInfo(tooltipInfo, si.entity.boolmetadataMap, valuesDiv,false);
     gatherMapInfo(tooltipInfo, si.entity.floatmetadataMap, valuesDiv, true);
     renderTooltipInfo(tooltipInfo, valuesDiv);
-    //shapeLogStrings[id] = 
+    shapeLogStrings[id] = getShapeLogString(tooltipInfo);
 }
 
+function getShapeLogString(tooltipInfo) {
+    var result = "";
+    var friend = tooltipInfo["Friend?"];
+    if (friend == "true"){
+        result = result + "friendly-";
+    }
+    else {
+        result = result + "enemy-";
+    }
+    result = result + tooltipInfo["Unit Type"];
+    return result;
+}
 function gatherMapInfo(ttInfo, map, limitToTwoDecimals) {
     var entryList = map.getEntryList();
     for (var i in entryList ){
