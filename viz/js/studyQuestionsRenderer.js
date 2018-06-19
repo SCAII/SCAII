@@ -154,7 +154,7 @@ function getStudyQuestionRenderer(questions) {
         questionLetterMap[2] = 'b';
         questionLetterMap[3] = 'c';
         questionLetterMap[4] = 'd';
-        questionLetterMap[5] = '5';
+        questionLetterMap[5] = 'e';
         var questionLetterIndex = 1;
         var questionIndicator = "D" + questionNumber;
         var text = qu.questionText;
