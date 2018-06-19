@@ -49,7 +49,8 @@ var connect = function (dots, attemptCount) {
 			}
 		}
 		catch (err) {
-			alert(err.message);
+            console.log(err.stack);
+			alert(err.message + " " + err.stack);
 		}
 	};
 
@@ -62,8 +63,9 @@ var connect = function (dots, attemptCount) {
 	};
 
 	dealer.onerror = function (err) {
-		console.log("Error: " + err);
-		alert("Error: " + err);
+        console.log("Error: " + err);
+        console.log(err.stack);
+		alert(err.message + " " + err.stack);
 	};
 
 };
