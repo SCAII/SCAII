@@ -58,12 +58,21 @@ class CityAttack(SkyRtsEnv):
         return act
 
     def actions(self):
+        # Originally was the following.
+        # This is closer to how it's
+        # represented in game, but the
+        # new one is more intuitive
+        #
+        # 'Bottom Right (Q1)': 1,
+        # 'Top Right (Q2)': 2,
+        # 'Bottom Left (Q3)': 3,
+        # 'Top left (Q4)': 4,
         return {
             'actions': {
-                'Bottom Right (Q1)': 1,
-                'Top Right (Q2)': 2,
-                'Bottom Left (Q3)': 3,
-                'Top left (Q4)': 4,
+                'Q1': 2,
+                'Q2': 4,
+                'Q3': 3,
+                'Q4': 1,
             },
             'desc': "Use action.attack_quadrant(1-4) to select "
             "a quadrant to attack or defend"
