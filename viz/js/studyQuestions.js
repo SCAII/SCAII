@@ -131,7 +131,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
 
     sqm.blockClicksOutsideRange = function() {
         var step = this.squim.getCurrentStep();
-        if (step == undefined){
+        if (step == undefined || step == 'summary'){
             return;
         }
         var rangePair = this.windowRangeForStep[step];
