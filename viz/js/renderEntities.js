@@ -51,6 +51,33 @@ function handleEntities(entitiesList) {
     //renderState(gameboard_zoom_ctx, gameboard_zoom_canvas, masterEntities, zoomFactor, zoomBoxOriginX, zoomBoxOriginY, shapePositionMapForContext["zoom"]);
 }
 
+function renderQuadrantGridlines(ctx){
+    ctx.save();
+    //starting path of the arrow from the start square to the end square and drawing the stroke
+    ctx.beginPath();
+    var width = gameboard_canvas.width;
+    var height = gameboard_canvas.height;
+    var x = width/2;
+    var y1 = 0; 
+    var y2 = height;
+
+
+    ctx.strokeStyle = "#444444";
+    ctx.lineWidth = 1;
+    ctx.moveTo(x, y1);
+    ctx.lineTo(x, y2);
+    ctx.stroke();
+
+    var x1 = 0;
+    var x2 = width;
+    var y = height / 2;
+ 
+    ctx.moveTo(x1, y);
+    ctx.lineTo(x2, y);
+    ctx.stroke();
+    ctx.restore();
+}
+
 function sortEntitiesAsPerUILayer(entities) {
     var uiLayerEntities = [];
     var nonUiLayerEntities = [];
@@ -100,6 +127,7 @@ function sortUiLayerEntities(entities) {
 }
 function renderState(ctx, canvas, entities, zoom_factor, xOffset, yOffset, shapePositionMap, generateTooltips) {
     clearGameBoard(ctx, canvas);
+    renderQuadrantGridlines(ctx);
     var uiLayerSortedEntities = sortEntitiesAsPerUILayer(entities);
     for (var i in uiLayerSortedEntities) {
         var entity = uiLayerSortedEntities[i];
