@@ -184,12 +184,19 @@ function renderTooltipInfo(ttInfo, div) {
         nonDebugKeys.splice(index, 1);
     }
 
+    var unitType = ttInfo["Unit Type"];
+    unitType = renameEntityInfoForIUI(unitType);
+    index = nonDebugKeys.indexOf("Unit Type");
+    if (index > -1) {
+        nonDebugKeys.splice(index, 1);
+    }
+
     var friendLabel = document.createElement("div");
     if(isFriend == "true"){
-        friendLabel.innerHTML = "Friendly";
+        friendLabel.innerHTML = "Friendly " + unitType;
     }
     else {
-        friendLabel.innerHTML = "Enemy";
+        friendLabel.innerHTML = "Enemy " + unitType;
     }
     
     div.append(friendLabel);
@@ -206,6 +213,26 @@ function renderTooltipInfo(ttInfo, div) {
     }
 }
 
+function renameEntityInfoForIUI(s) {
+    if (s == "Small Tower"){
+        return "Small Fort";
+    }
+    else if (s == "Big Tower"){
+        return "Big Fort";
+    }
+    if (s == "Small City"){
+        return "Town";
+    }
+    else if (s == "Big City"){
+        return "City";
+    }
+    else if (s == "Ship"){
+        return "Tank";
+    }
+    else {
+        return s;
+    }
+}
 function createMetadataTooltipEntry(key, val) {
     var label = document.createElement("div");
     label.innerHTML = key + ':' + val;
