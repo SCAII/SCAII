@@ -284,6 +284,7 @@ function sizeNonGeneratedElements() {
 }
 
 function clearGameBoards() {
+    cleanToolTips();
 	clearGameBoard(gameboard_ctx, gameboard_canvas, "game");
 	clearGameBoard(gameboard_zoom_ctx, gameboard_zoom_canvas, "zoom");
 }
