@@ -99,7 +99,7 @@ function createAllDataToolTip(shapeInfo) {
     valuesDiv.setAttribute("id",id);
      // position it relative to where origin of bounding box of gameboard is
     var y = si.y + canvas_bounds.top + 20;
-    var x = si.y + canvas_bounds.left + -125;
+    var x = si.x + canvas_bounds.left + -125;
     valuesDiv.setAttribute("style", 'position:absolute;padding:4px;background-color:black;z-index:' + zIndexMap["tooltip"] + ';left:' + x + 'px;top:' + y + 'px;color:white;	display: flex;flex-direction: column;font-family:Arial');
     $("#scaii-gameboard").append(valuesDiv);
     entityAllDataToolTipIds.push(id);
