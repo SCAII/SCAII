@@ -356,21 +356,23 @@ function getSaliencyDisplayManager(selectionManager) {
 		explCanvas.addEventListener('mouseleave', function(evt) {
             valueSpan.setAttribute("style", 'visibility:hidden;');
             targetHoverHandler(evt, "endMouseOverSaliencyMap:" + saliencyUIName);
-		});
-		explCanvas.addEventListener('mousemove', function(evt) {
-			var mousePos = getMousePos(explCanvas, evt);
-			var xForValueLookup = Math.floor(mousePos.x / gameScaleFactor);
-			var yForValueLookup = Math.floor(mousePos.y/gameScaleFactor);
-			var index = height * xForValueLookup + yForValueLookup;
-			var cellValue = cells[index];
-			var normValue = cellValue*normalizationFactor;
-			var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y + ' val: ' + normValue.toFixed(2);
-			var top = (mousePos.y + 10 - (40 * gameScaleFactor)) + 'px'; // shift it to canvas above
-			var left = (mousePos.x + 10) + 'px';
-			valueSpan.setAttribute("style", 'z-index:' + zIndexMap["saliencyHoverValue"] + '; position:relative; left:' + left + '; top: ' + top + '; color:#D73F09;font-family:Arial;'); // OSU orange
-			valueSpan.innerHTML = normValue.toFixed(2);
-			//console.log(message);
-		  }, false);
+        });
+        if (!isStudyQuestionsMode()){
+            explCanvas.addEventListener('mousemove', function(evt) {
+                var mousePos = getMousePos(explCanvas, evt);
+                var xForValueLookup = Math.floor(mousePos.x / gameScaleFactor);
+                var yForValueLookup = Math.floor(mousePos.y/gameScaleFactor);
+                var index = height * xForValueLookup + yForValueLookup;
+                var cellValue = cells[index];
+                var normValue = cellValue*normalizationFactor;
+                var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y + ' val: ' + normValue.toFixed(2);
+                var top = (mousePos.y + 10 - (40 * gameScaleFactor)) + 'px'; // shift it to canvas above
+                var left = (mousePos.x + 10) + 'px';
+                valueSpan.setAttribute("style", 'z-index:' + zIndexMap["saliencyHoverValue"] + '; position:relative; left:' + left + '; top: ' + top + '; color:#D73F09;font-family:Arial;'); // OSU orange
+                valueSpan.innerHTML = normValue.toFixed(2);
+                //console.log(message);
+              }, false);
+        }
 	}
 
 		
