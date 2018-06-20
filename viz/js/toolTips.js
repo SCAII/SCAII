@@ -127,6 +127,7 @@ function getShapeLogString(tooltipInfo) {
     result = result + tooltipInfo["Unit Type"];
     return result;
 }
+
 function gatherMapInfo(ttInfo, map, limitToTwoDecimals) {
     var entryList = map.getEntryList();
     for (var i in entryList ){
@@ -142,6 +143,7 @@ function gatherMapInfo(ttInfo, map, limitToTwoDecimals) {
         ttInfo[key] = val;
     }
 }
+
 function renderTooltipInfo(ttInfo, div) {
     var debugKeys = [];
     var nonDebugKeys = [];
@@ -157,23 +159,60 @@ function renderTooltipInfo(ttInfo, div) {
     }
     debugKeys.sort();
     nonDebugKeys.sort();
-    // pull out hp values and print first
-    var hp = ttInfo["Hitpoints"];
-    var maxHp = ttInfo["Max Hp"];
-    var index = nonDebugKeys.indexOf("Hitpoints");
-    if (index > -1) {
-        nonDebugKeys.splice(index, 1);
-    }
-    index = nonDebugKeys.indexOf("Max Hp");
-    if (index > -1) {
-        nonDebugKeys.splice(index, 1);
-    }
+    // pull out friend/vs enemy and unit type to show first
+    var friendLabel = getLabelForInfo(collectUnitInfoForConciseMessage(ttInfo, nonDebugKeys));
+    div.append(friendLabel);
 
-    var hpString = "Hitpoints " + hp + " of " + maxHp;
-    var hpLabel = document.createElement("div");
-    hpLabel.innerHTML = hpString;
+    // pull out hp values and print first
+    var hpLabel = getLabelForInfo(collectHitpointsForConciseMessage(ttInfo, nonDebugKeys));
     div.append(hpLabel);
 
+    // fabricate damageDealt
+    var unitType = ttInfo["Unit Type"];
+    unitType = renameEntityInfoForIUI(unitType);
+    var damageDealtlabel = getLabelForInfo(getDamageDealtStringForUnit(unitType));
+    div.append(damageDealtlabel);
+
+    for (var i in nonDebugKeys) {
+        var key = nonDebugKeys[i];
+        var val = ttInfo[key];
+        div.append(createMetadataTooltipEntry(key, val));
+    }
+    for (var i in debugKeys) {
+        var key = debugKeys[i];
+        var val = ttInfo[key];
+        div.append(createMetadataTooltipEntry(key, val));
+    }
+}
+
+function getLabelForInfo(s){
+    var label = document.createElement("div");
+    label.innerHTML = s;
+    return label;
+}
+function getDamageDealtStringForUnit(unitType){
+    var result = "deals damage: ";
+    if (unitType == "Tank"){
+        return result + "10 dmg / 0.2 sec";
+    }
+    else if (unitType == "City"){
+        return result + "0 dmg";
+    }
+    else if (unitType == "Town"){
+        return result + "0 dmg";
+    }
+    else if (unitType == "Big Fort"){
+        return result + "10 dmg / 0.2 sec";
+    }
+    else if (unitType == "Small Fort"){
+        return result + "5 dmg / 0.2 sec";
+    }
+    else {
+        return result + "unknown";
+    }
+}
+
+function collectUnitInfoForConciseMessage(ttInfo, nonDebugKeys) {
     var isFriend = ttInfo["Friend?"];
     index = nonDebugKeys.indexOf("Friend?");
     if (index > -1) {
@@ -192,27 +231,29 @@ function renderTooltipInfo(ttInfo, div) {
     }
 
     var friendLabel = document.createElement("div");
-    if(isFriend == "true"){
-        friendLabel.innerHTML = "Friendly " + unitType;
+    if (isFriend == "true"){
+        return "Friendly " + unitType;
     }
     else {
-        friendLabel.innerHTML = "Enemy " + unitType;
-    }
-    
-    div.append(friendLabel);
-
-    for (var i in nonDebugKeys) {
-        var key = nonDebugKeys[i];
-        var val = ttInfo[key];
-        div.append(createMetadataTooltipEntry(key, val));
-    }
-    for (var i in debugKeys) {
-        var key = debugKeys[i];
-        var val = ttInfo[key];
-        div.append(createMetadataTooltipEntry(key, val));
+        return "Enemy " + unitType;
     }
 }
 
+function collectHitpointsForConciseMessage(ttInfo,nonDebugKeys){
+    var hp = ttInfo["Hitpoints"];
+    var maxHp = ttInfo["Max Hp"];
+    var index = nonDebugKeys.indexOf("Hitpoints");
+    if (index > -1) {
+        nonDebugKeys.splice(index, 1);
+    }
+    index = nonDebugKeys.indexOf("Max Hp");
+    if (index > -1) {
+        nonDebugKeys.splice(index, 1);
+    }
+
+    var hpString = "Hitpoints: " + hp + " of " + maxHp;
+    return hpString;
+}
 function renameEntityInfoForIUI(s) {
     if (s == "Small Tower"){
         return "Small Fort";
