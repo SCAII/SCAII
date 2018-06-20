@@ -11,13 +11,13 @@ function drawCircle(shapeInfo, mode) {
     var ctx = get2dContextForMode(si, mode);
     ctx.save();
     ctx.translate(si.x, si.y);
-    ctx.rotate(si.rotation_in_radians);
+    // (no need to rotate circle)
     ctx.beginPath();
     ctx.arc(0, 0, si.radius, 0, 2 * Math.PI);
     if (mode == "outline") {
         ctx.lineWidth = shape_outline_width + 3;
         ctx.strokeStyle = "white";
-        cts.stroke();
+        ctx.stroke();
     }
     else {
         ctx.stroke();
