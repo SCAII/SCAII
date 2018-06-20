@@ -174,7 +174,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         }
         
         // calculate right window edge position
-        var rightValueOnTimeline = Math.floor((rangePair[1] / maxIndex ) * 100);
+        var rightValueOnTimeline = Math.floor(((Number(rangePair[1]) + 1)/ maxIndex ) * 100);
         var x3 = ecpOffset.left + timelineMargin + (rightValueOnTimeline / 100) * widthOfTimeline;
         // shift x3 to the left to fully cover the next DecisionPoint
         if (!this.squim.isAtLastDecisionPoint()) {
