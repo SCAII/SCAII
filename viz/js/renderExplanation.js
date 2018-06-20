@@ -796,6 +796,11 @@ function addLabelForAction(title, index, step){
 
 	actionLabel.addEventListener("click", function(evt) {
 		if (!isUserInputBlocked()){
+            if (isStudyQuestionMode()){
+                if (studyQuestionManager.isBeyondCurrentRange(step)){
+                    return;
+                }
+            }
 			var userCommand = new proto.scaii.common.UserCommand;
 			userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
 			// same args as above
@@ -805,7 +810,12 @@ function addLabelForAction(title, index, step){
 		}
 	});
 	actionLabel.addEventListener("mouseenter", function(evt) {
-		//$("#" + id).css("background-color","rgba(100,100,100,1.0);");
+        //$("#" + id).css("background-color","rgba(100,100,100,1.0);");
+        if (isStudyQuestionMode()){
+            if (studyQuestionManager.isBeyondCurrentRange(step)){
+                return;
+            }
+        }
 		$("#" + id).css("background-color","#EEDDCC");
 	});
 	actionLabel.addEventListener("mouseleave", function(evt) {

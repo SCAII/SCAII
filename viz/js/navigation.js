@@ -113,10 +113,10 @@ var tryRewind = function (e) {
 function rewindGame() {
 	pauseGame();
 	try {
-		controlsManager.userClickedRewind();
-		var userCommand = new proto.scaii.common.UserCommand;
-		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.REWIND);
-		stageUserCommand(userCommand);
+        controlsManager.userClickedRewind();
+        var userCommand = new proto.scaii.common.UserCommand;
+        userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.REWIND);
+        stageUserCommand(userCommand);
 	}
 	catch (err) {
 		alert(err.message);
@@ -228,7 +228,7 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	// rewind
 	//
 	manager.userClickedRewind = function () {
-		userInputBlocked = true;
+        userInputBlocked = true;
 		this.pendingAction = this.adjustToRewindClick;
 	}
 

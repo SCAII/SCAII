@@ -177,8 +177,8 @@ function targetHoverHandler(e, userActionSemantics) {
 }
 
 function deleteUnwantedControls(){
-    $("#action-list").empty();
-    $("#action-list").css("height","20px");
+    //$("#action-list").empty();
+   // $("#action-list").css("height","20px");
 }
 function setHandlers() {
     $("#scaii-interface")         .on("click",globalClickHandler);

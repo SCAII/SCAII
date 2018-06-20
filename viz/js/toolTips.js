@@ -8,7 +8,7 @@ function createToolTips(shapeInfo) {
     createHPToolTip(shapeInfo);
     createAllDataToolTip(shapeInfo);
     gameboard_canvas.onmouseleave = function(evt) {
-		hideAllTooltips();
+		hideAllTooltips(evt);
 	};
 }
 
@@ -17,7 +17,6 @@ function hideAllTooltips(evt) {
         if (hoveredAllDataToolTipIds[sId] != "hide") {
             var shapeId = sId;
             shapeId.replace("metadata_all","");
-            targetHoverHandler(evt, "hideEntityTooltip:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
         }
         hoveredAllDataToolTipIds[sId] = "hide";
         $("#" + sId).addClass('tooltip-invisible');
@@ -100,7 +99,7 @@ function createAllDataToolTip(shapeInfo) {
     valuesDiv.setAttribute("id",id);
      // position it relative to where origin of bounding box of gameboard is
     var y = si.y + canvas_bounds.top + 20;
-    var x = si.y + canvas_bounds.left + -125;
+    var x = si.x + canvas_bounds.left + -125;
     valuesDiv.setAttribute("style", 'position:absolute;padding:4px;background-color:black;z-index:' + zIndexMap["tooltip"] + ';left:' + x + 'px;top:' + y + 'px;color:white;	display: flex;flex-direction: column;font-family:Arial');
     $("#scaii-gameboard").append(valuesDiv);
     entityAllDataToolTipIds.push(id);
@@ -113,8 +112,21 @@ function createAllDataToolTip(shapeInfo) {
     gatherMapInfo(tooltipInfo, si.entity.boolmetadataMap, valuesDiv,false);
     gatherMapInfo(tooltipInfo, si.entity.floatmetadataMap, valuesDiv, true);
     renderTooltipInfo(tooltipInfo, valuesDiv);
+    shapeLogStrings[id] = getShapeLogString(tooltipInfo);
 }
 
+function getShapeLogString(tooltipInfo) {
+    var result = "";
+    var friend = tooltipInfo["Friend?"];
+    if (friend == "true"){
+        result = result + "friendly-";
+    }
+    else {
+        result = result + "enemy-";
+    }
+    result = result + tooltipInfo["Unit Type"];
+    return result;
+}
 function gatherMapInfo(ttInfo, map, limitToTwoDecimals) {
     var entryList = map.getEntryList();
     for (var i in entryList ){
@@ -145,6 +157,50 @@ function renderTooltipInfo(ttInfo, div) {
     }
     debugKeys.sort();
     nonDebugKeys.sort();
+    // pull out hp values and print first
+    var hp = ttInfo["Hitpoints"];
+    var maxHp = ttInfo["Max Hp"];
+    var index = nonDebugKeys.indexOf("Hitpoints");
+    if (index > -1) {
+        nonDebugKeys.splice(index, 1);
+    }
+    index = nonDebugKeys.indexOf("Max Hp");
+    if (index > -1) {
+        nonDebugKeys.splice(index, 1);
+    }
+
+    var hpString = "Hitpoints " + hp + " of " + maxHp;
+    var hpLabel = document.createElement("div");
+    hpLabel.innerHTML = hpString;
+    div.append(hpLabel);
+
+    var isFriend = ttInfo["Friend?"];
+    index = nonDebugKeys.indexOf("Friend?");
+    if (index > -1) {
+        nonDebugKeys.splice(index, 1);
+    }
+    index = nonDebugKeys.indexOf("Enemy?");
+    if (index > -1) {
+        nonDebugKeys.splice(index, 1);
+    }
+
+    var unitType = ttInfo["Unit Type"];
+    unitType = renameEntityInfoForIUI(unitType);
+    index = nonDebugKeys.indexOf("Unit Type");
+    if (index > -1) {
+        nonDebugKeys.splice(index, 1);
+    }
+
+    var friendLabel = document.createElement("div");
+    if(isFriend == "true"){
+        friendLabel.innerHTML = "Friendly " + unitType;
+    }
+    else {
+        friendLabel.innerHTML = "Enemy " + unitType;
+    }
+    
+    div.append(friendLabel);
+
     for (var i in nonDebugKeys) {
         var key = nonDebugKeys[i];
         var val = ttInfo[key];
@@ -157,6 +213,26 @@ function renderTooltipInfo(ttInfo, div) {
     }
 }
 
+function renameEntityInfoForIUI(s) {
+    if (s == "Small Tower"){
+        return "Small Fort";
+    }
+    else if (s == "Big Tower"){
+        return "Big Fort";
+    }
+    if (s == "Small City"){
+        return "Town";
+    }
+    else if (s == "Big City"){
+        return "City";
+    }
+    else if (s == "Ship"){
+        return "Tank";
+    }
+    else {
+        return s;
+    }
+}
 function createMetadataTooltipEntry(key, val) {
     var label = document.createElement("div");
     label.innerHTML = key + ':' + val;

@@ -52,14 +52,31 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         if (this.activeRange != undefined){
             var endOfRange = this.activeRange[1];
             // stop one prior to the true end to avoid showing the blank gameboard
-            if (step >= endOfRange - 1) { 
             //if (step >= endOfRange) { 
+            if (step >= endOfRange - 1) { 
+                // if we are at end of game, don't stop two shy
+                if (step == sessionIndexManager.getMaxIndex()- 1){
+                    return false;
+                }
+                // otherwise, stop two shy to avoid blank gameboard
                 return true;
             }
         }
         return false;
     }
     
+    sqm.isBeyondCurrentRange = function(step) {
+        if (this.activeRange != undefined){
+            var endOfRange = this.activeRange[1];
+            // stop one prior to the true end to avoid showing the blank gameboard
+            //if (step >= endOfRange) { 
+            if (step >endOfRange) { 
+                return true;
+            }
+        }
+        return false;
+    }
+
     sqm.hasShownUserId = function() {
         return this.userIdHasBeenSet;
     }
@@ -126,7 +143,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
 
     sqm.blockClicksOutsideRange = function() {
         var step = this.squim.getCurrentStep();
-        if (step == undefined){
+        if (step == undefined || step == 'summary'){
             return;
         }
         var rangePair = this.windowRangeForStep[step];
