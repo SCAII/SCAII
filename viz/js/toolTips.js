@@ -255,7 +255,7 @@ function collectHitpointsForConciseMessage(ttInfo,nonDebugKeys){
         nonDebugKeys.splice(index, 1);
     }
 
-    var hpString = "Hitpoints: " + hp + " of " + maxHp;
+    var hpString = "Health: " + hp + "/" + maxHp;
     return hpString;
 }
 function renameEntityInfoForIUI(s) {
