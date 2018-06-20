@@ -274,7 +274,12 @@ function getStudyQuestionRenderer(questions) {
         var question = document.createElement("DIV");
         question.setAttribute("id", "user-id-question");
         question.setAttribute("style", "margin-left:100px;font-family:Arial;font-size:18px;padding:10px;");
-        question.innerHTML = "Welcome to the XAI User Study.  Your study ID is:  " + studyQuestionManager.userId;
+        if (isTutorial()){
+            question.innerHTML = "Welcome to the XAI User Study.  Your study ID is:  " + studyQuestionManager.userId;
+        }
+        else {
+            question.innerHTML = "Please wait for the researcher to signal when to begin.";
+        }
         $("#user-id-question-row").append(question);
 
         // var userIdText = document.createElement("DIV");

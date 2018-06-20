@@ -287,7 +287,9 @@ function acceptAnswer(e) {
             controlsManager.enablePauseResume();
         } 
         else {
-            renderer.poseThankYouScreen();
+            if (!isTutorial()){
+                renderer.poseThankYouScreen();
+            }
         }
     }
 }
