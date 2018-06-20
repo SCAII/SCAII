@@ -195,7 +195,9 @@ function getStudyQuestionRenderer(questions) {
             this.renderRadioButtons(step, answers);
         }
         if (!(step == 'summary')){
-            this.renderFollowupQuestion(questionIndicator + "(" + questionLetterMap[questionLetterIndex] + ")"  + " ");
+            if (!isTutorial()){
+                this.renderFollowupQuestion(questionIndicator + "(" + questionLetterMap[questionLetterIndex] + ")"  + " ");
+            }
         }
         // add the ever present - follow up question, except on summary questions
         this.renderSaveButton(type);

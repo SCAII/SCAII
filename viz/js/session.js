@@ -132,23 +132,48 @@ function handleReplayControl(replayControl) {
 	}
 }
 
+function promoteTutorialFileIfPresent(replayNames) {
+    var setAside = undefined;
+    var result = [];
+    for (var i in replayNames) {
+        var name = replayNames[i];
+        if (name.startsWith("tutorial")) {
+            setAside = name;
+        }
+        else {
+            result.push(name);
+        }
+    }
+    if (setAside != undefined) {
+        result.unshift(setAside);
+    }
+    return result;
+}
 
 function handleReplayChoiceConfig(config){
-	var replayNames = config.getReplayFilenamesList();
+    var replayNames = config.getReplayFilenamesList();
+     // studyQuestionMode not yet set to check, just always check - unlikely to be a problem
+    // make tutorial file the default
+    replayNames = promoteTutorialFileIfPresent(replayNames);
 	for (var i in replayNames) {
 		var name = replayNames[i];
 		$("#replay-file-selector").append($('<option>', {
 			value: i,
 			text: name
 		}));
-	}
+    }
 	loadSelectedReplayFile();
 }
+
+function isTutorial() {
+    return chosenFile.startsWith("tutorial");
+}
+var chosenFile;
 
 function loadSelectedReplayFile() {
     clearStudyQuestionMode();
 	controlsManager.startLoadReplayFile();
-	var chosenFile = $( "#replay-file-selector option:selected" ).text();
+	chosenFile = $( "#replay-file-selector option:selected" ).text();
 	//console.log("    file selected: " + chosenFile);
 	var args = [chosenFile];
 	var userCommand = new proto.scaii.common.UserCommand;

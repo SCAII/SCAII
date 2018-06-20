@@ -261,9 +261,11 @@ function acceptAnswer(e) {
     if (clickInfo == undefined){
         clickInfo = "NA";
     }
-    var followupAnswer;
+    var followupAnswer = "NA";
     if (!(currentStep == 'summary')){
-        followupAnswer = renderer.getCurrentFollowupAnswer();
+        if (!isTutorial()){
+            followupAnswer = renderer.getCurrentFollowupAnswer();
+        }
     }
     targetClickHandler(e,"answerQuestion:"+ currentStep + "." + currentQuestionIndexAtStep + "_" + answer + "_" + followupAnswer + "_(" + clickInfo + ")");
 
