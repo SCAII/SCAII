@@ -113,7 +113,6 @@ function handleStudyQuestions(studyQuestions){
     stateMonitor = getStateMonitor();
     studyTreatment = getTreatmentManager(treatmentId);
     stateMonitor.logFileName = answerFilename;
-    $("#action-list").remove();
     // make div to hold the winning action name
     var winningActionLabel = document.createElement("div");
 	winningActionLabel.setAttribute("style", "margin-top:8px;margin-left:30px;font-family:Arial;font-weight:bold;font-size:14px;");

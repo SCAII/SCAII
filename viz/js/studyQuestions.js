@@ -65,6 +65,18 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         return false;
     }
     
+    sqm.isBeyondCurrentRange = function(step) {
+        if (this.activeRange != undefined){
+            var endOfRange = this.activeRange[1];
+            // stop one prior to the true end to avoid showing the blank gameboard
+            //if (step >= endOfRange) { 
+            if (step >endOfRange) { 
+                return true;
+            }
+        }
+        return false;
+    }
+
     sqm.hasShownUserId = function() {
         return this.userIdHasBeenSet;
     }
