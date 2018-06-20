@@ -157,6 +157,43 @@ function renderTooltipInfo(ttInfo, div) {
     }
     debugKeys.sort();
     nonDebugKeys.sort();
+    // pull out hp values and print first
+    var hp = ttInfo["Hitpoints"];
+    var maxHp = ttInfo["Max Hp"];
+    var index = nonDebugKeys.indexOf("Hitpoints");
+    if (index > -1) {
+        nonDebugKeys.splice(index, 1);
+    }
+    index = nonDebugKeys.indexOf("Max Hp");
+    if (index > -1) {
+        nonDebugKeys.splice(index, 1);
+    }
+
+    var hpString = "Hitpoints " + hp + " of " + maxHp;
+    var hpLabel = document.createElement("div");
+    hpLabel.innerHTML = hpString;
+    div.append(hpLabel);
+
+    var isFriend = ttInfo["Friend?"];
+    index = nonDebugKeys.indexOf("Friend?");
+    if (index > -1) {
+        nonDebugKeys.splice(index, 1);
+    }
+    index = nonDebugKeys.indexOf("Enemy?");
+    if (index > -1) {
+        nonDebugKeys.splice(index, 1);
+    }
+
+    var friendLabel = document.createElement("div");
+    if(isFriend == "true"){
+        friendLabel.innerHTML = "Friendly";
+    }
+    else {
+        friendLabel.innerHTML = "Enemy";
+    }
+    
+    div.append(friendLabel);
+
     for (var i in nonDebugKeys) {
         var key = nonDebugKeys[i];
         var val = ttInfo[key];
