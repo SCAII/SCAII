@@ -92,6 +92,9 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         }
     }
 
+    sqm.hasMoreQuestions = function() {
+        return this.squim.hasMoreQuestions();
+    }
     sqm.poseFirstQuestion = function() {
         var step = this.squim.getCurrentStep();
         var args = ["" + step];

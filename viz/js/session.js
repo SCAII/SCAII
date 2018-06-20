@@ -234,7 +234,9 @@ function handleViz(vizData) {
             if (studyQuestionManager.questionWasAnswered) {
                 studyQuestionManager.questionWasAnswered = false;
                 // we're ready to move forward to next Decision Point
-                studyQuestionManager.poseNextQuestion();
+                if (studyQuestionManager.hasMoreQuestions()){
+                    studyQuestionManager.poseNextQuestion();
+                }
                 controlsManager.expressResumeButton();
                 //chooseNextQuestionAfterStep(sessionIndexManager.getCurrentIndex());
             }
