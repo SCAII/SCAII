@@ -16,6 +16,7 @@ var masterEntities = {};
 
 
 function handleEntities(entitiesList) {
+    shapeInfoForHighlighting = {};
     shapeLogStrings = {};
     cleanToolTips();
     for (var i in entitiesList) {
