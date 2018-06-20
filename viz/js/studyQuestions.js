@@ -21,6 +21,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     sqm.windowRangeForStep = {};
     sqm.questionWasAnswered = false;
     sqm.activeRange = undefined;
+    sqm.mostRecentlyPosedQuestion = undefined;
 
     for (var i in questions){
         var question = questions[i];
@@ -130,10 +131,13 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
 
     sqm.poseCurrentQuestion = function() {
         var qid = this.squim.getCurrentQuestionId();
-        stateMonitor.setUserAction("showQuestion:"+ qid);
-        stateMonitor.setQuestionId(qid);
-        var qu = this.questionMap[qid];
-        this.renderer.poseQuestion(qu, this.squim.getCurrentDecisionPointNumber(), this.squim.getCurrentStep());
+        if (this.mostRecentlyPosedQuestion != qid){
+            this.mostRecentlyPosedQuestion = qid;
+            stateMonitor.setUserAction("showQuestion:"+ qid);
+            stateMonitor.setQuestionId(qid);
+            var qu = this.questionMap[qid];
+            this.renderer.poseQuestion(qu, this.squim.getCurrentDecisionPointNumber(), this.squim.getCurrentStep());
+        }
     }
 
     sqm.clearTimelineBlocks = function() {
