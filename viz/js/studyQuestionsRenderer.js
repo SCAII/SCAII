@@ -211,7 +211,7 @@ function getStudyQuestionRenderer(questions) {
                     if (!renderer.isClickInfoFromSaveButtonClick(clickInfo)){
                         renderer.clickInfoFromUserActionMonitor = clickInfo;
                         renderer.removeMissingClickInfoMessage();
-                        $("#click-prompt").html("Most recent click logged.");
+                        $("#click-prompt").html("Most recent click logged (you can click more if needed).");
                         $("#click-prompt").css("background-color", studyQuestionManager.renderer.bg);
                     }
                 }
