@@ -784,10 +784,11 @@ function boldThisStepInLegend(step){
 
 function getDecisionPointIdForName(name, step){
 	var nameForId = convertNameToLegalId(name);
-	nameForId = step + nameForId + "actionLabel";
+	nameForId = "actionLabel-step-" +step + "-action-" + nameForId;
 	return nameForId;
 }
 function addLabelForAction(title, index, step){
+    var fullName = 'D' + index + ': ' + title;
 	var actionLabel = document.createElement("div");
 	var id = getDecisionPointIdForName(title, step);
 	decisionPointIds[step] = id;
@@ -798,7 +799,11 @@ function addLabelForAction(title, index, step){
 		if (!isUserInputBlocked()){
             if (isStudyQuestionMode()){
                 if (studyQuestionManager.isBeyondCurrentRange(step)){
+                    targetClickHandler(evt, "clickActionLabelDenied:" + escapeAnswerFileDelimetersFromTextString(fullName));
                     return;
+                }
+                else {
+                    targetClickHandler(evt, "clickActionLabel:" + escapeAnswerFileDelimetersFromTextString(fullName));
                 }
             }
 			var userCommand = new proto.scaii.common.UserCommand;
@@ -826,7 +831,7 @@ function addLabelForAction(title, index, step){
 	var row = Math.floor((index - 1) / 2);
 	var col = 1 + (index - 1) % 2;
 	actionLabel.setAttribute("style", getGridPositionStyle(col, row) + 'padding:0px;margin-left:4px;margin-bottom:2px;margin-top:2px;margin-right:4px;font-family:Arial;font-size:14px;');
-	var fullName = 'D' + index + ': ' + title;
+	
 	actionLabel.innerHTML = fullName;
 	$("#action-list").append(actionLabel);
 }
