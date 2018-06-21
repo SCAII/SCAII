@@ -207,9 +207,9 @@ function getStudyQuestionRenderer(questions) {
             listener.acceptClickInfo = function(clickInfo){
                 var renderer = studyQuestionManager.renderer;
                 if (renderer.isLegalRegionToClickOn(clickInfo, qu.regionsToAllow)){
-                    renderer.clickInfoFromUserActionMonitor = clickInfo;
-                    // don't rembve the click message if this is residual click activty from prior question "save"
+                    // don't remove the click message if this is residual click activty from prior question "save"
                     if (!renderer.isClickInfoFromSaveButtonClick(clickInfo)){
+                        renderer.clickInfoFromUserActionMonitor = clickInfo;
                         renderer.removeMissingClickInfoMessage();
                         $("#click-prompt").html("Most recent click logged.");
                         $("#click-prompt").css("background-color", studyQuestionManager.renderer.bg);
