@@ -4,6 +4,7 @@ function getStudyQuestionRenderer(questions) {
     sqr.bg = "#ffffff";
     sqr.marginTop = "6px";
     sqr.fontSize = "16px";
+    //sqr.clickQuestionFontSize = "18px";
     sqr.questionFormat = undefined;
     sqr.currentRadioName = undefined;
     sqr.currentTextBox = undefined;
@@ -167,7 +168,7 @@ function getStudyQuestionRenderer(questions) {
         if (type == "waitForClick"){
             var clickPrompt = document.createElement("DIV");
             clickPrompt.setAttribute("id", "click-prompt");
-            clickPrompt.setAttribute("style", "margin-bottom:8px;margin-left:0px;font-family:Arial;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
+            clickPrompt.setAttribute("style", "padding:10px;margin-bottom:8px;margin-left:0px;font-family:Arial;font-size:" + this.fontSize + ";background-color:yellow;");
             clickPrompt.innerHTML =  questionIndicator + "(" + questionLetterMap[questionLetterIndex] + ")" + " " + qu.clickQuestionText;
             questionLetterIndex = questionLetterIndex + 1;
             $("#q-and-a-div").append(clickPrompt);
@@ -209,6 +210,7 @@ function getStudyQuestionRenderer(questions) {
                     renderer.clickInfoFromUserActionMonitor = clickInfo;
                     renderer.removeMissingClickInfoMessage();
                     $("#click-prompt").html("Most recent click logged.");
+                    $("#click-prompt").css("background-color", studyQuestionManager.renderer.bg);
                 }
                 // var clickAckDiv = document.createElement("DIV");
                 // clickAckDiv.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px");
