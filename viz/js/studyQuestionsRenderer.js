@@ -208,9 +208,12 @@ function getStudyQuestionRenderer(questions) {
                 var renderer = studyQuestionManager.renderer;
                 if (renderer.isLegalRegionToClickOn(clickInfo, qu.regionsToAllow)){
                     renderer.clickInfoFromUserActionMonitor = clickInfo;
-                    renderer.removeMissingClickInfoMessage();
-                    $("#click-prompt").html("Most recent click logged.");
-                    $("#click-prompt").css("background-color", studyQuestionManager.renderer.bg);
+                    // don't rembve the click message if this is residual click activty from prior question "save"
+                    if (!renderer.isClickInfoFromSaveButtonClick(clickInfo)){
+                        renderer.removeMissingClickInfoMessage();
+                        $("#click-prompt").html("Most recent click logged.");
+                        $("#click-prompt").css("background-color", studyQuestionManager.renderer.bg);
+                    }
                 }
                 // var clickAckDiv = document.createElement("DIV");
                 // clickAckDiv.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px");
@@ -221,6 +224,13 @@ function getStudyQuestionRenderer(questions) {
         }
     }
 
+    sqr.isClickInfoFromSaveButtonClick = function(clickInfo){
+        var matchIndex = clickInfo.indexOf("target:button-save");
+        if (Number(matchIndex) == Number(-1)){
+            return false;
+        }
+        return true;
+    }
     sqr.isClickInRegion = function(clickInfo, regionIndicator) {
         var matchDetector = "target:" + regionIndicator;
         if (clickInfo.includes(matchDetector)){

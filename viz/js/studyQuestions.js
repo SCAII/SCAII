@@ -244,7 +244,7 @@ function acceptUserId() {
 }
 function acceptAnswer(e) {
     var renderer = studyQuestionManager.renderer;
-    renderer.removeMissingClickInfoMessage();
+    //renderer.removeMissingClickInfoMessage();
     // block if no answer specified
     if (renderer.controlsWaitingForClick.length != 0) {
         if (renderer.clickInfoFromUserActionMonitor == undefined) {
