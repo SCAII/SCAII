@@ -1,0 +1,28 @@
+# Bad Lines Start
+;;
+;;;
+abb;1;1;
+31;1;1;
+summary;21;1;
+1;0;waitForC1ick:gameboard:Please click on the most important entity in the gameboard above.  Then answer the question below.;What is your favorite color?;Is this another question?
+1;0;waitForClick:gamebard:Please click on the most important entity in the gameboard above.  Then answer the question below.;What is your favorite color? Is this another question?
+1;0;waitForClick:gameboard_gameboard:Please click on the most important entity in the gameboard above.  Then answer the question below.;What is your favorite color? Is this another question?
+31;0;waitForClick:gameboard__rewardBar_saliencyMap:Please click on the most important entity in the gameboard above or the other two places. Then answer the question below.;What is your favorite car?;honda;chevy;toyota;tesla
+1;0;waitForClick:gameboard:;
+1;0;waitForClick:gameboard::;
+summary;0;plain:NA:saliencyMap;what is your mental model?
+summary;21;plain;what is your mental model?
+# Bad Lines End
+
+# All following lines should pass
+1;0;waitForC1ick:gameboard:gameboard;What is your favorite color?;Is this another question?
+
+1;0;waitForClick:gameboard:Please click on the most important entity in the gameboard above.  Then answer the question below.;What is your favorite color? Is this another question?
+
+31;0;waitForClick:gameboard_rewardBar_saliencyMap:Please click on the most important entity in the gameboard above or the other two places. Then answer the question below.;What is your favorite car?;honda;chevy;toyota;tesla
+
+63;0;plain:NA:NA;How did this happen?;not sure;it's too obvious to tell
+
+summary;0;plain:NA:NA;what is your mental model?
+
+summary;1;plain:NA:NA;what is it now?
