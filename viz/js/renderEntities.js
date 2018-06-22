@@ -18,7 +18,7 @@ var masterEntities = {};
 function handleEntities(entitiesList) {
     shapeInfoForHighlighting = {};
     shapeLogStrings = {};
-    cleanToolTips();
+    
     for (var i in entitiesList) {
         var entity = entitiesList[i];
         if (entity.hasId()) {
@@ -29,7 +29,7 @@ function handleEntities(entitiesList) {
                 }
                 else {
                     masterEntities[idString] = entity;
-                    copyMapsIntoUpdateablePosition(entity)
+                    copyMapsIntoUpdateablePosition(entity);
                 }
             }
             else {
@@ -46,10 +46,10 @@ function handleEntities(entitiesList) {
             console.log('-----ERROR----- no entity ID on entity');
         }
     }
-    renderState(gameboard_ctx, gameboard_canvas, masterEntities, gameScaleFactor, 0, 0, shapePositionMapForContext["game"], true);
+    renderState(gameboard_canvas, masterEntities, gameScaleFactor, 0, 0, true);
     // disable zoom box for now
     //drawZoomBox(gameboard_ctx, gameboard_canvas, zoomBoxOriginX, zoomBoxOriginY, zoomFactor);
-    //renderState(gameboard_zoom_ctx, gameboard_zoom_canvas, masterEntities, zoomFactor, zoomBoxOriginX, zoomBoxOriginY, shapePositionMapForContext["zoom"]);
+    //renderState(gameboard_zoom_canvas, masterEntities, zoomFactor, zoomBoxOriginX, zoomBoxOriginY, shapePositionMapForContext["zoom"]);
 }
 
 function renderQuadrantGridlines(ctx){
@@ -126,8 +126,15 @@ function sortUiLayerEntities(entities) {
     }
     return entitiesSortedByLayer;
 }
-function renderState(ctx, canvas, entities, zoom_factor, xOffset, yOffset, shapePositionMap, generateTooltips) {
-    clearGameBoard(ctx, canvas);
+function renderState(canvas, entities, zoom_factor, xOffset, yOffset, generateTooltips) {
+    var entityKeys = Object.keys(entities);
+    if (entityKeys.length == 0){
+        // if the gameboard has been cleared, just leave the prior move's entities in view
+        return;
+    }
+    var ctx = canvas.getContext("2d");
+    cleanToolTips();
+    clearGameBoard(ctx, canvas,"game");
     renderQuadrantGridlines(ctx);
     var uiLayerSortedEntities = sortEntitiesAsPerUILayer(entities);
     for (var i in uiLayerSortedEntities) {
@@ -138,15 +145,16 @@ function renderState(ctx, canvas, entities, zoom_factor, xOffset, yOffset, shape
                 if (pos.hasX() && pos.hasY()) {
                     var x = pos.getX();
                     var y = pos.getY();
-                    layoutEntityAtPosition(Number(i), ctx, x, y, entity, zoom_factor, xOffset, yOffset, shapePositionMap, generateTooltips);
+                    layoutEntityAtPosition(Number(i), ctx, x, y, entity, zoom_factor, xOffset, yOffset, generateTooltips);
                 }
             }
         }
     }
+    var x = 34;
 }
 
 
-function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOffset, yOffset, shapePositionMap, generateTooltips) {
+function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOffset, yOffset, generateTooltips) {
     var entityX = zoom(x - xOffset);
     var entityY = zoom(y - yOffset);
     var shapesList = entity.getShapesList();
@@ -156,13 +164,15 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
         var si = shapeInfo;
         //
         si.entity = entity;
-        si.shapePositionMap = shapePositionMap;
         si.ctx = ctx;
         si.entityIndex = entityIndex;
         si.entityX = entityX;
         si.entityY = entityY;
         si.zoom_factor = zoom_factor;
         si.shapeId = getShapeId(entity, shape);
+
+        console.log("layout shapeId: " + si.shapeId);
+
         setRelativePosition(si, shape);
         setAbsolutePosition(si);
         si.rotation_in_radians = shape.getRotation();
@@ -248,7 +258,7 @@ function renderCircle(si, shape) {
     }
 
     var shapePoints = getShapePoints(si.x, si.y, si.radius + 6, si.shapeId);
-    si.shapePositionMap[si.shapeId] = shapePoints;
+    shapePositionMap[si.shapeId] = shapePoints;
     //	highlightShape(ctx,shapeId,shapePositionMap);
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
     drawCircle(si, "normal");
@@ -267,7 +277,7 @@ function renderRectangle(si, shape) {
         si.height = zoom(rect.getHeight());
     }
     var shapePoints = getShapePoints(si.x, si.y, Math.max(si.width, si.height) + 6, si.shapeId);
-    si.shapePositionMap[si.shapeId] = shapePoints;
+    shapePositionMap[si.shapeId] = shapePoints;
     //	highlightShape(ctx,shapeId,shapePositionMap);
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
     drawRect(si,"normal");
@@ -290,7 +300,7 @@ function renderOctagon(si, shape) {
         si.edgeCorner = zoom(oct.getEdgeCorner());
     }
     var shapePoints = getShapePoints(si.x, si.y, Math.max(getOctagonHeight(si), getOctagonWidth(si)) + 6, si.shapeId);
-    si.shapePositionMap[si.shapeId] = shapePoints;
+    shapePositionMap[si.shapeId] = shapePoints;
     //	highlightShape(ctx,shapeId,shapePositionMap);
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
     drawOctagon(si, "normal");
@@ -302,7 +312,7 @@ function renderTriangle(si, shape) {
     var triangle = shape.getTriangle();
     si.baseLen = zoom(triangle.getBaseLen());
     var shapePoints = getShapePoints(si.x, si.y, si.baseLen + 6, si.shapeId);
-    si.shapePositionMap[si.shapeId] = shapePoints;
+    shapePositionMap[si.shapeId] = shapePoints;
     //	highlightShape(ctx,shapeId,shapePositionMap);
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
     //drawTriangle(ctx, x, y, baseLen, orientation, colorRGBA);
@@ -320,7 +330,7 @@ function renderTriangleAsKite(si, shape) {
     si.width = (Math.tan(radians) * si.baseLen) / 2;
     si.length = si.baseLen;
     var shapePoints = getShapePoints(si.x, si.y, si.baseLen + 6, si.shapeId);
-    si.shapePositionMap[si.shapeId] = shapePoints;
+    shapePositionMap[si.shapeId] = shapePoints;
     //	highlightShape(ctx,shapeId,shapePositionMap);
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
     //drawTriangle(ctx, x, y, baseLen, orientation, colorRGBA);
@@ -334,7 +344,7 @@ function renderKite(si, shape) {
     si.length = zoom(kite.getLength());
     si.width = zoom(kite.getWidth());
     var shapePoints = getShapePoints(si.x, si.y, Math.max(si.width, si.length), si.shapeId);
-    si.shapePositionMap[si.shapeId] = shapePoints;
+    shapePositionMap[si.shapeId] = shapePoints;
     //	highlightShape(ctx,shapeId,shapePositionMap);
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
     drawKite(si, "normal");

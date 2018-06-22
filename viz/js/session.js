@@ -151,6 +151,7 @@ function promoteTutorialFileIfPresent(replayNames) {
 }
 
 function handleReplayChoiceConfig(config){
+   
     var replayNames = config.getReplayFilenamesList();
      // studyQuestionMode not yet set to check, just always check - unlikely to be a problem
     // make tutorial file the default
@@ -171,6 +172,10 @@ function isTutorial() {
 var chosenFile;
 
 function loadSelectedReplayFile() {
+    if (userActionMonitor != undefined) {
+        userActionMonitor.clickListener = undefined;
+    }
+    
     clearStudyQuestionMode();
 	controlsManager.startLoadReplayFile();
 	chosenFile = $( "#replay-file-selector option:selected" ).text();

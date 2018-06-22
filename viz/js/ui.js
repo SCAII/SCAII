@@ -54,7 +54,8 @@ var sizingFactor = 1;
 
 // entities, shapes
 var entitiesList = undefined;
-var shapePositionMapForContext = {};
+//var shapePositionMapForContext = {};
+var shapePositionMap = {};
 var primaryHighlightedShapeIds = [];
 var secondaryHighlightedShapeIds = [];
 var shape_outline_color = '#202020';
@@ -223,7 +224,7 @@ function setUpMetadataToolTipEventHandlers() {
 	gameboard_canvas.addEventListener('click', function(evt) {
 		var x = evt.offsetX;
 		var y = evt.offsetY;
-		var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y, shapePositionMapForContext['game']);
+		var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y);
 		if (shapeId != undefined){
             highlightShapeForIdForClickCollectionFeedback(shapeId);
             targetClickHandler(evt, "clickEntity:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
@@ -241,7 +242,7 @@ function setUpMetadataToolTipEventHandlers() {
 	gameboard_canvas.addEventListener('mousemove', function(evt) {
 		var x = evt.offsetX;
 		var y = evt.offsetY;
-		var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y, shapePositionMapForContext['game'])
+		var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y);
 		if (shapeId == undefined) {
 			// we're not inside an object, so hide all the "all_metadata" tooltips
             hideAllTooltips(evt);
@@ -294,7 +295,7 @@ function clearGameBoard(ctx, canvas, shapePositionMapKey) {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	//gameboard_ctx.clearRect(0, 0, gameboard_canvas.width, gameboard_canvas.height);
 	//gameboard_zoom_ctx.clearRect(0, 0, gameboard_zoom_canvas.width, gameboard_zoom_canvas.height);
-	shapePositionMapForContext[shapePositionMapKey] = {};
+	shapePositionMap = {};
 }
 
 var draw_example_shapes = function () {

@@ -48,8 +48,8 @@ function cleanToolTips(){
             var id = entityAllDataToolTipIds[i];
             $("#"+id).remove();
         }
+        entityAllDataToolTipIds = [];
     }
-    entityAllDataToolTipIds = [];
   }
   
 function createHPToolTip(shapeInfo) {
@@ -99,6 +99,7 @@ function createAllDataToolTip(shapeInfo) {
       valuesDiv.setAttribute("class","tooltip-invisible");
     }
     var id = "metadata_all" + si.shapeId;
+    console.log("allData tooltip id:" + id);
     hoveredAllDataToolTipIds[id] = "hide";
     valuesDiv.setAttribute("id",id);
      // position it relative to where origin of bounding box of gameboard is

@@ -278,7 +278,7 @@ function acceptAnswer(e) {
 
     renderer.forgetQuestion();
     if (studyQuestionIndexManager.hasMoreQuestionsAtThisStep()) {
-        renderState(gameboard_ctx, gameboard_canvas, masterEntities, gameScaleFactor, 0, 0, shapePositionMapForContext["game"], true);
+        renderState(gameboard_canvas, masterEntities, gameScaleFactor, 0, 0, true);
         studyQuestionManager.poseNextQuestion();
     }
     else {

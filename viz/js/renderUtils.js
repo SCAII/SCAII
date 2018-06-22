@@ -1,4 +1,4 @@
-function getClosestInRangeShapeId(ctx, x, y, shapePositionMap){
+function getClosestInRangeShapeId(ctx, x, y){
 	var closestId = undefined;
 	var closestDistance = undefined;
 	for (key in shapePositionMap) {
@@ -206,12 +206,12 @@ function getColorRGBA(r,g,b,a) {
   }
   
   
-function highlightShape(ctx, shapeId, shapePositionMap) {
+function highlightShape(ctx, shapeId) {
     if (-1 != $.inArray(shapeId,primaryHighlightedShapeIds)){
-        highlightShapePrimary(ctx,shapeId, shapePositionMap);
+        highlightShapePrimary(ctx,shapeId);
     }
     else if (-1 != $.inArray(shapeId,secondaryHighlightedShapeIds)){
-        highlightShapeSecondary(ctx, shapeId, shapePositionMap);
+        highlightShapeSecondary(ctx, shapeId);
     }
     else {
         // do nothing
@@ -219,7 +219,7 @@ function highlightShape(ctx, shapeId, shapePositionMap) {
   }
   
   
-  function highlightShapePrimary(ctx, shapeId, shapePositionMap){
+  function highlightShapePrimary(ctx, shapeId){
     var shapePoints = shapePositionMap[shapeId];
     ctx.beginPath();
     ctx.arc(shapePoints.x, shapePoints.y, shapePoints.radius, 0, 2 * Math.PI, false);
@@ -230,7 +230,7 @@ function highlightShape(ctx, shapeId, shapePositionMap) {
     ctx.stroke();
   }
   
-  function highlightShapeSecondary(ctx, shapeId, shapePositionMap){
+  function highlightShapeSecondary(ctx, shapeId){
     var shapePoints = shapePositionMap[shapeId];
     ctx.beginPath();
     ctx.arc(shapePoints.x, shapePoints.y, shapePoints.radius, 0, 2 * Math.PI, false);

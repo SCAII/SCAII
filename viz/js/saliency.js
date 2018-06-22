@@ -278,7 +278,7 @@ function getSaliencyDisplayManager(selectionManager) {
         explCanvas.onclick = function(e) {
             var x = e.offsetX;
             var y = e.offsetY;
-            var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y, shapePositionMapForContext['game']);
+            var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y);
             if (shapeId != undefined){
                 //targetClickHandler(e, "clickEntity:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
                 targetClickHandler(e, "clickSaliencyMap:" + saliencyUIName + "_(" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y)+ ")");
@@ -377,7 +377,7 @@ function getSaliencyDisplayManager(selectionManager) {
 
 		
 	sdm.renderSaliencyMap = function(canvas, ctx, cells, width, height, normalizationFactor){
-		renderState(ctx, canvas, masterEntities, gameScaleFactor, 0, 0, shapePositionMapForContext["game"],false);
+		renderState(canvas, masterEntities, gameScaleFactor, 0, 0,false);
 		this.overlaySaliencyMapOntoGameReplica(ctx, cells, width, height, normalizationFactor);
 	}	
 	sdm.renderSaliencyMapOrig = function(canvas, ctx, cells, width, height, normalizationFactor){
