@@ -254,25 +254,27 @@ fn check_comments_or_nl(line: &String) -> bool {
     true
 }
 
+// Regex reference: http://jkorpela.fi/perl/regexp.html
 fn check_question(line: &String, line_num: &u8, fname: &str) ->u8{
     let line_copy = line.clone();
     let line_parts_iterator = line_copy.split(";");
     let vec: Vec<&str> = line_parts_iterator.collect();
 
-    let field0: String = vec[0].to_string();
-    
-    let mut temp:u8 = 0;
+    let mut temp:u8 = 0; // Correct lines have error code 0 (no error)
 
+    // Checks that there are atleast 3 ;    error code 1
     if line.chars().filter(|&c| c == ';').count() < 3 {
-        println!("\nERROR [ID: 1]: Missing \';\' delimiter.\n\t--> {:?}:{:?}\n\t|\n Line {:?} | {:?}\n\t|\n", fname, line_num, line_num, line);
-        return 1;
+        return check_regex(01, "$^".to_string(), "Missing \';\' delimiter".to_string(), &line, &line, &line_num, &fname);
     }
 
-    temp = check_regex(02, "^[0-9]*|^summary$".to_string(), "Invalid entry for step number in Field 0.".to_string(), &field0, &line, &line_num, &fname);
+    let field0: String = vec[0].to_string();
+    // Checks that field 0 is either a number or "summary"  error code 2
+    temp = check_regex(02, "[0-9]+|summary".to_string(), "Invalid entry for step number in Field 0.".to_string(), &field0, &line, &line_num, &fname);
     if temp != 0 { return temp; }
 
+    // Checks that field 1 is a number  error code 3
     let field1: String = vec[1].to_string();
-    temp = check_regex(03, "^[0-9]*".to_string(), "Invalid entry for question index Field 1.".to_string(), &field1, &line, &line_num, &fname);
+    temp = check_regex(03, "[0-9]+".to_string(), "Invalid entry for question index Field 1.".to_string(), &field1, &line, &line_num, &fname);
     if temp != 0 { return temp; }
 
     let field2: String = vec[2].to_string();
@@ -280,16 +282,30 @@ fn check_question(line: &String, line_num: &u8, fname: &str) ->u8{
 
     if f2vec.len() > 0 {
         if f2vec[0] == "plain" {
+            // Checks that plain has the correct args   error code 4
             temp = check_regex(04, "plain:NA:NA".to_string(), "Invalid entry for question type in Field 2. When question type is specified as [plain], subfields 1 and 2 must be 'NA'. ".to_string(), &field2, &line, &line_num, &fname);
             if temp != 0 { return temp; }
         }else{
+            // Checks that waitForClick exists   error code 5
             temp = check_regex(05, "^waitForClick".to_string(), "Invalid entry for question type in Field 2. Expected [plain] or [waitForClick]".to_string(), &f2vec[0].to_string(), &line, &line_num, &fname);
             if temp != 0 { return temp; }
             if f2vec.len() > 2  && !f2vec.contains(&""){
+                // Checks that waitForClick args are seperated by an _, and that there are at most 3.    error code 6
                 temp = check_regex(06, "^(gameboard_?|rewardBar_?|saliencyMap_?){0,3}$".to_string(), "Invalid entry for question type in Field 2, subfield 1. Valid entries are {gameboard, rewardBar, saliencyMap}, deliminated by _.".to_string(), &f2vec[1].to_string(), &line, &line_num, &fname);
                 if temp != 0 { return temp; }
+                
+                // Rust regex does not support positive lookahead, so we need to check for repeated entries this way. error code 7
+                let wFCvec: Vec<&str> = f2vec[1].split("_").collect();
+                
+                if wFCvec.iter().filter(|&n| *n == "gameboard").count() > 1 
+                || wFCvec.iter().filter(|&n| *n == "rewardBar").count() > 1
+                || wFCvec.iter().filter(|&n| *n == "saliencyMap").count() > 1 {
+                    return check_regex(07, "$^".to_string(), "Repeated entries in Field 2, subfield 1. Use options {gameboard, rewardBar, saliencyMap} at most once each.".to_string(), &f2vec[1].to_string(), &line, &line_num, &fname);
+                }
+    
             }else{
-                temp = check_regex(07, "$^".to_string(), "Invalid entry for question type in Field 2. Question type [waitForClick] cannot have blank subfields.".to_string(), &field2, &line, &line_num, &fname);
+                // Checks that waitForclick doesn't have blank subfields.   error code 8
+                temp = check_regex(08, "$^".to_string(), "Invalid entry for question type in Field 2. Question type [waitForClick] cannot have blank subfields.".to_string(), &field2, &line, &line_num, &fname);
                 if temp != 0 { return temp; }
             }
         }
@@ -318,4 +334,11 @@ fn check_regex(error_code: u8, regex: String, msg: String, str_to_check: &String
         return error_code;
     }
     0
+}
+
+#[test]
+fn test_question_checker() {
+    let path = PathBuf::from(r"./test_questions.txt");
+    //println!("{:?}", check_file(path));
+    assert_eq!(check_file(path), [1, 2, 2, 5, 5, 5, 6, 7, 6, 8, 8, 4, 4, 5]);
 }
