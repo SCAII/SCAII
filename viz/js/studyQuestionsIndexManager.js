@@ -71,9 +71,6 @@ function getStudyQuestionIndexManager(ids) {
 }
 
 function getStepFromQuestionId(questionId){
-    if (questionId == "summary"){
-        return questionId;
-    }
     var parts = questionId.split(".");
     return parts[0];
 }

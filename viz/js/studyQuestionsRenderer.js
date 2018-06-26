@@ -317,6 +317,44 @@ function getStudyQuestionRenderer(questions) {
         $("#user-id-button-row").append(next);
     }
 
+    
+    sqr.renderWaitScreen = function() {
+        var userIdDiv = document.createElement("DIV");
+        userIdDiv.setAttribute("id", "user-wait-div");
+        userIdDiv.setAttribute("class", "flex-column");
+        userIdDiv.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:" + zIndexMap["allTheWayToFront"] + ";margin:auto;font-family:Arial;padding:10px;width:1800px;height:1600px;background-color:" + this.bg + ";");
+        $('body').append(userIdDiv);
+
+        var questionRow = document.createElement("DIV");
+        questionRow.setAttribute("id", "user-wait-question-row");
+        questionRow.setAttribute("class", "flex-row");
+        questionRow.setAttribute("style", "margin-top:150px;font-family:Arial;padding:10px;");
+        $("#user-wait-div").append(questionRow);
+        
+        var question = document.createElement("DIV");
+        question.setAttribute("id", "user-wait-question");
+        question.setAttribute("style", "margin-left:100px;font-family:Arial;font-size:18px;padding:10px;");
+        question.innerHTML = "Please wait for the researcher to tell you to continue";
+        
+        $("#user-wait-question-row").append(question);
+
+        var buttonRow = document.createElement("DIV");
+        buttonRow.setAttribute("id", "user-wait-button-row");
+        buttonRow.setAttribute("class", "flex-row");
+        buttonRow.setAttribute("style", "margin-top:60px;font-family:Arial;padding:10px;");
+        $("#user-wait-div").append(buttonRow);
+
+        var next = document.createElement("BUTTON");
+        next.setAttribute("id", "user-wait-button-continue");
+        next.setAttribute("style", "margin-left:280px;font-family:Arial;font-size:18px;padding:10px;");
+        next.innerHTML = "Continue";
+        next.onclick = function() {
+            $("#user-wait-div").remove();
+            studyQuestionManager.renderer.renderCueAndArrowToPlayButton();
+        }
+        $("#user-wait-button-row").append(next);
+    }
+
     sqr.renderCueToPlayButton = function(){
         var arrowText = document.createElement("DIV");
         arrowText.setAttribute("id", "arrow-text");

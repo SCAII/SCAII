@@ -138,6 +138,10 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         }
     }
 
+    sqm.makeUserWaitForInstructions = function(){
+        this.renderer.renderWaitScreen();
+    }
+
     sqm.clearTimelineBlocks = function() {
         $("#left-block-div").remove();
         $("#right-block-div").remove();
@@ -278,7 +282,13 @@ function acceptAnswer(e) {
     }
     else {
         if (studyQuestionIndexManager.hasMoreQuestions()){
-            renderer.renderCueAndArrowToPlayButton();
+            if (getStepFromQuestionId(studyQuestionManager.mostRecentlyPosedQuestion) == "summary"){
+                renderer.renderCueAndArrowToPlayButton();
+            }
+            else {
+                studyQuestionManager.makeUserWaitForInstructions();
+            }
+            
         }
         studyQuestionManager.questionWasAnswered = true;
         if (studyQuestionIndexManager.hasMoreQuestions()){
