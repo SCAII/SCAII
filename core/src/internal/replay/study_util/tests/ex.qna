@@ -1,0 +1,10 @@
+1;0;waitForClick:gameboard_rewardBar_saliencyMap:"Please click on the most important entity in the gameboard above or the other two places. Then answer the question below.";"What is your favorite car?";"honda";"chevy";"toyota";"tesla"
+
+# foo bar
+// bar foo
+
+1;0;waitForClick:gameboard:"On the game map (above), which object was the agent paying the most attention to? Click on that object.";"Why do you think the agent cared about this object?"
+1;1;waitForClick:gameboard:"On the game map (above), which object do YOU think is the most important? Click on that object.";"Why do you think this object is the most important?"
+32;0;waitForClick:gameboard:"On the game map (above), which object was the agent paying the most attention to? Click on that object.";"Why do you think the agent cared about this object?"
+32;1;waitForClick:gameboard:"On the game map (above), which object do YOU think is the most important? Click on that object.";"Why do you think this object is the most important?"
+

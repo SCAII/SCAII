@@ -1,0 +1,76 @@
+use std::str::FromStr;
+use study_util::qna::grammar::ast::Token as ParseToken;
+use study_util::qna::grammar::ast::{ ClickTarget, RadioButtons, ClickTargets, Text, QnaItem, QuestionText, QuestionType, DecisionStep, Qna };
+
+grammar;
+
+// ---- TOKENS ---- //
+
+// Basic tokens
+
+Summary: ParseToken      = "summary"       => ParseToken;
+Na: ParseToken           = "NA"            => ParseToken;
+WaitForClick: ParseToken = "waitForClick"  => ParseToken;
+Plain: ParseToken        = r"plain"        => ParseToken;
+Comment: ParseToken      = r"(#|//).+"     => ParseToken;
+Newline: ParseToken      = r"(\n\r?)+"     => ParseToken;
+
+Gameboard: ClickTarget   = "gameboard"     => ClickTarget::Gameboard;
+SaliencyMap: ClickTarget = "saliencyMap"   => ClickTarget::SaliencyMap;
+RewardBar: ClickTarget   = "rewardBar"     => ClickTarget::RewardBar;
+
+
+// Variable value tokens
+Num: u64      = r"\d+"                                  => u64::from_str(<>).unwrap();
+TextTok: Text = r###""[\d\w\s[[:punct:]]&&[^"\n]]+""### => Text(<>.to_string());
+
+// ---- GRAMMAR ---- //
+
+pub QnaFile: Qna = {
+    Comment => Qna{ items: vec![] },
+    Newline => Qna{ items: vec![] },
+    Newline <q: QnaFile> => q,
+    Comment <q: QnaFile> => q,
+    <q: QnaLine> => Qna{items: vec![q]},
+    <q: QnaLine> <n: QnaFile> => {let mut n = n; n.items.push(q); n},
+}
+
+QnaLine: QnaItem = {
+    <decision_step: DStepExpr> ";" <question_id: QuestionIdExpr> ";" <q_type: QTypeExpr> ";" <q_text: QTextExpr> => QnaItem { <> },
+};
+
+QuestionIdExpr: u64 = {
+    Num => <>
+};
+
+DStepExpr: DecisionStep = {
+    Num => DecisionStep::Num(<>),
+    Summary => DecisionStep::Summary,
+};
+
+QTypeExpr: QuestionType = {
+    Plain ":" Na ":" Na => QuestionType::Plain,
+    Plain => QuestionType::Plain,
+    WaitForClick ":" <c:ClickTargetExpr> ":" <d:TextTok> => QuestionType::WaitForClick(c,d),
+};
+
+QTextExpr: QuestionText = {
+    <d: TextTok> => QuestionText{question: d, radio: None},
+    <d: TextTok> ";" <r: RadioTextExpr> => QuestionText{ question: d, radio: Some(r) },
+};
+
+RadioTextExpr: RadioButtons = {
+    <button_text: TextTok> => RadioButtons{button_text: vec![button_text]},
+    <d: TextTok> ";" <r: RadioTextExpr> => { let mut r = r; r.button_text.push(d); r },
+}
+
+ClickTargetExpr: ClickTargets = {
+    <c: ClickTargetTok> => ClickTargets{ targets: vec![c] },
+    <c: ClickTargetTok> "_" <t: ClickTargetExpr> => { let mut t = t; t.targets.push(c); t },
+};
+
+ClickTargetTok: ClickTarget = {
+    Gameboard => <>,
+    SaliencyMap => <>,
+    RewardBar => <>,
+}

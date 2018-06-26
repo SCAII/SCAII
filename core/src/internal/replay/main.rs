@@ -6,6 +6,8 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 extern crate url;
+extern crate regex;
+extern crate lalrpop_util;
 
 use protos::{MultiMessage, ScaiiPacket};
 use scaii_core::{Environment, ReplayAction};
