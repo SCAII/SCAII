@@ -156,6 +156,8 @@ function getStudyQuestionRenderer(questions) {
         questionLetterMap[3] = 'c';
         questionLetterMap[4] = 'd';
         questionLetterMap[5] = 'e';
+        questionLetterMap[6] = 'f';
+        questionLetterMap[7] = 'g';
         var questionLetterIndex = 1;
         var questionIndicator = "D" + questionNumber;
         var text = qu.questionText;
@@ -196,7 +198,7 @@ function getStudyQuestionRenderer(questions) {
             this.renderRadioButtons(step, answers);
         }
         if (!(step == 'summary')){
-            if (!isTutorial()){
+            if (!isTutorial()  && studyQuestionManager.isFinalQuestionAtDecisionPoint(qu.questionId)){
                 this.renderFollowupQuestion(questionIndicator + "(" + questionLetterMap[questionLetterIndex] + ")"  + " ");
             }
         }

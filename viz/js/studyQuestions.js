@@ -90,6 +90,30 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     sqm.hasMoreQuestions = function() {
         return this.squim.hasMoreQuestions();
     }
+
+    sqm.isFinalQuestionAtDecisionPoint = function(id){
+        var step = getStepFromQuestionId(id);
+        var index = this.questionIds.indexOf(id);
+        if (index == -1) {
+            // just move on - shouldn't happen
+            return false;
+        }
+        if (step == "summary"){
+            return false;
+        }
+        if (index == this.questionIds.length - 1){
+            // it'sthe last question which is not a summary question, which should not happen, but coding for completeness
+            return true;
+        }
+        else {
+            var nextId = this.questionIds[index + 1];
+            var stepFromNextId = getStepFromQuestionId(nextId);
+            if (stepFromNextId == step) {
+                return false;
+            }
+            return true;
+        }
+    }
     sqm.poseFirstQuestion = function() {
         var step = this.squim.getCurrentStep();
         var args = ["" + step];
@@ -269,7 +293,7 @@ function acceptAnswer(e) {
     }
     var followupAnswer = "NA";
     if (!(currentStep == 'summary')){
-        if (!isTutorial()){
+        if (!isTutorial() && studyQuestionManager.isFinalQuestionAtDecisionPoint(questionId)){
             followupAnswer = renderer.getCurrentFollowupAnswer();
         }
     }
