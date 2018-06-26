@@ -336,7 +336,7 @@ function getStudyQuestionRenderer(questions) {
         var question = document.createElement("DIV");
         question.setAttribute("id", "user-wait-question");
         question.setAttribute("style", "margin-left:100px;font-family:Arial;font-size:18px;padding:10px;");
-        question.innerHTML = "Please wait for the researcher to tell you to continue";
+        question.innerHTML = "Please wait for the researcher to tell you to continue.";
         
         $("#user-wait-question-row").append(question);
 

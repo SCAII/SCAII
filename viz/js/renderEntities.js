@@ -137,22 +137,57 @@ function renderState(canvas, entities, zoom_factor, xOffset, yOffset, generateTo
     clearGameBoard(ctx, canvas,"game");
     renderQuadrantGridlines(ctx);
     var uiLayerSortedEntities = sortEntitiesAsPerUILayer(entities);
-    for (var i in uiLayerSortedEntities) {
-        var entity = uiLayerSortedEntities[i];
-        if (entity != undefined) {
-            if (entity.hasPos()) {
-                var pos = entity.getPos();
-                if (pos.hasX() && pos.hasY()) {
-                    var x = pos.getX();
-                    var y = pos.getY();
-                    layoutEntityAtPosition(Number(i), ctx, x, y, entity, zoom_factor, xOffset, yOffset, generateTooltips);
+    // until we obey layers, force the order based on the (should be only one in entity) shape
+    var orderOverride = ["octagon", "rect", "circle", "triangle", "kite", "arrow"];
+    for (var overrideIndex in orderOverride){
+        var shapeToRenderThisPass = orderOverride[overrideIndex];
+        for (var i in uiLayerSortedEntities) {
+            var entity = uiLayerSortedEntities[i];
+            if (entity != undefined) {
+                var doThisPass = false;
+                if (entityHasShape(shapeToRenderThisPass,entity))  {
+                    doThisPass = true;
+                }
+                if (doThisPass) {
+                    if (entity.hasPos()) {
+                        var pos = entity.getPos();
+                        if (pos.hasX() && pos.hasY()) {
+                            var x = pos.getX();
+                            var y = pos.getY();
+                            layoutEntityAtPosition(Number(i), ctx, x, y, entity, zoom_factor, xOffset, yOffset, generateTooltips);
+                        }
+                    }
                 }
             }
         }
     }
-    var x = 34;
 }
 
+function entityHasShape(shapeName, entity) {
+    var shapesList = entity.getShapesList();
+    var shape = shapesList[0];
+    if (shapeName == "octagon"){
+        return shape.hasOctagon();
+    }
+    else if (shapeName == "rect"){
+        return shape.hasRect();
+    }
+    else if (shapeName == "circle"){
+        return shape.hasCircle();
+    }
+    else if (shapeName == "triangle"){
+        return shape.hasTriangle();
+    }
+    else if (shapeName == "kite"){
+        return shape.hasKite();
+    }
+    else if (shapeName == "arrow"){
+        return shape.hasArrow();
+    }
+    else {
+        return false;
+    }
+}
 
 function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOffset, yOffset, generateTooltips) {
     var entityX = zoom(x - xOffset);
