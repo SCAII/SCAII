@@ -294,18 +294,6 @@ impl Qna {
 
 impl From<QnaItem> for StudyQuestion {
     fn from(from: QnaItem) -> Self {
-        //         pub struct StudyQuestion {
-        //     #[prost(string, required, tag="1")]
-        //     pub step: String,
-        //     #[prost(string, required, tag="2")]
-        //     pub question: String,
-        //     #[prost(string, repeated, tag="3")]
-        //     pub answers: ::std::vec::Vec<String>,
-        //     #[prost(string, required, tag="4")]
-        //     pub question_id_for_step: String,
-        //     #[prost(string, required, tag="5")]
-        //     pub question_type: String,
-        // }
         StudyQuestion {
             step: from.decision_step.to_proto_text(),
             question_id_for_step: format!("{}", from.question_id),
