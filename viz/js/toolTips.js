@@ -129,7 +129,7 @@ function getShapeLogString(tooltipInfo) {
     else {
         result = result + "enemy-";
     }
-    result = result + tooltipInfo["Unit Type"];
+    result = result + renameEntityInfoForIUI(tooltipInfo["Unit Type"]);
     return result;
 }
 
