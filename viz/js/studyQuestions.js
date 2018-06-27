@@ -79,10 +79,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
   
     sqm.configureForCurrentStep = function() {
         var currentStep = sessionIndexManager.getCurrentIndex();
-        if (!this.hasShownUserId()) {
-            this.renderer.poseUserIdQuestion();
-        }
-        else if (this.squim.hasQuestionForStep(currentStep)) {
+        if (this.squim.hasQuestionForStep(currentStep)) {
             this.poseCurrentQuestion();
         }
     }
@@ -253,18 +250,12 @@ function getRanges(steps) {
     return stepRangePairs;
 }
 
-function acceptUserId() {
-    var userId = studyQuestionManager.userId;
-    if (userId == undefined || userId == "") {
-        alert('No userId specified.  Please specify a userId and then click "Next".');
-    }
-    else {
-        $("#user-id-div").remove();
-        studyQuestionManager.userIdHasBeenSet = true;
-        studyQuestionManager.poseFirstQuestion();
-    }
-    
+function clearUserIdScreen() {
+    $("#user-id-div").remove();
+    studyQuestionManager.userIdHasBeenSet = true;
+    studyQuestionManager.poseFirstQuestion();
 }
+
 function acceptAnswer(e) {
     var renderer = studyQuestionManager.renderer;
     //renderer.removeMissingClickInfoMessage();
@@ -327,6 +318,50 @@ function acceptAnswer(e) {
     }
 }
 
+
+function generateDisabledButton(cssId,text,className, tabLoadFunction) {
+    var b = document.createElement("BUTTON");
+    b.disabled = true;
+    b.setAttribute("id", cssId);
+    b.setAttribute("class", className);
+    b.innerHTML = text;
+    b.onclick = tabLoadFunction;
+    return b;
+}
+function populateTaskTabs(){
+    var tab1 = generateDisabledButton("tab-tutorial","Tutorial","maintab", "openTab('tab-tutorial','tutorial.scr', 'Loading tutorial...')");
+    var tab2 = generateDisabledButton("tab-task1","Task 1","maintab", "openTab('tab-task1','MainTask.scr', 'Loading Task 1...')");
+    var tab3 = generateDisabledButton("tab-task2","Task 2","maintab", "openTab('tab-task2','candidate_8.scr', 'Loading Task 2...')");
+    $("#master-tabs").append(tab1);
+    $("#master-tabs").append(tab2);
+    $("#master-tabs").append(tab3);
+}
+
+function removeFileSelectorEtc() {
+    $("#title-row").empty();
+    var div = document.createElement("DIV");
+    div.setAttribute("id", "spacer-replacing-fileselector");
+    div.setAttribute("style", "height:0px;width:100%;");
+    $("#title-row").append(div);
+}
+
+
+function openTab(tabId, replayFileForTab, loadingMessage){
+    showLoadingScreen(loadingMessage);
+    controlsManager.registerJQueryHandleForWaitCursor($("#loading-div"));
+    loadReplayFile(replayFileForTab);
+    $("#" + tabId).attr("disabled", false);
+
+    var i, tabcontent, tablinks;
+    
+    tablinks = document.getElementsByClassName("maintab");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    var tabControlToMakeActive = document.getElementById(tabId)
+    tabControlToMakeActive.className += " active";
+   // evt.currentTarget.className += " active";
+}
 
 // function chooseNextQuestionAfterStep(step) {
 //     // clear current question

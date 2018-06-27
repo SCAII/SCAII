@@ -272,54 +272,6 @@ function getStudyQuestionRenderer(questions) {
         $("#thank-you-row").append(thanks);
     }
 
-    sqr.poseUserIdQuestion = function() {
-        var userIdDiv = document.createElement("DIV");
-        userIdDiv.setAttribute("id", "user-id-div");
-        userIdDiv.setAttribute("class", "flex-column");
-        userIdDiv.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:" + zIndexMap["allTheWayToFront"] + ";margin:auto;font-family:Arial;padding:10px;width:1800px;height:1600px;background-color:" + this.bg + ";");
-        $('body').append(userIdDiv);
-
-        var questionRow = document.createElement("DIV");
-        questionRow.setAttribute("id", "user-id-question-row");
-        questionRow.setAttribute("class", "flex-row");
-        questionRow.setAttribute("style", "margin-top:150px;font-family:Arial;padding:10px;");
-        $("#user-id-div").append(questionRow);
-        
-        var question = document.createElement("DIV");
-        question.setAttribute("id", "user-id-question");
-        question.setAttribute("style", "margin-left:100px;font-family:Arial;font-size:18px;padding:10px;");
-        if (isTutorial()){
-            question.innerHTML = "Welcome to the XAI User Study.  Your study ID is:  " + studyQuestionManager.userId;
-        }
-        else {
-            question.innerHTML = "Please wait for the researcher to signal when to begin.";
-        }
-        $("#user-id-question-row").append(question);
-
-        // var userIdText = document.createElement("DIV");
-        // userIdText.setAttribute("id", "user-id-answer");
-        // userIdText.setAttribute("style", "margin:auto;font-family:Arial;font-size:18px;padding:10px;");
-        // userIdText.innerHTML = ;
-        
-        // $("#user-id-question-row").append(userIdText);
-
-        var buttonRow = document.createElement("DIV");
-        buttonRow.setAttribute("id", "user-id-button-row");
-        buttonRow.setAttribute("class", "flex-row");
-        buttonRow.setAttribute("style", "margin-top:60px;font-family:Arial;padding:10px;");
-        $("#user-id-div").append(buttonRow);
-
-        var next = document.createElement("BUTTON");
-        next.setAttribute("id", "user-id-button-next");
-        next.setAttribute("style", "margin-left:280px;font-family:Arial;font-size:18px;padding:10px;");
-        next.innerHTML = "Start";
-        next.onclick = function() {
-            acceptUserId();
-        }
-        $("#user-id-button-row").append(next);
-    }
-
-    
     sqr.renderWaitScreen = function() {
         var userIdDiv = document.createElement("DIV");
         userIdDiv.setAttribute("id", "user-wait-div");
@@ -380,7 +332,78 @@ function getStudyQuestionRenderer(questions) {
 
     return sqr;
 }
+var hasShownWelcomeScreen = false;
 
+function showUserIdScreen(){
+    var userIdDiv = document.createElement("DIV");
+    userIdDiv.setAttribute("id", "user-id-div");
+    userIdDiv.setAttribute("class", "flex-column");
+    userIdDiv.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:" + zIndexMap["allTheWayToFront"] + ";margin:auto;font-family:Arial;padding:10px;width:1800px;height:1600px;background-color:white;");
+    $('body').append(userIdDiv);
+
+    var questionRow = document.createElement("DIV");
+    questionRow.setAttribute("id", "user-id-question-row");
+    questionRow.setAttribute("class", "flex-row");
+    questionRow.setAttribute("style", "margin-top:150px;font-family:Arial;padding:10px;");
+    $("#user-id-div").append(questionRow);
+    
+    var question = document.createElement("DIV");
+    question.setAttribute("id", "user-id-question");
+    question.setAttribute("style", "margin-left:100px;font-family:Arial;font-size:18px;padding:10px;");
+    if (isTutorial()){
+        question.innerHTML = "Welcome to the XAI User Study.  Your study ID is:  " + studyQuestionManager.userId;
+    }
+    else {
+        question.innerHTML = "Please wait for the researcher to signal when to begin.";
+    }
+    $("#user-id-question-row").append(question);
+
+    // var userIdText = document.createElement("DIV");
+    // userIdText.setAttribute("id", "user-id-answer");
+    // userIdText.setAttribute("style", "margin:auto;font-family:Arial;font-size:18px;padding:10px;");
+    // userIdText.innerHTML = ;
+    
+    // $("#user-id-question-row").append(userIdText);
+
+    var buttonRow = document.createElement("DIV");
+    buttonRow.setAttribute("id", "user-id-button-row");
+    buttonRow.setAttribute("class", "flex-row");
+    buttonRow.setAttribute("style", "margin-top:60px;font-family:Arial;padding:10px;");
+    $("#user-id-div").append(buttonRow);
+
+    var next = document.createElement("BUTTON");
+    next.setAttribute("id", "user-id-button-next");
+    next.setAttribute("style", "margin-left:280px;font-family:Arial;font-size:18px;padding:10px;");
+    next.innerHTML = "Start";
+    next.onclick = function() {
+        clearUserIdScreen();
+    }
+    $("#user-id-button-row").append(next);
+    hasShownWelcomeScreen = true;
+}
+
+function clearLoadingScreen(){
+    $("#loading-div").remove();
+}
+
+function showLoadingScreen(loadingMessage){
+    var loadingDiv = document.createElement("DIV");
+    loadingDiv.setAttribute("id", "loading-div");
+    loadingDiv.innerHTML = loadingMessage;
+    $('body').append(loadingDiv);
+    $("#loading-div").css("position","absolute");
+    $("#loading-div").css("left","0px");
+    $("#loading-div").css("top","0px");
+    $("#loading-div").css("z-index",zIndexMap["allTheWayToFront"]);
+    $("#loading-div").css("padding-left","100px");
+    $("#loading-div").css("padding-top","150px");
+    $("#loading-div").css("font-family","Arial");
+    $("#loading-div").css("font-size","18px");
+    $("#loading-div").css("width","1800px");
+    $("#loading-div").css("height","1600px");
+    $("#loading-div").css("background-color","white");
+    $("#loading-div").css("position","absolute");
+}
 function escapeAnswerFileDelimetersFromTextString(s) {
     s = s.replace(/,/g, "ESCAPED-COMMA");
     s = s.replace(/_/g, "ESCAPED-UNDERSCORE");

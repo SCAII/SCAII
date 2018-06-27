@@ -188,7 +188,7 @@ function initUI() {
 	configureGameboardCanvas();
 	sizeNonGeneratedElements();
 	controlsManager.setControlsNotReady();
-	controlsManager.registerJQueryHandleForWaitCursor($("#scaii-interface"));
+	controlsManager.registerJQueryHandleForWaitCursor($("#tabbed-interface"));
 	configureNavigationButtons();
 	configureQuestionArea();
 	setUpMetadataToolTipEventHandlers();

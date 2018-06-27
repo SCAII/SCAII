@@ -163,7 +163,13 @@ function handleReplayChoiceConfig(config){
 			text: name
 		}));
     }
-	loadSelectedReplayFile();
+    if (tabMode){
+        openTab('tab-tutorial','tutorial.scr','Loading tutorial...');
+    }
+    else {
+        var filename = $( "#replay-file-selector option:selected" ).text();
+        loadReplayFile(filename);
+    }
 }
 
 function isTutorial() {
@@ -171,14 +177,13 @@ function isTutorial() {
 }
 var chosenFile;
 
-function loadSelectedReplayFile() {
+function loadReplayFile(filename) {
     if (userActionMonitor != undefined) {
         userActionMonitor.clickListener = undefined;
     }
-    
     clearStudyQuestionMode();
 	controlsManager.startLoadReplayFile();
-	chosenFile = $( "#replay-file-selector option:selected" ).text();
+	chosenFile = filename;
 	//console.log("    file selected: " + chosenFile);
 	var args = [chosenFile];
 	var userCommand = new proto.scaii.common.UserCommand;
@@ -408,7 +413,13 @@ function handleScaiiPacket(sPacket) {
 			controlsManager.jumpCompleted();
 		}
 		else if (commandType == proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE_COMPLETE){
-			controlsManager.doneLoadReplayFile();
+            controlsManager.doneLoadReplayFile();
+            if (isStudyQuestionMode()){
+                if (!hasShownWelcomeScreen){
+                    clearLoadingScreen();
+                    showUserIdScreen();
+                }
+            }
 		}
 	}
 	else {
