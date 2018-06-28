@@ -280,7 +280,7 @@ function renderArrow(si, shape) {
     }
 
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
-    drawArrow(si);
+    drawArrowShape(si);
     shapeInfoForHighlighting[si.shapeId] = si;
 }
 

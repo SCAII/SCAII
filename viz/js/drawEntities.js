@@ -220,7 +220,7 @@ function drawOctagon(shapeInfo, mode) {
     ctx.restore();
 }
 
-function drawArrow(shapeInfo) {
+function drawArrowShape(shapeInfo) {
     var si = shapeInfo;
     var fromx = si.x;
     var fromy = si.y;
