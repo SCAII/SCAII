@@ -117,7 +117,7 @@ function createAllDataToolTip(shapeInfo) {
     gatherMapInfo(tooltipInfo, si.entity.boolmetadataMap, valuesDiv,false);
     gatherMapInfo(tooltipInfo, si.entity.floatmetadataMap, valuesDiv, true);
     renderTooltipInfo(tooltipInfo, valuesDiv);
-    shapeLogStrings[id] = getShapeLogString(tooltipInfo);
+    shapeLogStrings[si.shapeId] = getShapeLogString(tooltipInfo);
 }
 
 function getShapeLogString(tooltipInfo) {

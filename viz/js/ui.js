@@ -236,7 +236,7 @@ function setUpMetadataToolTipEventHandlers() {
 			// 	selectedToolTipIds[shapeId] = "show";
 			// }
         }
-        targetClickHandler(evt, "clickGameQuadrant:" + getQuadrantName(x,y));
+        specifiedTargetClickHandler("gameboardBackground", "clickGameQuadrant:" + getQuadrantName(x,y));
 	});
 	  
 	gameboard_canvas.addEventListener('mousemove', function(evt) {

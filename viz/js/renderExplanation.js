@@ -179,7 +179,6 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
                 specifiedTargetClickHandler("decisionPointList", "jumpToDecisionPoint:" + matchingStep);
 			}
         }
-        	
 	}
 });
 
