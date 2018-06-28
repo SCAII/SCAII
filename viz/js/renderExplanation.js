@@ -176,7 +176,7 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
 				var args = ['' +matchingStep];
 				userCommand.setArgsList(args);
                 stageUserCommand(userCommand);
-                targetClickHandler(event, "jumpToDecisionPoint:" + matchingStep);
+                specifiedTargetClickHandler("decisionPointList", "jumpToDecisionPoint:" + matchingStep);
 			}
         }
         	
