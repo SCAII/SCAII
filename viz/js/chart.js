@@ -376,7 +376,9 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 	bcm.addSelection = function(selection) {
 		return this.selectionManager.addSelection(selection);
 	}
-
+    bcm.clearSelections = function(selection) {
+		return this.selectionManager.clearSelections(selection);
+	}
 	bcm.getRowInfoForHighestRewardBar = function() {
 		var barGroup = this.getMaxValueBarGroup();
 		var actionName = barGroup.getName();
@@ -465,9 +467,12 @@ function selectHandler(e) {
 		activeSaliencyDisplayManager.adjustCheckboxes(activeBarChartManager.getSelections());
 	}
 	else {
-		activeSaliencyDisplayManager.adjustCheckboxes(selectionsByName);
+        activeBarChartManager.clearSelections();
+        if (selectionsByName.length > 0){
+            activeBarChartManager.addSelection(selectionsByName[0]);
+            activeSaliencyDisplayManager.adjustCheckboxes(selectionsByName);
+        }
 		console.log('selections after click: ' + activeBarChartManager.getSelections());
-		
 	}
 	
 	var selection = activeBarChartManager.createGoogleChartSelections();
