@@ -26,7 +26,7 @@ function getStateMonitor() {
             var logLine = this.getStateLogEntry(date, time, sec);
             lfe.setEntry(logLine);
             lfe.setFilename(this.logFileName);
-            if (studyQuestionIndexManager.hasMoreQuestions()) {
+            if (tabManager.hasMoreQuestions()) {
                 lfe.setIsLastLine(false);
             }
             else {
@@ -165,7 +165,7 @@ function getStateMonitor() {
 }
 
 function trySetUserAction(s){
-    if (isStudyQuestionMode()){
+    if (userStudyMode){
         stateMonitor.setUserAction(s);
     }
 }

@@ -152,7 +152,7 @@ function regionClickHandlerGameArea(e) { userActionMonitor.regionClick("region:g
 function regionClickHandlerQnAArea(e)  { userActionMonitor.regionClick("region:QnA"     );}
 
 function targetClickHandler(e, userActionSemantics) {
-    if (isStudyQuestionMode()){
+    if (userStudyMode){
         var targetId = e.currentTarget.getAttribute("id");
         userActionMonitor.targetClick("target:" + targetId);
         userActionMonitor.setUserActionSemantics(userActionSemantics);
@@ -160,7 +160,7 @@ function targetClickHandler(e, userActionSemantics) {
 }
 
 function chartTargetClickHandler(targetName , userActionSemantics) {
-    if (isStudyQuestionMode()){
+    if (userStudyMode){
         userActionMonitor.targetClick("target:" + targetName);
         userActionMonitor.setUserActionSemantics(userActionSemantics);
         userActionMonitor.compileChartClickEvent();
@@ -168,7 +168,7 @@ function chartTargetClickHandler(targetName , userActionSemantics) {
 }
 
 function targetHoverHandler(e, userActionSemantics) {
-    if (isStudyQuestionMode()){
+    if (userStudyMode){
         var targetId = e.currentTarget.getAttribute("id");
         userActionMonitor.targetHover("target:" + targetId);
         userActionMonitor.setUserActionHoverSemantics(userActionSemantics);

@@ -474,7 +474,7 @@ function selectHandler(e) {
     googleChart.setSelection(selection);
     
     
-    if (isStudyQuestionMode()) {
+    if (userStudyMode) {
         if (!studyTreatment.showSaliencyAll){
             // bypass showing saliency 
             return;

@@ -7,7 +7,7 @@ function highlightShapeForIdForClickCollectionFeedback(shapeId){
 }
 
 function highlightShapeForClickCollectionFeedback(info){
-    if (studyQuestionManager.renderer.controlsWaitingForClick.length == 0) {
+    if (activeStudyQuestionManager.renderer.controlsWaitingForClick.length == 0) {
         return;
     }
     // redraw from scratch in case this is our second click andwe have to delete evidence of prior click

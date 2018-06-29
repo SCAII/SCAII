@@ -178,7 +178,7 @@ function initUI() {
 	var scaiiInterface = document.getElementById("scaii-interface");
 	scaiiInterface.addEventListener('click', function(evt) {
         mostRecentClickHadCtrlKeyDepressed = evt.ctrlKey;
-        if (!isStudyQuestionMode()){
+        if (!userStudyMode){
             if (evt.altKey){
                 toggleCheckboxVisibility();
             }

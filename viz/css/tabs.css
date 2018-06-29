@@ -1,11 +1,11 @@
-#master-tabs {
-    overflow: auto;
+.master-tab-container {
+    /*overflow: auto;*/
     /*border: 1px solid #ccc;*/
-    background-color: white;
+    background-color:"white";
 }
 
 /* Style the buttons that are used to open the tab content */
-#master-tabs button {
+.master-tab-container button {
     background-color: inherit;
     float: left;
     border: none;
@@ -18,13 +18,14 @@
 }
 
 /* Change background color of buttons on hover */
-#master-tabs button:hover {
-    background-color: #ddd;
+.master-tab-container button:hover {
+    background-color: #eee;
 }
 
 /* Create an active/current tablink class */
-#master-tabs button.active {
-    background-color: #ffffff;
+.master-tab-container button.active {
+    background-color: #ddd;
+    font-weight: bold;
 }
 
 /* Style the tab content */

@@ -21,6 +21,7 @@
       <script src="js/protobuf_js/message.js"></script>
       <!--<script src="js/protobuf_js/debug.js"></script>-->
       <script src="js/drawEntities.js"></script>
+      <script src="js/studyTabs.js"></script>
       <script src="js/studyQuestionsEntities.js"></script>
       <script src="js/studyTreatment.js"></script>
       <script src="js/userActionMonitor.js"></script>
@@ -53,11 +54,7 @@
 	</head>
 	<body>
         <div id="tabbed-interface" class="flex-column">
-            <div id="master-tabs" class= "flex-row">
-                <button class="maintab" onclick="openTab('tutorial')">Tutorial</button>
-                <button class="maintab" onclick="openTab('MainTask')">Task 1</button>
-                <button class="maintab" onclick="openTab('candidate_8')">Task 2</button>
-            </div>
+            <div id="master-tabs" class= "master-tab-container flex-row"></div>
             <div id="scaii-interface" class="grid bg">
                 <!--<div id="top-title-panel" class="flex-row bg">
                     <div id="scaii-interface-title" class="bg" >Small Configurable AI Interface</div>

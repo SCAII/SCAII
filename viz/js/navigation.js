@@ -93,8 +93,8 @@ function resumeGame() {
 		stageUserCommand(userCommand);
 		// if play button cue arrow present, remove it
         $("#cue-arrow-div").remove();
-        if (isStudyQuestionMode()){
-            if (studyQuestionManager.questionWasAnswered) {
+        if (userStudyMode){
+            if (activeStudyQuestionManager.questionWasAnswered) {
                 $('#q-and-a-div').empty();
             }
         }

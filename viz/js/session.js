@@ -3,8 +3,7 @@ var replaySessionConfig;
 var replayChoiceConfig;
 var selectedExplanationStep = undefined;
 var sessionIndexManager = undefined;
-var studyQuestionManager = undefined;
-var studyQuestionIndexManager = undefined;
+var activeStudyQuestionManager = undefined;
 var stateMonitor = undefined;
 var userActionMonitor = undefined;
 var studyTreatment = undefined;
@@ -104,11 +103,19 @@ function handleStudyQuestions(studyQuestions){
     var questions = studyQuestions.getStudyQuestionsList();
     var userId = studyQuestions.getUserId();
     var treatmentId = studyQuestions.getTreatmentId();
-    var answerFilename = studyQuestions.getAnswerFilename();
+    //var answerFilename = studyQuestions.getAnswerFilename();
+    var answerFilename = "answers_" + userId + "_" + treatmentId + ".txt";
     if (questions.length == 0) {
         return;
     }
-    studyQuestionManager = getStudyQuestionManager(questions, userId, treatmentId);
+    if (tabManager.currentTabHasQuestionManager()){
+        activeStudyQuestionManager = tabManager.getStudyQuestionManagerForCurrentTab();
+    }
+    else {
+        activeStudyQuestionManager = getStudyQuestionManager(questions, userId, treatmentId);
+        tabManager.setStudyQuestionManagerForCurrentTab(activeStudyQuestionManager);
+    }
+
     userActionMonitor = getUserActionMonitor();
     stateMonitor = getStateMonitor();
     studyTreatment = getTreatmentManager(treatmentId);
@@ -163,12 +170,11 @@ function handleReplayChoiceConfig(config){
 			text: name
 		}));
     }
-    if (tabMode){
+    if (userStudyMode){
         openTab('tab-tutorial','tutorial.scr','Loading tutorial...');
     }
     else {
-        var filename = $( "#replay-file-selector option:selected" ).text();
-        loadReplayFile(filename);
+        loadSelectedReplayFile();
     }
 }
 
@@ -177,6 +183,10 @@ function isTutorial() {
 }
 var chosenFile;
 
+function loadSelectedReplayFile() {
+    var filename = $( "#replay-file-selector option:selected" ).text();
+    loadReplayFile(filename);
+}
 function loadReplayFile(filename) {
     if (userActionMonitor != undefined) {
         userActionMonitor.clickListener = undefined;
@@ -228,24 +238,25 @@ function handleViz(vizData) {
 	entitiesList = vizData.getEntitiesList();
 	cumulativeRewardsMap = vizData.getCumulativeRewardsMap();
 	handleCumulativeRewards(cumulativeRewardsMap);
-	handleEntities(entitiesList);
+    handleEntities(entitiesList);
+    var asqm = activeStudyQuestionManager;
 	if (!jumpInProgress) {
         sessionIndexManager.incrementReplaySequencerIndex();
-        if (isStudyQuestionMode()) {
-            studyQuestionManager.configureForCurrentStep();
+        if (userStudyMode) {
+            asqm.configureForCurrentStep();
         }
     }
-    if (isStudyQuestionMode()) {
-        if (studyQuestionManager.hasShownUserId()){
-            studyQuestionManager.clearTimelineBlocks();
-            studyQuestionManager.blockClicksOutsideRange();
+    if (userStudyMode) {
+        if (tabManager.hasShownUserId()){
+            asqm.clearTimelineBlocks();
+            asqm.blockClicksOutsideRange();
         }
-        if (studyQuestionManager.isAtEndOfRange(sessionIndexManager.getCurrentIndex())){
-            if (studyQuestionManager.questionWasAnswered) {
-                studyQuestionManager.questionWasAnswered = false;
+        if (asqm.isAtEndOfRange(sessionIndexManager.getCurrentIndex())){
+            if (asqm.questionWasAnswered) {
+                asqm.questionWasAnswered = false;
                 // we're ready to move forward to next Decision Point
-                if (studyQuestionManager.hasMoreQuestions()){
-                    studyQuestionManager.poseNextQuestion();
+                if (asqm.hasMoreQuestions()){
+                    asqm.poseNextQuestion();
                 }
                 controlsManager.expressResumeButton();
                 //chooseNextQuestionAfterStep(sessionIndexManager.getCurrentIndex());
@@ -282,7 +293,7 @@ function handleCumulativeRewards(crm) {
 		$("#" + valId).html(total);
 	}  
     // add individual values
-    if (isStudyQuestionMode()) {
+    if (userStudyMode) {
         return;
     }
   	for (var i in entryList ){
@@ -414,10 +425,13 @@ function handleScaiiPacket(sPacket) {
 		}
 		else if (commandType == proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE_COMPLETE){
             controlsManager.doneLoadReplayFile();
-            if (isStudyQuestionMode()){
+            if (userStudyMode){
                 if (!hasShownWelcomeScreen){
                     clearLoadingScreen();
                     showUserIdScreen();
+                }
+                else {
+                    clearLoadingScreen();
                 }
             }
 		}

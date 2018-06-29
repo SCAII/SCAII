@@ -132,7 +132,7 @@ function getStudyQuestionRenderer(questions) {
     
     sqr.poseQuestion = function(qu, currentDecisionPointNumber, curStep){
         if (currentDecisionPointNumber == undefined) {
-            studyQuestionManager.clearTimelineBlocks();
+            activeStudyQuestionManager.clearTimelineBlocks();
         }
         this.poseGivenQuestion(currentDecisionPointNumber, curStep, qu);
     }
@@ -197,8 +197,9 @@ function getStudyQuestionRenderer(questions) {
             // add a div with radio button and label for each answer
             this.renderRadioButtons(step, answers);
         }
+        var asqm = activeStudyQuestionManager;
         if (!(step == 'summary')){
-            if (!isTutorial()  && studyQuestionManager.isFinalQuestionAtDecisionPoint(qu.questionId)){
+            if (!isTutorial()  && asqm.isFinalQuestionAtDecisionPoint(qu.questionId)){
                 this.renderFollowupQuestion(questionIndicator + "(" + questionLetterMap[questionLetterIndex] + ")"  + " ");
             }
         }
@@ -207,14 +208,14 @@ function getStudyQuestionRenderer(questions) {
         if (type == "waitForClick"){
             var listener = {};
             listener.acceptClickInfo = function(clickInfo){
-                var renderer = studyQuestionManager.renderer;
+                var renderer = asqm.renderer;
                 if (renderer.isLegalRegionToClickOn(clickInfo, qu.regionsToAllow)){
                     // don't remove the click message if this is residual click activty from prior question "save"
                     if (!renderer.isClickInfoFromSaveButtonClick(clickInfo)){
                         renderer.clickInfoFromUserActionMonitor = clickInfo;
                         renderer.removeMissingClickInfoMessage();
                         $("#click-prompt").html("Most recent click logged (you can click more if needed).");
-                        $("#click-prompt").css("background-color", studyQuestionManager.renderer.bg);
+                        $("#click-prompt").css("background-color", asqm.renderer.bg);
                     }
                 }
                 // var clickAckDiv = document.createElement("DIV");
@@ -304,7 +305,7 @@ function getStudyQuestionRenderer(questions) {
         next.innerHTML = "Continue";
         next.onclick = function() {
             $("#user-wait-div").remove();
-            studyQuestionManager.renderer.renderCueAndArrowToPlayButton();
+            activeStudyQuestionManager.renderer.renderCueAndArrowToPlayButton();
         }
         $("#user-wait-button-row").append(next);
     }
@@ -351,7 +352,7 @@ function showUserIdScreen(){
     question.setAttribute("id", "user-id-question");
     question.setAttribute("style", "margin-left:100px;font-family:Arial;font-size:18px;padding:10px;");
     if (isTutorial()){
-        question.innerHTML = "Welcome to the XAI User Study.  Your study ID is:  " + studyQuestionManager.userId;
+        question.innerHTML = "Welcome to the XAI User Study.  Your study ID is:  " + activeStudyQuestionManager.userId;
     }
     else {
         question.innerHTML = "Please wait for the researcher to signal when to begin.";

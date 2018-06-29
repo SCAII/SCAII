@@ -1,18 +1,13 @@
- function isStudyQuestionMode() {
-    return studyQuestionManager != undefined;
-}
-
 function clearStudyQuestionMode() {
     $('#q-and-a-div').empty();
     $("#left-block-div").remove();
     $("#right-block-div").remove();
-    studyQuestionManager = undefined;
+    //activeStudyQuestionManager = undefined;
 }
 function getStudyQuestionManager(questions, userId, treatmentId) {
     var sqm = {};
     sqm.renderer = getStudyQuestionRenderer();
     sqm.userId = userId;
-    sqm.userIdHasBeenSet = false;
     sqm.treatmentId = treatmentId;
 
     sqm.questionMap = {};
@@ -46,7 +41,6 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         sqm.questionMap[questionId] = qu;
     }
     sqm.squim = getStudyQuestionIndexManager(sqm.questionIds);
-    studyQuestionIndexManager = sqm.squim;
     sqm.windowRangeForStep = getRanges(sqm.squim.getDecisionPointSteps());
 
     sqm.isAtEndOfRange = function(step) {
@@ -73,10 +67,6 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         return false;
     }
 
-    sqm.hasShownUserId = function() {
-        return this.userIdHasBeenSet;
-    }
-  
     sqm.configureForCurrentStep = function() {
         var currentStep = sessionIndexManager.getCurrentIndex();
         if (this.squim.hasQuestionForStep(currentStep)) {
@@ -220,7 +210,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         rightBlockDiv.setAttribute("id", "right-block-div");
         rightBlockDiv.setAttribute("style", "position:absolute;left:" + x3 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] + ";background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
         rightBlockDiv.onclick = function(e) {
-            if (isStudyQuestionMode()){
+            if (userStudyMode){
                 targetClickHandler(e,"clickTimelineBlocker:NA");
                 regionClickHandlerGameArea(e);
                 userActionMonitor.globalClick(e.clientX, e.clientY);
@@ -252,12 +242,13 @@ function getRanges(steps) {
 
 function clearUserIdScreen() {
     $("#user-id-div").remove();
-    studyQuestionManager.userIdHasBeenSet = true;
-    studyQuestionManager.poseFirstQuestion();
+    tabManager.userIdHasBeenSet = true;
+    activeStudyQuestionManager.poseFirstQuestion();
 }
 
 function acceptAnswer(e) {
-    var renderer = studyQuestionManager.renderer;
+    var asqm = activeStudyQuestionManager;
+    var renderer = asqm.renderer;
     //renderer.removeMissingClickInfoMessage();
     // block if no answer specified
     if (renderer.controlsWaitingForClick.length != 0) {
@@ -273,105 +264,50 @@ function acceptAnswer(e) {
         return;
     }
     // gather answer, send to backend
-    var currentStep = studyQuestionIndexManager.getCurrentStep();
-    var questionId = studyQuestionIndexManager.getCurrentQuestionId();
+    var currentStep = activeStudyQuestionManager.squim.getCurrentStep();
+    var questionId = activeStudyQuestionManager.squim.getCurrentQuestionId();
     var currentQuestionIndexAtStep = getQuestionIndexFromQuestionId(questionId);
     var clickInfo = renderer.collectClickInfo();
     userActionMonitor.clickListener = undefined;
-    
+    var squim = activeStudyQuestionManager.squim;
     if (clickInfo == undefined){
         clickInfo = "NA";
     }
     var followupAnswer = "NA";
     if (!(currentStep == 'summary')){
-        if (!isTutorial() && studyQuestionManager.isFinalQuestionAtDecisionPoint(questionId)){
+        if (!isTutorial() && asqm.isFinalQuestionAtDecisionPoint(questionId)){
             followupAnswer = renderer.getCurrentFollowupAnswer();
         }
     }
     targetClickHandler(e,"answerQuestion:"+ currentStep + "." + currentQuestionIndexAtStep + "_" + answer + "_" + followupAnswer + "_(" + clickInfo + ")");
 
     renderer.forgetQuestion();
-    if (studyQuestionIndexManager.hasMoreQuestionsAtThisStep()) {
+    if (squim.hasMoreQuestionsAtThisStep()) {
         renderState(gameboard_canvas, masterEntities, gameScaleFactor, 0, 0, true);
-        studyQuestionManager.poseNextQuestion();
+        asqm.poseNextQuestion();
     }
     else {
-        if (studyQuestionIndexManager.hasMoreQuestions()){
-            if (getStepFromQuestionId(studyQuestionManager.mostRecentlyPosedQuestion) == "summary"){
+        if (squim.hasMoreQuestions()){
+            if (getStepFromQuestionId(asqm.mostRecentlyPosedQuestion) == "summary"){
                 renderer.renderCueAndArrowToPlayButton();
             }
             else {
-                studyQuestionManager.makeUserWaitForInstructions();
+                asqm.makeUserWaitForInstructions();
             }
             
         }
-        studyQuestionManager.questionWasAnswered = true;
-        if (studyQuestionIndexManager.hasMoreQuestions()){
+        asqm.questionWasAnswered = true;
+        if (squim.hasMoreQuestions()){
             // wait for play button to take us to next Decision Point
             controlsManager.enablePauseResume();
         } 
         else {
-            if (!isTutorial()){
+            if (tabManager.hasNextTab()){
+                tabManager.nextTab();
+            }
+            else {
                 renderer.poseThankYouScreen();
             }
         }
     }
 }
-
-
-function generateDisabledButton(cssId,text,className, tabLoadFunction) {
-    var b = document.createElement("BUTTON");
-    b.disabled = true;
-    b.setAttribute("id", cssId);
-    b.setAttribute("class", className);
-    b.innerHTML = text;
-    b.onclick = tabLoadFunction;
-    return b;
-}
-function populateTaskTabs(){
-    var tab1 = generateDisabledButton("tab-tutorial","Tutorial","maintab", "openTab('tab-tutorial','tutorial.scr', 'Loading tutorial...')");
-    var tab2 = generateDisabledButton("tab-task1","Task 1","maintab", "openTab('tab-task1','MainTask.scr', 'Loading Task 1...')");
-    var tab3 = generateDisabledButton("tab-task2","Task 2","maintab", "openTab('tab-task2','candidate_8.scr', 'Loading Task 2...')");
-    $("#master-tabs").append(tab1);
-    $("#master-tabs").append(tab2);
-    $("#master-tabs").append(tab3);
-}
-
-function removeFileSelectorEtc() {
-    $("#title-row").empty();
-    var div = document.createElement("DIV");
-    div.setAttribute("id", "spacer-replacing-fileselector");
-    div.setAttribute("style", "height:0px;width:100%;");
-    $("#title-row").append(div);
-}
-
-
-function openTab(tabId, replayFileForTab, loadingMessage){
-    showLoadingScreen(loadingMessage);
-    controlsManager.registerJQueryHandleForWaitCursor($("#loading-div"));
-    loadReplayFile(replayFileForTab);
-    $("#" + tabId).attr("disabled", false);
-
-    var i, tabcontent, tablinks;
-    
-    tablinks = document.getElementsByClassName("maintab");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    var tabControlToMakeActive = document.getElementById(tabId)
-    tabControlToMakeActive.className += " active";
-   // evt.currentTarget.className += " active";
-}
-
-// function chooseNextQuestionAfterStep(step) {
-//     // clear current question
-//     $('#q-and-a-div').empty();
-
-//     if (step == 'summary'){
-//         renderer.poseThankYouScreen();
-//     } 
-//     else {
-//         // pose next question
-//         studyQuestionManager.poseNextQuestion();
-//     }
-// }

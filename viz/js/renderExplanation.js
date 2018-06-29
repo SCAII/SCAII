@@ -277,7 +277,7 @@ function getBarChartManagerForSituation(isAggregate, isRewardMode) {
 function showRewards(isAggregate, isRewardMode) {
 	activeSaliencyDisplayManager = getSaliencyDisplayManagerForSituation(isAggregate, isRewardMode);
     configureRewardChart(isAggregate, isRewardMode);
-    if (isStudyQuestionMode()) {
+    if (userStudyMode) {
         if (!studyTreatment.showSaliencyAll){
             // bypass showing saliency 
             return;
@@ -336,7 +336,7 @@ function prepareForSaliencyOnlyView(explPoint){
 	saliencyDisplayManagerAdvantageDetailed.populateActionBarCheckBoxes();
     activeSaliencyDisplayManager = getSaliencyDisplayManagerForSituation(true, true);
 	configureInvisibleRewardChart(true, true);
-    if (isStudyQuestionMode()) {
+    if (userStudyMode) {
         stateMonitor.showedCombinedRewards();
         stateMonitor.showedCombinedSaliency();
     }
@@ -344,7 +344,7 @@ function prepareForSaliencyOnlyView(explPoint){
 	processWhatClick();
 }
 function renderWhyInfo(explPoint) {
-    if (isStudyQuestionMode()) {
+    if (userStudyMode) {
         if (studyTreatment.showAllSaliencyForTreatment1){
             prepareForSaliencyOnlyView(explPoint);
             return;
@@ -362,7 +362,7 @@ function renderWhyInfo(explPoint) {
 	saliencyDisplayManagerAdvantageDetailed.populateActionBarCheckBoxes();
     activeSaliencyDisplayManager = getSaliencyDisplayManagerForSituation(true, true);
 	configureRewardChart(true, true);
-    if (isStudyQuestionMode()) {
+    if (userStudyMode) {
         stateMonitor.showedCombinedRewards();
         stateMonitor.showedCombinedSaliency();
     }
@@ -377,7 +377,7 @@ function renderWhyInfo(explPoint) {
 	$("#why-label").css("font-size", 14);
 	$("#why-label").css("padding-right", 20);
     populateRewardQuestionSelector();
-    if (isStudyQuestionMode()){
+    if (userStudyMode){
         if (studyTreatment.showSaliencyAll){
             addWhatButton();
         }
@@ -397,7 +397,7 @@ function initSaliencyContainers(){
 	createSaliencyContainers();
     activeSaliencyDisplayManager = getSaliencyDisplayManagerForSituation(isCombinedView, isRewardMode);
     var chosenSaliencyMode = saliencyModeAggregate;
-    if (isStudyQuestionMode()) {
+    if (userStudyMode) {
         if (studyTreatment.showAllSaliencyForTreatment1){
             chosenSaliencyMode = saliencyModeDetailed;
         }
@@ -531,7 +531,7 @@ function populateSaliencyQuestionSelector(){
 	radioCombinedSaliency.onclick = function(e) {
         saliencyCombined = true;
         targetClickHandler(e, "setSaliencyView:combinedSaliency");
-        if (isStudyQuestionMode()) {
+        if (userStudyMode) {
             stateMonitor.showedCombinedSaliency();
         }
 		activeSaliencyDisplayManager.setSaliencyMode(saliencyModeAggregate);
@@ -552,7 +552,7 @@ function populateSaliencyQuestionSelector(){
 	radioDetailedSaliency.onclick = function(e) {
         saliencyCombined = false;
         targetClickHandler(e, "setSaliencyView:detailedSaliency");
-        if (isStudyQuestionMode()) {
+        if (userStudyMode) {
             stateMonitor.showedDetailedSaliency();
         }
 		activeSaliencyDisplayManager.setSaliencyMode(saliencyModeDetailed);
@@ -584,7 +584,7 @@ function populateRewardQuestionSelector(){
 	radioCombinedRewards.setAttribute("checked", "true");
 	radioCombinedRewards.onclick = function(e) {
         targetClickHandler(e, "setRewardView:combinedRewards");
-        if (isStudyQuestionMode()) {
+        if (userStudyMode) {
             stateMonitor.showedCombinedRewards();
         }
 		showRewards(true, true);
@@ -602,7 +602,7 @@ function populateRewardQuestionSelector(){
 	radioDetailedRewards.setAttribute("style", "margin-left:20px; ");
 	radioDetailedRewards.onclick = function(e) {
         targetClickHandler(e, "setRewardView:detailedRewards");
-        if (isStudyQuestionMode()) {
+        if (userStudyMode) {
             stateMonitor.showedDetailedRewards();
         }
 		showRewards(false, true);
@@ -626,7 +626,7 @@ function populateRewardQuestionSelector(){
 	radioCombinedAdvantage.setAttribute("style", "margin-left:20px;");
 	radioCombinedAdvantage.onclick = function(e) {
         targetClickHandler(e, "setRewardView:combinedAdvantage");
-        if (isStudyQuestionMode()) {
+        if (userStudyMode) {
             stateMonitor.showedCombinedAdvantage();
         }
 		showRewards(true, false);
@@ -644,7 +644,7 @@ function populateRewardQuestionSelector(){
 	radioDetailedAdvantage.setAttribute("style", "margin-left:20px; ");
 	radioDetailedAdvantage.onclick = function(e) {
         targetClickHandler(e, "setRewardView:detailedAdvantage");
-        if (isStudyQuestionMode()) {
+        if (userStudyMode) {
             stateMonitor.showedDetailedAdvantage();
         }
 		showRewards(false, false);
@@ -797,8 +797,8 @@ function addLabelForAction(title, index, step){
 
 	actionLabel.addEventListener("click", function(evt) {
 		if (!isUserInputBlocked()){
-            if (isStudyQuestionMode()){
-                if (studyQuestionManager.isBeyondCurrentRange(step)){
+            if (userStudyMode){
+                if (activeStudyQuestionManager.isBeyondCurrentRange(step)){
                     targetClickHandler(evt, "clickActionLabelDenied:" + escapeAnswerFileDelimetersFromTextString(fullName));
                     return;
                 }
@@ -816,8 +816,8 @@ function addLabelForAction(title, index, step){
 	});
 	actionLabel.addEventListener("mouseenter", function(evt) {
         //$("#" + id).css("background-color","rgba(100,100,100,1.0);");
-        if (isStudyQuestionMode()){
-            if (studyQuestionManager.isBeyondCurrentRange(step)){
+        if (userStudyMode){
+            if (activeStudyQuestionManager.isBeyondCurrentRange(step)){
                 return;
             }
         }
@@ -976,7 +976,7 @@ function configureExplanationSelectorDiamond(uiIndex,step){
 		halfHeight = explanationPointBigDiamondHalfWidth;
 		var yPositionOfWhyButton = -14;// relative to the next container below
         var xPositionOfWhyButton = x - 20;
-        if (isStudyQuestionMode()){
+        if (userStudyMode){
             if (studyTreatment.showReward) {
                 addWhyButtonForAction(step, xPositionOfWhyButton,  yPositionOfWhyButton);
             }
@@ -990,7 +990,7 @@ function configureExplanationSelectorDiamond(uiIndex,step){
         }
 		
         boldThisStepInLegend(step);
-        if (isStudyQuestionMode()){
+        if (userStudyMode){
             userActionMonitor.stepToDecisionPoint(step);
             stateMonitor.setDecisionPoint(step);
         }
@@ -1002,7 +1002,6 @@ function configureExplanationSelectorDiamond(uiIndex,step){
 				// so we force saliency to stay visible across a round trip request to back using a keepAlive flag
 				saliencyKeepAlive = true;
 			}
-			
 		}
 	}
 	else {
