@@ -329,6 +329,8 @@ function getStudyQuestionRenderer(questions) {
         var startCoords = getCoordForStartOfArrowText();
         var endCoords = getCoordsForPlayButton();
         drawArrow(startCoords, endCoords);
+        controlsManager.expressResumeButton();
+        controlsManager.enablePauseResume();
     }
 
     return sqr;

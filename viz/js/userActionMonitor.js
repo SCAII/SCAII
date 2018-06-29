@@ -159,6 +159,14 @@ function targetClickHandler(e, userActionSemantics) {
     }
 }
 
+function specifiedTargetClickHandler(targetName, userActionSemantics) {
+    if (isStudyQuestionMode()){
+        userActionMonitor.targetClick("target:" + targetName);
+        userActionMonitor.setUserActionSemantics(userActionSemantics);
+    }
+}
+
+
 function chartTargetClickHandler(targetName , userActionSemantics) {
     if (userStudyMode){
         userActionMonitor.targetClick("target:" + targetName);

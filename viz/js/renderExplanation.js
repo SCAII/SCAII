@@ -112,7 +112,18 @@ function getSelectionManager() {
 	}
     
     sm.clearSelections = function() {
-        this.selections = [];
+        if (this.selections.length != 0) {
+            var tempSelections = [];
+            for (var i in this.selections) {
+                var selection = this.selections[i];
+                tempSelections.push(selection);
+                
+            }
+            for (var i in tempSelections){
+                var selection = tempSelections[i];
+                this.removeSelection(selection);
+            }
+        }
     }
     
 	sm.addSelection = function(selection) {
@@ -176,10 +187,9 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
 				var args = ['' +matchingStep];
 				userCommand.setArgsList(args);
                 stageUserCommand(userCommand);
-                targetClickHandler(event, "jumpToDecisionPoint:" + matchingStep);
+                specifiedTargetClickHandler("decisionPointList", "jumpToDecisionPoint:" + matchingStep);
 			}
         }
-        	
 	}
 });
 
