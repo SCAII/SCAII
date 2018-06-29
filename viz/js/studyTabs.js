@@ -25,6 +25,8 @@ function getTabManager() {
     tm.addTabInfo("tab-task1","Task 1","maintab", "MainTask.scr", "Loading Task 1...");
     tm.addTabInfo("tab-task2","Task 2","maintab", "NextTask.scr", "Loading Task 2...");
 
+    
+
     for (var i in tm.tabInfos){
         var tabInfo = tm.tabInfos[i];
         generateTaskTab(tabInfo);
@@ -46,6 +48,26 @@ function getTabManager() {
     tm.getCurrentTabId = function(){
         var ti = this.tabInfos[this.currentTabIndex];
         return ti.cssId;
+    }
+
+    tm.getIndexOfTabWithId = function(id){
+        var indexOfTabInfoWithId = -1;
+        for (var i in tm.tabInfos){
+            var tabInfo = tm.tabInfos[i];
+            if (tabInfo.cssId == id){
+                return i;
+            }
+        }
+        return -1; 
+    }
+
+    tm.openTabForId = function(id) {
+        var targetIndex = this.getIndexOfTabWithId(id);
+        if (targetIndex != -1){
+            this.currentTabIndex = targetIndex;
+            var ti = this.tabInfos[this.currentTabIndex];
+            openTab(ti.cssId, ti.fileName, ti.loadingMessage);
+        }
     }
 
     tm.currentTabHasQuestionManager = function(){
@@ -88,7 +110,10 @@ function generateDisabledButton(cssId,text,className, tabLoadFunction) {
     b.setAttribute("id", cssId);
     b.setAttribute("class", className);
     b.innerHTML = text;
-    b.onclick = tabLoadFunction;
+    b.onclick = function(e){
+        tabManager.openTabForId(cssId);
+        enableTab(cssId);
+    };
     return b;
 }
 
@@ -103,6 +128,7 @@ function removeFileSelectorEtc() {
 function openTab(tabId, replayFileForTab, loadingMessage){
     loadTab(tabId, replayFileForTab, loadingMessage);
     enableTab(tabId);
+    $("#debug1").html("tab is " + tabId);
 }
 
 function loadTab(tabId, replayFileForTab, loadingMessage){

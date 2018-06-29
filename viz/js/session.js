@@ -108,12 +108,14 @@ function handleStudyQuestions(studyQuestions){
     if (questions.length == 0) {
         return;
     }
-    if (tabManager.currentTabHasQuestionManager()){
-        activeStudyQuestionManager = tabManager.getStudyQuestionManagerForCurrentTab();
-    }
-    else {
-        activeStudyQuestionManager = getStudyQuestionManager(questions, userId, treatmentId);
-        tabManager.setStudyQuestionManagerForCurrentTab(activeStudyQuestionManager);
+    if (userStudyMode) {
+        if (tabManager.currentTabHasQuestionManager()){
+            activeStudyQuestionManager = tabManager.getStudyQuestionManagerForCurrentTab();
+        }
+        else {
+            activeStudyQuestionManager = getStudyQuestionManager(questions, userId, treatmentId);
+            tabManager.setStudyQuestionManagerForCurrentTab(activeStudyQuestionManager);
+        }
     }
 
     userActionMonitor = getUserActionMonitor();
