@@ -1,5 +1,7 @@
 function clearStudyQuestionMode() {
-    $('#q-and-a-div').empty();
+    if (!tabManager.isInterTabHopInProgress){
+        $('#q-and-a-div').empty();
+    }
     $("#left-block-div").remove();
     $("#right-block-div").remove();
     //activeStudyQuestionManager = undefined;
@@ -103,12 +105,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     }
     sqm.poseFirstQuestion = function() {
         var step = this.squim.getCurrentStep();
-        var args = ["" + step];
-        var userCommand = new proto.scaii.common.UserCommand;
-        userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-        userCommand.setArgsList(args);
-        stageUserCommand(userCommand);
-        controlsManager.userJumped();
+        jumpToStep(step);
         this.poseCurrentQuestion();
     }
     
@@ -118,29 +115,23 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         var newStep = this.squim.getCurrentStep();
         if (priorStep != newStep && !this.squim.isCurrentQuestionSummary()) {
             // move to next step
-            var args = ["" + newStep];
-            var userCommand = new proto.scaii.common.UserCommand;
-            userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-            userCommand.setArgsList(args);
-            stageUserCommand(userCommand);
-            controlsManager.userJumped();
+            jumpToStep(newStep);
         }
         this.poseCurrentQuestion();
     }
     
-    // sqm.jumpBackToCurrentDecisionPoint = function() {
-    //     var targetStep = this.steps[this.currentStepIndex];
-    //     var args = ["" + nextStep];
-    //     var userCommand = new proto.scaii.common.UserCommand;
-    //     userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-    //     userCommand.setArgsList(args);
-    //     stageUserCommand(userCommand);
-    //     controlsManager.userJumped();
-    // }
-
     sqm.poseCurrentQuestion = function() {
         var qid = this.squim.getCurrentQuestionId();
-        if (this.mostRecentlyPosedQuestion != qid){
+        var shouldAskQuestion = false;
+        if (this.mostRecentlyPosedQuestion == qid){
+            if (tabManager.isInterTabHopInProgress){
+                shouldAskQuestion = true;
+            }
+        }
+        else {
+            shouldAskQuestion = true;
+        }
+        if (shouldAskQuestion) {
             this.mostRecentlyPosedQuestion = qid;
             stateMonitor.setUserAction("showQuestion:"+ qid);
             stateMonitor.setQuestionId(qid);

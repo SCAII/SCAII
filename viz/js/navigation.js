@@ -48,12 +48,8 @@ function processTimelineClick(e) {
 	var clickX = e.offsetX - timelineMargin;
 	var replaySequenceTargetStep = sessionIndexManager.getReplaySequencerIndexForClick(clickX);
 	var targetStepString = "" + replaySequenceTargetStep;
-	targetClickHandler(e, "timelineClick:" + targetStepString);
-	var args = [targetStepString];
-	var userCommand = new proto.scaii.common.UserCommand;
-	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-	userCommand.setArgsList(args);
-	stageUserCommand(userCommand);
+    targetClickHandler(e, "timelineClick:" + targetStepString);
+    jumpToStep(targetStepString);
 }
 function stageUserCommand(userCommand) {
 	var scaiiPkt = new proto.scaii.common.ScaiiPacket;
@@ -310,4 +306,13 @@ function updateButtonsAfterJump() {
 		controlsManager.enablePauseResume();
 		controlsManager.enableRewind();
 	}
+}
+
+function jumpToStep(step){
+    var userCommand = new proto.scaii.common.UserCommand;
+    userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+    var args = ['' +step];
+    userCommand.setArgsList(args);
+    stageUserCommand(userCommand);
+    controlsManager.userJumped();
 }

@@ -173,7 +173,7 @@ function handleReplayChoiceConfig(config){
 		}));
     }
     if (userStudyMode){
-        openTab('tab-tutorial','tutorial.scr','Loading tutorial...');
+        tabManager.openFirstTab();
     }
     else {
         loadSelectedReplayFile();
@@ -241,24 +241,26 @@ function handleViz(vizData) {
 	cumulativeRewardsMap = vizData.getCumulativeRewardsMap();
 	handleCumulativeRewards(cumulativeRewardsMap);
     handleEntities(entitiesList);
-    var asqm = activeStudyQuestionManager;
+    var qm = activeStudyQuestionManager;
 	if (!jumpInProgress) {
         sessionIndexManager.incrementReplaySequencerIndex();
         if (userStudyMode) {
-            asqm.configureForCurrentStep();
+            // will ask for first DP
+            qm.configureForCurrentStep();
         }
     }
     if (userStudyMode) {
         if (tabManager.hasShownUserId()){
-            asqm.clearTimelineBlocks();
-            asqm.blockClicksOutsideRange();
+            qm.clearTimelineBlocks();
+            qm.blockClicksOutsideRange();
         }
-        if (asqm.isAtEndOfRange(sessionIndexManager.getCurrentIndex())){
-            if (asqm.questionWasAnswered) {
-                asqm.questionWasAnswered = false;
+        if (qm.isAtEndOfRange(sessionIndexManager.getCurrentIndex())){
+            if (qm.questionWasAnswered) {
+                qm.questionWasAnswered = false;
                 // we're ready to move forward to next Decision Point
-                if (asqm.hasMoreQuestions()){
-                    asqm.poseNextQuestion();
+                if (qm.hasMoreQuestions()){
+                    //will ask for later DPs
+                    qm.poseNextQuestion();
                 }
                 controlsManager.expressResumeButton();
                 //chooseNextQuestionAfterStep(sessionIndexManager.getCurrentIndex());
@@ -423,17 +425,24 @@ function handleScaiiPacket(sPacket) {
 		}
 		else if (commandType == proto.scaii.common.UserCommand.UserCommandType.JUMP_COMPLETED) {
 			//console.log("-----got jump completed message");
-			controlsManager.jumpCompleted();
+            controlsManager.jumpCompleted();
+            if (userStudyMode) {
+                tabManager.checkForTabHopCompletion();
+            }
 		}
 		else if (commandType == proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE_COMPLETE){
             controlsManager.doneLoadReplayFile();
             if (userStudyMode){
                 if (!hasShownWelcomeScreen){
+                    // can't be tab hop, must be first screen shown
                     clearLoadingScreen();
                     showUserIdScreen();
                 }
                 else {
-                    clearLoadingScreen();
+                    var didJump = tabManager.jumpIfTabHopInProgress();
+                    if (!didJump){
+                        clearLoadingScreen();
+                    }
                 }
             }
 		}

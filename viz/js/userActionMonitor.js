@@ -160,7 +160,7 @@ function targetClickHandler(e, userActionSemantics) {
 }
 
 function specifiedTargetClickHandler(targetName, userActionSemantics) {
-    if (isStudyQuestionMode()){
+    if (userStudyMode){
         userActionMonitor.targetClick("target:" + targetName);
         userActionMonitor.setUserActionSemantics(userActionSemantics);
     }
@@ -177,10 +177,12 @@ function chartTargetClickHandler(targetName , userActionSemantics) {
 
 function targetHoverHandler(e, userActionSemantics) {
     if (userStudyMode){
-        var targetId = e.currentTarget.getAttribute("id");
-        userActionMonitor.targetHover("target:" + targetId);
-        userActionMonitor.setUserActionHoverSemantics(userActionSemantics);
-        userActionMonitor.forwardHoverEvent();
+        if (userActionMonitor != undefined) {
+            var targetId = e.currentTarget.getAttribute("id");
+            userActionMonitor.targetHover("target:" + targetId);
+            userActionMonitor.setUserActionHoverSemantics(userActionSemantics);
+            userActionMonitor.forwardHoverEvent();  
+        }
     }
 }
 

@@ -181,12 +181,7 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
 				//no need to move - already at step with explanation
 			}
 			else {
-				var userCommand = new proto.scaii.common.UserCommand;
-				userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-				// same args as above
-				var args = ['' +matchingStep];
-				userCommand.setArgsList(args);
-                stageUserCommand(userCommand);
+                jumpToStep(matchingStep);
                 specifiedTargetClickHandler("decisionPointList", "jumpToDecisionPoint:" + matchingStep);
 			}
         }
@@ -816,12 +811,7 @@ function addLabelForAction(title, index, step){
                     targetClickHandler(evt, "clickActionLabel:" + escapeAnswerFileDelimetersFromTextString(fullName));
                 }
             }
-			var userCommand = new proto.scaii.common.UserCommand;
-			userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-			// same args as above
-			var args = ['' +step];
-			userCommand.setArgsList(args);
-			stageUserCommand(userCommand);
+            jumpToStep(step);
 		}
 	});
 	actionLabel.addEventListener("mouseenter", function(evt) {
@@ -958,11 +948,7 @@ function showExplanationRewardInfo(stepNumber) {
 		//console.log("no need to move - already at step with explanation");
 	}
 	else {
-		var userCommand = new proto.scaii.common.UserCommand;
-		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-		// same args as above
-		userCommand.setArgsList(args);
-		stageUserCommand(userCommand);
+		jumpToStep(newStep);
 	}
 }
 

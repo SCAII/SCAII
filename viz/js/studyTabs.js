@@ -5,8 +5,11 @@ function getTabManager() {
     tm.currentTabIndex = 0;
     tm.tabInfos = [];
     tm.studyQuestionManagerForTab = {};
+    tm.hopTargetInfoForTab = {};
     tm.userIdHasBeenSet = false;
-
+    tm.isInterTabHopInProgress = false;
+    tm.hopSourceTabId = undefined;
+    tm.hopTargetTabId = undefined;
     
     tm.hasShownUserId = function() {
         return this.userIdHasBeenSet;
@@ -39,10 +42,14 @@ function getTabManager() {
         return true;
     }
 
+    tm.setTabIndex = function(index) {
+        this.currentTabIndex = index;
+        $("#debug2").html("tab index is now" + index);
+    }
     tm.nextTab = function() {
-        this.currentTabIndex = this.currentTabIndex + 1;
+        this.setTabIndex(this.currentTabIndex + 1);
         var ti = this.tabInfos[this.currentTabIndex];
-        openTab(ti.cssId, ti.fileName, ti.loadingMessage);
+        this.openTab(ti.cssId, ti.fileName, ti.loadingMessage, false);
     }
 
     tm.getCurrentTabId = function(){
@@ -64,9 +71,8 @@ function getTabManager() {
     tm.openTabForId = function(id) {
         var targetIndex = this.getIndexOfTabWithId(id);
         if (targetIndex != -1){
-            this.currentTabIndex = targetIndex;
-            var ti = this.tabInfos[this.currentTabIndex];
-            openTab(ti.cssId, ti.fileName, ti.loadingMessage);
+            var ti = this.tabInfos[targetIndex];
+            this.openTab(ti.cssId, ti.fileName, ti.loadingMessage, true);
         }
     }
 
@@ -96,6 +102,69 @@ function getTabManager() {
         return false;
 
     }
+
+    tm.initiateTabHop = function(tabId){
+        this.hopSourceTabId = this.getCurrentTabId();
+        this.hopTargetTabId = tabId;
+        this.isInterTabHopInProgress = true;
+        var tabHopInfo = {};
+        // hopReturnInfo.questionDivs = document.getElementById("q-and-a-div").childNodes;
+        // for (var i in hopReturnInfo.questionDivs){
+        //     var qDiv = hopReturnInfo.questionDivs[i];
+        //     var foo = 3;
+        // }
+        tabHopInfo.cachedQuestionDivs = $('#q-and-a-div').children().detach();
+        tabHopInfo.hopTargetStep = sessionIndexManager.getCurrentIndex();
+        // (click info should still be staged in renderer)
+        this.hopTargetInfoForTab[this.getCurrentTabId()] = tabHopInfo;
+    }
+
+    tm.getTabHopInfoForTargetTab = function(){
+       return this.hopTargetInfoForTab[tm.hopTargetTabId];
+    }
+
+    tm.checkForTabHopCompletion = function(){
+        var tabHopInfo = this.getTabHopInfoForTargetTab();
+        if (tabHopInfo!= undefined) {
+            if (tabHopInfo.cachedQuestionDivs != undefined) {
+                $("#q-and-a-div").append(tabHopInfo.cachedQuestionDivs);
+            }
+            // for (var i in tabHopInfo.questionDivs){
+            //     var qDiv = tabHopInfo.questionDivs[i];
+            //     $("q-and-a-div").append(qDiv);
+            // }
+            this.hopTargetInfoForTab[this.hopTargetTabId] = undefined;
+            this.hopTargetTabId = undefined;
+            this.hopSourceTabId = undefined;
+            this.isInterTabHopInProgress = false;
+            clearLoadingScreen();
+        }
+    }
+
+    tm.jumpIfTabHopInProgress = function(){
+        var tabHopInfo = this.getTabHopInfoForTargetTab();
+        if (tabHopInfo!= undefined) {
+            jumpToStep(tabHopInfo.hopTargetStep);
+            return true;
+        }
+        return false;
+    }
+
+    tm.openFirstTab = function(){
+        this.openTab('tab-tutorial','tutorial.scr','Loading tutorial...', false);
+    }
+    
+    tm.openTab = function(tabId, replayFileForTab, loadingMessage, isTabHop){
+        if (isTabHop){
+            this.initiateTabHop(tabId);
+            var indexOfTargetTab = this.getIndexOfTabWithId(tabId);
+            this.setTabIndex(indexOfTargetTab);
+        }
+        loadTab(tabId, replayFileForTab, loadingMessage);
+        enableTab(tabId);
+        $("#debug1").html("tab is " + tabId);
+    }
+
     return tm;
 }
 
@@ -111,6 +180,7 @@ function generateDisabledButton(cssId,text,className, tabLoadFunction) {
     b.setAttribute("class", className);
     b.innerHTML = text;
     b.onclick = function(e){
+        tabManager.isHopInProgress = true;
         tabManager.openTabForId(cssId);
         enableTab(cssId);
     };
@@ -125,11 +195,6 @@ function removeFileSelectorEtc() {
     $("#title-row").append(div);
 }
 
-function openTab(tabId, replayFileForTab, loadingMessage){
-    loadTab(tabId, replayFileForTab, loadingMessage);
-    enableTab(tabId);
-    $("#debug1").html("tab is " + tabId);
-}
 
 function loadTab(tabId, replayFileForTab, loadingMessage){
     showLoadingScreen(loadingMessage);

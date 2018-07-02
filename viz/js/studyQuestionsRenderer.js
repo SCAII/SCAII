@@ -11,7 +11,7 @@ function getStudyQuestionRenderer(questions) {
     sqr.currentFollowupTextBox = undefined;
     sqr.clickInfoFromUserActionMonitor = undefined;
     sqr.controlsWaitingForClick = [];
-
+   
     sqr.forgetQuestion = function(){
         this.questionFormat = undefined;
         this.currentRadioName = undefined;
@@ -150,6 +150,7 @@ function getStudyQuestionRenderer(questions) {
     }
 
     sqr.poseGivenQuestion = function(questionNumber, step, qu){
+        this.hopTargetQuestionDivContents = [];
         questionLetterMap = {}
         questionLetterMap[1] = 'a';
         questionLetterMap[2] = 'b';
