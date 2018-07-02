@@ -357,7 +357,7 @@ function getSaliencyDisplayManager(selectionManager) {
             valueSpan.setAttribute("style", 'visibility:hidden;');
             targetHoverHandler(evt, "endMouseOverSaliencyMap:" + saliencyUIName);
         });
-        if (!isStudyQuestionMode()){
+        if (!userStudyMode){
             explCanvas.addEventListener('mousemove', function(evt) {
                 var mousePos = getMousePos(explCanvas, evt);
                 var xForValueLookup = Math.floor(mousePos.x / gameScaleFactor);
