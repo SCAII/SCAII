@@ -1,5 +1,5 @@
 from scaii.env.sky_rts.env import SkyRtsEnv, MoveList, SkyState
-from enum import Enum
+from enum import IntEnum
 
 HP_NORM = 150.0
 
@@ -8,8 +8,10 @@ class CityAction(MoveList):
         super().__init__(discrete_actions=discrete_actions,
                          continuous_actions=continuous_actions, env_actions=env_actions)
         self.skip = skip
+        self.quadrant = None
 
     def attack_quadrant(self, quadrant):
+        self.quadrant = quadrant
         if quadrant not in [1, 2, 3, 4]:
             raise InvalidActionError(quadrant)
 
@@ -17,6 +19,14 @@ class CityAction(MoveList):
 
         super().move_unit(
             self.state.id_list[0], "attack", self.state.id_list[quadrant])
+
+    def as_enum(self):
+        if self.quadrant == None:
+            return None
+
+        for action in Actions:
+            if action == self.quadrant:
+                return action
 
     def to_proto(self, packet):
         super().to_proto(packet, self.skip, skip_lua=None)
@@ -75,25 +85,59 @@ class CityState(SkyState):
                     unit_type = UnitType.SMALL_CITY
 
                 assert(unit_type is not None)
+                assert(unit_type in UnitType)
 
                 friendly = state[r,c,5] == 1
                 
-                obj = CityObject(unit_type, hp, friendly)
+                obj = CityObject(unit_type, friendly, hp)
                 obj._update_bounding_box(r,c)
                 self.objects[u_id] = obj
 
-class UnitType(Enum):
-    TANK=1, 
+class UnitType(IntEnum):
+    TANK=1,
     BIG_FORT=2,
     SMALL_FORT=3,
     BIG_CITY=4,
     SMALL_CITY=5,
 
+    def __str__(self):
+        if self == UnitType.TANK:
+            return "Tank"
+        elif self == UnitType.BIG_FORT:
+            return "Big Fort"
+        elif self == UnitType.SMALL_FORT:
+            return "Small Fort"
+        elif self == UnitType.BIG_CITY:
+            return "Big City"
+        elif self == UnitType.SMALL_CITY:
+            return "Small City" 
+
+    def __repr__(self):
+        return str(self)
+
+class Actions(IntEnum):
+    Q1 = 2,
+    Q2 = 4,
+    Q3 = 3,
+    Q4 = 1,
+
+    def __str__(self):
+        if self == Actions.Q1:
+            return "Q1"
+        elif self == Actions.Q2:
+            return "Q2"
+        elif self == Actions.Q3:
+            return "Q3"
+        elif self == Actions.Q4:
+            return "Q4"
+    
+    def __repr__(self):
+        return str(self)
 
 class CityObject():
     def __init__(self, unit_type, is_friendly, hp):
         self.hp = hp
-        self.unit_type = unit_type,
+        self.unit_type = unit_type
         self.is_friendly = is_friendly
 
     def _update_bounding_box(self, x, y):
@@ -146,6 +190,12 @@ class CityObject():
                     state[r,c,7] = 0
         
         self.is_friendly = is_friendly
+    
+    def __str__(self):
+        return "CityObject: [ HP = {}, Unit Type = {}, Friendly? = {}, Bounds = {} ]".format(self.hp, str(self.unit_type), self.is_friendly, str(self.get_bounding_box()))
+    
+    def __repr__(self):
+        return str(self)
 
 class CityAttack(SkyRtsEnv):
     def __init__(self, map_name="city_attack"):
