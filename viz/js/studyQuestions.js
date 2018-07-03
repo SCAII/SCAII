@@ -303,11 +303,11 @@ function acceptAnswer(e) {
         }
     }
     var logLine = templateMap["button-save"];
-    logLine = logLine.replace("<CLCK_STEP>", this.currentStep);
-    logLine = logLine.replace("<Q_INDEX_STEP>", this.currentQuestionIndexAtStep);
-    logLine = logLine.replace("<USR_TXT_Q1>", this.answer);
-    logLine = logLine.replace("<USR_TXT_Q2>", this.followupAnswer);
-    logLine = logLine.replace("<USR_CLCK_Q>", this.clickInfo);
+    logLine = logLine.replace("<CLCK_STEP>", currentStep);
+    logLine = logLine.replace("<Q_INDEX_STEP>", currentQuestionIndexAtStep);
+    logLine = logLine.replace("<USR_TXT_Q1>", answer);
+    logLine = logLine.replace("<USR_TXT_Q2>", followupAnswer);
+    logLine = logLine.replace("<USR_CLCK_Q>", clickInfo);
     targetClickHandler(e, logLine);
     //targetClickHandlerOld(e,"answerQuestion:"+ currentStep + "." + currentQuestionIndexAtStep + "_" + answer + "_" + followupAnswer + "_(" + clickInfo + ")");
 

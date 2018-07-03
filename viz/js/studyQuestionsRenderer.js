@@ -224,7 +224,7 @@ function getStudyQuestionRenderer(questions) {
             };
             //var logLine = templateMap["button-save"];
             //logLine = logLine.replace("<USR_CLCK_Q>", listener);
-            userActionMonitor.setClickListener(listener);
+            stateMonitor.setClickListener(listener);
         }
     }
 

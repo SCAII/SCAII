@@ -4,7 +4,11 @@ function getStateMonitor() {
 
     sm.logFileName = undefined;
     sm.sentHeader = false;
+    sm.clickListener = undefined;
 
+    sm.setClickListener = function(cl){
+        this.clickListener = cl;
+    }
     sm.emitLogLineOld = function () {
         if (this.logFileName != undefined) {
             if (!this.sentHeader) {
@@ -58,7 +62,7 @@ function getStateMonitor() {
             logLine = logLine.replace("<DATE>", date);
             logLine = logLine.replace("<TIME>", time);
             logLine = logLine.replace("<1970_SEC>", sec);
-           
+            
             //logLine = this.getStateLogEntryNew(logLine); //templateMap[];
             logLine = this.setState(logLine);
             lfe.setEntry(logLine);
@@ -71,6 +75,9 @@ function getStateMonitor() {
             }
             pkt.setLogFileEntry(lfe);
             userInfoScaiiPackets.push(pkt);
+            if (this.clickListener != undefined) {
+                this.clickListener.acceptClickInfo(logLine);
+            }
             return logLine;
         }
     }

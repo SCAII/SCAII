@@ -6,12 +6,8 @@ function getUserActionMonitor() {
     uam.clickRegionDetails = undefined;
     uam.clickTargetDetails = undefined;
     uam.userActionSemantics = undefined;
-    uam.clickListener = undefined;
     uam.pendingLogLine = undefined;
 
-    uam.setClickListener = function(cl){
-        this.clickListener = cl;
-    }
 
     setHandlers();
     deleteUnwantedControls();
@@ -34,6 +30,11 @@ function getUserActionMonitor() {
         if (this.clickRegionDetails == undefined) {
             this.clickRegionDetails = info;
         }
+        if (this.pendingLogLine == undefined) {
+            this.pendingLogLine = templateMap["userClick"];
+            this.pendingLogLine = this.pendingLogLine.replace("<TARGET>", "NA");
+            this.pendingLogLine = this.pendingLogLine.replace("<TARGET_DTL>", "NA");
+        }
         this.pendingLogLine = this.pendingLogLine.replace("<REGION>", info);
     }
     uam.targetClick = function(info) {
@@ -41,7 +42,7 @@ function getUserActionMonitor() {
             this.clickTargetDetails = info;
         }
         //EVAN
-        //this.pendingLogLine = templateMap[info];
+        this.pendingLogLine = templateMap[info];
         this.pendingLogLine = this.pendingLogLine.replace("<TARGET>", info);
     }
     
@@ -68,11 +69,14 @@ function getUserActionMonitor() {
             rememberedGlobalChartClick = [x,y];
             return;
         }
+        if (this.pendingLogLine == undefined) {
+            this.pendingLogLine = templateMap["userClick"];
+            this.pendingLogLine = this.pendingLogLine.replace("<TARGET>", "NA");
+            this.pendingLogLine = this.pendingLogLine.replace("<TARGET_DTL>", "NA");
+        }
         var logLine = this.pendingLogLine.replace("<COORD_X>", x);
         logLine = logLine.replace("<COORD_Y>", y);
-        if (this.clickListener != undefined) {
-            this.clickListener.acceptClickInfo(logLine);
-        }
+        
         logLine = stateMonitor.emitLogLine(logLine);
         this.clear();
     }
@@ -80,6 +84,7 @@ function getUserActionMonitor() {
         this.clickRegionDetails = undefined;
         this.clickTargetDetails = undefined;
         this.userActionSemantics = undefined;
+        this.pendingLogLine = undefined;
         rememberedGlobalChartClick = undefined;
     }
     uam.compileChartClickEvent = function(){
