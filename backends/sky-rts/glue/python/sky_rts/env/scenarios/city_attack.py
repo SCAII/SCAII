@@ -1,5 +1,7 @@
 from scaii.env.sky_rts.env import SkyRtsEnv, MoveList, SkyState
+from enum import Enum
 
+HP_NORM = 150.0
 
 class CityAction(MoveList):
     def __init__(self, discrete_actions=None, continuous_actions=None, env_actions=None, skip=True):
@@ -30,8 +32,9 @@ class CityState(SkyState):
             (state.shape[0], state.shape[1], 8), dtype=np.float)
 
         # Normalize HP
-        self.state[:, :, 0] = state[:, :, 1] / 70.0
-        self.hps = np.unique(state[:, :, 0])
+        self.raw_hp = state[:, :, 1].copy()
+
+        self.state[:, :, 0] = state[:, :, 1] / HP_NORM
 
         unit_ids = state[:, :, 2].astype(np.int)
         self.id_types = [1, 2, 3, 4, 5]
@@ -43,7 +46,106 @@ class CityState(SkyState):
         self.factions = [0, 1, 2]
         self.state[:, :, 6:] = np.equal.outer(
             faction_ids, [0, 1, 2]).astype(np.float)[:, :, 1:]
+        
+        self.__objectify(self.id_map, self.raw_hp, self.state)
+    
+    def __objectify(self, id_map, raw_hp, state):
+        self.objects = {}
+        for r in range(id_map.shape[0]):
+            for c in range(id_map.shape[1]):
+                u_id = id_map[r,c]
+                if u_id == 0:
+                    continue
 
+                if u_id in self.objects:
+                    self.objects[u_id]._update_bounding_box(r,c)
+                    continue
+                
+                hp = raw_hp[r,c]
+                unit_type = None
+                if state[r,c,1] == 1:
+                    unit_type = UnitType.TANK
+                elif state[r,c,2] == 1:
+                    unit_type = UnitType.BIG_FORT
+                elif state[r,c,3] == 1:
+                    unit_type = UnitType.SMALL_FORT
+                elif state[r,c,4] == 1:
+                    unit_type = UnitType.BIG_CITY
+                elif state[r,c,5] == 1:
+                    unit_type = UnitType.SMALL_CITY
+
+                assert(unit_type is not None)
+
+                friendly = state[r,c,5] == 1
+                
+                obj = CityObject(unit_type, hp, friendly)
+                obj._update_bounding_box(r,c)
+                self.objects[u_id] = obj
+
+class UnitType(Enum):
+    TANK=1, 
+    BIG_FORT=2,
+    SMALL_FORT=3,
+    BIG_CITY=4,
+    SMALL_CITY=5,
+
+
+class CityObject():
+    def __init__(self, unit_type, is_friendly, hp):
+        self.hp = hp
+        self.unit_type = unit_type,
+        self.is_friendly = is_friendly
+
+    def _update_bounding_box(self, x, y):
+        if not hasattr(self, 'min_x'):
+            self.min_x = x
+            self.max_x = x
+            self.min_y = y
+            self.max_y = y
+            return
+        
+        self.min_x = min(self.min_x, x)
+        self.max_x = max(self.max_x, x)
+        self.min_y = min(self.min_y, y)
+        self.max_y = max(self.max_y, y)
+    
+    def get_bounding_box(self):
+        return ((self.min_x, self.min_y), (self.max_x, self.max_y))
+    
+    def change_hp(self, state, new_hp, norm=HP_NORM):
+        self.hp = new_hp
+        for r in range(self.min_x, self.max_x+1):
+            for c in range(self.min_y, self.max_y+1):
+                if state[r,c,0] == 0:
+                    continue
+                
+                state[r,c,0] = new_hp / HP_NORM
+        
+    def change_unit_type(self, state, new_type):
+        for r in range(self.min_x, self.max_x+1):
+            for c in range(self.min_y, self.max_y+1):
+                if state[r,c,self.unit_type] == 0:
+                    continue
+                
+                state[r,c,self.unit_type] = 0
+                state[r,c,new_type] = 1
+        
+        self.unit_type = new_type
+    
+    def change_faction(self, state, is_friendly):
+        if self.is_friendly == is_friendly:
+            return
+        
+        for r in range(self.min_x, self.max_x+1):
+            for c in range(self.min_y, self.max_y+1):
+                if self.is_friendly and state[r,c,6] == 1:
+                    state[r,c,6] = 0
+                    state[r,c,7] = 1
+                elif not self.is_friendly and state[r,c,7] == 1:
+                    state[r,c,6] = 1
+                    state[r,c,7] = 0
+        
+        self.is_friendly = is_friendly
 
 class CityAttack(SkyRtsEnv):
     def __init__(self, map_name="city_attack"):
