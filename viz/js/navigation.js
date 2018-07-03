@@ -48,7 +48,10 @@ function processTimelineClick(e) {
 	var clickX = e.offsetX - timelineMargin;
 	var replaySequenceTargetStep = sessionIndexManager.getReplaySequencerIndexForClick(clickX);
 	var targetStepString = "" + replaySequenceTargetStep;
-	targetClickHandler(e, "timelineClick:" + targetStepString);
+	//targetClickHandlerOld(e, "timelineClick:" + targetStepString);
+	var logLine = templateMap["expl-control-canvas"];
+	logLine = logLine.replace("<TIME_LINE_NUM>", targetStepString);
+	targetClickHandler(e, logLine);
 	var args = [targetStepString];
 	var userCommand = new proto.scaii.common.UserCommand;
 	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);

@@ -155,7 +155,9 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         var qid = this.squim.getCurrentQuestionId();
         if (this.mostRecentlyPosedQuestion != qid){
             this.mostRecentlyPosedQuestion = qid;
-            stateMonitor.setUserAction("showQuestion:"+ qid);
+            var logLine = templateMap["showQuestion"];
+            logLine = logLine.replace("<SHOW_Q>", qid);
+            stateMonitor.setUserAction(logLine);
             stateMonitor.setQuestionId(qid);
             var qu = this.questionMap[qid];
             this.renderer.poseQuestion(qu, this.squim.getCurrentDecisionPointNumber(), this.squim.getCurrentStep());
@@ -224,7 +226,10 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         rightBlockDiv.setAttribute("style", "position:absolute;left:" + x3 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] + ";background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
         rightBlockDiv.onclick = function(e) {
             if (isStudyQuestionMode()){
-                targetClickHandler(e,"clickTimelineBlocker:NA");
+                var logLine = templateMap["right-block-div"];
+                logLine = logLine.replace("<TIME_LINE_BLCKR>", "NA");
+                //targetClickHandler(e,"clickTimelineBlocker:NA");
+                targetClickHandler(e, logLine);
                 regionClickHandlerGameArea(e);
                 userActionMonitor.globalClick(e.clientX, e.clientY);
             }
@@ -297,7 +302,14 @@ function acceptAnswer(e) {
             followupAnswer = renderer.getCurrentFollowupAnswer();
         }
     }
-    targetClickHandler(e,"answerQuestion:"+ currentStep + "." + currentQuestionIndexAtStep + "_" + answer + "_" + followupAnswer + "_(" + clickInfo + ")");
+    var logLine = templateMap["button-save"];
+    logLine = logLine.replace("<CLCK_STEP>", this.currentStep);
+    logLine = logLine.replace("<Q_INDEX_STEP>", this.currentQuestionIndexAtStep);
+    logLine = logLine.replace("<USR_TXT_Q1>", this.answer);
+    logLine = logLine.replace("<USR_TXT_Q2>", this.followupAnswer);
+    logLine = logLine.replace("<USR_CLCK_Q>", this.clickInfo);
+    targetClickHandler(e, logLine);
+    //targetClickHandlerOld(e,"answerQuestion:"+ currentStep + "." + currentQuestionIndexAtStep + "_" + answer + "_" + followupAnswer + "_(" + clickInfo + ")");
 
     renderer.forgetQuestion();
     if (studyQuestionIndexManager.hasMoreQuestionsAtThisStep()) {

@@ -186,8 +186,12 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
 				// same args as above
 				var args = ['' +matchingStep];
 				userCommand.setArgsList(args);
-                stageUserCommand(userCommand);
-                specifiedTargetClickHandler("decisionPointList", "jumpToDecisionPoint:" + matchingStep);
+				stageUserCommand(userCommand);
+				var logLine = templateMap["decisionPointList"];
+				logLine = logLine.replace("<TARGET>", "decisionPointList")
+				logLine = logLine.replace("<J_DP_NUM>", matchingStep);
+                //specifiedTargetClickHandler("decisionPointList", "jumpToDecisionPoint:" + matchingStep);
+                specifiedTargetClickHandler("decisionPointList", logLine);
 			}
         }
 	}

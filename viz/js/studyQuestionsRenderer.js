@@ -222,6 +222,8 @@ function getStudyQuestionRenderer(questions) {
                 // clickAckDiv.innerHTML = "(click wasregistered)";
                 // $("#save-button-row").append(clickAckDiv);
             };
+            //var logLine = templateMap["button-save"];
+            //logLine = logLine.replace("<USR_CLCK_Q>", listener);
             userActionMonitor.setClickListener(listener);
         }
     }

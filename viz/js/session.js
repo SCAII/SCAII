@@ -110,8 +110,11 @@ function handleStudyQuestions(studyQuestions){
     }
     studyQuestionManager = getStudyQuestionManager(questions, userId, treatmentId);
     userActionMonitor = getUserActionMonitor();
-    stateMonitor = getStateMonitor();
-    studyTreatment = getTreatmentManager(treatmentId);
+	stateMonitor = getStateMonitor();
+	//logLine = getTemplateMap();
+	studyTreatment = getTreatmentManager(treatmentId);
+	console.log(treatmentId);
+	console.log(answerFilename);
     stateMonitor.logFileName = answerFilename;
     // make div to hold the winning action name
     var winningActionLabel = document.createElement("div");
