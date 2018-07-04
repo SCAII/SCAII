@@ -48,6 +48,7 @@ goog.require('proto.scaii.common.VizInit');
 */
 
 var main = function () {
+    runTests();
 	initUI();
 	var debug = true;
 	if (debug) {

@@ -110,7 +110,7 @@ function getStudyQuestionRenderer(questions) {
         this.currentRadioName = radioSetName;
     }
 
-    sqr.renderSaveButton = function(type){
+    sqr.renderSaveButton = function(type, isClickCollectingQuestion){
         var saveButtonRowId = "save-button-row";
         var buttonRow = document.createElement("DIV");
         buttonRow.setAttribute("id", saveButtonRowId);
@@ -125,18 +125,11 @@ function getStudyQuestionRenderer(questions) {
         save.innerHTML = "Save";
         save.onclick = acceptAnswer;
         $("#"+ saveButtonRowId).append(save);
-        if (type == "waitForClick"){
+        if (isClickCollectingQuestion){
             this.controlsWaitingForClick.push(save);
         }
     }
     
-    sqr.poseQuestion = function(qu, currentDecisionPointNumber, curStep){
-        if (currentDecisionPointNumber == undefined) {
-            studyQuestionManager.clearTimelineBlocks();
-        }
-        this.poseGivenQuestion(currentDecisionPointNumber, curStep, qu);
-    }
-
     sqr.removeMissingClickInfoMessage = function() {
         $("#missing-click-info-message").remove();
     }
@@ -148,8 +141,7 @@ function getStudyQuestionRenderer(questions) {
         missingClickInfoDiv.innerHTML =  "Please click on one of the designated areas";
         $("#save-button-row").append(missingClickInfoDiv);
     }
-
-    sqr.poseGivenQuestion = function(questionNumber, step, qu){
+    sqr.poseQuestion = function(qu, questionNumber, step){
         questionLetterMap = {}
         questionLetterMap[1] = 'a';
         questionLetterMap[2] = 'b';
@@ -167,7 +159,7 @@ function getStudyQuestionRenderer(questions) {
         $("#q-and-a-div").css("background-color",this.bg);
         $("#q-and-a-div").css("margin-top","20px");
         $("#q-and-a-div").css("padding","20px");
-        if (type == "waitForClick"){
+        if (qu.isClickCollectingQuestion()){
             var clickPrompt = document.createElement("DIV");
             clickPrompt.setAttribute("id", "click-prompt");
             clickPrompt.setAttribute("style", "padding:10px;margin-bottom:8px;margin-left:0px;font-family:Arial;font-size:" + this.fontSize + ";background-color:yellow;");
@@ -203,8 +195,8 @@ function getStudyQuestionRenderer(questions) {
             }
         }
         // add the ever present - follow up question, except on summary questions
-        this.renderSaveButton(type);
-        if (type == "waitForClick"){
+        this.renderSaveButton(type, qu.isClickCollectingQuestion());
+        if (qu.isClickCollectingQuestion()){
             var listener = {};
             listener.acceptClickInfo = function(clickInfo){
                 var renderer = studyQuestionManager.renderer;

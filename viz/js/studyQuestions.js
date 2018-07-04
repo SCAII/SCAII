@@ -14,13 +14,10 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     sqm.userId = userId;
     sqm.userIdHasBeenSet = false;
     sqm.treatmentId = treatmentId;
-
+    
     sqm.questionMap = {};
     sqm.questionIds = [];
-
-    sqm.windowRangeForStep = {};
     sqm.questionWasAnswered = false;
-    sqm.activeRange = undefined;
     sqm.mostRecentlyPosedQuestion = undefined;
 
     for (var i in questions){
@@ -34,10 +31,13 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         qu.questionIndexForStep = questionIndexForStep;
         qu.questionId = questionId;
         qu.questionText= question.getQuestion();;
+        qu.isClickCollectingQuestion = function() {
+            return ((this.questionType == "waitForClick") || (this.questionType =="waitForPredictionClick"));
+        }
         var allTypeInfo = question.getQuestionType();
         var typeParts = allTypeInfo.split(":");
         qu.questionType = typeParts[0];
-        if (qu.questionType == "waitForClick"){
+        if (qu.isClickCollectingQuestion()){
             qu.regionsToAllow = typeParts[1].split("_");
             qu.clickQuestionText = typeParts[2];
         }
@@ -47,31 +47,8 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     }
     sqm.squim = getStudyQuestionIndexManager(sqm.questionIds);
     studyQuestionIndexManager = sqm.squim;
-    sqm.windowRangeForStep = getRanges(sqm.squim.getDecisionPointSteps());
+    sqm.accessManager = getQuestionAccessManager(sqm.squim.getDecisionPointSteps(), sessionIndexManager.getMaxIndex());
 
-    sqm.isAtEndOfRange = function(step) {
-        if (this.activeRange != undefined){
-            var endOfRange = this.activeRange[1];
-            // stop one prior to the true end to avoid showing the blank gameboard
-            //if (step >= endOfRange) { 
-            if (step >= endOfRange - 1) { 
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    sqm.isBeyondCurrentRange = function(step) {
-        if (this.activeRange != undefined){
-            var endOfRange = this.activeRange[1];
-            // stop one prior to the true end to avoid showing the blank gameboard
-            //if (step >= endOfRange) { 
-            if (step >endOfRange) { 
-                return true;
-            }
-        }
-        return false;
-    }
 
     sqm.hasShownUserId = function() {
         return this.userIdHasBeenSet;
@@ -141,16 +118,6 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         this.poseCurrentQuestion();
     }
     
-    // sqm.jumpBackToCurrentDecisionPoint = function() {
-    //     var targetStep = this.steps[this.currentStepIndex];
-    //     var args = ["" + nextStep];
-    //     var userCommand = new proto.scaii.common.UserCommand;
-    //     userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-    //     userCommand.setArgsList(args);
-    //     stageUserCommand(userCommand);
-    //     controlsManager.userJumped();
-    // }
-
     sqm.poseCurrentQuestion = function() {
         var qid = this.squim.getCurrentQuestionId();
         if (this.mostRecentlyPosedQuestion != qid){
@@ -158,100 +125,95 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
             stateMonitor.setUserAction("showQuestion:"+ qid);
             stateMonitor.setQuestionId(qid);
             var qu = this.questionMap[qid];
-            this.renderer.poseQuestion(qu, this.squim.getCurrentDecisionPointNumber(), this.squim.getCurrentStep());
+            var currentStep = this.squim.getCurrentStep();
+            this.renderer.poseQuestion(qu, this.squim.getCurrentDecisionPointNumber(), currentStep);
+
+            this.accessManager.setQuestionState("posed");
+            this.accessManager.setQuestionType(qu.questionType);
+            this.accessManager.setQuestionStep(currentStep);
+            if (this.squim.isStepPriorToLastDecisionPoint(currentStep)) {
+                this.accessManager.setRelationToFinalDecisionPoint("before");
+            }
+            else {
+                this.accessManager.setRelationToFinalDecisionPoint("atOrPast");
+            }
+            this.accessManager.express();
+            renderDecisionPointLegend();
         }
     }
 
     sqm.makeUserWaitForInstructions = function(){
         this.renderer.renderWaitScreen();
     }
-
-    sqm.clearTimelineBlocks = function() {
-        $("#left-block-div").remove();
-        $("#right-block-div").remove();
-    }
-
-    sqm.blockClicksOutsideRange = function() {
-        var step = this.squim.getCurrentStep();
-        if (step == undefined || step == 'summary'){
-            return;
+    
+    sqm.isOkToDisplayActionName = function(step){
+        var currentQuestionId = this.squim.getCurrentQuestionId();
+        var currentStep = currentQuestionId.split(".")[0];
+        if (currentStep == "summary"){
+            // all can be revealed once we make it to summary question
+            return true;
         }
-        var rangePair = this.windowRangeForStep[step];
-        this.activeRange = rangePair;
-        var maxIndex = sessionIndexManager.getMaxIndex();
-        var widthOfTimeline = expl_ctrl_canvas.width - 2*timelineMargin;
-
-        // get offset of explanation-control-panel relative to document
-        var ecpOffset = $("#explanation-control-panel").offset();
-        var x1 = ecpOffset.left;
-        // calculate left window edge position
-        var leftValueOnTimeline = Math.floor((rangePair[0] / maxIndex ) * 100);
-        var x2 = ecpOffset.left + timelineMargin + (leftValueOnTimeline / 100) * widthOfTimeline;
-        // shift x2 to the left to fully expose the current DecisionPoint;
-        var currentIndex = sessionIndexManager.getCurrentIndex();
-        if (currentIndex == rangePair[0]) {
-            x2 = x2 - explanationPointBigDiamondHalfWidth;
+        var currentQuestionIndex = currentQuestionId.split(".")[1];
+        if (step < currentStep) {
+            // any waitForPredictionClick questions in the past would have been answered
+            return true;
+        }
+        if (step == currentStep){
+            if (currentQuestionIndex != 0){
+                return true;
+            }
+            // first question, check if its a waitForClickPrediction
+            var qu = this.questionMap[currentQuestionId];
+            if (qu.questionType == "waitForPredictionClick"){
+                return false;
+            }
+            return true;
         }
         else {
-            x2 = x2 - explanationPointSmallDiamondHalfWidth;
+            // step > currentQuestionId's step...
+            // Any future waitForPredictionClick questions need to be hidden
+            if (this.doesStepHaveWaitForPredictionClickQuestion(step)){
+                return false;
+            }
+            return true;
         }
-        
-        // calculate right window edge position
-        var rightValueOnTimeline = Math.floor(((Number(rangePair[1]) + 1)/ maxIndex ) * 100);
-        var x3 = ecpOffset.left + timelineMargin + (rightValueOnTimeline / 100) * widthOfTimeline;
-        // shift x3 to the left to fully cover the next DecisionPoint
-        if (!this.squim.isAtLastDecisionPoint()) {
-            x3 = x3 - explanationPointSmallDiamondHalfWidth;
+    }
+
+    sqm.doesStepHaveWaitForPredictionClickQuestion = function(step) {
+        if (step == "summary"){
+            return false;
         }
-        var x4 = expl_ctrl_canvas.width;
-        
-
-        var y = ecpOffset.top;
-        var width1 = x2 - x1;
-        var width2 = x4 - x3;
-        var height = $("#explanation-control-panel").height();
-        // make blocking div from 0 -> rightXofLeftBlock
-        var gradientBars = "repeating-linear-gradient(135deg,rgba(100, 100, 100, 0.1),rgba(100, 100, 100, 0.3) 20px,rgba(100, 100, 100, 0.6) 20px,rgba(100, 100, 100, 0.7) 20px)";
-        var leftBlockDiv = document.createElement("DIV");
-        leftBlockDiv.setAttribute("id", "left-block-div");
-        leftBlockDiv.setAttribute("style", "position:absolute;left:" + x1 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] + ";background:" + gradientBars + ";width:" + width1 + "px;height:" + height + "px;");
-        //$("body").append(leftBlockDiv);
-
-
-        // make blocking div from leftXofRightBlock -> expl_ctrl_canvas.width
-        var rightBlockDiv = document.createElement("DIV");
-        rightBlockDiv.setAttribute("id", "right-block-div");
-        rightBlockDiv.setAttribute("style", "position:absolute;left:" + x3 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] + ";background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
-        rightBlockDiv.onclick = function(e) {
-            if (isStudyQuestionMode()){
-                targetClickHandler(e,"clickTimelineBlocker:NA");
-                regionClickHandlerGameArea(e);
-                userActionMonitor.globalClick(e.clientX, e.clientY);
+        for (var i in this.questionIds){
+            var qId = this.questionIds[i];
+            var curStep = qId.split(".")[0];
+            if (curStep == step){
+                var qu = this.questionMap[qId];
+                if (qu.questionType == "waitForPredictionClick"){
+                    return true;
+                }
             }
         }
-        
-        $("body").append(rightBlockDiv);
+        return false;
     }
+
+    sqm.getExplanationTitles = function(explanationSteps, explanationTitles){
+        var result = [];
+        for (var i in explanationSteps){
+            var step = explanationSteps[i];
+            var title = explanationTitles[i];
+            if (this.isOkToDisplayActionName(step)){
+                result[i] = title;
+            }
+            else {
+                result[i] = "---";
+            }
+        }
+        return result;
+    }
+
     return sqm;
 }
 
-function getRanges(steps) {
-    var stepRangePairs = {};
-    for (var i = 0; i < steps.length; i++) {
-        if (i == steps.length - 1) {
-            // looking at the final entry - pair this one with the max index
-            var range_pair = [ Number(steps[i]), Number(sessionIndexManager.getMaxIndex()) ];
-            stepRangePairs[steps[i]] = range_pair;
-        }
-        else {
-            // prior to last one, we make a pair with the step prior to the next question's step
-            var range_pair = [ Number(steps[i]), Number(steps[i+1]) - 1 ];
-            stepRangePairs[steps[i]] = range_pair;
-        }
-    }
-    console.log(stepRangePairs)
-    return stepRangePairs;
-}
 
 function acceptUserId() {
     var userId = studyQuestionManager.userId;
@@ -266,7 +228,8 @@ function acceptUserId() {
     
 }
 function acceptAnswer(e) {
-    var renderer = studyQuestionManager.renderer;
+    var sqMan = studyQuestionManager;
+    var renderer = sqMan.renderer;
     //renderer.removeMissingClickInfoMessage();
     // block if no answer specified
     if (renderer.controlsWaitingForClick.length != 0) {
@@ -293,7 +256,7 @@ function acceptAnswer(e) {
     }
     var followupAnswer = "NA";
     if (!(currentStep == 'summary')){
-        if (!isTutorial() && studyQuestionManager.isFinalQuestionAtDecisionPoint(questionId)){
+        if (!isTutorial() && sqMan.isFinalQuestionAtDecisionPoint(questionId)){
             followupAnswer = renderer.getCurrentFollowupAnswer();
         }
     }
@@ -302,19 +265,19 @@ function acceptAnswer(e) {
     renderer.forgetQuestion();
     if (studyQuestionIndexManager.hasMoreQuestionsAtThisStep()) {
         renderState(gameboard_canvas, masterEntities, gameScaleFactor, 0, 0, true);
-        studyQuestionManager.poseNextQuestion();
+        sqMan.poseNextQuestion();
     }
     else {
         if (studyQuestionIndexManager.hasMoreQuestions()){
-            if (getStepFromQuestionId(studyQuestionManager.mostRecentlyPosedQuestion) == "summary"){
+            if (getStepFromQuestionId(sqMan.mostRecentlyPosedQuestion) == "summary"){
                 renderer.renderCueAndArrowToPlayButton();
             }
             else {
-                studyQuestionManager.makeUserWaitForInstructions();
+                sqMan.makeUserWaitForInstructions();
             }
             
         }
-        studyQuestionManager.questionWasAnswered = true;
+        sqMan.questionWasAnswered = true;
         if (studyQuestionIndexManager.hasMoreQuestions()){
             // wait for play button to take us to next Decision Point
             controlsManager.enablePauseResume();
@@ -325,18 +288,6 @@ function acceptAnswer(e) {
             }
         }
     }
+    sqMan.accessManager.setQuestionState("answered");
+    sqMan.accessManager.express();
 }
-
-
-// function chooseNextQuestionAfterStep(step) {
-//     // clear current question
-//     $('#q-and-a-div').empty();
-
-//     if (step == 'summary'){
-//         renderer.poseThankYouScreen();
-//     } 
-//     else {
-//         // pose next question
-//         studyQuestionManager.poseNextQuestion();
-//     }
-// }

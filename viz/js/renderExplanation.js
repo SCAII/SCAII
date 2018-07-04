@@ -699,7 +699,10 @@ function renderDecisionPointLegend() {
 	$("#action-list").append(legendLabel);
 
 	var explanation_steps = replaySessionConfig.getExplanationStepsList();
-	var explanation_titles = replaySessionConfig.getExplanationTitlesList();
+    var explanation_titles = replaySessionConfig.getExplanationTitlesList();
+    if (isStudyQuestionMode()) {
+       explanation_titles = studyQuestionManager.getExplanationTitles(explanation_steps, explanation_titles);
+    }
 	var expl_count = explanation_steps.length;
 	var index = 0;
 	while (index < expl_count){
@@ -797,6 +800,7 @@ function getDecisionPointIdForName(name, step){
 	nameForId = "actionLabel-step-" +step + "-action-" + nameForId;
 	return nameForId;
 }
+
 function addLabelForAction(title, index, step){
     var fullName = 'D' + index + ': ' + title;
 	var actionLabel = document.createElement("div");
@@ -808,7 +812,7 @@ function addLabelForAction(title, index, step){
 	actionLabel.addEventListener("click", function(evt) {
 		if (!isUserInputBlocked()){
             if (isStudyQuestionMode()){
-                if (studyQuestionManager.isBeyondCurrentRange(step)){
+                if (studyQuestionManager.accessManager.isBeyondCurrentRange(step)){
                     targetClickHandler(evt, "clickActionLabelDenied:" + escapeAnswerFileDelimetersFromTextString(fullName));
                     return;
                 }
@@ -827,7 +831,7 @@ function addLabelForAction(title, index, step){
 	actionLabel.addEventListener("mouseenter", function(evt) {
         //$("#" + id).css("background-color","rgba(100,100,100,1.0);");
         if (isStudyQuestionMode()){
-            if (studyQuestionManager.isBeyondCurrentRange(step)){
+            if (studyQuestionManager.accessManager.isBeyondCurrentRange(step)){
                 return;
             }
         }
