@@ -177,6 +177,7 @@ function isTutorial() {
 var chosenFile;
 
 function loadSelectedReplayFile() {
+    $("#cue-arrow-div").remove();
     if (userActionMonitor != undefined) {
         userActionMonitor.clickListener = undefined;
     }

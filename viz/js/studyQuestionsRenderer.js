@@ -376,7 +376,6 @@ function getStudyQuestionRenderer(questions) {
         next.innerHTML = "Continue";
         next.onclick = function() {
             $("#user-wait-div").remove();
-            studyQuestionManager.renderer.renderCueAndArrowToPlayButton();
         }
         $("#user-wait-button-row").append(next);
         $("#user-wait-button-continue").attr("disabled", true);

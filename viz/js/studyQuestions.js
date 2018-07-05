@@ -139,6 +139,13 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
             }
             this.accessManager.express();
             renderDecisionPointLegend();
+            // wait before show first question at DP, but not on DP1
+            if (currentStep != "summary" && currentStep != 1){
+                var questionIndex = qid.split(".")[1];
+                if (questionIndex == 0){
+                    this.makeUserWaitForInstructions();
+                }
+            }
         }
     }
 
@@ -273,7 +280,7 @@ function acceptAnswer(e) {
                 renderer.renderCueAndArrowToPlayButton();
             }
             else {
-                sqMan.makeUserWaitForInstructions();
+                studyQuestionManager.renderer.renderCueAndArrowToPlayButton();
             }
             
         }
