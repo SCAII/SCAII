@@ -124,9 +124,11 @@ function getSaliencyDisplayManager(selectionManager) {
 				$("#saliency-checkboxes").append(checkBoxLabel);
 			}
 		}
-	}
+    }
+    
 	sdm.populateActionCheckBoxes = function() {	
-		var barGroups = activeBarChartManager.groupsList;
+        var barGroups = activeBarChartManager.groupsList;
+        barGroups = rankThings(barGroups, getMaxValueBarGroupFromList);
 		for (var i in barGroups) {
 			var barGroup = barGroups[i];
 			var actionName = barGroup.getName();
@@ -154,11 +156,13 @@ function getSaliencyDisplayManager(selectionManager) {
 	}
 		
 	sdm.populateActionBarCheckBoxes = function(){
-		var barGroups = activeBarChartManager.groupsList;
+        var barGroups = activeBarChartManager.groupsList;
+        barGroups = rankThings(barGroups, getMaxValueBarGroupFromList);
 		for (var i in barGroups) {
 			var barGroup = barGroups[i];
 			var actionName = barGroup.getName();
-			var barsList = barGroup.getBarsList();
+            var barsList = barGroup.getBarsList();
+            barsList = rankThings(barsList, getMaxValueBarFromList);
 			var barCount = barsList.length;
 			for (var j in barsList){
 				var bar = barsList[j];
