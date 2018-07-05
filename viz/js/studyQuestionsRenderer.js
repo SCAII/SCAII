@@ -332,6 +332,37 @@ function getStudyQuestionRenderer(questions) {
         
         $("#user-wait-question-row").append(question);
 
+
+        var checkboxRow = document.createElement("DIV");
+        checkboxRow.setAttribute("id", "user-wait-checkbox-row");
+        checkboxRow.setAttribute("class", "flex-row");
+        checkboxRow.setAttribute("style", "margin-left:100px;margin-top:50px;padding:10px;");
+        $("#user-wait-div").append(checkboxRow);
+        
+        var checkbox = document.createElement("INPUT");
+        checkbox.setAttribute("id", "user-wait-checkbox");
+        checkbox.setAttribute("type", "checkbox");
+        checkbox.setAttribute("style", "padding:10px;margin:0px;width:20px;height:20px;");
+        checkbox.onclick = function(e) {
+            if (e.currentTarget.checked) {
+                $("#user-wait-button-continue").attr("disabled", false);
+            }
+            else {
+                $("#user-wait-button-continue").attr("disabled", true);
+            }
+        };
+        $("#user-wait-checkbox-row").append(checkbox);
+
+        var checkboxLabel = document.createElement("LABEL");
+        checkboxLabel.setAttribute("id", "user-wait-checkbox");
+        //checkboxLabel.setAttribute("for", "user-wait-checkbox");
+        checkboxLabel.setAttribute("style", "font-family:font-size:18px;Arial;padding:10px;");
+        var t = document.createTextNode("The researcher has given the instruction to proceed");
+		checkboxLabel.appendChild(t);
+        //checkboxLabel.innerHTML = "The researcher has given the instruction to proceed";
+        $("#user-wait-checkbox-row").append(checkboxLabel);
+
+
         var buttonRow = document.createElement("DIV");
         buttonRow.setAttribute("id", "user-wait-button-row");
         buttonRow.setAttribute("class", "flex-row");
@@ -340,6 +371,7 @@ function getStudyQuestionRenderer(questions) {
 
         var next = document.createElement("BUTTON");
         next.setAttribute("id", "user-wait-button-continue");
+        next.setAttribute("disabled", "true");
         next.setAttribute("style", "margin-left:280px;font-family:Arial;font-size:18px;padding:10px;");
         next.innerHTML = "Continue";
         next.onclick = function() {
@@ -347,6 +379,7 @@ function getStudyQuestionRenderer(questions) {
             studyQuestionManager.renderer.renderCueAndArrowToPlayButton();
         }
         $("#user-wait-button-row").append(next);
+        $("#user-wait-button-continue").attr("disabled", true);
     }
 
     sqr.renderCueToPlayButton = function(){
