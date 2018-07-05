@@ -268,7 +268,8 @@ function getStudyQuestionRenderer(questions) {
         var userIdDiv = document.createElement("DIV");
         userIdDiv.setAttribute("id", "user-id-div");
         userIdDiv.setAttribute("class", "flex-column");
-        userIdDiv.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:" + zIndexMap["allTheWayToFront"] + ";margin:auto;font-family:Arial;padding:10px;width:1800px;height:1600px;background-color:" + this.bg + ";");
+        var widthNeededToCoverEverything = this.getWidthNeededToHideEverything();
+        userIdDiv.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:" + zIndexMap["allTheWayToFront"] + ";margin:auto;font-family:Arial;padding:10px;width:" + widthNeededToCoverEverything + "px;height:1600px;background-color:" + this.bg + ";");
         $('body').append(userIdDiv);
 
         var questionRow = document.createElement("DIV");
@@ -311,12 +312,21 @@ function getStudyQuestionRenderer(questions) {
         $("#user-id-button-row").append(next);
     }
 
+    sqr.getWidthNeededToHideEverything = function() {
+        var result = 3000;
+        // if ($('#scaii-explanations').length > 0) {
+        //     var width = $("#scaii-explanations").width();
+        //     result = width + 5;
+        // }
+        return result;
+    }
     
     sqr.renderWaitScreen = function() {
         var userIdDiv = document.createElement("DIV");
         userIdDiv.setAttribute("id", "user-wait-div");
         userIdDiv.setAttribute("class", "flex-column");
-        userIdDiv.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:" + zIndexMap["allTheWayToFront"] + ";margin:auto;font-family:Arial;padding:10px;width:1800px;height:1600px;background-color:" + this.bg + ";");
+        var widthNeededToCoverEverything = this.getWidthNeededToHideEverything();
+        userIdDiv.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:" + zIndexMap["allTheWayToFront"] + ";margin:auto;font-family:Arial;padding:10px;width:" + widthNeededToCoverEverything + "px;height:1600px;background-color:" + this.bg + ";");
         $('body').append(userIdDiv);
 
         var questionRow = document.createElement("DIV");
