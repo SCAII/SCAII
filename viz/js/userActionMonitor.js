@@ -67,6 +67,9 @@ function getUserActionMonitor() {
     uam.globalClick = function(x,y) {
         if (chartClickProcessing) {
             rememberedGlobalChartClick = [x,y];
+            userActionMonitor.regionClick("rewards");
+            //userActionMonitor.regionClickOld("region:rewards");
+            userActionMonitor.compileChartClickEvent();
             return;
         }
         if (this.pendingLogLine == undefined) {
@@ -165,7 +168,9 @@ function globalClickHandler(e) {
     userActionMonitor.globalClick(e.clientX, e.clientY);
 }
 
-function regionClickHandlerSaliency(e) { userActionMonitor.regionClick("saliency");}
+function regionClickHandlerSaliency(e) { 
+    userActionMonitor.regionClick("saliency");
+}
 function regionClickHandlerRewards(e)  { userActionMonitor.regionClick("rewards");}
 function regionClickHandlerGameArea(e) { userActionMonitor.regionClick("gameArea");}
 function regionClickHandlerQnAArea(e)  { userActionMonitor.regionClick("QnA");}
@@ -244,8 +249,6 @@ function deleteUnwantedControls(){
 }
 function setHandlers() {
     $("#scaii-interface")         .on("click",globalClickHandler);
-    $("#scaii-explanations")      .on("click",regionClickHandlerSaliency);
-    $("#rewards-titled-container").on("click",regionClickHandlerRewards);
     $("#game-titled-container")   .on("click",regionClickHandlerGameArea);
     $('#q-and-a-div')             .on("click",regionClickHandlerQnAArea);
     $("#scaii-acronym")           .on("click",function(e) {
@@ -280,11 +283,6 @@ function setHandlers() {
         var y = e.clientY;
         if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom) {
             chartClickProcessing = true;
-            if (rememberedGlobalChartClick != undefined) {
-                userActionMonitor.regionClick("rewards");
-                userActionMonitor.regionClickOld("region:rewards");
-                userActionMonitor.compileChartClickEvent();
-            }
         }
         else {
             chartClickProcessing = false;

@@ -65,7 +65,9 @@ function stageUserCommand(userCommand) {
 }
 var tryPause = function (e) {
 	if (!userInputBlocked) {
-		targetClickHandler(e, "pause:NA");
+		var logLine = templateMap["pauseButton"];
+		logLine = logLine.replace("<TIME_LINE_PAUSE>", "NA");
+		targetClickHandler(e, logLine);
 		pauseGame();
 	}
 }
@@ -83,7 +85,9 @@ function pauseGame() {
 
 var tryResume = function (e) {
 	if (!userInputBlocked) {
-		targetClickHandler(e, "play:NA");
+		var logLine = templateMap["playButton"];
+		logLine = logLine.replace("<TIME_LINE_PLAY>", "NA");
+		targetClickHandler(e, logLine);
 		resumeGame();
 	}
 }
@@ -109,7 +113,9 @@ function resumeGame() {
 
 var tryRewind = function (e) {
 	if (!userInputBlocked) {
-		targetClickHandler(e, "rewind:NA");
+		var logLine = templateMap["rewindButton"];
+		logLine = logLine.replace("<TIME_LINE_RWND>", "NA");
+		targetClickHandler(e, logLine);
 		rewindGame();
 	}
 }
