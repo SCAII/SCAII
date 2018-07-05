@@ -211,8 +211,9 @@ function getSaliencyDisplayManager(selectionManager) {
 					var name = expLayer.getName();
 					var cells = expLayer.getCellsList();
 					var width = expLayer.getWidth();
-					var height = expLayer.getHeight();
-					this.renderExplLayer(j + 1, i, name, rowInfoString + name, cells, width, height, normalizationFactor);
+                    var height = expLayer.getHeight();
+                    var realUIName = renameEntityInfoForIUI(name);
+					this.renderExplLayer(j + 1, i, realUIName, rowInfoString + realUIName, cells, width, height, normalizationFactor);
 				} 
 			}
 		}
