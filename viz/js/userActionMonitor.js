@@ -67,9 +67,6 @@ function getUserActionMonitor() {
     uam.globalClick = function(x,y) {
         if (chartClickProcessing) {
             rememberedGlobalChartClick = [x,y];
-            userActionMonitor.regionClick("rewards");
-            //userActionMonitor.regionClickOld("region:rewards");
-            userActionMonitor.compileChartClickEvent();
             return;
         }
         if (this.pendingLogLine == undefined) {
@@ -283,6 +280,11 @@ function setHandlers() {
         var y = e.clientY;
         if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom) {
             chartClickProcessing = true;
+            if (rememberedGlobalChartClick != undefined) {
+                userActionMonitor.regionClick("rewards");
+                userActionMonitor.regionClickOld("region:rewards");
+                userActionMonitor.compileChartClickEvent();
+            }
         }
         else {
             chartClickProcessing = false;
