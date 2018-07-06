@@ -424,6 +424,13 @@ function createRewardChartContainer() {
 	rewardTitleContainer.setAttribute("class", "flex-column titled-container r0c1 rewards-bg");
 	$("#scaii-interface").append(rewardTitleContainer);
 
+    var rewardSpacerContainer = document.createElement("DIV");
+	rewardSpacerContainer.setAttribute("id", "rewards-spacer");
+	rewardSpacerContainer.setAttribute("class", "r0c2");
+	rewardSpacerContainer.setAttribute("style", "background-color:white;width:800px;");
+	$("#scaii-interface").append(rewardSpacerContainer);
+
+
 	var whyQuestionsDiv = document.createElement("DIV");
 	whyQuestionsDiv.setAttribute("id", "why-questions-div");
 	whyQuestionsDiv.setAttribute("class", "rewards-bg flex-row");

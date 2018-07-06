@@ -196,6 +196,10 @@ function getSaliencyDisplayManager(selectionManager) {
 		$("#saliency-maps").empty();
 		var rowInfos = this.xaiSelectionManager.getSelections();
 		for (var i in rowInfos){
+            var scaleFactor = 1.0;
+            if (i > 0){
+                scaleFactor = 0.8;
+            }
 			var rowInfo = rowInfos[i];
 			var saliencyId = activeBarChartManager.getSaliencyIdForActionNameAndBar(rowInfo[0], rowInfo[1]);
 			//console.log("NON-COMBINED MAP saliencyID " + saliencyId);
@@ -217,7 +221,7 @@ function getSaliencyDisplayManager(selectionManager) {
 					var width = expLayer.getWidth();
                     var height = expLayer.getHeight();
                     var realUIName = renameEntityInfoForIUI(name);
-					this.renderExplLayer(j + 1, i, realUIName, rowInfoString + realUIName, cells, width, height, normalizationFactor);
+					this.renderExplLayer(j + 1, i, realUIName, rowInfoString + realUIName, cells, width, height, normalizationFactor, scaleFactor);
 				} 
 			}
 		}
@@ -244,7 +248,7 @@ function getSaliencyDisplayManager(selectionManager) {
 				var normalizationFactor = getNormalizationFactorFromCells(aggregatedCells);
 				var width = expLayers[0].getWidth();
 				var height = expLayers[0].getHeight();
-				this.renderExplLayer(1, i, "all features cumulative", rowInfoString, aggregatedCells, width, height, normalizationFactor);
+				this.renderExplLayer(1, i, "all features cumulative", rowInfoString, aggregatedCells, width, height, normalizationFactor, 1.0);
 			}
 		}
 	}
@@ -274,7 +278,7 @@ function getSaliencyDisplayManager(selectionManager) {
 		}
 	}
 
-	sdm.renderExplLayer = function(gridX, gridY, saliencyUIName, saliencyNameForId, cells, width, height, normalizationFactor) {
+	sdm.renderExplLayer = function(gridX, gridY, saliencyUIName, saliencyNameForId, cells, width, height, normalizationFactor, scaleFactor) {
 		var nameNoSpaces = saliencyNameForId.replace(/ /g,"");
 		var nameForId = nameNoSpaces.replace(/,/g,"");
 		var explCanvas = document.createElement("canvas");
@@ -309,8 +313,8 @@ function getSaliencyDisplayManager(selectionManager) {
 		// );
 		var explCtx = explCanvas.getContext("2d");
 		// canvas size should be same a gameboardHeight
-		explCanvas.width  = gameboard_canvas.width * this.saliencyMapPercentSize;
-		explCanvas.height = gameboard_canvas.height * this.saliencyMapPercentSize;
+		explCanvas.width  = gameboard_canvas.width * scaleFactor;
+		explCanvas.height = gameboard_canvas.height * scaleFactor;
 		this.renderSaliencyMap(explCanvas, explCtx, cells, width, height, normalizationFactor);
 		// the div that will contain it should be a bit wider
 		// and tall enough to contain title text
