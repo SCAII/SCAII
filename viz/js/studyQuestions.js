@@ -118,6 +118,17 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         this.poseCurrentQuestion();
     }
     
+    sqm.getLegalInstrumentationTargetsForCurrentQuestion =function(){
+        var qid = this.squim.getCurrentQuestionId();
+        var qu = this.questionMap[qid];
+        if (qu.questionType == 'waitForClick' || qu.questionType == 'waitForPredictionClick'){
+            return qu.regionsToAllow;
+        }
+        else {
+            return undefined;
+        }
+    }
+
     sqm.poseCurrentQuestion = function() {
         var qid = this.squim.getCurrentQuestionId();
         if (this.mostRecentlyPosedQuestion != qid){

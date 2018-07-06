@@ -127,19 +127,30 @@ function getSelectionManager() {
     }
     
 	sm.addSelection = function(selection) {
-        var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
-        var targetArg = selection[0] + "/" + selection[1];
-        if (this.defaultSelectionMade) {
-            chartTargetClickHandler(targetName, "selectRewardBar:" + targetArg);
+        //since not doing our own highlighting of bar, don't need to do isLegalTarget checking
+        if (isStudyQuestionMode()){
+            var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
+            var targetArg = selection[0] + "/" + selection[1];
+            if (this.defaultSelectionMade) {
+                chartTargetClickHandler(targetName, "selectRewardBar:" + targetArg);
+                // clear any highlighing that might have been done for those items
+                activeSaliencyDisplayManager.hideAllSaliencyMapOutlines();
+                clearHighlightedShapesOnGameboard()
+            }
         }
         this.defaultSelectionMade = true;
 		this.selections.push(selection);
 	}
 
 	sm.removeSelection = function (selection) {
-        var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
-        var targetArg = selection[0] + "/" + selection[1];
-        chartTargetClickHandler(targetName, "unselectRewardBar:" + targetArg);
+        //since not doing our own highlighting of bar, don't need to do isLegalTarget checking
+        if (isStudyQuestionMode()){
+            var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
+            var targetArg = selection[0] + "/" + selection[1];
+            if (this.defaultSelectionMade) {
+                chartTargetClickHandler(targetName, "unselectRewardBar:" + targetArg);
+            }
+        }
 		var newList = [];
 		for (var i in this.selections) {
 			var curSel = this.selections[i];

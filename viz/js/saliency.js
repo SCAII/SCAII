@@ -12,7 +12,8 @@ function getSaliencyDisplayManager(selectionManager) {
 	sdm.activeCheckBoxLabels = [];
 	//A list of strings such as "attack bottom left *"  (for all bars) or "attack bottom left rewardX" 
 	sdm.xaiSelectionManager = selectionManager;
-	sdm.rowInfosByName = {};
+    sdm.rowInfosByName = {};
+    sdm.outlinesForSaliencyMap = {};
 	
 	sdm.setActiveRowInfo = function(activeRowInfos) {
 		this.rowInfosByName = {};
@@ -290,12 +291,27 @@ function getSaliencyDisplayManager(selectionManager) {
 		}
 	}
 
+    sdm.hideAllSaliencyMapOutlines = function() {
+        var keys = Object.keys(this.outlinesForSaliencyMap);
+        for (var i in keys){
+            var key = keys[i];
+            var outlineId = this.outlinesForSaliencyMap[key];
+            $("#" + outlineId).css("visibility", "hidden");
+        }
+    }
+
+    sdm.showSaliencyMapOutline = function(saliencyMapId) {
+        var outlineId = this.outlinesForSaliencyMap[saliencyMapId];
+        $("#" + outlineId).css("visibility", "visible");
+    }
+
 	sdm.renderExplLayer = function(gridX, gridY, saliencyUIName, saliencyNameForId, cells, width, height, normalizationFactor, scaleFactor) {
 		var nameNoSpaces = saliencyNameForId.replace(/ /g,"");
 		var nameForId = nameNoSpaces.replace(/,/g,"");
 		var explCanvas = document.createElement("canvas");
         explCanvas.setAttribute("class", "explanation-canvas");
-        explCanvas.setAttribute("id", "saliencyMap_" + nameForId);
+        var saliencyMapId = "saliencyMap_" + nameForId;
+        explCanvas.setAttribute("id", saliencyMapId);
         explCanvas.onclick = function(e) {
             var x = e.offsetX;
             var y = e.offsetY;
@@ -304,8 +320,21 @@ function getSaliencyDisplayManager(selectionManager) {
                 //targetClickHandler(e, "clickEntity:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
                 targetClickHandler(e, "clickSaliencyMap:" + saliencyUIName + "_(" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y)+ ")");
             }
-            //targetClickHandler(e, "clickGameQuadrant:" + getQuadrantName(x,y));
-            targetClickHandler(e, "clickSaliencyMap:" + saliencyUIName + "_(" + getQuadrantName(x,y) + ")");
+            else {
+                //targetClickHandler(e, "clickGameQuadrant:" + getQuadrantName(x,y));
+                targetClickHandler(e, "clickSaliencyMap:" + saliencyUIName + "_(" + getQuadrantName(x,y) + ")");
+            }
+            if (isStudyQuestionMode()){
+                var legalClickTargetRegions = studyQuestionManager.getLegalInstrumentationTargetsForCurrentQuestion();
+                if (studyQuestionManager.renderer.isLegalRegionToClickOn("target:saliencyMap", legalClickTargetRegions)){
+                    if (studyQuestionManager.renderer.controlsWaitingForClick.length == 0) {
+                        return;
+                    }
+                    activeSaliencyDisplayManager.hideAllSaliencyMapOutlines();
+                    activeSaliencyDisplayManager.showSaliencyMapOutline(saliencyMapId);
+                    clearHighlightedShapesOnGameboard();
+                }
+            }
         }
         
             
@@ -327,8 +356,21 @@ function getSaliencyDisplayManager(selectionManager) {
 		// canvas size should be same a gameboardHeight
 		explCanvas.width  = gameboard_canvas.width * scaleFactor;
 		explCanvas.height = gameboard_canvas.height * scaleFactor;
-		this.renderSaliencyMap(explCanvas, explCtx, cells, width, height, normalizationFactor);
-		// the div that will contain it should be a bit wider
+        this.renderSaliencyMap(explCanvas, explCtx, cells, width, height, normalizationFactor);
+        
+        var w = explCanvas.width;
+        var h = explCanvas.height;
+       
+        var outlineWidth = 6;
+        var divW = w - 2 * outlineWidth;
+        var divH = h - 2 * outlineWidth;
+        var outlineDiv = document.createElement("div");
+        var outlineDivId =  "outline-div-" + nameForId;
+        outlineDiv.setAttribute("id", outlineDivId);
+        outlineDiv.setAttribute("style","visibility:hidden;border-color:white;border-style:solid;border-width:6px;z-index:" + zIndexMap["saliencyHoverValue"] + "; position:relative; left:0px; top:-" + h + "px;background-color:transparent;width:"+ divW + "px;height:"+ divH + "px;");
+        this.outlinesForSaliencyMap[saliencyMapId] = outlineDivId;
+        
+        // the div that will contain it should be a bit wider
 		// and tall enough to contain title text
 		var mapContainerDivHeight = explCanvas.height + 30;
 		
@@ -362,7 +404,8 @@ function getSaliencyDisplayManager(selectionManager) {
 		$(mapDivSelector).css("width",explCanvas.width + 'px');
 		$(mapDivSelector).css("height",explCanvas.height + 'px');
 		$(mapDivSelector).css("background-color", "#123456");
-		$(mapDivSelector).append(explCanvas);
+        $(mapDivSelector).append(explCanvas);
+        $(mapDivSelector).append(outlineDiv);
 
 		
 		var valueSpan = document.createElement("span");
@@ -576,4 +619,23 @@ function getWhiteRGBAString(saliencyValue) {
   color['A'] = saliencyValue;
   var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
   return result;
+}
+function drawClickSelectHighlight(canvas, width, height){
+    var ctx = canvas.getContext("2d");
+    var x1 = 0;
+    var y1 = 0;
+    var x2 = width;
+    var y2 = height;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y1);
+    ctx.lineTo(x2, y2);
+    ctx.lineTo(x1, y2);
+    ctx.lineTo(x1, y1);
+    ctx.closePath();
+
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = "white";
+    ctx.stroke();
+    
 }
