@@ -267,10 +267,22 @@ function getSaliencyDisplayManager(selectionManager) {
 	
 	
 	sdm.overlaySaliencyMapOntoGameReplica = function(ctx, cells, width, height, normalizationFactor) {
+        if (isStudyQuestionMode()){
+            if (isTutorial()){
+                cells = getRandomCells(width * height);
+                var max = getMaxValueForLayer(cells);
+                if (max == 0) {
+                    normalizationFactor = 1;
+                }
+                else{
+                    normalizationFactor = 1/ max;
+                }
+            }
+        }
 		for (var x= 0; x < width; x++){
 			for (var y = 0; y < height; y++){
 				var index = height * x + y;
-				var cellValue = cells[index];
+                var cellValue = cells[index];
 				ctx.fillStyle = getOverlayOpacityBySaliencyRGBAString(cellValue * normalizationFactor);
 				ctx.fillRect(x*gameScaleFactor, y*gameScaleFactor, gameScaleFactor, gameScaleFactor);
 				ctx.fill();
@@ -482,6 +494,13 @@ function getNormalizationFactorFromCells(cells) {
 	return factor;
 }
 
+function getRandomCells(count) {
+    var result = [];
+    for (var i = 0; i < count; i++){
+        result.push(Math.random());
+    }
+    return result;
+}
 var getNormalizationFactor = function(expLayers){
 	var max = 0.0
 	for (var i in expLayers) {
@@ -508,7 +527,8 @@ var getMaxValueForLayer = function(vals){
 		if (value > max) {
 			max = value;
 		}
-	}
+    }
+    console.log("max for layer = " + max);
 	return max;
 }
 function getGridPositionStyle(gridX, gridY) {
