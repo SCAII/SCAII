@@ -87,7 +87,7 @@ function roll_ship(rng, units, agent)
     table.insert(units, tower)
 end
 
-function sky_reset(rng)
+function _reset(rng, data)
     local agent = {
         pos = {x=20.0, y=20.0},
         unit_type="Ship",
@@ -122,6 +122,10 @@ function sky_reset(rng)
     roll_ship(rng, out, agent)
 
     return out
+end
+
+function sky_reset(rng)
+    return _reset(rng, nil)
 end
 
 function on_spawn(world, unit)
@@ -259,7 +263,7 @@ function on_death(world, dead, cause)
 
     -- We'll just use our reset function to generate
     -- the next board and tweak it to our liking
-    new_board = sky_reset(world:rng())
+    new_board = _reset(world:rng(), world)
     for _k,entity in pairs(new_board) do
         -- Carry over agent HP to next iteration
         if entity.unit_type == "Ship" and entity.faction == 0 then
