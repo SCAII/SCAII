@@ -126,10 +126,26 @@ function getSaliencyDisplayManager(selectionManager) {
 			}
 		}
     }
-    
+    sdm.rankString = {};
+    sdm.createRankStrings = function(barGroups) {
+        this.rankStrings ={};
+        for (var i in barGroups) {
+            var barGroup= barGroups[i];
+            if (i == 0){
+                this.rankString[barGroup.getName()] = "best action at D" + studyQuestionManager.squim.getCurrentDecisionPointNumber();
+            }
+            else if (i == 1){
+                this.rankString[barGroup.getName()] = "2nd best action at D" + studyQuestionManager.squim.getCurrentDecisionPointNumber();
+            }
+            else {
+                this.rankString[barGroup.getName()] = "";
+            }
+        }
+    }
 	sdm.populateActionCheckBoxes = function() {	
         var barGroups = activeBarChartManager.groupsList;
         barGroups = rankThings(barGroups, getMaxValueBarGroupFromList);
+        this.createRankStrings(barGroups);
 		for (var i in barGroups) {
 			var barGroup = barGroups[i];
 			var actionName = barGroup.getName();
@@ -159,6 +175,7 @@ function getSaliencyDisplayManager(selectionManager) {
 	sdm.populateActionBarCheckBoxes = function(){
         var barGroups = activeBarChartManager.groupsList;
         barGroups = rankThings(barGroups, getMaxValueBarGroupFromList);
+        this.createRankStrings(barGroups);
 		for (var i in barGroups) {
 			var barGroup = barGroups[i];
 			var actionName = barGroup.getName();
@@ -210,7 +227,7 @@ function getSaliencyDisplayManager(selectionManager) {
 			}
 			else {
 				var expLayers = layerMessage.getLayersList();
-				var nameContainerDiv = getNameDivForRow(i, rowInfo);
+				var nameContainerDiv = getNameDivForRow(i, rowInfo,this.rankString[rowInfo[0]]);
 				$("#saliency-maps").append(nameContainerDiv);
 				var rowInfoString = getRowInfoString(rowInfo);
 				var normalizationFactor = getNormalizationFactor(expLayers);
@@ -242,7 +259,7 @@ function getSaliencyDisplayManager(selectionManager) {
 			}
 			else {
 				var expLayers = layerMessage.getLayersList();
-				var nameContainerDiv = getNameDivForRow(i, rowInfo);
+				var nameContainerDiv = getNameDivForRow(i, rowInfo, this.rankString[rowInfo[0]]);
 				$("#saliency-maps").append(nameContainerDiv);
 				var rowInfoString = getRowInfoString(rowInfo);
 				var aggregatedCells = getAggregatedCells(expLayers);
@@ -466,7 +483,6 @@ function getSaliencyDisplayManager(selectionManager) {
 	}
 	return sdm;
 }
-
 function getRowInfoString(rowInfo) {
 	var result = undefined;
 	if ('*' == rowInfo[1]) {
@@ -486,15 +502,20 @@ function getMousePos(canvas, evt) {
 	};
   }
 	
-function getNameDivForRow(rowIndex, rowInfo, layerCount){
-	var nameContainerDiv = document.createElement("div");
-	nameContainerDiv.setAttribute("style", getGridPositionStyle(0,rowIndex) + '; width:200px;padding-top:125px; text-align:center; border-style: solid; border-width:1px;font-family:Arial;');
-	nameContainerDiv.innerHTML = getRowInfoString(rowInfo);                              // had height:100%
-//	var nameContainerContentDiv = document.createElement("div");
-//	nameContainerContentDiv.innerHTML = getRowInfoString(rowInfo);
-//	nameContainerContentDiv.setAttribute("style", 'margin:auto;font-family:Arial;');
-	//nameContainerContentDiv.setAttribute("style", 'text-align:center; padding-top:80px;font-family:Arial;');
-//	nameContainerDiv.append(nameContainerContentDiv);
+function getNameDivForRow(rowIndex, rowInfo, contextString){
+    var nameContainerDiv = document.createElement("div");
+    nameContainerDiv.setAttribute("class", "flex-column");
+	nameContainerDiv.setAttribute("style", getGridPositionStyle(0,rowIndex) + '; width:200px;text-align:center; border-style: solid; border-width:1px;font-family:Arial;');
+    
+    var contextDiv = document.createElement("div");
+	contextDiv.setAttribute("style", 'width:200px;padding-top:100px; text-align:center; font-family:Arial;');
+    contextDiv.innerHTML = contextString; 
+    nameContainerDiv.append(contextDiv);
+
+    var nameDiv = document.createElement("div");
+	nameDiv.setAttribute("style", 'width:200px;padding-top:25px; text-align:center; font-family:Arial;');
+    nameDiv.innerHTML = getRowInfoString(rowInfo);     
+    nameContainerDiv.append(nameDiv);
 	return nameContainerDiv;
 }
 
