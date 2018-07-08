@@ -122,7 +122,9 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         var qid = this.squim.getCurrentQuestionId();
         if (this.mostRecentlyPosedQuestion != qid){
             this.mostRecentlyPosedQuestion = qid;
-            stateMonitor.setUserAction("showQuestion:"+ qid);
+            var logLine = templateMap["showQuestion"];
+            logLine = logLine.replace("<SHOW_Q>", qid);
+            stateMonitor.setUserAction(logLine);
             stateMonitor.setQuestionId(qid);
             var qu = this.questionMap[qid];
             var currentStep = this.squim.getCurrentStep();
@@ -267,7 +269,14 @@ function acceptAnswer(e) {
             followupAnswer = renderer.getCurrentFollowupAnswer();
         }
     }
-    targetClickHandler(e,"answerQuestion:"+ currentStep + "." + currentQuestionIndexAtStep + "_" + answer + "_" + followupAnswer + "_(" + clickInfo + ")");
+    var logLine = templateMap["button-save"];
+    logLine = logLine.replace("<CLCK_STEP>", currentStep);
+    logLine = logLine.replace("<Q_INDEX_STEP>", currentQuestionIndexAtStep);
+    logLine = logLine.replace("<USR_TXT_Q1>", answer);
+    logLine = logLine.replace("<USR_TXT_Q2>", followupAnswer);
+    logLine = logLine.replace("<USR_CLCK_Q>", clickInfo);
+    targetClickHandler(e, logLine);
+    //targetClickHandlerOld(e,"answerQuestion:"+ currentStep + "." + currentQuestionIndexAtStep + "_" + answer + "_" + followupAnswer + "_(" + clickInfo + ")");
 
     renderer.forgetQuestion();
     if (studyQuestionIndexManager.hasMoreQuestionsAtThisStep()) {

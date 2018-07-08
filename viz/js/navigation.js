@@ -48,7 +48,10 @@ function processTimelineClick(e) {
 	var clickX = e.offsetX - timelineMargin;
 	var replaySequenceTargetStep = sessionIndexManager.getReplaySequencerIndexForClick(clickX);
 	var targetStepString = "" + replaySequenceTargetStep;
-	targetClickHandler(e, "timelineClick:" + targetStepString);
+	//targetClickHandlerOld(e, "timelineClick:" + targetStepString);
+	var logLine = templateMap["expl-control-canvas"];
+	logLine = logLine.replace("<TIME_LINE_NUM>", targetStepString);
+	targetClickHandler(e, logLine);
 	var args = [targetStepString];
 	var userCommand = new proto.scaii.common.UserCommand;
 	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
@@ -62,7 +65,9 @@ function stageUserCommand(userCommand) {
 }
 var tryPause = function (e) {
 	if (!userInputBlocked) {
-		targetClickHandler(e, "pause:NA");
+		var logLine = templateMap["pauseButton"];
+		logLine = logLine.replace("<TIME_LINE_PAUSE>", "NA");
+		targetClickHandler(e, logLine);
 		pauseGame();
 	}
 }
@@ -80,7 +85,9 @@ function pauseGame() {
 
 var tryResume = function (e) {
 	if (!userInputBlocked) {
-		targetClickHandler(e, "play:NA");
+		var logLine = templateMap["playButton"];
+		logLine = logLine.replace("<TIME_LINE_PLAY>", "NA");
+		targetClickHandler(e, logLine);
 		resumeGame();
 	}
 }
@@ -106,7 +113,9 @@ function resumeGame() {
 
 var tryRewind = function (e) {
 	if (!userInputBlocked) {
-		targetClickHandler(e, "rewind:NA");
+		var logLine = templateMap["rewindButton"];
+		logLine = logLine.replace("<TIME_LINE_RWND>", "NA");
+		targetClickHandler(e, logLine);
 		rewindGame();
 	}
 }

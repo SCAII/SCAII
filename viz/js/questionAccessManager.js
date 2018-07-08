@@ -193,7 +193,10 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
         rightBlockDiv.setAttribute("style", "position:absolute;left:" + x3 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] + ";background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
         rightBlockDiv.onclick = function(e) {
             if (isStudyQuestionMode()){
-                targetClickHandler(e,"clickTimelineBlocker:NA");
+                var logLine = templateMap["right-block-div"];
+                logLine = logLine.replace("<TIME_LINE_BLCKR>", "NA");
+                targetClickHandler(e, logLine);
+                //targetClickHandler(e,"clickTimelineBlocker:NA");
                 regionClickHandlerGameArea(e);
                 userActionMonitor.globalClick(e.clientX, e.clientY);
             }
@@ -232,7 +235,10 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
         rightBlockDiv.setAttribute("style", "position:absolute;left:" + x2 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] + ";background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
         rightBlockDiv.onclick = function(e) {
             if (isStudyQuestionMode()){
-                targetClickHandler(e,"clickTimelineBlocker:NA");
+                var logLine = templateMap["right-block-div"];
+                logLine = logLine.replace("<TIME_LINE_BLCKR>", "NA");
+                targetClickHandler(e, logLine);
+                //targetClickHandler(e,"clickTimelineBlocker:NA");
                 regionClickHandlerGameArea(e);
                 userActionMonitor.globalClick(e.clientX, e.clientY);
             }

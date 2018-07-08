@@ -110,8 +110,11 @@ function handleStudyQuestions(studyQuestions){
     }
     studyQuestionManager = getStudyQuestionManager(questions, userId, treatmentId);
     userActionMonitor = getUserActionMonitor();
-    stateMonitor = getStateMonitor();
-    studyTreatment = getTreatmentManager(treatmentId);
+	stateMonitor = getStateMonitor();
+	//logLine = getTemplateMap();
+	studyTreatment = getTreatmentManager(treatmentId);
+	console.log(treatmentId);
+	console.log(answerFilename);
     stateMonitor.logFileName = answerFilename;
     // make div to hold the winning action name
     var winningActionLabel = document.createElement("div");
@@ -315,8 +318,11 @@ function addCumRewardPair(index, key, val){
 		rewardKeyDiv.setAttribute("style", "height:15px;font-family:Arial;font-size:14px;");
 	}
 	
-    rewardKeyDiv.innerHTML = key;
-    rewardKeyDiv.onclick = function(e) {targetClickHandler(e,"touchCumRewardLabel:" + key);};
+	rewardKeyDiv.innerHTML = key;
+	var logLineLabel = templateMap["touchCumRewardLabel"];
+	logLineLabel = logLineLabel.replace("<CUM_LBL>", key);
+    rewardKeyDiv.onclick = function(e) {targetClickHandler(e, logLineLabel);};
+    //rewardKeyDiv.onclick = function(e) {targetClickHandler(e,"touchCumRewardLabel:" + key);};
 	$("#cumulative-rewards").append(rewardKeyDiv);
 
 	var rewardValDiv = document.createElement("DIV");
@@ -333,7 +339,10 @@ function addCumRewardPair(index, key, val){
 	}
 	
 	rewardValDiv.innerHTML = val;
-    rewardValDiv.onclick = function(e) {targetClickHandler(e,"touchCumRewardValueFor:" + key);};
+	var logLineValue = templateMap["touchCumRewardValueFor"];
+	logLineValue = logLineValue.replace("<CUM_VAL>", key);
+    rewardValDiv.onclick = function(e) {targetClickHandler(e, logLineValue);};
+    //rewardValDiv.onclick = function(e) {targetClickHandler(e,"touchCumRewardValueFor:" + key);};
     $("#cumulative-rewards").append(rewardValDiv);
 }
 
