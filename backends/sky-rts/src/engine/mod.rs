@@ -213,6 +213,7 @@ impl<'a, 'b> Rts<'a, 'b> {
         self.world.write_resource::<Skip>().0 = false;
         self.world.write_resource::<Skip>().1 = None;
         self.world.write_resource::<NeedsKeyInfo>().0 = true;
+        self.world.write_resource::<DataStore>().clear();
         self.last_action = Default::default();
 
         self.world.delete_all();
