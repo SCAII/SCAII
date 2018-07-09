@@ -12,7 +12,8 @@ function getSaliencyDisplayManager(selectionManager) {
 	sdm.activeCheckBoxLabels = [];
 	//A list of strings such as "attack bottom left *"  (for all bars) or "attack bottom left rewardX" 
 	sdm.xaiSelectionManager = selectionManager;
-	sdm.rowInfosByName = {};
+    sdm.rowInfosByName = {};
+    sdm.outlinesForSaliencyMap = {};
 	
 	sdm.setActiveRowInfo = function(activeRowInfos) {
 		this.rowInfosByName = {};
@@ -124,9 +125,27 @@ function getSaliencyDisplayManager(selectionManager) {
 				$("#saliency-checkboxes").append(checkBoxLabel);
 			}
 		}
-	}
+    }
+    sdm.rankString = {};
+    sdm.createRankStrings = function(barGroups) {
+        this.rankStrings ={};
+        for (var i in barGroups) {
+            var barGroup= barGroups[i];
+            if (i == 0){
+                this.rankString[barGroup.getName()] = "best action at D" + studyQuestionManager.squim.getCurrentDecisionPointNumber();
+            }
+            else if (i == 1){
+                this.rankString[barGroup.getName()] = "2nd best action at D" + studyQuestionManager.squim.getCurrentDecisionPointNumber();
+            }
+            else {
+                this.rankString[barGroup.getName()] = "";
+            }
+        }
+    }
 	sdm.populateActionCheckBoxes = function() {	
-		var barGroups = activeBarChartManager.groupsList;
+        var barGroups = activeBarChartManager.groupsList;
+        barGroups = rankThings(barGroups, getMaxValueBarGroupFromList);
+        this.createRankStrings(barGroups);
 		for (var i in barGroups) {
 			var barGroup = barGroups[i];
 			var actionName = barGroup.getName();
@@ -154,11 +173,14 @@ function getSaliencyDisplayManager(selectionManager) {
 	}
 		
 	sdm.populateActionBarCheckBoxes = function(){
-		var barGroups = activeBarChartManager.groupsList;
+        var barGroups = activeBarChartManager.groupsList;
+        barGroups = rankThings(barGroups, getMaxValueBarGroupFromList);
+        this.createRankStrings(barGroups);
 		for (var i in barGroups) {
 			var barGroup = barGroups[i];
 			var actionName = barGroup.getName();
-			var barsList = barGroup.getBarsList();
+            var barsList = barGroup.getBarsList();
+            barsList = rankThings(barsList, getMaxValueBarFromList);
 			var barCount = barsList.length;
 			for (var j in barsList){
 				var bar = barsList[j];
@@ -190,8 +212,14 @@ function getSaliencyDisplayManager(selectionManager) {
 	
 	sdm.renderAllExplanationSaliencyMaps = function() {
 		$("#saliency-maps").empty();
-		var rowInfos = this.xaiSelectionManager.getSelections();
+        var rowInfos = this.xaiSelectionManager.getSelections();
+        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('detailed', rowInfos[0][1]);
+		
 		for (var i in rowInfos){
+            var scaleFactor = 1.0;
+            if (i > 0){
+                scaleFactor = 0.8;
+            }
 			var rowInfo = rowInfos[i];
 			var saliencyId = activeBarChartManager.getSaliencyIdForActionNameAndBar(rowInfo[0], rowInfo[1]);
 			//console.log("NON-COMBINED MAP saliencyID " + saliencyId);
@@ -201,18 +229,19 @@ function getSaliencyDisplayManager(selectionManager) {
 			}
 			else {
 				var expLayers = layerMessage.getLayersList();
-				var nameContainerDiv = getNameDivForRow(i, rowInfo);
+				var nameContainerDiv = getNameDivForRow(i, rowInfo,this.rankString[rowInfo[0]]);
 				$("#saliency-maps").append(nameContainerDiv);
-				var rowInfoString = getRowInfoString(rowInfo);
-				var normalizationFactor = getNormalizationFactor(expLayers);
+                var rowInfoString = getRowInfoString(rowInfo);
+				//var normalizationFactor = getNormalizationFactor(expLayers);
 				for (var j in expLayers) {
 					expLayer = expLayers[j];
 					//console.log('found layer ' + expLayer.getName());
 					var name = expLayer.getName();
 					var cells = expLayer.getCellsList();
 					var width = expLayer.getWidth();
-					var height = expLayer.getHeight();
-					this.renderExplLayer(j + 1, i, name, rowInfoString + name, cells, width, height, normalizationFactor);
+                    var height = expLayer.getHeight();
+                    var realUIName = renameEntityInfoForIUI(name);
+					this.renderExplLayer(j + 1, i, realUIName, rowInfoString + realUIName, cells, width, height, normalizationFactor, scaleFactor);
 				} 
 			}
 		}
@@ -221,7 +250,8 @@ function getSaliencyDisplayManager(selectionManager) {
 	
 	sdm.renderCombinedExplanationSaliencyMaps = function() {
 		$("#saliency-maps").empty();
-		var rowInfos = this.xaiSelectionManager.getSelections();
+        var rowInfos = this.xaiSelectionManager.getSelections();
+        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('combined', rowInfos[0][1]);
 		for (var i in rowInfos){
 			var rowInfo = rowInfos[i]; 
 			var saliencyId = activeBarChartManager.getSaliencyIdForActionNameAndBar(rowInfo[0], rowInfo[1]);
@@ -232,14 +262,15 @@ function getSaliencyDisplayManager(selectionManager) {
 			}
 			else {
 				var expLayers = layerMessage.getLayersList();
-				var nameContainerDiv = getNameDivForRow(i, rowInfo);
+				var nameContainerDiv = getNameDivForRow(i, rowInfo, this.rankString[rowInfo[0]]);
 				$("#saliency-maps").append(nameContainerDiv);
 				var rowInfoString = getRowInfoString(rowInfo);
-				var aggregatedCells = getAggregatedCells(expLayers);
-				var normalizationFactor = getNormalizationFactorFromCells(aggregatedCells);
+                var aggregatedCells = getAggregatedCells(expLayers);
+                
+				//var normalizationFactor = getNormalizationFactorFromCells(aggregatedCells);
 				var width = expLayers[0].getWidth();
 				var height = expLayers[0].getHeight();
-				this.renderExplLayer(1, i, "all features cumulative", rowInfoString, aggregatedCells, width, height, normalizationFactor);
+				this.renderExplLayer(1, i, "all features cumulative", rowInfoString, aggregatedCells, width, height, normalizationFactor, 1.0);
 			}
 		}
 	}
@@ -258,10 +289,22 @@ function getSaliencyDisplayManager(selectionManager) {
 	
 	
 	sdm.overlaySaliencyMapOntoGameReplica = function(ctx, cells, width, height, normalizationFactor) {
+        if (isStudyQuestionMode()){
+            if (isTutorial()){
+                cells = getRandomCells(width * height);
+                var max = getMaxValueForLayer(cells);
+                if (max == 0) {
+                    normalizationFactor = 1;
+                }
+                else{
+                    normalizationFactor = 1/ max;
+                }
+            }
+        }
 		for (var x= 0; x < width; x++){
 			for (var y = 0; y < height; y++){
 				var index = height * x + y;
-				var cellValue = cells[index];
+                var cellValue = cells[index];
 				ctx.fillStyle = getOverlayOpacityBySaliencyRGBAString(cellValue * normalizationFactor);
 				ctx.fillRect(x*gameScaleFactor, y*gameScaleFactor, gameScaleFactor, gameScaleFactor);
 				ctx.fill();
@@ -269,12 +312,27 @@ function getSaliencyDisplayManager(selectionManager) {
 		}
 	}
 
-	sdm.renderExplLayer = function(gridX, gridY, saliencyUIName, saliencyNameForId, cells, width, height, normalizationFactor) {
+    sdm.hideAllSaliencyMapOutlines = function() {
+        var keys = Object.keys(this.outlinesForSaliencyMap);
+        for (var i in keys){
+            var key = keys[i];
+            var outlineId = this.outlinesForSaliencyMap[key];
+            $("#" + outlineId).css("visibility", "hidden");
+        }
+    }
+
+    sdm.showSaliencyMapOutline = function(saliencyMapId) {
+        var outlineId = this.outlinesForSaliencyMap[saliencyMapId];
+        $("#" + outlineId).css("visibility", "visible");
+    }
+
+	sdm.renderExplLayer = function(gridX, gridY, saliencyUIName, saliencyNameForId, cells, width, height, normalizationFactor, scaleFactor) {
 		var nameNoSpaces = saliencyNameForId.replace(/ /g,"");
 		var nameForId = nameNoSpaces.replace(/,/g,"");
 		var explCanvas = document.createElement("canvas");
         explCanvas.setAttribute("class", "explanation-canvas");
-        explCanvas.setAttribute("id", "saliencyMap_" + nameForId);
+        var saliencyMapId = "saliencyMap_" + nameForId;
+        explCanvas.setAttribute("id", saliencyMapId);
         explCanvas.onclick = function(e) {
             var x = e.offsetX;
             var y = e.offsetY;
@@ -283,8 +341,21 @@ function getSaliencyDisplayManager(selectionManager) {
                 //targetClickHandler(e, "clickEntity:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
                 targetClickHandler(e, "clickSaliencyMap:" + saliencyUIName + "_(" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y)+ ")");
             }
-            //targetClickHandler(e, "clickGameQuadrant:" + getQuadrantName(x,y));
-            targetClickHandler(e, "clickSaliencyMap:" + saliencyUIName + "_(" + getQuadrantName(x,y) + ")");
+            else {
+                //targetClickHandler(e, "clickGameQuadrant:" + getQuadrantName(x,y));
+                targetClickHandler(e, "clickSaliencyMap:" + saliencyUIName + "_(" + getQuadrantName(x,y) + ")");
+            }
+            if (isStudyQuestionMode()){
+                var legalClickTargetRegions = studyQuestionManager.getLegalInstrumentationTargetsForCurrentQuestion();
+                if (studyQuestionManager.renderer.isLegalRegionToClickOn("target:saliencyMap", legalClickTargetRegions)){
+                    if (studyQuestionManager.renderer.controlsWaitingForClick.length == 0) {
+                        return;
+                    }
+                    activeSaliencyDisplayManager.hideAllSaliencyMapOutlines();
+                    activeSaliencyDisplayManager.showSaliencyMapOutline(saliencyMapId);
+                    clearHighlightedShapesOnGameboard();
+                }
+            }
         }
         
             
@@ -304,10 +375,23 @@ function getSaliencyDisplayManager(selectionManager) {
 		// );
 		var explCtx = explCanvas.getContext("2d");
 		// canvas size should be same a gameboardHeight
-		explCanvas.width  = gameboard_canvas.width * this.saliencyMapPercentSize;
-		explCanvas.height = gameboard_canvas.height * this.saliencyMapPercentSize;
-		this.renderSaliencyMap(explCanvas, explCtx, cells, width, height, normalizationFactor);
-		// the div that will contain it should be a bit wider
+		explCanvas.width  = gameboard_canvas.width * scaleFactor;
+		explCanvas.height = gameboard_canvas.height * scaleFactor;
+        this.renderSaliencyMap(explCanvas, explCtx, cells, width, height, normalizationFactor);
+        
+        var w = explCanvas.width;
+        var h = explCanvas.height;
+       
+        var outlineWidth = 6;
+        var divW = w - 2 * outlineWidth;
+        var divH = h - 2 * outlineWidth;
+        var outlineDiv = document.createElement("div");
+        var outlineDivId =  "outline-div-" + nameForId;
+        outlineDiv.setAttribute("id", outlineDivId);
+        outlineDiv.setAttribute("style","visibility:hidden;border-color:white;border-style:solid;border-width:6px;z-index:" + zIndexMap["saliencyHoverValue"] + "; position:relative; left:0px; top:-" + h + "px;background-color:transparent;width:"+ divW + "px;height:"+ divH + "px;");
+        this.outlinesForSaliencyMap[saliencyMapId] = outlineDivId;
+        
+        // the div that will contain it should be a bit wider
 		// and tall enough to contain title text
 		var mapContainerDivHeight = explCanvas.height + 30;
 		
@@ -341,7 +425,8 @@ function getSaliencyDisplayManager(selectionManager) {
 		$(mapDivSelector).css("width",explCanvas.width + 'px');
 		$(mapDivSelector).css("height",explCanvas.height + 'px');
 		$(mapDivSelector).css("background-color", "#123456");
-		$(mapDivSelector).append(explCanvas);
+        $(mapDivSelector).append(explCanvas);
+        $(mapDivSelector).append(outlineDiv);
 
 		
 		var valueSpan = document.createElement("span");
@@ -402,7 +487,6 @@ function getSaliencyDisplayManager(selectionManager) {
 	}
 	return sdm;
 }
-
 function getRowInfoString(rowInfo) {
 	var result = undefined;
 	if ('*' == rowInfo[1]) {
@@ -422,15 +506,20 @@ function getMousePos(canvas, evt) {
 	};
   }
 	
-function getNameDivForRow(rowIndex, rowInfo, layerCount){
-	var nameContainerDiv = document.createElement("div");
-	nameContainerDiv.setAttribute("style", getGridPositionStyle(0,rowIndex) + '; width:200px;padding-top:125px; text-align:center; border-style: solid; border-width:1px;font-family:Arial;');
-	nameContainerDiv.innerHTML = getRowInfoString(rowInfo);                              // had height:100%
-//	var nameContainerContentDiv = document.createElement("div");
-//	nameContainerContentDiv.innerHTML = getRowInfoString(rowInfo);
-//	nameContainerContentDiv.setAttribute("style", 'margin:auto;font-family:Arial;');
-	//nameContainerContentDiv.setAttribute("style", 'text-align:center; padding-top:80px;font-family:Arial;');
-//	nameContainerDiv.append(nameContainerContentDiv);
+function getNameDivForRow(rowIndex, rowInfo, contextString){
+    var nameContainerDiv = document.createElement("div");
+    nameContainerDiv.setAttribute("class", "flex-column");
+	nameContainerDiv.setAttribute("style", getGridPositionStyle(0,rowIndex) + '; width:200px;text-align:center; border-style: solid; border-width:1px;font-family:Arial;');
+    
+    var contextDiv = document.createElement("div");
+	contextDiv.setAttribute("style", 'width:200px;padding-top:100px; text-align:center; font-family:Arial;');
+    contextDiv.innerHTML = contextString; 
+    nameContainerDiv.append(contextDiv);
+
+    var nameDiv = document.createElement("div");
+	nameDiv.setAttribute("style", 'width:200px;padding-top:25px; text-align:center; font-family:Arial;');
+    nameDiv.innerHTML = getRowInfoString(rowInfo);     
+    nameContainerDiv.append(nameDiv);
 	return nameContainerDiv;
 }
 
@@ -460,38 +549,26 @@ function getAggregatedCells(expLayers){
 	return result;
 }
 
-function getNormalizationFactorFromCells(cells) {
-	var max = getMaxValueForLayer(cells);
-	var factor = undefined;
-	if (max == 0) {
-		factor = 1;
-	}
-	else{
-		factor = 1/ max;
-	}
-	 
-	return factor;
+
+function getRandomCells(count) {
+    var result = [];
+    for (var i = 0; i < count; i++){
+        result.push(Math.random());
+    }
+    return result;
 }
 
-var getNormalizationFactor = function(expLayers){
-	var max = 0.0
-	for (var i in expLayers) {
-		expLayer = expLayers[i];
-		var value = getMaxValueForLayer(expLayer.getCellsList());
+var getMaxValueForLayers = function(layers) {
+    var max = 0.0;
+    for (var i in layers) {
+        var layer = layers[i];
+        var value = getMaxValueForLayer(layer.getCellsList());
 		if (value > max) {
 			max = value;
 		}
-	} 
-    var factor = undefined;
-	if (max == 0) {
-		factor = 1;
-	}
-	else{
-		factor = 1/ max;
-	}
-	return factor;
+    }
+	return max;
 }
-
 var getMaxValueForLayer = function(vals){
 	var max = 0.0;
 	for (var i in vals) {
@@ -499,7 +576,8 @@ var getMaxValueForLayer = function(vals){
 		if (value > max) {
 			max = value;
 		}
-	}
+    }
+    console.log("max for layer = " + max);
 	return max;
 }
 function getGridPositionStyle(gridX, gridY) {
@@ -547,4 +625,23 @@ function getWhiteRGBAString(saliencyValue) {
   color['A'] = saliencyValue;
   var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
   return result;
+}
+function drawClickSelectHighlight(canvas, width, height){
+    var ctx = canvas.getContext("2d");
+    var x1 = 0;
+    var y1 = 0;
+    var x2 = width;
+    var y2 = height;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y1);
+    ctx.lineTo(x2, y2);
+    ctx.lineTo(x1, y2);
+    ctx.lineTo(x1, y1);
+    ctx.closePath();
+
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = "white";
+    ctx.stroke();
+    
 }

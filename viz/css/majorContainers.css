@@ -3,8 +3,9 @@ body {
     margin: 0px;
 }	
 #scaii-interface {
-    width: 50px;
-    height: 50px;
+    /*width: 50px;
+    height: 50px;*/
+    background-color: white;
 }
 
 .grid {

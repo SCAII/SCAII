@@ -14,7 +14,8 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 	bcm.saliencyDisplayManager = saliencyDisplayManager;
 	bcm.isCombined = isCombined;
 	bcm.isRewardMode = isRewardMode;
-	
+    
+
 	bcm.convertGoogleChartSelectionsToSelectionsByName = function(googleChartSelections){
 		var selectionsByName = [];
 		console.log("SELECTION from getSelection() looks like: ");
@@ -276,7 +277,8 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 	
 		var options = {
 			//legend: { position: "none" },
-			title: this.barChartMessage.getTitle(),
+			//title: this.barChartMessage.getTitle(),
+			title: 'Expected Score by Action',
 			//chartArea: {width: '50%', left:70},
 			chartArea: {width: '50%', left:"15%"},
 			hAxis: {
@@ -383,41 +385,14 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 		var barGroup = this.getMaxValueBarGroup();
 		var actionName = barGroup.getName();
 		var bars = barGroup.getBarsList();
-		//var maxBarIndex = undefined;
-		var maxBar = undefined;
-		for (var i in bars){
-			var bar = bars[i];
-			if  (maxBar == undefined) {
-				maxBar = bar;
-			}
-			else if (bar.getValue() > maxBar.getValue()) {
-				maxBar = bar;
-			}
-			else {
-				//skip
-			}
-		}
+		var maxBar = getMaxValueBarFromList(bars);
 		return [ actionName, maxBar.getName()];
 	}
 
 	
 	bcm.getMaxValueBarGroup = function(){
-		var barGroups = this.groupsList;
-		var barGroupWithMaxValue = undefined;
-		for (var i in barGroups) {
-			barGroup = barGroups[i];
-			if (barGroupWithMaxValue == undefined) {
-				barGroupWithMaxValue = barGroup;
-			}
-			else {
-				var curValue = getValueForBarGroup(barGroup);
-				var maxValue = getValueForBarGroup(barGroupWithMaxValue);
-				if (curValue > maxValue) {
-					barGroupWithMaxValue = barGroup;
-				}
-			}
-		}
-		return barGroupWithMaxValue;
+        var barGroups = this.groupsList;
+        return getMaxValueBarGroupFromList(barGroups);
 	}
 	bcm.getChosenActionName = function() {
 		var group = this.getMaxValueBarGroup();
@@ -426,6 +401,55 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 	return bcm;
 }
 
+function getMaxValueBarFromList(bars){
+    var maxBar = undefined;
+    for (var i in bars){
+        var bar = bars[i];
+        if  (maxBar == undefined) {
+            maxBar = bar;
+        }
+        else if (bar.getValue() > maxBar.getValue()) {
+            maxBar = bar;
+        }
+        else {
+            //skip
+        }
+    }
+    return maxBar;
+}
+function getMaxValueBarGroupFromList(barGroups){
+    var barGroupWithMaxValue = undefined;
+    for (var i in barGroups) {
+        barGroup = barGroups[i];
+        if (barGroupWithMaxValue == undefined) {
+            barGroupWithMaxValue = barGroup;
+        }
+        else {
+            var curValue = getValueForBarGroup(barGroup);
+            var maxValue = getValueForBarGroup(barGroupWithMaxValue);
+            if (curValue > maxValue) {
+                barGroupWithMaxValue = barGroup;
+            }
+        }
+    }
+    return barGroupWithMaxValue;
+}
+function rankThings(things, maxFunction){
+    var result = [];
+    while (things.length > 0){
+        var maxThing = maxFunction(things);
+        result.push(maxThing);
+        var fewerThings = [];
+        for (var i in things){
+            var thing = things[i];
+            if (thing != maxThing) {
+                fewerThings.push(thing);
+            }
+        }
+        things = fewerThings;
+    }
+    return result;
+}
 
 function getRewardNameRowOneBarPerAction() {
 	var rewardNameRow = ['', 'total reward'];

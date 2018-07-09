@@ -285,7 +285,9 @@ fn check_question(line: &String, line_num: &u8, fname: &str) ->u8{
             // Checks that plain has the correct args   error code 4
             temp = check_regex(04, "plain:NA:NA".to_string(), "Invalid entry for question type in Field 2. When question type is specified as [plain], subfields 1 and 2 must be 'NA'. ".to_string(), &field2, &line, &line_num, &fname);
             if temp != 0 { return temp; }
-        }else{
+        }else if f2vec[0] == "waitForPredictionClick" {
+            // skip checking for now
+        } else {
             // Checks that waitForClick exists   error code 5
             temp = check_regex(05, "^waitForClick".to_string(), "Invalid entry for question type in Field 2. Expected [plain] or [waitForClick]".to_string(), &f2vec[0].to_string(), &line, &line_num, &fname);
             if temp != 0 { return temp; }

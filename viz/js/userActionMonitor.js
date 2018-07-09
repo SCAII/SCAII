@@ -34,6 +34,7 @@ function getUserActionMonitor() {
             this.clickRegionDetails = info;
         }
     }
+    
     uam.targetClick = function(info) {
         if (this.clickTargetDetails == undefined) {
             this.clickTargetDetails = info;

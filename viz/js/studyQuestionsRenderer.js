@@ -110,7 +110,7 @@ function getStudyQuestionRenderer(questions) {
         this.currentRadioName = radioSetName;
     }
 
-    sqr.renderSaveButton = function(type){
+    sqr.renderSaveButton = function(type, isClickCollectingQuestion){
         var saveButtonRowId = "save-button-row";
         var buttonRow = document.createElement("DIV");
         buttonRow.setAttribute("id", saveButtonRowId);
@@ -125,18 +125,11 @@ function getStudyQuestionRenderer(questions) {
         save.innerHTML = "Save";
         save.onclick = acceptAnswer;
         $("#"+ saveButtonRowId).append(save);
-        if (type == "waitForClick"){
+        if (isClickCollectingQuestion){
             this.controlsWaitingForClick.push(save);
         }
     }
     
-    sqr.poseQuestion = function(qu, currentDecisionPointNumber, curStep){
-        if (currentDecisionPointNumber == undefined) {
-            activeStudyQuestionManager.clearTimelineBlocks();
-        }
-        this.poseGivenQuestion(currentDecisionPointNumber, curStep, qu);
-    }
-
     sqr.removeMissingClickInfoMessage = function() {
         $("#missing-click-info-message").remove();
     }
@@ -148,9 +141,7 @@ function getStudyQuestionRenderer(questions) {
         missingClickInfoDiv.innerHTML =  "Please click on one of the designated areas";
         $("#save-button-row").append(missingClickInfoDiv);
     }
-
-    sqr.poseGivenQuestion = function(questionNumber, step, qu){
-        this.hopTargetQuestionDivContents = [];
+    sqr.poseQuestion = function(qu, questionNumber, step){
         questionLetterMap = {}
         questionLetterMap[1] = 'a';
         questionLetterMap[2] = 'b';
@@ -168,7 +159,7 @@ function getStudyQuestionRenderer(questions) {
         $("#q-and-a-div").css("background-color",this.bg);
         $("#q-and-a-div").css("margin-top","20px");
         $("#q-and-a-div").css("padding","20px");
-        if (type == "waitForClick"){
+        if (qu.isClickCollectingQuestion()){
             var clickPrompt = document.createElement("DIV");
             clickPrompt.setAttribute("id", "click-prompt");
             clickPrompt.setAttribute("style", "padding:10px;margin-bottom:8px;margin-left:0px;font-family:Arial;font-size:" + this.fontSize + ";background-color:yellow;");
@@ -205,8 +196,8 @@ function getStudyQuestionRenderer(questions) {
             }
         }
         // add the ever present - follow up question, except on summary questions
-        this.renderSaveButton(type);
-        if (type == "waitForClick"){
+        this.renderSaveButton(type, qu.isClickCollectingQuestion());
+        if (qu.isClickCollectingQuestion()){
             var listener = {};
             listener.acceptClickInfo = function(clickInfo){
                 var renderer = asqm.renderer;
@@ -278,7 +269,8 @@ function getStudyQuestionRenderer(questions) {
         var userIdDiv = document.createElement("DIV");
         userIdDiv.setAttribute("id", "user-wait-div");
         userIdDiv.setAttribute("class", "flex-column");
-        userIdDiv.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:" + zIndexMap["allTheWayToFront"] + ";margin:auto;font-family:Arial;padding:10px;width:1800px;height:1600px;background-color:" + this.bg + ";");
+        var widthNeededToCoverEverything = this.getWidthNeededToHideEverything();
+        userIdDiv.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:" + zIndexMap["allTheWayToFront"] + ";margin:auto;font-family:Arial;padding:10px;width:" + widthNeededToCoverEverything + "px;height:1600px;background-color:" + this.bg + ";");
         $('body').append(userIdDiv);
 
         var questionRow = document.createElement("DIV");
@@ -294,6 +286,37 @@ function getStudyQuestionRenderer(questions) {
         
         $("#user-wait-question-row").append(question);
 
+
+        var checkboxRow = document.createElement("DIV");
+        checkboxRow.setAttribute("id", "user-wait-checkbox-row");
+        checkboxRow.setAttribute("class", "flex-row");
+        checkboxRow.setAttribute("style", "margin-left:100px;margin-top:50px;padding:10px;");
+        $("#user-wait-div").append(checkboxRow);
+        
+        var checkbox = document.createElement("INPUT");
+        checkbox.setAttribute("id", "user-wait-checkbox");
+        checkbox.setAttribute("type", "checkbox");
+        checkbox.setAttribute("style", "padding:10px;margin:0px;width:20px;height:20px;");
+        checkbox.onclick = function(e) {
+            if (e.currentTarget.checked) {
+                $("#user-wait-button-continue").attr("disabled", false);
+            }
+            else {
+                $("#user-wait-button-continue").attr("disabled", true);
+            }
+        };
+        $("#user-wait-checkbox-row").append(checkbox);
+
+        var checkboxLabel = document.createElement("LABEL");
+        checkboxLabel.setAttribute("id", "user-wait-checkbox");
+        //checkboxLabel.setAttribute("for", "user-wait-checkbox");
+        checkboxLabel.setAttribute("style", "font-family:font-size:18px;Arial;padding:10px;");
+        var t = document.createTextNode("The researcher has given the instruction to proceed");
+		checkboxLabel.appendChild(t);
+        //checkboxLabel.innerHTML = "The researcher has given the instruction to proceed";
+        $("#user-wait-checkbox-row").append(checkboxLabel);
+
+
         var buttonRow = document.createElement("DIV");
         buttonRow.setAttribute("id", "user-wait-button-row");
         buttonRow.setAttribute("class", "flex-row");
@@ -302,13 +325,14 @@ function getStudyQuestionRenderer(questions) {
 
         var next = document.createElement("BUTTON");
         next.setAttribute("id", "user-wait-button-continue");
+        next.setAttribute("disabled", "true");
         next.setAttribute("style", "margin-left:280px;font-family:Arial;font-size:18px;padding:10px;");
         next.innerHTML = "Continue";
         next.onclick = function() {
             $("#user-wait-div").remove();
-            activeStudyQuestionManager.renderer.renderCueAndArrowToPlayButton();
         }
         $("#user-wait-button-row").append(next);
+        $("#user-wait-button-continue").attr("disabled", true);
     }
 
     sqr.renderCueToPlayButton = function(){

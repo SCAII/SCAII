@@ -127,19 +127,30 @@ function getSelectionManager() {
     }
     
 	sm.addSelection = function(selection) {
-        var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
-        var targetArg = selection[0] + "/" + selection[1];
-        if (this.defaultSelectionMade) {
-            chartTargetClickHandler(targetName, "selectRewardBar:" + targetArg);
+        //since not doing our own highlighting of bar, don't need to do isLegalTarget checking
+        if (isStudyQuestionMode()){
+            var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
+            var targetArg = selection[0] + "/" + selection[1];
+            if (this.defaultSelectionMade) {
+                chartTargetClickHandler(targetName, "selectRewardBar:" + targetArg);
+                // clear any highlighing that might have been done for those items
+                activeSaliencyDisplayManager.hideAllSaliencyMapOutlines();
+                clearHighlightedShapesOnGameboard()
+            }
         }
         this.defaultSelectionMade = true;
 		this.selections.push(selection);
 	}
 
 	sm.removeSelection = function (selection) {
-        var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
-        var targetArg = selection[0] + "/" + selection[1];
-        chartTargetClickHandler(targetName, "unselectRewardBar:" + targetArg);
+        //since not doing our own highlighting of bar, don't need to do isLegalTarget checking
+        if (isStudyQuestionMode()){
+            var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
+            var targetArg = selection[0] + "/" + selection[1];
+            if (this.defaultSelectionMade) {
+                chartTargetClickHandler(targetName, "unselectRewardBar:" + targetArg);
+            }
+        }
 		var newList = [];
 		for (var i in this.selections) {
 			var curSel = this.selections[i];
@@ -419,6 +430,13 @@ function createRewardChartContainer() {
 	rewardTitleContainer.setAttribute("class", "flex-column titled-container r0c1 rewards-bg");
 	$("#scaii-interface").append(rewardTitleContainer);
 
+    var rewardSpacerContainer = document.createElement("DIV");
+	rewardSpacerContainer.setAttribute("id", "rewards-spacer");
+	rewardSpacerContainer.setAttribute("class", "r0c2");
+	rewardSpacerContainer.setAttribute("style", "background-color:white;width:800px;");
+	$("#scaii-interface").append(rewardSpacerContainer);
+
+
 	var whyQuestionsDiv = document.createElement("DIV");
 	whyQuestionsDiv.setAttribute("id", "why-questions-div");
 	whyQuestionsDiv.setAttribute("class", "rewards-bg flex-row");
@@ -659,10 +677,10 @@ function populateRewardQuestionSelector(){
 	detailedAdvantageLabel.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:14px;");
 	detailedAdvantageLabel.innerHTML = "detailed advantage";
 	
-	$("#why-radios").append(radioCombinedAdvantage);
-	$("#why-radios").append(combinedAdvantageLabel);
-	$("#why-radios").append(radioDetailedAdvantage);
-	$("#why-radios").append(detailedAdvantageLabel);
+	//$("#why-radios").append(radioCombinedAdvantage);
+	//$("#why-radios").append(combinedAdvantageLabel);
+	//$("#why-radios").append(radioDetailedAdvantage);
+	//$("#why-radios").append(detailedAdvantageLabel);
 
 }
 
@@ -694,7 +712,10 @@ function renderDecisionPointLegend() {
 	$("#action-list").append(legendLabel);
 
 	var explanation_steps = replaySessionConfig.getExplanationStepsList();
-	var explanation_titles = replaySessionConfig.getExplanationTitlesList();
+    var explanation_titles = replaySessionConfig.getExplanationTitlesList();
+    if (isStudyQuestionMode()) {
+       explanation_titles = studyQuestionManager.getExplanationTitles(explanation_steps, explanation_titles);
+    }
 	var expl_count = explanation_steps.length;
 	var index = 0;
 	while (index < expl_count){
@@ -792,6 +813,7 @@ function getDecisionPointIdForName(name, step){
 	nameForId = "actionLabel-step-" +step + "-action-" + nameForId;
 	return nameForId;
 }
+
 function addLabelForAction(title, index, step){
     var fullName = 'D' + index + ': ' + title;
 	var actionLabel = document.createElement("div");
@@ -803,7 +825,7 @@ function addLabelForAction(title, index, step){
 	actionLabel.addEventListener("click", function(evt) {
 		if (!isUserInputBlocked()){
             if (userStudyMode){
-                if (activeStudyQuestionManager.isBeyondCurrentRange(step)){
+                if (activeStudyQuestionManager.accessManager.isBeyondCurrentRange(step)){
                     targetClickHandler(evt, "clickActionLabelDenied:" + escapeAnswerFileDelimetersFromTextString(fullName));
                     return;
                 }
@@ -817,7 +839,7 @@ function addLabelForAction(title, index, step){
 	actionLabel.addEventListener("mouseenter", function(evt) {
         //$("#" + id).css("background-color","rgba(100,100,100,1.0);");
         if (userStudyMode){
-            if (activeStudyQuestionManager.isBeyondCurrentRange(step)){
+            if (activeStudyQuestionManager.accessManager.isBeyondCurrentRange(step)){
                 return;
             }
         }

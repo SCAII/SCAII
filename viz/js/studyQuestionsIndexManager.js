@@ -62,6 +62,10 @@ function getStudyQuestionIndexManager(ids) {
         return currentStep == nextQuestionStep;
     }
 
+    squim.isStepPriorToLastDecisionPoint = function(step){
+        var lastDecisionPointStep = this.decisionPointSteps[this.decisionPointSteps.length - 1];
+        return step < lastDecisionPointStep;
+    }
     squim.isAtLastDecisionPoint = function(){
         var lastDecisionPointStep = this.decisionPointSteps[this.decisionPointSteps.length - 1];
         var currentStep = this.getCurrentStep();

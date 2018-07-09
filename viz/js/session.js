@@ -128,6 +128,8 @@ function handleStudyQuestions(studyQuestions){
 	winningActionLabel.setAttribute("id", "winning-action-label");
     winningActionLabel.innerHTML = "";
     $("#reward-Values-panel").append(winningActionLabel);
+    // re-render this sowe can change names to ??? if need to for waitForPredictionClick questions
+    renderDecisionPointLegend();
 }
 
 function handleReplayControl(replayControl) {
@@ -136,7 +138,10 @@ function handleReplayControl(replayControl) {
 		if (command[0] == 'set_step_position') {
 			//console.log('___set_step_position updating step from handleReplayControl to ' + command[1] + ' which should be one prior to what the first viz packet arriving will set it to');
 			sessionIndexManager.setReplaySequencerIndex(parseInt(command[1]));
-			updateButtonsAfterJump();
+            updateButtonsAfterJump();
+            if (isStudyQuestionMode()){
+                studyQuestionManager.accessManager.express();
+            }
 		}
 	}
 }
@@ -190,6 +195,7 @@ function loadSelectedReplayFile() {
     loadReplayFile(filename);
 }
 function loadReplayFile(filename) {
+    $("#cue-arrow-div").remove();
     if (userActionMonitor != undefined) {
         userActionMonitor.clickListener = undefined;
     }
@@ -251,10 +257,8 @@ function handleViz(vizData) {
     }
     if (userStudyMode) {
         if (tabManager.hasShownUserId()){
-            qm.clearTimelineBlocks();
-            qm.blockClicksOutsideRange();
         }
-        if (qm.isAtEndOfRange(sessionIndexManager.getCurrentIndex())){
+        if (qm.accessManager.isAtEndOfRange(sessionIndexManager.getCurrentIndex())){
             if (qm.questionWasAnswered) {
                 qm.questionWasAnswered = false;
                 // we're ready to move forward to next Decision Point
@@ -279,7 +283,7 @@ function handleViz(vizData) {
 var totalsString = "total score";
 var rewardsDivMap = {};
 function handleCumulativeRewards(crm) {
-    $("#cumulative-rewards").empty();
+    
 	var entryList = crm.getEntryList();
 	var total = 0;
 	//compute totals
