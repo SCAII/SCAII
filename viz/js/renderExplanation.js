@@ -709,10 +709,10 @@ function populateRewardQuestionSelector(){
 	detailedAdvantageLabel.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:14px;");
 	detailedAdvantageLabel.innerHTML = "detailed advantage";
 	
-	$("#why-radios").append(radioCombinedAdvantage);
-	$("#why-radios").append(combinedAdvantageLabel);
-	$("#why-radios").append(radioDetailedAdvantage);
-	$("#why-radios").append(detailedAdvantageLabel);
+	//$("#why-radios").append(radioCombinedAdvantage);
+	//$("#why-radios").append(combinedAdvantageLabel);
+	//$("#why-radios").append(radioDetailedAdvantage);
+	//$("#why-radios").append(detailedAdvantageLabel);
 
 }
 

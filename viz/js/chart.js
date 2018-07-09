@@ -14,7 +14,8 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 	bcm.saliencyDisplayManager = saliencyDisplayManager;
 	bcm.isCombined = isCombined;
 	bcm.isRewardMode = isRewardMode;
-	
+    
+
 	bcm.convertGoogleChartSelectionsToSelectionsByName = function(googleChartSelections){
 		var selectionsByName = [];
 		console.log("SELECTION from getSelection() looks like: ");
@@ -276,7 +277,8 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 	
 		var options = {
 			//legend: { position: "none" },
-			title: this.barChartMessage.getTitle(),
+			//title: this.barChartMessage.getTitle(),
+			title: 'Expected Score by Action',
 			//chartArea: {width: '50%', left:70},
 			chartArea: {width: '50%', left:"15%"},
 			hAxis: {

@@ -126,10 +126,26 @@ function getSaliencyDisplayManager(selectionManager) {
 			}
 		}
     }
-    
+    sdm.rankString = {};
+    sdm.createRankStrings = function(barGroups) {
+        this.rankStrings ={};
+        for (var i in barGroups) {
+            var barGroup= barGroups[i];
+            if (i == 0){
+                this.rankString[barGroup.getName()] = "best action at D" + studyQuestionManager.squim.getCurrentDecisionPointNumber();
+            }
+            else if (i == 1){
+                this.rankString[barGroup.getName()] = "2nd best action at D" + studyQuestionManager.squim.getCurrentDecisionPointNumber();
+            }
+            else {
+                this.rankString[barGroup.getName()] = "";
+            }
+        }
+    }
 	sdm.populateActionCheckBoxes = function() {	
         var barGroups = activeBarChartManager.groupsList;
         barGroups = rankThings(barGroups, getMaxValueBarGroupFromList);
+        this.createRankStrings(barGroups);
 		for (var i in barGroups) {
 			var barGroup = barGroups[i];
 			var actionName = barGroup.getName();
@@ -159,6 +175,7 @@ function getSaliencyDisplayManager(selectionManager) {
 	sdm.populateActionBarCheckBoxes = function(){
         var barGroups = activeBarChartManager.groupsList;
         barGroups = rankThings(barGroups, getMaxValueBarGroupFromList);
+        this.createRankStrings(barGroups);
 		for (var i in barGroups) {
 			var barGroup = barGroups[i];
 			var actionName = barGroup.getName();
@@ -195,7 +212,9 @@ function getSaliencyDisplayManager(selectionManager) {
 	
 	sdm.renderAllExplanationSaliencyMaps = function() {
 		$("#saliency-maps").empty();
-		var rowInfos = this.xaiSelectionManager.getSelections();
+        var rowInfos = this.xaiSelectionManager.getSelections();
+        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('detailed', rowInfos[0][1]);
+		
 		for (var i in rowInfos){
             var scaleFactor = 1.0;
             if (i > 0){
@@ -210,10 +229,10 @@ function getSaliencyDisplayManager(selectionManager) {
 			}
 			else {
 				var expLayers = layerMessage.getLayersList();
-				var nameContainerDiv = getNameDivForRow(i, rowInfo);
+				var nameContainerDiv = getNameDivForRow(i, rowInfo,this.rankString[rowInfo[0]]);
 				$("#saliency-maps").append(nameContainerDiv);
-				var rowInfoString = getRowInfoString(rowInfo);
-				var normalizationFactor = getNormalizationFactor(expLayers);
+                var rowInfoString = getRowInfoString(rowInfo);
+				//var normalizationFactor = getNormalizationFactor(expLayers);
 				for (var j in expLayers) {
 					expLayer = expLayers[j];
 					//console.log('found layer ' + expLayer.getName());
@@ -231,7 +250,8 @@ function getSaliencyDisplayManager(selectionManager) {
 	
 	sdm.renderCombinedExplanationSaliencyMaps = function() {
 		$("#saliency-maps").empty();
-		var rowInfos = this.xaiSelectionManager.getSelections();
+        var rowInfos = this.xaiSelectionManager.getSelections();
+        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('combined', rowInfos[0][1]);
 		for (var i in rowInfos){
 			var rowInfo = rowInfos[i]; 
 			var saliencyId = activeBarChartManager.getSaliencyIdForActionNameAndBar(rowInfo[0], rowInfo[1]);
@@ -242,11 +262,12 @@ function getSaliencyDisplayManager(selectionManager) {
 			}
 			else {
 				var expLayers = layerMessage.getLayersList();
-				var nameContainerDiv = getNameDivForRow(i, rowInfo);
+				var nameContainerDiv = getNameDivForRow(i, rowInfo, this.rankString[rowInfo[0]]);
 				$("#saliency-maps").append(nameContainerDiv);
 				var rowInfoString = getRowInfoString(rowInfo);
-				var aggregatedCells = getAggregatedCells(expLayers);
-				var normalizationFactor = getNormalizationFactorFromCells(aggregatedCells);
+                var aggregatedCells = getAggregatedCells(expLayers);
+                
+				//var normalizationFactor = getNormalizationFactorFromCells(aggregatedCells);
 				var width = expLayers[0].getWidth();
 				var height = expLayers[0].getHeight();
 				this.renderExplLayer(1, i, "all features cumulative", rowInfoString, aggregatedCells, width, height, normalizationFactor, 1.0);
@@ -485,7 +506,6 @@ function getSaliencyDisplayManager(selectionManager) {
 	}
 	return sdm;
 }
-
 function getRowInfoString(rowInfo) {
 	var result = undefined;
 	if ('*' == rowInfo[1]) {
@@ -505,15 +525,20 @@ function getMousePos(canvas, evt) {
 	};
   }
 	
-function getNameDivForRow(rowIndex, rowInfo, layerCount){
-	var nameContainerDiv = document.createElement("div");
-	nameContainerDiv.setAttribute("style", getGridPositionStyle(0,rowIndex) + '; width:200px;padding-top:125px; text-align:center; border-style: solid; border-width:1px;font-family:Arial;');
-	nameContainerDiv.innerHTML = getRowInfoString(rowInfo);                              // had height:100%
-//	var nameContainerContentDiv = document.createElement("div");
-//	nameContainerContentDiv.innerHTML = getRowInfoString(rowInfo);
-//	nameContainerContentDiv.setAttribute("style", 'margin:auto;font-family:Arial;');
-	//nameContainerContentDiv.setAttribute("style", 'text-align:center; padding-top:80px;font-family:Arial;');
-//	nameContainerDiv.append(nameContainerContentDiv);
+function getNameDivForRow(rowIndex, rowInfo, contextString){
+    var nameContainerDiv = document.createElement("div");
+    nameContainerDiv.setAttribute("class", "flex-column");
+	nameContainerDiv.setAttribute("style", getGridPositionStyle(0,rowIndex) + '; width:200px;text-align:center; border-style: solid; border-width:1px;font-family:Arial;');
+    
+    var contextDiv = document.createElement("div");
+	contextDiv.setAttribute("style", 'width:200px;padding-top:100px; text-align:center; font-family:Arial;');
+    contextDiv.innerHTML = contextString; 
+    nameContainerDiv.append(contextDiv);
+
+    var nameDiv = document.createElement("div");
+	nameDiv.setAttribute("style", 'width:200px;padding-top:25px; text-align:center; font-family:Arial;');
+    nameDiv.innerHTML = getRowInfoString(rowInfo);     
+    nameContainerDiv.append(nameDiv);
 	return nameContainerDiv;
 }
 
@@ -543,18 +568,6 @@ function getAggregatedCells(expLayers){
 	return result;
 }
 
-function getNormalizationFactorFromCells(cells) {
-	var max = getMaxValueForLayer(cells);
-	var factor = undefined;
-	if (max == 0) {
-		factor = 1;
-	}
-	else{
-		factor = 1/ max;
-	}
-	 
-	return factor;
-}
 
 function getRandomCells(count) {
     var result = [];
@@ -563,25 +576,18 @@ function getRandomCells(count) {
     }
     return result;
 }
-var getNormalizationFactor = function(expLayers){
-	var max = 0.0
-	for (var i in expLayers) {
-		expLayer = expLayers[i];
-		var value = getMaxValueForLayer(expLayer.getCellsList());
+
+var getMaxValueForLayers = function(layers) {
+    var max = 0.0;
+    for (var i in layers) {
+        var layer = layers[i];
+        var value = getMaxValueForLayer(layer.getCellsList());
 		if (value > max) {
 			max = value;
 		}
-	} 
-    var factor = undefined;
-	if (max == 0) {
-		factor = 1;
-	}
-	else{
-		factor = 1/ max;
-	}
-	return factor;
+    }
+	return max;
 }
-
 var getMaxValueForLayer = function(vals){
 	var max = 0.0;
 	for (var i in vals) {
