@@ -133,7 +133,9 @@ function renderState(canvas, entities, zoom_factor, xOffset, yOffset, generateTo
         return;
     }
     var ctx = canvas.getContext("2d");
-    cleanToolTips();
+    if (canvas == gameboard_canvas) {
+        cleanToolTips();
+    }
     clearGameBoard(ctx, canvas,"game");
     renderQuadrantGridlines(ctx);
     var uiLayerSortedEntities = sortEntitiesAsPerUILayer(entities);

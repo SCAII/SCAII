@@ -127,27 +127,38 @@ function getSelectionManager() {
     }
     
 	sm.addSelection = function(selection) {
-        var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
-        var targetArg = selection[0] + "/" + selection[1];
-        if (this.defaultSelectionMade) {
-			var logLine = templateMap["selectedRewardBar"];
-			logLine = logLine.replace("<REGION>", "rewardChart");
-			logLine = logLine.replace("<SLCT_RWRD_BAR>", targetArg);
-        	chartTargetClickHandler(targetName, logLine);
-        	//chartTargetClickHandler(targetName, "selectRewardBar:" + targetArg);
+        //since not doing our own highlighting of bar, don't need to do isLegalTarget checking
+        if (isStudyQuestionMode()){
+            var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
+            var targetArg = selection[0] + "/" + selection[1];
+            if (this.defaultSelectionMade) {
+				var logLine = templateMap["selectedRewardBar"];
+				logLine = logLine.replace("<REGION>", "rewardChart");
+				logLine = logLine.replace("<SLCT_RWRD_BAR>", targetArg);
+        		chartTargetClickHandler(targetName, logLine);
+                //chartTargetClickHandler(targetName, "selectRewardBar:" + targetArg);
+                // clear any highlighing that might have been done for those items
+                activeSaliencyDisplayManager.hideAllSaliencyMapOutlines();
+                clearHighlightedShapesOnGameboard()
+            }
         }
         this.defaultSelectionMade = true;
 		this.selections.push(selection);
 	}
 
 	sm.removeSelection = function (selection) {
-        var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
-		var targetArg = selection[0] + "/" + selection[1];
-		var logLine = templateMap["unselectedRewardBar"];
-		logLine = logLine.replace("<REGION>", "rewardChart");
-		logLine = logLine.replace("<UNSLCT_RWRD_BAR>", targetArg);
-        chartTargetClickHandler(targetName, logLine);
-        //chartTargetClickHandler(targetName, "unselectRewardBar:" + targetArg);
+        //since not doing our own highlighting of bar, don't need to do isLegalTarget checking
+        if (isStudyQuestionMode()){
+            var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
+            var targetArg = selection[0] + "/" + selection[1];
+            if (this.defaultSelectionMade) {
+				var logLine = templateMap["unselectedRewardBar"];
+				logLine = logLine.replace("<REGION>", "rewardChart");
+				logLine = logLine.replace("<UNSLCT_RWRD_BAR>", targetArg);
+        		chartTargetClickHandler(targetName, logLine);
+                //chartTargetClickHandler(targetName, "unselectRewardBar:" + targetArg);
+            }
+        }
 		var newList = [];
 		for (var i in this.selections) {
 			var curSel = this.selections[i];
@@ -435,6 +446,13 @@ function createRewardChartContainer() {
 	rewardTitleContainer.setAttribute("id", "rewards-titled-container");
 	rewardTitleContainer.setAttribute("class", "flex-column titled-container r0c1 rewards-bg");
 	$("#scaii-interface").append(rewardTitleContainer);
+
+    var rewardSpacerContainer = document.createElement("DIV");
+	rewardSpacerContainer.setAttribute("id", "rewards-spacer");
+	rewardSpacerContainer.setAttribute("class", "r0c2");
+	rewardSpacerContainer.setAttribute("style", "background-color:white;width:800px;");
+	$("#scaii-interface").append(rewardSpacerContainer);
+
 
 	var whyQuestionsDiv = document.createElement("DIV");
 	whyQuestionsDiv.setAttribute("id", "why-questions-div");
