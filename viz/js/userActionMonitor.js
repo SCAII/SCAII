@@ -236,8 +236,15 @@ function targetHoverHandler(e, logLine) {
     if (isStudyQuestionMode()){
         var targetId = e.currentTarget.getAttribute("id");
         logLine = logLine.replace("<TARGET>", targetId);
-        userActionMonitor.pendingLogLine = logLine;
-        stateMonitor.setUserAction(logLine);
+        var listener = stateMonitor.getLogListener();
+        if(listener.search != undefined && listener.includes("hideEntityTooltips") && logLine.includes("hideEntityTooltips")) {
+            userActionMonitor.logListener = undefined;
+            userActionMonitor.clear();
+        } else {
+            userActionMonitor.pendingLogLine = logLine;
+            stateMonitor.setUserAction(logLine);
+            userActionMonitor.clear();
+        }
     }
 }
 

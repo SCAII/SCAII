@@ -5,6 +5,7 @@ function getStateMonitor() {
     sm.logFileName = undefined;
     sm.sentHeader = false;
     sm.clickListener = undefined;
+    sm.logListener = undefined;
 
     sm.setClickListener = function(cl){
         this.clickListener = cl;
@@ -78,8 +79,12 @@ function getStateMonitor() {
             if (this.clickListener != undefined) {
                 this.clickListener.acceptClickInfo(logLine);
             }
+            logListener = logLine;
             return logLine;
         }
+    }
+    sm.getLogListener = function () {
+        return logListener;
     }
 
     sm.getDate = function () {
