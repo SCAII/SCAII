@@ -27,66 +27,7 @@ function gen_tower(rng, x, y, faction, out)
     table.insert(out, tower)
 end
 
-function roll_ship(rng, units, agent)
-    friendlies = {}
-    for i,tower in pairs(units) do
-        if tower.unit_type ~= "Ship" and tower.faction == 0 then
-            table.insert(friendlies, i)
-        end
-    end
 
-    if #friendlies == 0 then
-        return false
-    end
-
-    roll = rng:rand_double(0,1)
-    if roll < 0.6 then
-        return false
-    end
-
-    which = rng:rand_int(1, #friendlies+1)
-    idx = friendlies[which]
-    tower = units[idx]
-
-
-    -- Find how far we need to spawn the ship from the tower
-    -- to be outside it (at least mostly)
-    if tower.unit_type == "Big Tower" then
-        scale = 5 * math.sqrt(2) / 2
-    elseif tower.unit_type == "Small Tower" then
-        scale = 3 * math.sqrt(2) / 2
-    elseif tower.unit_type == "Small City" then
-        scale = 1.5
-    elseif tower.unit_type == "Big City" then
-        scale = 3
-    end
-
-    -- Find unit vector from tower to agent
-    -- and scale to needed value
-    x = tower.pos.x - agent.pos.x
-    y = tower.pos.y - agent.pos.y
-
-    norm = math.sqrt(x*x + y*y)
-
-    x = x / norm
-    y = y / norm
-
-    x = x * scale
-    y = y * scale
-
-    enemy_ship = {
-        pos = {x = tower.pos.x - x, y = tower.pos.y - y},
-        unit_type = "Ship",
-        faction = 1,
-        hp = rng:rand_double(15.0, 50.0)
-    }
-
-    -- The python code just attacks the index corresponding to the
-    -- given entity, so this hack lets us select the ship as if it
-    -- were the tower in that quadrant automagically
-    units[idx] = enemy_ship
-    table.insert(units, tower)
-end
 
 function _reset(rng, data)
     local agent = {
@@ -95,32 +36,88 @@ function _reset(rng, data)
         faction=0,
     }
 
+    if data == nil then
+        generation = 1
+    elseif data.generation == nil then
+        data.generation = 2
+        generation = 2
+    elseif data.generation > 1 then
+        data.generation = data.generation + 1
+        generation = data.generation
+    end
+
+    if generation > 3 then
+        print "uh oh"
+    end
+
+
+
     out = {}
     table.insert(out, agent)
 
+    local full_hp_small = {
+        unit_type="Small Tower",
+        faction=0
+    }
 
-    for i = 4,1,-1 do
-        x_max = (( (i-1) // 2) + 1) * 20.0 - 5.5
+    local damaged_small = {
+        unit_type="Small Tower",
+        faction=1,
+        hp=30.0,
+    }
+
+    local damaged_big = {
+        unit_type="Big Tower",
+        faction=1,
+        hp=40.0,
+    }
+
+    local friendly_small = {
+        unit_type="Small Tower",
+        faction=0,
+    }
+
+    -- Reminder:
+    -- Q1 = 2
+    -- Q2 = 4
+    -- Q3 = 3
+    -- Q4 = 1
+    if generation == 1 then
+        -- Q1, Q4, Q3, Q2
+        full_hp_small.pos = {x=35.0, y=10.0}
+        damaged_small.pos = {x=26.3, y=31.2}
+        damaged_big.pos = {x=10.8, y=31.5}
+        friendly_small.pos = {x=13.8, y=8.0}
+
+        table.insert(out, damaged_small)
+        table.insert(out, full_hp_small)
+        table.insert(out, damaged_big)
+        table.insert(out, friendly_small)
+    elseif generation == 2 then
+        -- Q4, Q3, Q1, Q2
+        full_hp_small.pos = {x=26.3, y=31.2}
+        damaged_small.pos = {x=10.8, y=31.5}
+        damaged_big.pos = {x=35.0, y=10.0}
+        friendly_small.pos = {x=13.8, y=8.0}
+
+        table.insert(out, full_hp_small)
+        table.insert(out, damaged_big)
+        table.insert(out, damaged_small)
+        table.insert(out, friendly_small)
+    else
+        -- Q1, Q2, Q4, Q3
+        full_hp_small.pos = {x=35.0, y=10.0}
+        damaged_small.pos = {x=13.8, y=8.0}
+        damaged_big.pos = {x=26.3, y=31.2}
+        friendly_small.pos = {x=10.8, y=31.5}
+
         
-        y_max = (( (i-1) %  2) + 1) * 20.0 - 5.5
-
-        x = rng:rand_double(x_max - 2.5, x_max)
-        y = rng:rand_double(y_max - 2.5, y_max)
-
-        faction_weight = rng:rand_double(0.0, 1.0)
-
-        -- About a 70% chance of a tower being an enemy.
-        -- May tweak
-        if faction_weight < 0.7 then
-            faction = 1
-        else
-            faction = 0
-        end
-
-        gen_tower(rng, x, y, faction, out)
+        table.insert(out, damaged_big)
+        table.insert(out, full_hp_small)
+        table.insert(out, friendly_small)
+        table.insert(out, damaged_small)
+        
     end
-
-    roll_ship(rng, out, agent)
 
     return out
 end
