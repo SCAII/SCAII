@@ -14,7 +14,8 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 	bcm.saliencyDisplayManager = saliencyDisplayManager;
 	bcm.isCombined = isCombined;
 	bcm.isRewardMode = isRewardMode;
-	
+    
+
 	bcm.convertGoogleChartSelectionsToSelectionsByName = function(googleChartSelections){
 		var selectionsByName = [];
 		console.log("SELECTION from getSelection() looks like: ");

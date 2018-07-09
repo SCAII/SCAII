@@ -212,7 +212,9 @@ function getSaliencyDisplayManager(selectionManager) {
 	
 	sdm.renderAllExplanationSaliencyMaps = function() {
 		$("#saliency-maps").empty();
-		var rowInfos = this.xaiSelectionManager.getSelections();
+        var rowInfos = this.xaiSelectionManager.getSelections();
+        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('detailed', rowInfos[0][1]);
+		
 		for (var i in rowInfos){
             var scaleFactor = 1.0;
             if (i > 0){
@@ -229,8 +231,8 @@ function getSaliencyDisplayManager(selectionManager) {
 				var expLayers = layerMessage.getLayersList();
 				var nameContainerDiv = getNameDivForRow(i, rowInfo,this.rankString[rowInfo[0]]);
 				$("#saliency-maps").append(nameContainerDiv);
-				var rowInfoString = getRowInfoString(rowInfo);
-				var normalizationFactor = getNormalizationFactor(expLayers);
+                var rowInfoString = getRowInfoString(rowInfo);
+				//var normalizationFactor = getNormalizationFactor(expLayers);
 				for (var j in expLayers) {
 					expLayer = expLayers[j];
 					//console.log('found layer ' + expLayer.getName());
@@ -248,7 +250,8 @@ function getSaliencyDisplayManager(selectionManager) {
 	
 	sdm.renderCombinedExplanationSaliencyMaps = function() {
 		$("#saliency-maps").empty();
-		var rowInfos = this.xaiSelectionManager.getSelections();
+        var rowInfos = this.xaiSelectionManager.getSelections();
+        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('combined', rowInfos[0][1]);
 		for (var i in rowInfos){
 			var rowInfo = rowInfos[i]; 
 			var saliencyId = activeBarChartManager.getSaliencyIdForActionNameAndBar(rowInfo[0], rowInfo[1]);
@@ -262,8 +265,9 @@ function getSaliencyDisplayManager(selectionManager) {
 				var nameContainerDiv = getNameDivForRow(i, rowInfo, this.rankString[rowInfo[0]]);
 				$("#saliency-maps").append(nameContainerDiv);
 				var rowInfoString = getRowInfoString(rowInfo);
-				var aggregatedCells = getAggregatedCells(expLayers);
-				var normalizationFactor = getNormalizationFactorFromCells(aggregatedCells);
+                var aggregatedCells = getAggregatedCells(expLayers);
+                
+				//var normalizationFactor = getNormalizationFactorFromCells(aggregatedCells);
 				var width = expLayers[0].getWidth();
 				var height = expLayers[0].getHeight();
 				this.renderExplLayer(1, i, "all features cumulative", rowInfoString, aggregatedCells, width, height, normalizationFactor, 1.0);
@@ -545,18 +549,6 @@ function getAggregatedCells(expLayers){
 	return result;
 }
 
-function getNormalizationFactorFromCells(cells) {
-	var max = getMaxValueForLayer(cells);
-	var factor = undefined;
-	if (max == 0) {
-		factor = 1;
-	}
-	else{
-		factor = 1/ max;
-	}
-	 
-	return factor;
-}
 
 function getRandomCells(count) {
     var result = [];
@@ -565,25 +557,18 @@ function getRandomCells(count) {
     }
     return result;
 }
-var getNormalizationFactor = function(expLayers){
-	var max = 0.0
-	for (var i in expLayers) {
-		expLayer = expLayers[i];
-		var value = getMaxValueForLayer(expLayer.getCellsList());
+
+var getMaxValueForLayers = function(layers) {
+    var max = 0.0;
+    for (var i in layers) {
+        var layer = layers[i];
+        var value = getMaxValueForLayer(layer.getCellsList());
 		if (value > max) {
 			max = value;
 		}
-	} 
-    var factor = undefined;
-	if (max == 0) {
-		factor = 1;
-	}
-	else{
-		factor = 1/ max;
-	}
-	return factor;
+    }
+	return max;
 }
-
 var getMaxValueForLayer = function(vals){
 	var max = 0.0;
 	for (var i in vals) {
