@@ -140,6 +140,10 @@ function getUserActionMonitor() {
     uam.stepToDecisionPoint = function(dp) {
         stateMonitor.setUserAction('stepIntoDecisionPoint:' + dp);
     }
+
+    uam.extractClickCoordinatesFromClickEvent =function(logLine){
+        //LEFT OFF HERE
+    }
     return uam;
 }
 

@@ -192,7 +192,7 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
         rightBlockDiv.setAttribute("id", "right-block-div");
         rightBlockDiv.setAttribute("style", "position:absolute;left:" + x3 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] + ";background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
         rightBlockDiv.onclick = function(e) {
-            if (isStudyQuestionMode()){
+            if (userStudyMode){
                 targetClickHandler(e,"clickTimelineBlocker:NA");
                 regionClickHandlerGameArea(e);
                 userActionMonitor.globalClick(e.clientX, e.clientY);
@@ -231,7 +231,7 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
         rightBlockDiv.setAttribute("id", "right-block-div");
         rightBlockDiv.setAttribute("style", "position:absolute;left:" + x2 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] + ";background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
         rightBlockDiv.onclick = function(e) {
-            if (isStudyQuestionMode()){
+            if (userStudyMode){
                 targetClickHandler(e,"clickTimelineBlocker:NA");
                 regionClickHandlerGameArea(e);
                 userActionMonitor.globalClick(e.clientX, e.clientY);
@@ -279,7 +279,7 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
     //     rightBlockDiv.setAttribute("id", "right-block-div");
     //     rightBlockDiv.setAttribute("style", "position:absolute;left:" + x2 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] + ";background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
     //     rightBlockDiv.onclick = function(e) {
-    //         if (isStudyQuestionMode()){
+    //         if (userStudyMode){
     //             targetClickHandler(e,"clickTimelineBlocker:NA");
     //             regionClickHandlerGameArea(e);
     //             userActionMonitor.globalClick(e.clientX, e.clientY);
@@ -347,7 +347,7 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
     //     rightBlockDiv.setAttribute("id", "right-block-div");
     //     rightBlockDiv.setAttribute("style", "position:absolute;left:" + x3 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] + ";background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
     //     rightBlockDiv.onclick = function(e) {
-    //         if (isStudyQuestionMode()){
+    //         if (userStudyMode){
     //             targetClickHandler(e,"clickTimelineBlocker:NA");
     //             regionClickHandlerGameArea(e);
     //             userActionMonitor.globalClick(e.clientX, e.clientY);

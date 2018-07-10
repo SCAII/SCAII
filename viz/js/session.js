@@ -139,8 +139,8 @@ function handleReplayControl(replayControl) {
 			//console.log('___set_step_position updating step from handleReplayControl to ' + command[1] + ' which should be one prior to what the first viz packet arriving will set it to');
 			sessionIndexManager.setReplaySequencerIndex(parseInt(command[1]));
             updateButtonsAfterJump();
-            if (isStudyQuestionMode()){
-                studyQuestionManager.accessManager.express();
+            if (userStudyMode){
+                activeStudyQuestionManager.accessManager.express();
             }
 		}
 	}
@@ -226,7 +226,6 @@ function handleReplaySessionConfig(rsc, selectedStep) {
 	var timelineWidth = expl_ctrl_canvas.width - 2*timelineMargin;
 	sessionIndexManager = getSessionIndexManager(rsc.getStepCount(), timelineWidth);
 	sessionIndexManager.setReplaySequencerIndex(0);
-	renderDecisionPointLegend();
 }
 
 

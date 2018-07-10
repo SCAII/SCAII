@@ -132,10 +132,10 @@ function getSaliencyDisplayManager(selectionManager) {
         for (var i in barGroups) {
             var barGroup= barGroups[i];
             if (i == 0){
-                this.rankString[barGroup.getName()] = "best action at D" + studyQuestionManager.squim.getCurrentDecisionPointNumber();
+                this.rankString[barGroup.getName()] = "best action at D" + activeStudyQuestionManager.squim.getCurrentDecisionPointNumber();
             }
             else if (i == 1){
-                this.rankString[barGroup.getName()] = "2nd best action at D" + studyQuestionManager.squim.getCurrentDecisionPointNumber();
+                this.rankString[barGroup.getName()] = "2nd best action at D" + activeStudyQuestionManager.squim.getCurrentDecisionPointNumber();
             }
             else {
                 this.rankString[barGroup.getName()] = "";
@@ -289,7 +289,7 @@ function getSaliencyDisplayManager(selectionManager) {
 	
 	
 	sdm.overlaySaliencyMapOntoGameReplica = function(ctx, cells, width, height, normalizationFactor) {
-        if (isStudyQuestionMode()){
+        if (userStudyMode){
             if (isTutorial()){
                 cells = getRandomCells(width * height);
                 var max = getMaxValueForLayer(cells);
@@ -345,14 +345,16 @@ function getSaliencyDisplayManager(selectionManager) {
                 //targetClickHandler(e, "clickGameQuadrant:" + getQuadrantName(x,y));
                 targetClickHandler(e, "clickSaliencyMap:" + saliencyUIName + "_(" + getQuadrantName(x,y) + ")");
             }
-            if (isStudyQuestionMode()){
-                var legalClickTargetRegions = studyQuestionManager.getLegalInstrumentationTargetsForCurrentQuestion();
-                if (studyQuestionManager.renderer.isLegalRegionToClickOn("target:saliencyMap", legalClickTargetRegions)){
-                    if (studyQuestionManager.renderer.controlsWaitingForClick.length == 0) {
+            if (userStudyMode){
+                var legalClickTargetRegions = activeStudyQuestionManager.getLegalInstrumentationTargetsForCurrentQuestion();
+                if (activeStudyQuestionManager.renderer.isLegalRegionToClickOn("target:saliencyMap", legalClickTargetRegions)){
+                    if (activeStudyQuestionManager.renderer.controlsWaitingForClick.length == 0) {
                         return;
                     }
-                    activeSaliencyDisplayManager.hideAllSaliencyMapOutlines();
-                    activeSaliencyDisplayManager.showSaliencyMapOutline(saliencyMapId);
+                    if (tm.showAllSaliencyForTreatment1 || tm.showSaliencyAll){
+                        activeSaliencyDisplayManager.hideAllSaliencyMapOutlines();
+                        activeSaliencyDisplayManager.showSaliencyMapOutline(saliencyMapId);
+                    }
                     clearHighlightedShapesOnGameboard();
                 }
             }

@@ -5,11 +5,12 @@ function getTabManager() {
     tm.currentTabIndex = 0;
     tm.tabInfos = [];
     tm.studyQuestionManagerForTab = {};
-    tm.hopTargetInfoForTab = {};
+    tm.returnInfoForTab = {};
     tm.userIdHasBeenSet = false;
     tm.isInterTabHopInProgress = false;
-    tm.hopSourceTabId = undefined;
+    tm.priorTabId = undefined;
     tm.hopTargetTabId = undefined;
+    tm.answeredQuestions = [];
     
     tm.hasShownUserId = function() {
         return this.userIdHasBeenSet;
@@ -35,6 +36,24 @@ function getTabManager() {
         generateTaskTab(tabInfo);
     }
 
+    tm.noteQuestionWasAnswered = function(questionId) {
+        var absoluteQuestionId = this.getCurrentCssId() + "." + questionId;
+        this.answeredQuestions.push(absoluteQuestionId);
+    }
+
+    tm.wasQuestionAnsweredAlready = function(questionId){
+        var absoluteQuestionId = this.getCurrentCssId() + "." + questionId;
+        return this.answeredQuestions.includes(absoluteQuestionId);
+    }
+
+    tm.wereQuestionDivsSavedOff = function(questionId) {
+        var returnInfo = this.returnInfoForTab[this.getCurrentCssId()];
+        if (returnInfo == undefined){
+            return false;
+        }
+        return returnInfo.questionId == questionId;
+    }
+
     tm.hasNextTab = function(){
         if (this.currentTabIndex >= this.tabInfos.length - 1){
             return false;
@@ -47,12 +66,12 @@ function getTabManager() {
         $("#debug2").html("tab index is now" + index);
     }
     tm.nextTab = function() {
-        this.setTabIndex(this.currentTabIndex + 1);
-        var ti = this.tabInfos[this.currentTabIndex];
-        this.openTab(ti.cssId, ti.fileName, ti.loadingMessage, false);
+        var indexOfNextTab = Number(this.currentTabIndex) + 1;
+        var ti = this.tabInfos[indexOfNextTab];
+        this.openTab(ti.cssId, ti.fileName, ti.loadingMessage, true, false);
     }
 
-    tm.getCurrentTabId = function(){
+    tm.getCurrentCssId = function(){
         var ti = this.tabInfos[this.currentTabIndex];
         return ti.cssId;
     }
@@ -72,23 +91,23 @@ function getTabManager() {
         var targetIndex = this.getIndexOfTabWithId(id);
         if (targetIndex != -1){
             var ti = this.tabInfos[targetIndex];
-            this.openTab(ti.cssId, ti.fileName, ti.loadingMessage, true);
+            this.openTab(ti.cssId, ti.fileName, ti.loadingMessage, true, true);
         }
     }
 
     tm.currentTabHasQuestionManager = function(){
-        var curTabId = this.getCurrentTabId();
+        var curTabId = this.getCurrentCssId();
         var qm = this.studyQuestionManagerForTab[curTabId];
         return qm != undefined;
     }
 
     tm.setStudyQuestionManagerForCurrentTab = function(qm){
-        var curTabId = this.getCurrentTabId();
+        var curTabId = this.getCurrentCssId();
         this.studyQuestionManagerForTab[curTabId] = qm;
     }
 
     tm.getStudyQuestionManagerForCurrentTab = function(){
-        var curTabId = this.getCurrentTabId();
+        var curTabId = this.getCurrentCssId();
         var qm = this.studyQuestionManagerForTab[curTabId];
         return qm;
     }
@@ -100,31 +119,39 @@ function getTabManager() {
             return true;
         }
         return false;
-
     }
 
-    tm.initiateTabHop = function(tabId){
-        this.hopSourceTabId = this.getCurrentTabId();
+    tm.rememberStateUponDeparture = function(tabId, isHop){
+        this.priorTabId = this.getCurrentCssId();
         this.hopTargetTabId = tabId;
-        this.isInterTabHopInProgress = true;
-        var tabHopInfo = {};
+        this.isInterTabHopInProgress = isHop;
+        var returnInfo = {};
         // hopReturnInfo.questionDivs = document.getElementById("q-and-a-div").childNodes;
         // for (var i in hopReturnInfo.questionDivs){
         //     var qDiv = hopReturnInfo.questionDivs[i];
         //     var foo = 3;
         // }
-        tabHopInfo.cachedQuestionDivs = $('#q-and-a-div').children().detach();
-        tabHopInfo.hopTargetStep = sessionIndexManager.getCurrentIndex();
+        if ($('#q-and-a-div').children().length != 0){
+            returnInfo.cachedQuestionDivs = $('#q-and-a-div').children().detach();
+            //$('#q-and-a-div').empty(); 
+            returnInfo.questionId = activeStudyQuestionManager.squim.getCurrentQuestionId();
+        }
+        else {
+            returnInfo.cachedQuestionDivs = undefined; 
+        }
+        returnInfo.returnTargetStep = sessionIndexManager.getCurrentIndex();
+        // remember any queued up clickInfo
+        returnInfo.queuedUpClickInfo = activeStudyQuestionManager.renderer.clickInfoFromUserActionMonitor;
         // (click info should still be staged in renderer)
-        this.hopTargetInfoForTab[this.getCurrentTabId()] = tabHopInfo;
+        this.returnInfoForTab[this.getCurrentCssId()] = returnInfo;
     }
 
-    tm.getTabHopInfoForTargetTab = function(){
-       return this.hopTargetInfoForTab[tm.hopTargetTabId];
+    tm.getReturnInfoForTargetTab = function(){
+       return this.returnInfoForTab[tm.hopTargetTabId];
     }
 
     tm.checkForTabHopCompletion = function(){
-        var tabHopInfo = this.getTabHopInfoForTargetTab();
+        var tabHopInfo = this.getReturnInfoForTargetTab();
         if (tabHopInfo!= undefined) {
             if (tabHopInfo.cachedQuestionDivs != undefined) {
                 $("#q-and-a-div").append(tabHopInfo.cachedQuestionDivs);
@@ -133,38 +160,41 @@ function getTabManager() {
             //     var qDiv = tabHopInfo.questionDivs[i];
             //     $("q-and-a-div").append(qDiv);
             // }
-            this.hopTargetInfoForTab[this.hopTargetTabId] = undefined;
+            activeStudyQuestionManager.renderer.clickInfoFromUserActionMonitor = returnInfo.queuedUpClickInfo;
+            var coords = userActionMonitor.extractClickCoordinatesFromClickEvent(returnInfo.queuedUpClickInfo);
+            this.returnInfoForTab[this.hopTargetTabId] = undefined;
             this.hopTargetTabId = undefined;
-            this.hopSourceTabId = undefined;
+            this.priorTabId = undefined;
             this.isInterTabHopInProgress = false;
             clearLoadingScreen();
         }
     }
 
     tm.jumpIfTabHopInProgress = function(){
-        var tabHopInfo = this.getTabHopInfoForTargetTab();
-        if (tabHopInfo!= undefined) {
-            jumpToStep(tabHopInfo.hopTargetStep);
-            return true;
+        if (this.isInterTabHopInProgress){
+            var tabHopInfo = this.getReturnInfoForTargetTab();
+            if (tabHopInfo!= undefined) {
+                jumpToStep(tabHopInfo.returnTargetStep);
+                return true;
+            }
         }
         return false;
     }
 
     tm.openFirstTab = function(){
-        this.openTab('tab-tutorial','tutorial.scr','Loading tutorial...', false);
+        this.openTab('tab-tutorial','tutorial.scr','Loading tutorial...', false, false);
     }
     
-    tm.openTab = function(tabId, replayFileForTab, loadingMessage, isTabHop){
-        if (isTabHop){
-            this.initiateTabHop(tabId);
-            var indexOfTargetTab = this.getIndexOfTabWithId(tabId);
-            this.setTabIndex(indexOfTargetTab);
+    tm.openTab = function(tabId, replayFileForTab, loadingMessage, rememberInfo, isHop){
+        if (rememberInfo){
+            this.rememberStateUponDeparture(tabId, isHop);
         }
+        var indexOfTargetTab = this.getIndexOfTabWithId(tabId);
+        this.setTabIndex(indexOfTargetTab);
         loadTab(tabId, replayFileForTab, loadingMessage);
         enableTab(tabId);
         $("#debug1").html("tab is " + tabId);
     }
-
     return tm;
 }
 

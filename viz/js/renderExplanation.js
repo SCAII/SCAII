@@ -128,7 +128,7 @@ function getSelectionManager() {
     
 	sm.addSelection = function(selection) {
         //since not doing our own highlighting of bar, don't need to do isLegalTarget checking
-        if (isStudyQuestionMode()){
+        if (userStudyMode){
             var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
             var targetArg = selection[0] + "/" + selection[1];
             if (this.defaultSelectionMade) {
@@ -144,7 +144,7 @@ function getSelectionManager() {
 
 	sm.removeSelection = function (selection) {
         //since not doing our own highlighting of bar, don't need to do isLegalTarget checking
-        if (isStudyQuestionMode()){
+        if (userStudyMode){
             var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
             var targetArg = selection[0] + "/" + selection[1];
             if (this.defaultSelectionMade) {
@@ -713,8 +713,8 @@ function renderDecisionPointLegend() {
 
 	var explanation_steps = replaySessionConfig.getExplanationStepsList();
     var explanation_titles = replaySessionConfig.getExplanationTitlesList();
-    if (isStudyQuestionMode()) {
-       explanation_titles = studyQuestionManager.getExplanationTitles(explanation_steps, explanation_titles);
+    if (userStudyMode) {
+       explanation_titles = activeStudyQuestionManager.getExplanationTitles(explanation_steps, explanation_titles);
     }
 	var expl_count = explanation_steps.length;
 	var index = 0;

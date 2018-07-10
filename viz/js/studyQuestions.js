@@ -111,6 +111,9 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
 
     sqm.poseCurrentQuestion = function() {
         var qid = this.squim.getCurrentQuestionId();
+        if (tabManager.wasQuestionAnsweredAlready(qid) || tabManager.wereQuestionDivsSavedOff(qid)){
+            return;
+        }
         var shouldAskQuestion = false;
         if (this.mostRecentlyPosedQuestion == qid){
             if (tabManager.isInterTabHopInProgress){
@@ -247,6 +250,7 @@ function acceptAnswer(e) {
     // gather answer, send to backend
     var currentStep = activeStudyQuestionManager.squim.getCurrentStep();
     var questionId = activeStudyQuestionManager.squim.getCurrentQuestionId();
+    tabManager.noteQuestionWasAnswered(questionId);
     var currentQuestionIndexAtStep = getQuestionIndexFromQuestionId(questionId);
     var clickInfo = renderer.collectClickInfo();
     userActionMonitor.clickListener = undefined;
@@ -291,6 +295,6 @@ function acceptAnswer(e) {
             }
         }
     }
-    sqMan.accessManager.setQuestionState("answered");
-    sqMan.accessManager.express();
+    asqm.accessManager.setQuestionState("answered");
+    asqm.accessManager.express();
 }

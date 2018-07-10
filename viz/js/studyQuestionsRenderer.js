@@ -265,6 +265,9 @@ function getStudyQuestionRenderer(questions) {
         $("#thank-you-row").append(thanks);
     }
 
+    sqr.getWidthNeededToHideEverything = function(){
+        return 3000;
+    }
     sqr.renderWaitScreen = function() {
         var userIdDiv = document.createElement("DIV");
         userIdDiv.setAttribute("id", "user-wait-div");
