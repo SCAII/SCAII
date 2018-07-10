@@ -132,7 +132,11 @@ function getSelectionManager() {
             var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
             var targetArg = selection[0] + "/" + selection[1];
             if (this.defaultSelectionMade) {
-                chartTargetClickHandler(targetName, "selectRewardBar:" + targetArg);
+				var logLine = templateMap["selectedRewardBar"];
+				logLine = logLine.replace("<REGION>", "rewardChart");
+				logLine = logLine.replace("<SLCT_RWRD_BAR>", targetArg);
+        		chartTargetClickHandler(targetName, logLine);
+                //chartTargetClickHandler(targetName, "selectRewardBar:" + targetArg);
                 // clear any highlighing that might have been done for those items
                 activeSaliencyDisplayManager.hideAllSaliencyMapOutlines();
                 clearHighlightedShapesOnGameboard()
@@ -148,7 +152,11 @@ function getSelectionManager() {
             var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
             var targetArg = selection[0] + "/" + selection[1];
             if (this.defaultSelectionMade) {
-                chartTargetClickHandler(targetName, "unselectRewardBar:" + targetArg);
+				var logLine = templateMap["unselectedRewardBar"];
+				logLine = logLine.replace("<REGION>", "rewardChart");
+				logLine = logLine.replace("<UNSLCT_RWRD_BAR>", targetArg);
+        		chartTargetClickHandler(targetName, logLine);
+                //chartTargetClickHandler(targetName, "unselectRewardBar:" + targetArg);
             }
         }
 		var newList = [];
@@ -193,7 +201,11 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
 			}
 			else {
                 jumpToStep(matchingStep);
-                specifiedTargetClickHandler("decisionPointList", "jumpToDecisionPoint:" + matchingStep);
+				var logLine = templateMap["decisionPointList"];
+				logLine = logLine.replace("<TARGET>", "decisionPointList")
+				logLine = logLine.replace("<J_DP_NUM>", matchingStep);
+                //specifiedTargetClickHandler("decisionPointList", "jumpToDecisionPoint:" + matchingStep);
+                specifiedTargetClickHandler("decisionPointList", logLine);
 			}
         }
 	}
@@ -485,6 +497,8 @@ function createRewardChartContainer() {
 	whatRadios.setAttribute("class", "flex-row rewards-bg");
 	whatRadios.setAttribute("style", "padding:6px");
 	$("#what-div").append(whatRadios);
+
+    $("#rewards-titled-container").on("click",regionClickHandlerRewards);
 }
 
 function createSaliencyContainers() {
@@ -536,6 +550,7 @@ function createSaliencyContainers() {
 	saliencyMaps.setAttribute("class", "grid");
 	$("#saliency-maps-titled-container").append(saliencyMaps);
 
+    $("#scaii-explanations")      .on("click",regionClickHandlerSaliency);
 }
 
 var saliencyCombined = true;
@@ -606,7 +621,9 @@ function populateRewardQuestionSelector(){
 	radioCombinedRewards.setAttribute("style", "margin-left:20px;");
 	radioCombinedRewards.setAttribute("checked", "true");
 	radioCombinedRewards.onclick = function(e) {
-        targetClickHandler(e, "setRewardView:combinedRewards");
+		var logLine = templateMap["setRewardView"];
+		logLine = logLine.replace("<SET_RWRD_VIEW>", "combinedRewards");
+        targetClickHandler(e, logLine);
         if (userStudyMode) {
             stateMonitor.showedCombinedRewards();
         }
@@ -624,7 +641,9 @@ function populateRewardQuestionSelector(){
 	radioDetailedRewards.setAttribute("value","rewardDetailed");
 	radioDetailedRewards.setAttribute("style", "margin-left:20px; ");
 	radioDetailedRewards.onclick = function(e) {
-        targetClickHandler(e, "setRewardView:detailedRewards");
+		var logLine = templateMap["setRewardView"];
+		logLine = logLine.replace("<SET_RWRD_VIEW>", "detailedRewards");
+        targetClickHandler(e, logLine);
         if (userStudyMode) {
             stateMonitor.showedDetailedRewards();
         }
@@ -648,7 +667,9 @@ function populateRewardQuestionSelector(){
 	radioCombinedAdvantage.setAttribute("value","advantageCombined");
 	radioCombinedAdvantage.setAttribute("style", "margin-left:20px;");
 	radioCombinedAdvantage.onclick = function(e) {
-        targetClickHandler(e, "setRewardView:combinedAdvantage");
+		var logLine = templateMap["setRewardView"];
+		logLine = logLine.replace("<SET_RWRD_VIEW>", "combinedAdvantage");
+        targetClickHandler(e, logLine);
         if (userStudyMode) {
             stateMonitor.showedCombinedAdvantage();
         }
@@ -666,7 +687,9 @@ function populateRewardQuestionSelector(){
 	radioDetailedAdvantage.setAttribute("value","advantageDetailed");
 	radioDetailedAdvantage.setAttribute("style", "margin-left:20px; ");
 	radioDetailedAdvantage.onclick = function(e) {
-        targetClickHandler(e, "setRewardView:detailedAdvantage");
+		var logLine = templateMap["setRewardView"];
+		logLine = logLine.replace("<SET_RWRD_VIEW>", "detailedAdvantage");
+        targetClickHandler(e, logLine);
         if (userStudyMode) {
             stateMonitor.showedDetailedAdvantage();
         }
@@ -753,10 +776,16 @@ function addWhyButtonForAction(step, x,  y) {
 	$("#" + buttonId).click(function(e) {
         
         if (rewardsAreShowing) {
-            targetClickHandler(e,"hideWhy:NA");
+			var logLine = templateMap["hideWhy"];
+			logLine = logLine.replace("<HIDE_WHY>", "NA");
+			targetClickHandler(e, logLine);
+            //targetClickHandler(e,"hideWhy:NA");
         }
         else {
-            targetClickHandler(e,"showWhy:NA");
+			var logLine = templateMap["showWhy"];
+			logLine = logLine.replace("<SHW_WHY>", "NA");
+			targetClickHandler(e, logLine);
+            //targetClickHandler(e,"showWhy:NA");
         }
         
 		 e.preventDefault();
@@ -776,10 +805,16 @@ function addWhatButton() {
 	$("#what-button-div").append(whatButton);
 	$("#" + buttonId).click(function(e) {
         if (salienciesAreShowing){
-            targetClickHandler(e,"hideSaliency:NA");
+			var logLine = templateMap["hideSaliency"];
+			logLine = logLine.replace("<HIDE_SALNCY>", "NA");
+            targetClickHandler(e, logLine);
+            //targetClickHandler(e,"hideSaliency:NA");
         }
         else {
-            targetClickHandler(e,"showSaliency:NA");
+			var logLine = templateMap["showSaliency"];
+			logLine = logLine.replace("<SHW_SALNCY>", "NA");
+            targetClickHandler(e, logLine);
+            //targetClickHandler(e,"showSaliency:NA");
         }
 		e.preventDefault();
 		processWhatClick();
@@ -826,11 +861,16 @@ function addLabelForAction(title, index, step){
 		if (!isUserInputBlocked()){
             if (userStudyMode){
                 if (activeStudyQuestionManager.accessManager.isBeyondCurrentRange(step)){
-                    targetClickHandler(evt, "clickActionLabelDenied:" + escapeAnswerFileDelimetersFromTextString(fullName));
+					var logLine = templateMap["clickActionLabelDenied"];
+					logLine = logLine.replace("<CLCK_ACT_D>", escapeAnswerFileDelimetersFromTextString(fullName));
+					targetClickHandler(evt, logLine);
                     return;
                 }
                 else {
-                    targetClickHandler(evt, "clickActionLabel:" + escapeAnswerFileDelimetersFromTextString(fullName));
+					var logLine = templateMap["clickActionLabel"];
+					logLine = logLine.replace("<CLCK_ACT>", escapeAnswerFileDelimetersFromTextString(fullName));
+					targetClickHandler(evt, logLine);
+                    //targetClickHandler(evt, "clickActionLabel:" + escapeAnswerFileDelimetersFromTextString(fullName));
                 }
             }
             jumpToStep(step);

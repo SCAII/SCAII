@@ -151,17 +151,17 @@ function getTabManager() {
     }
 
     tm.checkForTabHopCompletion = function(){
-        var tabHopInfo = this.getReturnInfoForTargetTab();
-        if (tabHopInfo!= undefined) {
-            if (tabHopInfo.cachedQuestionDivs != undefined) {
-                $("#q-and-a-div").append(tabHopInfo.cachedQuestionDivs);
+        var returnInfo = this.getReturnInfoForTargetTab();
+        if (returnInfo!= undefined) {
+            if (returnInfo.cachedQuestionDivs != undefined) {
+                $("#q-and-a-div").append(returnInfo.cachedQuestionDivs);
             }
-            // for (var i in tabHopInfo.questionDivs){
-            //     var qDiv = tabHopInfo.questionDivs[i];
-            //     $("q-and-a-div").append(qDiv);
-            // }
+           
             activeStudyQuestionManager.renderer.clickInfoFromUserActionMonitor = returnInfo.queuedUpClickInfo;
             var coords = userActionMonitor.extractClickCoordinatesFromClickEvent(returnInfo.queuedUpClickInfo);
+            if (coords != undefined) {
+                highlightShapeInRange(coords[0], coords[1]);
+            }
             this.returnInfoForTab[this.hopTargetTabId] = undefined;
             this.hopTargetTabId = undefined;
             this.priorTabId = undefined;
@@ -172,9 +172,9 @@ function getTabManager() {
 
     tm.jumpIfTabHopInProgress = function(){
         if (this.isInterTabHopInProgress){
-            var tabHopInfo = this.getReturnInfoForTargetTab();
-            if (tabHopInfo!= undefined) {
-                jumpToStep(tabHopInfo.returnTargetStep);
+            var returnInfo = this.getReturnInfoForTargetTab();
+            if (returnInfo!= undefined) {
+                jumpToStep(returnInfo.returnTargetStep);
                 return true;
             }
         }

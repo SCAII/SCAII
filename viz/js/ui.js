@@ -218,6 +218,13 @@ function getQuadrantName(x,y){
     }
 }
 
+function highlightShapeInRange(x,y) {
+    var ctx = gameboard_canvas.getContext('2d');
+    var shapeId = getClosestInRangeShapeId(ctx, x, y);
+	if (shapeId != undefined){
+        highlightShapeForIdForClickCollectionFeedback(shapeId);
+    }
+}
 
 function setUpMetadataToolTipEventHandlers() {
 	// for hiding/showing tooltips
@@ -226,8 +233,12 @@ function setUpMetadataToolTipEventHandlers() {
 		var y = evt.offsetY;
 		var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y);
 		if (shapeId != undefined){
-            highlightShapeForIdForClickCollectionFeedback(shapeId);
-            targetClickHandler(evt, "clickEntity:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
+			highlightShapeForIdForClickCollectionFeedback(shapeId);
+			var logLine = templateMap["gameboard"];
+			logLine = logLine.replace("<CLCK_GAME_ENTITY>", shapeLogStrings[shapeId]);
+			logLine = logLine.replace("<CLCK_QUADRANT>", getQuadrantName(x,y));
+            targetClickHandler(evt, logLine);
+            //targetClickHandler(evt, "clickEntity:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
 			// $("#metadata_hp" + shapeId).toggleClass('tooltip-invisible');
 			// if (selectedToolTipIds[shapeId] == "show") {
 			// 	selectedToolTipIds[shapeId] = "hide";
@@ -235,8 +246,12 @@ function setUpMetadataToolTipEventHandlers() {
 			// else {
 			// 	selectedToolTipIds[shapeId] = "show";
 			// }
-        }
-        specifiedTargetClickHandler("gameboardBackground", "clickGameQuadrant:" + getQuadrantName(x,y));
+		} else {
+			var logBackground = templateMap["gameboardBackground"];
+			logBackground = logBackground.replace("<CLCK_QUADRANT>", getQuadrantName(x,y));
+			specifiedTargetClickHandler("gameboardBackground", logBackground);
+        	//specifiedTargetClickHandler("gameboardBackground", "clickGameQuadrant:" + getQuadrantName(x,y));
+		}
 	});
 	  
 	gameboard_canvas.addEventListener('mousemove', function(evt) {
@@ -245,14 +260,22 @@ function setUpMetadataToolTipEventHandlers() {
 		var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y);
 		if (shapeId == undefined) {
 			// we're not inside an object, so hide all the "all_metadata" tooltips
-            hideAllTooltips(evt);
-            targetHoverHandler(evt, "hideEntityTooltips:all");
+			hideAllTooltips(evt);
+			var logLine = templateMap["hideEntityTooltips"];
+			logLine = logLine.replace("<HIDE_TOOL>", "all")
+            targetHoverHandler(evt, logLine);
+            //targetHoverHandler(evt, "hideEntityTooltips:all");
 		}
 		else {
             var tooltipId = "metadata_all" + shapeId;
             //we're inside one, keep it visible
             if (hoveredAllDataToolTipIds[tooltipId] != "show") {
-                targetHoverHandler(evt, "showEntityTooltip:" + shapeLogStrings[tooltipId] + "_" + getQuadrantName(x,y));
+				var logLine = templateMap["showEntityTooltip"];
+				logLine = logLine.replace("<ENTITY_INFO>", shapeLogStrings[shapeId]);
+				//logLine = logLine.replace("<ENTITY_INFO>", shapeLogStrings[tooltipId]);
+				logLine = logLine.replace("<TIP_QUADRANT>", getQuadrantName(x,y));
+				//targetHoverHandler(evt, "showEntityTooltip:" + shapeLogStrings[tooltipId] + "_" + getQuadrantName(x,y));
+				targetHoverHandler(evt, logLine);
             }
             hideAllTooltips(evt);
             $("#" + tooltipId).removeClass('tooltip-invisible');
