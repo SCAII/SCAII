@@ -236,14 +236,16 @@ function targetHoverHandler(e, logLine) {
     if (isStudyQuestionMode()){
         var targetId = e.currentTarget.getAttribute("id");
         logLine = logLine.replace("<TARGET>", targetId);
-        var listener = stateMonitor.getLogListener();
-        if(listener.search != undefined && listener.includes("hideEntityTooltips") && logLine.includes("hideEntityTooltips")) {
-            userActionMonitor.logListener = undefined;
-            userActionMonitor.clear();
-        } else {
-            userActionMonitor.pendingLogLine = logLine;
-            stateMonitor.setUserAction(logLine);
-            userActionMonitor.clear();
+        var mostRecentLogLine = stateMonitor.getMostRecentLogLine();
+        if (mostRecentLogLine != undefined){
+            if(mostRecentLogLine.search != undefined && mostRecentLogLine.includes("hideEntityTooltips") && logLine.includes("hideEntityTooltips")) {
+                userActionMonitor.mostRecentLogLine = undefined;
+                userActionMonitor.clear();
+            } else {
+                userActionMonitor.pendingLogLine = logLine;
+                stateMonitor.setUserAction(logLine);
+                userActionMonitor.clear();
+            }
         }
     }
 }

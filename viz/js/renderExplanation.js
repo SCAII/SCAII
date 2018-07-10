@@ -399,9 +399,16 @@ function renderWhyInfo(explPoint) {
         stateMonitor.showedCombinedRewards();
         stateMonitor.showedCombinedSaliency();
     }
-	var actionName =  activeBarChartManager.getChosenActionName();
-	var fullName = 'D' + showingDecisionNumber + ': ' + actionName;
+    var actionName =  activeBarChartManager.getChosenActionName();
+    var currentStep = studyQuestionManager.squim.getCurrentStep();
+    var fullName = 'D' + showingDecisionNumber + ': ' + actionName;
 	var whyPrompt = " had highest predicted reward. ";
+    if (isStudyQuestionMode()){
+        if (!studyQuestionManager.isOkToDisplayActionName(currentStep)) {
+            fullName = "";
+            whyPrompt = "";
+        }
+    }
 	$("#why-action-label").html(fullName);
 	$("#why-action-label").css("font-size", 14);
 	$("#why-action-label").css("padding-right", 20);

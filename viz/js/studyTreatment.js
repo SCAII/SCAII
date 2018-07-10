@@ -21,5 +21,9 @@ function getTreatmentManager(treatment) {
     else {
         alert("Invalid treatment specified - consult with study manager");
     }
+
+    tm.isAnySaliencyInPlay = function() {
+        return this.showAllSaliencyForTreatment1 || this.showSaliencyAll;
+    }
     return tm;
 }

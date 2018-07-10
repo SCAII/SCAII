@@ -122,7 +122,7 @@ function handleStudyQuestions(studyQuestions){
 	winningActionLabel.setAttribute("id", "winning-action-label");
     winningActionLabel.innerHTML = "";
     $("#reward-Values-panel").append(winningActionLabel);
-    // re-render this sowe can change names to ??? if need to for waitForPredictionClick questions
+    // re-render this so we can change names to ??? if need to for waitForPredictionClick questions
     renderDecisionPointLegend();
 }
 

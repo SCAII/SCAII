@@ -199,6 +199,9 @@ function getStudyQuestionRenderer(questions) {
         if (qu.isClickCollectingQuestion()){
             var listener = {};
             listener.acceptClickInfo = function(clickInfo){
+                if (studyQuestionManager == undefined) {
+                    return;
+                }
                 var renderer = studyQuestionManager.renderer;
                 if (renderer.isLegalRegionToClickOn(clickInfo, qu.regionsToAllow)){
                     // don't remove the click message if this is residual click activty from prior question "save"

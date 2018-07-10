@@ -31,7 +31,9 @@ function highlightShapeForClickCollectionFeedback(info){
         else if (info.type == "triangle"){
             drawTriangle(info, "outline");
         }
-        activeSaliencyDisplayManager.hideAllSaliencyMapOutlines();
+        if (studyTreatment.isAnySaliencyInPlay()){
+            activeSaliencyDisplayManager.hideAllSaliencyMapOutlines();
+        }
     }
 }
 
