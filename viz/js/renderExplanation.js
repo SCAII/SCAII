@@ -922,6 +922,10 @@ var selectedWhyButtonId = undefined;
 var selectedQmButtonId = undefined;
 var selectedDecisionStep = undefined;
 
+function showChart(step){
+    selectedDecisionStep = step;
+    showExplanationRewardInfo(step);
+}
 function processWhyClick(step) {
 	if (selectedDecisionStep == step){
 		// toggle active buttons
@@ -942,11 +946,10 @@ function processWhyClick(step) {
 		// toggle target buttons
 		//selectedQmButtonId = getQmButtonId(step);
 	 	selectedWhyButtonId = getWhyButtonIdForStep(step);
-	 	selectedDecisionStep = step;
 	 	//$("#" + selectedQmButtonId).toggleClass('active');
 	 	$("#" + selectedWhyButtonId).toggleClass('active');
 		// show explanation info for new step
-		showExplanationRewardInfo(step);
+		showChart(step);
 		
 		// engage selection color for supporting areas
 		$("#why-questions").toggleClass('active');
@@ -957,19 +960,14 @@ function processWhyClick(step) {
 		// toggle active buttons
 		$("#" + selectedQmButtonId).toggleClass('active');
 		$("#" + selectedWhyButtonId).toggleClass('active');
-
-		// clear explanation info
-		//clearExplanationInfo();
 		// toggle target buttons
 		selectedQmButtonId = getQmButtonId(step);
 	 	selectedWhyButtonId = getWhyButtonIdForStep(step);
-	 	selectedDecisionStep = step;
 	 	$("#" + selectedQmButtonId).toggleClass('active');
 		$("#" + selectedWhyButtonId).toggleClass('active');
 		 
 		// show explanation info for new step
-		showExplanationRewardInfo(step);
-
+        showChart(step);
 	}
 }
 var saliencyKeepAlive = false;

@@ -46,13 +46,13 @@ function getTabManager() {
         return this.answeredQuestions.includes(absoluteQuestionId);
     }
 
-    tm.wereQuestionDivsSavedOff = function(questionId) {
-        var returnInfo = this.returnInfoForTab[this.getCurrentCssId()];
-        if (returnInfo == undefined){
-            return false;
-        }
-        return returnInfo.questionId == questionId;
-    }
+    // tm.wereQuestionDivsSavedOff = function(questionId) {
+    //     var returnInfo = this.returnInfoForTab[this.getCurrentCssId()];
+    //     if (returnInfo == undefined){
+    //         return false;
+    //     }
+    //     return returnInfo.questionId == questionId;
+    // }
 
     tm.hasNextTab = function(){
         if (this.currentTabIndex >= this.tabInfos.length - 1){
@@ -133,11 +133,16 @@ function getTabManager() {
         // }
         if ($('#q-and-a-div').children().length != 0){
             returnInfo.cachedQuestionDivs = $('#q-and-a-div').children().detach();
-            //$('#q-and-a-div').empty(); 
             returnInfo.questionId = activeStudyQuestionManager.squim.getCurrentQuestionId();
         }
         else {
             returnInfo.cachedQuestionDivs = undefined; 
+        }
+        returnInfo.cachedChartDivs = undefined; 
+        if ($("#rewards-titled-container").length != 0){
+            if ($("#rewards-titled-container").children().length != 0){
+                returnInfo.cachedChartDivs = $("#rewards-titled-container").children().detach();
+            }
         }
         returnInfo.returnTargetStep = sessionIndexManager.getCurrentIndex();
         // remember any queued up clickInfo
@@ -154,9 +159,15 @@ function getTabManager() {
         var returnInfo = this.getReturnInfoForTargetTab();
         if (returnInfo!= undefined) {
             if (returnInfo.cachedQuestionDivs != undefined) {
+                $("#q-and-a-div").empty();
                 $("#q-and-a-div").append(returnInfo.cachedQuestionDivs);
             }
-           
+            if (returnInfo.cachedChartDivs != undefined){
+                var currentStep = sessionIndexManager.getCurrentIndex();
+                showChart(currentStep);
+                $("#rewards-titled-container").empty();
+                $("#rewards-titled-container").append(returnInfo.cachedChartDivs);
+            }
             activeStudyQuestionManager.renderer.clickInfoFromUserActionMonitor = returnInfo.queuedUpClickInfo;
             var coords = userActionMonitor.extractClickCoordinatesFromClickEvent(returnInfo.queuedUpClickInfo);
             if (coords != undefined) {

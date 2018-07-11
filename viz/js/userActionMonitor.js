@@ -174,11 +174,11 @@ function getUserActionMonitor() {
                     var subFields = field.split(';');
                     for (var j in subFields){
                         var subField = subFields[j];
-                        if (subField.startsWith('userClick')){
+                        if (subField.startsWith('clickEntity')){
                             // coordinates are in second subSubField
-                            var coordString = subField.split(':')[1];
-                            var coords = coordString.split('_');
-                            return coords;
+                            var clickEntityValueParts = subField.split(':')[1];
+                            var valueArgs = clickEntityValueParts.split('_');
+                            return [valueArgs[2], valueArgs[3]];
                         }
                     }
                 }
@@ -295,7 +295,6 @@ function setHandlers() {
             chartClickProcessing = true;
             if (rememberedGlobalChartClick != undefined) {
                 userActionMonitor.regionClick("rewards");
-                userActionMonitor.regionClickOld("region:rewards");
                 userActionMonitor.compileChartClickEvent();
             }
         }

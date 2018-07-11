@@ -237,6 +237,8 @@ function setUpMetadataToolTipEventHandlers() {
 			var logLine = templateMap["gameboard"];
 			logLine = logLine.replace("<CLCK_GAME_ENTITY>", shapeLogStrings[shapeId]);
 			logLine = logLine.replace("<CLCK_QUADRANT>", getQuadrantName(x,y));
+            logLine = logLine.replace("<GAME_COORD_X>", x);
+			logLine = logLine.replace("<GAME_COORD_Y>", y);
             targetClickHandler(evt, logLine);
             //targetClickHandler(evt, "clickEntity:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
 			// $("#metadata_hp" + shapeId).toggleClass('tooltip-invisible');

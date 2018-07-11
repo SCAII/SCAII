@@ -111,7 +111,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
 
     sqm.poseCurrentQuestion = function() {
         var qid = this.squim.getCurrentQuestionId();
-        if (tabManager.wasQuestionAnsweredAlready(qid) || tabManager.wereQuestionDivsSavedOff(qid)){
+        if (tabManager.wasQuestionAnsweredAlready(qid)){
             return;
         }
         var shouldAskQuestion = false;
