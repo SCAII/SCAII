@@ -971,20 +971,22 @@ function processWhyClick(step) {
 	}
 }
 var saliencyKeepAlive = false;
+
+function showSaliencies() {
+    initSaliencyContainers();
+	activeSaliencyDisplayManager.renderCheckboxes();
+	updateSaliencyContainers();
+}
 function processWhatClick() {
 	if (saliencyKeepAlive) {
-		initSaliencyContainers();
-		activeSaliencyDisplayManager.renderCheckboxes();
-		updateSaliencyContainers();
+		showSaliencies();
 		saliencyKeepAlive = false;
 	}
 	else if (salienciesAreShowing) {
 		clearSaliencies();
 	}
 	else {
-		initSaliencyContainers();
-		activeSaliencyDisplayManager.renderCheckboxes();
-		updateSaliencyContainers();
+		showSaliencies();
 	}
 	 $("#what-questions").toggleClass('saliency-active');
 	 $("#what-label").toggleClass('saliency-active');
