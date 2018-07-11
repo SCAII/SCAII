@@ -87,7 +87,7 @@ class CityState(SkyState):
                 assert(unit_type is not None)
                 assert(unit_type in UnitType)
 
-                friendly = state[r,c,5] == 1
+                friendly = state[r,c,6] == 1
                 
                 obj = CityObject(unit_type, friendly, hp)
                 obj._update_bounding_box(r,c)
