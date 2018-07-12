@@ -400,10 +400,10 @@ function renderWhyInfo(explPoint) {
         stateMonitor.showedCombinedSaliency();
     }
     var actionName =  activeBarChartManager.getChosenActionName();
-    var currentStep = studyQuestionManager.squim.getCurrentStep();
     var fullName = 'D' + showingDecisionNumber + ': ' + actionName;
 	var whyPrompt = " had highest predicted reward. ";
     if (isStudyQuestionMode()){
+        var currentStep = studyQuestionManager.squim.getCurrentStep();
         if (!studyQuestionManager.isOkToDisplayActionName(currentStep)) {
             fullName = "";
             whyPrompt = "";
@@ -839,7 +839,9 @@ function addWhatButton() {
 function convertNameToLegalId(name) {
 	name = name.replace(/ /g,"");
 	name = name.replace(/,/g,"");
-	name = name.replace(/\(/g,"");
+    name = name.replace(/\(/g,"");
+    //replace slashes with dashes
+	name = name.replace(/\//g,"-");
 	var nameForId = name.replace(/\)/g,"");
 	return nameForId;
 }
