@@ -39,7 +39,7 @@ function getStudyQuestionIndexManager(ids) {
         for (var i in this.questionIds){
             var questionId = this.questionIds[i];
             var curStep = getStepFromQuestionId(questionId);
-            if (curStep == step){
+            if (curStep == Number(step)){
                 return true;
             }
         }
@@ -59,33 +59,43 @@ function getStudyQuestionIndexManager(ids) {
         }
         var currentStep = this.getCurrentStep();
         var nextQuestionStep = getStepFromQuestionId(this.questionIds[this.currentIdIndex + 1]);
-        return currentStep == nextQuestionStep;
+        return (Number(currentStep) == Number(nextQuestionStep));
     }
 
     squim.isStepPriorToLastDecisionPoint = function(step){
+        if (step == 'summary'){
+            return false;
+        }
         var lastDecisionPointStep = this.decisionPointSteps[this.decisionPointSteps.length - 1];
-        return step < lastDecisionPointStep;
+        return  (Number(step) < Number(lastDecisionPointStep));
     }
     squim.isAtLastDecisionPoint = function(){
         var lastDecisionPointStep = this.decisionPointSteps[this.decisionPointSteps.length - 1];
         var currentStep = this.getCurrentStep();
-        return lastDecisionPointStep == currentStep;
+        if (currentStep == 'summary') {
+            return false;
+        }
+        return (Number(lastDecisionPointStep) == Number(currentStep));
     }
     return squim;
 }
 
 function getStepFromQuestionId(questionId){
     var parts = questionId.split(".");
-    return parts[0];
+    var stepString = parts[0];
+    if (stepString == 'summary'){
+        return stepString;
+    }
+    return Number(stepString);
 }
 
 function getQuestionIndexFromQuestionId(questionId){
     var parts = questionId.split(".");
-    return parts[1];
+    return Number(parts[1]);
 }
 
 function getQuestionId(step, questionIndex) {
-    return step + '.' + questionIndex;
+    return "" + step + '.' + questionIndex;
 }
 function getDecisionPointStepsFromQuestionIds(ids) {
     var stepsList = [];
