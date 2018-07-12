@@ -128,6 +128,7 @@ function getSaliencyDisplayManager(selectionManager) {
     }
     sdm.rankString = {};
     sdm.createRankStrings = function(barGroups) {
+        var squim = undefined;
         this.rankStrings ={};
         for (var i in barGroups) {
             var barGroup= barGroups[i];
@@ -145,7 +146,9 @@ function getSaliencyDisplayManager(selectionManager) {
 	sdm.populateActionCheckBoxes = function() {	
         var barGroups = activeBarChartManager.groupsList;
         barGroups = rankThings(barGroups, getMaxValueBarGroupFromList);
-        this.createRankStrings(barGroups);
+        if (isStudyQuestionMode()){
+            this.createRankStrings(barGroups);
+        }
 		for (var i in barGroups) {
 			var barGroup = barGroups[i];
 			var actionName = barGroup.getName();
@@ -175,7 +178,9 @@ function getSaliencyDisplayManager(selectionManager) {
 	sdm.populateActionBarCheckBoxes = function(){
         var barGroups = activeBarChartManager.groupsList;
         barGroups = rankThings(barGroups, getMaxValueBarGroupFromList);
-        this.createRankStrings(barGroups);
+        if (isStudyQuestionMode()){
+            this.createRankStrings(barGroups);
+        }
 		for (var i in barGroups) {
 			var barGroup = barGroups[i];
 			var actionName = barGroup.getName();
@@ -327,8 +332,7 @@ function getSaliencyDisplayManager(selectionManager) {
     }
 
 	sdm.renderExplLayer = function(gridX, gridY, saliencyUIName, saliencyNameForId, cells, width, height, normalizationFactor, scaleFactor) {
-		var nameNoSpaces = saliencyNameForId.replace(/ /g,"");
-		var nameForId = nameNoSpaces.replace(/,/g,"");
+		var nameForId = convertNameToLegalId(saliencyNameForId);
 		var explCanvas = document.createElement("canvas");
         explCanvas.setAttribute("class", "explanation-canvas");
         var saliencyMapId = "saliencyMap_" + nameForId;
