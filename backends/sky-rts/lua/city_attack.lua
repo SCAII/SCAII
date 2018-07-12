@@ -18,7 +18,7 @@ function gen_tower(rng, x, y, faction, out)
     elseif tower_type == 2 then
         tower.hp = rng:rand_double(15, 70)
     else
-        -- Only friendly towers for now
+        -- Only friendly cities for now
         tower.faction = 0
         tower.hp = rng:rand_double(50, 70)
     end
@@ -28,14 +28,14 @@ function gen_tower(rng, x, y, faction, out)
 end
 
 function roll_ship(rng, units, agent)
-    friendlies = {}
+    cities = {}
     for i,tower in pairs(units) do
-        if tower.unit_type ~= "Ship" and tower.faction == 0 then
-            table.insert(friendlies, i)
+        if tower.unit_type ~= "Ship" and tower.faction == 0 and (tower.unit_type == "Small City" or tower.unit_type == "Big City") then
+            table.insert(cities, i)
         end
     end
 
-    if #friendlies == 0 then
+    if #cities == 0 then
         return false
     end
 
@@ -44,13 +44,15 @@ function roll_ship(rng, units, agent)
         return false
     end
 
-    which = rng:rand_int(1, #friendlies+1)
-    idx = friendlies[which]
+    which = rng:rand_int(1, #cities+1)
+    idx = cities[which]
     tower = units[idx]
 
 
     -- Find how far we need to spawn the ship from the tower
     -- to be outside it (at least mostly)
+    --
+    -- Code for towers is left in for legacy reasons (i.e. in case we want to go back to it)
     if tower.unit_type == "Big Tower" then
         scale = 5 * math.sqrt(2) / 2
     elseif tower.unit_type == "Small Tower" then
@@ -78,6 +80,7 @@ function roll_ship(rng, units, agent)
         pos = {x = tower.pos.x - x, y = tower.pos.y - y},
         unit_type = "Ship",
         faction = 1,
+        hp = rng:rand_double(5.0, 25.0)
     }
 
     -- The python code just attacks the index corresponding to the
@@ -87,7 +90,7 @@ function roll_ship(rng, units, agent)
     table.insert(units, tower)
 end
 
-function sky_reset(rng)
+function _reset(rng, data)
     local agent = {
         pos = {x=20.0, y=20.0},
         unit_type="Ship",
@@ -124,6 +127,10 @@ function sky_reset(rng)
     return out
 end
 
+function sky_reset(rng)
+    return _reset(rng, nil)
+end
+
 function on_spawn(world, unit)
     world:override_skip(true)
 end
@@ -134,12 +141,12 @@ function sky_init()
     local unit_types= {}
     unit_types[1] = {
         tag = "Ship",
-        max_hp = 50,
+        max_hp = 80,
         shape = {
             body="triangle",
             base_len=2.0,
         },
-        kill_reward=50,
+        kill_reward=70,
         kill_type="Enemy Destroyed",
         dmg_deal_type="Enemy Damaged",
         death_penalty=0,
@@ -179,7 +186,7 @@ function sky_init()
             height=5.0,
         },
         can_move=false,
-        kill_reward=70,
+        kill_reward=85,
         kill_type="Enemy Destroyed",
         death_type="Friend Destroyed",
         dmg_recv_type="Friend Damaged",
@@ -198,8 +205,8 @@ function sky_init()
             radius=3,
         },
         can_move=false,
-        kill_reward=-150,
-        death_penalty=-150,
+        kill_reward=-115,
+        death_penalty=-115,
         kill_type="City Destroyed",
         death_type="City Destroyed",
         dmg_recv_type="City Damaged",
@@ -219,8 +226,8 @@ function sky_init()
             radius=1.5,
         },
         can_move=false,
-        kill_reward=-125,
-        death_penalty=-125,
+        kill_reward=-100,
+        death_penalty=-100,
         kill_type="City Destroyed",
         death_type="City Destroyed",
         dmg_recv_type="City Damaged",
@@ -259,7 +266,7 @@ function on_death(world, dead, cause)
 
     -- We'll just use our reset function to generate
     -- the next board and tweak it to our liking
-    new_board = sky_reset(world:rng())
+    new_board = _reset(world:rng(), world)
     for _k,entity in pairs(new_board) do
         -- Carry over agent HP to next iteration
         if entity.unit_type == "Ship" and entity.faction == 0 then

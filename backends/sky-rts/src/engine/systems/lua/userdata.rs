@@ -29,11 +29,38 @@ pub struct DataStore {
 }
 
 impl DataStore {
-    fn remove_key(&mut self, idx: &str) {
+    pub fn remove_key(&mut self, idx: &str) {
         self.int_data.remove(idx);
         self.float_data.remove(idx);
         self.string_data.remove(idx);
         self.bool_data.remove(idx);
+    }
+
+    #[allow(dead_code)]
+    pub fn int_data(&self) -> &HashMap<String, i64> {
+        &self.int_data
+    }
+
+    #[allow(dead_code)]
+    pub fn float_data(&self) -> &HashMap<String, f64> {
+        &self.float_data
+    }
+
+    #[allow(dead_code)]
+    pub fn string_data(&self) -> &HashMap<String, String> {
+        &self.string_data
+    }
+
+    #[allow(dead_code)]
+    pub fn bool_data(&self) -> &HashMap<String, bool> {
+        &self.bool_data
+    }
+
+    pub fn clear(&mut self) {
+        self.int_data.clear();
+        self.float_data.clear();
+        self.string_data.clear();
+        self.bool_data.clear();
     }
 
     /// Returns the overall size of the underlying storage
