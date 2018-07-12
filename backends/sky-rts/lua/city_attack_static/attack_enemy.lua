@@ -57,19 +57,20 @@ function _reset(rng, data)
 
     local full_hp_small = {
         unit_type="Small Tower",
+        hp=37,
         faction=0
     }
 
     local damaged_small = {
         unit_type="Small Tower",
         faction=1,
-        hp=30.0,
+        hp=25.27692,
     }
 
     local damaged_big = {
         unit_type="Big Tower",
         faction=1,
-        hp=40.0,
+        hp=45.0,
     }
 
     local friendly_small = {
@@ -83,18 +84,18 @@ function _reset(rng, data)
     -- Q3 = 3
     -- Q4 = 1
     if generation == 1 then
-        -- Q1, Q4, Q3, Q2
-        full_hp_small.pos = {x=35.0, y=10.0}
+        -- Q3, Q4, Q1, Q2 = 3, 1, 2, 4
+        full_hp_small.pos = {x=10.8, y=31.5}
         damaged_small.pos = {x=26.3, y=31.2}
-        damaged_big.pos = {x=10.8, y=31.5}
+        damaged_big.pos = {x=35.0, y=10.0}
         friendly_small.pos = {x=13.8, y=8.0}
 
         table.insert(out, damaged_small)
-        table.insert(out, full_hp_small)
         table.insert(out, damaged_big)
+        table.insert(out, full_hp_small)
         table.insert(out, friendly_small)
     elseif generation == 2 then
-        -- Q4, Q3, Q1, Q2
+        -- Q4, Q3, Q1, Q2 = 1, 3, 2, 4
         full_hp_small.pos = {x=26.3, y=31.2}
         damaged_small.pos = {x=10.8, y=31.5}
         damaged_big.pos = {x=35.0, y=10.0}
@@ -105,7 +106,7 @@ function _reset(rng, data)
         table.insert(out, damaged_small)
         table.insert(out, friendly_small)
     else
-        -- Q1, Q2, Q4, Q3
+        -- Q1, Q2, Q4, Q3 = 2, 4, 1, 3
         full_hp_small.pos = {x=35.0, y=10.0}
         damaged_small.pos = {x=13.8, y=8.0}
         damaged_big.pos = {x=26.3, y=31.2}
@@ -136,12 +137,12 @@ function sky_init()
     local unit_types= {}
     unit_types[1] = {
         tag = "Ship",
-        max_hp = 50,
+        max_hp = 80,
         shape = {
             body="triangle",
             base_len=2.0,
         },
-        kill_reward=50,
+        kill_reward=70,
         kill_type="Enemy Destroyed",
         dmg_deal_type="Enemy Damaged",
         death_penalty=0,
@@ -181,7 +182,7 @@ function sky_init()
             height=5.0,
         },
         can_move=false,
-        kill_reward=70,
+        kill_reward=85,
         kill_type="Enemy Destroyed",
         death_type="Friend Destroyed",
         dmg_recv_type="Friend Damaged",
@@ -200,8 +201,8 @@ function sky_init()
             radius=3,
         },
         can_move=false,
-        kill_reward=-150,
-        death_penalty=-150,
+        kill_reward=-115,
+        death_penalty=-115,
         kill_type="City Destroyed",
         death_type="City Destroyed",
         dmg_recv_type="City Damaged",
@@ -221,8 +222,8 @@ function sky_init()
             radius=1.5,
         },
         can_move=false,
-        kill_reward=-125,
-        death_penalty=-125,
+        kill_reward=-100,
+        death_penalty=-100,
         kill_type="City Destroyed",
         death_type="City Destroyed",
         dmg_recv_type="City Damaged",

@@ -146,7 +146,7 @@ function sky_init()
             body="triangle",
             base_len=2.0,
         },
-        kill_reward=50,
+        kill_reward=70,
         kill_type="Enemy Destroyed",
         dmg_deal_type="Enemy Damaged",
         death_penalty=0,
