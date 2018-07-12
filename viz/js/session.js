@@ -118,8 +118,9 @@ function handleStudyQuestions(studyQuestions){
         }
     }
 
-    userActionMonitor = getUserActionMonitor();
-	stateMonitor = getStateMonitor();
+    if (userActionMonitor == undefined) {  userActionMonitor = getUserActionMonitor(); }
+    if (stateMonitor == undefined)      {  stateMonitor =      getStateMonitor();      }
+	
 	//logLine = getTemplateMap();
 	studyTreatment = getTreatmentManager(treatmentId);
 	console.log(treatmentId);
