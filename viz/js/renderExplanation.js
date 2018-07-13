@@ -136,7 +136,6 @@ function getSelectionManager() {
 				logLine = logLine.replace("<REGION>", "rewardChart");
 				logLine = logLine.replace("<SLCT_RWRD_BAR>", targetArg);
         		chartTargetClickHandler(targetName, logLine);
-                //chartTargetClickHandler(targetName, "selectRewardBar:" + targetArg);
                 // clear any highlighing that might have been done for those items
                 activeSaliencyDisplayManager.hideAllSaliencyMapOutlines();
                 clearHighlightedShapesOnGameboard()
@@ -156,7 +155,6 @@ function getSelectionManager() {
 				logLine = logLine.replace("<REGION>", "rewardChart");
 				logLine = logLine.replace("<UNSLCT_RWRD_BAR>", targetArg);
         		chartTargetClickHandler(targetName, logLine);
-                //chartTargetClickHandler(targetName, "unselectRewardBar:" + targetArg);
             }
         }
 		var newList = [];
@@ -204,7 +202,6 @@ expl_ctrl_canvas.addEventListener('click', function (event) {
 				var logLine = templateMap["decisionPointList"];
 				logLine = logLine.replace("<TARGET>", "decisionPointList")
 				logLine = logLine.replace("<J_DP_NUM>", matchingStep);
-                //specifiedTargetClickHandler("decisionPointList", "jumpToDecisionPoint:" + matchingStep);
                 specifiedTargetClickHandler("decisionPointList", logLine);
 			}
         }
@@ -779,13 +776,11 @@ function addWhyButtonForAction(step, x,  y) {
 			var logLine = templateMap["hideWhy"];
 			logLine = logLine.replace("<HIDE_WHY>", "NA");
 			targetClickHandler(e, logLine);
-            //targetClickHandler(e,"hideWhy:NA");
         }
         else {
 			var logLine = templateMap["showWhy"];
 			logLine = logLine.replace("<SHW_WHY>", "NA");
 			targetClickHandler(e, logLine);
-            //targetClickHandler(e,"showWhy:NA");
         }
         
 		 e.preventDefault();
@@ -808,13 +803,11 @@ function addWhatButton() {
 			var logLine = templateMap["hideSaliency"];
 			logLine = logLine.replace("<HIDE_SALNCY>", "NA");
             targetClickHandler(e, logLine);
-            //targetClickHandler(e,"hideSaliency:NA");
         }
         else {
 			var logLine = templateMap["showSaliency"];
 			logLine = logLine.replace("<SHW_SALNCY>", "NA");
             targetClickHandler(e, logLine);
-            //targetClickHandler(e,"showSaliency:NA");
         }
 		e.preventDefault();
 		processWhatClick();
@@ -870,7 +863,6 @@ function addLabelForAction(title, index, step){
 					var logLine = templateMap["clickActionLabel"];
 					logLine = logLine.replace("<CLCK_ACT>", escapeAnswerFileDelimetersFromTextString(fullName));
 					targetClickHandler(evt, logLine);
-                    //targetClickHandler(evt, "clickActionLabel:" + escapeAnswerFileDelimetersFromTextString(fullName));
                 }
             }
             jumpToStep(step);
@@ -1112,7 +1104,7 @@ var getMatchingExplanationStep = function(ctx, x, y){
 	var matchingStep = undefined;
 	for (key in explanationBoxMap) {
 		var eBox = explanationBoxMap[key];
-		if (x > eBox.left_x && x < eBox.right_x && y > eBox.upper_y && y < eBox.lower_y) {
+		if (x > eBox.left_x && x < eBox.right_x) {
 			matchingStep = eBox.step;
 		}
 	}

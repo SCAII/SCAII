@@ -339,22 +339,18 @@ function getSaliencyDisplayManager(selectionManager) {
             var shapeId = getClosestInRangeShapeId(gameboard_ctx, x, y);
 			var logLine = templateMap["clickSaliencyMap"];
             if (shapeId != undefined){
-				//targetClickHandler(e, "clickEntity:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
 				logLine = logLine.replace("<REGION>", "saliencyMap");
 				logLine = logLine.replace("<CLCK_SALNCY_MAP>", saliencyUIName);
 				logLine = logLine.replace("<SHAPE_LOG>", shapeLogStrings[shapeId]);
 				logLine = logLine.replace("<QUADRANT_NAME>", getQuadrantName(x,y));
 				targetClickHandler(e, logLine);
-                //targetClickHandler(e, "clickSaliencyMap:" + saliencyUIName + "_(" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y)+ ")");
             }
            else {
-				//targetClickHandler(e, "clickGameQuadrant:" + getQuadrantName(x,y));
 				logLine = logLine.replace("<REGION>", "saliencyMap");
 				logLine = logLine.replace("<CLCK_SALNCY_MAP>", saliencyUIName);
 				logLine = logLine.replace("<SHAPE_LOG>", "NA");
 				logLine = logLine.replace("<QUADRANT_NAME>", getQuadrantName(x,y));
 				targetClickHandler(e, logLine);
-                //targetClickHandler(e, "clickSaliencyMap:" + saliencyUIName + "_(" + getQuadrantName(x,y) + ")");
             }
             if (userStudyMode){
                 var legalClickTargetRegions = activeStudyQuestionManager.getLegalInstrumentationTargetsForCurrentQuestion();
@@ -453,7 +449,6 @@ function getSaliencyDisplayManager(selectionManager) {
 			logLine = logLine.replace("<REGION>", "saliencyMap");
 			logLine = logLine.replace("<SLNCY_NAME>", saliencyUIName);
 			targetHoverHandler(evt, logLine);
-            //targetHoverHandler(evt, "startMouseOverSaliencyMap:" + saliencyUIName);
 		});
 		explCanvas.addEventListener('mouseleave', function(evt) {
             valueSpan.setAttribute("style", 'visibility:hidden;');
@@ -461,7 +456,6 @@ function getSaliencyDisplayManager(selectionManager) {
 			logLine = logLine.replace("<REGION>", "saliencyMap");
 			logLine = logLine.replace("<SLNCY_NAME>", saliencyUIName);
 			targetHoverHandler(evt, logLine);
-            //targetHoverHandler(evt, "endMouseOverSaliencyMap:" + saliencyUIName);
         });
         if (!userStudyMode){
             explCanvas.addEventListener('mousemove', function(evt) {

@@ -342,7 +342,6 @@ function addCumRewardPair(index, key, val){
 	var logLineLabel = templateMap["touchCumRewardLabel"];
 	logLineLabel = logLineLabel.replace("<CUM_LBL>", key);
     rewardKeyDiv.onclick = function(e) {targetClickHandler(e, logLineLabel);};
-    //rewardKeyDiv.onclick = function(e) {targetClickHandler(e,"touchCumRewardLabel:" + key);};
 	$("#cumulative-rewards").append(rewardKeyDiv);
 
 	var rewardValDiv = document.createElement("DIV");
@@ -362,7 +361,6 @@ function addCumRewardPair(index, key, val){
 	var logLineValue = templateMap["touchCumRewardValueFor"];
 	logLineValue = logLineValue.replace("<CUM_VAL>", key);
     rewardValDiv.onclick = function(e) {targetClickHandler(e, logLineValue);};
-    //rewardValDiv.onclick = function(e) {targetClickHandler(e,"touchCumRewardValueFor:" + key);};
     $("#cumulative-rewards").append(rewardValDiv);
 }
 

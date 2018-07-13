@@ -42,7 +42,6 @@ function getUserActionMonitor() {
         if (this.clickTargetDetails == undefined) {
             this.clickTargetDetails = info;
         }
-        //EVAN
         this.pendingLogLine = templateMap[info];
         this.pendingLogLine = this.pendingLogLine.replace("<TARGET>", info);
     }
@@ -51,20 +50,6 @@ function getUserActionMonitor() {
         this.clickTargetDetails = info;
     }
 
-    uam.globalClickOld = function(x,y) {
-        if (chartClickProcessing) {
-            rememberedGlobalChartClick = [x,y];
-            return;
-        }
-        this.pendingLogLine = this.pendingLogLine.replace("<COORD_X>", x);
-        this.pendingLogLine = this.pendingLogLine.replace("<COORD_Y>", y);
-        
-        if (this.clickListener != undefined) {
-            this.clickListener.acceptClickInfo(this.pendingLogLine);
-        }
-        stateMonitor.setUserAction(this.pendingLogLine);
-        this.clear();
-    }
     uam.globalClick = function(x,y) {
         if (chartClickProcessing) {
             rememberedGlobalChartClick = [x,y];
@@ -77,7 +62,9 @@ function getUserActionMonitor() {
         }
         var logLine = this.pendingLogLine.replace("<COORD_X>", x);
         logLine = logLine.replace("<COORD_Y>", y);
-        
+        if (logLine.indexOf("<REGION>") != -1 && (x > 602 || y > 798))  {
+            logLine = logLine.replace("<REGION>", "scaii-interface");
+        }
         logLine = stateMonitor.emitLogLine(logLine);
         this.clear();
     }
@@ -199,18 +186,6 @@ function regionClickHandlerSaliency(e) {
 function regionClickHandlerRewards(e)  { userActionMonitor.regionClick("rewards");}
 function regionClickHandlerGameArea(e) { userActionMonitor.regionClick("gameArea");}
 function regionClickHandlerQnAArea(e)  { userActionMonitor.regionClick("QnA");}
-function regionClickHandlerSaliencyOld(e) { userActionMonitor.regionClick("region:saliency");}
-function regionClickHandlerRewardsOld(e)  { userActionMonitor.regionClick("region:rewards");}
-function regionClickHandlerGameAreaOld(e) { userActionMonitor.regionClick("region:gameArea");}
-function regionClickHandlerQnAAreaOld(e)  { userActionMonitor.regionClick("region:QnA");}
-
-function targetClickHandler(e, userActionSemantics) {
-    if (userStudyMode){
-        var targetId = e.currentTarget.getAttribute("id");
-        userActionMonitor.targetClick("target:" + targetId);
-        userActionMonitor.setUserActionSemantics(userActionSemantics);
-    }
-}
 
 function targetClickHandler(e, logLine) {
     if (userStudyMode){
@@ -265,25 +240,21 @@ function setHandlers() {
         var logLine = templateMap["scaii-acronym"];
         logLine = logLine.replace("<TCH_ACRONYM>", "NA");
         targetClickHandler(e, logLine);
-        //targetClickHandler(e,"touchAcronym:NA");
     });
     $("#game-replay-label")       .on("click",function(e) {
         var logLine = templateMap["game-replay-label"];
         logLine = logLine.replace("<RPL_GAME_FILE>", "NA");
         targetClickHandler(e, logLine);
-        //targetClickHandler(e,"touchReplayingGameFileLabel:NA");
     });
     $("#replay-file-selector")    .on("click",function(e) {
         var logLine = templateMap["game-replay-label-selector"];
         logLine = logLine.replace("<RPL_GAME_SLCTR>", "NA"); 
         targetClickHandler(e, logLine);
-        //targetClickHandler(e,"touchReplayFileSelector:NA");
     });
     $("#step-value")              .on("click",function(e) {
         var logLine = templateMap["touch-step-progress-label"];
         logLine = logLine.replace("<RPL_GAME_PRGSS>", "NA");
         targetClickHandler(e, logLine);
-        //targetClickHandler(e,"touchStepProgressLabel:NA");
     });
     $("#scaii-interface")         .on("mousemove", function(e) { 
         var div = document.getElementById("explanations-rewards");

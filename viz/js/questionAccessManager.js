@@ -101,7 +101,7 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
             return [Number(this.questionStep) + 1, this.maxStep];
         }
         else if (state == "blockPastRange"){
-            return [Number(this.activeRange[1]) + 1, maxStep];
+            return [Number(this.activeRange[1]) + 1, this.maxStep];
         }
         else {
             // noBlock
@@ -213,7 +213,7 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
         var x2 = ecpOffset.left + timelineMargin + (leftValueOnTimeline / 100) * widthOfTimeline;
         // shift x2 to the left to fully expose the current DecisionPoint;
         var currentIndex = sessionIndexManager.getCurrentIndex();
-        if (currentIndex == rangePair[0]) {
+        if (currentIndex + 1 == rangePair[0]) {
             x2 = x2 + explanationPointBigDiamondHalfWidth;
         }
         else {

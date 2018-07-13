@@ -53,15 +53,17 @@ function getStudyQuestionRenderer(questions) {
     }
 
     sqr.getCurrentFollowupAnswer = function(){
-        var answer = '"' + this.currentFollowupTextBox.value + '"';
+        //var answer = '"' + this.currentFollowupTextBox.value + '"';
+        var answer = '"' + $('textarea#followup-textarea').val() + '"';
         answer = escapeAnswerFileDelimetersFromTextString(answer);
         return answer;
     }
 
     sqr.getCurrentAnswer = function(){
         if (this.questionFormat == 'text') {
-            var answer = '"' + this.currentTextBox.value + '"';
-            aanswer = escapeAnswerFileDelimetersFromTextString(answer);
+            //var answer = '"' + this.currentTextBox.value + '"';
+            var answer = '"' + $('textarea#question-text-box').val() + '"';
+            answer = escapeAnswerFileDelimetersFromTextString(answer);
             return answer;
         }
         else if (this.questionFormat == 'radio') {
@@ -135,11 +137,13 @@ function getStudyQuestionRenderer(questions) {
     }
 
     sqr.expressMissingClickInfoMessage  = function () {
-        var missingClickInfoDiv = document.createElement("DIV");
-        missingClickInfoDiv.setAttribute("id", "missing-click-info-message");
-        missingClickInfoDiv.setAttribute("style", "margin-left:0px;font-family:Arial;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
-        missingClickInfoDiv.innerHTML =  "Please click on one of the designated areas";
-        $("#save-button-row").append(missingClickInfoDiv);
+        if ($("#missing-click-info-message").length == 0) {
+            var missingClickInfoDiv = document.createElement("DIV");
+            missingClickInfoDiv.setAttribute("id", "missing-click-info-message");
+            missingClickInfoDiv.setAttribute("style", "margin-left:0px;font-family:Arial;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
+            missingClickInfoDiv.innerHTML =  "Please click on one of the designated areas";
+            $("#save-button-row").append(missingClickInfoDiv);
+        }
     }
     sqr.poseQuestion = function(qu, questionNumber, step){
         questionLetterMap = {}
@@ -215,8 +219,6 @@ function getStudyQuestionRenderer(questions) {
                 // clickAckDiv.innerHTML = "(click wasregistered)";
                 // $("#save-button-row").append(clickAckDiv);
             };
-            //var logLine = templateMap["button-save"];
-            //logLine = logLine.replace("<USR_CLCK_Q>", listener);
             stateMonitor.setClickListener(listener);
         }
     }

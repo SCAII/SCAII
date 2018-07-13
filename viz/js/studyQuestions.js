@@ -16,6 +16,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     sqm.questionIds = [];
     sqm.questionWasAnswered = false;
     sqm.mostRecentlyPosedQuestion = undefined;
+    sqm.didWeDisplayWait = [];
 
     for (var i in questions){
         var question = questions[i];
@@ -147,8 +148,18 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
             // wait before show first question at DP, but not on DP1
             if (currentStep != "summary" && currentStep != 1){
                 var questionIndex = qid.split(".")[1];
+                var questionStep = qid.split(".")[0];
+                var foundDisplayWait = false;
                 if (questionIndex == 0){
-                    this.makeUserWaitForInstructions();
+                    for (var i in this.didWeDisplayWait) {
+                        if (questionStep == this.didWeDisplayWait[i]) {
+                            foundDisplayWait = true;
+                        }
+                    }
+                    if (foundDisplayWait == false) {
+                        this.makeUserWaitForInstructions();
+                        this.didWeDisplayWait.push(questionStep);
+                    }
                 }
             }
         }
@@ -273,7 +284,6 @@ function acceptAnswer(e) {
     logLine = logLine.replace("<USR_TXT_Q2>", followupAnswer);
     logLine = logLine.replace("<USR_CLCK_Q>", clickInfo);
     targetClickHandler(e, logLine);
-    //targetClickHandlerOld(e,"answerQuestion:"+ currentStep + "." + currentQuestionIndexAtStep + "_" + answer + "_" + followupAnswer + "_(" + clickInfo + ")");
 
     renderer.forgetQuestion();
     if (squim.hasMoreQuestionsAtThisStep()) {
@@ -286,6 +296,9 @@ function acceptAnswer(e) {
                 renderer.renderCueAndArrowToPlayButton();
             }
             else {
+                if (userInputBlocked == false) {
+                    pauseGame();
+                }
                 asqm.renderer.renderCueAndArrowToPlayButton();
             }
             

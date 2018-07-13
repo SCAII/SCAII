@@ -240,7 +240,6 @@ function setUpMetadataToolTipEventHandlers() {
             logLine = logLine.replace("<GAME_COORD_X>", x);
 			logLine = logLine.replace("<GAME_COORD_Y>", y);
             targetClickHandler(evt, logLine);
-            //targetClickHandler(evt, "clickEntity:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
 			// $("#metadata_hp" + shapeId).toggleClass('tooltip-invisible');
 			// if (selectedToolTipIds[shapeId] == "show") {
 			// 	selectedToolTipIds[shapeId] = "hide";
@@ -252,7 +251,6 @@ function setUpMetadataToolTipEventHandlers() {
 			var logBackground = templateMap["gameboardBackground"];
 			logBackground = logBackground.replace("<CLCK_QUADRANT>", getQuadrantName(x,y));
 			specifiedTargetClickHandler("gameboardBackground", logBackground);
-        	//specifiedTargetClickHandler("gameboardBackground", "clickGameQuadrant:" + getQuadrantName(x,y));
 		}
 	});
 	  
@@ -266,7 +264,6 @@ function setUpMetadataToolTipEventHandlers() {
 			var logLine = templateMap["hideEntityTooltips"];
 			logLine = logLine.replace("<HIDE_TOOL>", "all")
             targetHoverHandler(evt, logLine);
-            //targetHoverHandler(evt, "hideEntityTooltips:all");
 		}
 		else {
             var tooltipId = "metadata_all" + shapeId;
@@ -274,9 +271,7 @@ function setUpMetadataToolTipEventHandlers() {
             if (hoveredAllDataToolTipIds[tooltipId] != "show") {
 				var logLine = templateMap["showEntityTooltip"];
 				logLine = logLine.replace("<ENTITY_INFO>", shapeLogStrings[shapeId]);
-				//logLine = logLine.replace("<ENTITY_INFO>", shapeLogStrings[tooltipId]);
 				logLine = logLine.replace("<TIP_QUADRANT>", getQuadrantName(x,y));
-				//targetHoverHandler(evt, "showEntityTooltip:" + shapeLogStrings[tooltipId] + "_" + getQuadrantName(x,y));
 				targetHoverHandler(evt, logLine);
             }
             hideAllTooltips(evt);
