@@ -157,14 +157,14 @@ var showCheckboxes = false;
 
 function toggleCheckboxVisibility(){
 	if (showCheckboxes) {
-		if (salienciesAreShowing) {
+		if (replayState.salienciesAreShowing) {
 			showCheckboxes = false;
 			activeSaliencyDisplayManager.hideCheckboxes();
 			updateSaliencyContainers();
 		}
 	}
 	else {
-		if (salienciesAreShowing) {
+		if (replayState.salienciesAreShowing) {
 			showCheckboxes = true;
 			activeSaliencyDisplayManager.renderCheckboxes();
 			updateSaliencyContainers();
@@ -363,3 +363,26 @@ var subtractPixels = function(a,b){
 	var intB = b.replace("px", "");
 	return intA - intB;
 }
+
+
+expl_ctrl_canvas.addEventListener('click', function (event) {
+	if (!isUserInputBlocked()){
+		var matchingStep = getMatchingExplanationStep(expl_ctrl_ctx, event.offsetX, event.offsetY);
+		if (matchingStep == undefined){
+            processTimelineClick(event);
+		}
+		else{
+			if (matchingStep == sessionIndexManager.getCurrentIndex()) {
+				//no need to move - already at step with explanation
+			}
+			else {
+                jumpToStep(matchingStep);
+				var logLine = templateMap["decisionPointList"];
+				logLine = logLine.replace("<TARGET>", "decisionPointList")
+				logLine = logLine.replace("<J_DP_NUM>", matchingStep);
+                //specifiedTargetClickHandler("decisionPointList", "jumpToDecisionPoint:" + matchingStep);
+                specifiedTargetClickHandler("decisionPointList", logLine);
+			}
+        }
+	}
+});

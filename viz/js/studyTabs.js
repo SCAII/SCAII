@@ -5,11 +5,12 @@ function getTabManager() {
     tm.currentTabIndex = 0;
     tm.tabInfos = [];
     tm.studyQuestionManagerForTab = {};
-    tm.returnInfoForTab = {};
+   
     tm.userIdHasBeenSet = false;
-    tm.isInterTabHopInProgress = false;
-    tm.priorTabId = undefined;
-    tm.hopTargetTabId = undefined;
+
+    tm.returnInfoForTab = {};
+
+    tm.targetTabId = undefined;
     tm.answeredQuestions = [];
     
     tm.hasShownUserId = function() {
@@ -29,8 +30,6 @@ function getTabManager() {
     tm.addTabInfo("tab-task1","Task 1","maintab", "MainTask.scr", "Loading Task 1...");
     tm.addTabInfo("tab-task2","Task 2","maintab", "NextTask.scr", "Loading Task 2...");
 
-    
-
     for (var i in tm.tabInfos){
         var tabInfo = tm.tabInfos[i];
         generateTaskTab(tabInfo);
@@ -46,13 +45,6 @@ function getTabManager() {
         return this.answeredQuestions.includes(absoluteQuestionId);
     }
 
-    // tm.wereQuestionDivsSavedOff = function(questionId) {
-    //     var returnInfo = this.returnInfoForTab[this.getCurrentCssId()];
-    //     if (returnInfo == undefined){
-    //         return false;
-    //     }
-    //     return returnInfo.questionId == questionId;
-    // }
 
     tm.hasNextTab = function(){
         if (this.currentTabIndex >= this.tabInfos.length - 1){
@@ -68,7 +60,7 @@ function getTabManager() {
     tm.nextTab = function() {
         var indexOfNextTab = Number(this.currentTabIndex) + 1;
         var ti = this.tabInfos[indexOfNextTab];
-        this.openTab(ti.cssId, ti.fileName, ti.loadingMessage, true, false);
+        this.openTab(ti.cssId, ti.fileName, ti.loadingMessage, true);
     }
 
     tm.getCurrentCssId = function(){
@@ -91,7 +83,7 @@ function getTabManager() {
         var targetIndex = this.getIndexOfTabWithId(id);
         if (targetIndex != -1){
             var ti = this.tabInfos[targetIndex];
-            this.openTab(ti.cssId, ti.fileName, ti.loadingMessage, true, true);
+            this.openTab(ti.cssId, ti.fileName, ti.loadingMessage, true);
         }
     }
 
@@ -121,85 +113,159 @@ function getTabManager() {
         return false;
     }
 
-    tm.rememberStateUponDeparture = function(tabId, isHop){
-        this.priorTabId = this.getCurrentCssId();
-        this.hopTargetTabId = tabId;
-        this.isInterTabHopInProgress = isHop;
-        var returnInfo = {};
-        // hopReturnInfo.questionDivs = document.getElementById("q-and-a-div").childNodes;
-        // for (var i in hopReturnInfo.questionDivs){
-        //     var qDiv = hopReturnInfo.questionDivs[i];
-        //     var foo = 3;
-        // }
+    tm.rememberQuestionInProgress = function(returnInfo){
+        returnInfo.cachedQuestionDivs = undefined;
         if ($('#q-and-a-div').children().length != 0){
             returnInfo.cachedQuestionDivs = $('#q-and-a-div').children().detach();
             returnInfo.questionId = activeStudyQuestionManager.squim.getCurrentQuestionId();
+            return true;
+        }
+        return false;
+    }
+    tm.rememberChartState = function(returnInfo){
+        if (replayState.rewardsAreShowing){
+            returnInfo.chartIsShowing = true;
+            returnInfo.chartDisplayModeKey = replayState.rewardView;
+            returnInfo.selections = {};
+            returnInfo.selections["rewards.combined"] = selectionManagers["rewards.combined"].getSelections();
+            returnInfo.selections["rewards.detailed"] = selectionManagers["rewards.detailed"].getSelections();
+            returnInfo.selections["advantage.combined"] = selectionManagers["advantage.combined"].getSelections();
+            returnInfo.selections["advantage.detailed"] = selectionManagers["advantage.detailed"].getSelections();
         }
         else {
-            returnInfo.cachedQuestionDivs = undefined; 
+            returnInfo.chartIsShowing = false;
         }
-        returnInfo.cachedChartDivs = undefined; 
-        if ($("#rewards-titled-container").length != 0){
-            if ($("#rewards-titled-container").children().length != 0){
-                returnInfo.cachedChartDivs = $("#rewards-titled-container").children().detach();
-            }
+    }
+
+    // tm.restoreChartState = function(returnInfo){
+    //     if (returnInfo.chartIsShowing) {
+    //         if (!replayState.rewardsAreShowing){
+    //             replayState.rewardView = returnInfo.chartDisplayModeKey;
+    //             selectionManagers["rewards.combined"].setSelections(returnInfo.selections["rewards.combined"]);
+    //             selectionManagers["rewards.detailed"].setSelections(returnInfo.selections["rewards.detailed"]);
+    //             selectionManagers["advantage.combined"].setSelections(returnInfo.selections["advantage.combined"]);
+    //             selectionManagers["advantage.detailed"].setSelections(returnInfo.selections["advantage.detailed"]);
+    //             showChart(returnInfo.returnTargetStep);
+    //         }
+    //     }
+    // }
+
+    tm.rememberSaliencyState = function(returnInfo) {
+        if (replayState.salienciesAreShowing) {
+            returnInfo.salienciesAreShowing = true;
+            returnInfo.saliencyCombined = replayState.saliencyCombined;
+            returnInfo.highlightedMapIds = {};
+            returnInfo.highlightedMapIds["rewards.combined"] = saliencyDisplayManagers["rewards.combined"].currentlyHighlightedSaliencyMapId;
+            returnInfo.highlightedMapIds["rewards.detailed"] = saliencyDisplayManagers["rewards.detailed"].currentlyHighlightedSaliencyMapId;
+            returnInfo.highlightedMapIds["advantage.combined"] = saliencyDisplayManagers["advantage.combined"].currentlyHighlightedSaliencyMapId;
+            returnInfo.highlightedMapIds["advantage.detailed"] = saliencyDisplayManagers["advantage.detailed"].currentlyHighlightedSaliencyMapId;
+
+            returnInfo.saliencyDisplayModes = {};
+            returnInfo.saliencyDisplayModes["rewards.combined"] = saliencyDisplayManagers["rewards.combined"].getSaliencyMode();
+            returnInfo.saliencyDisplayModes["rewards.detailed"] = saliencyDisplayManagers["rewards.detailed"].getSaliencyMode();
+            returnInfo.saliencyDisplayModes["advantage.combined"] = saliencyDisplayManagers["advantage.combined"].getSaliencyMode();
+            returnInfo.saliencyDisplayModes["advantage.detailed"] = saliencyDisplayManagers["advantage.detailed"].getSaliencyMode();
         }
+        else {
+            returnInfo.salienciesAreShowing = false;
+        }
+    }
+    // tm.restoreSaliencyState = function(returnInfo) {
+    //     if (returnInfo.salienciesAreShowing){
+    //         if (!replayState.salienciesAreShowing){
+    //             activeDisplayModeKey = returnInfo.chartDisplayModeKey;
+    //             showSaliencies();
+    //             this.highlightSaliencyMap("rewards.combined", returnInfo);
+    //             this.highlightSaliencyMap("rewards.detailed", returnInfo);
+    //             this.highlightSaliencyMap("advantage.combined", returnInfo);
+    //             this.highlightSaliencyMap("advantage.detailed", returnInfo);
+    //         }
+    //     }
+    //     replayState.salienciesAreShowing = returnInfo.salienciesAreShowing;
+    // }
+    tm.highlightSaliencyMap = function(displayModeKey, returnInfo){
+        var mapId = returnInfo.highlightedMapIds[displayModeKey]
+        if (mapId != undefined) {
+            saliencyDisplayManagers[displayModekey].showSaliencyMapOutline(mapId);
+        }
+    }
+    
+    tm.getReturnInfoForTargetTab = function(){
+        return this.returnInfoForTab[this.targetTabId];
+    }
+    tm.rememberStateUponDeparture = function(tabId){
+        this.targetTabId = tabId;
+        var returnInfo = {};
+        // always remember chart state and saliency that is displayed
+        this.rememberChartState(returnInfo);
+        this.rememberSaliencyState(returnInfo);
         returnInfo.returnTargetStep = sessionIndexManager.getCurrentIndex();
-        // remember any queued up clickInfo
-        returnInfo.queuedUpClickInfo = activeStudyQuestionManager.renderer.clickInfoFromUserActionMonitor;
-        // (click info should still be staged in renderer)
+        if (this.rememberQuestionInProgress(returnInfo)){
+            returnInfo.tabWasCompleted = false;
+            // remember any queued up clickInfo
+            returnInfo.queuedUpClickInfo = activeStudyQuestionManager.renderer.clickInfoFromUserActionMonitor;
+        }
+        else {
+            returnInfo.tabWasCompleted = true;
+        }
         this.returnInfoForTab[this.getCurrentCssId()] = returnInfo;
     }
 
-    tm.getReturnInfoForTargetTab = function(){
-       return this.returnInfoForTab[tm.hopTargetTabId];
-    }
-
-    tm.checkForTabHopCompletion = function(){
-        var returnInfo = this.getReturnInfoForTargetTab();
-        if (returnInfo!= undefined) {
-            if (returnInfo.cachedQuestionDivs != undefined) {
-                $("#q-and-a-div").empty();
-                $("#q-and-a-div").append(returnInfo.cachedQuestionDivs);
-            }
-            if (returnInfo.cachedChartDivs != undefined){
-                var currentStep = sessionIndexManager.getCurrentIndex();
-                showChart(currentStep);
-                $("#rewards-titled-container").empty();
-                $("#rewards-titled-container").append(returnInfo.cachedChartDivs);
-            }
-            activeStudyQuestionManager.renderer.clickInfoFromUserActionMonitor = returnInfo.queuedUpClickInfo;
-            var coords = userActionMonitor.extractClickCoordinatesFromClickEvent(returnInfo.queuedUpClickInfo);
-            if (coords != undefined) {
-                highlightShapeInRange(coords[0], coords[1]);
-            }
-            this.returnInfoForTab[this.hopTargetTabId] = undefined;
-            this.hopTargetTabId = undefined;
-            this.priorTabId = undefined;
-            this.isInterTabHopInProgress = false;
-            clearLoadingScreen();
+    tm.applyRememberedQuestionInProgress = function(returnInfo) {
+        if (returnInfo.cachedQuestionDivs != undefined) {
+            $("#q-and-a-div").empty();
+            $("#q-and-a-div").append(returnInfo.cachedQuestionDivs);
         }
     }
 
-    tm.jumpIfTabHopInProgress = function(){
-        if (this.isInterTabHopInProgress){
-            var returnInfo = this.getReturnInfoForTargetTab();
-            if (returnInfo!= undefined) {
-                jumpToStep(returnInfo.returnTargetStep);
-                return true;
+    tm.finalStepsForChangeToUnfinishedTab = function(){
+        var returnInfo = this.returnInfoForTab[this.targetTabId];
+        if (returnInfo!= undefined) {
+            if (!returnInfo.tabWasCompleted){
+                this.applyRememberedQuestionInProgress(returnInfo);
+                // highlight any gameboard object that was clicked on
+                activeStudyQuestionManager.renderer.clickInfoFromUserActionMonitor = returnInfo.queuedUpClickInfo;
+                var coords = userActionMonitor.extractClickCoordinatesFromClickEvent(returnInfo.queuedUpClickInfo);
+                if (coords != undefined) {
+                    highlightShapeInRange(coords[0], coords[1]);
+                }
+                delete this.returnInfoForTab[this.targetTabId];
+                this.targetTabId = undefined;
+                clearLoadingScreen();
             }
+        }
+    }
+
+    tm.finalStepsForChangeToCompletedTab = function(){
+        var returnInfo = this.returnInfoForTab[this.targetTabId];
+        if (returnInfo!= undefined) {
+            if (returnInfo.tabWasCompleted){
+                delete this.returnInfoForTab[this.targetTabId];
+                this.targetTabId = undefined;
+                clearLoadingScreen();
+            }
+        }
+    }
+
+
+    tm.jumpToDesiredStepIfTabChangeInProgress = function(){
+        var returnInfo = this.returnInfoForTab[this.targetTabId];
+        if (returnInfo!= undefined) {
+            jumpToStep(returnInfo.returnTargetStep);
+            return true;
         }
         return false;
     }
 
     tm.openFirstTab = function(){
-        this.openTab('tab-tutorial','tutorial.scr','Loading tutorial...', false, false);
+        this.openTab('tab-tutorial','tutorial.scr','Loading tutorial...', false);
     }
     
-    tm.openTab = function(tabId, replayFileForTab, loadingMessage, rememberInfo, isHop){
+    tm.openTab = function(tabId, replayFileForTab, loadingMessage, rememberInfo){
         if (rememberInfo){
-            this.rememberStateUponDeparture(tabId, isHop);
+            this.rememberStateUponDeparture(tabId);
         }
+        clearExplanationInfoButRetainState();
         var indexOfTargetTab = this.getIndexOfTabWithId(tabId);
         this.setTabIndex(indexOfTargetTab);
         loadTab(tabId, replayFileForTab, loadingMessage);
@@ -253,3 +319,89 @@ function enableTab(tabId) {
     var tabControlToMakeActive = document.getElementById(tabId)
     tabControlToMakeActive.className += " active";
 }
+
+
+function hasTargetReturnInfoData() {
+    if (tabManager == undefined) {
+        return false;
+    }
+    var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
+    if (returnInfoForTargetTab == undefined) {
+        return false;
+    }
+    return true;
+}
+function getTargetDisplayModeFromTabManager(displayMode) {
+    if (!hasTargetReturnInfoData()) {
+        return displayMode;
+    }
+    var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
+    var newKey = returnInfoForTargetTab.chartDisplayModeKey;
+    if (newKey == undefined) {
+        return displayMode;
+    }
+    return newKey;
+}
+
+function isTargetStepChartVisible() {
+    if (!hasTargetReturnInfoData()) {
+        return false;
+    }
+    var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
+    var val = returnInfoForTargetTab.chartIsShowing;
+    if (val == undefined) {
+        return false;
+    }
+    return val;
+}
+
+
+function getTargetStepFromReturnInfo() {
+    if (!hasTargetReturnInfoData()) {
+        return undefined;
+    }
+    var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
+    var targetStep = returnInfoForTargetTab.returnTargetStep;
+    if (targetStep == undefined) {
+        return undefined;
+    }
+    return Number(targetStep);
+}
+
+//Saliency
+//remember visible?  (salienciesAreShowing)
+function isTargetStepSaliencyVisible() {
+    if (!hasTargetReturnInfoData()) {
+        return false;
+    }
+    var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
+    var val = returnInfoForTargetTab.salienciesAreShowing;
+    if (val == undefined) {
+        return false;
+    }
+    return val;
+}
+//combined?
+function isTargetStepSaliencyCombined(){
+    if (!hasTargetReturnInfoData()) {
+        // default to combined as that would have been the original default
+        return true;
+    }
+    var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
+    var val = returnInfoForTargetTab.saliencyCombined;
+    return val;
+}
+//whichRowsVisible? selectionManagers[modeKey] getSelection/setSelection
+// no need - saliency shares a selectionManager with the chart
+
+//anySelected?  saliencyDisplayManager.currentlyHighlightedSaliencyMapId for all four. then call saliencyDisplayManager.showSaliencyMapOutline(saliencyMapId)
+function getTargetStepSaliencyMapToHighlight(){
+    if (!hasTargetReturnInfoData()) {
+        return undefined;
+    }
+    var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
+    var chartDisplayModeKey = returnInfoForTargetTab.chartDisplayModeKey;
+    var mapIdToHighlight = returnInfoForTargetTab.highlightedMapIds[chartDisplayModeKey];
+    return mapIdToHighlight;
+}
+

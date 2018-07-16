@@ -509,7 +509,7 @@ function selectHandler(e) {
             return;
         }
     }
-	if (salienciesAreShowing) {
+	if (replayState.salienciesAreShowing) {
 		updateSaliencyContainers();
 	}
 	else {

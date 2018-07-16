@@ -204,7 +204,7 @@ function regionClickHandlerRewardsOld(e)  { userActionMonitor.regionClick("regio
 function regionClickHandlerGameAreaOld(e) { userActionMonitor.regionClick("region:gameArea");}
 function regionClickHandlerQnAAreaOld(e)  { userActionMonitor.regionClick("region:QnA");}
 
-function targetClickHandler(e, userActionSemantics) {
+function targetClickHandlerOld(e, userActionSemantics) {
     if (userStudyMode){
         var targetId = e.currentTarget.getAttribute("id");
         userActionMonitor.targetClick("target:" + targetId);
@@ -214,7 +214,13 @@ function targetClickHandler(e, userActionSemantics) {
 
 function targetClickHandler(e, logLine) {
     if (userStudyMode){
-        var targetId = e.currentTarget.getAttribute("id");
+        var targetId = undefined;
+        if (e.currentTarget != undefined) {
+            targetId = e.currentTarget.getAttribute("id");
+        }
+        else {
+            targetId = e.target.getAttribute("id");
+        }
         logLine = logLine.replace("<TARGET>", targetId);
         userActionMonitor.pendingLogLine = logLine;
     }

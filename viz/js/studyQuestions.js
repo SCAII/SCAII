@@ -1,5 +1,5 @@
 function clearStudyQuestionMode() {
-    if (!tabManager.isInterTabHopInProgress){
+    if (!tabManager.hopToUnfinishedQuestionInProgress){
         $('#q-and-a-div').empty();
     }
     $("#left-block-div").remove();
@@ -116,7 +116,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         }
         var shouldAskQuestion = false;
         if (this.mostRecentlyPosedQuestion == qid){
-            if (tabManager.isInterTabHopInProgress){
+            if (tabManager.hopToUnfinishedQuestionInProgress){
                 shouldAskQuestion = true;
             }
         }
