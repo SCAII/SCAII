@@ -204,13 +204,9 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
     }
 
     qam.blockPastStep = function(rangePair) {
-        var widthOfTimeline = expl_ctrl_canvas.width - 2*timelineMargin;
-
-        // get offset of explanation-control-panel relative to document
-        var ecpOffset = $("#explanation-control-panel").offset();
+        
         // calculate left window edge position
-        var leftValueOnTimeline = Math.floor((rangePair[0] / this.maxStep ) * 100);
-        var x2 = ecpOffset.left + timelineMargin + (leftValueOnTimeline / 100) * widthOfTimeline;
+        var x2 = getXOriginOfDecisionPointAtStep(Number(rangePair[0]));
         // shift x2 to the left to fully expose the current DecisionPoint;
         var currentIndex = sessionIndexManager.getCurrentIndex();
         if (currentIndex + 1 == rangePair[0]) {
@@ -221,7 +217,9 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
         }
         // shift x3 to the left to fully cover the next DecisionPoint
         var x4 = expl_ctrl_canvas.width;
-    
+        
+        // get offset of explanation-control-panel relative to document
+        var ecpOffset = $("#explanation-control-panel").offset();
         var y = ecpOffset.top;
         var width2 = x4 - x2;
         var height = $("#explanation-control-panel").height();

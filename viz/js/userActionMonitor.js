@@ -189,7 +189,13 @@ function regionClickHandlerQnAArea(e)  { userActionMonitor.regionClick("QnA");}
 
 function targetClickHandler(e, logLine) {
     if (userStudyMode){
-        var targetId = e.currentTarget.getAttribute("id");
+        var targetId = undefined;
+        if (e.currentTarget != undefined) {
+            targetId = e.currentTarget.getAttribute("id");
+        }
+        else {
+            targetId = e.target.getAttribute("id");
+        }
         logLine = logLine.replace("<TARGET>", targetId);
         userActionMonitor.pendingLogLine = logLine;
     }

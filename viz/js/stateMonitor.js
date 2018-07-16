@@ -115,6 +115,16 @@ function getStateMonitor() {
         this.detailedAdvantage = false;
     }
 
+    var keyToIndexMap = {};
+    keyToIndexMap["rewards.combined"] = "combinedReward";
+    keyToIndexMap["rewards.detailed"] = "detailedReward";
+    keyToIndexMap["advantage.combined"] = "combinedAdvantage";
+    keyToIndexMap["advantage.detailed"] = "detailedAdvantage";
+    sm.setRewardDisplayModeByKey = function(displayModeKey){
+        this.clearRewards();
+        var codedIndex = keyToIndexMap[displayModeKey];
+        this[codedIndex] = true;
+    }
     sm.showedCombinedRewards = function () {
         this.clearRewards();
         this.combinedReward = true;

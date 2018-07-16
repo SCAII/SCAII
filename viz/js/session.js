@@ -198,7 +198,18 @@ function loadSelectedReplayFile() {
     var filename = $( "#replay-file-selector option:selected" ).text();
     loadReplayFile(filename);
 }
+
+var replayState = undefined;
+var replayStateForFilename = {};
+
 function loadReplayFile(filename) {
+    var rs = replayStateForFilename[filename];
+    if (rs == undefined){
+        rs = {};
+        initExplanationFields(rs);
+        replayStateForFilename[filename] = rs;
+        replayState = rs;
+    }
     $("#cue-arrow-div").remove();
     if (userActionMonitor != undefined) {
         userActionMonitor.clickListener = undefined;
@@ -216,7 +227,7 @@ function loadReplayFile(filename) {
 	$("#explanation-control-panel").empty();
 	drawExplanationTimeline();
 	clearGameBoards();
-	clearExplanationInfo();
+	clearExplanationInfoButRetainState();
 }
 
 
@@ -401,7 +412,10 @@ function handleScaiiPacket(sPacket) {
 	else if (sPacket.hasExplDetails()) {
 		//console.log('has expl details');
 		var explDetails = sPacket.getExplDetails();
-		handleExplDetails(explDetails);
+        handleExplDetails(explDetails);
+        if (userStudyMode) {
+            tabManager.finalStepsForChangeToUnfinishedTab();
+        }
 	}
 	else if (sPacket.hasReplayControl()) {
 		//console.log("-----got replayCOntrol");
@@ -432,13 +446,12 @@ function handleScaiiPacket(sPacket) {
 			else {
 				result = new proto.scaii.common.MultiMessage;
 			}
-			
 		}
 		else if (commandType == proto.scaii.common.UserCommand.UserCommandType.JUMP_COMPLETED) {
 			//console.log("-----got jump completed message");
             controlsManager.jumpCompleted();
             if (userStudyMode) {
-                tabManager.checkForTabHopCompletion();
+                tabManager.finalStepsForChangeToCompletedTab();
             }
 		}
 		else if (commandType == proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE_COMPLETE){
@@ -450,7 +463,7 @@ function handleScaiiPacket(sPacket) {
                     showUserIdScreen();
                 }
                 else {
-                    var didJump = tabManager.jumpIfTabHopInProgress();
+                    var didJump = tabManager.jumpToDesiredStepIfTabChangeInProgress();
                     if (!didJump){
                         clearLoadingScreen();
                     }
