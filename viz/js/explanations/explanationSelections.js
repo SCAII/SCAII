@@ -5,10 +5,13 @@ function getSelectionManager() {
     sm.defaultSelectionMade = false;
 	
 	sm.setSelections = function(info) {
+        // NEW_CHART select bars
 		this.selections = info;
 	}
     
     sm.clearSelections = function() {
+        
+        // NEW_CHART clear bar
         if (this.selections.length != 0) {
             var tempSelections = [];
             for (var i in this.selections) {
@@ -24,11 +27,15 @@ function getSelectionManager() {
     }
     
 	sm.addSelection = function(selection) {
+        
+        // NEW_CHART select bar
         //since not doing our own highlighting of bar, don't need to do isLegalTarget checking
         if (userStudyMode){
             var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
             var targetArg = selection[0] + "/" + selection[1];
             if (this.defaultSelectionMade) {
+                // NEW_CHART default selections are made, and we need to remember that they were made already
+                // NEW_SAL default selections are made, and we need to remember that they were made already
 				var logLine = templateMap["selectedRewardBar"];
 				logLine = logLine.replace("<REGION>", "rewardChart");
 				logLine = logLine.replace("<SLCT_RWRD_BAR>", targetArg);
@@ -44,6 +51,8 @@ function getSelectionManager() {
 	}
 
 	sm.removeSelection = function (selection) {
+        
+        // NEW_CHART unselect bar
         //since not doing our own highlighting of bar, don't need to do isLegalTarget checking
         if (userStudyMode){
             var targetName = "rewardBar(" + selection[0] + "/" + selection[1] + ")";
@@ -69,6 +78,7 @@ function getSelectionManager() {
 		this.selections = newList;
 	}
 
+    // NEW_CHART is bar selected
 	sm.isSelected = function(selection) {
 		for (var i in this.selections) {
 			var cur = this.selections[i];
@@ -79,6 +89,7 @@ function getSelectionManager() {
 		return false;
 	}
 
+    // NEW_CHART get selectied bars
 	sm.getSelections = function(){
 		return this.selections;
 	}

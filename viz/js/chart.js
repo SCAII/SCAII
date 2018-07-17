@@ -120,7 +120,7 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 		return chartTable;
 	}
 
-
+    //NEW_CHART detailed rewards live in the Bar messages, combined rewards are obtained by adding up Bar messages
 
 	bcm.getTableForGoogleChartAggregateRewards = function() {
 		// need structure to look like this
@@ -299,6 +299,7 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 	
 	
 	bcm.getSaliencyIdForActionNameAndBar = function(actionName, barName) {
+        //NEW_SAL sal ids looked up in bar and bar group
 		var barGroups = this.groupsList;
 		for (var i in barGroups){
 			var barGroup = barGroups[i];
@@ -477,6 +478,7 @@ var drawBarChart = function(chartData, options) {
 function selectHandler(e) {
 	var googleChartSelections = googleChart.getSelection();
     var selectionsByName = activeBarChartManager.convertGoogleChartSelectionsToSelectionsByName(googleChartSelections);
+    // NEW_CHART needs to support multi-select
 	if (mostRecentClickHadCtrlKeyDepressed){
 		for (var i in selectionsByName){
 			var selection = selectionsByName[i];
@@ -491,6 +493,7 @@ function selectHandler(e) {
 		activeSaliencyDisplayManager.adjustCheckboxes(activeBarChartManager.getSelections());
 	}
 	else {
+        // NEW_CHART single-select on bar clears other bars
         activeBarChartManager.clearSelections();
         if (selectionsByName.length > 0){
             activeBarChartManager.addSelection(selectionsByName[0]);

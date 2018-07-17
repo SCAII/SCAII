@@ -7,6 +7,7 @@ function showSaliencies() {
 	updateSaliencyContainers();
 }
 function processWhatClick() {
+    // NEW_SAL saliency kepp alive still needed?
 	if (saliencyKeepAlive) {
 		showSaliencies();
 		saliencyKeepAlive = false;

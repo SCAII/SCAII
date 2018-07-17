@@ -63,6 +63,8 @@ function showRewards(displayModeKey) {
     replayState.rewardView = displayModeKey;
 	activeSaliencyDisplayManager = saliencyDisplayManagers[displayModeKey];
     configureRewardChart(displayModeKey);
+    // NEW_SAL  treatment# affects which saliencies to show
+    // NEW_SAL  userStudyMode yes/no
     if (userStudyMode) {
         if (!studyTreatment.showSaliencyAll){
             // bypass showing saliency 
@@ -71,12 +73,15 @@ function showRewards(displayModeKey) {
     }
 
 	if (replayState.salienciesAreShowing){
+        // NEW_SAL  shown yes/no
 		if (replayState.saliencyCombined) {
+             // NEW_SAL  combined yes/no
 			activeSaliencyDisplayManager.setSaliencyMode(saliencyModeAggregate);
 		}
 		else {
 			activeSaliencyDisplayManager.setSaliencyMode(saliencyModeDetailed);
-		}
+        }
+        // NEW_SAL  checkboxes were used as proxy selection control - they will go
 		if (showCheckboxes) {
 			activeSaliencyDisplayManager.renderCheckboxes();
 		}
@@ -104,6 +109,7 @@ function renderWhyInfo(explPoint) {
     activeSaliencyDisplayManager = saliencyDisplayManagers[replayState.rewardView];
 	configureRewardChart(replayState.rewardView);
     if (userStudyMode) {
+        // NEW_CHART  display mode varieties - used to have 4 due to advantage/reward and combined/vsdetailed.  But now we have ????  
         stateMonitor.setRewardDisplayModeByKey(replayState.rewardView);
     }
 	var actionName =  activeBarChartManager.getChosenActionName();
@@ -141,9 +147,11 @@ var selectedDecisionStep = undefined;
 function showChart(step){
     selectedDecisionStep = step;
     askBackendForExplanationRewardInfo(step);
-}
+} 
 function processWhyClick(step) {
+    
 	if (selectedDecisionStep == step){
+        // NEW_CHART  toggling why button click shows/hides chart
 		// toggle active buttons
 		$("#" + selectedWhyButtonId).toggleClass('active');
 
@@ -157,6 +165,7 @@ function processWhyClick(step) {
 		//$("#why-label").toggleClass('active');
 	}
 	else if (selectedDecisionStep == undefined) {
+        // NEW_CHART  clicking why button click shows chart
 		// toggle target buttons
 	 	selectedWhyButtonId = getWhyButtonIdForStep(step);
 	 	$("#" + selectedWhyButtonId).toggleClass('active');

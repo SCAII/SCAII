@@ -237,7 +237,8 @@ function populateRewardQuestionSelector(){
 	var combinedRewardsLabel = document.createElement("div");
 	combinedRewardsLabel.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:14px;");
 	combinedRewardsLabel.innerHTML = "combined rewards";
-
+    // NEW_CHART showing or not
+    // NEW_CHART user study yes/no
 	var radioDetailedRewards = document.createElement("input");
 	radioDetailedRewards.setAttribute("type","radio");
 	radioDetailedRewards.setAttribute("id","radio-detailed-rewards");

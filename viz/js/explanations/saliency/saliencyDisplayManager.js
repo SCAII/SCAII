@@ -17,6 +17,8 @@ function getSaliencyDisplayManager(selectionManager) {
     sdm.currentlyHighlightedSaliencyMapId = undefined;
     
 	sdm.setActiveRowInfo = function(activeRowInfos) {
+        // NEW_SAL control which saliency rows are visible
+        // NEW_SAL in one mode at least, saliency maps for losing actions are smaller
 		this.rowInfosByName = {};
 	}
 	
@@ -29,6 +31,7 @@ function getSaliencyDisplayManager(selectionManager) {
 	}
 	
 	sdm.registerRowInfoString = function(rowInfo, rowInfoString) {
+        //NEW_SAL info displayed to left of saliency; has to be UI friendly 
 		this.rowInfosByName[rowInfoString] = rowInfo;
 	}
 	
@@ -133,6 +136,7 @@ function getSaliencyDisplayManager(selectionManager) {
     }
     sdm.rankString = {};
     sdm.createRankStrings = function(barGroups) {
+        //NEW_SAL UI friendly text to explain ranking of rowxs
         this.rankStrings ={};
         for (var i in barGroups) {
             var barGroup= barGroups[i];
@@ -296,6 +300,7 @@ function getSaliencyDisplayManager(selectionManager) {
 	sdm.overlaySaliencyMapOntoGameReplica = function(ctx, cells, width, height, normalizationFactor) {
         if (userStudyMode){
             if (isTutorial()){
+                //NEW_SAL tutorial saliencies are randomized
                 cells = getRandomCells(width * height);
                 var max = getMaxValueForLayer(cells);
                 if (max == 0) {
@@ -318,6 +323,7 @@ function getSaliencyDisplayManager(selectionManager) {
 	}
 
     sdm.hideAllSaliencyMapOutlines = function() {
+        //NEW_SAL user may highlight saliency map for a question
         var keys = Object.keys(this.outlinesForSaliencyMap);
         for (var i in keys){
             var key = keys[i];
@@ -471,6 +477,7 @@ function getSaliencyDisplayManager(selectionManager) {
             //targetHoverHandler(evt, "endMouseOverSaliencyMap:" + saliencyUIName);
         });
         if (!userStudyMode){
+            //NEW_SAL regular mode mouse hover shows score on map
             explCanvas.addEventListener('mousemove', function(evt) {
                 var mousePos = getMousePos(explCanvas, evt);
                 var xForValueLookup = Math.floor(mousePos.x / gameScaleFactor);
@@ -517,7 +524,8 @@ function getSaliencyDisplayManager(selectionManager) {
 }
 
 function getRowInfoString(rowInfo) {
-	var result = undefined;
+    var result = undefined;
+    // NEW_CHART, NEW_SAL  selection values as [ "Q1","*"] [ "Q1","rewardX"]
 	if ('*' == rowInfo[1]) {
 		var result = rowInfo[0];// action name only
 	}
