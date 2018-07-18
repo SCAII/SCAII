@@ -1,4 +1,9 @@
-function getChartData() {
-    var d = {};
-    return d;
+function wrapChartData(rawChartData) {
+    var rd = rawChartData;
+    rd.getActionForName = function(actionName){
+
+    }
+    rd.getRewardForName = function(actionName,rewardName){
+        
+    }
 }

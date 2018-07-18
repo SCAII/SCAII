@@ -16,7 +16,11 @@ function runTests(){
     runQuestionAccessManagerTests();
     var fc = getFailureChecker();
     runChartManagerTests(fc);
-
+    runChartDataSelectionTests(fc);
+    //runChartDataGeometryTests(fc);
+    //runChartDataTextTests(fc);
+    //runChartDataColorTests(fc);
+    //runChartDataRankingTests(fc);
     if (fc.failures.length != 0){
         var message = "";
         for (var i in fc.failures){
@@ -29,3 +33,4 @@ function runTests(){
         alert("awesome - time to go home");
     }
 }
+
