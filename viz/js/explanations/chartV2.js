@@ -11,7 +11,6 @@ function getChartManager(chartData){
     cm.userStudyMode = false;
     cm.showChartAccessButton = false;
     cm.chartVisible = false;
-    cm.chartCombined = false;
     cm.showSaliencyAccessButton = false;
     cm.saliencyVisible = false;
     cm.saliencyCombined = false;
@@ -35,7 +34,6 @@ function getChartManager(chartData){
 
         this.showChartAccessButton = true;
         this.chartVisible = false;
-        this.chartCombined = true;
         this.showSaliencyAccessButton = true;
         this.saliencyVisible = false;
         this.saliencyCombined = true;
@@ -46,7 +44,6 @@ function getChartManager(chartData){
             this.treatmentID = "T0";
             this.showChartAccessButton = false;
             this.chartVisible = false;
-            this.chartCombined = true;
             this.showSaliencyAccessButton = false;
             this.saliencyVisible = false;
             this.saliencyCombined = true;
@@ -55,7 +52,6 @@ function getChartManager(chartData){
             this.treatmentID = "T1";
             this.showChartAccessButton = false;
             this.chartVisible = false;
-            this.chartCombined = true;
             this.showSaliencyAccessButton = false;
             this.saliencyVisible = true;
             this.saliencyCombined = false;
@@ -65,7 +61,6 @@ function getChartManager(chartData){
             this.treatmentID = "T2";
             this.showChartAccessButton = true;
             this.chartVisible = false;
-            this.chartCombined = true;
             this.showSaliencyAccessButton = false;
             this.saliencyVisible = false;
             this.saliencyCombined = false;
@@ -75,7 +70,6 @@ function getChartManager(chartData){
             this.treatmentID = "T3";
             this.showChartAccessButton = true;
             this.chartVisible = false;
-            this.chartCombined = true;
             this.showSaliencyAccessButton = true;
             this.saliencyVisible = false;
             this.saliencyCombined = true;
@@ -109,10 +103,7 @@ function getChartManager(chartData){
         if (this.showChartAccessButton){
             this.renderChartAccessButton(mode);
         }
-        if (this.chartVisible && this.chartCombined){
-            this.renderChartCombined(mode);
-        }
-        if (this.chartVisible && !this.chartCombined){
+        if (this.chartVisible){
             this.renderChartDetailed(mode);
         }
     }
@@ -121,10 +112,7 @@ function getChartManager(chartData){
         if (this.showChartAccessButton){
             this.renderChartAccessButton(mode);
         }
-        if (this.chartVisible && this.chartCombined){
-            this.renderChartCombined(mode);
-        }
-        if (this.chartVisible && !this.chartCombined){
+        if (this.chartVisible){
             this.renderChartDetailed(mode);
         }
         if (this.showSaliencyAccessButton && this.chartVisible){
@@ -141,14 +129,6 @@ function getChartManager(chartData){
     cm.renderChartAccessButton = function(mode){
         if (mode == "trace"){
             this.renderLog.push("renderChartAccessButton");
-            return;
-        }
-        // do the actual rendering
-    }
-    
-    cm.renderChartCombined = function(mode){
-        if (mode == "trace"){
-            this.renderLog.push("renderChartCombined");
             return;
         }
         // do the actual rendering

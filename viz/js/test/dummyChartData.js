@@ -5,6 +5,8 @@ function buildDummyChart(rewardCount) {
     chart.actionBarNames = [];
     chart.rewardBars = {};
     chart.rewardBarNames = [];
+    var posOrNeg = 0;
+    var addTen = 0;
     for (var i = 0; i < 4; i++){
         var action = {};
         action.bars = [];
@@ -13,16 +15,21 @@ function buildDummyChart(rewardCount) {
         for (var j = 0; j < rewardCount; j++){
             var bar = {};
             bar.name = "action_"+ i+ ".reward_" + j;
-            if (j % 1 == 0){
-                bar.value = (Number(i) + 1) * (Number(j)+ 1);
+            bar.rName = "reward_" + j;
+            if (posOrNeg % 2 == 0){
+                //bar.value = ((Number(i) + 1) * (Number(j)+ 1)) * 10;
+                bar.value = addTen;
             }
             else {
-                bar.value = -1 * (Number(i) + 1) * (Number(j)+ 1);
+                //bar.value = -((Number(i) + 1) * (Number(j)+ 1)) * 10;
+                bar.value = -addTen;
             }
             action.value = Number(action.value) + Number(bar.value);
             action.bars.push(bar);
             chart.rewardBars[bar.name] = bar;
-            chart.rewardBarNames.push(bar.name);
+            chart.rewardBarNames.push(bar.rName)
+            posOrNeg++;
+            addTen += 10;
         }
         chart.actions.push(action);
         chart.actionBars[action.name] = action;

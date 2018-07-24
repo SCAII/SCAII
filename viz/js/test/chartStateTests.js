@@ -10,18 +10,18 @@
 function runChartManagerTests(failureChecker) {
     var fc = failureChecker;
 
-    var chartData = getChartData();
+    //var chartData = getChartData();
 
     var cm;
     { // defaults checks
         fc.setCase("normal mode defaults check");
-        cm = getChartManager(chartData);
+        //cm = getChartManager(chartData);
+        cm = getChartManager();
         cm.setUserStudyMode(false);
         fc.assert(cm.userStudyTreatment, "NA", "userStudyTreatment");
         
         fc.assert(cm.showChartAccessButton, true, "showChartAccessButton");// NEW_CHART treatment1 shows saliency but not rewards so can't rely on the "what was relevant" button
         fc.assert(cm.chartVisible, false, "chartVisible");
-        fc.assert(cm.chartCombined, true, "chartCombined");
         
         fc.assert(cm.showSaliencyAccessButton, true, "showSaliencyAccessButton");
         fc.assert(cm.saliencyVisible, false, "saliencyVisible");
@@ -32,13 +32,13 @@ function runChartManagerTests(failureChecker) {
     
         //
         fc.setCase("user study mode T0 defaults check");
-        cm = getChartManager(chartData);
+        //cm = getChartManager(chartData);
+        cm = getChartManager();
         cm.setUserStudyMode(true);
         cm.setUserStudyTreatment("T0");
         
         fc.assert(cm.showChartAccessButton, false, "showChartAccessButton");
         fc.assert(cm.chartVisible, false, "chartVisible");
-        fc.assert(cm.chartCombined, true, "chartCombined");
         
         fc.assert(cm.showSaliencyAccessButton, false, "showSaliencyAccessButton");
         fc.assert(cm.saliencyVisible, false, "saliencyVisible");
@@ -48,13 +48,13 @@ function runChartManagerTests(failureChecker) {
 
         //
         fc.setCase("user study mode T1 defaults check");
-        cm = getChartManager(chartData);
+        //cm = getChartManager(chartData);
+        cm = getChartManager();
         cm.setUserStudyMode(true);
         cm.setUserStudyTreatment("T1");
         
         fc.assert(cm.showChartAccessButton, false, "showChartAccessButton");
         fc.assert(cm.chartVisible, false, "chartVisible");
-        fc.assert(cm.chartCombined, true, "chartCombined");
         
         fc.assert(cm.showSaliencyAccessButton, false, "showSaliencyAccessButton");
         fc.assert(cm.saliencyVisible, true, "saliencyVisible");
@@ -65,13 +65,13 @@ function runChartManagerTests(failureChecker) {
 
         //
         fc.setCase("user study mode T2 defaults check");
-        cm = getChartManager(chartData);
+        //cm = getChartManager(chartData);
+        cm = getChartManager();
         cm.setUserStudyMode(true);
         cm.setUserStudyTreatment("T2");
         
         fc.assert(cm.showChartAccessButton, true, "showChartAccessButton");
         fc.assert(cm.chartVisible, false, "chartVisible");
-        fc.assert(cm.chartCombined, true, "chartCombined");
         
         fc.assert(cm.showSaliencyAccessButton, false, "showSaliencyAccessButton");
         fc.assert(cm.saliencyVisible, false, "saliencyVisible");
@@ -82,13 +82,13 @@ function runChartManagerTests(failureChecker) {
 
         //
         fc.setCase("user study mode T3 defaults check");
-        cm = getChartManager(chartData);
+        //cm = getChartManager(chartData);
+        cm = getChartManager();
         cm.setUserStudyMode(true);
         cm.setUserStudyTreatment("T3");
         
         fc.assert(cm.showChartAccessButton, true, "showChartAccessButton");
         fc.assert(cm.chartVisible, false, "chartVisible");
-        fc.assert(cm.chartCombined, true, "chartCombined");
         
         fc.assert(cm.showSaliencyAccessButton, true, "showSaliencyAccessButton");
         fc.assert(cm.saliencyVisible, false, "saliencyVisible");
@@ -100,7 +100,8 @@ function runChartManagerTests(failureChecker) {
 
     { // non user study mode
         fc.setCase("non user study mode");
-        cm = getChartManager(chartData);
+        //cm = getChartManager(chartData);
+        cm = getChartManager();
         cm.setUserStudyMode(false);
         fc.assert(cm.showLosingActionSmaller,false,"losing actions saliency map size");
         cm.filename = "foo.scr"; 
@@ -109,16 +110,8 @@ function runChartManagerTests(failureChecker) {
         cm.render("trace");
         fc.assert(cm.renderLog.length, 3,"renderLog.length.a"); 
         fc.assert(cm.renderLog[0], "renderChartAccessButton", "renderLog[0]a");
-        fc.assert(cm.renderLog[1], "renderChartCombined", "renderLog[1]a");
+        fc.assert(cm.renderLog[1], "renderChartDetailed", "renderLog[1]a");
         fc.assert(cm.renderLog[2], "renderSaliencyAccessButton", "renderLog[2]a");
-
-        cm.chartCombined = false;
-        cm.render("trace");
-        fc.assert(cm.renderLog.length, 3,"renderLog.length.b"); 
-        fc.assert(cm.renderLog[0], "renderChartAccessButton", "renderLog[0]b");
-        fc.assert(cm.renderLog[1], "renderChartDetailed", "renderLog[1]b");
-        fc.assert(cm.renderLog[2], "renderSaliencyAccessButton", "renderLog[2]b");
-
 
         cm.saliencyVisible = true;
         cm.render("trace");
@@ -141,7 +134,8 @@ function runChartManagerTests(failureChecker) {
 
     { // T1
         fc.setCase("T1");
-        cm = getChartManager(chartData);
+        //cm = getChartManager(chartData);
+        cm = getChartManager();
         cm.setUserStudyMode(true);
         cm.setUserStudyTreatment("T1");
 
@@ -155,7 +149,8 @@ function runChartManagerTests(failureChecker) {
     
     { // T2
         fc.setCase("T2");
-        cm = getChartManager(chartData);
+        //cm = getChartManager(chartData);
+        cm = getChartManager();
         cm.setUserStudyMode(true);
         cm.setUserStudyTreatment("T2");
         fc.assert(cm.showLosingActionSmaller,true,"losing actions saliency map size");
@@ -164,20 +159,13 @@ function runChartManagerTests(failureChecker) {
         cm.render("trace");
         fc.assert(cm.renderLog.length, 2,"renderLog.length.a"); 
         fc.assert(cm.renderLog[0], "renderChartAccessButton", "renderLog[0]a");
-        fc.assert(cm.renderLog[1], "renderChartCombined", "renderLog[1]a");
-
-        cm.chartCombined = false;
-        cm.render("trace");
-        fc.assert(cm.renderLog.length, 2,"renderLog.length.b"); 
-        fc.assert(cm.renderLog[0], "renderChartAccessButton", "renderLog[0]b");
-        fc.assert(cm.renderLog[1], "renderChartDetailed", "renderLog[1]b");
-
-
+        fc.assert(cm.renderLog[1], "renderChartDetailed", "renderLog[1]a");
     }
 
     { // T3
         fc.setCase("T3");
-        cm = getChartManager(chartData);
+        //cm = getChartManager(chartData);
+        cm = getChartManager();
         cm.setUserStudyMode(true);
         cm.setUserStudyTreatment("T3");
         fc.assert(cm.showLosingActionSmaller,true,"losing actions saliency map size");
@@ -187,15 +175,8 @@ function runChartManagerTests(failureChecker) {
         cm.render("trace");
         fc.assert(cm.renderLog.length, 3,"renderLog.length.a"); 
         fc.assert(cm.renderLog[0], "renderChartAccessButton", "renderLog[0]a");
-        fc.assert(cm.renderLog[1], "renderChartCombined", "renderLog[1]a");
+        fc.assert(cm.renderLog[1], "renderChartDetailed", "renderLog[1]a");
         fc.assert(cm.renderLog[2], "renderSaliencyAccessButton", "renderLog[2]a");
-
-        cm.chartCombined = false;
-        cm.render("trace");
-        fc.assert(cm.renderLog.length, 3,"renderLog.length.b"); 
-        fc.assert(cm.renderLog[0], "renderChartAccessButton", "renderLog[0]b");
-        fc.assert(cm.renderLog[1], "renderChartDetailed", "renderLog[1]b");
-        fc.assert(cm.renderLog[2], "renderSaliencyAccessButton", "renderLog[2]b");
 
         cm.saliencyVisible = true;
         cm.render("trace");
