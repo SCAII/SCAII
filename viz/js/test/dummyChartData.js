@@ -27,7 +27,9 @@ function buildDummyChart(rewardCount) {
             action.value = Number(action.value) + Number(bar.value);
             action.bars.push(bar);
             chart.rewardBars[bar.name] = bar;
-            chart.rewardBarNames.push(bar.rName)
+            if (chart.rewardBarNames.length < rewardCount) {
+                chart.rewardBarNames.push(bar.rName);
+            }
             posOrNeg++;
             addTen += 10;
         }
