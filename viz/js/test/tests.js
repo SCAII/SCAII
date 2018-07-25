@@ -19,7 +19,7 @@ function runTests(){
     runChartDataSelectionTests(fc);
     //runChartDataGeometryTests(fc);
     //runChartDataTextTests(fc);
-    //runChartDataColorTests(fc);
+    runChartDataColorTests(fc);
     //runChartDataRankingTests(fc);
     if (fc.failures.length != 0){
         var message = "";

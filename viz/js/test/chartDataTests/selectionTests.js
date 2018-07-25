@@ -3,6 +3,7 @@ function runChartDataSelectionTests(failureChecker) {
     var fc = failureChecker;
     var ch = wrapChartData(buildDummyChart(3));
 
+    ch = selectionImplementation(ch);
     // action names are action_0, action_1...action_3
     // rewardnames are action action_0.reward_0, action_0.reward_1
     // test single-select 
