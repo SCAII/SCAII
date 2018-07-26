@@ -1,4 +1,4 @@
-function rankImplementation(rawChartData) {
+function addRankingFunctions(rawChartData) {
     var rd = rawChartData;
 
     rd.rank = [];
@@ -8,23 +8,6 @@ function rankImplementation(rawChartData) {
         }
     }
     rd.rank = this.rankThings(rd.actions[i].bars[j], this.maxFunction());
-
-    rd.rankThings = function (things, maxFunction) {
-        var result = [];
-        while (things.length > 0) {
-            var maxThing = maxFunction(things);
-            result.push(maxThing);
-            var fewerThings = [];
-            for (var i in things) {
-                var thing = things[i];
-                if (thing != maxThing) {
-                    fewerThings.push(thing);
-                }
-            }
-            things = fewerThings;
-        }
-        return result;
-    }
 
     rd.maxFunction = function (things) {
         var maxPosValue = 0;

@@ -1,6 +1,6 @@
 function runChartDataTextTests(failureChecker) {
   // test saliency row label generation
-  var cm = wrapChartData(buildDummyChart(3));
+  var cm = addUtilityFunctions(buildDummyChart(3));
 
   cm = textImplementation(cm);
 

@@ -1,4 +1,4 @@
-function selectionImplementation (rawChartData) {
+function addSelectionFunctions (rawChartData) {
     var rd = rawChartData;
 
     for (var i in rd.actions) {

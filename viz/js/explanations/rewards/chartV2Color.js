@@ -1,4 +1,4 @@
-function colorImplementation(rawChartData) {
+function addColorToBars(rawChartData) {
     var rd = rawChartData;
     //possible issue: if rawChartData has different number of bars for each action colors will NOT be consistent
     //possible solution: base it off of rName variable?

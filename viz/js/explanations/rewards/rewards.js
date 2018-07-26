@@ -1,4 +1,4 @@
-
+//TODO - theseneeded?
 function configureInvisibleRewardChart(displayModeKey) {
     // NEW_CHART treatment1 shows saliency but not rewards so can't rely on the "what was relevant" button
     replayState.rewardView = displayModeKey;
