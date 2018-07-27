@@ -1,35 +1,93 @@
-function addRankingFunctions(rawChartData) {
-    var rd = rawChartData;
+function addRankingFunctions(chart) {
+    var ch = chart;
 
-    rd.rank = [];
-    for (var i in rd.actions) {
-        for (var j in rd.actions[i].bars) {
-            rd.actions[i].bars[j].rank = 0;
+    ch.getMaxAbsValueReward = function() {
+        return getMaxAbsoluteValue(this.rewardBars);
+    }
+    ch.getMaxReward = function(){
+        return getMaxValue(this.rewardBars);
+    }
+    ch.getMinReward = function(){
+        return getMinValue(this.rewardBars);
+    }
+    return ch;
+}
+
+function getMaxValue(things) {
+    var maxValue = undefined;
+    for (var i in things){
+        var value = things[i].value;
+        if (maxValue == undefined) {
+            maxValue = value;
+        }
+        else {
+            maxValue = Math.max(maxValue, value);
         }
     }
-    rd.rank = this.rankThings(rd.actions[i].bars[j], this.maxFunction());
+    return maxValue;
+}
 
-    rd.maxFunction = function (things) {
-        var maxPosValue = 0;
-        var maxNegValue = 0;
-        var maxValue = 0;
+function getMaxAbsoluteValue(things) {
+    var maxAbsValue = undefined;
+    for (var i in things){
+        var absValue = Math.abs(things[i].value);
+        if (maxAbsValue == undefined) {
+            maxAbsValue = absValue;
+        }
+        else {
+            maxAbsValue = Math.max(maxAbsValue, absValue);
+        }
+    }
+    return maxAbsValue;
+}
+
+function getMinValue(things) {
+    var minValue = undefined;
+    for (var i in things){
+        var value = things[i].value; 
+        if (minValue == undefined) {
+            minValue = value;
+        }
+        else {
+            minValue = Math.min(minValue, value);
+        }
+    }
+    return minValue;
+}
+
+
+
+function getThingWithMaxValue(things) {
+    var maxValue = undefined;
+    var maxValueThing = undefined;
+    for (var i in things){
+        var value = things[i].value;
+        if (maxValue == undefined) {
+            maxValue = value;
+            maxValueThing = things[i];
+        }
+        else if (value > maxValue){
+            maxValue = value;
+            maxValueThing = things[i];
+        }
+        
+    }
+    return maxValueThing;
+}
+
+function rankThings(things, maxFunction) {
+    var result = [];
+    while (things.length > 0) {
+        var maxThing = maxFunction(things);
+        result.push(maxThing);
+        var fewerThings = [];
         for (var i in things) {
-            for (var j in things[i]) {
-                if (things[i][j] >= 0) {
-                    maxPosValue = Math.max(maxValue, this.options.data[i][j]);
-                } else {
-                    maxNegValue = Math.max(maxNegValue, Math.abs(this.options.data[i][j]));
-                }
+            var thing = things[i];
+            if (thing != maxThing) {
+                fewerThings.push(thing);
             }
         }
-        if (maxPosValue > maxNegValue) {
-            maxValue = maxPosValue;
-        } else {
-            maxValue = maxNegValue;
-        }
-        maxNegValue = -maxNegValue;
-        return maxValue;
+        things = fewerThings;
     }
-
-    return rd;
+    return result;
 }
