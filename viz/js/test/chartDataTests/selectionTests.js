@@ -2,7 +2,7 @@
 function runChartDataSelectionTests(failureChecker) {
     var fc = failureChecker;
     var ch = addUtilityFunctions(buildDummyChart(3));
-
+    fc.setTestName("runChartDataSelectionTests");
     ch = addSelectionFunctions(ch);
     // action names are action_0, action_1...action_3
     // rewardnames are action action_0.reward_0, action_0.reward_1

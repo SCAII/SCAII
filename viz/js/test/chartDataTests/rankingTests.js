@@ -1,6 +1,6 @@
 function runRankingTests(failureChecker) {
     var fc = failureChecker;
-    
+    fc.setTestName("rankingTests");
     //cm.newVar = cm.rankThings(cm.rewardBars)
     fc.setCase("rank tests pos and neg values")
     var thing1= {};

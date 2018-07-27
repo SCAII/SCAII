@@ -3,6 +3,7 @@ function runChartDataColorTests(failureChecker) {
     //colors: ['#00AAAA', '#0055CC', '#00CC00']
     //colors: ['#00AAAA', '#0055CC', '#00CC00', '#004400', '#0000AA', '#006666', '#002222', '#000044']
     var fc = failureChecker;
+    fc.setTestName("chartDataColorTests");
     var ch = addUtilityFunctions(buildDummyChart(3));
 
     ch = addColorToBars(ch);

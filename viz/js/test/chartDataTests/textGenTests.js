@@ -2,6 +2,7 @@ function runChartDataTextTests(failureChecker) {
   // test saliency row label generation
     var ch = addUtilityFunctions(buildDummyChart(3));
     var fc = failureChecker;    
+    fc.setTestName("chartDataTextTests");
     ch = addTextFunctions(ch);
 
     fc.setCase("test Title");
