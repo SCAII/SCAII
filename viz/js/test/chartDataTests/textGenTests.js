@@ -1,26 +1,28 @@
 function runChartDataTextTests(failureChecker) {
   // test saliency row label generation
-  var cm = addUtilityFunctions(buildDummyChart(3));
+    var ch = addUtilityFunctions(buildDummyChart(3));
+    var fc = failureChecker;    
+    ch = addTextFunctions(ch);
 
-  cm = textImplementation(cm);
+    fc.setCase("test Title");
+    fc.assert(ch.getTitle("detailedRewards"), "Rewards Predicted For Each Action", "title text detailedRewards");
 
-  fc.setCase("test Title");
-  fc.assert(ch.title, "Title", "title text test");
+    fc.setCase("labels for action");
+    fc.assert(ch.actions[0].name, "action_0", "action label action_0");
+    fc.assert(ch.actions[1].name, "action_1", "action label action_1");
+    fc.assert(ch.actions[2].name, "action_2", "action label action_2");
+    fc.assert(ch.actions[3].name, "action_3", "action label action_3");
 
-  fc.setCase("labels for action");
-  fc.assert(cm.getActionLabels(failureChecker), [["stuff"]], "action label test");
+    fc.setCase("legend text");
+    //Do we have to check this?? why not just pull from rewardBarNames???
+    fc.assert(ch.getLegendTextForRewardName("rewardX"), "rewardX", "legend names 0");
+    var rewardBar = ch.rewardBars["action_0.reward_0"];
+    fc.assert(ch.getSaliencyRowLabel(rewardBar), "action_0 reward_0", "saliency row name 0");
 
-  fc.setCase("number of reward value markers");
-  //???
+    // test tooltip text generation
+    fc.setCase("bar tooltip text");
+    fc.assert(ch.getBarTooltipTextForRewardName("rewardX"), "bar tooltip for rewardX", "reward bar tooltip 0");
 
-  fc.setCase("legend texts are the reward names");
-  //Do we have to check this?? why not just pull from rewardBarNames???
-  fc.assert(cm.rewardBarNames[0], cm.legendBarNames[0], "legend names == reward bar names")
-
-  var salRowLabel = cm.getSaliencyRowLabels();
-
-  fc.assert(salRowLabel[0][0], ["text here?"], "saliency row label 0.0")
-  fc.assert(cm.getSaliencyRowLabels(failureChecker), [["this is saliency for best action Q1"]], "saliency row labels");
-
-  // test tooltip text generation
+    fc.setCase("legend tooltip text");
+    fc.assert(ch.getLegendTooltipTextForRewardName("rewardX"), "legend tooltip for rewardX", "legend tooltip 0");
 }

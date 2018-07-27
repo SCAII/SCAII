@@ -18,7 +18,7 @@ function runTests(){
     runChartManagerTests(fc);
     runChartDataSelectionTests(fc);
     //runChartDataGeometryTests(fc);
-    //runChartDataTextTests(fc);
+    runChartDataTextTests(fc);
     runChartDataColorTests(fc);
     runRankingTests(fc);
     if (fc.failures.length != 0){
