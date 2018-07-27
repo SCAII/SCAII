@@ -172,7 +172,6 @@ function sky_init()
         death_type="Friend Destroyed",
         dmg_recv_type="Friend Damaged",
         dmg_deal_type="Enemy Damaged",
-        damage_deal_reward=0,
         attack_range=0.3,
         attack_dmg=5,
         attack_delay=0.2,
@@ -187,12 +186,11 @@ function sky_init()
             height=5.0,
         },
         can_move=false,
-        kill_reward=85,
+        kill_reward=70,
         kill_type="Enemy Destroyed",
         death_type="Friend Destroyed",
         dmg_recv_type="Friend Damaged",
         dmg_deal_type="Enemy Damaged",
-        damage_deal_reward=0,
         attack_range=0.3,
         attack_dmg=10,
         attack_delay=0.2,
@@ -245,7 +243,7 @@ function sky_init()
         factions=factions,
         victory_reward=0,
         failure_penalty=0,
-        reward_types={"Enemy Destroyed", "Friend Destroyed", "City Destroyed", "City Damaged", "Friend Damaged", "Enemy Damaged"},
+        reward_types={"Enemy Destroyed", "Friend Destroyed", "City Destroyed", "City Damaged", "Friend Damaged", "Enemy Damaged", "Living"},
     }
 end
 
@@ -257,6 +255,8 @@ function on_death(world, dead, cause)
     then 
         return 
     end
+
+    world:emit_reward(1, "Living")
     
     if dead:unit_type() == "Ship" and dead:faction() == 0 then
         world:victory(0)
