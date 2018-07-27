@@ -21,36 +21,48 @@ function addUtilityFunctions(rawChartData) {
             }
         }
     }
-    rd.getMaxAbsoluteValueReward = function(){
-        //WHERE DO I ADD THIS INFORMATION?
-        var addFive = 0; //sits at 160
-        var i = 0;
-        for (var i in this.options.data) {
-            for (var j in this.options.data[i]) {
-                if (this.options.data[i][j] >= 0) {
-                    maxPosValue = Math.max(maxValue, this.options.data[i][j]);
-                } else {
-                    maxNegValue = Math.max(maxNegValue, Math.abs(this.options.data[i][j]));
+    rd.getMaxBar = function () {
+        var maxBar = 0;
+        maxBar = Math.max(this.getMaxAbsoluteValueReward(), this.getMaxActionValue());
+        return maxBar;
+    }
+    rd.getMaxActionValue = function () {
+        var maxTotal = 0;
+        for (var i in ch.actionBars) {
+            maxTotal = Math.max(maxValue, Math.abs(ch.actionsBars[i]));
+        }
+        return maxTotal;
+    }
+    rd.getMaxAbsoluteValueReward = function () {
+        var maxValue;
+        for (var i in ch.actionsBars) {
+            for (var j in ch.actionBars[i].bars) {
+                maxValue = Math.max(maxValue, Math.abs(ch.actionBars[i].bars[j]));
+            }
+        }
+        return maxValue;
+    }
+    rd.getMaxPositiveReward = function () {
+        var maxPosValue;
+        for (var i in ch.actionBars) {
+            for (var j in ch.actionBars[i].bars) {
+                if (ch.actionsBars[i].bars[j] >= 0) {
+                    maxPosValue = Math.max(maxPosValue, ch.actionBars[i].bars[j]);
                 }
             }
         }
-        if (maxPosValue > maxNegValue) {
-            maxValue = maxPosValue;
-        } else {
-            maxValue = maxNegValue;
-        }
-        maxNegValue = -maxNegValue;
-        //?????
-        for (i = 0; i < ch.maxBar; i++) {
-            fc.assert()
-            addFive += 5;
-        }
+        return maxPosValue;
     }
-    rd.getMaxPositiveReward = function(){
-        
-    }
-    rd.getMaxNegativeReward = function(){
-        
+    rd.getMaxNegativeReward = function () {
+        var maxNegValue;
+        for (var i in ch.actionBars) {
+            for (var j in ch.actionBars[i].bars) {
+                if (ch.actionsBars[i].bars[j] <= 0) {
+                    maxNegValue = Math.max(maxNegValue, Math.abs(ch.actionBars[i].bars[j]));
+                }
+            }
+        }
+        return maxNegValue;
     }
     return rd;
 }
