@@ -11,7 +11,7 @@ function runChartManagerTests(failureChecker) {
     var fc = failureChecker;
 
     //var chartData = getChartData();
-
+    fc.setTestName("chartManagerTest");
     var cm;
     { // defaults checks
         fc.setCase("normal mode defaults check");
