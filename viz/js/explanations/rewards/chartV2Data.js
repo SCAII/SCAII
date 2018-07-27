@@ -24,19 +24,19 @@ function addUtilityFunctions(chart) {
             }
         }
     }
-    rd.getMaxBar = function () {
+    ch.getMaxBar = function () {
         var maxBar = 0;
         maxBar = Math.max(this.getMaxAbsoluteValueReward(), this.getMaxActionValue());
         return maxBar;
     }
-    rd.getMaxActionValue = function () {
+    ch.getMaxActionValue = function () {
         var maxTotal = 0;
         for (var i in ch.actionBars) {
             maxTotal = Math.max(maxValue, Math.abs(ch.actionsBars[i]));
         }
         return maxTotal;
     }
-    rd.getMaxAbsoluteValueReward = function () {
+    ch.getMaxAbsoluteValueReward = function () {
         var maxValue;
         for (var i in ch.actionsBars) {
             for (var j in ch.actionBars[i].bars) {
@@ -45,7 +45,7 @@ function addUtilityFunctions(chart) {
         }
         return maxValue;
     }
-    rd.getMaxPositiveReward = function () {
+    ch.getMaxPositiveReward = function () {
         var maxPosValue;
         for (var i in ch.actionBars) {
             for (var j in ch.actionBars[i].bars) {
@@ -56,7 +56,7 @@ function addUtilityFunctions(chart) {
         }
         return maxPosValue;
     }
-    rd.getMaxNegativeReward = function () {
+    ch.getMaxNegativeReward = function () {
         var maxNegValue;
         for (var i in ch.actionBars) {
             for (var j in ch.actionBars[i].bars) {
@@ -67,12 +67,5 @@ function addUtilityFunctions(chart) {
         }
         return maxNegValue;
     }
-    return rd;
-}
-
-
-
-
-
     return ch;
 }
