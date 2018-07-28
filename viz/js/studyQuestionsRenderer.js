@@ -512,3 +512,10 @@ function drawArrow(startCoords, endCoords){
     ctx.fillStyle = "#cc0000";
     ctx.fill();
 }
+
+function clearQuestionControls(){
+	$("#why-radios").empty();
+	$("#what-button-div").empty();
+	$("#reward-question-selector").empty();
+	$("#why-label").html(" ");
+}

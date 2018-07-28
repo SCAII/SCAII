@@ -475,51 +475,51 @@ var drawBarChart = function(chartData, options) {
 	
 }
 
-function selectHandler(e) {
-	var googleChartSelections = googleChart.getSelection();
-    var selectionsByName = activeBarChartManager.convertGoogleChartSelectionsToSelectionsByName(googleChartSelections);
-    // NEW_CHART needs to support multi-select
-	if (mostRecentClickHadCtrlKeyDepressed){
-		for (var i in selectionsByName){
-			var selection = selectionsByName[i];
-			if (activeBarChartManager.isSelected(selection)) {
-				activeBarChartManager.removeSelection(selection);
-			}
-			else {
-				activeBarChartManager.addSelection(selection);
-			}
-		}
-		console.log('selections after ctrl-click: ' + activeBarChartManager.getSelections());
-		activeSaliencyDisplayManager.adjustCheckboxes(activeBarChartManager.getSelections());
-	}
-	else {
-        // NEW_CHART single-select on bar clears other bars
-        activeBarChartManager.clearSelections();
-        if (selectionsByName.length > 0){
-            activeBarChartManager.addSelection(selectionsByName[0]);
-            activeSaliencyDisplayManager.adjustCheckboxes(selectionsByName);
-        }
-		console.log('selections after click: ' + activeBarChartManager.getSelections());
-	}
+// function selectHandler(e) {
+// 	var googleChartSelections = googleChart.getSelection();
+//     var selectionsByName = activeBarChartManager.convertGoogleChartSelectionsToSelectionsByName(googleChartSelections);
+//     // NEW_CHART needs to support multi-select
+// 	if (mostRecentClickHadCtrlKeyDepressed){
+// 		for (var i in selectionsByName){
+// 			var selection = selectionsByName[i];
+// 			if (activeBarChartManager.isSelected(selection)) {
+// 				activeBarChartManager.removeSelection(selection);
+// 			}
+// 			else {
+// 				activeBarChartManager.addSelection(selection);
+// 			}
+// 		}
+// 		console.log('selections after ctrl-click: ' + activeBarChartManager.getSelections());
+// 		activeSaliencyDisplayManager.adjustCheckboxes(activeBarChartManager.getSelections());
+// 	}
+// 	else {
+//         // NEW_CHART single-select on bar clears other bars
+//         activeBarChartManager.clearSelections();
+//         if (selectionsByName.length > 0){
+//             activeBarChartManager.addSelection(selectionsByName[0]);
+//             activeSaliencyDisplayManager.adjustCheckboxes(selectionsByName);
+//         }
+// 		console.log('selections after click: ' + activeBarChartManager.getSelections());
+// 	}
 	
-	var selection = activeBarChartManager.createGoogleChartSelections();
-    googleChart.setSelection(selection);
+// 	var selection = activeBarChartManager.createGoogleChartSelections();
+//     googleChart.setSelection(selection);
     
     
-    if (userStudyMode) {
-        if (!studyTreatment.showSaliencyAll){
-            // bypass showing saliency 
-            return;
-        }
-    }
-	if (replayState.salienciesAreShowing) {
-		updateSaliencyContainers();
-	}
-	else {
-		initSaliencyContainers();
-		updateSaliencyContainers();
-	}
-}
+//     if (userStudyMode) {
+//         if (!studyTreatmentOld.showSaliencyAll){
+//             // bypass showing saliency 
+//             return;
+//         }
+//     }
+// 	if (replayState.salienciesAreShowing) {
+// 		updateSaliencyContainers();
+// 	}
+// 	else {
+// 		initSaliencyContainers();
+// 		updateSaliencyContainers();
+// 	}
+// }
 //'stroke-color: #871B47; stroke-opacity: 0.6; stroke-width: 8; fill-color: #BC5679; fill-opacity: 0.2'
 function getValueForBarGroup(barGroup) {
 	var statedValue = barGroup.getValue();

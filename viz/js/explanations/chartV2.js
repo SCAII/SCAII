@@ -1,23 +1,34 @@
 
   // IMPLEMENTATION ISSUES
      // if (jumpInProgress) don't render yet
-
-function getChartManager(chartData){
+function addFunctionsToRawChart(rawChart){
+    var ch = addColorToBars(rawChart);
+    ch = addUtilityFunctions(ch);
+    ch = addRankingFunctions(ch);
+    ch = addSelectionFunctions(ch);
+    ch = addTextFunctions(ch);
+    return ch;
+}
+function getChartV2Manager(){
     var cm = {};
+    cm.data = undefined;
     cm.filename = undefined;
     cm.saliencyRandomized = false;
     cm.renderLog = [];
-    cm.userStudyTreatment = "NA";
     cm.userStudyMode = false;
-    cm.showChartAccessButton = false;
     cm.chartVisible = false;
     cm.showSaliencyAccessButton = false;
     cm.saliencyVisible = false;
     cm.saliencyCombined = false;
-    cm.treatmentID = undefined;
+    cm.treatmentID = "NA";
     cm.showLosingActionSmaller = false;
     cm.showHoverScores = false;
+    cm.chartUI = getChartV2UI();
+    cm.saliencyUI = getSaliencyV2UI();
 
+    cm.setChartData = function(chartData){
+        this.data = addFunctionsToRawChart(chartData);
+    }
     cm.setFilename = function(filename){
         this.filename = filename;
         if (filename.startsWith("tutorial")){
@@ -42,7 +53,6 @@ function getChartManager(chartData){
     cm.setUserStudyTreatment = function(val) {
         if (val == "T0"){
             this.treatmentID = "T0";
-            this.showChartAccessButton = false;
             this.chartVisible = false;
             this.showSaliencyAccessButton = false;
             this.saliencyVisible = false;
@@ -50,7 +60,6 @@ function getChartManager(chartData){
         }
         else if (val == "T1"){
             this.treatmentID = "T1";
-            this.showChartAccessButton = false;
             this.chartVisible = false;
             this.showSaliencyAccessButton = false;
             this.saliencyVisible = true;
@@ -59,7 +68,6 @@ function getChartManager(chartData){
         }
         else if (val == "T2"){
             this.treatmentID = "T2";
-            this.showChartAccessButton = true;
             this.chartVisible = false;
             this.showSaliencyAccessButton = false;
             this.saliencyVisible = false;
@@ -68,7 +76,6 @@ function getChartManager(chartData){
         }
         else if (val == "T3"){
             this.treatmentID = "T3";
-            this.showChartAccessButton = true;
             this.chartVisible = false;
             this.showSaliencyAccessButton = true;
             this.saliencyVisible = false;
@@ -80,6 +87,7 @@ function getChartManager(chartData){
         }
     }
     cm.render = function(mode){
+        clearExplanationInfoButRetainState();
         this.renderLog = [];
         if (this.treatmentID == "T0"){
             // no action
@@ -100,18 +108,12 @@ function getChartManager(chartData){
     }
     
     cm.renderT2 = function(mode){
-        if (this.showChartAccessButton){
-            this.renderChartAccessButton(mode);
-        }
         if (this.chartVisible){
             this.renderChartDetailed(mode);
         }
     }
 
     cm.renderT3 = function(mode){
-        if (this.showChartAccessButton){
-            this.renderChartAccessButton(mode);
-        }
         if (this.chartVisible){
             this.renderChartDetailed(mode);
         }
@@ -126,20 +128,14 @@ function getChartManager(chartData){
         }
     }
 
-    cm.renderChartAccessButton = function(mode){
-        if (mode == "trace"){
-            this.renderLog.push("renderChartAccessButton");
-            return;
-        }
-        // do the actual rendering
-    }
-    
     cm.renderChartDetailed = function(mode){
         if (mode == "trace"){
             this.renderLog.push("renderChartDetailed");
             return;
         }
-        // do the actual rendering
+        else {
+            this.chartUI.renderChartDetailed();
+        }
     }
     
     cm.renderSaliencyAccessButton = function(mode){
@@ -147,7 +143,9 @@ function getChartManager(chartData){
             this.renderLog.push("renderSaliencyAccessButton");
             return;
         }
-        // do the actual rendering
+        else {
+            this.saliencyUI.renderSaliencyAccessControls();
+        }
     }
     
     cm.renderSaliencyCombined = function(mode){
@@ -155,7 +153,9 @@ function getChartManager(chartData){
             this.renderLog.push("renderSaliencyCombined");
             return;
         }
-        // do the actual rendering
+        else {
+            this.saliencyUI.renderSaliencyCombined();
+        }
     }
     
     cm.renderSaliencyDetailed = function(mode){
@@ -163,7 +163,19 @@ function getChartManager(chartData){
             this.renderLog.push("renderSaliencyDetailed");
             return;
         }
-        // do the actual rendering
+        else {
+            this.saliencyUI.renderSaliencyDetailed();
+        }
     }
     return cm;
 }
+
+
+// function restoreChartIfReturningToTab(step){
+//     if (isTargetStepChartVisible()) {
+//         var targetStep = getTargetStepFromReturnInfo();
+//         if (targetStep != undefined && targetStep == step) {
+//             processWhyClick(step);
+//         }
+//     }
+// }

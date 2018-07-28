@@ -6,7 +6,7 @@ var sessionIndexManager = undefined;
 var activeStudyQuestionManager = undefined;
 var stateMonitor = undefined;
 var userActionMonitor = undefined;
-var studyTreatment = undefined;
+var studyTreatmentOld = undefined;
 
 // ToDo - when strat jump- turn off incrementing index until receive set position.  Unblock incrementing on jump complete
 // then it will be apparent if we need to correct for ReplaySequencer's index pointing to next-packet-to-send rather than 
@@ -52,7 +52,7 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, progressWidth)
 	}
 	
 	sim.setReplaySequencerIndex = function(index) {
-		$("#why-button").remove();
+		//$("#why-button").remove();
 		this.replaySequencerIndex = index;
         //console.log('');
         //console.log('replaySequencerIndex is now ' + index);
@@ -99,12 +99,16 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, progressWidth)
 	return sim;
 }
 
+var treatmentID = undefined;
+
 function handleStudyQuestions(studyQuestions){
     var questions = studyQuestions.getStudyQuestionsList();
     var userId = studyQuestions.getUserId();
-    var treatmentId = studyQuestions.getTreatmentId();
+    treatmentID = studyQuestions.getTreatmentId();
+    currentChartV2.setUserStudyMode(true);
+    currentChartV2.setUserStudyTreatment("T" + treatmentID);
     //var answerFilename = studyQuestions.getAnswerFilename();
-    var answerFilename = "answers_" + userId + "_" + treatmentId + ".txt";
+    var answerFilename = "answers_" + userId + "_" + treatmentID + ".txt";
     if (questions.length == 0) {
         return;
     }
@@ -113,7 +117,7 @@ function handleStudyQuestions(studyQuestions){
             activeStudyQuestionManager = tabManager.getStudyQuestionManagerForCurrentTab();
         }
         else {
-            activeStudyQuestionManager = getStudyQuestionManager(questions, userId, treatmentId);
+            activeStudyQuestionManager = getStudyQuestionManager(questions, userId, treatmentID);
             tabManager.setStudyQuestionManagerForCurrentTab(activeStudyQuestionManager);
         }
     }
@@ -122,8 +126,8 @@ function handleStudyQuestions(studyQuestions){
     if (stateMonitor == undefined)      {  stateMonitor =      getStateMonitor();      }
 	
 	//logLine = getTemplateMap();
-	studyTreatment = getTreatmentManager(treatmentId);
-	console.log(treatmentId);
+	studyTreatmentOld = getTreatmentManagerOld(treatmentID);
+	console.log(treatmentID);
 	console.log(answerFilename);
     stateMonitor.logFileName = answerFilename;
     // make div to hold the winning action name
@@ -199,17 +203,17 @@ function loadSelectedReplayFile() {
     loadReplayFile(filename);
 }
 
-var replayState = undefined;
-var replayStateForFilename = {};
+//var replayState = undefined;
+//var replayStateForFilename = {};
 
 function loadReplayFile(filename) {
-    var rs = replayStateForFilename[filename];
-    if (rs == undefined){
-        rs = {};
-        initExplanationFields(rs);
-        replayStateForFilename[filename] = rs;
-        replayState = rs;
-    }
+    // var rs = replayStateForFilename[filename];
+    // if (rs == undefined){
+    //     rs = {};
+    //     initExplanationFields(rs);
+    //     replayStateForFilename[filename] = rs;
+    //     replayState = rs;
+    // }
     $("#cue-arrow-div").remove();
     if (userActionMonitor != undefined) {
         userActionMonitor.clickListener = undefined;
@@ -227,7 +231,10 @@ function loadReplayFile(filename) {
 	$("#explanation-control-panel").empty();
 	drawExplanationTimeline();
 	clearGameBoards();
-	clearExplanationInfoButRetainState();
+    clearExplanationInfoButRetainState();
+    currentChartV2 = getChartV2Manager();
+    currentChartV2.setFilename(filename);
+    currentChartV2.setUserStudyMode(false);
 }
 
 
@@ -412,7 +419,7 @@ function handleScaiiPacket(sPacket) {
 	else if (sPacket.hasExplDetails()) {
 		//console.log('has expl details');
 		var explDetails = sPacket.getExplDetails();
-        handleExplDetails(explDetails);
+        handleExplanationDetails(explDetails);
         if (userStudyMode) {
             tabManager.finalStepsForChangeToUnfinishedTab();
         }
