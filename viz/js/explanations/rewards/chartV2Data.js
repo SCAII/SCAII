@@ -3,7 +3,7 @@ function addUtilityFunctions(chart) {
 
     ch.positiveMarkerValues = [];
 
-    ch.positiveMarkerPixelsFromOrigin = [];
+    ch.positiveMarkerYPixelsFromXAxis = [];
 
     ch.getActionForName = function (actionName) {
         for (var i in rd.actions) {

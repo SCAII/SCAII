@@ -3,6 +3,7 @@ function runChartDataGeometryTests(failureChecker) {
     var ch = getSeeSawChart();
     ch = addUtilityFunctions(ch);
     var fc = failureChecker;
+    fc.setTestName("geometryTests");
 
     // action names are action_0, action_1...action_3
     // rewardnames are action action_0.reward_0, action_0.reward_1
@@ -169,55 +170,60 @@ function runChartDataGeometryTests(failureChecker) {
     // assume scaling factor of 2 pixels per 1 value, so value of 120 is 240 pixels
     ch.positionValueMarkers(4); //give something with maxPosValue and maxNegValue
     fc.assert(ch.positiveMarkerValues[0], 30.0, "line 1 value");
-    fc.assert(ch.positiveMarkerPixelsFromOrigin[0], 60.0, "line 1 pixel distance");
+    fc.assert(ch.positiveMarkerYPixelsFromXAxis[0], 60.0, "line 1 pixel distance");
     fc.assert(ch.positiveMarkerValues[1], 60.0, " line 2 value");
-    fc.assert(ch.positiveMarkerPixelsFromOrigin[1], 120.0, "line 2 pixel distance");
+    fc.assert(ch.positiveMarkerYPixelsFromXAxis[1], 120.0, "line 2 pixel distance");
     fc.assert(ch.positiveMarkerValues[2], 90.0, " line 3 value");
-    fc.assert(ch.positiveMarkerPixelsFromOrigin[2], 180.0, "line 3 pixel distance");
+    fc.assert(ch.positiveMarkerYPixelsFromXAxis[2], 180.0, "line 3 pixel distance");
     fc.assert(ch.positiveMarkerValues[3], 120.0, "line 4 value");
-    fc.assert(ch.positiveMarkerPixelsFromOrigin[4], 240.0, "line 4 pixel distance");
+    fc.assert(ch.positiveMarkerYPixelsFromXAxis[3], 240.0, "line 4 pixel distance");
   
     fc.setCase("value line positioning");
-    // x = groupWidthMargin = 6
-    // y = (canvasHeight / 2) (i * maxAbsValue / 4)
+    // x = groupWidthMargin = 20
+    // 60 == lineSpacing = maxAbsoluteValue * scaling factor / 4
+    // y = (canvasHeight / 2) + (1 + Number(i)) * linSpacing
     ch.positionValueLines(4);
-    fc.assert(ch.positiveLine[0].originX, 6.0, "line 1 positionX");
-    fc.assert(ch.positiveLine[0].originY, 60.0, "line 1 positionY");
+    fc.assert(ch.positiveLine[0].originX, 20.0, "line 1 positionX");
+    fc.assert(ch.positiveLine[0].originY, 380.0, "line 1 positionY"); 320 + 60
+    fc.assert(ch.positiveLine[0].length, 776.0, "line 1 positionY");// canvasWidth - groupWidthMargin * 2
 
-    fc.assert(ch.positiveLine[1].originX, 6.0, "line 1 positionX");
-    fc.assert(ch.positiveLine[1].originY, 120.0, "line 1 positionY");
+    fc.assert(ch.positiveLine[1].originX, 20.0, "line 1 positionX");
+    fc.assert(ch.positiveLine[1].originY, 440.0, "line 1 positionY"); 320 + 120
+    fc.assert(ch.positiveLine[1].length, 776.0, "line 1 positionY");// canvasWidth - groupWidthMargin * 2
 
-    fc.assert(ch.positiveLine[2].originX, 6.0, "line 1 positionX");
-    fc.assert(ch.positiveLine[2].originY, 180.0, "line 1 positionY");
+    fc.assert(ch.positiveLine[2].originX, 20.0, "line 1 positionX");
+    fc.assert(ch.positiveLine[2].originY, 500.0, "line 1 positionY"); 320 + 180
+    fc.assert(ch.positiveLine[2].length, 776.0, "line 1 positionY");// canvasWidth - groupWidthMargin * 2
 
-    fc.assert(ch.positiveLine[3].originX, 6.0, "line 1 positionX");
-    fc.assert(ch.positiveLine[3].originY, 240.0, "line 1 positionY");
+    fc.assert(ch.positiveLine[3].originX, 20.0, "line 1 positionX");
+    fc.assert(ch.positiveLine[3].originY, 560.0, "line 1 positionY"); 320 + 240
+    fc.assert(ch.positiveLine[3].length, 776.0, "line 1 positionY");// canvasWidth - groupWidthMargin * 2
 
     /*
     Tooltips will assume sit at 3/4 the height of bar
     tooltipHeight = 50;
     tooltipWidth = 75;
-    ch.toolTip.originX = ch.actionRewardForNameMap["action_i.reward_j"].originX + (widthAvailableForRewardBars / rewardCount)
+    ch.toolTip.originX = ch.actionRewardForNameMap["action_i.reward_j"].originX + rewardBarWidth
     ch.toolTip.originY = (canvasHeight / 2) - ((ch.rewardBar[i].bars[j].value * scallingFactor) * 0.75)
     */
     fc.setCase("tooltips positioning");
     ch.positionTooltips(ch.actionRewardForNameMap);
 
-    fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].tooltipOriginX, 54.0, "tooltip aciton_0.reward_0");
+    fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].tooltipOriginX, 74.0, "tooltip aciton_0.reward_0");
     fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].tooltipOriginY, 305.0, "tooltip aciton_0.reward_0"); //320 - 10 * 2 * .75
-    fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].tooltipOriginX, 74.0, "tooltip aciton_0.reward_1");
+    fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].tooltipOriginX, 128.0, "tooltip aciton_0.reward_1");
     fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].tooltipOriginY, 350.0, "tooltip aciton_0.reward_1"); // 320 - 20 * 2 * .75
-    fc.assert(ch.actionRewardForNameMap["action_0.reward_2"].tooltipOriginX, 94.0, "tooltip aciton_0.reward_2");
+    fc.assert(ch.actionRewardForNameMap["action_0.reward_2"].tooltipOriginX, 182.0, "tooltip aciton_0.reward_2");
     fc.assert(ch.actionRewardForNameMap["action_0.reward_2"].tooltipOriginY, 275.0, "tooltip aciton_0.reward_2"); // 320 - 30 * 2 * .75
 
-    fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].tooltipOriginX, 258.0, "tooltip aciton_1.reward_0");
-    fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].tooltipOriginY, 290.0, "tooltip aciton_1.reward_0"); // 320 - 40 * 2 * .75
+    fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].tooltipOriginX, 278.0, "tooltip aciton_1.reward_0");
+    fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].tooltipOriginY, 380.0, "tooltip aciton_1.reward_0"); // 320 - 40 * 2 * .75
 
-    fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].tooltipOriginX, 482.0, "tooltip aciton_2.reward_1"); // 320 - 60 * 2 * .75
-    fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].tooltipOriginY, 410.0, "tooltip aciton_2.reward_1");
+    fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].tooltipOriginX, 536.0, "tooltip aciton_2.reward_1"); 
+    fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].tooltipOriginY, 440.0, "tooltip aciton_2.reward_1");
 
-    fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].tooltipOriginX, 706.0, "tooltip aciton_3.reward_2");
-    fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].tooltipOriginY, 140.0, "tooltip aciton_3.reward_2"); // 320 - 120 * 2 * .75
+    fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].tooltipOriginX, 794.0, "tooltip aciton_3.reward_2");
+    fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].tooltipOriginY, 500.0, "tooltip aciton_3.reward_2"); // 320 - 120 * 2 * .75
 
     /*
         legendHeight = (rewardBarNames.length * 20) + legendDesc.height -- depends on how many legend lines there are

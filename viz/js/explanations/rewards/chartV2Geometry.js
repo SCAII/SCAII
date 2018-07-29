@@ -86,24 +86,26 @@ function addGeometryFunctions(rawChartData) {
 
     rd.positionValueMarkers = function (numberOfLines) {
         this.positiveMarkerValues = [numberOfLines];
-        this.positiveMarkerPixelsFromOrigin = [numberOfLines];
+        this.positiveMarkerYPixelsFromXAxis = [numberOfLines];
         var valueMarkers = this.getMaxAbsoluteValueReward() / 4;
         var setValue = valueMarkers;
         for (var i=0; i < numberOfLines; i++) {
             this.positiveMarkerValues[i] = setValue;
-            this.positiveMarkerPixelsFromOrigin[i] = setValue * this.scalingFactor;
+            this.positiveMarkerYPixelsFromXAxis[i] = setValue * this.scalingFactor;
             setValue += valueMarkers;
         }
     }
 
     rd.positionValueLines = function (numberOfLines) {
+        var length = this.canvasWidth - this.groupWidthMargin * 2
         this.positiveLine = [numberOfLines];
         // TODO: make variable names for this funciton and one above better
-        var maxAbs = this.getMaxAbsoluteValueReward() / numberOfLines;
+        var lineSpacing = this.getMaxAbsoluteValueReward() / numberOfLines * this.scalingFactor;
         for (var i = 0; i < numberOfLines; i++) {
             this.positiveLine[i] = {};
             this.positiveLine[i].originX = this.groupWidthMargin;
-            this.positiveLine[i].originY = (this.canvasHeight / 2) + maxAbs * this.scalingFactor;
+            this.positiveLine[i].originY = (this.canvasHeight / 2) + (1 + Number(i)) * lineSpacing;
+            this.positiveLine[i].length = length;
         }
     }
     rd.positionTooltips = function(rewardBars){
@@ -111,8 +113,9 @@ function addGeometryFunctions(rawChartData) {
         for (var i in keys) {
             var key = keys[i];
             var rewardBar = rewardBars[key];
-            //originX + (widthAvailableForRewardBars / rewardCount)
-            rewardBar.tooltipOriginX = rewardBar.originX + (this.widthAvailableForRewardBars / this.actionRewardNames.length)
+            //originX + rewardBarWidth
+
+            rewardBar.tooltipOriginX = rewardBar.originX + this.rewardBarWidth;
             // (canvasHeight / 2) - ((ch.rewardBar[i].bars[j].value * scallingFactor) * 0.75)
             rewardBar.tooltipOriginY = this.canvasHeight/2 - rewardBar.value * this.scalingFactor * 0.75; 
         }
