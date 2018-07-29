@@ -3,8 +3,11 @@ function getChartV2UI() {
 
     ui.whyButtonInfo = undefined;
 
-    ui.renderChartDetailed = function(){
-        //FIXME
+    ui.renderChartDetailed = function(chartData){
+        createRewardChartContainer();
+        var canvasWidth = $("#explanations-rewards").width;
+        var canvasHeight = $("#explanations-rewards").height;
+        chartData.initChartDimensions(canvasHeight, canvasWidth);
         alert("called renderChartDetailed");
     }
     return ui;
@@ -35,7 +38,7 @@ function processWhyClick(step) {
 	else {
 		// (selectedDecisionStep == someOtherStep)
         currentChartV2.chartVisible = true;
-
+        
 		// show explanation info for new step
         selectedDecisionStep = step;
         askBackendForExplanationRewardInfo(step);

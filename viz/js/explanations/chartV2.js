@@ -1,13 +1,52 @@
-
-  // IMPLEMENTATION ISSUES
-     // if (jumpInProgress) don't render yet
 function addFunctionsToRawChart(rawChart){
     var ch = addColorToBars(rawChart);
     ch = addUtilityFunctions(ch);
     ch = addRankingFunctions(ch);
     ch = addSelectionFunctions(ch);
     ch = addTextFunctions(ch);
+    ch = addGeometryFunctions(ch);
     return ch;
+}
+
+function addConvenienceDataStructures(chartData) {
+    if (chartData.actionForNameMap == undefined){
+        chartData.actionForNameMap = {};
+        chartData.actionNames = [];
+        for(var i in chartData.actions){
+            var action = chartData.actions[i];
+            var actionName = action.name;
+            chartData.actionForNameMap[actionName] = action;
+            chartData.actionNames.push(actionName);
+        }
+    }
+    
+    if (chartData.actionRewardForNameMap == undefined){
+        chartData.actionRewardForNameMap = {};
+        chartData.actionRewardNames = [];
+        for(var i in chartData.actions){
+            var action = chartData.actions[i];
+            for (var j in action.bars){
+                var bar = action.bars[j];
+                bar.fullName = action.name+ "." + bar.name;
+                chartData.actionRewardForNameMap[bar.fullName] = bar;
+                chartData.actionRewardNames.push(bar.fullName);
+            }
+        }
+    }
+    
+    if (chartData.rewardNames == undefined){
+        chartData.rewardNames = [];
+        for(var i in chartData.actions){
+            var action = chartData.actions[i];
+            for (var j in action.bars){
+                var bar = action.bars[j];
+                if (!chartData.rewardNames.includes(bar.name)) {
+                    chartData.rewardNames.push(bar.name);
+                }
+            }
+        }
+    }
+    return chartData;
 }
 function getChartV2Manager(){
     var cm = {};
@@ -28,6 +67,7 @@ function getChartV2Manager(){
 
     cm.setChartData = function(chartData){
         this.data = addFunctionsToRawChart(chartData);
+        this.data = addConvenienceDataStructures(this.data);
     }
     cm.setFilename = function(filename){
         this.filename = filename;
@@ -134,7 +174,7 @@ function getChartV2Manager(){
             return;
         }
         else {
-            this.chartUI.renderChartDetailed();
+            this.chartUI.renderChartDetailed(this.data);
         }
     }
     

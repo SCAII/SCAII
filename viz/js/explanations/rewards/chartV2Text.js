@@ -21,7 +21,7 @@ function addTextFunctions(chart) {
         return "legend tooltip for " + rewardName;
     }
     ch.getSaliencyRowLabel = function(bar) {
-        return bar.name.replace(".", " ");
+        return bar.fullName.replace(".", " ");
     }
     return ch;
 }
