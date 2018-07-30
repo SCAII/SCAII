@@ -8,9 +8,9 @@ function getChartV2UI() {
         //var canvasWidth = $("#explanations-rewards").width;
         //var canvasHeight = $("#explanations-rewards").height;
         //specify dimensions
-        var canvasHeight = 400;
-        var canvasWidth = 600;
-        chartData.initChartDimensions(canvasHeight, canvasWidth, 0.2, 0.0);
+        var canvasHeight = 500;
+        var canvasWidth = 700;
+        chartData.initChartDimensions(canvasHeight, canvasWidth, 0.5, 0.0);
 
         // create canvas
         var chartCanvas = document.createElement("canvas");
@@ -20,13 +20,46 @@ function getChartV2UI() {
         $("#explanations-rewards").append(chartCanvas);
         var ctx = chartCanvas.getContext("2d");
         $("#chartV2-canvas").css("background-color", "white");
-        //this.renderXAxis(chartData);
+        
         this.renderBars(chartCanvas,chartData);
-        alert("called renderChartDetailed");
+        this.renderXAxis(chartCanvas, chartData);
+        this.renderYAxis(chartCanvas, chartData);
+
+        //this.renderActionSeparatorLines(chartCanvas, chartData);
+        //this.renderChartValueLines(chartCanvas, chartData);
+        //this.renderChartValueLabels(chartCanvas, chartData);
+        //this.renderActionNames(chartCanvas, chartData);
+        //this.renderActionBars(chartCanvas, chartData);
+        //this.renderLegend(chartCanvas, chartData);
+        //this.renderTooltips(chartCanvas, chartData);
     }
 
-    ui.renderXAxis = function(chartData){
-
+    ui.renderXAxis = function(canvas, chartData){
+        chartData.positionXAxisLine();
+        var ctx = canvas.getContext("2d");
+        ctx.save();
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(chartData.xAxisOriginX, chartData.xAxisOriginY);
+        ctx.lineTo(Number(chartData.xAxisOriginX) + Number(chartData.xAxisLength), chartData.xAxisOriginY);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+    }
+    
+    ui.renderYAxis = function(canvas, chartData){
+        chartData.positionYAxisLine();
+        var ctx = canvas.getContext("2d");
+        ctx.save();
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(chartData.yAxisOriginX, chartData.yAxisOriginY);
+        ctx.lineTo(chartData.yAxisOriginX, Number(chartData.yAxisOriginY)  + Number(chartData.yAxisLength));
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
     }
     ui.renderBars = function(canvas, chartData){
         var ctx = canvas.getContext("2d");
@@ -45,36 +78,30 @@ function getChartV2UI() {
         ctx.save();
         var x0 = bar.originX;
         var y0 = bar.originY;
-        var x1 = bar.originX + bar.width;
-        var y1 = y0;
-        var x2 = x1;
-        var x3 = x0;
+
         var upperLeftOriginX = x0;
         var upperLeftOriginY = undefined;
-        if (bar.value > 0) {
-            var y2 = y0 - bar.height;
-            upperLeftOriginY = y2;
+        if (bar.value > 0){
+            upperLeftOriginY = y0 - bar.height;
         }
         else {
-            var y2 = y0 + bar.height;
             upperLeftOriginY = y0;
         }
-        var y3 = y2;  // y3 is in the upper left corner with x3, strokeRect uses that as the origin
         ctx.beginPath();
     
         if (mode == "outline"){
             ctx.lineWidth = shape_outline_width + 3;
             ctx.strokeStyle = "blue";
-            ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, bar.height, bar.width);
+            ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
         }
         else {
             ctx.lineWidth = shape_outline_width;
             ctx.strokeStyle = bar.color;
             
-            ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, bar.height, bar.width);
+            ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
             
             ctx.fillStyle = bar.color;
-            ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.height, bar.width);
+            ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
         }
         ctx.restore();
     }

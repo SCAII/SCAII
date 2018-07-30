@@ -9,9 +9,12 @@ function addGeometryFunctions(rawChartData) {
     rd.widthAvailableForGroup       = undefined;
     rd.groupWidthMargin             = undefined;
     rd.widthAvailableForRewardBars  = undefined;
-    rd.widthAvailableForRewardBar      = undefined;
+    rd.widthAvailableForRewardBar   = undefined;
     rd.rewardSpacerWidth            = undefined;
     rd.rewardBarWidth               = undefined;
+    rd.xAxisOriginX                 = undefined;
+    rd.xAxisOriginY                 = undefined;
+    rd.xAxisLength                  = undefined;
 
     rd.initChartDimensions = function (canvasHeight, canvasWidth, groupWidthMarginFactor, rewardSpacerWidth) {
         this.rewardSpacerWidth = rewardSpacerWidth;
@@ -26,30 +29,41 @@ function addGeometryFunctions(rawChartData) {
         this.scalingFactor = (canvasHeight / 2) * 0.75 / maxAbsRewardValue;
     }
 
+    rd.positionXAxisLine = function(){
+        // xAxisLength = width - 2 * groupWidthMargin
+        // xAxisOriginX = groupWidthMargin;
+        // xAxisOriginY = height / 2
+        this.xAxisLength = this.canvasWidth - 2 * this.groupWidthMargin;
+        this.xAxisOriginY = this.canvasHeight / 2;
+        this.xAxisOriginX = this.groupWidthMargin;
+    }
+
+    rd.positionYAxisLine = function(){
+        // yAxisLength = maxAbsRewardValue * 2 * scalingFactor + aBitMore
+        // yAxisOriginX = groupWidthMargin;
+        // yAxisOriginY = (canvasHeight - yAxisLength) / 2
+        this.yAxisLength = this.getMaxBar() * 2 * this.scalingFactor + 10;
+        this.yAxisOriginY = (this.canvasHeight - this.yAxisLength) / 2;
+        this.yAxisOriginX = this.groupWidthMargin;
+    }
+
     rd.positionRewardBar = function (rewardBar, actionIndex, rewardIndex) {
         //what is passed: ch.actionRewardForNameMap["action_0.reward_0"] & action number
         //204 widthAvailableForGroup == canvasWidth / actionCount 
         //groupWidthMargin = (widthAvailableForGroup * .2) / 2
         //bar.originX = i*widthAvailableForGroup + groupWidthMargin + j *(rewardBarWidth)
         //bar.originY = canvasHeight/2 ==> constant 320.0
-<<<<<<< HEAD
-        rewardBar.originX = action * widthAvailableForGroup + groupWidthMargin + (reward * rewardBarWidthAvailable);
-        rewardBar.originY = rd.canvasHeight / 2;
-=======
         rewardBar.originX = Math.floor(actionIndex * this.widthAvailableForGroup + this.groupWidthMargin + rewardIndex * this.rewardBarWidth);
         rewardBar.originY = this.canvasHeight / 2;
->>>>>>> 8769b80ead49f1bfd0e124b1350da0c36d11465b
     }
-
 
     rd.dimensionRewardBar = function (rewardBar) {
         //ch.actionRewardForNameMap["action_0.reward_0"]
         //widthAvailableForRewardBars = widthAvailableForGroup - 2 * groupWidthMargin
         //widthAvailableForRewardBar = widthAvailableForRewardBars / rewardBarCount
-        rewardBar.height = rewardBar.value * this.scalingFactor;
+        rewardBar.height = Math.abs(rewardBar.value * this.scalingFactor);
         rewardBar.width = this.rewardBarWidth;
     }
-
 
     rd.positionActionBar = function (actionBar, action) {
         //ch.actionForNameMap["action_0"]

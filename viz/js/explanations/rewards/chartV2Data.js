@@ -32,7 +32,7 @@ function addUtilityFunctions(chart) {
     ch.getMaxActionValue = function () {
         var maxTotal = 0;
         for (var i in ch.actionForNameMap) {
-            maxTotal = Math.max(maxValue, Math.abs(ch.actionForNameMap[i]));
+            maxTotal = Math.max(maxTotal, Math.abs(ch.actionForNameMap[i].value));
         }
         return maxTotal;
     }

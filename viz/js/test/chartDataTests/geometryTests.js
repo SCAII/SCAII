@@ -3,7 +3,6 @@ function runChartDataGeometryTests(failureChecker) {
     var ch = getSeeSawChart();
     ch = addUtilityFunctions(ch);
     var fc = failureChecker;
-    fc.setTestName("geometryTests");
 
     fc.setTestName("chart data geometry test");
     // action names are action_0, action_1...action_3
@@ -76,7 +75,7 @@ function runChartDataGeometryTests(failureChecker) {
     fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].width, 54.0, "originWidth 0.0");
 
     ch.dimensionRewardBar(ch.actionRewardForNameMap["action_0.reward_1"]);
-    fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].height, -40.0, "originHeight 0.1");
+    fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].height, 40.0, "originHeight 0.1");
     fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].width, 54.0, "originWidth 0");
 
     ch.dimensionRewardBar(ch.actionRewardForNameMap["action_0.reward_2"]);
@@ -84,15 +83,15 @@ function runChartDataGeometryTests(failureChecker) {
     fc.assert(ch.actionRewardForNameMap["action_0.reward_2"].width, 54.0, "originWidth 0.2");
 
     ch.dimensionRewardBar(ch.actionRewardForNameMap["action_1.reward_0"]);
-    fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].height, -80.0, "originHeight 1.0");
+    fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].height, 80.0, "originHeight 1.0");
     fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].width, 54.0, "originWidth 1.0");
 
     ch.dimensionRewardBar(ch.actionRewardForNameMap["action_2.reward_1"]);
-    fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].height, -160.0, "originHeight 2.1");
+    fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].height, 160.0, "originHeight 2.1");
     fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].width, 54.0, "originWidth 2.1");
 
     ch.dimensionRewardBar(ch.actionRewardForNameMap["action_3.reward_2"]);
-    fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].height, -240.0, "originHeight 3.2");
+    fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].height, 240.0, "originHeight 3.2");
     fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].width, 54.0, "originWidth 3.2");
 
     //NEED TO ADD TEST TO POSITION TOTAL ACTION BAR
@@ -226,6 +225,23 @@ function runChartDataGeometryTests(failureChecker) {
     fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].tooltipOriginX, 794.0, "tooltip aciton_3.reward_2");
     fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].tooltipOriginY, 500.0, "tooltip aciton_3.reward_2"); // 320 - 120 * 2 * .75
 
+    fc.setCase("xAxisLine positioning");
+    // xAxisLength = width - 2 * groupWidthMargin
+    // xAxisOriginX = groupWidthMargin;
+    // xAxisOriginY = height / 2
+    ch.positionXAxisLine();
+    fc.assert(ch.xAxisOriginX, 20.0, "xAxisOriginX");
+    fc.assert(ch.xAxisOriginY, 320.0, "xAxisOriginY");
+    fc.assert(ch.xAxisLength, 776.0, "xAxisLength");
+
+    fc.setCase("yAxisLine positioning");
+    // yAxisLength = maxAbsRewardValue * 2 * scalingFactor + aBitMore
+    // yAxisOriginX = groupWidthMargin;
+    // yAxisOriginY = (canvasHeight - yAxisLength) / 2
+    ch.positionYAxisLine();
+    fc.assert(ch.yAxisOriginX, 20.0, "yAxisOriginX");
+    fc.assert(ch.yAxisOriginY, 75.0, "yAxisOriginY");
+    fc.assert(ch.yAxisLength,  490.0, "yAxisLength");
     /*
         legendHeight = (rewardBarNames.length * 20) + legendDesc.height -- depends on how many legend lines there are
         legendWidth = 100
