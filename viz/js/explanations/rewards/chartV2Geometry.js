@@ -20,7 +20,7 @@ function geometryImplementation(rawChartData) {
         //groupWidthMargin = (widthAvailableForGroup * .2) / 2
         //bar.originX = i*widthAvailableForGroup + groupWidthMargin 
         //bar.originY = canvasHeight/2 ==> constant 320.0
-        rewardBar.originX = action * widthAvailableForGroup + groupWidthMargin;
+        rewardBar.originX = action * widthAvailableForGroup + groupWidthMargin + (reward * rewardBarWidthAvailable);
         rewardBar.originY = rd.canvasHeight / 2;
     }
 
