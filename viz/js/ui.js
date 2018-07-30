@@ -155,23 +155,6 @@ function drawExplanationTimeline() {
 
 var showCheckboxes = false;
 
-function toggleCheckboxVisibility(){
-	if (showCheckboxes) {
-		if (replayState.salienciesAreShowing) {
-			showCheckboxes = false;
-			activeSaliencyDisplayManager.hideCheckboxes();
-			updateSaliencyContainers();
-		}
-	}
-	else {
-		if (replayState.salienciesAreShowing) {
-			showCheckboxes = true;
-			activeSaliencyDisplayManager.renderCheckboxes();
-			updateSaliencyContainers();
-		}
-	}
-}
-
 function initUI() {
 	//configureSpeedSlider();
 	//configureZoomBox

@@ -17,7 +17,7 @@ function runChartDataTextTests(failureChecker) {
     fc.setCase("legend text");
     //Do we have to check this?? why not just pull from rewardBarNames???
     fc.assert(ch.getLegendTextForRewardName("rewardX"), "rewardX", "legend names 0");
-    var rewardBar = ch.rewardBars["action_0.reward_0"];
+    var rewardBar = ch.actionRewardForNameMap["action_0.reward_0"];
     fc.assert(ch.getSaliencyRowLabel(rewardBar), "action_0 reward_0", "saliency row name 0");
 
     // test tooltip text generation

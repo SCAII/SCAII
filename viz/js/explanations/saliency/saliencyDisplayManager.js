@@ -78,7 +78,7 @@ function getSaliencyDisplayManager(selectionManager) {
         }
         
         if (userStudyMode) {  // show all the move's saliencies if treatment 1
-            if (studyTreatment.showAllSaliencyForTreatment1){
+            if (studyTreatmentOld.showAllSaliencyForTreatment1){
                 this.xaiSelectionManager.clearSelections();
                 // select all the checkboxes
                 for (var i in this.activeCheckBoxes){
@@ -97,7 +97,7 @@ function getSaliencyDisplayManager(selectionManager) {
 			this.renderAllExplanationSaliencyMaps();
         }
         if (userStudyMode) {
-            if (studyTreatment.showAllSaliencyForTreatment1){
+            if (studyTreatmentOld.showAllSaliencyForTreatment1){
                 // don't try to interact with the chart
                 return;
             }

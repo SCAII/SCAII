@@ -122,67 +122,7 @@ function getTabManager() {
         }
         return false;
     }
-    tm.rememberChartState = function(returnInfo){
-        if (replayState.rewardsAreShowing){
-            returnInfo.chartIsShowing = true;
-            returnInfo.chartDisplayModeKey = replayState.rewardView;
-            returnInfo.selections = {};
-            returnInfo.selections["rewards.combined"] = selectionManagers["rewards.combined"].getSelections();
-            returnInfo.selections["rewards.detailed"] = selectionManagers["rewards.detailed"].getSelections();
-            returnInfo.selections["advantage.combined"] = selectionManagers["advantage.combined"].getSelections();
-            returnInfo.selections["advantage.detailed"] = selectionManagers["advantage.detailed"].getSelections();
-        }
-        else {
-            returnInfo.chartIsShowing = false;
-        }
-    }
-
-    // tm.restoreChartState = function(returnInfo){
-    //     if (returnInfo.chartIsShowing) {
-    //         if (!replayState.rewardsAreShowing){
-    //             replayState.rewardView = returnInfo.chartDisplayModeKey;
-    //             selectionManagers["rewards.combined"].setSelections(returnInfo.selections["rewards.combined"]);
-    //             selectionManagers["rewards.detailed"].setSelections(returnInfo.selections["rewards.detailed"]);
-    //             selectionManagers["advantage.combined"].setSelections(returnInfo.selections["advantage.combined"]);
-    //             selectionManagers["advantage.detailed"].setSelections(returnInfo.selections["advantage.detailed"]);
-    //             showChart(returnInfo.returnTargetStep);
-    //         }
-    //     }
-    // }
-
-    tm.rememberSaliencyState = function(returnInfo) {
-        if (replayState.salienciesAreShowing) {
-            returnInfo.salienciesAreShowing = true;
-            returnInfo.saliencyCombined = replayState.saliencyCombined;
-            returnInfo.highlightedMapIds = {};
-            returnInfo.highlightedMapIds["rewards.combined"] = saliencyDisplayManagers["rewards.combined"].currentlyHighlightedSaliencyMapId;
-            returnInfo.highlightedMapIds["rewards.detailed"] = saliencyDisplayManagers["rewards.detailed"].currentlyHighlightedSaliencyMapId;
-            returnInfo.highlightedMapIds["advantage.combined"] = saliencyDisplayManagers["advantage.combined"].currentlyHighlightedSaliencyMapId;
-            returnInfo.highlightedMapIds["advantage.detailed"] = saliencyDisplayManagers["advantage.detailed"].currentlyHighlightedSaliencyMapId;
-
-            returnInfo.saliencyDisplayModes = {};
-            returnInfo.saliencyDisplayModes["rewards.combined"] = saliencyDisplayManagers["rewards.combined"].getSaliencyMode();
-            returnInfo.saliencyDisplayModes["rewards.detailed"] = saliencyDisplayManagers["rewards.detailed"].getSaliencyMode();
-            returnInfo.saliencyDisplayModes["advantage.combined"] = saliencyDisplayManagers["advantage.combined"].getSaliencyMode();
-            returnInfo.saliencyDisplayModes["advantage.detailed"] = saliencyDisplayManagers["advantage.detailed"].getSaliencyMode();
-        }
-        else {
-            returnInfo.salienciesAreShowing = false;
-        }
-    }
-    // tm.restoreSaliencyState = function(returnInfo) {
-    //     if (returnInfo.salienciesAreShowing){
-    //         if (!replayState.salienciesAreShowing){
-    //             activeDisplayModeKey = returnInfo.chartDisplayModeKey;
-    //             showSaliencies();
-    //             this.highlightSaliencyMap("rewards.combined", returnInfo);
-    //             this.highlightSaliencyMap("rewards.detailed", returnInfo);
-    //             this.highlightSaliencyMap("advantage.combined", returnInfo);
-    //             this.highlightSaliencyMap("advantage.detailed", returnInfo);
-    //         }
-    //     }
-    //     replayState.salienciesAreShowing = returnInfo.salienciesAreShowing;
-    // }
+ 
     tm.highlightSaliencyMap = function(displayModeKey, returnInfo){
         var mapId = returnInfo.highlightedMapIds[displayModeKey]
         if (mapId != undefined) {
@@ -197,8 +137,7 @@ function getTabManager() {
         this.targetTabId = tabId;
         var returnInfo = {};
         // always remember chart state and saliency that is displayed
-        this.rememberChartState(returnInfo);
-        this.rememberSaliencyState(returnInfo);
+        returnInfo.chartV2 = currentChartV2;
         returnInfo.returnTargetStep = sessionIndexManager.getCurrentIndex();
         if (this.rememberQuestionInProgress(returnInfo)){
             returnInfo.tabWasCompleted = false;
@@ -233,6 +172,8 @@ function getTabManager() {
                 this.targetTabId = undefined;
                 clearLoadingScreen();
             }
+            currentChartV2 = returnInfo.chartV2;
+            currentChartV2.render();
         }
     }
 
@@ -244,6 +185,8 @@ function getTabManager() {
                 this.targetTabId = undefined;
                 clearLoadingScreen();
             }
+            currentChartV2 = returnInfo.chartV2;
+            currentChartV2.render();
         }
     }
 
@@ -321,87 +264,87 @@ function enableTab(tabId) {
 }
 
 
-function hasTargetReturnInfoData() {
-    if (tabManager == undefined) {
-        return false;
-    }
-    var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
-    if (returnInfoForTargetTab == undefined) {
-        return false;
-    }
-    return true;
-}
-function getTargetDisplayModeFromTabManager(displayMode) {
-    if (!hasTargetReturnInfoData()) {
-        return displayMode;
-    }
-    var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
-    var newKey = returnInfoForTargetTab.chartDisplayModeKey;
-    if (newKey == undefined) {
-        return displayMode;
-    }
-    return newKey;
-}
+// function hasTargetReturnInfoData() {
+//     if (tabManager == undefined) {
+//         return false;
+//     }
+//     var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
+//     if (returnInfoForTargetTab == undefined) {
+//         return false;
+//     }
+//     return true;
+// }
+// function getTargetDisplayModeFromTabManager(displayMode) {
+//     if (!hasTargetReturnInfoData()) {
+//         return displayMode;
+//     }
+//     var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
+//     var newKey = returnInfoForTargetTab.chartDisplayModeKey;
+//     if (newKey == undefined) {
+//         return displayMode;
+//     }
+//     return newKey;
+// }
 
-function isTargetStepChartVisible() {
-    if (!hasTargetReturnInfoData()) {
-        return false;
-    }
-    var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
-    var val = returnInfoForTargetTab.chartIsShowing;
-    if (val == undefined) {
-        return false;
-    }
-    return val;
-}
+// function isTargetStepChartVisible() {
+//     if (!hasTargetReturnInfoData()) {
+//         return false;
+//     }
+//     var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
+//     var val = returnInfoForTargetTab.chartIsShowing;
+//     if (val == undefined) {
+//         return false;
+//     }
+//     return val;
+// }
 
 
-function getTargetStepFromReturnInfo() {
-    if (!hasTargetReturnInfoData()) {
-        return undefined;
-    }
-    var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
-    var targetStep = returnInfoForTargetTab.returnTargetStep;
-    if (targetStep == undefined) {
-        return undefined;
-    }
-    return Number(targetStep);
-}
+// function getTargetStepFromReturnInfo() {
+//     if (!hasTargetReturnInfoData()) {
+//         return undefined;
+//     }
+//     var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
+//     var targetStep = returnInfoForTargetTab.returnTargetStep;
+//     if (targetStep == undefined) {
+//         return undefined;
+//     }
+//     return Number(targetStep);
+// }
 
 //Saliency
 //remember visible?  (salienciesAreShowing)
-function isTargetStepSaliencyVisible() {
-    if (!hasTargetReturnInfoData()) {
-        return false;
-    }
-    var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
-    var val = returnInfoForTargetTab.salienciesAreShowing;
-    if (val == undefined) {
-        return false;
-    }
-    return val;
-}
+// function isTargetStepSaliencyVisible() {
+//     if (!hasTargetReturnInfoData()) {
+//         return false;
+//     }
+//     var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
+//     var val = returnInfoForTargetTab.salienciesAreShowing;
+//     if (val == undefined) {
+//         return false;
+//     }
+//     return val;
+// }
 //combined?
-function isTargetStepSaliencyCombined(){
-    if (!hasTargetReturnInfoData()) {
-        // default to combined as that would have been the original default
-        return true;
-    }
-    var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
-    var val = returnInfoForTargetTab.saliencyCombined;
-    return val;
-}
+// function isTargetStepSaliencyCombined(){
+//     if (!hasTargetReturnInfoData()) {
+//         // default to combined as that would have been the original default
+//         return true;
+//     }
+//     var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
+//     var val = returnInfoForTargetTab.saliencyCombined;
+//     return val;
+// }
 //whichRowsVisible? selectionManagers[modeKey] getSelection/setSelection
 // no need - saliency shares a selectionManager with the chart
 
 //anySelected?  saliencyDisplayManager.currentlyHighlightedSaliencyMapId for all four. then call saliencyDisplayManager.showSaliencyMapOutline(saliencyMapId)
-function getTargetStepSaliencyMapToHighlight(){
-    if (!hasTargetReturnInfoData()) {
-        return undefined;
-    }
-    var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
-    var chartDisplayModeKey = returnInfoForTargetTab.chartDisplayModeKey;
-    var mapIdToHighlight = returnInfoForTargetTab.highlightedMapIds[chartDisplayModeKey];
-    return mapIdToHighlight;
-}
+// function getTargetStepSaliencyMapToHighlight(){
+//     if (!hasTargetReturnInfoData()) {
+//         return undefined;
+//     }
+//     var returnInfoForTargetTab = tabManager.getReturnInfoForTargetTab();
+//     var chartDisplayModeKey = returnInfoForTargetTab.chartDisplayModeKey;
+//     var mapIdToHighlight = returnInfoForTargetTab.highlightedMapIds[chartDisplayModeKey];
+//     return mapIdToHighlight;
+// }
 

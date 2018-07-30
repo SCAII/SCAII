@@ -2,13 +2,13 @@ function addRankingFunctions(chart) {
     var ch = chart;
 
     ch.getMaxAbsValueReward = function() {
-        return getMaxAbsoluteValue(this.rewardBars);
+        return getMaxAbsoluteValue(this.actionRewardForNameMap);
     }
     ch.getMaxReward = function(){
-        return getMaxValue(this.rewardBars);
+        return getMaxValue(this.actionRewardForNameMap);
     }
     ch.getMinReward = function(){
-        return getMinValue(this.rewardBars);
+        return getMinValue(this.actionRewardForNameMap);
     }
     return ch;
 }

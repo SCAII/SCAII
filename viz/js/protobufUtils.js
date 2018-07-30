@@ -71,3 +71,34 @@ function buildReturnMultiMessageFromState(entities) {
   var mm = createMultiMessageFromPacket(pkt);
   return mm;
 }
+
+
+function convertProtobufChartToJSChart(pbch){
+    var chart = {};
+    chart.title = pbch.getTitle();
+    chart.v_title = pbch.getVTitle();
+    chart.h_title = pbch.getHTitle();
+    var groupsList = pbch.getGroupsList();
+    chart.actions = [];
+    for (var i in groupsList){
+        var groupMessage  = groupsList[i];
+        var action = {};
+        action.value = groupMessage.getValue();
+        action.bars = [];
+        action.saliencyId = groupMessage.getSaliencyId();
+        action.name = groupMessage.getName();
+        chart.actions.push(action);
+        var barsList = groupMessage.getBarsList();
+        for (var j in barsList){
+            var barMessage = barsList[j];
+            var bar = {};
+            bar.value = barMessage.getValue();
+            bar.saliencyId = barMessage.getSaliencyId();
+            bar.name = barMessage.getName();
+            action.bars.push(bar);
+        }
+    }
+    return chart;
+}
+
+  

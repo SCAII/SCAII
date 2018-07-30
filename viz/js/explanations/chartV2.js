@@ -1,23 +1,74 @@
+function addFunctionsToRawChart(rawChart){
+    var ch = addColorToBars(rawChart);
+    ch = addUtilityFunctions(ch);
+    ch = addRankingFunctions(ch);
+    ch = addSelectionFunctions(ch);
+    ch = addTextFunctions(ch);
+    ch = addGeometryFunctions(ch);
+    return ch;
+}
 
-  // IMPLEMENTATION ISSUES
-     // if (jumpInProgress) don't render yet
-
-function getChartManager(chartData){
+function addConvenienceDataStructures(chartData) {
+    if (chartData.actionForNameMap == undefined){
+        chartData.actionForNameMap = {};
+        chartData.actionNames = [];
+        for(var i in chartData.actions){
+            var action = chartData.actions[i];
+            var actionName = action.name;
+            chartData.actionForNameMap[actionName] = action;
+            chartData.actionNames.push(actionName);
+        }
+    }
+    
+    if (chartData.actionRewardForNameMap == undefined){
+        chartData.actionRewardForNameMap = {};
+        chartData.actionRewardNames = [];
+        for(var i in chartData.actions){
+            var action = chartData.actions[i];
+            for (var j in action.bars){
+                var bar = action.bars[j];
+                bar.fullName = action.name+ "." + bar.name;
+                chartData.actionRewardForNameMap[bar.fullName] = bar;
+                chartData.actionRewardNames.push(bar.fullName);
+            }
+        }
+    }
+    
+    if (chartData.rewardNames == undefined){
+        chartData.rewardNames = [];
+        for(var i in chartData.actions){
+            var action = chartData.actions[i];
+            for (var j in action.bars){
+                var bar = action.bars[j];
+                if (!chartData.rewardNames.includes(bar.name)) {
+                    chartData.rewardNames.push(bar.name);
+                }
+            }
+        }
+    }
+    return chartData;
+}
+function getChartV2Manager(){
     var cm = {};
+    cm.data = undefined;
     cm.filename = undefined;
     cm.saliencyRandomized = false;
     cm.renderLog = [];
-    cm.userStudyTreatment = "NA";
     cm.userStudyMode = false;
-    cm.showChartAccessButton = false;
     cm.chartVisible = false;
     cm.showSaliencyAccessButton = false;
     cm.saliencyVisible = false;
     cm.saliencyCombined = false;
-    cm.treatmentID = undefined;
+    cm.treatmentID = "NA";
     cm.showLosingActionSmaller = false;
     cm.showHoverScores = false;
+    cm.chartUI = getChartV2UI();
+    cm.saliencyUI = getSaliencyV2UI();
 
+    cm.setChartData = function(chartData){
+        this.data = addFunctionsToRawChart(chartData);
+        this.data = addConvenienceDataStructures(this.data);
+    }
     cm.setFilename = function(filename){
         this.filename = filename;
         if (filename.startsWith("tutorial")){
@@ -42,7 +93,6 @@ function getChartManager(chartData){
     cm.setUserStudyTreatment = function(val) {
         if (val == "T0"){
             this.treatmentID = "T0";
-            this.showChartAccessButton = false;
             this.chartVisible = false;
             this.showSaliencyAccessButton = false;
             this.saliencyVisible = false;
@@ -50,7 +100,6 @@ function getChartManager(chartData){
         }
         else if (val == "T1"){
             this.treatmentID = "T1";
-            this.showChartAccessButton = false;
             this.chartVisible = false;
             this.showSaliencyAccessButton = false;
             this.saliencyVisible = true;
@@ -59,7 +108,6 @@ function getChartManager(chartData){
         }
         else if (val == "T2"){
             this.treatmentID = "T2";
-            this.showChartAccessButton = true;
             this.chartVisible = false;
             this.showSaliencyAccessButton = false;
             this.saliencyVisible = false;
@@ -68,7 +116,6 @@ function getChartManager(chartData){
         }
         else if (val == "T3"){
             this.treatmentID = "T3";
-            this.showChartAccessButton = true;
             this.chartVisible = false;
             this.showSaliencyAccessButton = true;
             this.saliencyVisible = false;
@@ -80,6 +127,7 @@ function getChartManager(chartData){
         }
     }
     cm.render = function(mode){
+        clearExplanationInfoButRetainState();
         this.renderLog = [];
         if (this.treatmentID == "T0"){
             // no action
@@ -100,18 +148,12 @@ function getChartManager(chartData){
     }
     
     cm.renderT2 = function(mode){
-        if (this.showChartAccessButton){
-            this.renderChartAccessButton(mode);
-        }
         if (this.chartVisible){
             this.renderChartDetailed(mode);
         }
     }
 
     cm.renderT3 = function(mode){
-        if (this.showChartAccessButton){
-            this.renderChartAccessButton(mode);
-        }
         if (this.chartVisible){
             this.renderChartDetailed(mode);
         }
@@ -126,20 +168,14 @@ function getChartManager(chartData){
         }
     }
 
-    cm.renderChartAccessButton = function(mode){
-        if (mode == "trace"){
-            this.renderLog.push("renderChartAccessButton");
-            return;
-        }
-        // do the actual rendering
-    }
-    
     cm.renderChartDetailed = function(mode){
         if (mode == "trace"){
             this.renderLog.push("renderChartDetailed");
             return;
         }
-        // do the actual rendering
+        else {
+            this.chartUI.renderChartDetailed(this.data);
+        }
     }
     
     cm.renderSaliencyAccessButton = function(mode){
@@ -147,7 +183,9 @@ function getChartManager(chartData){
             this.renderLog.push("renderSaliencyAccessButton");
             return;
         }
-        // do the actual rendering
+        else {
+            this.saliencyUI.renderSaliencyAccessControls();
+        }
     }
     
     cm.renderSaliencyCombined = function(mode){
@@ -155,7 +193,9 @@ function getChartManager(chartData){
             this.renderLog.push("renderSaliencyCombined");
             return;
         }
-        // do the actual rendering
+        else {
+            this.saliencyUI.renderSaliencyCombined();
+        }
     }
     
     cm.renderSaliencyDetailed = function(mode){
@@ -163,7 +203,19 @@ function getChartManager(chartData){
             this.renderLog.push("renderSaliencyDetailed");
             return;
         }
-        // do the actual rendering
+        else {
+            this.saliencyUI.renderSaliencyDetailed();
+        }
     }
     return cm;
 }
+
+
+// function restoreChartIfReturningToTab(step){
+//     if (isTargetStepChartVisible()) {
+//         var targetStep = getTargetStepFromReturnInfo();
+//         if (targetStep != undefined && targetStep == step) {
+//             processWhyClick(step);
+//         }
+//     }
+// }
