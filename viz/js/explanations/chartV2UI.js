@@ -5,10 +5,78 @@ function getChartV2UI() {
 
     ui.renderChartDetailed = function(chartData){
         createRewardChartContainer();
-        var canvasWidth = $("#explanations-rewards").width;
-        var canvasHeight = $("#explanations-rewards").height;
-        chartData.initChartDimensions(canvasHeight, canvasWidth);
+        //var canvasWidth = $("#explanations-rewards").width;
+        //var canvasHeight = $("#explanations-rewards").height;
+        //specify dimensions
+        var canvasHeight = 400;
+        var canvasWidth = 600;
+        chartData.initChartDimensions(canvasHeight, canvasWidth, 0.2, 0.0);
+
+        // create canvas
+        var chartCanvas = document.createElement("canvas");
+        chartCanvas.setAttribute("width", canvasWidth);
+        chartCanvas.setAttribute("height", canvasHeight);
+        chartCanvas.setAttribute("id", "chartV2-canvas");
+        $("#explanations-rewards").append(chartCanvas);
+        var ctx = chartCanvas.getContext("2d");
+        $("#chartV2-canvas").css("background-color", "white");
+        //this.renderXAxis(chartData);
+        this.renderBars(chartCanvas,chartData);
         alert("called renderChartDetailed");
+    }
+
+    ui.renderXAxis = function(chartData){
+
+    }
+    ui.renderBars = function(canvas, chartData){
+        var ctx = canvas.getContext("2d");
+        for (var i in chartData.actions){
+            var action = chartData.actions[i];
+            for (var j in action.bars){
+                var bar = action.bars[j];
+                chartData.positionRewardBar(bar, i, j);
+                chartData.dimensionRewardBar(bar);
+                this.renderBar(ctx, bar, "normal");
+            }
+        }
+    }
+    ui.renderBar = function(ctx, bar, mode) {
+        // originY is always on the x axis
+        ctx.save();
+        var x0 = bar.originX;
+        var y0 = bar.originY;
+        var x1 = bar.originX + bar.width;
+        var y1 = y0;
+        var x2 = x1;
+        var x3 = x0;
+        var upperLeftOriginX = x0;
+        var upperLeftOriginY = undefined;
+        if (bar.value > 0) {
+            var y2 = y0 - bar.height;
+            upperLeftOriginY = y2;
+        }
+        else {
+            var y2 = y0 + bar.height;
+            upperLeftOriginY = y0;
+        }
+        var y3 = y2;  // y3 is in the upper left corner with x3, strokeRect uses that as the origin
+        ctx.beginPath();
+    
+        if (mode == "outline"){
+            ctx.lineWidth = shape_outline_width + 3;
+            ctx.strokeStyle = "blue";
+            ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, bar.height, bar.width);
+        }
+        else {
+            ctx.lineWidth = shape_outline_width;
+            ctx.strokeStyle = bar.color;
+            
+            ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, bar.height, bar.width);
+            
+            ctx.fillStyle = bar.color;
+            ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.height, bar.width);
+        }
+        ctx.restore();
     }
     return ui;
 }
