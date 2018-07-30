@@ -5,6 +5,7 @@ function runChartDataGeometryTests(failureChecker) {
     var fc = failureChecker;
     fc.setTestName("geometryTests");
 
+    fc.setTestName("chart data geometry test");
     // action names are action_0, action_1...action_3
     // rewardnames are action action_0.reward_0, action_0.reward_1
 

@@ -32,8 +32,13 @@ function addGeometryFunctions(rawChartData) {
         //groupWidthMargin = (widthAvailableForGroup * .2) / 2
         //bar.originX = i*widthAvailableForGroup + groupWidthMargin + j *(rewardBarWidth)
         //bar.originY = canvasHeight/2 ==> constant 320.0
+<<<<<<< HEAD
+        rewardBar.originX = action * widthAvailableForGroup + groupWidthMargin + (reward * rewardBarWidthAvailable);
+        rewardBar.originY = rd.canvasHeight / 2;
+=======
         rewardBar.originX = Math.floor(actionIndex * this.widthAvailableForGroup + this.groupWidthMargin + rewardIndex * this.rewardBarWidth);
         rewardBar.originY = this.canvasHeight / 2;
+>>>>>>> 8769b80ead49f1bfd0e124b1350da0c36d11465b
     }
 
 
