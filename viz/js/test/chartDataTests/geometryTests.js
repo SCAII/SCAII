@@ -183,21 +183,12 @@ function runChartDataGeometryTests(failureChecker) {
     // 60 == lineSpacing = maxAbsoluteValue * scaling factor / 4
     // y = (canvasHeight / 2) + (1 + Number(i)) * linSpacing
     ch.positionValueLines(4);
-    fc.assert(ch.positiveLine[0].originX, 20.0, "line 1 positionX");
-    fc.assert(ch.positiveLine[0].originY, 380.0, "line 1 positionY"); 320 + 60
-    fc.assert(ch.positiveLine[0].length, 776.0, "line 1 positionY");// canvasWidth - groupWidthMargin * 2
-
-    fc.assert(ch.positiveLine[1].originX, 20.0, "line 1 positionX");
-    fc.assert(ch.positiveLine[1].originY, 440.0, "line 1 positionY"); 320 + 120
-    fc.assert(ch.positiveLine[1].length, 776.0, "line 1 positionY");// canvasWidth - groupWidthMargin * 2
-
-    fc.assert(ch.positiveLine[2].originX, 20.0, "line 1 positionX");
-    fc.assert(ch.positiveLine[2].originY, 500.0, "line 1 positionY"); 320 + 180
-    fc.assert(ch.positiveLine[2].length, 776.0, "line 1 positionY");// canvasWidth - groupWidthMargin * 2
-
-    fc.assert(ch.positiveLine[3].originX, 20.0, "line 1 positionX");
-    fc.assert(ch.positiveLine[3].originY, 560.0, "line 1 positionY"); 320 + 240
-    fc.assert(ch.positiveLine[3].length, 776.0, "line 1 positionY");// canvasWidth - groupWidthMargin * 2
+    fc.assert(ch.positiveLineLength, 776.0, "line distance" + ch.positiveLineLength);
+    fc.assert(ch.positiveLineOriginX, 20.0, "line originX");
+    fc.assert(ch.positiveLineOriginY[0], 380.0, "line 1 positionY"); 320 + 60
+    fc.assert(ch.positiveLineOriginY[1], 440.0, "line 1 positionY"); 320 + 120
+    fc.assert(ch.positiveLineOriginY[2], 500.0, "line 1 positionY"); 320 + 180
+    fc.assert(ch.positiveLineOriginY[3], 560.0, "line 1 positionY"); 320 + 240
 
     /*
     Tooltips will assume sit at 3/4 the height of bar
@@ -242,6 +233,15 @@ function runChartDataGeometryTests(failureChecker) {
     fc.assert(ch.yAxisOriginX, 20.0, "yAxisOriginX");
     fc.assert(ch.yAxisOriginY, 75.0, "yAxisOriginY");
     fc.assert(ch.yAxisLength,  490.0, "yAxisLength");
+
+    fc.setCase("position Action Seperators");
+    ch.positionActionSeperatorLines();
+    fc.assert(ch.actionLinesOriginX[0], 204.0, "actionLineOriginX 0");
+    fc.assert(ch.actionLinesOriginX[1], 408.0, "actionLineOriginX 1");
+    fc.assert(ch.actionLinesOriginX[2], 612.0, "actionLineOriginX 2");
+    fc.assert(ch.actionLinesOriginY, 75.0, "actionLineOriginY");
+    fc.assert(ch.actionLinesLength, 490.0, "actionLineLength");
+
     /*
         legendHeight = (rewardBarNames.length * 20) + legendDesc.height -- depends on how many legend lines there are
         legendWidth = 100
