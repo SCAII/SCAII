@@ -64,10 +64,13 @@ function getChartV2Manager(){
     cm.showHoverScores = false;
     cm.chartUI = getChartV2UI();
     cm.saliencyUI = getSaliencyV2UI();
+    cm.rewardBarTooltipManager = getRewardBarTooltipManager()
 
     cm.setChartData = function(chartData){
         this.data = addFunctionsToRawChart(chartData);
         this.data = addConvenienceDataStructures(this.data);
+        this.rewardBarTooltipManager.setChartData(this.data);
+        this.rewardBarTooltipManager.setCanvas(this.chartUI.chartCanvas);
     }
     cm.setFilename = function(filename){
         this.filename = filename;

@@ -1,8 +1,9 @@
 function getChartV2UI() {
     var ui = {};
 
+    var chartCanvas = undefined;
     ui.whyButtonInfo = undefined;
-
+    ui.rewardBarTooltipManager = getRewardBarTooltipManager(chartData);
     ui.renderChartDetailed = function(chartData){
         createRewardChartContainer();
         //var canvasWidth = $("#explanations-rewards").width;
@@ -13,7 +14,7 @@ function getChartV2UI() {
         chartData.initChartDimensions(canvasHeight, canvasWidth, 0.5, 0.0);
 
         // create canvas
-        var chartCanvas = document.createElement("canvas");
+        chartCanvas = document.createElement("canvas");
         chartCanvas.setAttribute("width", canvasWidth);
         chartCanvas.setAttribute("height", canvasHeight);
         chartCanvas.setAttribute("id", "chartV2-canvas");
@@ -23,6 +24,7 @@ function getChartV2UI() {
             var rewardBarName = chartData.getBarNameForCoordinates(x, y);
             alert(rewardBarName);
         }
+        
         $("#explanations-rewards").append(chartCanvas);
         var ctx = chartCanvas.getContext("2d");
         $("#chartV2-canvas").css("background-color", "white");
