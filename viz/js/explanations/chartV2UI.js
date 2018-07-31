@@ -18,6 +18,41 @@ function getChartV2UI() {
 		chartCanvas.setAttribute("height", canvasHeight);
 		chartCanvas.setAttribute("id", "chartV2-canvas");
 		$("#explanations-rewards").append(chartCanvas);
+
+		// create legend area
+		var legendCanvas = document.createElement("DIV");
+		legendCanvas.setAttribute("id", "legend-canvas");
+		legendCanvas.setAttribute("class", "flex-column");
+		legendCanvas.setAttribute("style", "background-color:white;width:100px;");
+		$("#explanations-rewards").append(legendCanvas);
+
+		//create legend
+		var legendRewards = document.createElement("DIV");
+		legendRewards.setAttribute("id", "legend-rewards");
+		legendRewards.setAttribute("class", "grid");
+		legendRewards.setAttribute("style", "background-color:pink");
+		$("#legend-canvas").append(legendRewards);
+
+		// append legend names and boxes to legendRewards
+		var rewardBox = [];
+		var rewardInfo = [];
+		for (var i in chartData.rewardNames) {
+			rewardBox.push(chartData.rewardNames[i] + "_box_" + i);
+			rewardBox[i] = document.createElement("DIV");
+			rewardBox[i].setAttribute("id", "legend-box-" + i);
+			rewardBox[i].setAttribute("class", "r" + i + "c0");
+			rewardBox[i].setAttribute("style", "background-color:green;height:10px;width:13px");
+			$("#legend-rewards").append(rewardBox[i]);
+
+			rewardInfo.push(chartData.rewardNames[i] + "_name_" + i);
+			rewardInfo[i] = document.createElement("DIV");
+			rewardInfo[i].setAttribute("id", "legend-name-" + i);
+			rewardInfo[i].setAttribute("class", "r" + i + "c1");
+			rewardInfo[i].setAttribute("style", "background-color:orange;height:20px");
+			$("#legend-rewards").append(rewardInfo[i]);
+
+		}
+
 		var ctx = chartCanvas.getContext("2d");
 		$("#chartV2-canvas").css("background-color", "white");
 
@@ -30,10 +65,25 @@ function getChartV2UI() {
 		//this.renderChartValueLines(chartCanvas, chartData, 4);
 		this.renderChartValueLabels(chartCanvas, chartData, 4);
 		this.renderActionNames(chartCanvas, chartData);
-		//this.renderLegend(chartCanvas, chartData);
+//************************************************************** */
+		//this.renderLegend(legendRewards, chartData, legendRewards);
+		this.renderLegend(rewardInfo, chartData, legendRewards);
+//************************************************************** */
 		//this.renderTooltips(chartCanvas, chartData);
-	}
+		//this.renderTitle(chartCanvas, chartData);
+	}	
+	
+	ui.renderLegend = function (rewardInfo, chartData) {
+		for (var i in chartData.rewardNames) {
+			//var box = document.getElementById("legend-box-" + i);
 
+			var name = document.getElementById("legend-name-" + i);
+			var content = document.createTextNode(chartData.rewardNames[i]);
+			name.appendChild(content);
+			//this.renderLegendBoxes(rewardBox[i], chartData); //something to do with color in chartData
+		}	
+	}
+/*************************************************************** */
 	ui.renderActionBars = function (canvas, chartData){
 		var ctx = canvas.getContext("2d");
 		for (var i in chartData.actions) {
@@ -279,7 +329,7 @@ function createRewardChartContainer() {
 
 	var explanationRewards = document.createElement("DIV");
 	explanationRewards.setAttribute("id", "explanations-rewards");
-	explanationRewards.setAttribute("class", "rewards-bg");
+	explanationRewards.setAttribute("class", "rewards-bg flex-row");
 	explanationRewards.setAttribute("style", "margin-left:20px; margin-right: 20px;font-family:Arial;");
 	$("#rewards-titled-container").append(explanationRewards);
 
