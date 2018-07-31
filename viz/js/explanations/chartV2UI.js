@@ -3,7 +3,7 @@ function getChartV2UI() {
 
     var chartCanvas = undefined;
     ui.whyButtonInfo = undefined;
-    ui.rewardBarTooltipManager = getRewardBarTooltipManager(chartData);
+    ui.rewardBarTooltipManager = undefined;
     ui.renderChartDetailed = function(chartData){
         createRewardChartContainer();
         //var canvasWidth = $("#explanations-rewards").width;
@@ -40,6 +40,8 @@ function getChartV2UI() {
         this.renderActionNames(chartCanvas, chartData);
         //this.renderLegend(chartCanvas, chartData);
         //this.renderTooltips(chartCanvas, chartData);
+        
+        this.rewardBarTooltipManager = getRewardBarTooltipManager(chartCanvas,chartData);
     }
 	ui.renderActionBars = function (canvas, chartData){
 		var ctx = canvas.getContext("2d");
