@@ -211,7 +211,7 @@ function runChartDataGeometryTests(failureChecker) {
     ch.toolTip.originY = (canvasHeight / 2) - ((ch.rewardBar[i].bars[j].value * scallingFactor) * 0.75)
     */
     fc.setCase("tooltips positioning");
-    ch.positionTooltips(ch.actionRewardForNameMap);
+    ch.positionTooltips();
 
     fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].tooltipOriginX, 74.0, "tooltip aciton_0.reward_0");
     fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].tooltipOriginY, 305.0, "tooltip aciton_0.reward_0"); //320 - 10 * 2 * .75
@@ -262,25 +262,25 @@ function runChartDataGeometryTests(failureChecker) {
 
 
     fc.setCase("bar click/mouse move detection");
-    fc.assert(ch.getBarNameForCoordinates(25,310), "action_0.reward_0", "hit action_0.reward_0");
-    fc.assert(ch.getBarNameForCoordinates(80,330), "action_0.reward_1", "hit action_0.reward_1");
-    fc.assert(ch.getBarNameForCoordinates(130,310), "action_0.reward_2", "hit action_0.reward_2");
+    fc.assert(ch.getActionBarNameForCoordinates(25,310), "action_0.reward_0", "hit action_0.reward_0");
+    fc.assert(ch.getActionBarNameForCoordinates(80,330), "action_0.reward_1", "hit action_0.reward_1");
+    fc.assert(ch.getActionBarNameForCoordinates(130,310), "action_0.reward_2", "hit action_0.reward_2");
     
-    fc.assert(ch.getBarNameForCoordinates(230,340), "action_1.reward_0",  "hit action_1.reward_0");
+    fc.assert(ch.getActionBarNameForCoordinates(230,340), "action_1.reward_0",  "hit action_1.reward_0");
 
-    fc.assert(ch.getBarNameForCoordinates(500,360), "action_2.reward_1", "hit action_2.reward_1"); // -80 * 2
+    fc.assert(ch.getActionBarNameForCoordinates(500,360), "action_2.reward_1", "hit action_2.reward_1"); // -80 * 2
     
-    fc.assert(ch.getBarNameForCoordinates(760,380), "action_3.reward_2", "hit action_3.reward_2"); // -120 * 2
+    fc.assert(ch.getActionBarNameForCoordinates(760,380), "action_3.reward_2", "hit action_3.reward_2"); // -120 * 2
 
     // far miss
-    fc.assert(ch.getBarNameForCoordinates(1,1), "None", "miss upper left corner");
-    fc.assert(ch.getBarNameForCoordinates(800,630), "None", "miss lower right corner");
+    fc.assert(ch.getActionBarNameForCoordinates(1,1), "None", "miss upper left corner");
+    fc.assert(ch.getActionBarNameForCoordinates(800,630), "None", "miss lower right corner");
 
     //close miss
-    fc.assert(ch.getBarNameForCoordinates(19,310), "None", "close miss ");
+    fc.assert(ch.getActionBarNameForCoordinates(19,310), "None", "close miss ");
     
     //hit corner
-    fc.assert(ch.getBarNameForCoordinates(20,300), "action_0.reward_0", "hit corner");// canvasHeight/2 - smallestBarHeight * scalingFactor (i.e. 10*2)
+    fc.assert(ch.getActionBarNameForCoordinates(20,300), "action_0.reward_0", "hit corner");// canvasHeight/2 - smallestBarHeight * scalingFactor (i.e. 10*2)
     fc.setCase("position Action Seperators");
     ch.positionActionSeperatorLines();
     fc.assert(ch.actionLinesOriginX[0], 204.0, "actionLineOriginX 0");

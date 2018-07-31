@@ -13,17 +13,18 @@ function addUtilityFunctions(chart) {
         }
     }
 
-    ch.getRewardForName = function (actionName, rewardName) {
-        for (var i in rd.actions) {
-            if (rd.actions[i].actionBarName == actionName) {
-                for (var j in rd.actions[i].bars) {
-                    if (rd.actions[i].bars[j].actionRewardNames == rewardName) {
-                        return rd.actions[i].bars[j];
-                    }
-                }
-            }
-        }
-    }
+    // ch.getActionRewardForName = function (actionRewardName) {
+    //     return ch.actionRewardForNameMap[rewardName];
+    //     // for (var i in rd.actions) {
+    //     //     if (rd.actions[i].actionBarName == actionName) {
+    //     //         for (var j in rd.actions[i].bars) {
+    //     //             if (rd.actions[i].bars[j].actionRewardNames == rewardName) {
+    //     //                 return rd.actions[i].bars[j];
+    //     //             }
+    //     //         }
+    //     //     }
+    //     // }
+    // }
     ch.getMaxBar = function () {
         var maxBar = 0;
         maxBar = Math.max(this.getMaxAbsoluteValueReward(), this.getMaxActionValue());

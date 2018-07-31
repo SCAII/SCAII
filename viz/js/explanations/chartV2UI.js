@@ -21,7 +21,7 @@ function getChartV2UI() {
         chartCanvas.onclick = function(e){
             var x = e.offsetX;
 		    var y = e.offsetY;
-            var rewardBarName = chartData.getBarNameForCoordinates(x, y);
+            var rewardBarName = chartData.getActionBarNameForCoordinates(x, y);
             alert(rewardBarName);
         }
         

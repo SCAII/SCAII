@@ -99,6 +99,7 @@ function getDecisionPointIdForName(name, step){
 
 function convertNameToLegalId(name) {
 	name = name.replace(/ /g,"");
+	name = name.replace(/\./g,"");
 	name = name.replace(/,/g,"");
 	name = name.replace(/\(/g,"");
 	var nameForId = name.replace(/\)/g,"");

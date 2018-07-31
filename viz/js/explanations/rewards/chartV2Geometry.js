@@ -154,11 +154,10 @@ function addGeometryFunctions(rawChartData) {
             this.positiveLineOriginY[i] = (this.canvasHeight / 2) + (1 + Number(i)) * lineSpacing;
         }
     }
-    rd.positionTooltips = function(rewardBars){
-        var keys = Object.keys(rewardBars);
-        for (var i in keys) {
-            var key = keys[i];
-            var rewardBar = rewardBars[key];
+    rd.positionTooltips = function(){
+        for (var i in this.actionRewardNames) {
+            var actionRewardName = this.actionRewardNames[i];
+            var rewardBar = this.actionRewardForNameMap[actionRewardName];
             //originX + rewardBarWidth
 
             rewardBar.tooltipOriginX = rewardBar.originX + this.rewardBarWidth;
@@ -166,7 +165,7 @@ function addGeometryFunctions(rawChartData) {
             rewardBar.tooltipOriginY = this.canvasHeight/2 - rewardBar.value * this.scalingFactor * 0.75; 
         }
     }
-    rd.getBarNameForCoordinates = function(x,y) {
+    rd.getActionBarNameForCoordinates = function(x,y) {
         for (var i in this.actionRewardNames){
             var barName = this.actionRewardNames[i];
             var bar = this.actionRewardForNameMap[barName];
