@@ -78,6 +78,7 @@ function getChartV2UI() {
 			//var box = document.getElementById("legend-box-" + i);
 
 			var name = document.getElementById("legend-name-" + i);
+			//font stuff in here for css
 			var content = document.createTextNode(chartData.rewardNames[i]);
 			name.appendChild(content);
 			//this.renderLegendBoxes(rewardBox[i], chartData); //something to do with color in chartData

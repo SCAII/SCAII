@@ -60,10 +60,17 @@ function runChartDataGeometryTests(failureChecker) {
     fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].originX, 224.0, "originX 1.0");// 204 + 20.0 + 0 * (1) + 0 == 224.0
     fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].originY, 320.0, "originY 1.0");// 320
 
+    ch.positionRewardBar(ch.actionRewardForNameMap["action_1.reward_1"], 1, 1);//skip test here but need later
+    ch.positionRewardBar(ch.actionRewardForNameMap["action_1.reward_2"], 1, 2);//skip test here but need later
+
+    ch.positionRewardBar(ch.actionRewardForNameMap["action_2.reward_0"], 2, 0);//skip test here but need later
     ch.positionRewardBar(ch.actionRewardForNameMap["action_2.reward_1"], 2, 1);
     fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].originX, 482.0, "originX 2.1");// 408 + 20.0 + 0 * (2) + 54 == 482.0
     fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].originY, 320.0, "originY 2.1");// 320
+    ch.positionRewardBar(ch.actionRewardForNameMap["action_2.reward_2"], 2, 2);//skip test here but need later
 
+    ch.positionRewardBar(ch.actionRewardForNameMap["action_3.reward_0"], 3, 0);//skip test here but need later
+    ch.positionRewardBar(ch.actionRewardForNameMap["action_3.reward_1"], 3, 1);//skip test here but need later
     ch.positionRewardBar(ch.actionRewardForNameMap["action_3.reward_2"], 3, 2);
     fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].originX, 740.0, "originX 3.2");// 612 + 20.0 + 0 * (3) + 108 == 740.0
     fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].originY, 320.0, "originY 3.2");// 320 
@@ -85,11 +92,17 @@ function runChartDataGeometryTests(failureChecker) {
     ch.dimensionRewardBar(ch.actionRewardForNameMap["action_1.reward_0"]);
     fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].height, 80.0, "originHeight 1.0");
     fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].width, 54.0, "originWidth 1.0");
+    ch.dimensionRewardBar(ch.actionRewardForNameMap["action_1.reward_1"]);
+    ch.dimensionRewardBar(ch.actionRewardForNameMap["action_1.reward_2"]);
 
+    ch.dimensionRewardBar(ch.actionRewardForNameMap["action_2.reward_0"]);
     ch.dimensionRewardBar(ch.actionRewardForNameMap["action_2.reward_1"]);
     fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].height, 160.0, "originHeight 2.1");
     fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].width, 54.0, "originWidth 2.1");
+    ch.dimensionRewardBar(ch.actionRewardForNameMap["action_2.reward_2"]);
 
+    ch.dimensionRewardBar(ch.actionRewardForNameMap["action_3.reward_0"]);
+    ch.dimensionRewardBar(ch.actionRewardForNameMap["action_3.reward_1"]);
     ch.dimensionRewardBar(ch.actionRewardForNameMap["action_3.reward_2"]);
     fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].height, 240.0, "originHeight 3.2");
     fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].width, 54.0, "originWidth 3.2");
@@ -125,19 +138,19 @@ function runChartDataGeometryTests(failureChecker) {
     // width == widthAvailableForRewardBars== 192
     // height == sum of the bars
     ch.dimensionActionBar(ch.actionForNameMap["action_0"]);
-    fc.assert(ch.actionForNameMap["action_0"].height, 40.0, "originHeight action_0");  // (10  -20 + 30) * scallingFactor of 2
+    fc.assert(ch.actionForNameMap["action_0"].height, 40.0, "originHeight action_0");  // Abs((10  -20 + 30) * scallingFactor of 2)
     fc.assert(ch.actionForNameMap["action_0"].width, 164.0, "originWidth action_0");
 
     ch.dimensionActionBar(ch.actionForNameMap["action_1"]);
-    fc.assert(ch.actionForNameMap["action_1"].height, -100.0, "originHeight action_1"); //  (-40 + 50 - 60) * scallingFacotr of 2
+    fc.assert(ch.actionForNameMap["action_1"].height, 100.0, "originHeight action_1"); //  Abs((-40 + 50 - 60) * scallingFacotr of 2)
     fc.assert(ch.actionForNameMap["action_1"].width, 164.0, "originWidth action_1");
     
     ch.dimensionActionBar(ch.actionForNameMap["action_2"]);
-    fc.assert(ch.actionForNameMap["action_2"].height, 160.0, "originHeight action_2"); // (70 - 80 + 90) * scallingFacotr of 2
+    fc.assert(ch.actionForNameMap["action_2"].height, 160.0, "originHeight action_2"); // Abs((70 - 80 + 90) * scallingFacotr of 2)
     fc.assert(ch.actionForNameMap["action_2"].width, 164.0, "originWidth action_2");
     
     ch.dimensionActionBar(ch.actionForNameMap["action_3"]);
-    fc.assert(ch.actionForNameMap["action_3"].height, -220.0, "originHeight action_3");  // (-100 + 110 - 120) * scallingFactor of 2
+    fc.assert(ch.actionForNameMap["action_3"].height, 220.0, "originHeight action_3");  // Abs((-100 + 110 - 120) * scallingFactor of 2)
     fc.assert(ch.actionForNameMap["action_3"].width, 164.0, "originWidth action_3");
     
     
@@ -234,6 +247,40 @@ function runChartDataGeometryTests(failureChecker) {
     fc.assert(ch.yAxisOriginY, 75.0, "yAxisOriginY");
     fc.assert(ch.yAxisLength,  490.0, "yAxisLength");
 
+
+    fc.setCase("isPointInBox");
+    //x,y,xOrigin,yOrigin,width,height,isHeightNegative
+    // positive bar tests
+    fc.assert(ch.isPointInsideBox(12,220,10,300,40,60, false), false, "isPointInsideBox pos bar bad y"); 
+    fc.assert(ch.isPointInsideBox(8,280,10,300,40,60, false), false, "isPointInsideBox pos bar bad x"); 
+    fc.assert(ch.isPointInsideBox(12,280,10,300,40,60, false), true, "isPointInsideBox pos bar good x, y"); 
+
+    // negative bar tests
+    fc.assert(ch.isPointInsideBox(12,370,10,300,40,60, true), false, "isPointInsideBox neg bar bad y"); 
+    fc.assert(ch.isPointInsideBox(8,350,10,300,40,60, true), false, "isPointInsideBox neg bar bad x"); 
+    fc.assert(ch.isPointInsideBox(12,350,10,300,40,60, true), true, "isPointInsideBox neg bar good x, y"); 
+
+
+    fc.setCase("bar click/mouse move detection");
+    fc.assert(ch.getBarNameForCoordinates(25,310), "action_0.reward_0", "hit action_0.reward_0");
+    fc.assert(ch.getBarNameForCoordinates(80,330), "action_0.reward_1", "hit action_0.reward_1");
+    fc.assert(ch.getBarNameForCoordinates(130,310), "action_0.reward_2", "hit action_0.reward_2");
+    
+    fc.assert(ch.getBarNameForCoordinates(230,340), "action_1.reward_0",  "hit action_1.reward_0");
+
+    fc.assert(ch.getBarNameForCoordinates(500,360), "action_2.reward_1", "hit action_2.reward_1"); // -80 * 2
+    
+    fc.assert(ch.getBarNameForCoordinates(760,380), "action_3.reward_2", "hit action_3.reward_2"); // -120 * 2
+
+    // far miss
+    fc.assert(ch.getBarNameForCoordinates(1,1), "None", "miss upper left corner");
+    fc.assert(ch.getBarNameForCoordinates(800,630), "None", "miss lower right corner");
+
+    //close miss
+    fc.assert(ch.getBarNameForCoordinates(19,310), "None", "close miss ");
+    
+    //hit corner
+    fc.assert(ch.getBarNameForCoordinates(20,300), "action_0.reward_0", "hit corner");// canvasHeight/2 - smallestBarHeight * scalingFactor (i.e. 10*2)
     fc.setCase("position Action Seperators");
     ch.positionActionSeperatorLines();
     fc.assert(ch.actionLinesOriginX[0], 204.0, "actionLineOriginX 0");
