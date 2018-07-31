@@ -25,7 +25,7 @@ function addUtilityFunctions(chart) {
     //     //     }
     //     // }
     // }
-    ch.getMaxBar = function () {
+    ch.getMaxAbsRewardOrActionValue = function () {
         var maxBar = 0;
         maxBar = Math.max(this.getMaxAbsoluteValueReward(), this.getMaxActionValue());
         return maxBar;
@@ -68,7 +68,7 @@ function addUtilityFunctions(chart) {
         return maxPosValue;
     }
     // get the negative reward with the largest absolute value
-    ch.getMaxNegativeReward = function () {
+    ch.getMaxAbsValNegativeReward = function () {
         var maxNegValue = undefined;
         for (var i in ch.actions) {
             for (var j in ch.actions[i].bars) {
@@ -82,7 +82,17 @@ function addUtilityFunctions(chart) {
                 }
             }
         }
-        return maxNegValue;
+        return Math.abs(maxNegValue);
+    }
+    ch.getMaxAbsValNegativeAction = function() {
+        var max = 0.0;
+        for (var i in this.actions){
+            var value = this.actions[i].value;
+            if (value < 0) {
+                max = Math.max(max, Math.abs(value));
+            }
+        }
+        return max;
     }
     return ch;
 }

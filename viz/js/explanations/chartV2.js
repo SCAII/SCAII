@@ -48,6 +48,19 @@ function addConvenienceDataStructures(chartData) {
     }
     return chartData;
 }
+
+function ensureActionValuesSet(chartData) {
+    for (var i in chartData.actions) {
+        var action = chartData.actions[i];
+        var actionTotal = 0.0;
+        for (var j in action.bars){
+            var bar = action.bars[j];
+            actionTotal = actionTotal + bar.value;
+        }
+        action.value = actionTotal;
+    }
+    return chartData;
+}
 function getChartV2Manager(){
     var cm = {};
     cm.data = undefined;
@@ -67,6 +80,7 @@ function getChartV2Manager(){
 
     cm.setChartData = function(chartData){
         this.data = addFunctionsToRawChart(chartData);
+        this.data = ensureActionValuesSet(this.data);
         this.data = addConvenienceDataStructures(this.data);
     }
     cm.setFilename = function(filename){

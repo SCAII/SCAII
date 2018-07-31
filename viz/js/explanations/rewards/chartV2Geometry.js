@@ -39,15 +39,14 @@ function addGeometryFunctions(rawChartData) {
         this.widthAvailableForRewardBars = Math.floor(this.widthAvailableForGroup - 2 * this.groupWidthMargin);
         this.widthAvailableForRewardBar = Math.floor(this.widthAvailableForRewardBars / this.rewardNames.length);
         this.rewardBarWidth = Math.floor(this.widthAvailableForRewardBar - 2 * rewardSpacerWidth);
-        var maxAbsRewardValue = this.getMaxAbsoluteValueReward();
-        this.scalingFactor = (canvasHeight / 2) * 0.75 / maxAbsRewardValue;
+        this.scalingFactor = (canvasHeight / 2) * 0.75 / this.getMaxAbsRewardOrActionValue();
     }
 
     rd.positionActionSeperatorLines = function() {
         // acitonLinesLength = maxAbsRewardValue * 2 * scalingFactor + aBitMore
         // actionLinesOriginX
         // actionLinesOriginY = (canvasHeight - yAxisLength) / 2
-        this.actionLinesLength = this.getMaxBar() * 2 * this.scalingFactor + 10;
+        this.actionLinesLength = this.getMaxAbsRewardOrActionValue() * 2 * this.scalingFactor + 10;
         this.actionLinesOriginY = (this.canvasHeight - this.yAxisLength) / 2;
         for (var i = 1; i < this.actions.length; i++) {
             this.actionLinesOriginX.push(this.widthAvailableForGroup * i);
@@ -67,7 +66,7 @@ function addGeometryFunctions(rawChartData) {
         // yAxisLength = maxAbsRewardValue * 2 * scalingFactor + aBitMore
         // yAxisOriginX = groupWidthMargin;
         // yAxisOriginY = (canvasHeight - yAxisLength) / 2
-        this.yAxisLength = this.getMaxBar() * 2 * this.scalingFactor + 10;
+        this.yAxisLength = this.getMaxAbsRewardOrActionValue() * 2 * this.scalingFactor + 10;
         this.yAxisOriginY = (this.canvasHeight - this.yAxisLength) / 2;
         this.yAxisOriginX = this.groupWidthMargin;
     }
@@ -110,18 +109,19 @@ function addGeometryFunctions(rawChartData) {
         actionBar.value = total;
     }
 
-    rd.positionActionLabels = function () {
-        var minDistanceFromBarOrAxis = 20;
-        var maxNegReward = this.getMaxNegativeReward();
+    rd.positionActionLabels = function(minDistanceFromBarOrAxis) {
+        var maxAbsValNegReward = this.getMaxAbsValNegativeReward();
+        var maxAbsValNegativeAction = this.getMaxAbsValNegativeAction();
+        var maxAbsValNegBar = Math.max(maxAbsValNegReward, maxAbsValNegativeAction);
         var actionLabelY = undefined;
-        if (maxNegReward == undefined){
+        if (maxAbsValNegBar == undefined){
             actionLabelY = this.canvasHeight / 2 + minDistanceFromBarOrAxis;
         }
-        else if (maxNegReward > -minDistanceFromBarOrAxis){
+        else if (maxAbsValNegBar < minDistanceFromBarOrAxis){
             actionLabelY = this.canvasHeight / 2 + minDistanceFromBarOrAxis;
         }
         else {
-            actionLabelY = this.canvasHeight / 2 + Math.abs(maxNegReward) * this.scalingFactor + minDistanceFromBarOrAxis;
+            actionLabelY = this.canvasHeight / 2 + maxAbsValNegBar * this.scalingFactor + minDistanceFromBarOrAxis;
         }
         for (var i in this.actions){
             var action = this.actions[i];

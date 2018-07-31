@@ -7,8 +7,8 @@ function handleExplanationDetails(explDetails){
         var barChartMessage = explanationPoint.getBarChart();
         var rawChart = convertProtobufChartToJSChart(barChartMessage);
         //ignore true data for testing
-        currentChartV2.setChartData(getSeeSawChart());
-        //currentChartV2.setChartData(rawChart);
+        //currentChartV2.setChartData(getSeeSawChart());
+        currentChartV2.setChartData(rawChart);
         currentChartV2.render();
 	}
 	else {

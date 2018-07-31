@@ -157,12 +157,12 @@ function runChartDataGeometryTests(failureChecker) {
 
     fc.setCase("action labels positioning");
     // x == groupWidthMargin + i * widthAvailableForGroup +  widthAvailableForRewardBars / 2
-    // y == canvasHeight/2 + maxNegativeValue + 20
+    // y == canvasHeight/2 + Max(maxNegativeRewardValue, maxActionValue) + 20
     /*
         204 widthAvailableForGroup == canvasWidth / actionCount 
         20 == groupWidthMargin = (widthAvailableForGroup * .2) / 2
     */
-    ch.positionActionLabels();
+    ch.positionActionLabels(20);
 
     fc.assert(ch.actions[0].actionLabelOriginX, 102.0, "actions_0.X");// 20 + 0 * 204 + 82 = 102
     fc.assert(ch.actions[0].actionLabelOriginY, 580.0, "actions_0.Y");//  320 + 120*2 + 20 = 580
