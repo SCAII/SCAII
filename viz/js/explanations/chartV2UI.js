@@ -41,17 +41,28 @@ function getChartV2UI() {
 			rewardBox[i] = document.createElement("DIV");
 			rewardBox[i].setAttribute("id", "legend-box-" + i);
 			rewardBox[i].setAttribute("class", "r" + i + "c0");
-			rewardBox[i].setAttribute("style", "background-color:green;height:10px;width:13px;position:relative;top:4px");
+			rewardBox[i].setAttribute("style", "background-color:" + chartData.colors[i] + ";height:10px;width:13px;position:relative;top:4px;");
 			$("#legend-rewards").append(rewardBox[i]);
 
 			rewardInfo.push(chartData.rewardNames[i] + "_name_" + i);
 			rewardInfo[i] = document.createElement("DIV");
 			rewardInfo[i].setAttribute("id", "legend-name-" + i);
 			rewardInfo[i].setAttribute("class", "r" + i + "c1");
-			rewardInfo[i].setAttribute("style", "height:20px");
+			rewardInfo[i].setAttribute("style", "height:20px;");
 			$("#legend-rewards").append(rewardInfo[i]);
-
 		}
+		var rewardLegendTotalBox = document.createElement("DIV");
+		rewardLegendTotalBox.setAttribute("id", "legend-box-" + i);
+		rewardLegendTotalBox.setAttribute("class", "r" + chartData.rewardNames.length + "c0");
+		rewardLegendTotalBox.setAttribute("style", "background-color:black;height:10px;width:13px;position:relative;top:4px;");
+		$("#legend-rewards").append(rewardLegendTotalBox);
+
+		var rewardLegendTotal = document.createElement("DIV");
+		rewardLegendTotal.setAttribute("id", "legend-total-name");
+		rewardLegendTotal.setAttribute("class", "r" + chartData.rewardNames.length + "c1");
+		rewardLegendTotal.setAttribute("style", "height:20px;");
+		$("#legend-rewards").append(rewardLegendTotal);
+
 
 		var ctx = chartCanvas.getContext("2d");
 		$("#chartV2-canvas").css("background-color", "white");
@@ -65,26 +76,23 @@ function getChartV2UI() {
 		//this.renderChartValueLines(chartCanvas, chartData, 4);
 		this.renderChartValueLabels(chartCanvas, chartData, 4);
 		this.renderActionNames(chartCanvas, chartData);
-//************************************************************** */
-		//this.renderLegend(legendRewards, chartData, legendRewards);
-		this.renderLegend(rewardInfo, chartData, legendRewards);
-//************************************************************** */
+		this.renderLegend(chartData);
 		//this.renderTooltips(chartCanvas, chartData);
 		//this.renderTitle(chartCanvas, chartData);
 	}	
 	
-	ui.renderLegend = function (rewardInfo, chartData) {
+	ui.renderLegend = function (chartData) {
 		for (var i in chartData.rewardNames) {
-			//var box = document.getElementById("legend-box-" + i);
-
 			var name = document.getElementById("legend-name-" + i);
 			//font stuff in here for css
 			var content = document.createTextNode(chartData.rewardNames[i]);
 			name.appendChild(content);
-			//this.renderLegendBoxes(rewardBox[i], chartData); //something to do with color in chartData
 		}	
+		var totalName = document.getElementById("legend-total-name");
+		var totalContent = document.createTextNode("reward_T");
+		totalName.appendChild(totalContent);
 	}
-/*************************************************************** */
+
 	ui.renderActionBars = function (canvas, chartData){
 		var ctx = canvas.getContext("2d");
 		for (var i in chartData.actions) {
