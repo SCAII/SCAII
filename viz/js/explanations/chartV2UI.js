@@ -17,6 +17,12 @@ function getChartV2UI() {
         chartCanvas.setAttribute("width", canvasWidth);
         chartCanvas.setAttribute("height", canvasHeight);
         chartCanvas.setAttribute("id", "chartV2-canvas");
+        chartCanvas.onclick = function(e){
+            var x = e.offsetX;
+		    var y = e.offsetY;
+            var rewardBarName = chartData.getBarNameForCoordinates(x, y);
+            alert(rewardBarName);
+        }
         $("#explanations-rewards").append(chartCanvas);
         var ctx = chartCanvas.getContext("2d");
         $("#chartV2-canvas").css("background-color", "white");

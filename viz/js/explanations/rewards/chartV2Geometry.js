@@ -139,5 +139,37 @@ function addGeometryFunctions(rawChartData) {
             rewardBar.tooltipOriginY = this.canvasHeight/2 - rewardBar.value * this.scalingFactor * 0.75; 
         }
     }
+    rd.getBarNameForCoordinates = function(x,y) {
+        for (var i in this.actionRewardNames){
+            var barName = this.actionRewardNames[i];
+            var bar = this.actionRewardForNameMap[barName];
+            var isHeightNegative = true;
+            if (bar.value > 0){
+                isHeightNegative = false;
+            }
+            if (this.isPointInsideBox(x, y, bar.originX, bar.originY, bar.width, bar.height, isHeightNegative)){
+                return bar.fullName;
+            }
+        }
+        return "None";
+    }
+    rd.isPointInsideBox = function(x, y, originX, originY, width, height, isHeightNegative){
+        if (x < originX || x > originX + width){
+            return false;
+        }
+        if (isHeightNegative){
+            // height is negative which means maxY is > originY
+            if (y < originY || y > (originY + height)) {
+                return false; // its outside a negative bar
+            }
+        }
+        else {
+            // height is positive which means maxY is < originY
+            if (y > originY || y < (originY - height)) {
+                return false;  // it's outside a positive bar
+            }
+        }
+        return true;
+    }
     return rd;
 }
