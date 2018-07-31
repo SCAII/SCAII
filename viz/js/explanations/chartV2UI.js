@@ -54,7 +54,7 @@ function getChartV2UI() {
 		var rewardLegendTotalBox = document.createElement("DIV");
 		rewardLegendTotalBox.setAttribute("id", "legend-box-" + i);
 		rewardLegendTotalBox.setAttribute("class", "r" + chartData.rewardNames.length + "c0");
-		rewardLegendTotalBox.setAttribute("style", "background-color:black;height:10px;width:13px;position:relative;top:4px;");
+		rewardLegendTotalBox.setAttribute("style", "background-color:" + chartData.actions[0].color + ";height:10px;width:13px;position:relative;top:4px;");
 		$("#legend-rewards").append(rewardLegendTotalBox);
 
 		var rewardLegendTotal = document.createElement("DIV");
