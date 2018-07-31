@@ -30,7 +30,7 @@ function getChartV2UI() {
 		var legendRewards = document.createElement("DIV");
 		legendRewards.setAttribute("id", "legend-rewards");
 		legendRewards.setAttribute("class", "grid");
-		legendRewards.setAttribute("style", "background-color:pink");
+		legendRewards.setAttribute("style", "background-color:white");
 		$("#legend-canvas").append(legendRewards);
 
 		// append legend names and boxes to legendRewards
@@ -41,14 +41,14 @@ function getChartV2UI() {
 			rewardBox[i] = document.createElement("DIV");
 			rewardBox[i].setAttribute("id", "legend-box-" + i);
 			rewardBox[i].setAttribute("class", "r" + i + "c0");
-			rewardBox[i].setAttribute("style", "background-color:green;height:10px;width:13px");
+			rewardBox[i].setAttribute("style", "background-color:green;height:10px;width:13px;position:relative;top:4px");
 			$("#legend-rewards").append(rewardBox[i]);
 
 			rewardInfo.push(chartData.rewardNames[i] + "_name_" + i);
 			rewardInfo[i] = document.createElement("DIV");
 			rewardInfo[i].setAttribute("id", "legend-name-" + i);
 			rewardInfo[i].setAttribute("class", "r" + i + "c1");
-			rewardInfo[i].setAttribute("style", "background-color:orange;height:20px");
+			rewardInfo[i].setAttribute("style", "height:20px");
 			$("#legend-rewards").append(rewardInfo[i]);
 
 		}
