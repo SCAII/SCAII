@@ -28,8 +28,8 @@ function getFailureChecker() {
     return fc;
 }
 function runTests(){
-    runQuestionAccessManagerTests();
     var fc = getFailureChecker();
+    runQuestionAccessManagerTests(fc);
     runChartManagerTests(fc);
     runChartDataSelectionTests(fc);
     runChartDataGeometryTests(fc);

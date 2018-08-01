@@ -27,46 +27,41 @@ function getChartV2UI() {
         
         $("#explanations-rewards").append(chartCanvas);
 
-        // create legend area
-        var legendCanvas = document.createElement("DIV");
-        legendCanvas.setAttribute("id", "legend-canvas");
-        legendCanvas.setAttribute("class", "flex-column");
-        legendCanvas.setAttribute("style", "background-color:white;");
+        // append legend div in explanationRewards so will be right of chartCanvas
+        var legendDiv = document.createElement("DIV");
+        legendDiv.setAttribute("id", "legend-canvas");
+        legendDiv.setAttribute("class", "flex-column");
+        legendDiv.setAttribute("style", "background-color:white;");
         $("#explanations-rewards").append(legendCanvas);
 
-        //create legend
+        // create legend area where names and boxes will exist
         var legendRewards = document.createElement("DIV");
         legendRewards.setAttribute("id", "legend-rewards");
         legendRewards.setAttribute("class", "grid");
         legendRewards.setAttribute("style", "background-color:white");
         $("#legend-canvas").append(legendRewards);
 
-        // append legend names and boxes to legendRewards
-        var rewardBox = [];
-        var rewardInfo = [];
+		// append legend names and boxes to legend area
         for (var i in chartData.rewardNames) {
-            rewardBox.push(chartData.rewardNames[i] + "_box_" + i);
-            rewardBox[i] = document.createElement("DIV");
-            rewardBox[i].setAttribute("id", "legend-box-" + i);
-            rewardBox[i].setAttribute("class", "r" + i + "c0");
-            rewardBox[i].setAttribute("style", "background-color:" + chartData.colors[i] + ";height:10px;width:13px;position:relative;top:4px;");
-            $("#legend-rewards").append(rewardBox[i]);
+            var rewardBox = document.createElement("DIV");
+            rewardBox.setAttribute("id", "legend-box-" + i);
+            rewardBox.setAttribute("class", "r" + i + "c0");
+            rewardBox.setAttribute("style", "background-color:" + chartData.colors[i] + ";height:10px;width:13px;position:relative;top:4px;");
+            $("#legend-rewards").append(rewardBox);
 
-            rewardInfo.push(chartData.rewardNames[i] + "_name_" + i);
-            rewardInfo[i] = document.createElement("DIV");
-            rewardInfo[i].setAttribute("id", "legend-name-" + i);
-            rewardInfo[i].setAttribute("class", "r" + i + "c1");
-            rewardInfo[i].setAttribute("style", "height:20px;");
-            $("#legend-rewards").append(rewardInfo[i]);
+            var rewardInfo = document.createElement("DIV");
+            rewardInfo.setAttribute("id", "legend-name-" + i);
+            rewardInfo.setAttribute("class", "r" + i + "c1");
+            rewardInfo.setAttribute("style", "height:20px;");
+            $("#legend-rewards").append(rewardInfo);
 
         }
-
+		// append legend total name and box to legend area
         var rewardLegendTotalBox = document.createElement("DIV");
 		rewardLegendTotalBox.setAttribute("id", "legend-box-" + i);
 		rewardLegendTotalBox.setAttribute("class", "r" + chartData.rewardNames.length + "c0");
 		rewardLegendTotalBox.setAttribute("style", "background-color:" + chartData.actions[0].color + ";height:10px;width:13px;position:relative;top:4px;");
 		$("#legend-rewards").append(rewardLegendTotalBox);
-
 		var rewardLegendTotal = document.createElement("DIV");
 		rewardLegendTotal.setAttribute("id", "legend-total-name");
 		rewardLegendTotal.setAttribute("class", "r" + chartData.rewardNames.length + "c1");
@@ -91,7 +86,7 @@ function getChartV2UI() {
     }
     
 	ui.renderLegend = function (rewardInfo, chartData) {
-
+		// NOTE: There are no tests for rendering the legend
 		for (var i in chartData.rewardNames) {
 			var name = document.getElementById("legend-name-" + i);
 			//font stuff in here for css
