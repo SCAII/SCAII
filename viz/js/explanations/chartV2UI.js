@@ -32,7 +32,7 @@ function getChartV2UI() {
         legendDiv.setAttribute("id", "legend-canvas");
         legendDiv.setAttribute("class", "flex-column");
         legendDiv.setAttribute("style", "background-color:white;");
-        $("#explanations-rewards").append(legendCanvas);
+        $("#explanations-rewards").append(legendDiv);
 
         // create legend area where names and boxes will exist
         var legendRewards = document.createElement("DIV");
