@@ -75,8 +75,8 @@ function getSeeSawChart() {
 
 function getAllPositivesChart() {
     var actionInfos = [];
-    actionInfos.push([ "action_0", 0, [[ "reward_0" , 10], ["reward_1", 20], ["reward_2", 30] ]]);
-    actionInfos.push([ "action_1", 0, [[ "reward_0" , 40], ["reward_1", 50], ["reward_2", 60] ]]);
+    actionInfos.push([ "action_0", 0, [[ "reward_0" , 0], ["reward_1", 0], ["reward_2", 0] ]]);
+    actionInfos.push([ "action_1", 0, [[ "reward_0" , 40], ["reward_1", 0], ["reward_2", 60] ]]);
     actionInfos.push([ "action_2", 0, [[ "reward_0" , 70], ["reward_1", 80], ["reward_2", 90] ]]);
     actionInfos.push([ "action_3", 0, [[ "reward_0" , 100],["reward_1", 110],["reward_2", 120] ]]);
     var ch = buildChartFromActionInfos(actionInfos);
