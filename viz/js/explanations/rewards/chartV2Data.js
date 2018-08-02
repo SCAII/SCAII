@@ -31,11 +31,19 @@ function addUtilityFunctions(chart) {
         return maxBar;
     }
     ch.getMaxActionValue = function () {
-        var maxTotal = 0;
+        var max = 0;
         for (var i in ch.actionForNameMap) {
-            maxTotal = Math.max(maxTotal, Math.abs(ch.actionForNameMap[i].value));
+            max = Math.max(max, Math.abs(ch.actionForNameMap[i].value));
         }
-        return maxTotal;
+        return max;
+    }
+    
+    ch.getMaxValueAction = function () {
+        return getMaxValuedThing(this.actions);
+    }
+
+    ch.getMaxValueBar = function(actionBars) {
+        return getMaxValuedThing(actionBars);
     }
     ch.getMaxAbsoluteValueReward = function () {
         var maxValue = undefined;
@@ -95,4 +103,24 @@ function addUtilityFunctions(chart) {
         return max;
     }
     return ch;
+}
+
+function getMaxValuedThing(things) {
+    var max = 0;
+    var maxThing = undefined
+    for (var i in things) {
+        var thing = things[i];
+        var value = thing.value;
+        if (maxThing == undefined) {
+            maxThing = thing;
+            max = value;
+        }
+        else {
+            if (value > max){
+                maxThing = thing;
+                max = value;
+            }
+        }
+    }
+    return maxThing;
 }

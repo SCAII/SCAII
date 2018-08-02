@@ -1,27 +1,120 @@
 function getSaliencyV2UI() {
     var ui = {};
+    ui.uimap = getSaliencyV2UIMap();
+    ui.currentlyHighlightedSaliencyMapId = undefined;
+
     ui.renderSaliencyAccessControls = function() {
         clearSaliencyControls();
-        //FIXME
-        alert("called renderSaliencyAccessControls");
+        populateSaliencyQuestionSelector();
+        addWhatButton();
     }
-    ui.renderSaliencyCombined = function() {
+   
+	ui.renderSaliencyDetailed = function(chartData) {
         clearSaliencies();
         createSaliencyContainers();
-        //FIXME
-        
-        alert("called renderSaliencyCombined");
-    }
-    
-    ui.renderSaliencyDetailed = function() {
+        var selectedBars = chartData.getSelectedBars();
+        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('detailed', "reward");
+		
+		for (var i in selectedBars){
+            var scaleFactor = 1.0;
+            // if (i > 0){
+            //     scaleFactor = 0.8;
+            // }
+			var bar = selectedBars[i];
+			var saliencyId = bar.saliencyId;
+			var layerMessage = saliencyLookupMap.get(saliencyId);
+			if (layerMessage == undefined){
+				console.log("ERROR - no Layer message for saliencyID " + saliencyId);
+			}
+			else {
+				var expLayers = layerMessage.getLayersList();
+				var nameContainerDiv = getNameDivForRow(i, bar,"?? used to be rank string??");
+				$("#saliency-maps").append(nameContainerDiv);
+                var rowInfoString = getRowInfoString(bar);
+				//var normalizationFactor = getNormalizationFactor(expLayers);
+				for (var j in expLayers) {
+					expLayer = expLayers[j];
+					//console.log('found layer ' + expLayer.getName());
+					var name = expLayer.getName();
+					var cells = expLayer.getCellsList();
+					var width = expLayer.getWidth();
+                    var height = expLayer.getHeight();
+                    var realUIName = renameEntityInfoForIUI(name);
+					this.uimap.renderExplLayer(j + 1, i, realUIName, rowInfoString + realUIName, cells, width, height, normalizationFactor, scaleFactor);
+				} 
+			}
+		}
+	}
+
+	
+	ui.renderSaliencyCombined = function(chartData) {
         clearSaliencies();
         createSaliencyContainers();
-        //FIXME
-        alert("called renderSaliencyDetailed");
-    }
+        var selectedBars = chartData.getSelectedBars();
+        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('combined', "reward");
+		for (var i in selectedBars){
+			var bar = selectedBars[i];
+			var saliencyId = bar.saliencyId;
+			var layerMessage = saliencyLookupMap.get(saliencyId);
+			if (layerMessage == undefined){
+				console.log("ERROR - no Layer message for saliencyID " + saliencyId);
+			}
+			else {
+				var expLayers = layerMessage.getLayersList();
+				var nameContainerDiv = getNameDivForRow(i, bar, "??used to be rank string??");
+				$("#saliency-maps").append(nameContainerDiv);
+				var rowInfoString = getRowInfoString(bar);
+                var aggregatedCells = getAggregatedCells(expLayers);
+                
+				//var normalizationFactor = getNormalizationFactorFromCells(aggregatedCells);
+				var width = expLayers[0].getWidth();
+				var height = expLayers[0].getHeight();
+				this.uimap.renderExplLayer(1, i, "all features cumulative", rowInfoString, aggregatedCells, width, height, normalizationFactor, 1.0);
+			}
+		}
+	}
+
     return ui;
 }
 
+
+function getRowInfoString(bar) {
+    var parts = bar.fullName.split(".");
+    var result = parts[0] + ', ' + parts[1];
+	return result;
+}
+
+
+function getAggregatedCells(expLayers){
+	var result = [];
+	var cellsCount = expLayers[0].getCellsList().length;
+	for (i = 0; i < cellsCount; i++) {
+		var totalForCell = 0;
+		for (var j in expLayers){
+			var expLayer = expLayers[j];
+			totalForCell = totalForCell + expLayer.getCellsList()[i];
+		}
+		result[i] = totalForCell;
+	}
+	return result;
+}
+
+function getNameDivForRow(rowIndex, bar, contextString){
+    var nameContainerDiv = document.createElement("div");
+    nameContainerDiv.setAttribute("class", "flex-column");
+	nameContainerDiv.setAttribute("style", getGridPositionStyle(0,rowIndex) + '; width:200px;text-align:center; border-style: solid; border-width:1px;font-family:Arial;');
+    
+    var contextDiv = document.createElement("div");
+	contextDiv.setAttribute("style", 'width:200px;padding-top:100px; text-align:center; font-family:Arial;');
+    contextDiv.innerHTML = contextString; 
+    nameContainerDiv.append(contextDiv);
+
+    var nameDiv = document.createElement("div");
+	nameDiv.setAttribute("style", 'width:200px;padding-top:25px; text-align:center; font-family:Arial;');
+    nameDiv.innerHTML = getRowInfoString(bar);     
+    nameContainerDiv.append(nameDiv);
+	return nameContainerDiv;
+}
 
 function createSaliencyContainers() {
 	var saliencyDiv = document.createElement("DIV");
@@ -137,3 +230,19 @@ function clearSaliencyControls() {
 	$("#relevance-combined-label").remove();
 	$("#relevance-detailed-label").remove();
 }
+
+function processWhatClick() {
+	currentChartV2.saliencyVisible = true;
+	$("#what-questions").toggleClass('saliency-active');
+    $("#what-label").toggleClass('saliency-active');
+    currentChartV2.render();
+}
+
+
+function getMousePos(canvas, evt) {
+	var rect = canvas.getBoundingClientRect();
+	return {
+	  x: evt.clientX - rect.left,
+	  y: evt.clientY - rect.top
+	};
+  }

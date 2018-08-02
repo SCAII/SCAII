@@ -10,7 +10,7 @@ function runChartDataSelectionTests(failureChecker) {
     fc.setCase("single-select");
 
     // verify clearing works
-    ch.clearSelections();
+    ch.clearRewardBarSelections();
     fc.assert(ch.getRewardBarSelectionCount(), 0, "selectionCount 0");
     // fc.assert(ch.actionForNameMap["action_0"].selected, false, "not selected a0");
     // fc.assert(ch.actionForNameMap["action_1"].selected, false, "not selected b0");

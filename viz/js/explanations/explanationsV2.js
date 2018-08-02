@@ -1,5 +1,6 @@
 var currentChartV2 = undefined;
 var currentExplanationStep = undefined;
+var saliencyLookupMap = {};
 
 function handleExplanationDetails(explDetails){
 	if (explDetails.hasExplPoint()){
@@ -8,6 +9,8 @@ function handleExplanationDetails(explDetails){
         var rawChart = convertProtobufChartToJSChart(barChartMessage);
         //ignore true data for testing
         //currentChartV2.setChartData(getSeeSawChart());
+        var saliency = explanationPoint.getSaliency();
+        saliencyLookupMap = saliency.getSaliencyMapMap();
         currentChartV2.setChartData(rawChart);
         currentChartV2.render();
 	}

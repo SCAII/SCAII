@@ -1,19 +1,12 @@
 
-var saliencyLookupMap = {};
 
-function processWhatClick() {
-	currentChartV2.saliencyVisible = true;
-	$("#what-questions").toggleClass('saliency-active');
-    $("#what-label").toggleClass('saliency-active');
-    currentChartV2.render();
-}
 
-function initSaliencyContainers(){
-	var saliency = activeExplanationPoint.getSaliency();
-    saliencyLookupMap = saliency.getSaliencyMapMap();
-	populateSaliencyQuestionSelector();
-	createSaliencyContainers();
-}
+// function initSaliencyContainers(){
+// 	var saliency = activeExplanationPoint.getSaliency();
+//     saliencyLookupMap = saliency.getSaliencyMapMap();
+// 	populateSaliencyQuestionSelector();
+// 	createSaliencyContainers();
+// }
 
 // function restoreSaliencyIfReturningToTab(step){
 //     if (isTargetStepSaliencyVisible()){

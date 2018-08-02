@@ -140,19 +140,15 @@ normalizationFunctionMap["action.combined"] = getNormalizationFactorForCombinedB
 normalizationFunctionMap["reward.detailed"] = getNormalizationFactorForAllBarSaliencies;
 normalizationFunctionMap["reward.combined"] = getNormalizationFactorForCombinedBarSaliencies;
 
-function getNormalizationKey(style, resolution){
-    var key = undefined;
-    if (resolution == '*'){
-        return 'action.' + style;
-    }
-    else {
-        return 'reward.' + style;
-    }
+function getNormalizationKey(displayGranularity, dataGranularity){
+    // dataGranularity == "action" | "reward"
+    // dispplayGranularity = "detailed" | "combined"
+    return dataGranularity + "." + displayGranularity;
 }
-function getNormalizationFactorForDisplayStyleAndResolution(style, resolution) {
+function getNormalizationFactorForDisplayStyleAndResolution(style, resolution, actions) {
     var key =getNormalizationKey(style, resolution);
     var f = normalizationFunctionMap[key];
-    return f(activeBarChartManager.groupsList);
+    return f(actions);
 }
 
 // function getNormalizationFactorFromCells(cells) {

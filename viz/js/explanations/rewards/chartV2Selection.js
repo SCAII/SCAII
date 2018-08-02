@@ -1,20 +1,24 @@
 function addSelectionFunctions (rawChartData) {
     var rd = rawChartData;
 
-    for (var i in rd.actions) {
-        for (var j in rd.actions[i].bars) {
-            rd.actions[i].bars[j].selected = false;
-            rd.actions[i].bars[j].saliencyMapSelected = false;
+    rd.clearSaliencyMapSelections = function() {
+        for (var i in rd.actions) {
+            for (var j in rd.actions[i].bars) {
+                rd.actions[i].bars[j].saliencyMapSelected = false;
+            }
         }
     }
-
-    rd.clearSelections = function () {
+    rd.clearRewardBarSelections = function () {
         for (var i in rd.actions) {
             for (var j in rd.actions[i].bars) {
                 rd.actions[i].bars[j].selected = false;
             }
         }
     }
+
+    rd.clearRewardBarSelections();
+    rd.clearSaliencyMapSelections();
+    
     rd.getRewardBarSelectionCount = function () {
         var count = 0;
         for (var i in rd.actions) {
@@ -25,6 +29,17 @@ function addSelectionFunctions (rawChartData) {
             }
         }
         return count;
+    }
+    rd.getSelectedBars = function(){
+        result = [];
+        for (var i in rd.actionRewardNames){
+            var name = rd.actionRewardNames[i];
+            var bar = rd.actionRewardForNameMap[name];
+            if (bar.selected){
+                result.push(bar);
+            }
+        }
+        return result;
     }
     rd.selectSingleRewardBar = function (barName) {
         for (var i in rd.actions) {

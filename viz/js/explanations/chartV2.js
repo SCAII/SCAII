@@ -8,6 +8,12 @@ function addFunctionsToRawChart(rawChart){
     return ch;
 }
 
+function setDefaultSelections(chartData) {
+    var action = chartData.getMaxValueAction();
+    var bar = chartData.getMaxValueBar(action.bars);
+    bar.selected = true;
+    return chartData;
+}
 function addConvenienceDataStructures(chartData) {
     if (chartData.actionForNameMap == undefined){
         chartData.actionForNameMap = {};
@@ -82,6 +88,7 @@ function getChartV2Manager(){
         this.data = addFunctionsToRawChart(chartData);
         this.data = ensureActionValuesSet(this.data);
         this.data = addConvenienceDataStructures(this.data);
+        this.data = setDefaultSelections(this.data);
     }
     cm.setFilename = function(filename){
         this.filename = filename;
@@ -208,7 +215,7 @@ function getChartV2Manager(){
             return;
         }
         else {
-            this.saliencyUI.renderSaliencyCombined();
+            this.saliencyUI.renderSaliencyCombined(this.data);
         }
     }
     
@@ -218,7 +225,7 @@ function getChartV2Manager(){
             return;
         }
         else {
-            this.saliencyUI.renderSaliencyDetailed();
+            this.saliencyUI.renderSaliencyDetailed(this.data);
         }
     }
     return cm;
