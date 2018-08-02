@@ -52,7 +52,7 @@ function getChartV2UI() {
             var rewardInfo = document.createElement("DIV");
             rewardInfo.setAttribute("id", "legend-name-" + i);
             rewardInfo.setAttribute("class", "r" + i + "c1");
-            rewardInfo.setAttribute("style", "height:20px;");
+            rewardInfo.setAttribute("style", "height:20px;padding-left:5px");
             $("#legend-rewards").append(rewardInfo);
 
         }
@@ -65,7 +65,7 @@ function getChartV2UI() {
 		var rewardLegendTotal = document.createElement("DIV");
 		rewardLegendTotal.setAttribute("id", "legend-total-name");
 		rewardLegendTotal.setAttribute("class", "r" + chartData.rewardNames.length + "c1");
-		rewardLegendTotal.setAttribute("style", "height:20px;");
+		rewardLegendTotal.setAttribute("style", "height:20px;padding-left:5px");
 		$("#legend-rewards").append(rewardLegendTotal);
 
         var ctx = chartCanvas.getContext("2d");
@@ -74,18 +74,29 @@ function getChartV2UI() {
         this.renderActionBars(chartCanvas, chartData);
         this.renderBars(chartCanvas,chartData);
         this.renderXAxis(chartCanvas, chartData);
-        this.renderYAxis(chartCanvas, chartData);
+		this.renderYAxis(chartCanvas, chartData);
 
         this.renderActionSeparatorLines(chartCanvas, chartData);
-        this.renderChartValueLabels(chartCanvas, chartData);
-        this.renderActionNames(chartCanvas, chartData);
-		this.renderLegend(rewardInfo, chartData, legendRewards);
-        //this.renderTitle(chartCanvas, chartData);
-        //this.renderChartValueLines(chartCanvas, chartData);
+        this.renderChartValueLabels(chartCanvas, chartData, 4);
+        this.renderChartValueLines(chartCanvas, chartData, 4);
+		this.renderZeroValueLabel(chartCanvas, chartData);
+		this.renderActionNames(chartCanvas, chartData);
+		this.renderLegend(chartData);
+        this.renderTitle(chartCanvas, chartData);
         this.rewardBarTooltipManager = getRewardBarTooltipManager(chartCanvas,chartData);
-    }
+	}
+
+    ui.renderTitle = function (canvas, chartData) {
+		// NOTE: There are no tests for rendering the title
+		var ctx = canvas.getContext("2d");
+		ctx.save();
+		ctx.fillStyle = "black";
+		ctx.font = "bold 20px Arial";
+		ctx.fillText("Chart Title", chartData.canvasWidth / 2 - chartData.groupWidthMargin, chartData.canvasHeight * .07);
+		ctx.restore();
+	}
     
-	ui.renderLegend = function (rewardInfo, chartData) {
+	ui.renderLegend = function (chartData) {
 		// NOTE: There are no tests for rendering the legend
 		for (var i in chartData.rewardNames) {
 			var name = document.getElementById("legend-name-" + i);
@@ -94,11 +105,12 @@ function getChartV2UI() {
 			name.appendChild(content);
 		}	
 		var totalName = document.getElementById("legend-total-name");
-		var totalContent = document.createTextNode("reward_T");
+		var totalContent = document.createTextNode("Reward Total");
 		totalName.appendChild(totalContent);
 	}
 
 	ui.renderActionBars = function (canvas, chartData){
+		// (EVAN) TODO: add test in here for actionBar Names?
 		var ctx = canvas.getContext("2d");
 		for (var i in chartData.actions) {
 			var bar = chartData.actions[i];
@@ -114,10 +126,20 @@ function getChartV2UI() {
 		for (var i = 0; i < chartData.actions.length; i++) {
             ctx.save();
             ctx.fillStyle = "black";
-			ctx.font = "bold 20px Arial";
+			ctx.font = "bold 15px Arial";
 			ctx.fillText(chartData.actionNames[i], chartData.actions[i].actionLabelOriginX - chartData.groupWidthMargin, chartData.actions[i].actionLabelOriginY)
             ctx.restore();
 		}
+	}
+	
+	ui.renderZeroValueLabel = function (canvas, chartData) {
+		// NOTE: there is no test for the zero value label
+		var ctx = canvas.getContext("2d");
+		ctx.save();
+		ctx.fillStyle = "black";
+		ctx.font = "bold 10px Arial";
+		ctx.fillText(0, chartData.groupWidthMargin - 25, chartData.canvasHeight / 2);
+		ctx.restore();
 	}
 
 	ui.renderChartValueLabels = function (canvas, chartData, numberOfLines) {
@@ -144,6 +166,12 @@ function getChartV2UI() {
 			ctx.moveTo(chartData.positiveLineOriginX, chartData.positiveLineOriginY[i]);
 			ctx.lineTo(Number(chartData.positiveLineOriginX) + Number(chartData.positiveLineLength), chartData.positiveLineOriginY[i]);
 			ctx.stroke();
+			ctx.closePath();
+			ctx.beginPath();
+			ctx.moveTo(chartData.positiveLineOriginX, chartData.canvasHeight / 2 - chartData.positiveMarkerYPixelsFromXAxis[i]);
+			ctx.lineTo(Number(chartData.positiveLineOriginX) + Number(chartData.positiveLineLength), chartData.canvasHeight / 2 - chartData.positiveMarkerYPixelsFromXAxis[i]);
+			ctx.stroke()
+			ctx.closePath();
 			ctx.restore();
 		}
 	}

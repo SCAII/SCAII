@@ -32,7 +32,10 @@ function runTests(){
     runQuestionAccessManagerTests(fc);
     runChartManagerTests(fc);
     runChartDataSelectionTests(fc);
-    runChartDataGeometryTests(fc);
+
+    var chartType = getAllPositivesChart();
+    var chartTesting = "allPositives"; // seeSaw , allPositives , allNegatives
+    runChartDataGeometryTests(fc, chartType, chartTesting);
     runChartDataTextTests(fc);
     runChartDataColorTests(fc);
     runRankingTests(fc);

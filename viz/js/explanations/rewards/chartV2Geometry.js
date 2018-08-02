@@ -39,14 +39,14 @@ function addGeometryFunctions(rawChartData) {
         this.widthAvailableForRewardBars = Math.floor(this.widthAvailableForGroup - 2 * this.groupWidthMargin);
         this.widthAvailableForRewardBar = Math.floor(this.widthAvailableForRewardBars / this.rewardNames.length);
         this.rewardBarWidth = Math.floor(this.widthAvailableForRewardBar - 2 * rewardSpacerWidth);
-        this.scalingFactor = (canvasHeight / 2) * 0.75 / this.getMaxAbsRewardOrActionValue();
+        this.scalingFactor = ((canvasHeight / 2) * 0.75 / this.getMaxAbsRewardOrActionValue()).toFixed(2);
     }
 
     rd.positionActionSeperatorLines = function() {
         // acitonLinesLength = maxAbsRewardValue * 2 * scalingFactor + aBitMore
         // actionLinesOriginX
         // actionLinesOriginY = (canvasHeight - yAxisLength) / 2
-        this.actionLinesLength = this.getMaxAbsRewardOrActionValue() * 2 * this.scalingFactor + 10;
+        this.actionLinesLength = Math.floor(this.getMaxAbsRewardOrActionValue() * 2 * this.scalingFactor + 10);
         this.actionLinesOriginY = (this.canvasHeight - this.yAxisLength) / 2;
         for (var i = 1; i < this.actions.length; i++) {
             this.actionLinesOriginX.push(this.widthAvailableForGroup * i);
@@ -134,7 +134,7 @@ function addGeometryFunctions(rawChartData) {
     rd.positionValueMarkers = function (numberOfLines) {
         this.positiveMarkerValues = [numberOfLines];
         this.positiveMarkerYPixelsFromXAxis = [numberOfLines];
-        var valueMarkers = this.getMaxAbsoluteValueReward() / 4;
+        var valueMarkers = Math.floor(this.getMaxAbsRewardOrActionValue() / numberOfLines);
         var setValue = valueMarkers;
         for (var i=0; i < numberOfLines; i++) {
             this.positiveMarkerValues[i] = setValue;
@@ -146,7 +146,7 @@ function addGeometryFunctions(rawChartData) {
     rd.positionValueLines = function (numberOfLines) {
         var length = this.canvasWidth - this.groupWidthMargin * 2;
         this.positiveLine = [numberOfLines];
-        var lineSpacing = this.getMaxAbsoluteValueReward() / numberOfLines * this.scalingFactor;
+        var lineSpacing = Math.floor(this.getMaxAbsRewardOrActionValue() / numberOfLines * this.scalingFactor);
         this.positiveLineLength = this.canvasWidth - 2 * this.groupWidthMargin;
         this.positiveLineOriginX = this.groupWidthMargin;
         for (var i = 0; i < numberOfLines; i++) {
