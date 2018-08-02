@@ -162,6 +162,9 @@ function getChartV2Manager(){
             // normal mode falls through to here and matches T3 as desired
             this.renderT3(mode);
         } 
+        if (this.userStudyMode){
+            ensureStudyControlScreenIsWideEnough();
+        }
     }
 
     cm.renderT1 = function(mode){
