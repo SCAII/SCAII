@@ -512,6 +512,12 @@ function drawArrow(startCoords, endCoords){
     ctx.fillStyle = "#cc0000";
     ctx.fill();
 }
+function ensureStudyControlScreenIsWideEnough(){
+    var interfaceWidth = $("#scaii-interface").width();
+    var saliencyWidth = $("#saliency-div").width();
+    var width = Math.max(interfaceWidth, saliencyWidth);
+    $("#user-id-div").css("width","" + width);
+}
 
 function clearQuestionControls(){
 	$("#why-radios").empty();
