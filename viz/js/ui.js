@@ -283,8 +283,14 @@ function sizeNonGeneratedElements() {
 	$("#scaii-acronym").css("padding-top", "10px");
 	$("#scaii-acronym").css("padding-bottom", "10px");
 	$("#game-replay-label").css("padding-top", "10px");
-	$("#game-replay-label").css("padding-bottom", "10px");
-
+    $("#game-replay-label").css("padding-bottom", "10px");
+    
+    
+    $("#reward-values-panel").css("height", gameboard_canvas.height + "px");
+    $("#left-side-quadrant-labels").css("height", gameboard_canvas.height + "px");
+    $("#right-side-quadrant-labels").css("height", gameboard_canvas.height + "px");
+    $("#playback-controls-panel").css("height", "30px");
+    $("#explanation-control-panel").css("height", "85px");
 }
 
 function clearGameBoards() {
