@@ -29,9 +29,15 @@ function configureExplanationSelectorDiamond(uiIndex,step){
         $("#winning-action-label").html("Chosen move at D" + uiIndex + ": " + winningActionForStep[step]);
 		ctx.font = "16px Arial bold";
 		halfWidth = explanationPointBigDiamondHalfWidth;
-		halfHeight = explanationPointBigDiamondHalfWidth;
-		var yPositionOfWhyButton = -14;// relative to the next container below
-        var xPositionOfWhyButton = x - 20;
+        halfHeight = explanationPointBigDiamondHalfWidth;
+        
+
+        var rectForExplanationControlPanel = document.getElementById("explanation-control-panel").getBoundingClientRect();
+        var absoluteXExpCtrlPanel = rectForExplanationControlPanel.left;
+        var absoluteYExpCtrlPanel = rectForExplanationControlPanel.top;
+
+		var yPositionOfWhyButton = absoluteYExpCtrlPanel + 60;// relative to the next container below
+        var xPositionOfWhyButton = absoluteXExpCtrlPanel + x - 20;
         // why button rendering handled outside of chartV2 as chartV2 is created later upon explDetails arriving
         if (userStudyMode){
             if (treatmentID == "1"){

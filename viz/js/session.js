@@ -227,8 +227,7 @@ function loadReplayFile(filename) {
 	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE);
 	userCommand.setArgsList(args);
     stageUserCommand(userCommand);
-	$("#action-list").empty();
-	$("#explanation-control-panel").empty();
+    clearUIElementsForNewFile();
 	drawExplanationTimeline();
 	clearGameBoards();
     clearExplanationInfoButRetainState();
@@ -237,7 +236,11 @@ function loadReplayFile(filename) {
     currentChartV2.setUserStudyMode(false);
 }
 
-
+function clearUIElementsForNewFile(){
+    $("#action-list").empty();
+    $("#why-button").remove();
+    $("#explanation-control-panel").empty();
+}
 function handleReplaySessionConfig(rsc, selectedStep) {
 	if (!rsc.hasStepCount()) {
 		dialog('Error no stepCount carried by ReplaySessionConfig');
