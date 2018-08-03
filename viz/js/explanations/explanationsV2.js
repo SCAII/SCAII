@@ -31,7 +31,7 @@ function askBackendForExplanationRewardInfo(stepNumber) {
 		//console.log("no need to move - already at step with explanation");
 	}
 	else {
-		jumpToStep(newStep);
+		jumpToStep(stepNumber);
 	}
 }
 

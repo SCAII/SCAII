@@ -135,11 +135,10 @@ function handleStudyQuestions(studyQuestions){
 	winningActionLabel.setAttribute("style", "margin-top:8px;margin-left:30px;font-family:Arial;font-weight:bold;font-size:14px;");
 	winningActionLabel.setAttribute("id", "winning-action-label");
     winningActionLabel.innerHTML = "";
-    $("#reward-Values-panel").append(winningActionLabel);
+    $("#reward-values-panel").append(winningActionLabel);
     // re-render this sowe can change names to ??? if need to for waitForPredictionClick questions
     renderDecisionPointLegend();
 }
-
 function handleReplayControl(replayControl) {
 	var command = replayControl.getCommandList();
 	if (command.length == 2) {
