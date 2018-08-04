@@ -177,7 +177,7 @@ function getChartV2UI() {
 	}
 
 	ui.renderActionSeparatorLines = function (canvas, chartData) {
-		chartData.positionActionSeperatorLines();
+		chartData.positionActionSeparatorLines();
 		var ctx = canvas.getContext("2d");
 		for (var i = 0; i < chartData.actions.length - 1; i++) {
 			ctx.save();
