@@ -472,11 +472,10 @@ function handleScaiiPacket(sPacket) {
                     showUserIdScreen();
                 }
                 else {
-                    var didJump = tabManager.jumpToDesiredStepIfTabChangeInProgress();
-                    if (!didJump){
-                        clearLoadingScreen();
-                    }
+                    tabManager.jumpToDesiredStepIfTabChangeInProgress();
+                    clearLoadingScreen();
                 }
+                
             }
 		}
 	}
