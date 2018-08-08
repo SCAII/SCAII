@@ -33,8 +33,8 @@ function runTests(){
     runChartManagerTests(fc);
     runChartDataSelectionTests(fc);
 
-    var chartType = getAllPositivesChart();
-    var chartTesting = "allPositives"; // seeSaw , allPositives , allNegatives
+    var chartType = getAllNegativesChart();
+    var chartTesting = "allNegatives"; // seeSaw , allPositives , allNegatives
     runChartDataGeometryTests(fc, chartType, chartTesting);
     runChartDataTextTests(fc);
     runChartDataColorTests(fc);

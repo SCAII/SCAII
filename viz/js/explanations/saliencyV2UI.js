@@ -119,7 +119,8 @@ function getNameDivForRow(rowIndex, bar, contextString){
 function createSaliencyContainers() {
 	var saliencyDiv = document.createElement("DIV");
 	saliencyDiv.setAttribute("id", "saliency-div");
-    saliencyDiv.setAttribute("class", "r1c0_2 saliencies-bg");
+	saliencyDiv.setAttribute("class", "saliencies-bg");
+	saliencyDiv.setAttribute("style", "display:block;clear:both;");
 	$("#scaii-interface").append(saliencyDiv);
 
 	var saliencyGroup = document.createElement("DIV");

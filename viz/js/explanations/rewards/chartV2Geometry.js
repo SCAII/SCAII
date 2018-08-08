@@ -42,7 +42,7 @@ function addGeometryFunctions(rawChartData) {
         this.scalingFactor = ((canvasHeight / 2) * 0.75 / this.getMaxAbsRewardOrActionValue()).toFixed(2);
     }
 
-    rd.positionActionSeperatorLines = function() {
+    rd.positionActionSeparatorLines = function() {
         // acitonLinesLength = maxAbsRewardValue * 2 * scalingFactor + aBitMore
         // actionLinesOriginX
         // actionLinesOriginY = (canvasHeight - yAxisLength) / 2
@@ -138,7 +138,7 @@ function addGeometryFunctions(rawChartData) {
         var setValue = valueMarkers;
         for (var i=0; i < numberOfLines; i++) {
             this.positiveMarkerValues[i] = setValue;
-            this.positiveMarkerYPixelsFromXAxis[i] = setValue * this.scalingFactor;
+            this.positiveMarkerYPixelsFromXAxis[i] = (setValue * this.scalingFactor).toFixed(2);
             setValue += valueMarkers;
         }
     }
@@ -151,7 +151,7 @@ function addGeometryFunctions(rawChartData) {
         this.positiveLineOriginX = this.groupWidthMargin;
         for (var i = 0; i < numberOfLines; i++) {
             this.positiveLine[i] = {};
-            this.positiveLineOriginY[i] = (this.canvasHeight / 2) + (1 + Number(i)) * lineSpacing;
+            this.positiveLineOriginY[i] = ((this.canvasHeight / 2) + (1 + Number(i)) * lineSpacing).toFixed(2);
         }
     }
     rd.positionTooltips = function(){
@@ -161,7 +161,7 @@ function addGeometryFunctions(rawChartData) {
             //originX + rewardBarWidth
 
             rewardBar.tooltipOriginX = rewardBar.originX + this.rewardBarWidth;
-            // (canvasHeight / 2) - ((ch.rewardBar[i].bars[j].value * scallingFactor) * 0.75)
+            // (canvasHeight / 2) - ((ch.rewardBar[i].bars[j].value * scalingFactor) * 0.75)
             rewardBar.tooltipOriginY = this.canvasHeight/2 - rewardBar.value * this.scalingFactor * 0.75; 
         }
     }

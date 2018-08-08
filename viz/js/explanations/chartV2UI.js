@@ -149,8 +149,8 @@ function getChartV2UI() {
             ctx.save();
             ctx.fillStyle = "black";
             ctx.font = "bold 10px Arial";
-			ctx.fillText(chartData.positiveMarkerValues[i], chartData.groupWidthMargin - 25, chartData.canvasHeight / 2 - chartData.positiveMarkerYPixelsFromXAxis[i]);
-			ctx.fillText(-chartData.positiveMarkerValues[i], chartData.groupWidthMargin - 25, chartData.canvasHeight / 2 + chartData.positiveMarkerYPixelsFromXAxis[i]);
+			ctx.fillText(chartData.positiveMarkerValues[i], chartData.groupWidthMargin - 25, chartData.canvasHeight / 2 - Number(chartData.positiveMarkerYPixelsFromXAxis[i]));
+			ctx.fillText(-chartData.positiveMarkerValues[i], chartData.groupWidthMargin - 25, chartData.canvasHeight / 2 + Number(chartData.positiveMarkerYPixelsFromXAxis[i]));
             ctx.restore();
 		}
 	}
@@ -177,7 +177,7 @@ function getChartV2UI() {
 	}
 
 	ui.renderActionSeparatorLines = function (canvas, chartData) {
-		chartData.positionActionSeperatorLines();
+		chartData.positionActionSeparatorLines();
 		var ctx = canvas.getContext("2d");
 		for (var i = 0; i < chartData.actions.length - 1; i++) {
 			ctx.save();
@@ -303,7 +303,7 @@ function fullClearExplanationInfo() {
 	clearQuestionControls();
 	if ($("#rewards-titled-container").length) {
 		$("#rewards-titled-container").remove();
-	}
+	}	
 	if (currentChartV2 != undefined) {
 		currentChartV2.chartVisible = false;
 		if (currentChartV2.saliencyVisible) {
@@ -321,7 +321,7 @@ function clearExplanationInfoButRetainState() {
 	clearQuestionControls();
 	if ($("#rewards-titled-container").length) {
 		$("#rewards-titled-container").remove();
-	}
+	}	
 	if (currentChartV2 != undefined) {
 		if (currentChartV2.saliencyVisible) {
 			clearSaliencies();
@@ -334,15 +334,19 @@ function clearExplanationInfoButRetainState() {
 function createRewardChartContainer() {
 	var rewardTitleContainer = document.createElement("DIV");
 	rewardTitleContainer.setAttribute("id", "rewards-titled-container");
-	rewardTitleContainer.setAttribute("class", "flex-column titled-container r0c1 rewards-bg");
-	$("#scaii-interface").append(rewardTitleContainer);
+	rewardTitleContainer.setAttribute("class", "flex-column titled-container rewards-bg");
+	//rewardTitleContainer.setAttribute("class", "flex-column titled-container r0c1 rewards-bg");
+	rewardTitleContainer.setAttribute("style", "float:left;white-space:nowrap;width:auto;");
+	$("#game-chart-container").append(rewardTitleContainer);
 
-	var rewardSpacerContainer = document.createElement("DIV");
-	rewardSpacerContainer.setAttribute("id", "rewards-spacer");
-	rewardSpacerContainer.setAttribute("class", "r0c2");
-	//rewardSpacerContainer.setAttribute("style", "background-color:white;width:800px;");
-	rewardSpacerContainer.setAttribute("style", "background-color:white;");
-	$("#scaii-interface").append(rewardSpacerContainer);
+	// if (!($("#rewards-spacer").length)) {
+	// 	var rewardSpacerContainer = document.createElement("DIV");
+	// 	rewardSpacerContainer.setAttribute("id", "rewards-spacer");
+	// 	//rewardSpacerContainer.setAttribute("class", "r0c2");
+	// 	rewardSpacerContainer.setAttribute("style", "background-color:white;width:800px;");
+	// 	//rewardSpacerContainer.setAttribute("style", "background-color:white;");
+	// 	$("#scaii-interface").append(rewardSpacerContainer);
+	// }
 
 
 	var whyQuestionsDiv = document.createElement("DIV");
@@ -379,7 +383,7 @@ function createRewardChartContainer() {
 	var whatDiv = document.createElement("DIV");
 	whatDiv.setAttribute("id", "what-div");
 	whatDiv.setAttribute("class", "flex-row rewards-bg");
-	whatDiv.setAttribute("style", "margin:auto;font-family:Arial;");
+	whatDiv.setAttribute("style", "margin:auto;font-family:Arial;padding:10px;");
 	$("#rewards-titled-container").append(whatDiv);
 
 	var whatButtonDiv = document.createElement("DIV");
