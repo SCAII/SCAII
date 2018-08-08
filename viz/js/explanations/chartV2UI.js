@@ -337,17 +337,7 @@ function createRewardChartContainer() {
 	rewardTitleContainer.setAttribute("class", "flex-column titled-container rewards-bg");
 	//rewardTitleContainer.setAttribute("class", "flex-column titled-container r0c1 rewards-bg");
 	rewardTitleContainer.setAttribute("style", "float:left;white-space:nowrap;width:auto;");
-	$("#game-chart-container").append(rewardTitleContainer);
-
-	// if (!($("#rewards-spacer").length)) {
-	// 	var rewardSpacerContainer = document.createElement("DIV");
-	// 	rewardSpacerContainer.setAttribute("id", "rewards-spacer");
-	// 	//rewardSpacerContainer.setAttribute("class", "r0c2");
-	// 	rewardSpacerContainer.setAttribute("style", "background-color:white;width:800px;");
-	// 	//rewardSpacerContainer.setAttribute("style", "background-color:white;");
-	// 	$("#scaii-interface").append(rewardSpacerContainer);
-	// }
-
+	$("#game-chart-container").append(rewardTitleContainer);	
 
 	var whyQuestionsDiv = document.createElement("DIV");
 	whyQuestionsDiv.setAttribute("id", "why-questions-div");

@@ -241,7 +241,7 @@ function removeFileSelectorEtc() {
     $("#title-row").empty();
     var div = document.createElement("DIV");
     div.setAttribute("id", "spacer-replacing-fileselector");
-    div.setAttribute("style", "height:0px;width:100%;");
+    div.setAttribute("style", "height:15px;width:100%;");
     $("#title-row").append(div);
 }
 
