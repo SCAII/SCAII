@@ -10,7 +10,7 @@ function getSaliencyV2UI() {
     }
    
 	ui.renderSaliencyDetailed = function(chartData) {
-        clearSaliencies();
+        $("#saliency-div").remove();
         createSaliencyContainers();
         var selectedBars = chartData.getSelectedBars();
         var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('detailed', "reward");
@@ -48,7 +48,7 @@ function getSaliencyV2UI() {
 
 	
 	ui.renderSaliencyCombined = function(chartData) {
-        clearSaliencies();
+        $("#saliency-div").remove();
         createSaliencyContainers();
         var selectedBars = chartData.getSelectedBars();
         var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('combined', "reward");
@@ -180,13 +180,13 @@ function populateSaliencyQuestionSelector(){
 	radioCombinedSaliency.setAttribute("id","relevance-combined-radio");
 	radioCombinedSaliency.setAttribute("value","saliencyCombined");
     radioCombinedSaliency.setAttribute("style", "margin-left:20px;");
-    if (currentChartV2.saliencyCombined){
+    if (currentExplManager.saliencyCombined){
         radioCombinedSaliency.setAttribute("checked", "true");
     }
 	radioCombinedSaliency.onclick = function(e) {
-        currentChartV2.saliencyCombined = true;
+        currentExplManager.saliencyCombined = true;
         targetClickHandler(e, "setSaliencyView:combinedSaliency");
-        currentChartV2.render();
+        currentExplManager.render();
 	};
 
 	var combinedSaliencyLabel = document.createElement("div");
@@ -200,13 +200,13 @@ function populateSaliencyQuestionSelector(){
 	radioDetailedSaliency.setAttribute("id","relevance-detailed-radio");
 	radioDetailedSaliency.setAttribute("value","saliencyDetailed");
     radioDetailedSaliency.setAttribute("style", "margin-left:20px; ");
-    if (!currentChartV2.saliencyCombined){
+    if (!currentExplManager.saliencyCombined){
         radioDetailedSaliency.setAttribute("checked", "true");
     }
 	radioDetailedSaliency.onclick = function(e) {
-        currentChartV2.saliencyCombined = false;
+        currentExplManager.saliencyCombined = false;
         targetClickHandler(e, "setSaliencyView:detailedSaliency");
-        currentChartV2.render();
+        currentExplManager.render();
 	};
 
 	var detailedSaliencyLabel = document.createElement("div");
@@ -221,10 +221,6 @@ function populateSaliencyQuestionSelector(){
 }
 
 
-
-function clearSaliencies() {
-    $("#saliency-div").remove();
-}
 function clearSaliencyControls() {
     $("#relevance-combined-radio").remove();
 	$("#relevance-detailed-radio").remove();
@@ -233,10 +229,18 @@ function clearSaliencyControls() {
 }
 
 function processWhatClick() {
-	currentChartV2.saliencyVisible = true;
-	$("#what-questions").toggleClass('saliency-active');
-    $("#what-label").toggleClass('saliency-active');
-    currentChartV2.render();
+    if (currentExplManager.saliencyVisible){
+        currentExplManager.saliencyVisible = false;
+        $("#what-questions").toggleClass('saliency-active');
+        $("#what-label").toggleClass('saliency-active');
+        currentExplManager.render();
+    }
+    else {
+        currentExplManager.saliencyVisible = true;
+        $("#what-questions").toggleClass('saliency-active');
+        $("#what-label").toggleClass('saliency-active');
+        currentExplManager.render();
+    }
 }
 
 

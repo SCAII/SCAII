@@ -270,16 +270,17 @@ var selectedDecisionStep = undefined;
 
 function processWhyClick(step) {
 	if (selectedDecisionStep == step) {
-		currentChartV2.chartVisible = false;
+        currentExplManager.chartVisible = false;
+        currentExplManager.saliencyVisible = false;
 		selectedDecisionStep = undefined;
-		currentChartV2.render();
+		currentExplManager.render();
 		// engage selection color for supporting areas
 		//$("#why-questions").toggleClass('active');
 		//$("#why-label").toggleClass('active');
 	}
 	else if (selectedDecisionStep == undefined) {
 		// show explanation info for new step
-		currentChartV2.chartVisible = true;
+		currentExplManager.chartVisible = true;
 		selectedDecisionStep = step;
 		askBackendForExplanationRewardInfo(step);
 
@@ -289,7 +290,7 @@ function processWhyClick(step) {
 	}
 	else {
 		// (selectedDecisionStep == someOtherStep)
-		currentChartV2.chartVisible = true;
+		currentExplManager.chartVisible = true;
 
 		// show explanation info for new step
 		selectedDecisionStep = step;
@@ -297,37 +298,32 @@ function processWhyClick(step) {
 	}
 }
 
-function fullClearExplanationInfo() {
+// function fullClearExplanationInfo() {
+// 	$("#explanations-rewards").empty();
+// 	$("#action-name-label").html(" ");
+// 	clearQuestionControls();
+// 	if ($("#rewards-titled-container").length) {
+// 		$("#rewards-titled-container").remove();
+// 	}	
+// 	if (currentExplManager != undefined) {
+// 		currentExplManager.chartVisible = false;
+// 		if (currentExplManager.saliencyVisible) {
+// 			$("#saliency-div").remove();
+// 		}
+// 		currentExplManager.saliencyVisible = false;
+// 	}
+
+// }
+
+
+function cleanExplanationUI() {
 	$("#explanations-rewards").empty();
 	$("#action-name-label").html(" ");
 	clearQuestionControls();
 	if ($("#rewards-titled-container").length) {
 		$("#rewards-titled-container").remove();
 	}	
-	if (currentChartV2 != undefined) {
-		currentChartV2.chartVisible = false;
-		if (currentChartV2.saliencyVisible) {
-			clearSaliencies();
-		}
-		currentChartV2.saliencyVisible = false;
-	}
-
-}
-
-
-function clearExplanationInfoButRetainState() {
-	$("#explanations-rewards").empty();
-	$("#action-name-label").html(" ");
-	clearQuestionControls();
-	if ($("#rewards-titled-container").length) {
-		$("#rewards-titled-container").remove();
-	}	
-	if (currentChartV2 != undefined) {
-		if (currentChartV2.saliencyVisible) {
-			clearSaliencies();
-		}
-	}
-
+	$("#saliency-div").remove();
 }
 
 
@@ -438,7 +434,7 @@ function addWhatButton() {
 
 	$("#what-button-div").append(whatButton);
 	$("#" + buttonId).click(function (e) {
-		if (currentChartV2.saliencyVisible) {
+		if (currentExplManager.saliencyVisible) {
 			var logLine = templateMap["hideSaliency"];
 			logLine = logLine.replace("<HIDE_SALNCY>", "NA");
 			targetClickHandler(e, logLine);

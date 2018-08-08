@@ -57,7 +57,7 @@ function configureExplanationSelectorDiamond(uiIndex,step){
             userActionMonitor.stepToDecisionPoint(step);
             stateMonitor.setDecisionPoint(step);
         }
-		// if (currentChartV2.chartVisible){
+		// if (currentExplManager.chartVisible){
 		// 	// send a request to back end for focusing on this new step
 		// 	processWhyClick(step);
 		// 	// but salienciesAreShowing is cleared by default on loading new explanation point

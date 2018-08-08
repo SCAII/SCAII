@@ -105,8 +105,8 @@ function handleStudyQuestions(studyQuestions){
     var questions = studyQuestions.getStudyQuestionsList();
     var userId = studyQuestions.getUserId();
     treatmentID = studyQuestions.getTreatmentId();
-    currentChartV2.setUserStudyMode(true);
-    currentChartV2.setUserStudyTreatment("T" + treatmentID);
+    currentExplManager.setUserStudyMode(true);
+    currentExplManager.setUserStudyTreatment("T" + treatmentID);
     //var answerFilename = studyQuestions.getAnswerFilename();
     var answerFilename = "answers_" + userId + "_" + treatmentID + ".txt";
     if (questions.length == 0) {
@@ -229,10 +229,10 @@ function loadReplayFile(filename) {
     clearUIElementsForNewFile();
 	drawExplanationTimeline();
 	clearGameBoards();
-    clearExplanationInfoButRetainState();
-    currentChartV2 = getChartV2Manager();
-    currentChartV2.setFilename(filename);
-    currentChartV2.setUserStudyMode(false);
+    cleanExplanationUI();
+    currentExplManager = getExplanationsV2Manager();
+    currentExplManager.setFilename(filename);
+    currentExplManager.setUserStudyMode(false);
 }
 
 function clearUIElementsForNewFile(){
