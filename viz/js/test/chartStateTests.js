@@ -15,8 +15,8 @@ function runChartManagerTests(failureChecker) {
     var cm;
     { // defaults checks
         fc.setCase("normal mode defaults check");
-        //cm = getChartV2Manager(chartData);
-        cm = getChartV2Manager();
+        //cm = getExplanationsV2Manager(chartData);
+        cm = getExplanationsV2Manager();
         cm.setChartData(buildDummyChart(3));
         cm.setUserStudyMode(false);
         fc.assert(cm.treatmentID, "NA", "treatmentID");
@@ -31,8 +31,8 @@ function runChartManagerTests(failureChecker) {
     
         //
         fc.setCase("user study mode T0 defaults check");
-        //cm = getChartV2Manager(chartData);
-        cm = getChartV2Manager();
+        //cm = getExplanationsV2Manager(chartData);
+        cm = getExplanationsV2Manager();
         cm.setChartData(buildDummyChart(3));
         cm.setUserStudyMode(true);
         cm.setUserStudyTreatment("T0");
@@ -47,8 +47,8 @@ function runChartManagerTests(failureChecker) {
 
         //
         fc.setCase("user study mode T1 defaults check");
-        //cm = getChartV2Manager(chartData);
-        cm = getChartV2Manager();
+        //cm = getExplanationsV2Manager(chartData);
+        cm = getExplanationsV2Manager();
         cm.setChartData(buildDummyChart(3));
         cm.setUserStudyMode(true);
         cm.setUserStudyTreatment("T1");
@@ -64,8 +64,8 @@ function runChartManagerTests(failureChecker) {
 
         //
         fc.setCase("user study mode T2 defaults check");
-        //cm = getChartV2Manager(chartData);
-        cm = getChartV2Manager();
+        //cm = getExplanationsV2Manager(chartData);
+        cm = getExplanationsV2Manager();
         cm.setChartData(buildDummyChart(3));
         cm.setUserStudyMode(true);
         cm.setUserStudyTreatment("T2");
@@ -80,8 +80,8 @@ function runChartManagerTests(failureChecker) {
 
         //
         fc.setCase("user study mode T3 defaults check");
-        //cm = getChartV2Manager(chartData);
-        cm = getChartV2Manager();
+        //cm = getExplanationsV2Manager(chartData);
+        cm = getExplanationsV2Manager();
         cm.setChartData(buildDummyChart(3));
         cm.setUserStudyMode(true);
         cm.setUserStudyTreatment("T3");
@@ -98,8 +98,8 @@ function runChartManagerTests(failureChecker) {
 
     { // non user study mode
         fc.setCase("non user study mode");
-        //cm = getChartV2Manager(chartData);
-        cm = getChartV2Manager();
+        //cm = getExplanationsV2Manager(chartData);
+        cm = getExplanationsV2Manager();
         cm.setChartData(buildDummyChart(3));
         cm.setUserStudyMode(false);
         fc.assert(cm.showLosingActionSmaller,false,"losing actions saliency map size");
@@ -130,8 +130,8 @@ function runChartManagerTests(failureChecker) {
 
     { // T1
         fc.setCase("T1");
-        //cm = getChartV2Manager(chartData);
-        cm = getChartV2Manager();
+        //cm = getExplanationsV2Manager(chartData);
+        cm = getExplanationsV2Manager();
         cm.setChartData(buildDummyChart(3));
         cm.setUserStudyMode(true);
         cm.setUserStudyTreatment("T1");
@@ -146,8 +146,8 @@ function runChartManagerTests(failureChecker) {
     
     { // T2
         fc.setCase("T2");
-        //cm = getChartV2Manager(chartData);
-        cm = getChartV2Manager();
+        //cm = getExplanationsV2Manager(chartData);
+        cm = getExplanationsV2Manager();
         cm.setChartData(buildDummyChart(3));
         cm.setUserStudyMode(true);
         cm.setUserStudyTreatment("T2");
@@ -161,8 +161,8 @@ function runChartManagerTests(failureChecker) {
 
     { // T3
         fc.setCase("T3");
-        //cm = getChartV2Manager(chartData);
-        cm = getChartV2Manager();
+        //cm = getExplanationsV2Manager(chartData);
+        cm = getExplanationsV2Manager();
         cm.setChartData(buildDummyChart(3));
         cm.setUserStudyMode(true);
         cm.setUserStudyTreatment("T3");

@@ -137,7 +137,7 @@ function getTabManager() {
         this.targetTabId = tabId;
         var returnInfo = {};
         // always remember chart state and saliency that is displayed
-        returnInfo.chartV2 = currentChartV2;
+        returnInfo.chartV2 = currentExplManager;
         returnInfo.returnTargetStep = sessionIndexManager.getCurrentIndex();
         if (this.rememberQuestionInProgress(returnInfo)){
             returnInfo.tabWasCompleted = false;
@@ -172,8 +172,8 @@ function getTabManager() {
                 this.targetTabId = undefined;
                 clearLoadingScreen();
             }
-            currentChartV2 = returnInfo.chartV2;
-            currentChartV2.render();
+            currentExplManager = returnInfo.chartV2;
+            currentExplManager.render();
         }
     }
 
@@ -185,8 +185,8 @@ function getTabManager() {
                 this.targetTabId = undefined;
                 clearLoadingScreen();
             }
-            currentChartV2 = returnInfo.chartV2;
-            currentChartV2.render();
+            currentExplManager = returnInfo.chartV2;
+            currentExplManager.render();
         }
     }
 
@@ -208,7 +208,7 @@ function getTabManager() {
         if (rememberInfo){
             this.rememberStateUponDeparture(tabId);
         }
-        clearExplanationInfoButRetainState();
+        cleanExplanationUI();
         var indexOfTargetTab = this.getIndexOfTabWithId(tabId);
         this.setTabIndex(indexOfTargetTab);
         loadTab(tabId, replayFileForTab, loadingMessage);

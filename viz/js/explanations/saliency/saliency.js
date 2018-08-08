@@ -10,7 +10,7 @@
 
 // function restoreSaliencyIfReturningToTab(step){
 //     if (isTargetStepSaliencyVisible()){
-//         currentChartV2.saliencyVisible = true;
+//         currentExplManager.saliencyVisible = true;
 //         var targetStep = getTargetStepFromReturnInfo();
 //         if (targetStep != undefined && targetStep == step) {
 //             processWhatClick();
