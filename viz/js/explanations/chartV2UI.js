@@ -277,19 +277,8 @@ function processWhyClick(step) {
 		// engage selection color for supporting areas
 		//$("#why-questions").toggleClass('active');
 		//$("#why-label").toggleClass('active');
-	}
-	else if (selectedDecisionStep == undefined) {
-		// show explanation info for new step
-		currentExplManager.chartVisible = true;
-		selectedDecisionStep = step;
-		askBackendForExplanationRewardInfo(step);
-
-		// engage selection color for supporting areas
-		//		$("#why-questions").toggleClass('active');
-		//		$("#why-label").toggleClass('active');
-	}
+	}	
 	else {
-		// (selectedDecisionStep == someOtherStep)
 		currentExplManager.chartVisible = true;
 
 		// show explanation info for new step

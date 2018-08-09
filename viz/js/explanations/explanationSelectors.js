@@ -57,14 +57,10 @@ function configureExplanationSelectorDiamond(uiIndex,step){
             userActionMonitor.stepToDecisionPoint(step);
             stateMonitor.setDecisionPoint(step);
         }
-		// if (currentExplManager.chartVisible){
-		// 	// send a request to back end for focusing on this new step
-		// 	processWhyClick(step);
-		// 	// but salienciesAreShowing is cleared by default on loading new explanation point
-        // }
-        // else {
-        //     restoreChartIfReturningToTab(step);
-        // }
+		if (currentExplManager.chartVisible){
+			// send a request to back end for focusing on this new step
+			processWhyClick(step);
+        }
 	}
 	else {
 		ctx.font = "12px Arial bold";
