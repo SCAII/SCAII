@@ -293,13 +293,18 @@ function acceptAnswer(e) {
     else {
         if (squim.hasMoreQuestions()){
             if (getStepFromQuestionId(asqm.mostRecentlyPosedQuestion) == "summary"){
-                renderer.renderCueAndArrowToPlayButton();
+                if (!controlsManager.isPauseButtonDisplayed()){ // don't draw arrow if playing
+                    renderer.renderCueAndArrowToPlayButton();
+                }
+                
             }
             else {
-                if (userInputBlocked == false) {
-                    pauseGame();
+                if (!controlsManager.isPauseButtonDisplayed()){ // don't pause or draw arrow if playing
+                    if (userInputBlocked == false) {
+                        pauseGame();
+                    }
+                    renderer.renderCueAndArrowToPlayButton();
                 }
-                asqm.renderer.renderCueAndArrowToPlayButton();
             }
             
         }
