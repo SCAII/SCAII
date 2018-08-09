@@ -228,6 +228,12 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 		this.pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="16px" width="14px"/>';
 	}
 
+    manager.isPauseButtonDisplayed = function() {
+        if (this.pauseResumeButton.onclick == tryPause) {
+            return true;
+        }
+        return false;
+    }
 	//
 	// rewind
 	//
