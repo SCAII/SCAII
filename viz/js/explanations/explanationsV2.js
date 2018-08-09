@@ -41,7 +41,7 @@ function renderWhyButton(step, x, y){
     whyButton.setAttribute("id", buttonId);
     var why = document.createTextNode("why?");
     whyButton.appendChild(why);          
-    whyButton.setAttribute("style", 'z-index:' + zIndexMap["whyButton"] + ';position:absolute;left:' + x + 'px;top:' + y + 'px;font-family:Arial;');
+    whyButton.setAttribute("style", 'z-index:' + zIndexMap["whyButton"] + ';position:relative;left:' + x + 'px;top:-17px;font-family:Arial;');
     $("#explanation-control-panel").append(whyButton);
     $("#" + buttonId).click(function(e) {
         if (currentExplManager.chartVisible) {

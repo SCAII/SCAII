@@ -139,7 +139,14 @@ function drawExplanationTimeline() {
 	// just use width of gameboard for now, may need to be bigger
 	
 	expl_ctrl_canvas.height = explanationControlCanvasHeight;
-	$("#explanation-control-panel").append(expl_ctrl_canvas);
+	//FIXME: this could be done better
+	//EXPLANATION: since why-button is sometimes made before expl_ctrl_canvas updates 
+	//			   append before why-button incase this happens, else do the normal thing
+	if ($("#why-button").length) {
+		$("#why-button").before(expl_ctrl_canvas);
+	} else {
+		$("#explanation-control-panel").append(expl_ctrl_canvas);
+	}
 	let ctx = expl_ctrl_ctx;
 	var can_width = 600;
 	

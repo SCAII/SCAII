@@ -269,7 +269,7 @@ function getChartV2UI() {
 var selectedDecisionStep = undefined;
 
 function processWhyClick(step) {
-	if (selectedDecisionStep == step) {
+	if (selectedDecisionStep == step && currentExplManager.chartVisible == true) {
         currentExplManager.chartVisible = false;
         currentExplManager.saliencyVisible = false;
 		selectedDecisionStep = undefined;
