@@ -127,7 +127,7 @@ var getMatchingExplanationStep = function(ctx, x, y){
 	var matchingStep = undefined;
 	for (key in explanationBoxMap) {
 		var eBox = explanationBoxMap[key];
-		if (x > eBox.left_x && x < eBox.right_x && y > eBox.upper_y && y < eBox.lower_y) {
+		if (x > eBox.left_x && x < eBox.right_x) {
 			matchingStep = eBox.step;
 		}
 	}
