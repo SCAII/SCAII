@@ -222,7 +222,7 @@ function targetHoverHandler(e, logLine) {
             var targetId = e.currentTarget.getAttribute("id");
             logLine = logLine.replace("<TARGET>", targetId);
             var listener = stateMonitor.getLogListener();
-            if(listener.search != undefined && listener.includes("hideEntityTooltips") && logLine.includes("hideEntityTooltips")) {
+            if(listener != undefined && listener.includes("hideEntityTooltips") && logLine.includes("hideEntityTooltips")) {
                 userActionMonitor.logListener = undefined;
                 userActionMonitor.clear();
             } else {
