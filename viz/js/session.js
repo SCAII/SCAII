@@ -422,9 +422,6 @@ function handleScaiiPacket(sPacket) {
 		//console.log('has expl details');
 		var explDetails = sPacket.getExplDetails();
         handleExplanationDetails(explDetails);
-        if (userStudyMode) {
-            tabManager.finalStepsForChangeToUnfinishedTab();
-        }
 	}
 	else if (sPacket.hasReplayControl()) {
 		//console.log("-----got replayCOntrol");
@@ -460,7 +457,7 @@ function handleScaiiPacket(sPacket) {
 			//console.log("-----got jump completed message");
             controlsManager.jumpCompleted();
             if (userStudyMode) {
-                tabManager.finalStepsForChangeToCompletedTab();
+                tabManager.finalStepsForChangeToTab();
             }
 		}
 		else if (commandType == proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE_COMPLETE){
