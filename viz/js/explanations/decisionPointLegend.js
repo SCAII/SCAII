@@ -1,8 +1,10 @@
 
+var decisionPointIds = {};
 var winningActionForStep = {};
 function renderDecisionPointLegend() {
 	$("#action-list").empty();
-	decisionPointIds = {};
+    decisionPointIds = {};
+    winningActionForStep = {};
 	var legendLabel = document.createElement("LABEL");
 	legendLabel.setAttribute("id", "legend-label");
 	legendLabel.setAttribute("style", getGridPositionStyle(0,0) + 'margin-left:10px;margin-bottom:0px;margin-top:6px;font-family:Arial;font-size:14px;');
@@ -105,5 +107,4 @@ function convertNameToLegalId(name) {
 	var nameForId = name.replace(/\)/g,"");
 	return nameForId;
 }
-var decisionPointIds = {};
 
