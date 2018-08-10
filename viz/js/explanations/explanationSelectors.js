@@ -1,6 +1,8 @@
 
 var explanationPointBigDiamondHalfWidth = 22;
 var explanationPointSmallDiamondHalfWidth = 16;
+var explanationBoxMap = {};
+var showingDecisionNumber;
 
 function renderExplanationSelectors() {
 	var explanation_steps = replaySessionConfig.getExplanationStepsList();
@@ -14,7 +16,6 @@ function renderExplanationSelectors() {
 		index = index + 1;
 	}
 }
-var showingDecisionNumber;
 
 function configureExplanationSelectorDiamond(uiIndex,step){
 	var x = getXOriginOfDecisionPointAtStep(step);
@@ -119,8 +120,6 @@ function getExplanationBox(left_x,right_x, upper_y, lower_y, step){
 	eBox.step = step;
 	return eBox;
 }
-
-var explanationBoxMap = {};
 
 
 
