@@ -157,10 +157,15 @@ function getTabManager() {
         }
     }
 
-    tm.finalStepsForChangeToUnfinishedTab = function(){
+    tm.finalStepsForChangeToTab = function(){
         var returnInfo = this.returnInfoForTab[this.targetTabId];
         if (returnInfo!= undefined) {
-            if (!returnInfo.tabWasCompleted){
+            if (returnInfo.tabWasCompleted){
+                delete this.returnInfoForTab[this.targetTabId];
+                this.targetTabId = undefined;
+                clearLoadingScreen();
+            }
+             else {
                 this.applyRememberedQuestionInProgress(returnInfo);
                 // highlight any gameboard object that was clicked on
                 activeStudyQuestionManager.renderer.clickInfoFromUserActionMonitor = returnInfo.queuedUpClickInfo;
@@ -168,19 +173,6 @@ function getTabManager() {
                 if (coords != undefined) {
                     highlightShapeInRange(coords[0], coords[1]);
                 }
-                delete this.returnInfoForTab[this.targetTabId];
-                this.targetTabId = undefined;
-                clearLoadingScreen();
-            }
-            currentExplManager = returnInfo.chartV2;
-            currentExplManager.render();
-        }
-    }
-
-    tm.finalStepsForChangeToCompletedTab = function(){
-        var returnInfo = this.returnInfoForTab[this.targetTabId];
-        if (returnInfo!= undefined) {
-            if (returnInfo.tabWasCompleted){
                 delete this.returnInfoForTab[this.targetTabId];
                 this.targetTabId = undefined;
                 clearLoadingScreen();
