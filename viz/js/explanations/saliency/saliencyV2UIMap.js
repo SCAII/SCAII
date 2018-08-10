@@ -71,8 +71,8 @@ function getSaliencyV2UIMap() {
                         return;
                     }
                     if (tm.showAllSaliencyForTreatment1 || tm.showSaliencyAll){
-                        this.hideAllSaliencyMapOutlines();
-                        this.showSaliencyMapOutline(saliencyMapId);
+                        currentExplManager.saliencyUI.uimap.hideAllSaliencyMapOutlines();
+                        currentExplManager.saliencyUI.uimap.showSaliencyMapOutline(saliencyMapId);
                     }
                     clearHighlightedShapesOnGameboard();
                 }

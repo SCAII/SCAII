@@ -208,10 +208,12 @@ function getStudyQuestionRenderer(questions) {
                 if (renderer.isLegalRegionToClickOn(clickInfo, qu.regionsToAllow)){
                     // don't remove the click message if this is residual click activty from prior question "save"
                     if (!renderer.isClickInfoFromSaveButtonClick(clickInfo)){
-                        renderer.clickInfoFromUserActionMonitor = clickInfo;
-                        renderer.removeMissingClickInfoMessage();
-                        $("#click-prompt").html("Most recent click logged (you can click more if needed).");
-                        $("#click-prompt").css("background-color", asqm.renderer.bg);
+                        if (!clickInfo.includes("MouseOverSaliencyMap")) {
+                            renderer.clickInfoFromUserActionMonitor = clickInfo;
+                            renderer.removeMissingClickInfoMessage();
+                            $("#click-prompt").html("Most recent click logged (you can click more if needed).");
+                            $("#click-prompt").css("background-color", asqm.renderer.bg);
+                        }
                     }
                 }
                 // var clickAckDiv = document.createElement("DIV");
