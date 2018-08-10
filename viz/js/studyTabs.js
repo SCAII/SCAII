@@ -329,7 +329,7 @@ function enableTab(tabId) {
 //whichRowsVisible? selectionManagers[modeKey] getSelection/setSelection
 // no need - saliency shares a selectionManager with the chart
 
-//anySelected?  saliencyDisplayManager.currentlyHighlightedSaliencyMapId for all four. then call saliencyDisplayManager.showSaliencyMapOutline(saliencyMapId)
+//anySelected?  saliencyDisplayManager.currentlyHighlightedSaliencyMapKey for all four. then call saliencyDisplayManager.showSaliencyMapOutline(saliencyMapId)
 // function getTargetStepSaliencyMapToHighlight(){
 //     if (!hasTargetReturnInfoData()) {
 //         return undefined;
