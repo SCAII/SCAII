@@ -210,10 +210,10 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
         // shift x2 to the left to fully expose the current DecisionPoint;
         var currentIndex = sessionIndexManager.getCurrentIndex();
         if (currentIndex + 1 == rangePair[0]) {
-            x2 = x2 + explanationPointBigDiamondHalfWidth;
+            x2 = x2 + explanationPointBigDiamondHalfWidth - 3;
         }
         else {
-            x2 = x2 + explanationPointSmallDiamondHalfWidth;
+            x2 = x2 + explanationPointSmallDiamondHalfWidth - 3;
         }
         // shift x3 to the left to fully cover the next DecisionPoint
         var x4 = expl_ctrl_canvas.width;
@@ -229,7 +229,8 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
         // make blocking div from leftXofRightBlock -> expl_ctrl_canvas.width
         var rightBlockDiv = document.createElement("DIV");
         rightBlockDiv.setAttribute("id", "right-block-div");
-        rightBlockDiv.setAttribute("style", "position:absolute;left:" + x2 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] + ";background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
+        rightBlockDiv.setAttribute("style", "position:absolute;left:" + x2 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] 
+                                          + ";background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
         rightBlockDiv.onclick = function(e) {
             if (userStudyMode){
                 var logLine = templateMap["right-block-div"];
