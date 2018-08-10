@@ -171,7 +171,6 @@ function updateMasterEntity(master, update) {
   }
   var masterShapes = master.getShapesList();
   var updateShapes = update.getShapesList();
-  var newShapesToAdd = [];
   for (var i in updateShapes) {
     var updateShape = updateShapes[i];
     if (!updateShape.hasId()) {
@@ -185,7 +184,7 @@ function updateMasterEntity(master, update) {
     }
     else {
       if (updateShape.hasDelete() && updateShape.getDelete()) {
-        var fullShapeId = getShapeId(update, updeateShape);
+        var fullShapeId = getShapeId(update, updateShape);
         removeFullShapeIdFromTrackingLists(fullShapeId);
         deleteShape(masterShapes, masterShape);
       }
