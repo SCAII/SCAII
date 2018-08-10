@@ -171,14 +171,15 @@ function promoteTutorialFileIfPresent(replayNames) {
     return result;
 }
 
+var rewardsDivMaps= {};
 function handleReplayChoiceConfig(config){
-   
     var replayNames = config.getReplayFilenamesList();
      // studyQuestionMode not yet set to check, just always check - unlikely to be a problem
     // make tutorial file the default
     replayNames = promoteTutorialFileIfPresent(replayNames);
 	for (var i in replayNames) {
-		var name = replayNames[i];
+        var name = replayNames[i];
+        rewardsDivMaps[name] = {};
 		$("#replay-file-selector").append($('<option>', {
 			value: i,
 			text: name
@@ -304,7 +305,6 @@ function handleViz(vizData) {
 	}
 }
 var totalsString = "total score";
-var rewardsDivMap = {};
 function handleCumulativeRewards(crm) {
     
 	var entryList = crm.getEntryList();
@@ -316,7 +316,7 @@ function handleCumulativeRewards(crm) {
 		total = Number(total) + Number(val);
 	}
 	var valId = getRewardValueId(totalsString);
-	var idOfExistingTotalLabel = rewardsDivMap[valId];
+	var idOfExistingTotalLabel = rewardsDivMaps[chosenFile][valId];
 	if (idOfExistingTotalLabel == undefined) {
 		addCumRewardPair(0, totalsString, total);
 	}
@@ -332,7 +332,7 @@ function handleCumulativeRewards(crm) {
     	var key = entry[0];
 		var val = entry[1];
 		var valId = getRewardValueId(key);
-		var idOfExistingValueLabel = rewardsDivMap[valId];
+		var idOfExistingValueLabel = rewardsDivMaps[chosenFile][valId];
 		if (idOfExistingValueLabel == undefined) {
 			var indexInt = Number(i+1);
 			addCumRewardPair(indexInt, key, val);
@@ -367,7 +367,7 @@ function addCumRewardPair(index, key, val){
 	var rewardValDiv = document.createElement("DIV");
 	// give the value div an id constructed with key so can find it later to update
 	var id = getRewardValueId(key);
-	rewardsDivMap[id] = rewardValDiv;
+	rewardsDivMaps[chosenFile][id] = rewardValDiv;
 	rewardValDiv.setAttribute("id", id);
 	rewardValDiv.setAttribute("class", "r" + index +"c1");
 	if (key == totalsString){
@@ -383,13 +383,27 @@ function addCumRewardPair(index, key, val){
     rewardValDiv.onclick = function(e) {targetClickHandler(e, logLineValue);};
     $("#cumulative-rewards").append(rewardValDiv);
 }
-
+//
+//  ORDER OF ARRIVAL OF PACKETS
+//
+//  1. ReplayChoiceConfig   (list of filenames)
+//  2. ReplaySessionConfig
+//  3. StudyQuestions (optional)
+//  4. VizInit
+//  5. Viz
+//  6. SelectFileComplete
+//
+//  Game start  (userStudyMode)
+//  7. VizInit
+//  8. Viz
+//  9. Viz
+//  10. JumpCompleted
+//
 function handleScaiiPacket(sPacket) {
 	var result = undefined;
 	if (sPacket.hasReplayChoiceConfig()) {
 		var config = sPacket.getReplayChoiceConfig();
 		replayChoiceConfig = config;
-		rewardsDivMap = {};
 		handleReplayChoiceConfig(config);
 	}
 	else if (sPacket.hasReplaySessionConfig()) {
