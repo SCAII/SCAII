@@ -37,7 +37,7 @@ function configureExplanationSelectorDiamond(uiIndex,step){
         var absoluteYExpCtrlPanel = rectForExplanationControlPanel.top;
 
 		var yPositionOfWhyButton = absoluteYExpCtrlPanel + 60;// relative to the next container below
-        var xPositionOfWhyButton = absoluteXExpCtrlPanel + x - 20;
+        var xPositionOfWhyButton = absoluteXExpCtrlPanel + x - 37;
         // why button rendering handled outside of chartV2 as chartV2 is created later upon explDetails arriving
         if (userStudyMode){
             if (treatmentID == "1"){
@@ -56,11 +56,12 @@ function configureExplanationSelectorDiamond(uiIndex,step){
         if (userStudyMode){
             userActionMonitor.stepToDecisionPoint(step);
             stateMonitor.setDecisionPoint(step);
-        }
+		}
 		if (currentExplManager.chartVisible){
 			// send a request to back end for focusing on this new step
-			processWhyClick(step);
-        }
+			askBackendForExplanationRewardInfo(step);
+		}
+		selectedDecisionStep = step;
 	}
 	else {
 		ctx.font = "12px Arial bold";
