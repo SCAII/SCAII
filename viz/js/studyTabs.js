@@ -122,13 +122,6 @@ function getTabManager() {
         }
         return false;
     }
- 
-    tm.highlightSaliencyMap = function(displayModeKey, returnInfo){
-        var mapId = returnInfo.highlightedMapIds[displayModeKey]
-        if (mapId != undefined) {
-            saliencyDisplayManagers[displayModekey].showSaliencyMapOutline(mapId);
-        }
-    }
     
     tm.getReturnInfoForTargetTab = function(){
         return this.returnInfoForTab[this.targetTabId];
