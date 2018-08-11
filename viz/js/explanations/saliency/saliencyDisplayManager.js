@@ -13,7 +13,7 @@ const saliencyQuestionDetailed  = "(Showing areas of greatest attention by featu
 // 	//A list of strings such as "attack bottom left *"  (for all bars) or "attack bottom left rewardX" 
 // 	sdm.xaiSelectionManager = selectionManager;
 //     sdm.rowInfosByName = {};
-//     sdm.currentlyHighlightedSaliencyMapId = undefined;
+//     sdm.currentlyHighlightedSaliencyMapKey = undefined;
     
 // 	sdm.setActiveRowInfo = function(activeRowInfos) {
 //         // NEW_SAL control which saliency rows are visible
