@@ -183,7 +183,7 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
         var x4 = expl_ctrl_canvas.width;
         
         var y = ecpOffset.top;
-        var width2 = x4 - x3;
+        var width2 = x4 - x3 + 3;
         var height = $("#explanation-control-panel").height();
         var gradientBars = "repeating-linear-gradient(135deg,rgba(100, 100, 100, 0.1),rgba(100, 100, 100, 0.3) 20px,rgba(100, 100, 100, 0.6) 20px,rgba(100, 100, 100, 0.7) 20px)";
 
@@ -221,7 +221,7 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
         // get offset of explanation-control-panel relative to document
         var ecpOffset = $("#explanation-control-panel").offset();
         var y = ecpOffset.top;
-        var width2 = x4 - x2;
+        var width2 = x4 - x2 + 3;
         var height = $("#explanation-control-panel").height();
         // make blocking div from 0 -> rightXofLeftBlock
         var gradientBars = "repeating-linear-gradient(135deg,rgba(100, 100, 100, 0.1),rgba(100, 100, 100, 0.3) 20px,rgba(100, 100, 100, 0.6) 20px,rgba(100, 100, 100, 0.7) 20px)";
