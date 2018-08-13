@@ -242,6 +242,7 @@ function clearUIElementsForNewFile(){
     $("#action-list").empty();
     $("#why-button").remove();
     $("#explanation-control-panel").empty();
+    $("#cumulative-rewards").empty();
 }
 function handleReplaySessionConfig(rsc, selectedStep) {
 	if (!rsc.hasStepCount()) {
@@ -306,7 +307,6 @@ function handleViz(vizData) {
 }
 var totalsString = "total score";
 function handleCumulativeRewards(crm) {
-    
 	var entryList = crm.getEntryList();
 	var total = 0;
 	//compute totals
