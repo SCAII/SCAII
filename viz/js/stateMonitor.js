@@ -46,7 +46,9 @@ function getStateMonitor() {
             pkt.setLogFileEntry(lfe);
             userInfoScaiiPackets.push(pkt);
             if (this.clickListener != undefined) {
-                this.clickListener.acceptClickInfo(logLine);
+                if (logLine.includes("userClick")){
+                    this.clickListener.acceptClickInfo(logLine);
+                }
             }
             this.logListener = logLine;
             return logLine;
