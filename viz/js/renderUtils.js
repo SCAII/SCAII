@@ -205,42 +205,6 @@ function getColorRGBA(r,g,b,a) {
     else return value;
   }
   
-  
-function highlightShape(ctx, shapeId) {
-    if (-1 != $.inArray(shapeId,primaryHighlightedShapeIds)){
-        highlightShapePrimary(ctx,shapeId);
-    }
-    else if (-1 != $.inArray(shapeId,secondaryHighlightedShapeIds)){
-        highlightShapeSecondary(ctx, shapeId);
-    }
-    else {
-        // do nothing
-    }
-  }
-  
-  
-  function highlightShapePrimary(ctx, shapeId){
-    var shapePoints = shapePositionMap[shapeId];
-    ctx.beginPath();
-    ctx.arc(shapePoints.x, shapePoints.y, shapePoints.radius, 0, 2 * Math.PI, false);
-    //ctx.fillStyle = 'red';
-    //ctx.fill();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'red';
-    ctx.stroke();
-  }
-  
-  function highlightShapeSecondary(ctx, shapeId){
-    var shapePoints = shapePositionMap[shapeId];
-    ctx.beginPath();
-    ctx.arc(shapePoints.x, shapePoints.y, shapePoints.radius, 0, 2 * Math.PI, false);
-    //ctx.fillStyle = 'white';
-    //ctx.fill();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'white';
-    ctx.stroke();
-  }
-  
 function getOctagonHeight(si) {
     var h = Math.sqrt((si.edgeCorner * si.edgeCorner) / 2.0 );
     var result  = si.edgeLeft + 2 * h;
