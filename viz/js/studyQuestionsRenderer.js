@@ -33,12 +33,33 @@ function getStudyQuestionRenderer(questions) {
         ta.setAttribute("id", textBoxId);
         ta.setAttribute("style","font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px;height:50px");
         ta.onkeyup = function() {
-            $("#button-save").attr("disabled",this.value == "");
+            activeStudyQuestionManager.renderer.saveButtonEnableCheck();
         }
         this.currentTextBox = ta;
         $("#q-and-a-div").append(ta);
     }
 
+    sqr.saveButtonEnableCheck = function() {
+        var enableTheButton = false;
+        var questionText = undefined;
+        var followupQuestionText = undefined;
+        if ($("#question-text-box").length != 0){
+            questionText = $("#question-text-box").val();
+            if (questionText != ""){
+                enableTheButton = true;
+            }
+        }
+        if ($("#followup-textarea").length != 0){
+            followupQuestionText = $("#followup-textarea").val();
+            enableTheButton = followupQuestionText != "" && followupQuestionText != undefined &&  enableTheButton;
+        }
+        if (enableTheButton){
+            $("#button-save").attr("disabled",false);
+        }
+        else {
+            $("#button-save").attr("disabled",true);
+        }
+    }
     sqr.renderFollowupQuestion = function(prefix) {
         var fuText = document.createElement("DIV");
         fuText.setAttribute("id", "followup-text");
@@ -49,6 +70,9 @@ function getStudyQuestionRenderer(questions) {
         ta.setAttribute("id", "followup-textarea");
         ta.setAttribute("style","font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px;height:50px");
         this.currentFollowupTextBox = ta;
+        ta.onkeyup = function() {
+            activeStudyQuestionManager.renderer.saveButtonEnableCheck();
+        }
         $("#q-and-a-div").append(ta);
     }
 
