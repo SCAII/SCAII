@@ -484,6 +484,7 @@ function handleScaiiPacket(sPacket) {
                 }
                 else {
                     tabManager.jumpToDesiredStepIfTabChangeInProgress();
+                    activeStudyQuestionManager.accessManager.express();
                     clearLoadingScreen();
                 }
                 
