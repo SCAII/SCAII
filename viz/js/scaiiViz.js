@@ -52,7 +52,7 @@ var main = function () {
 	initUI();
 	var debug = true;
 	if (debug) {
-        //userStudyMode = true;
+        userStudyMode = true;
         if (userStudyMode) {
             removeFileSelectorEtc();
             tabManager = getTabManager();

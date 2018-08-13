@@ -279,7 +279,7 @@ function getStudyQuestionRenderer(questions) {
         var div = document.createElement("DIV");
         div.setAttribute("id", "thank-you-div");
         div.setAttribute("class", "flex-column");
-        div.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:" + zIndexMap["allTheWayToFront"] + ";margin:auto;font-family:Arial;padding:10px;width:1800px;height:1600px;background-color:" + this.bg + ";");
+        div.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:" + zIndexMap["allTheWayToFront"] + ";margin:auto;font-family:Arial;padding:10px;width:" + widthNeededToCoverEverything + "px;height:1600px;background-color:" + this.bg + ";");
         $('body').append(div);
 
         var row = document.createElement("DIV");
