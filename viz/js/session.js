@@ -384,7 +384,7 @@ function addCumRewardPair(index, key, val){
     $("#cumulative-rewards").append(rewardValDiv);
 }
 //
-//  ORDER OF ARRIVAL OF PACKETS
+//  INITIAL ORDER OF ARRIVAL OF PACKETS
 //
 //  1. ReplayChoiceConfig   (list of filenames)
 //  2. ReplaySessionConfig
