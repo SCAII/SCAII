@@ -1,7 +1,6 @@
 function getSaliencyV2UI() {
     var ui = {};
     ui.uimap = getSaliencyV2UIMap();
-    ui.currentlyHighlightedSaliencyMapId = undefined;
 
     ui.renderSaliencyAccessControls = function() {
         clearSaliencyControls();
@@ -43,7 +42,10 @@ function getSaliencyV2UI() {
 					this.uimap.renderExplLayer(j + 1, i, realUIName, rowInfoString + realUIName, cells, width, height, normalizationFactor, scaleFactor);
 				} 
 			}
-		}
+        }
+        if (this.uimap.currentlyHighlightedSaliencyMapKey != undefined) {
+            this.uimap.showSaliencyMapOutline(this.uimap.currentlyHighlightedSaliencyMapKey);
+        }
 	}
 
 	

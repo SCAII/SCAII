@@ -4,11 +4,19 @@ function getSaliencyV2UIMap() {
 
     uimap.saliencyMapPercentSize = 1.0;
     uimap.outlinesForSaliencyMap = {};
+    uimap.currentlyHighlightedSaliencyMapKey = undefined;
 	uimap.renderSaliencyMap = function(canvas, ctx, cells, width, height, normalizationFactor){
 		renderState(canvas, masterEntities, gameScaleFactor, 0, 0,false);
 		this.overlaySaliencyMapOntoGameReplica(ctx, cells, width, height, normalizationFactor);
 	}	
-	
+    
+    /*
+    Must take into account current filename, current decision point, and saliencyMapId
+    */
+    uimap.getDPSpecificSaliencyMapKey = function(saliencyMapId) {
+        var result = 'DP-' + showingDecisionNumber + "-" + saliencyMapId;
+        return result;
+    }
 	uimap.overlaySaliencyMapOntoGameReplica = function(ctx, cells, width, height, normalizationFactor) {
         if (userStudyMode){
             if (isTutorial()){
@@ -71,8 +79,10 @@ function getSaliencyV2UIMap() {
                         return;
                     }
                     if (tm.showAllSaliencyForTreatment1 || tm.showSaliencyAll){
-                        currentExplManager.saliencyUI.uimap.hideAllSaliencyMapOutlines();
-                        currentExplManager.saliencyUI.uimap.showSaliencyMapOutline(saliencyMapId);
+                        var uimap = currentExplManager.saliencyUI.uimap;
+                        uimap.hideAllSaliencyMapOutlines();
+                        var key = uimap.getDPSpecificSaliencyMapKey(saliencyMapId);
+                        uimap.showSaliencyMapOutline(key);
                     }
                     clearHighlightedShapesOnGameboard();
                 }
@@ -107,10 +117,10 @@ function getSaliencyV2UIMap() {
         var divW = w - 2 * outlineWidth;
         var divH = h - 2 * outlineWidth;
         var outlineDiv = document.createElement("div");
-        var outlineDivId =  "outline-div-" + nameForId;
+        var outlineDivId =  "outline-div-DP" + showingDecisionNumber + "-" + nameForId;
         outlineDiv.setAttribute("id", outlineDivId);
         outlineDiv.setAttribute("style","visibility:hidden;border-color:white;border-style:solid;border-width:6px;z-index:" + zIndexMap["saliencyHoverValue"] + "; position:relative; left:0px; top:-" + h + "px;background-color:transparent;width:"+ divW + "px;height:"+ divH + "px;");
-        this.outlinesForSaliencyMap[saliencyMapId] = outlineDivId;
+        this.outlinesForSaliencyMap[this.getDPSpecificSaliencyMapKey(saliencyMapId)] = outlineDivId;
         
         // the div that will contain it should be a bit wider
 		// and tall enough to contain title text
@@ -187,12 +197,12 @@ function getSaliencyV2UIMap() {
             var outlineId = this.outlinesForSaliencyMap[key];
             $("#" + outlineId).css("visibility", "hidden");
         }
-        this.currentlyHighlightedSaliencyMapId = undefined;
+        this.currentlyHighlightedSaliencyMapKey = undefined;
     }
 
-    uimap.showSaliencyMapOutline = function(saliencyMapId) {
-        this.currentlyHighlightedSaliencyMapId = saliencyMapId;
-        var outlineId = this.outlinesForSaliencyMap[saliencyMapId];
+    uimap.showSaliencyMapOutline = function(saliencyMapKey) {
+        this.currentlyHighlightedSaliencyMapKey = saliencyMapKey;
+        var outlineId = this.outlinesForSaliencyMap[saliencyMapKey];
         $("#" + outlineId).css("visibility", "visible");
     }
 

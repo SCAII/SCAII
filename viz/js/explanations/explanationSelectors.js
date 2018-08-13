@@ -1,6 +1,8 @@
 
 var explanationPointBigDiamondHalfWidth = 22;
 var explanationPointSmallDiamondHalfWidth = 16;
+var explanationBoxMap = {};
+var showingDecisionNumber;
 
 function renderExplanationSelectors() {
 	var explanation_steps = replaySessionConfig.getExplanationStepsList();
@@ -9,14 +11,13 @@ function renderExplanationSelectors() {
 	explanationBoxMap = {};
 	while (index < expl_count){
 		var step = explanation_steps[index];
-		var uiIndex =index + 1;
-		configureExplanationSelectorDiamond(uiIndex, step);
+		var decisionPointNumber =index + 1;
+		configureExplanationSelectorDiamond(decisionPointNumber, step);
 		index = index + 1;
 	}
 }
-var showingDecisionNumber;
 
-function configureExplanationSelectorDiamond(uiIndex,step){
+function configureExplanationSelectorDiamond(decisionPointNumber,step){
 	var x = getXOriginOfDecisionPointAtStep(step);
 	var y = explanationControlYPosition;
 	var halfWidth;
@@ -25,8 +26,8 @@ function configureExplanationSelectorDiamond(uiIndex,step){
 	var currentStep = sessionIndexManager.getCurrentIndex();
 	var ctx = expl_ctrl_ctx;
 	if (currentStep == step) {
-		showingDecisionNumber = uiIndex;
-        $("#winning-action-label").html("Chosen move at D" + uiIndex + ": " + winningActionForStep[step]);
+		showingDecisionNumber = decisionPointNumber;
+        $("#winning-action-label").html("Chosen move at D" + decisionPointNumber + ": " + winningActionForStep[step]);
 		ctx.font = "16px Arial bold";
 		halfWidth = explanationPointBigDiamondHalfWidth;
         halfHeight = explanationPointBigDiamondHalfWidth;
@@ -102,7 +103,7 @@ function configureExplanationSelectorDiamond(uiIndex,step){
 	}
 	ctx.font = "Arial";
 	var textCenterY = explanationControlYPosition + 5;
-	ctx.fillText('D' + uiIndex,textCenterX,textCenterY);
+	ctx.fillText('D' + decisionPointNumber,textCenterX,textCenterY);
 
 	//ctx.rect(upper_left_x, upper_left_y, rect_width, rect_height);
 	var eBox = getExplanationBox(leftVertexX, rightVertexX, topVertexY, bottomVertexY, step);
@@ -119,8 +120,6 @@ function getExplanationBox(left_x,right_x, upper_y, lower_y, step){
 	eBox.step = step;
 	return eBox;
 }
-
-var explanationBoxMap = {};
 
 
 
