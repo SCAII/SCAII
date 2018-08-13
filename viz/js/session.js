@@ -234,6 +234,8 @@ function loadReplayFile(filename) {
     currentExplManager = getExplanationsV2Manager();
     currentExplManager.setFilename(filename);
     currentExplManager.setUserStudyMode(false);
+    // start fresh with entities
+    masterEntities = {};
 }
 
 function clearUIElementsForNewFile(){
@@ -261,8 +263,6 @@ function handleVizInit(vizInit) {
 			testingMode = true;
 		}
     }
-    // start fresh with entities
-    masterEntities = {};
 	// ignoring gameboard width and height, assume 40 x 40
 }
 
