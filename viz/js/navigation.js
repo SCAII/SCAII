@@ -288,7 +288,8 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	manager.userCommandSent = function () {
 		//this.restorePriorStates();
 		if (this.pendingAction != undefined) {
-			this.pendingAction();
+            this.pendingAction();
+            this.pendingAction = undefined;
 		}
 		userInputBlocked = false;
 	}
