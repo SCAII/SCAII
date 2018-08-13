@@ -179,6 +179,7 @@ function handleReplayChoiceConfig(config){
     replayNames = promoteTutorialFileIfPresent(replayNames);
 	for (var i in replayNames) {
         var name = replayNames[i];
+        alert(name);
 		$("#replay-file-selector").append($('<option>', {
 			value: i,
 			text: name

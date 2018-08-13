@@ -1,6 +1,8 @@
 function clearStudyQuestionMode() {
-    if (!tabManager.hopToUnfinishedQuestionInProgress){
-        $('#q-and-a-div').empty();
+    if (userStudyMode){
+        if (!tabManager.hopToUnfinishedQuestionInProgress){
+            $('#q-and-a-div').empty();
+        }
     }
     $("#left-block-div").remove();
     $("#right-block-div").remove();
