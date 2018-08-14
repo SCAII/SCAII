@@ -242,14 +242,21 @@ function getStudyQuestionRenderer(questions) {
                 var renderer = asqm.renderer;
                 if (renderer.isLegalRegionToClickOn(clickInfo, qu.regionsToAllow)){
                     // don't remove the click message if this is residual click activty from prior question "save"
-                    if (!renderer.isClickInfoFromSaveButtonClick(clickInfo)){
-                        if (!clickInfo.includes("MouseOverSaliencyMap")) {
-                            renderer.clickInfoFromUserActionMonitor = clickInfo;
-                            renderer.removeMissingClickInfoMessage();
-                            $("#click-prompt").html("Most recent click logged (you can click more if needed).");
-                            $("#click-prompt").css("background-color", asqm.renderer.bg);
-                        }
+                    if (renderer.isClickInfoFromSaveButtonClick(clickInfo)){
+                        return;
                     }
+                    if (clickInfo.includes("MouseOverSaliencyMap")) {
+                        return;
+                    }
+                    if (clickInfo.includes("clickGameQuadrant")){ 
+                        // we don't want clicks "legally" in the gameboard region that are not 
+                        // of type "clickEntity" to be accepted as click events for q and a
+                        return;
+                    }
+                    renderer.clickInfoFromUserActionMonitor = clickInfo;
+                    renderer.removeMissingClickInfoMessage();
+                    $("#click-prompt").html("Most recent click logged (you can click more if needed).");
+                    $("#click-prompt").css("background-color", asqm.renderer.bg);
                 }
                 // var clickAckDiv = document.createElement("DIV");
                 // clickAckDiv.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px");
