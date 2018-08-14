@@ -135,7 +135,9 @@ function getStudyQuestionRenderer(questions) {
     sqr.removeMissingClickInfoMessage = function() {
         $("#missing-click-info-message").remove();
     }
-
+    sqr.removeMissingQuestionInfoMessage = function() {
+        $("#missing-question-info-message").remove();
+    }
     sqr.expressMissingClickInfoMessage  = function () {
         if ($("#missing-click-info-message").length == 0) {
             var missingClickInfoDiv = document.createElement("DIV");
@@ -143,6 +145,15 @@ function getStudyQuestionRenderer(questions) {
             missingClickInfoDiv.setAttribute("style", "margin-left:0px;font-family:Arial;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
             missingClickInfoDiv.innerHTML =  "Please click on one of the designated areas";
             $("#save-button-row").append(missingClickInfoDiv);
+        }
+    }
+    sqr.expressMissingQuestionInfoMessage = function () {
+        if ($("#missing-question-info-message").length == 0) {
+            var missingQuestionInfoDiv = document.createElement("DIV");
+            missingQuestionInfoDiv.setAttribute("id", "missing-question-info-message");
+            missingQuestionInfoDiv.setAttribute("style", "margin-left:0px;font-family:Arial;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
+            missingQuestionInfoDiv.innerHTML =  "Please answer all of the questions in the designated areas";
+            $("#save-button-row").append(missingQuestionInfoDiv);
         }
     }
     sqr.poseQuestion = function(qu, questionNumber, step){

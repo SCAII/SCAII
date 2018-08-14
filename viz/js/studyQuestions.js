@@ -256,8 +256,8 @@ function acceptAnswer(e) {
     }
     var answer = renderer.getCurrentAnswer();
     
-    if (answer == undefined || answer == '') {
-        alert('No answer chosen for the current question.  Please specify an answer and then click "Next Question".');
+    if (answer == undefined || answer == "\"\"") {
+        renderer.expressMissingQuestionInfoMessage();
         return;
     }
     // gather answer, send to backend
@@ -277,6 +277,12 @@ function acceptAnswer(e) {
             followupAnswer = renderer.getCurrentFollowupAnswer();
         }
     }
+    if (followupAnswer == undefined || followupAnswer == "\"\"") {
+        renderer.expressMissingQuestionInfoMessage();
+        return;
+    }
+    renderer.removeMissingQuestionInfoMessage();
+
     var logLine = templateMap["button-save"];
     logLine = logLine.replace("<CLCK_STEP>", currentStep);
     logLine = logLine.replace("<Q_INDEX_STEP>", currentQuestionIndexAtStep);
