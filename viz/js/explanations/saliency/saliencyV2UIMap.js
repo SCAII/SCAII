@@ -43,8 +43,7 @@ function getSaliencyV2UIMap() {
 	}
 
 	uimap.renderExplLayer = function(gridX, gridY, saliencyUIName, saliencyNameForId, cells, width, height, normalizationFactor, scaleFactor) {
-		var nameNoSpaces = saliencyNameForId.replace(/ /g,"");
-		var nameForId = nameNoSpaces.replace(/,/g,"");
+		var nameForId = convertNameToLegalId(saliencyNameForId);
 		var explCanvas = document.createElement("canvas");
         explCanvas.setAttribute("class", "explanation-canvas");
         var saliencyMapId = "saliencyMap_" + nameForId;
