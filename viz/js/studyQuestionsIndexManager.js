@@ -59,17 +59,17 @@ function getStudyQuestionIndexManager(ids) {
         }
         var currentStep = this.getCurrentStep();
         var nextQuestionStep = getStepFromQuestionId(this.questionIds[this.currentIdIndex + 1]);
-        return currentStep == nextQuestionStep;
+        return Number(currentStep) == Number(nextQuestionStep);
     }
 
     squim.isStepPriorToLastDecisionPoint = function(step){
         var lastDecisionPointStep = this.decisionPointSteps[this.decisionPointSteps.length - 1];
-        return step < lastDecisionPointStep;
+        return Number(step) < Number(lastDecisionPointStep);
     }
     squim.isAtLastDecisionPoint = function(){
         var lastDecisionPointStep = this.decisionPointSteps[this.decisionPointSteps.length - 1];
         var currentStep = this.getCurrentStep();
-        return lastDecisionPointStep == currentStep;
+        return Number(lastDecisionPointStep) == Number(currentStep);
     }
     return squim;
 }

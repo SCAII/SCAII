@@ -285,8 +285,8 @@ function handleViz(vizData) {
         if (tabManager.hasShownUserId()){
         }
         if (qm.accessManager.isAtEndOfRange(sessionIndexManager.getCurrentIndex())){
-            if (qm.questionWasAnswered) {
-                qm.questionWasAnswered = false;
+            if (qm.allQuestionsAtDecisionPointAnswered) {
+                qm.allQuestionsAtDecisionPointAnswered = false;
                 // we're ready to move forward to next Decision Point
                 if (qm.hasMoreQuestions()){
                     //will ask for later DPs
