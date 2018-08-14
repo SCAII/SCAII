@@ -171,7 +171,7 @@ function promoteTutorialFileIfPresent(replayNames) {
     return result;
 }
 
-var rewardsDivMaps= {};
+var rewardDivMap = {};
 function handleReplayChoiceConfig(config){
     var replayNames = config.getReplayFilenamesList();
      // studyQuestionMode not yet set to check, just always check - unlikely to be a problem
@@ -179,7 +179,6 @@ function handleReplayChoiceConfig(config){
     replayNames = promoteTutorialFileIfPresent(replayNames);
 	for (var i in replayNames) {
         var name = replayNames[i];
-        rewardsDivMaps[name] = {};
 		$("#replay-file-selector").append($('<option>', {
 			value: i,
 			text: name
@@ -242,7 +241,9 @@ function clearUIElementsForNewFile(){
     $("#action-list").empty();
     $("#why-button").remove();
     $("#explanation-control-panel").empty();
+
     $("#cumulative-rewards").empty();
+    rewardsDivMap = {};
 }
 function handleReplaySessionConfig(rsc, selectedStep) {
 	if (!rsc.hasStepCount()) {
@@ -316,7 +317,7 @@ function handleCumulativeRewards(crm) {
 		total = Number(total) + Number(val);
 	}
 	var valId = getRewardValueId(totalsString);
-	var idOfExistingTotalLabel = rewardsDivMaps[chosenFile][valId];
+    var idOfExistingTotalLabel = rewardsDivMap[valId];
 	if (idOfExistingTotalLabel == undefined) {
 		addCumRewardPair(0, totalsString, total);
 	}
@@ -332,7 +333,7 @@ function handleCumulativeRewards(crm) {
     	var key = entry[0];
 		var val = entry[1];
 		var valId = getRewardValueId(key);
-		var idOfExistingValueLabel = rewardsDivMaps[chosenFile][valId];
+		var idOfExistingValueLabel = rewardsDivMap[valId];
 		if (idOfExistingValueLabel == undefined) {
 			var indexInt = Number(i+1);
 			addCumRewardPair(indexInt, key, val);
@@ -367,7 +368,7 @@ function addCumRewardPair(index, key, val){
 	var rewardValDiv = document.createElement("DIV");
 	// give the value div an id constructed with key so can find it later to update
 	var id = getRewardValueId(key);
-	rewardsDivMaps[chosenFile][id] = rewardValDiv;
+	rewardsDivMap[id] = rewardValDiv;
 	rewardValDiv.setAttribute("id", id);
 	rewardValDiv.setAttribute("class", "r" + index +"c1");
 	if (key == totalsString){
@@ -384,7 +385,7 @@ function addCumRewardPair(index, key, val){
     $("#cumulative-rewards").append(rewardValDiv);
 }
 //
-//  ORDER OF ARRIVAL OF PACKETS
+//  INITIAL ORDER OF ARRIVAL OF PACKETS
 //
 //  1. ReplayChoiceConfig   (list of filenames)
 //  2. ReplaySessionConfig
@@ -484,6 +485,7 @@ function handleScaiiPacket(sPacket) {
                 }
                 else {
                     tabManager.jumpToDesiredStepIfTabChangeInProgress();
+                    activeStudyQuestionManager.accessManager.express();
                     clearLoadingScreen();
                 }
                 

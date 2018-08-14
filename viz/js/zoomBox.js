@@ -18,10 +18,6 @@ function configureZoomCanvas() {
 
 	gameboard_zoom_canvas.addEventListener('click', function (event) {
 		shapeId = getClosestInRangeShapeId(gameboard_zoom_ctx, event.offsetX, event.offsetY, shapePositionMapForContext["zoom"]);
-		primaryHighlightedShapeIds = [];
-		if (shapeId != undefined) {
-			primaryHighlightedShapeIds.push(shapeId);
-		}
 		handleEntities(entitiesList);
 
 
@@ -103,10 +99,6 @@ function addZoomControlToGameboardCanvas(gameboard_canvas){
 		}
 		else {
 			shapeId = getClosestInRangeShapeId(gameboard_ctx, event.offsetX, event.offsetY, shapePositionMapForContext["game"]);
-			primaryHighlightedShapeIds = [];
-			if (shapeId != undefined) {
-				primaryHighlightedShapeIds.push(shapeId);
-			}
 			handleEntities(entitiesList);
 		}
 
