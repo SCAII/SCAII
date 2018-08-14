@@ -16,7 +16,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     
     sqm.questionMap = {};
     sqm.questionIds = [];
-    sqm.questionWasAnswered = false;
+    sqm.allQuestionsAtDecisionPointAnswered = false;
     sqm.mostRecentlyPosedQuestion = undefined;
     sqm.didWeDisplayWait = [];
 
@@ -310,7 +310,7 @@ function acceptAnswer(e) {
             }
             
         }
-        asqm.questionWasAnswered = true;
+        asqm.allQuestionsAtDecisionPointAnswered = true;
         if (squim.hasMoreQuestions()){
             // wait for play button to take us to next Decision Point
             controlsManager.enablePauseResume();
@@ -323,7 +323,7 @@ function acceptAnswer(e) {
                 renderer.poseThankYouScreen();
             }
         }
+        asqm.accessManager.setQuestionState("answered");
     }
-    asqm.accessManager.setQuestionState("answered");
     asqm.accessManager.express();
 }

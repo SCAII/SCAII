@@ -35,7 +35,7 @@ function getTabManager() {
         generateTaskTab(tabInfo);
     }
 
-    tm.noteQuestionWasAnswered = function(questionId) {
+    tm.noteallQuestionsAtDecisionPointAnswered = function(questionId) {
         var absoluteQuestionId = this.getCurrentCssId() + "." + questionId;
         this.answeredQuestions.push(absoluteQuestionId);
     }
