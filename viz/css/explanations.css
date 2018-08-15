@@ -66,11 +66,11 @@
     margin: auto;
 }
 */
-.Button:active, .active {
-	background-color:#EEDDCC;
+/*.Button:active, .active {
+	background-color:#EEDDCC;*/
    /* background-color:#C4D6A4; /* OSU reindeer moss */
-    color: black;
-}
+  /*  color: black;
+}*/
 #rewards-titled-container {
 	background-color:#EEDDCC;
    /* background-color:#C4D6A4; /* OSU reindeer moss */

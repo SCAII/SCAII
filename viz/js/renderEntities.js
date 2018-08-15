@@ -1,18 +1,6 @@
-var entityHPToolTipIds = [];
-var selectedToolTipIds = {};
-var entityAllDataToolTipIds = [];
-var hoveredAllDataToolTipIds = {};
 var masterEntities = {};
 var shapeLogStrings = {};
 var shapeInfoForHighlighting = {};
-
-
-function removeFullShapeIdFromTrackingLists(fullShapeId) {
-    removeMemoryOfToolTip(selectedToolTipIds, entityHPToolTipIds, fullShapeId);
-    removeMemoryOfToolTip(hoveredAllDataToolTipIds, entityAllDataToolTipIds, fullShapeId);
-}
-
-var masterEntities = {};
 
 
 function handleEntities(entitiesList) {

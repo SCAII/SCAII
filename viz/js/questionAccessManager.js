@@ -101,7 +101,7 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
             return [Number(this.questionStep) + 1, this.maxStep];
         }
         else if (state == "blockPastRange"){
-            return [Number(this.activeRange[1]) + 1, maxStep];
+            return [Number(this.activeRange[1]) + 1, this.maxStep];
         }
         else {
             // noBlock
@@ -183,7 +183,7 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
         var x4 = expl_ctrl_canvas.width;
         
         var y = ecpOffset.top;
-        var width2 = x4 - x3;
+        var width2 = x4 - x3 + 3;
         var height = $("#explanation-control-panel").height();
         var gradientBars = "repeating-linear-gradient(135deg,rgba(100, 100, 100, 0.1),rgba(100, 100, 100, 0.3) 20px,rgba(100, 100, 100, 0.6) 20px,rgba(100, 100, 100, 0.7) 20px)";
 
@@ -192,11 +192,10 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
         rightBlockDiv.setAttribute("id", "right-block-div");
         rightBlockDiv.setAttribute("style", "position:absolute;left:" + x3 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] + ";background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
         rightBlockDiv.onclick = function(e) {
-            if (isStudyQuestionMode()){
+            if (userStudyMode){
                 var logLine = templateMap["right-block-div"];
                 logLine = logLine.replace("<TIME_LINE_BLCKR>", "NA");
                 targetClickHandler(e, logLine);
-                //targetClickHandler(e,"clickTimelineBlocker:NA");
                 regionClickHandlerGameArea(e);
                 userActionMonitor.globalClick(e.clientX, e.clientY);
             }
@@ -205,26 +204,24 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
     }
 
     qam.blockPastStep = function(rangePair) {
-        var widthOfTimeline = expl_ctrl_canvas.width - 2*timelineMargin;
-
-        // get offset of explanation-control-panel relative to document
-        var ecpOffset = $("#explanation-control-panel").offset();
+        
         // calculate left window edge position
-        var leftValueOnTimeline = Math.floor((rangePair[0] / this.maxStep ) * 100);
-        var x2 = ecpOffset.left + timelineMargin + (leftValueOnTimeline / 100) * widthOfTimeline;
+        var x2 = getXOriginOfDecisionPointAtStep(Number(rangePair[0]));
         // shift x2 to the left to fully expose the current DecisionPoint;
         var currentIndex = sessionIndexManager.getCurrentIndex();
-        if (currentIndex == rangePair[0]) {
-            x2 = x2 + explanationPointBigDiamondHalfWidth;
+        if (currentIndex + 1 == rangePair[0]) {
+            x2 = x2 + explanationPointBigDiamondHalfWidth - 3;
         }
         else {
-            x2 = x2 + explanationPointSmallDiamondHalfWidth;
+            x2 = x2 + explanationPointSmallDiamondHalfWidth - 3;
         }
         // shift x3 to the left to fully cover the next DecisionPoint
         var x4 = expl_ctrl_canvas.width;
-    
+        
+        // get offset of explanation-control-panel relative to document
+        var ecpOffset = $("#explanation-control-panel").offset();
         var y = ecpOffset.top;
-        var width2 = x4 - x2;
+        var width2 = x4 - x2 + 3;
         var height = $("#explanation-control-panel").height();
         // make blocking div from 0 -> rightXofLeftBlock
         var gradientBars = "repeating-linear-gradient(135deg,rgba(100, 100, 100, 0.1),rgba(100, 100, 100, 0.3) 20px,rgba(100, 100, 100, 0.6) 20px,rgba(100, 100, 100, 0.7) 20px)";
@@ -232,13 +229,13 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
         // make blocking div from leftXofRightBlock -> expl_ctrl_canvas.width
         var rightBlockDiv = document.createElement("DIV");
         rightBlockDiv.setAttribute("id", "right-block-div");
-        rightBlockDiv.setAttribute("style", "position:absolute;left:" + x2 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] + ";background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
+        rightBlockDiv.setAttribute("style", "position:absolute;left:" + x2 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] 
+                                          + ";background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
         rightBlockDiv.onclick = function(e) {
-            if (isStudyQuestionMode()){
+            if (userStudyMode){
                 var logLine = templateMap["right-block-div"];
                 logLine = logLine.replace("<TIME_LINE_BLCKR>", "NA");
                 targetClickHandler(e, logLine);
-                //targetClickHandler(e,"clickTimelineBlocker:NA");
                 regionClickHandlerGameArea(e);
                 userActionMonitor.globalClick(e.clientX, e.clientY);
             }
@@ -285,7 +282,7 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
     //     rightBlockDiv.setAttribute("id", "right-block-div");
     //     rightBlockDiv.setAttribute("style", "position:absolute;left:" + x2 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] + ";background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
     //     rightBlockDiv.onclick = function(e) {
-    //         if (isStudyQuestionMode()){
+    //         if (userStudyMode){
     //             targetClickHandler(e,"clickTimelineBlocker:NA");
     //             regionClickHandlerGameArea(e);
     //             userActionMonitor.globalClick(e.clientX, e.clientY);
@@ -353,7 +350,7 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
     //     rightBlockDiv.setAttribute("id", "right-block-div");
     //     rightBlockDiv.setAttribute("style", "position:absolute;left:" + x3 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] + ";background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
     //     rightBlockDiv.onclick = function(e) {
-    //         if (isStudyQuestionMode()){
+    //         if (userStudyMode){
     //             targetClickHandler(e,"clickTimelineBlocker:NA");
     //             regionClickHandlerGameArea(e);
     //             userActionMonitor.globalClick(e.clientX, e.clientY);

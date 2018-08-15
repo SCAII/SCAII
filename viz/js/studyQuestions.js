@@ -1,24 +1,24 @@
- function isStudyQuestionMode() {
-    return studyQuestionManager != undefined;
-}
-
 function clearStudyQuestionMode() {
-    $('#q-and-a-div').empty();
+    if (userStudyMode){
+        if (!tabManager.hopToUnfinishedQuestionInProgress){
+            $('#q-and-a-div').empty();
+        }
+    }
     $("#left-block-div").remove();
     $("#right-block-div").remove();
-    studyQuestionManager = undefined;
+    //activeStudyQuestionManager = undefined;
 }
 function getStudyQuestionManager(questions, userId, treatmentId) {
     var sqm = {};
     sqm.renderer = getStudyQuestionRenderer();
     sqm.userId = userId;
-    sqm.userIdHasBeenSet = false;
     sqm.treatmentId = treatmentId;
     
     sqm.questionMap = {};
     sqm.questionIds = [];
-    sqm.questionWasAnswered = false;
+    sqm.allQuestionsAtDecisionPointAnswered = false;
     sqm.mostRecentlyPosedQuestion = undefined;
+    sqm.didWeDisplayWait = [];
 
     for (var i in questions){
         var question = questions[i];
@@ -50,16 +50,9 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     sqm.accessManager = getQuestionAccessManager(sqm.squim.getDecisionPointSteps(), sessionIndexManager.getMaxIndex());
 
 
-    sqm.hasShownUserId = function() {
-        return this.userIdHasBeenSet;
-    }
-  
     sqm.configureForCurrentStep = function() {
         var currentStep = sessionIndexManager.getCurrentIndex();
-        if (!this.hasShownUserId()) {
-            this.renderer.poseUserIdQuestion();
-        }
-        else if (this.squim.hasQuestionForStep(currentStep)) {
+        if (this.squim.hasQuestionForStep(currentStep)) {
             this.poseCurrentQuestion();
         }
     }
@@ -93,12 +86,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     }
     sqm.poseFirstQuestion = function() {
         var step = this.squim.getCurrentStep();
-        var args = ["" + step];
-        var userCommand = new proto.scaii.common.UserCommand;
-        userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-        userCommand.setArgsList(args);
-        stageUserCommand(userCommand);
-        controlsManager.userJumped();
+        jumpToStep(step);
         this.poseCurrentQuestion();
     }
     
@@ -108,12 +96,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         var newStep = this.squim.getCurrentStep();
         if (priorStep != newStep && !this.squim.isCurrentQuestionSummary()) {
             // move to next step
-            var args = ["" + newStep];
-            var userCommand = new proto.scaii.common.UserCommand;
-            userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-            userCommand.setArgsList(args);
-            stageUserCommand(userCommand);
-            controlsManager.userJumped();
+            jumpToStep(newStep);
         }
         this.poseCurrentQuestion();
     }
@@ -131,7 +114,19 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
 
     sqm.poseCurrentQuestion = function() {
         var qid = this.squim.getCurrentQuestionId();
-        if (this.mostRecentlyPosedQuestion != qid){
+        if (tabManager.wasQuestionAnsweredAlready(qid)){
+            return;
+        }
+        var shouldAskQuestion = false;
+        if (this.mostRecentlyPosedQuestion == qid){
+            if (tabManager.hopToUnfinishedQuestionInProgress){
+                shouldAskQuestion = true;
+            }
+        }
+        else {
+            shouldAskQuestion = true;
+        }
+        if (shouldAskQuestion) {
             this.mostRecentlyPosedQuestion = qid;
             var logLine = templateMap["showQuestion"];
             logLine = logLine.replace("<SHOW_Q>", qid);
@@ -155,8 +150,18 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
             // wait before show first question at DP, but not on DP1
             if (currentStep != "summary" && currentStep != 1){
                 var questionIndex = qid.split(".")[1];
+                var questionStep = qid.split(".")[0];
+                var foundDisplayWait = false;
                 if (questionIndex == 0){
-                    this.makeUserWaitForInstructions();
+                    for (var i in this.didWeDisplayWait) {
+                        if (questionStep == this.didWeDisplayWait[i]) {
+                            foundDisplayWait = true;
+                        }
+                    }
+                    if (foundDisplayWait == false) {
+                        this.makeUserWaitForInstructions();
+                        this.didWeDisplayWait.push(questionStep);
+                    }
                 }
             }
         }
@@ -234,22 +239,15 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     return sqm;
 }
 
-
-function acceptUserId() {
-    var userId = studyQuestionManager.userId;
-    if (userId == undefined || userId == "") {
-        alert('No userId specified.  Please specify a userId and then click "Next".');
-    }
-    else {
-        $("#user-id-div").remove();
-        studyQuestionManager.userIdHasBeenSet = true;
-        studyQuestionManager.poseFirstQuestion();
-    }
-    
+function clearUserIdScreen() {
+    $("#user-id-div").remove();
+    tabManager.userIdHasBeenSet = true;
+    activeStudyQuestionManager.poseFirstQuestion();
 }
+
 function acceptAnswer(e) {
-    var sqMan = studyQuestionManager;
-    var renderer = sqMan.renderer;
+    var asqm = activeStudyQuestionManager;
+    var renderer = asqm.renderer;
     //renderer.removeMissingClickInfoMessage();
     // block if no answer specified
     if (renderer.controlsWaitingForClick.length != 0) {
@@ -260,26 +258,33 @@ function acceptAnswer(e) {
     }
     var answer = renderer.getCurrentAnswer();
     
-    if (answer == undefined || answer == '') {
-        alert('No answer chosen for the current question.  Please specify an answer and then click "Next Question".');
+    if (answer == undefined || answer == "\"\"") {
+        renderer.expressMissingQuestionInfoMessage();
         return;
     }
     // gather answer, send to backend
-    var currentStep = studyQuestionIndexManager.getCurrentStep();
-    var questionId = studyQuestionIndexManager.getCurrentQuestionId();
+    var currentStep = activeStudyQuestionManager.squim.getCurrentStep();
+    var questionId = activeStudyQuestionManager.squim.getCurrentQuestionId();
+    tabManager.noteQuestionWasAnswered(questionId);
     var currentQuestionIndexAtStep = getQuestionIndexFromQuestionId(questionId);
     var clickInfo = renderer.collectClickInfo();
     userActionMonitor.clickListener = undefined;
-    
+    var squim = activeStudyQuestionManager.squim;
     if (clickInfo == undefined){
         clickInfo = "NA";
     }
     var followupAnswer = "NA";
     if (!(currentStep == 'summary')){
-        if (!isTutorial() && sqMan.isFinalQuestionAtDecisionPoint(questionId)){
+        if (!isTutorial() && asqm.isFinalQuestionAtDecisionPoint(questionId)){
             followupAnswer = renderer.getCurrentFollowupAnswer();
         }
     }
+    if (followupAnswer == undefined || followupAnswer == "\"\"") {
+        renderer.expressMissingQuestionInfoMessage();
+        return;
+    }
+    renderer.removeMissingQuestionInfoMessage();
+
     var logLine = templateMap["button-save"];
     logLine = logLine.replace("<CLCK_STEP>", currentStep);
     logLine = logLine.replace("<Q_INDEX_STEP>", currentQuestionIndexAtStep);
@@ -287,34 +292,44 @@ function acceptAnswer(e) {
     logLine = logLine.replace("<USR_TXT_Q2>", followupAnswer);
     logLine = logLine.replace("<USR_CLCK_Q>", clickInfo);
     targetClickHandler(e, logLine);
-    //targetClickHandlerOld(e,"answerQuestion:"+ currentStep + "." + currentQuestionIndexAtStep + "_" + answer + "_" + followupAnswer + "_(" + clickInfo + ")");
 
     renderer.forgetQuestion();
-    if (studyQuestionIndexManager.hasMoreQuestionsAtThisStep()) {
+    if (squim.hasMoreQuestionsAtThisStep()) {
         renderState(gameboard_canvas, masterEntities, gameScaleFactor, 0, 0, true);
-        sqMan.poseNextQuestion();
+        asqm.poseNextQuestion();
     }
     else {
-        if (studyQuestionIndexManager.hasMoreQuestions()){
-            if (getStepFromQuestionId(sqMan.mostRecentlyPosedQuestion) == "summary"){
-                renderer.renderCueAndArrowToPlayButton();
+        if (squim.hasMoreQuestions()){
+            if (getStepFromQuestionId(asqm.mostRecentlyPosedQuestion) == "summary"){
+                if (!controlsManager.isPauseButtonDisplayed()){ // don't draw arrow if playing
+                    renderer.renderCueAndArrowToPlayButton();
+                }
+                
             }
             else {
-                studyQuestionManager.renderer.renderCueAndArrowToPlayButton();
+                if (!controlsManager.isPauseButtonDisplayed()){ // don't pause or draw arrow if playing
+                    if (userInputBlocked == false) {
+                        pauseGame();
+                    }
+                    renderer.renderCueAndArrowToPlayButton();
+                }
             }
             
         }
-        sqMan.questionWasAnswered = true;
-        if (studyQuestionIndexManager.hasMoreQuestions()){
+        asqm.allQuestionsAtDecisionPointAnswered = true;
+        if (squim.hasMoreQuestions()){
             // wait for play button to take us to next Decision Point
             controlsManager.enablePauseResume();
         } 
         else {
-            if (!isTutorial()){
+            if (tabManager.hasNextTab()){
+                tabManager.nextTab();
+            }
+            else {
                 renderer.poseThankYouScreen();
             }
         }
+        asqm.accessManager.setQuestionState("answered");
     }
-    sqMan.accessManager.setQuestionState("answered");
-    sqMan.accessManager.express();
+    asqm.accessManager.express();
 }

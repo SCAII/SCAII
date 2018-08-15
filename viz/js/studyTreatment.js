@@ -1,4 +1,4 @@
-function getTreatmentManager(treatment) {
+function getTreatmentManagerOld(treatment) {
     tm = {};
 
     tm.showAllSaliencyForTreatment1 = false;

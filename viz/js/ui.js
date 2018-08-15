@@ -56,8 +56,6 @@ var sizingFactor = 1;
 var entitiesList = undefined;
 //var shapePositionMapForContext = {};
 var shapePositionMap = {};
-var primaryHighlightedShapeIds = [];
-var secondaryHighlightedShapeIds = [];
 var shape_outline_color = '#202020';
 //var shape_outline_width = 2;
 var shape_outline_width = 0;
@@ -139,7 +137,14 @@ function drawExplanationTimeline() {
 	// just use width of gameboard for now, may need to be bigger
 	
 	expl_ctrl_canvas.height = explanationControlCanvasHeight;
-	$("#explanation-control-panel").append(expl_ctrl_canvas);
+	//FIXME: this could be done better
+	//EXPLANATION: since why-button is sometimes made before expl_ctrl_canvas updates 
+	//			   append before why-button incase this happens, else do the normal thing
+	if ($("#why-button").length) {
+		$("#why-button").before(expl_ctrl_canvas);
+	} else {
+		$("#explanation-control-panel").append(expl_ctrl_canvas);
+	}
 	let ctx = expl_ctrl_ctx;
 	var can_width = 600;
 	
@@ -155,30 +160,13 @@ function drawExplanationTimeline() {
 
 var showCheckboxes = false;
 
-function toggleCheckboxVisibility(){
-	if (showCheckboxes) {
-		if (salienciesAreShowing) {
-			showCheckboxes = false;
-			activeSaliencyDisplayManager.hideCheckboxes();
-			updateSaliencyContainers();
-		}
-	}
-	else {
-		if (salienciesAreShowing) {
-			showCheckboxes = true;
-			activeSaliencyDisplayManager.renderCheckboxes();
-			updateSaliencyContainers();
-		}
-	}
-}
-
 function initUI() {
 	//configureSpeedSlider();
 	//configureZoomBox
 	var scaiiInterface = document.getElementById("scaii-interface");
 	scaiiInterface.addEventListener('click', function(evt) {
         mostRecentClickHadCtrlKeyDepressed = evt.ctrlKey;
-        if (!isStudyQuestionMode()){
+        if (!userStudyMode){
             if (evt.altKey){
                 toggleCheckboxVisibility();
             }
@@ -188,7 +176,7 @@ function initUI() {
 	configureGameboardCanvas();
 	sizeNonGeneratedElements();
 	controlsManager.setControlsNotReady();
-	controlsManager.registerJQueryHandleForWaitCursor($("#scaii-interface"));
+	controlsManager.registerJQueryHandleForWaitCursor($("#tabbed-interface"));
 	configureNavigationButtons();
 	configureQuestionArea();
 	setUpMetadataToolTipEventHandlers();
@@ -218,6 +206,13 @@ function getQuadrantName(x,y){
     }
 }
 
+function highlightShapeInRange(x,y) {
+    var ctx = gameboard_canvas.getContext('2d');
+    var shapeId = getClosestInRangeShapeId(ctx, x, y);
+	if (shapeId != undefined){
+        highlightShapeForIdForClickCollectionFeedback(shapeId);
+    }
+}
 
 function setUpMetadataToolTipEventHandlers() {
 	// for hiding/showing tooltips
@@ -230,8 +225,9 @@ function setUpMetadataToolTipEventHandlers() {
 			var logLine = templateMap["gameboard"];
 			logLine = logLine.replace("<CLCK_GAME_ENTITY>", shapeLogStrings[shapeId]);
 			logLine = logLine.replace("<CLCK_QUADRANT>", getQuadrantName(x,y));
+            logLine = logLine.replace("<GAME_COORD_X>", x);
+			logLine = logLine.replace("<GAME_COORD_Y>", y);
             targetClickHandler(evt, logLine);
-            //targetClickHandler(evt, "clickEntity:" + shapeLogStrings[shapeId] + "_" + getQuadrantName(x,y));
 			// $("#metadata_hp" + shapeId).toggleClass('tooltip-invisible');
 			// if (selectedToolTipIds[shapeId] == "show") {
 			// 	selectedToolTipIds[shapeId] = "hide";
@@ -243,7 +239,6 @@ function setUpMetadataToolTipEventHandlers() {
 			var logBackground = templateMap["gameboardBackground"];
 			logBackground = logBackground.replace("<CLCK_QUADRANT>", getQuadrantName(x,y));
 			specifiedTargetClickHandler("gameboardBackground", logBackground);
-        	//specifiedTargetClickHandler("gameboardBackground", "clickGameQuadrant:" + getQuadrantName(x,y));
 		}
 	});
 	  
@@ -257,7 +252,6 @@ function setUpMetadataToolTipEventHandlers() {
 			var logLine = templateMap["hideEntityTooltips"];
 			logLine = logLine.replace("<HIDE_TOOL>", "all")
             targetHoverHandler(evt, logLine);
-            //targetHoverHandler(evt, "hideEntityTooltips:all");
 		}
 		else {
             var tooltipId = "metadata_all" + shapeId;
@@ -265,9 +259,7 @@ function setUpMetadataToolTipEventHandlers() {
             if (hoveredAllDataToolTipIds[tooltipId] != "show") {
 				var logLine = templateMap["showEntityTooltip"];
 				logLine = logLine.replace("<ENTITY_INFO>", shapeLogStrings[shapeId]);
-				//logLine = logLine.replace("<ENTITY_INFO>", shapeLogStrings[tooltipId]);
 				logLine = logLine.replace("<TIP_QUADRANT>", getQuadrantName(x,y));
-				//targetHoverHandler(evt, "showEntityTooltip:" + shapeLogStrings[tooltipId] + "_" + getQuadrantName(x,y));
 				targetHoverHandler(evt, logLine);
             }
             hideAllTooltips(evt);
@@ -296,8 +288,14 @@ function sizeNonGeneratedElements() {
 	$("#scaii-acronym").css("padding-top", "10px");
 	$("#scaii-acronym").css("padding-bottom", "10px");
 	$("#game-replay-label").css("padding-top", "10px");
-	$("#game-replay-label").css("padding-bottom", "10px");
-
+    $("#game-replay-label").css("padding-bottom", "10px");
+    
+    
+    $("#reward-values-panel").css("height", gameboard_canvas.height + "px");
+    $("#left-side-quadrant-labels").css("height", gameboard_canvas.height + "px");
+    $("#right-side-quadrant-labels").css("height", gameboard_canvas.height + "px");
+    $("#playback-controls-panel").css("height", "30px");
+    $("#explanation-control-panel").css("height", "85px");
 }
 
 function clearGameBoards() {
@@ -354,3 +352,26 @@ var subtractPixels = function(a,b){
 	var intB = b.replace("px", "");
 	return intA - intB;
 }
+
+
+expl_ctrl_canvas.addEventListener('click', function (event) {
+	if (!isUserInputBlocked()){
+		var matchingStep = getMatchingExplanationStep(expl_ctrl_ctx, event.offsetX, event.offsetY);
+		if (matchingStep == undefined){
+            processTimelineClick(event);
+		}
+		else{
+			if (matchingStep == sessionIndexManager.getCurrentIndex()) {
+				//no need to move - already at step with explanation
+			}
+			else {
+                jumpToStep(matchingStep);
+				var logLine = templateMap["decisionPointList"];
+				logLine = logLine.replace("<TARGET>", "decisionPointList")
+				logLine = logLine.replace("<J_DP_NUM>", matchingStep);
+                //specifiedTargetClickHandler("decisionPointList", "jumpToDecisionPoint:" + matchingStep);
+                specifiedTargetClickHandler("decisionPointList", logLine);
+			}
+        }
+	}
+});

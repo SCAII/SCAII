@@ -42,7 +42,6 @@ function getUserActionMonitor() {
         if (this.clickTargetDetails == undefined) {
             this.clickTargetDetails = info;
         }
-        //EVAN
         this.pendingLogLine = templateMap[info];
         this.pendingLogLine = this.pendingLogLine.replace("<TARGET>", info);
     }
@@ -51,20 +50,6 @@ function getUserActionMonitor() {
         this.clickTargetDetails = info;
     }
 
-    uam.globalClickOld = function(x,y) {
-        if (chartClickProcessing) {
-            rememberedGlobalChartClick = [x,y];
-            return;
-        }
-        this.pendingLogLine = this.pendingLogLine.replace("<COORD_X>", x);
-        this.pendingLogLine = this.pendingLogLine.replace("<COORD_Y>", y);
-        
-        if (this.clickListener != undefined) {
-            this.clickListener.acceptClickInfo(this.pendingLogLine);
-        }
-        stateMonitor.setUserAction(this.pendingLogLine);
-        this.clear();
-    }
     uam.globalClick = function(x,y) {
         if (chartClickProcessing) {
             rememberedGlobalChartClick = [x,y];
@@ -77,7 +62,9 @@ function getUserActionMonitor() {
         }
         var logLine = this.pendingLogLine.replace("<COORD_X>", x);
         logLine = logLine.replace("<COORD_Y>", y);
-        
+        if (logLine.indexOf("<REGION>") != -1 && (x > 602 || y > 798))  {
+            logLine = logLine.replace("<REGION>", "scaii-interface");
+        }
         logLine = stateMonitor.emitLogLine(logLine);
         this.clear();
     }
@@ -159,6 +146,33 @@ function getUserActionMonitor() {
         logLine = logLine.replace("<DP_NUM>", dp)
         stateMonitor.setUserAction(logLine);
     }
+
+    uam.extractClickCoordinatesFromClickEvent =function(logLine){
+        if (logLine == undefined){
+            return undefined;
+        }
+        // see templateMap["gameboard"]
+        if (logLine.indexOf('clickEntity') != -1){
+            // it's an entity click
+            var fields = logLine.split(',');
+            for (var i in fields){
+                var field = fields[i];
+                if (field.includes('userClick')){
+                    var subFields = field.split(';');
+                    for (var j in subFields){
+                        var subField = subFields[j];
+                        if (subField.startsWith('clickEntity')){
+                            // coordinates are in second subSubField
+                            var clickEntityValueParts = subField.split(':')[1];
+                            var valueArgs = clickEntityValueParts.split('_');
+                            return [valueArgs[2], valueArgs[3]];
+                        }
+                    }
+                }
+            }
+        }
+        return undefined;
+    }
     return uam;
 }
 
@@ -172,79 +186,51 @@ function regionClickHandlerSaliency(e) {
 function regionClickHandlerRewards(e)  { userActionMonitor.regionClick("rewards");}
 function regionClickHandlerGameArea(e) { userActionMonitor.regionClick("gameArea");}
 function regionClickHandlerQnAArea(e)  { userActionMonitor.regionClick("QnA");}
-function regionClickHandlerSaliencyOld(e) { userActionMonitor.regionClick("region:saliency");}
-function regionClickHandlerRewardsOld(e)  { userActionMonitor.regionClick("region:rewards");}
-function regionClickHandlerGameAreaOld(e) { userActionMonitor.regionClick("region:gameArea");}
-function regionClickHandlerQnAAreaOld(e)  { userActionMonitor.regionClick("region:QnA");}
-
-function targetClickHandlerOld(e, userActionSemantics) {
-    if (isStudyQuestionMode()){
-        var targetId = e.currentTarget.getAttribute("id");
-        userActionMonitor.targetClick("target:" + targetId);
-        userActionMonitor.setUserActionSemantics(userActionSemantics);
-    }
-}
 
 function targetClickHandler(e, logLine) {
-    if (isStudyQuestionMode()){
-        var targetId = e.currentTarget.getAttribute("id");
+    if (userStudyMode){
+        var targetId = undefined;
+        if (e.currentTarget != undefined) {
+            targetId = e.currentTarget.getAttribute("id");
+        }
+        else {
+            targetId = e.target.getAttribute("id");
+        }
         logLine = logLine.replace("<TARGET>", targetId);
         userActionMonitor.pendingLogLine = logLine;
-    }
-}
-
-function specifiedTargetClickHandlerOld(targetName, userActionSemantics) {
-    if (isStudyQuestionMode()){
-        userActionMonitor.targetClick("target:" + targetName);
-        userActionMonitor.setUserActionSemantics(userActionSemantics);
     }
 }
 
 function specifiedTargetClickHandler(targetName, logLine) {
-    if (isStudyQuestionMode()){
+    if (userStudyMode){
         logLine = logLine.replace("<TARGET>", targetName);
         userActionMonitor.pendingLogLine = logLine;
-    }
-}
-
-function chartTargetClickHandlerOld(targetName , userActionSemantics) {
-    if (isStudyQuestionMode()){
-        userActionMonitor.targetClick("target:" + targetName);
-        userActionMonitor.setUserActionSemantics(userActionSemantics);
-        userActionMonitor.compileChartClickEvent();
     }
 }
 
 function chartTargetClickHandler(targetName , logLine) {
-    if (isStudyQuestionMode()){
+    if (userStudyMode){
         logLine = logLine.replace("<TARGET>", targetName);
         userActionMonitor.pendingLogLine = logLine;
         userActionMonitor.compileChartClickEvent();
     }
 }
 
-function targetHoverHandlerOld(e, userActionSemantics) {
-    if (isStudyQuestionMode()){
-        var targetId = e.currentTarget.getAttribute("id");
-        userActionMonitor.targetHover("target:" + targetId);
-        userActionMonitor.setUserActionHoverSemantics(userActionSemantics);
-        userActionMonitor.forwardHoverEvent();
-    }
-}
-
 function targetHoverHandler(e, logLine) {
-    if (isStudyQuestionMode()){
-        var targetId = e.currentTarget.getAttribute("id");
-        logLine = logLine.replace("<TARGET>", targetId);
-        var mostRecentLogLine = stateMonitor.getMostRecentLogLine();
-        if (mostRecentLogLine != undefined){
-            if(mostRecentLogLine.search != undefined && mostRecentLogLine.includes("hideEntityTooltips") && logLine.includes("hideEntityTooltips")) {
-                userActionMonitor.mostRecentLogLine = undefined;
-                userActionMonitor.clear();
-            } else {
-                userActionMonitor.pendingLogLine = logLine;
-                stateMonitor.setUserAction(logLine);
-                userActionMonitor.clear();
+    if (userStudyMode){
+        if (userActionMonitor != undefined) {
+            var targetId = e.currentTarget.getAttribute("id");
+            logLine = logLine.replace("<TARGET>", targetId);
+            var mostRecentLogLine = stateMonitor.getMostRecentLogLine();
+            if (mostRecentLogLine != undefined){
+                if(mostRecentLogLine.search != undefined && mostRecentLogLine.includes("hideEntityTooltips") && logLine.includes("hideEntityTooltips")) {
+                    userActionMonitor.mostRecentLogLine = undefined;
+                    userActionMonitor.clear();
+                } else {
+                    userActionMonitor.pendingLogLine = logLine;
+                    stateMonitor.setUserAction(logLine);
+                    userActionMonitor.clear();
+                }
             }
         }
     }
@@ -262,25 +248,21 @@ function setHandlers() {
         var logLine = templateMap["scaii-acronym"];
         logLine = logLine.replace("<TCH_ACRONYM>", "NA");
         targetClickHandler(e, logLine);
-        //targetClickHandler(e,"touchAcronym:NA");
     });
     $("#game-replay-label")       .on("click",function(e) {
         var logLine = templateMap["game-replay-label"];
         logLine = logLine.replace("<RPL_GAME_FILE>", "NA");
         targetClickHandler(e, logLine);
-        //targetClickHandler(e,"touchReplayingGameFileLabel:NA");
     });
     $("#replay-file-selector")    .on("click",function(e) {
         var logLine = templateMap["game-replay-label-selector"];
         logLine = logLine.replace("<RPL_GAME_SLCTR>", "NA"); 
         targetClickHandler(e, logLine);
-        //targetClickHandler(e,"touchReplayFileSelector:NA");
     });
     $("#step-value")              .on("click",function(e) {
         var logLine = templateMap["touch-step-progress-label"];
         logLine = logLine.replace("<RPL_GAME_PRGSS>", "NA");
         targetClickHandler(e, logLine);
-        //targetClickHandler(e,"touchStepProgressLabel:NA");
     });
     $("#scaii-interface")         .on("mousemove", function(e) { 
         var div = document.getElementById("explanations-rewards");
@@ -292,7 +274,6 @@ function setHandlers() {
             chartClickProcessing = true;
             if (rememberedGlobalChartClick != undefined) {
                 userActionMonitor.regionClick("rewards");
-                userActionMonitor.regionClickOld("region:rewards");
                 userActionMonitor.compileChartClickEvent();
             }
         }

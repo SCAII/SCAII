@@ -10,37 +10,6 @@ function getStateMonitor() {
     sm.setClickListener = function(cl){
         this.clickListener = cl;
     }
-    sm.emitLogLineOld = function () {
-        if (this.logFileName != undefined) {
-            if (!this.sentHeader) {
-                var pkt = new proto.scaii.common.ScaiiPacket;
-                var lfeHeader = new proto.scaii.common.LogFileEntry;
-                var header = this.getHeader();
-                lfeHeader.setEntry(header);
-                lfeHeader.setFilename(this.logFileName);
-                lfeHeader.setIsLastLine(false);
-                pkt.setLogFileEntry(lfeHeader);
-                userInfoScaiiPackets.push(pkt);
-                this.sentHeader = true;
-            }
-            var pkt = new proto.scaii.common.ScaiiPacket;
-            var lfe = new proto.scaii.common.LogFileEntry;
-            var date = this.getDate();
-            var time = this.getTime();
-            var sec = this.getSecondsSince1970();
-            var logLine = this.getStateLogEntry(date, time, sec);
-            lfe.setEntry(logLine);
-            lfe.setFilename(this.logFileName);
-            if (studyQuestionIndexManager.hasMoreQuestions()) {
-                lfe.setIsLastLine(false);
-            }
-            else {
-                lfe.setIsLastLine(true);
-            }
-            pkt.setLogFileEntry(lfe);
-            userInfoScaiiPackets.push(pkt);
-        }
-    }
     sm.emitLogLine = function (logLine) {
         if (this.logFileName != undefined) {
             if (!this.sentHeader) {
@@ -60,11 +29,11 @@ function getStateMonitor() {
             var time = this.getTime();
             var sec = this.getSecondsSince1970();
 
+            logLine = logLine.replace("<FILE_NAME>", this.logFileName);
             logLine = logLine.replace("<DATE>", date);
             logLine = logLine.replace("<TIME>", time);
             logLine = logLine.replace("<1970_SEC>", sec);
             
-            //logLine = this.getStateLogEntryNew(logLine); //templateMap[];
             logLine = this.setState(logLine);
             lfe.setEntry(logLine);
             lfe.setFilename(this.logFileName);
@@ -77,7 +46,9 @@ function getStateMonitor() {
             pkt.setLogFileEntry(lfe);
             userInfoScaiiPackets.push(pkt);
             if (this.clickListener != undefined) {
-                this.clickListener.acceptClickInfo(logLine);
+                if (logLine.includes("userClick")){
+                    this.clickListener.acceptClickInfo(logLine);
+                }
             }
             this.mostRecentLogLine = logLine;
             return logLine;
@@ -146,6 +117,16 @@ function getStateMonitor() {
         this.detailedAdvantage = false;
     }
 
+    var keyToIndexMap = {};
+    keyToIndexMap["rewards.combined"] = "combinedReward";
+    keyToIndexMap["rewards.detailed"] = "detailedReward";
+    keyToIndexMap["advantage.combined"] = "combinedAdvantage";
+    keyToIndexMap["advantage.detailed"] = "detailedAdvantage";
+    sm.setRewardDisplayModeByKey = function(displayModeKey){
+        this.clearRewards();
+        var codedIndex = keyToIndexMap[displayModeKey];
+        this[codedIndex] = true;
+    }
     sm.showedCombinedRewards = function () {
         this.clearRewards();
         this.combinedReward = true;
@@ -188,7 +169,7 @@ function getStateMonitor() {
     sm.decisionPoint = undefined;
 
     sm.setUserAction = function (logLine) {
-        if (isStudyQuestionMode()) {
+        if (userStudyMode) {
             //this.userAction = ua;
             this.emitLogLine(logLine);
         }

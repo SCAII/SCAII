@@ -3,11 +3,10 @@ var replaySessionConfig;
 var replayChoiceConfig;
 var selectedExplanationStep = undefined;
 var sessionIndexManager = undefined;
-var studyQuestionManager = undefined;
-var studyQuestionIndexManager = undefined;
+var activeStudyQuestionManager = undefined;
 var stateMonitor = undefined;
 var userActionMonitor = undefined;
-var studyTreatment = undefined;
+var studyTreatmentOld = undefined;
 
 // ToDo - when strat jump- turn off incrementing index until receive set position.  Unblock incrementing on jump complete
 // then it will be apparent if we need to correct for ReplaySequencer's index pointing to next-packet-to-send rather than 
@@ -53,7 +52,7 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, progressWidth)
 	}
 	
 	sim.setReplaySequencerIndex = function(index) {
-		$("#why-button").remove();
+		//$("#why-button").remove();
 		this.replaySequencerIndex = index;
         //console.log('');
         //console.log('replaySequencerIndex is now ' + index);
@@ -100,20 +99,35 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, progressWidth)
 	return sim;
 }
 
+var treatmentID = undefined;
+
 function handleStudyQuestions(studyQuestions){
     var questions = studyQuestions.getStudyQuestionsList();
     var userId = studyQuestions.getUserId();
-    var treatmentId = studyQuestions.getTreatmentId();
-    var answerFilename = studyQuestions.getAnswerFilename();
+    treatmentID = studyQuestions.getTreatmentId();
+    currentExplManager.setUserStudyMode(true);
+    currentExplManager.setUserStudyTreatment("T" + treatmentID);
+    //var answerFilename = studyQuestions.getAnswerFilename();
+    var answerFilename = "answers_" + userId + "_" + treatmentID + ".txt";
     if (questions.length == 0) {
         return;
     }
-    studyQuestionManager = getStudyQuestionManager(questions, userId, treatmentId);
-    userActionMonitor = getUserActionMonitor();
-	stateMonitor = getStateMonitor();
+    if (userStudyMode) {
+        if (tabManager.currentTabHasQuestionManager()){
+            activeStudyQuestionManager = tabManager.getStudyQuestionManagerForCurrentTab();
+        }
+        else {
+            activeStudyQuestionManager = getStudyQuestionManager(questions, userId, treatmentID);
+            tabManager.setStudyQuestionManagerForCurrentTab(activeStudyQuestionManager);
+        }
+    }
+
+    if (userActionMonitor == undefined) {  userActionMonitor = getUserActionMonitor(); }
+    if (stateMonitor == undefined)      {  stateMonitor =      getStateMonitor();      }
+	
 	//logLine = getTemplateMap();
-	studyTreatment = getTreatmentManager(treatmentId);
-	console.log(treatmentId);
+	studyTreatmentOld = getTreatmentManagerOld(treatmentID);
+	console.log(treatmentID);
 	console.log(answerFilename);
     stateMonitor.logFileName = answerFilename;
     // make div to hold the winning action name
@@ -121,11 +135,15 @@ function handleStudyQuestions(studyQuestions){
 	winningActionLabel.setAttribute("style", "margin-top:8px;margin-left:30px;font-family:Arial;font-weight:bold;font-size:14px;");
 	winningActionLabel.setAttribute("id", "winning-action-label");
     winningActionLabel.innerHTML = "";
+<<<<<<< HEAD
     $("#reward-Values-panel").append(winningActionLabel);
     // re-render this so we can change names to ??? if need to for waitForPredictionClick questions
+=======
+    $("#reward-values-panel").append(winningActionLabel);
+    // re-render this sowe can change names to ??? if need to for waitForPredictionClick questions
+>>>>>>> tabs
     renderDecisionPointLegend();
 }
-
 function handleReplayControl(replayControl) {
 	var command = replayControl.getCommandList();
 	if (command.length == 2) {
@@ -133,8 +151,8 @@ function handleReplayControl(replayControl) {
 			//console.log('___set_step_position updating step from handleReplayControl to ' + command[1] + ' which should be one prior to what the first viz packet arriving will set it to');
 			sessionIndexManager.setReplaySequencerIndex(parseInt(command[1]));
             updateButtonsAfterJump();
-            if (isStudyQuestionMode()){
-                studyQuestionManager.accessManager.express();
+            if (userStudyMode){
+                activeStudyQuestionManager.accessManager.express();
             }
 		}
 	}
@@ -158,20 +176,25 @@ function promoteTutorialFileIfPresent(replayNames) {
     return result;
 }
 
+var rewardDivMap = {};
 function handleReplayChoiceConfig(config){
-   
     var replayNames = config.getReplayFilenamesList();
      // studyQuestionMode not yet set to check, just always check - unlikely to be a problem
     // make tutorial file the default
     replayNames = promoteTutorialFileIfPresent(replayNames);
 	for (var i in replayNames) {
-		var name = replayNames[i];
+        var name = replayNames[i];
 		$("#replay-file-selector").append($('<option>', {
 			value: i,
 			text: name
 		}));
     }
-	loadSelectedReplayFile();
+    if (userStudyMode){
+        tabManager.openFirstTab();
+    }
+    else {
+        loadSelectedReplayFile();
+    }
 }
 
 function isTutorial() {
@@ -180,27 +203,53 @@ function isTutorial() {
 var chosenFile;
 
 function loadSelectedReplayFile() {
+    var filename = $( "#replay-file-selector option:selected" ).text();
+    loadReplayFile(filename);
+}
+
+//var replayState = undefined;
+//var replayStateForFilename = {};
+
+function loadReplayFile(filename) {
+    // var rs = replayStateForFilename[filename];
+    // if (rs == undefined){
+    //     rs = {};
+    //     initExplanationFields(rs);
+    //     replayStateForFilename[filename] = rs;
+    //     replayState = rs;
+    // }
     $("#cue-arrow-div").remove();
     if (userActionMonitor != undefined) {
         userActionMonitor.clickListener = undefined;
     }
     clearStudyQuestionMode();
 	controlsManager.startLoadReplayFile();
-	chosenFile = $( "#replay-file-selector option:selected" ).text();
+	chosenFile = filename;
 	//console.log("    file selected: " + chosenFile);
 	var args = [chosenFile];
 	var userCommand = new proto.scaii.common.UserCommand;
 	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE);
 	userCommand.setArgsList(args);
     stageUserCommand(userCommand);
-	$("#action-list").empty();
-	$("#explanation-control-panel").empty();
+    clearUIElementsForNewFile();
 	drawExplanationTimeline();
 	clearGameBoards();
-	clearExplanationInfo();
+    cleanExplanationUI();
+    currentExplManager = getExplanationsV2Manager();
+    currentExplManager.setFilename(filename);
+    currentExplManager.setUserStudyMode(false);
+    // start fresh with entities
+    masterEntities = {};
 }
 
+function clearUIElementsForNewFile(){
+    $("#action-list").empty();
+    $("#why-button").remove();
+    $("#explanation-control-panel").empty();
 
+    $("#cumulative-rewards").empty();
+    rewardsDivMap = {};
+}
 function handleReplaySessionConfig(rsc, selectedStep) {
 	if (!rsc.hasStepCount()) {
 		dialog('Error no stepCount carried by ReplaySessionConfig');
@@ -211,7 +260,6 @@ function handleReplaySessionConfig(rsc, selectedStep) {
 	var timelineWidth = expl_ctrl_canvas.width - 2*timelineMargin;
 	sessionIndexManager = getSessionIndexManager(rsc.getStepCount(), timelineWidth);
 	sessionIndexManager.setReplaySequencerIndex(0);
-	renderDecisionPointLegend();
 }
 
 
@@ -222,8 +270,6 @@ function handleVizInit(vizInit) {
 			testingMode = true;
 		}
     }
-    // start fresh with entities
-    masterEntities = {};
 	// ignoring gameboard width and height, assume 40 x 40
 }
 
@@ -231,23 +277,25 @@ function handleViz(vizData) {
 	entitiesList = vizData.getEntitiesList();
 	cumulativeRewardsMap = vizData.getCumulativeRewardsMap();
 	handleCumulativeRewards(cumulativeRewardsMap);
-	handleEntities(entitiesList);
+    handleEntities(entitiesList);
+    var qm = activeStudyQuestionManager;
 	if (!jumpInProgress) {
         sessionIndexManager.incrementReplaySequencerIndex();
-        if (isStudyQuestionMode()) {
-            studyQuestionManager.configureForCurrentStep();
+        if (userStudyMode) {
+            // will ask for first DP
+            qm.configureForCurrentStep();
         }
     }
-    if (isStudyQuestionMode()) {
-        if (studyQuestionManager.hasShownUserId()){
-            //studyQuestionManager.blockClicksOutsideRange();
+    if (userStudyMode) {
+        if (tabManager.hasShownUserId()){
         }
-        if (studyQuestionManager.accessManager.isAtEndOfRange(sessionIndexManager.getCurrentIndex())){
-            if (studyQuestionManager.questionWasAnswered) {
-                studyQuestionManager.questionWasAnswered = false;
+        if (qm.accessManager.isAtEndOfRange(sessionIndexManager.getCurrentIndex())){
+            if (qm.allQuestionsAtDecisionPointAnswered) {
+                qm.allQuestionsAtDecisionPointAnswered = false;
                 // we're ready to move forward to next Decision Point
-                if (studyQuestionManager.hasMoreQuestions()){
-                    studyQuestionManager.poseNextQuestion();
+                if (qm.hasMoreQuestions()){
+                    //will ask for later DPs
+                    qm.poseNextQuestion();
                 }
                 controlsManager.expressResumeButton();
                 //chooseNextQuestionAfterStep(sessionIndexManager.getCurrentIndex());
@@ -264,9 +312,7 @@ function handleViz(vizData) {
 	}
 }
 var totalsString = "total score";
-var rewardsDivMap = {};
 function handleCumulativeRewards(crm) {
-    
 	var entryList = crm.getEntryList();
 	var total = 0;
 	//compute totals
@@ -276,7 +322,7 @@ function handleCumulativeRewards(crm) {
 		total = Number(total) + Number(val);
 	}
 	var valId = getRewardValueId(totalsString);
-	var idOfExistingTotalLabel = rewardsDivMap[valId];
+    var idOfExistingTotalLabel = rewardsDivMap[valId];
 	if (idOfExistingTotalLabel == undefined) {
 		addCumRewardPair(0, totalsString, total);
 	}
@@ -284,7 +330,7 @@ function handleCumulativeRewards(crm) {
 		$("#" + valId).html(total);
 	}  
     // add individual values
-    if (isStudyQuestionMode()) {
+    if (userStudyMode) {
         return;
     }
   	for (var i in entryList ){
@@ -322,7 +368,6 @@ function addCumRewardPair(index, key, val){
 	var logLineLabel = templateMap["touchCumRewardLabel"];
 	logLineLabel = logLineLabel.replace("<CUM_LBL>", key);
     rewardKeyDiv.onclick = function(e) {targetClickHandler(e, logLineLabel);};
-    //rewardKeyDiv.onclick = function(e) {targetClickHandler(e,"touchCumRewardLabel:" + key);};
 	$("#cumulative-rewards").append(rewardKeyDiv);
 
 	var rewardValDiv = document.createElement("DIV");
@@ -342,16 +387,29 @@ function addCumRewardPair(index, key, val){
 	var logLineValue = templateMap["touchCumRewardValueFor"];
 	logLineValue = logLineValue.replace("<CUM_VAL>", key);
     rewardValDiv.onclick = function(e) {targetClickHandler(e, logLineValue);};
-    //rewardValDiv.onclick = function(e) {targetClickHandler(e,"touchCumRewardValueFor:" + key);};
     $("#cumulative-rewards").append(rewardValDiv);
 }
-
+//
+//  INITIAL ORDER OF ARRIVAL OF PACKETS
+//
+//  1. ReplayChoiceConfig   (list of filenames)
+//  2. ReplaySessionConfig
+//  3. StudyQuestions (optional)
+//  4. VizInit
+//  5. Viz
+//  6. SelectFileComplete
+//
+//  Game start  (userStudyMode)
+//  7. VizInit
+//  8. Viz
+//  9. Viz
+//  10. JumpCompleted
+//
 function handleScaiiPacket(sPacket) {
 	var result = undefined;
 	if (sPacket.hasReplayChoiceConfig()) {
 		var config = sPacket.getReplayChoiceConfig();
 		replayChoiceConfig = config;
-		rewardsDivMap = {};
 		handleReplayChoiceConfig(config);
 	}
 	else if (sPacket.hasReplaySessionConfig()) {
@@ -383,7 +441,7 @@ function handleScaiiPacket(sPacket) {
 	else if (sPacket.hasExplDetails()) {
 		//console.log('has expl details');
 		var explDetails = sPacket.getExplDetails();
-		handleExplDetails(explDetails);
+        handleExplanationDetails(explDetails);
 	}
 	else if (sPacket.hasReplayControl()) {
 		//console.log("-----got replayCOntrol");
@@ -414,14 +472,29 @@ function handleScaiiPacket(sPacket) {
 			else {
 				result = new proto.scaii.common.MultiMessage;
 			}
-			
 		}
 		else if (commandType == proto.scaii.common.UserCommand.UserCommandType.JUMP_COMPLETED) {
 			//console.log("-----got jump completed message");
-			controlsManager.jumpCompleted();
+            controlsManager.jumpCompleted();
+            if (userStudyMode) {
+                tabManager.finalStepsForChangeToTab();
+            }
 		}
 		else if (commandType == proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE_COMPLETE){
-			controlsManager.doneLoadReplayFile();
+            controlsManager.doneLoadReplayFile();
+            if (userStudyMode){
+                if (!hasShownWelcomeScreen){
+                    // can't be tab hop, must be first screen shown
+                    clearLoadingScreen();
+                    showUserIdScreen();
+                }
+                else {
+                    tabManager.jumpToDesiredStepIfTabChangeInProgress();
+                    activeStudyQuestionManager.accessManager.express();
+                    clearLoadingScreen();
+                }
+                
+            }
 		}
 	}
 	else {

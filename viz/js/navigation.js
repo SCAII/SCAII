@@ -48,15 +48,10 @@ function processTimelineClick(e) {
 	var clickX = e.offsetX - timelineMargin;
 	var replaySequenceTargetStep = sessionIndexManager.getReplaySequencerIndexForClick(clickX);
 	var targetStepString = "" + replaySequenceTargetStep;
-	//targetClickHandlerOld(e, "timelineClick:" + targetStepString);
 	var logLine = templateMap["expl-control-canvas"];
 	logLine = logLine.replace("<TIME_LINE_NUM>", targetStepString);
 	targetClickHandler(e, logLine);
-	var args = [targetStepString];
-	var userCommand = new proto.scaii.common.UserCommand;
-	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-	userCommand.setArgsList(args);
-	stageUserCommand(userCommand);
+    jumpToStep(targetStepString);
 }
 function stageUserCommand(userCommand) {
 	var scaiiPkt = new proto.scaii.common.ScaiiPacket;
@@ -100,8 +95,8 @@ function resumeGame() {
 		stageUserCommand(userCommand);
 		// if play button cue arrow present, remove it
         $("#cue-arrow-div").remove();
-        if (isStudyQuestionMode()){
-            if (studyQuestionManager.questionWasAnswered) {
+        if (userStudyMode){
+            if (activeStudyQuestionManager.allQuestionsAtDecisionPointAnswered) {
                 $('#q-and-a-div').empty();
             }
         }
@@ -233,6 +228,12 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 		this.pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="16px" width="14px"/>';
 	}
 
+    manager.isPauseButtonDisplayed = function() {
+        if (this.pauseResumeButton.onclick == tryPause) {
+            return true;
+        }
+        return false;
+    }
 	//
 	// rewind
 	//
@@ -287,7 +288,8 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	manager.userCommandSent = function () {
 		//this.restorePriorStates();
 		if (this.pendingAction != undefined) {
-			this.pendingAction();
+            this.pendingAction();
+            this.pendingAction = undefined;
 		}
 		userInputBlocked = false;
 	}
@@ -319,4 +321,13 @@ function updateButtonsAfterJump() {
 		controlsManager.enablePauseResume();
 		controlsManager.enableRewind();
 	}
+}
+
+function jumpToStep(step){
+    var userCommand = new proto.scaii.common.UserCommand;
+    userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+    var args = ['' +step];
+    userCommand.setArgsList(args);
+    stageUserCommand(userCommand);
+    controlsManager.userJumped();
 }
