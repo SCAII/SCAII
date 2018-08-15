@@ -9,10 +9,6 @@ function deleteShape(shapeList, shape) {
   }
 }
 
-function addShape(shapesList, shape) {
-  masterShapes.push(updateShape);
-}
-
 function updateMasterPosition(masterPos, updatePos) {
   if (updatePos != undefined) {
     if (updatePos.hasX()) {
@@ -180,7 +176,7 @@ function updateMasterEntity(master, update) {
     var updateShapeId = updateShape.getId();
     var masterShape = getShapeWithMatchingId(masterShapes, updateShapeId);
     if (masterShape == undefined) {
-      addShape(masterShapes, updateShape);
+        masterShapes.push(updateShape);
     }
     else {
     //   if (updateShape.hasDelete() && updateShape.getDelete()) {
