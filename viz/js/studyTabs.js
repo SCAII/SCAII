@@ -28,7 +28,7 @@ function getTabManager() {
     }
     tm.addTabInfo("tab-tutorial","Tutorial","maintab", "tutorial.scr","Loading tutorial...");
     tm.addTabInfo("tab-task1","Task 1","maintab", "MainTask.scr", "Loading Task 1...");
-    tm.addTabInfo("tab-task2","Task 2","maintab", "NextTask.scr", "Loading Task 2...");
+    //tm.addTabInfo("tab-task2","Task 2","maintab", "NextTask.scr", "Loading Task 2...");
 
     for (var i in tm.tabInfos){
         var tabInfo = tm.tabInfos[i];

@@ -135,13 +135,8 @@ function handleStudyQuestions(studyQuestions){
 	winningActionLabel.setAttribute("style", "margin-top:8px;margin-left:30px;font-family:Arial;font-weight:bold;font-size:14px;");
 	winningActionLabel.setAttribute("id", "winning-action-label");
     winningActionLabel.innerHTML = "";
-<<<<<<< HEAD
-    $("#reward-Values-panel").append(winningActionLabel);
-    // re-render this so we can change names to ??? if need to for waitForPredictionClick questions
-=======
     $("#reward-values-panel").append(winningActionLabel);
     // re-render this sowe can change names to ??? if need to for waitForPredictionClick questions
->>>>>>> tabs
     renderDecisionPointLegend();
 }
 function handleReplayControl(replayControl) {
@@ -239,7 +234,7 @@ function loadReplayFile(filename) {
     currentExplManager.setFilename(filename);
     currentExplManager.setUserStudyMode(false);
     // start fresh with entities
-    masterEntities = {};
+    cleanEntities();
 }
 
 function clearUIElementsForNewFile(){

@@ -2,7 +2,11 @@ var masterEntities = {};
 var shapeLogStrings = {};
 var shapeInfoForHighlighting = {};
 
-
+function cleanEntities() {
+    masterEntities = {};
+    shapeLogStrings = {};
+    shapeInfoForHighlighting = {};
+}
 function handleEntities(entitiesList) {
     shapeInfoForHighlighting = {};
     shapeLogStrings = {};
@@ -114,7 +118,23 @@ function sortUiLayerEntities(entities) {
     }
     return entitiesSortedByLayer;
 }
+
+function printEntity(entity){
+    var result = "............ID:"+ entity.getId() + " ";
+    if(entity.hasPos()){
+        result = result + "Pos:Y ";
+    }
+    else {
+        result = result + "Pos:- ";
+    }
+    var shapeList = entity.getShapesList();
+    result = result + "ShapeCount:" + shapeList.length + " ";
+	result = result + "del:" + entity.getDelete();
+    
+    console.log(result);
+}
 function renderState(canvas, entities, zoom_factor, xOffset, yOffset, generateTooltips) {
+    //console.log("--------renderState()--------");
     var entityKeys = Object.keys(entities);
     if (entityKeys.length == 0){
         // if the gameboard has been cleared, just leave the prior move's entities in view
@@ -131,10 +151,17 @@ function renderState(canvas, entities, zoom_factor, xOffset, yOffset, generateTo
     var orderOverride = ["octagon", "rect", "circle", "triangle", "kite", "arrow"];
     for (var overrideIndex in orderOverride){
         var shapeToRenderThisPass = orderOverride[overrideIndex];
+        //console.log(".....render shape " + shapeToRenderThisPass + "?")
         for (var i in uiLayerSortedEntities) {
             var entity = uiLayerSortedEntities[i];
             if (entity != undefined) {
+                //printEntity(entity);
                 var doThisPass = false;
+                
+                //aFter lunch 
+                //    log entity and shape
+                 //   try with different file
+                //    (maybe this was a delta that had no shape info , just position)
                 if (entityHasShape(shapeToRenderThisPass,entity))  {
                     doThisPass = true;
                 }
@@ -155,6 +182,10 @@ function renderState(canvas, entities, zoom_factor, xOffset, yOffset, generateTo
 
 function entityHasShape(shapeName, entity) {
     var shapesList = entity.getShapesList();
+    if (shapesList.length == 0){
+        console.log("--------------------- SKIPPED NO-SHAPE ENTITY --------------------");
+        return false;
+    }
     var shape = shapesList[0];
     if (shapeName == "octagon"){
         return shape.hasOctagon();
@@ -196,7 +227,7 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
         si.zoom_factor = zoom_factor;
         si.shapeId = getShapeId(entity, shape);
 
-        console.log("layout shapeId: " + si.shapeId);
+        //console.log("....................layout shapeId: " + si.shapeId);
 
         setRelativePosition(si, shape);
         setAbsolutePosition(si);

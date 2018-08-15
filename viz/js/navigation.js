@@ -330,4 +330,6 @@ function jumpToStep(step){
     userCommand.setArgsList(args);
     stageUserCommand(userCommand);
     controlsManager.userJumped();
+    cleanEntities();
+    cleanToolTips();
 }

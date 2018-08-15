@@ -183,14 +183,14 @@ function updateMasterEntity(master, update) {
       addShape(masterShapes, updateShape);
     }
     else {
-      if (updateShape.hasDelete() && updateShape.getDelete()) {
-        var fullShapeId = getShapeId(update, updateShape);
-        removeFullShapeIdFromTrackingLists(fullShapeId);
-        deleteShape(masterShapes, masterShape);
-      }
-      else {
+    //   if (updateShape.hasDelete() && updateShape.getDelete()) {
+    //     var fullShapeId = getShapeId(update, updateShape);
+    //     removeFullShapeIdFromTrackingLists(fullShapeId);
+    //     deleteShape(masterShapes, masterShape);
+    //   }
+    //   else {
         updateMasterShape(masterShape, updateShape);
-      }
+    //   }
     }
   }
   updateMetadata(master, update);

@@ -1,5 +1,5 @@
 var entityHPToolTipIds = [];
-var selectedToolTipIds = {};
+//var selectedToolTipIds = {};
 var entityAllDataToolTipIds = [];
 var hoveredAllDataToolTipIds = {};
 
@@ -22,18 +22,18 @@ function hideAllTooltips(evt) {
         $("#" + sId).addClass('tooltip-invisible');
     }
 }
-function removeFullShapeIdFromTrackingLists(fullShapeId){
-    removeMemoryOfToolTip(selectedToolTipIds, entityHPToolTipIds, fullShapeId);
-    removeMemoryOfToolTip(hoveredAllDataToolTipIds, entityAllDataToolTipIds, fullShapeId);
-  }
+// function removeFullShapeIdFromTrackingLists(fullShapeId){
+//     removeMemoryOfToolTip(selectedToolTipIds, entityHPToolTipIds, fullShapeId);
+//     removeMemoryOfToolTip(hoveredAllDataToolTipIds, entityAllDataToolTipIds, fullShapeId);
+//   }
   
-function removeMemoryOfToolTip(someDict, someArray, someId) {
-    var index = someArray.indexOf(someId);
-    if (index !== -1) {
-      someArray.splice(index, 1);
-      delete someDict[someId];
-    }
-}
+// function removeMemoryOfToolTip(someDict, someArray, someId) {
+//     var index = someArray.indexOf(someId);
+//     if (index !== -1) {
+//       someArray.splice(index, 1);
+//       delete someDict[someId];
+//     }
+// }
   
 function cleanToolTips(){
     if (entityHPToolTipIds != undefined) {
@@ -50,6 +50,7 @@ function cleanToolTips(){
         }
         entityAllDataToolTipIds = [];
     }
+    hoveredAllDataToolTipIds = {};
   }
   
 function createHPToolTip(shapeInfo) {
@@ -57,10 +58,10 @@ function createHPToolTip(shapeInfo) {
     if (undefined != si.percentHPRemaining) {
         var canvas_bounds = gameboard_canvas.getBoundingClientRect();
         var hpDiv = document.createElement("div");
-        var setToShow = selectedToolTipIds[si.shapeId];
-        if (setToShow == undefined || setToShow == "hide"){
-          hpDiv.setAttribute("class","tooltip-invisible");
-        }
+        // var setToShow = selectedToolTipIds[si.shapeId];
+        // if (setToShow == undefined || setToShow == "hide"){
+        //   hpDiv.setAttribute("class","tooltip-invisible");
+        // }
         
         var id = "metadata_hp" + si.shapeId;
         hpDiv.setAttribute("id",id);
@@ -99,7 +100,7 @@ function createAllDataToolTip(shapeInfo) {
       valuesDiv.setAttribute("class","tooltip-invisible");
     }
     var id = "metadata_all" + si.shapeId;
-    console.log("allData tooltip id:" + id);
+    //console.log("allData tooltip id:" + id);
     hoveredAllDataToolTipIds[id] = "hide";
     valuesDiv.setAttribute("id",id);
      // position it relative to where origin of bounding box of gameboard is
