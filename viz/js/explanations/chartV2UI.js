@@ -77,8 +77,8 @@ function getChartV2UI() {
         this.renderChartValueLines(chartCanvas, chartData, 4);
         this.renderZeroValueLabel(chartCanvas, chartData);
         
-        this.renderActionBars(chartCanvas, chartData);
         this.renderBars(chartCanvas,chartData);
+        this.renderActionBars(chartCanvas, chartData);
         this.renderXAxis(chartCanvas, chartData);
 		this.renderYAxis(chartCanvas, chartData);
 
@@ -89,8 +89,13 @@ function getChartV2UI() {
 	}
 
     ui.processRewardBarClick = function(rewardBarName, chartData){
-        alert(" still works - " + rewardBarName);
+        var bar = chartData.actionRewardForNameMap[rewardBarName];
+        chartData.showSalienciesForRewardBar(bar);
+        currentExplManager.saliencyVisible = true;
+        currentExplManager.saliencyCombined = false;
+        currentExplManager.render();
     }
+
     ui.renderTitle = function (canvas, chartData) {
 		// NOTE: There are no tests for rendering the title
 		var ctx = canvas.getContext("2d");
