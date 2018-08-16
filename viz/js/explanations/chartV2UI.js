@@ -22,7 +22,7 @@ function getChartV2UI() {
             var x = e.offsetX;
 		    var y = e.offsetY;
             var rewardBarName = chartData.getActionBarNameForCoordinates(x, y);
-            alert(rewardBarName);
+            currentExplManager.chartUI.processRewardBarClick(rewardBarName, chartData);
         }
         
         $("#explanations-rewards").append(chartCanvas);
@@ -88,6 +88,9 @@ function getChartV2UI() {
         this.rewardBarTooltipManager = getRewardBarTooltipManager(chartCanvas,chartData);
 	}
 
+    ui.processRewardBarClick = function(rewardBarName, chartData){
+        alert(" still works - " + rewardBarName);
+    }
     ui.renderTitle = function (canvas, chartData) {
 		// NOTE: There are no tests for rendering the title
 		var ctx = canvas.getContext("2d");
