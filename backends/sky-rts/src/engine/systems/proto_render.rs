@@ -59,7 +59,7 @@ impl RenderSystem {
     fn render_delta(&mut self, mut sys_data: RenderSystemData) {
         sys_data.out.0.entities.clear();
 
-        for (pos, id) in (&sys_data.pos, &*sys_data.ids).join() {
+        for (pos, id, _) in (&sys_data.pos, &*sys_data.ids, &sys_data.shape).join() {
             if !(sys_data.moved.get(id).is_some()
                 || sys_data.death.get(id).is_some()
                 || sys_data.delete.get(id).is_some()
