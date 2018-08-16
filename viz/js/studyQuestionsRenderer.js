@@ -481,7 +481,7 @@ function showLoadingScreen(loadingMessage){
     $("#loading-div").css("font-size","18px");
     $("#loading-div").css("width","1800px");
     $("#loading-div").css("height","1600px");
-    if (true){
+    if (false){
         $("#loading-div").css("width","200px");
         $("#loading-div").css("height","200px");
     }
