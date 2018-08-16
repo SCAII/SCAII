@@ -73,6 +73,7 @@ function setDefaultSelections(chartData) {
     var action = chartData.getMaxValueAction();
     var bar = chartData.getMaxValueBar(action.bars);
     bar.selected = true;
+    chartData.showSalienciesForRewardBar(bar);
     return chartData;
 }
 function addConvenienceDataStructures(chartData) {
