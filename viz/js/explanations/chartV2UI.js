@@ -71,15 +71,17 @@ function getChartV2UI() {
         var ctx = chartCanvas.getContext("2d");
         $("#chartV2-canvas").css("background-color", "white");
         
+
+        this.renderActionSeparatorLines(chartCanvas, chartData);
+        this.renderChartValueLabels(chartCanvas, chartData, 4);
+        this.renderChartValueLines(chartCanvas, chartData, 4);
+        this.renderZeroValueLabel(chartCanvas, chartData);
+        
         this.renderActionBars(chartCanvas, chartData);
         this.renderBars(chartCanvas,chartData);
         this.renderXAxis(chartCanvas, chartData);
 		this.renderYAxis(chartCanvas, chartData);
 
-        this.renderActionSeparatorLines(chartCanvas, chartData);
-        this.renderChartValueLabels(chartCanvas, chartData, 4);
-        this.renderChartValueLines(chartCanvas, chartData, 4);
-		this.renderZeroValueLabel(chartCanvas, chartData);
 		this.renderActionNames(chartCanvas, chartData);
 		this.renderLegend(chartData);
         this.renderTitle(chartCanvas, chartData);
