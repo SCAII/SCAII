@@ -11,7 +11,8 @@ function getSaliencyV2UI() {
 	ui.renderSaliencyDetailed = function(chartData) {
         $("#saliency-div").remove();
         createSaliencyContainers();
-        var selectedBars = chartData.getSelectedBars();
+        
+        var selectedBars = chartData.getBarsFlaggedForShowingSaliency();
         var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('detailed', "reward");
 		
 		for (var i in selectedBars){
