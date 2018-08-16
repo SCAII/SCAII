@@ -81,6 +81,34 @@ function addSelectionFunctions (rawChartData) {
             }
         }
     }
-
+    rd.clearShowSaliencies = function() {
+        for (var i in this.actionRewardNames){
+            var name = this.actionRewardNames[i];
+            var bar = this.actionRewardForNameMap[name];
+            bar.showSaliencyMap = false;
+        }
+    }
+    rd.showSalienciesForRewardBar = function(bar) {
+        this.clearShowSaliencies();
+        var matchingRewardName = bar.name;
+        for (var i in this.actionRewardNames){
+            var name = this.actionRewardNames[i];
+            var bar = this.actionRewardForNameMap[name];
+            if (bar.name == matchingRewardName){
+                bar.showSaliencyMap = true;
+            }
+        }
+    }
+    rd.getBarsFlaggedForShowingSaliency = function(){
+        var result = [];
+        for (var i in this.actionRewardNames){
+            var name = this.actionRewardNames[i];
+            var bar = this.actionRewardForNameMap[name];
+            if (bar.showSaliencyMap){
+                result.push(bar);
+            }
+        }
+        return result;
+    }
     return rd;
 }
