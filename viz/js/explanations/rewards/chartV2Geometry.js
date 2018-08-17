@@ -165,6 +165,21 @@ function addGeometryFunctions(rawChartData) {
             rewardBar.tooltipOriginY = this.canvasHeight/2 - rewardBar.value * this.scalingFactor * 0.75; 
         }
     }
+    rd.positionValueTooltips = function() {
+        for (var i in this.actionRewardNames) {
+            var actionRewardName = this.actionRewardNames[i];
+            var rewardBar = this.actionRewardForNameMap[actionRewardName];
+
+
+            rewardBar.tooltipOriginX = rewardBar.originX - Number(this.rewardBarWidth / 2);
+            // (canvasHeight / 2) - ((ch.rewardBar[i].bars[j].value * scalingFactor) * 0.75)
+            if (rewardBar.value >= 0) {
+                rewardBar.tooltipOriginY = this.canvasHeight/2 - (rewardBar.value + 30) * this.scalingFactor; 
+            } else {
+                rewardBar.tooltipOriginY = this.canvasHeight/2 - (rewardBar.value) * this.scalingFactor; 
+            }
+        }
+    }
     rd.getActionBarNameForCoordinates = function(x,y) {
         for (var i in this.actionRewardNames){
             var barName = this.actionRewardNames[i];

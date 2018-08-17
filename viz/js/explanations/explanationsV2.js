@@ -72,7 +72,6 @@ function addFunctionsToRawChart(rawChart){
 function setDefaultSelections(chartData) {
     var action = chartData.getMaxValueAction();
     var bar = chartData.getMaxValueBar(action.bars);
-    bar.selected = true;
     return chartData;
 }
 function addConvenienceDataStructures(chartData) {
@@ -234,13 +233,13 @@ function getExplanationsV2Manager(){
     
     cm.renderT2 = function(mode){
         if (this.chartVisible){
-            this.renderChartDetailed(mode);
+            this.renderChartDetailed(mode, "T2");
         }
     }
 
     cm.renderT3 = function(mode){
         if (this.chartVisible){
-            this.renderChartDetailed(mode);
+            this.renderChartDetailed(mode, "T3");
         }
         if (this.showSaliencyAccessButton && this.chartVisible){
             this.renderSaliencyAccessButton(mode);
@@ -253,13 +252,13 @@ function getExplanationsV2Manager(){
         }
     }
 
-    cm.renderChartDetailed = function(mode){
+    cm.renderChartDetailed = function(mode, treatment){
         if (mode == "trace"){
             this.renderLog.push("renderChartDetailed");
             return;
         }
         else {
-            this.chartUI.renderChartDetailed(this.data);
+            this.chartUI.renderChartDetailed(this.data, treatment);
         }
     }
     

@@ -158,6 +158,7 @@ function runChartDataSelectionTests(failureChecker) {
     fc.assert(ch.actionRewardForNameMap["action_3.reward_1"].selected, false, "not selected o2");
     fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].selected, true, "is selected p2");//<<--
 
+    ch.clearRewardBarSelections();
     
     // saliency map selection
     fc.setCase("saliency highlighting");

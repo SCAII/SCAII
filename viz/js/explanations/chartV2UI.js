@@ -4,7 +4,7 @@ function getChartV2UI() {
     var chartCanvas = undefined;
     ui.whyButtonInfo = undefined;
     ui.rewardBarTooltipManager = undefined;
-    ui.renderChartDetailed = function(chartData){
+    ui.renderChartDetailed = function(chartData, treatment){
         createRewardChartContainer();
         //var canvasWidth = $("#explanations-rewards").width;
         //var canvasHeight = $("#explanations-rewards").height;
@@ -22,7 +22,7 @@ function getChartV2UI() {
             var x = e.offsetX;
 		    var y = e.offsetY;
             var rewardBarName = chartData.getActionBarNameForCoordinates(x, y);
-            currentExplManager.chartUI.processRewardBarClick(rewardBarName, chartData);
+            currentExplManager.chartUI.processRewardBarClick(rewardBarName, chartData, e, treatment);
         }
         
         $("#explanations-rewards").append(chartCanvas);
@@ -41,31 +41,46 @@ function getChartV2UI() {
         legendRewards.setAttribute("style", "background-color:white");
         $("#legend-canvas").append(legendRewards);
 
-		// append legend names and boxes to legend area
+		// append legend title to legend area
+		var legendTitle = document.createElement("DIV");
+		legendTitle.setAttribute("id", "legend-title");
+		legendTitle.setAttribute("class", "r0c0_1");
+		legendTitle.setAttribute("style", "height:20px;padding:5px");
+		$("#legend-rewards").append(legendTitle);
+
+		// append desc, legend names, and boxes to legend area
         for (var i in chartData.rewardNames) {
+			var iPlusOne = Number(i) + 1;
+
+			var rewardDesc = document.createElement('DIV');
+			rewardDesc.setAttribute("id", "legend-desc-" + i);
+			rewardDesc.setAttribute("class", "r" + iPlusOne + "c0");
+			rewardDesc.setAttribute("style", "height:20px;width:100px;position:relative;left:15px");
+			$("#legend-rewards").append(rewardDesc);
+
             var rewardBox = document.createElement("DIV");
             rewardBox.setAttribute("id", "legend-box-" + i);
-            rewardBox.setAttribute("class", "r" + i + "c0");
+            rewardBox.setAttribute("class", "r" + iPlusOne + "c1");
             rewardBox.setAttribute("style", "background-color:" + chartData.colors[i] + ";height:10px;width:13px;position:relative;top:4px;");
             $("#legend-rewards").append(rewardBox);
 
             var rewardInfo = document.createElement("DIV");
-            rewardInfo.setAttribute("id", "legend-name-" + i);
-            rewardInfo.setAttribute("class", "r" + i + "c1");
-            rewardInfo.setAttribute("style", "height:20px;padding-left:5px");
+			rewardInfo.setAttribute("id", "legend-name-" + i);
+            rewardInfo.setAttribute("class", "r" + iPlusOne + "c2");
+            rewardInfo.setAttribute("style", "height:20px;");
             $("#legend-rewards").append(rewardInfo);
 
         }
 		// append legend total name and box to legend area
         var rewardLegendTotalBox = document.createElement("DIV");
 		rewardLegendTotalBox.setAttribute("id", "legend-box-" + i);
-		rewardLegendTotalBox.setAttribute("class", "r" + chartData.rewardNames.length + "c0");
+		rewardLegendTotalBox.setAttribute("class", "r" + Number(chartData.rewardNames.length + 1) + "c1");
 		rewardLegendTotalBox.setAttribute("style", "background-color:" + chartData.actions[0].color + ";height:10px;width:13px;position:relative;top:4px;");
 		$("#legend-rewards").append(rewardLegendTotalBox);
 		var rewardLegendTotal = document.createElement("DIV");
 		rewardLegendTotal.setAttribute("id", "legend-total-name");
-		rewardLegendTotal.setAttribute("class", "r" + chartData.rewardNames.length + "c1");
-		rewardLegendTotal.setAttribute("style", "height:20px;padding-left:5px");
+		rewardLegendTotal.setAttribute("class", "r" + Number(chartData.rewardNames.length + 1) + "c2");
+		rewardLegendTotal.setAttribute("style", "height:20px;");
 		$("#legend-rewards").append(rewardLegendTotal);
 
         var ctx = chartCanvas.getContext("2d");
@@ -78,17 +93,31 @@ function getChartV2UI() {
         this.renderZeroValueLabel(chartCanvas, chartData);
         
         this.renderActionBars(chartCanvas, chartData);
-        this.renderBars(chartCanvas,chartData);
+        this.renderBars(chartCanvas,chartData, "none");
         this.renderXAxis(chartCanvas, chartData);
 		this.renderYAxis(chartCanvas, chartData);
 
 		this.renderActionNames(chartCanvas, chartData);
 		this.renderLegend(chartData);
+		this.renderLegendTitle(chartCanvas, chartData);
         this.renderTitle(chartCanvas, chartData);
         this.rewardBarTooltipManager = getRewardBarTooltipManager(chartCanvas,chartData);
 	}
 
-    ui.processRewardBarClick = function(rewardBarName, chartData){
+    ui.processRewardBarClick = function(rewardBarName, chartData, e, treatment){
+		var logLine = templateMap["selectedRewardBar"];
+		logLine = logLine.replace("<SLCT_RWRD_BAR>", rewardBarName);
+		targetClickHandler(e, logLine);
+		if (rewardBarName != "None") {
+			chartData.clearRewardBarSelections();
+			chartData.selectSingleRewardBar(rewardBarName);
+			if (treatment == "T3") {
+				chartData.clearHighlightSelections();
+				var trueRewardBarName = rewardBarName.split(".")[1];
+				chartData.highlightSimilarRewardBars(trueRewardBarName);
+			}
+			this.renderBars(chartCanvas, chartData, treatment);
+		}
         alert(" still works - " + rewardBarName);
     }
     ui.renderTitle = function (canvas, chartData) {
@@ -100,13 +129,32 @@ function getChartV2UI() {
 		ctx.fillText("Chart Title", chartData.canvasWidth / 2 - chartData.groupWidthMargin, chartData.canvasHeight * .07);
 		ctx.restore();
 	}
-    
+    ui.renderLegendTitle = function (canvas, chartData) {
+		var titleElement = document.getElementById("legend-title");
+		var titleContent = document.createTextNode("The agent predicts that, by the end of the game, it will get:");
+		titleElement.appendChild(titleContent);
+	}
 	ui.renderLegend = function (chartData) {
 		// NOTE: There are no tests for rendering the legend
 		for (var i in chartData.rewardNames) {
+			var desc = document.getElementById("legend-desc-" + i);
+			var damagedOrDestroyed = chartData.rewardNames[i].split(" ");
+			var type;
+			if (damagedOrDestroyed[1] == "Damaged") {
+				type = "score";
+			} else if (damagedOrDestroyed[1] == "Destroyed") {
+				if (damagedOrDestroyed[0] == "Enemy") {
+					type = "bonus";
+				} else {
+					type = "penalty";
+				}
+			}
+			var descContent = document.createTextNode("This " + type);
+			desc.append(descContent);
+
 			var name = document.getElementById("legend-name-" + i);
 			//font stuff in here for css
-			var content = document.createTextNode(chartData.rewardNames[i]);
+			var content = document.createTextNode("for " + chartData.rewardNames[i] + " on all future maps");
 			name.appendChild(content);
 		}	
 		var totalName = document.getElementById("legend-total-name");
@@ -115,7 +163,6 @@ function getChartV2UI() {
 	}
 
 	ui.renderActionBars = function (canvas, chartData){
-		// (EVAN) TODO: add test in here for actionBar Names?
 		var ctx = canvas.getContext("2d");
 		for (var i in chartData.actions) {
 			var bar = chartData.actions[i];
@@ -222,19 +269,60 @@ function getChartV2UI() {
 		ctx.closePath();
 		ctx.stroke();
 		ctx.restore();
+	}	
+	ui.renderPattern = function (color) {
+		var p = document.createElement("canvas")
+		p.width=32;
+		p.height=16;
+		var pctx=p.getContext('2d');
+		
+		var x0=36;
+		var x1=-4;
+		var y0=-2;
+		var y1=18;
+		var offset=32;
+	
+		pctx.imageSmoothingEnabled = true;
+		pctx.strokeStyle = color;
+		pctx.lineWidth=4;
+		pctx.beginPath();
+		pctx.moveTo(x0,y0);
+		pctx.lineTo(x1,y1);
+		pctx.moveTo(x0-(offset / 2),y0);
+		pctx.lineTo(x1-(offset / 2),y1);
+		pctx.moveTo(x0-offset,y0);
+		pctx.lineTo(x1-offset,y1);
+		pctx.moveTo(x0+(offset / 2),y0);
+		pctx.lineTo(x1+(offset / 2),y1);
+		pctx.moveTo(x0+offset,y0);
+		pctx.lineTo(x1+offset,y1);
+		pctx.stroke();	
+
+		return p;
 	}
-	ui.renderBars = function (canvas, chartData) {
+	ui.renderBars = function (canvas, chartData, treatment) {
 		var ctx = canvas.getContext("2d");
-		for (var i in chartData.actions) {
+		for (var i=0; i<chartData.actions.length; i++) {
 			var action = chartData.actions[i];
-			for (var j in action.bars) {
+			for (var j=0; j<action.bars.length; j++) {
 				var bar = action.bars[j];
 				chartData.positionRewardBar(bar, i, j);
 				chartData.dimensionRewardBar(bar);
-				this.renderBar(ctx, bar, "normal");
+				if (bar.selected == true) {
+					if (treatment == "T3") {
+						this.renderBar(ctx, bar, "outlineT3");
+					}
+					else {
+						this.renderBar(ctx, bar, "outline");
+					}
+				} else if (bar.highlight == true) {
+					this.renderBar(ctx, bar, "gradient");
+				} else {
+					this.renderBar(ctx, bar, "normal");
+				}
 			}
 		}
-	}
+	}	
 	ui.renderBar = function (ctx, bar, mode) {
 		// originY is always on the x axis
 		ctx.save();
@@ -248,15 +336,45 @@ function getChartV2UI() {
 		}
 		else {
 			upperLeftOriginY = y0;
-		}
+		}	
 		ctx.beginPath();
 
-		if (mode == "outline") {
-			ctx.lineWidth = shape_outline_width + 3;
-			ctx.strokeStyle = "blue";
+		if (mode == "outlineT3") {
+			ctx.clearRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+			ctx.lineWidth = shape_outline_width;
+			ctx.strokeStyle = "white";
 			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
-		}
-		else {
+
+			var rgbaBarColor = hexToRgbA(bar.color);
+			ctx.fillStyle = rgbaBarColor + " 0.7)";
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+
+			var pattern = this.renderPattern(bar.color);
+			ctx.fillStyle = ctx.createPattern(pattern, 'repeat');
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+		} else if (mode == "outline") {
+			ctx.clearRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+			ctx.lineWidth = shape_outline_width;
+			ctx.strokeStyle = "white";
+			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+		
+			ctx.fillStyle = bar.color;
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+		} else if (mode == "gradient") {
+			ctx.clearRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+			ctx.lineWidth = shape_outline_width;
+			ctx.strokeStyle = bar.color;
+
+			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+
+			var rgbaBarColor = hexToRgbA(bar.color);
+			ctx.fillStyle = rgbaBarColor + " 0.7)";
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+
+			var pattern = this.renderPattern(bar.color);
+			ctx.fillStyle = ctx.createPattern(pattern, 'repeat');
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+		} else {
 			ctx.lineWidth = shape_outline_width;
 			ctx.strokeStyle = bar.color;
 

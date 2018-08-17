@@ -15,9 +15,17 @@ function addSelectionFunctions (rawChartData) {
             }
         }
     }
+    rd.clearHighlightSelections = function () {
+        for (var i in rd.actions) {
+            for (var j in rd.actions[i].bars) {
+                rd.actions[i].bars[j].highlight = false;
+            }
+        }
+    }
 
     rd.clearRewardBarSelections();
     rd.clearSaliencyMapSelections();
+    rd.clearHighlightSelections();
     
     rd.getRewardBarSelectionCount = function () {
         var count = 0;
@@ -49,6 +57,15 @@ function addSelectionFunctions (rawChartData) {
                 }
                 if (rd.actions[i].bars[j].fullName == barName) {
                     rd.actions[i].bars[j].selected = true;
+                }
+            }
+        }
+    }
+    rd.highlightSimilarRewardBars = function (barName) {
+        for (var i in rd.actions) {
+            for (var j in rd.actions[i].bars) {
+                if (rd.actions[i].bars[j].name == barName) {
+                    rd.actions[i].bars[j].highlight = true;
                 }
             }
         }
