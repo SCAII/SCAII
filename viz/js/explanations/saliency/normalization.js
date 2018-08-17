@@ -31,12 +31,14 @@ function getCellsForAllLayersOfSaliencyId(saliencyId){
         var expLayers = layerMessage.getLayersList();
         for (var i in expLayers){
             var expLayer = expLayers[i];
+            var name = expLayer.getName();
             var cellList = expLayer.getCellsList();
             result.push(cellList);
         }
     }
     return result;
 }
+
 
 function addLayersToYieldSingleLayer(cellLists){
     var result = [];
@@ -56,7 +58,7 @@ function getNormalizationFactorForAllBarGroupSaliencies(barGroups){
     // gather up the cellList from each layer of all groups
     for (var i in barGroups){
         var group = barGroups[i];
-        var saliencyId = group.getSaliencyId();
+        var saliencyId = group.saliencyId;
         var cellsLists = getCellsForAllLayersOfSaliencyId(saliencyId);
         for (var j in cellsLists){
             var cellsList = cellsLists[j];
@@ -75,10 +77,10 @@ function getNormalizationFactorForAllBarSaliencies(barGroups){
     // gather up the cellList from each layer of all bars
     for (var i in barGroups){
         var group = barGroups[i];
-        var bars = group.getBarsList();
+        var bars = group.bars;
         for (var j in bars){
             var bar = bars[j];
-            var saliencyId = bar.getSaliencyId();
+            var saliencyId = bar.saliencyId;
             var cellsLists = getCellsForAllLayersOfSaliencyId(saliencyId);
             for (var j in cellsLists){
                 var cellsList = cellsLists[j];
@@ -99,7 +101,7 @@ function getNormalizationFactorForCombinedBarGroupSaliencies(barGroups) {
     // gather up the cellList from each layer of all groups
     for (var i in barGroups){
         var group = barGroups[i];
-        var saliencyId = group.getSaliencyId();
+        var saliencyId = group.saliencyId;
         var cellsLists = getCellsForAllLayersOfSaliencyId(saliencyId);
         // add each pixel value from all layers together to get a flattened-combined single layer
         var flattentedCombinedCellList = addLayersToYieldSingleLayer(cellsLists);
@@ -117,10 +119,10 @@ function getNormalizationFactorForCombinedBarSaliencies(barGroups) {
     // gather up the cellList from each layer of all groups
     for (var i in barGroups){
         var group = barGroups[i];
-        var bars = group.getBarsList();
+        var bars = group.bars;
         for (var j in bars) {
             var bar = bars[j];
-            var saliencyId = bar.getSaliencyId();
+            var saliencyId = bar.saliencyId;
             var cellsLists = getCellsForAllLayersOfSaliencyId(saliencyId);
             // add each pixel value from all layers together to get a flattened-combined single layer
             var flattentedCombinedCellList = addLayersToYieldSingleLayer(cellsLists);
