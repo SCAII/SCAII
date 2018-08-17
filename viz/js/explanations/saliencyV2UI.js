@@ -33,7 +33,7 @@ function getSaliencyV2UI() {
         
         var selectedBars = chartData.getBarsFlaggedForShowingSaliency();
         var rewardOrAction = selectedBars[0].type;
-        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('detailed', rewardOrAction);
+        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('detailed', rewardOrAction, chartData.actions);
 		
 		for (var i in selectedBars){
             var scaleFactor = 1.0;
@@ -76,7 +76,7 @@ function getSaliencyV2UI() {
         createSaliencyContainers();
         var selectedBars = chartData.getBarsFlaggedForShowingSaliency();
         var rewardOrAction = selectedBars[0].type;
-        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('combined', rewardOrAction);
+        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('combined', rewardOrAction, chartData.actions);
 		for (var i in selectedBars){
 			var bar = selectedBars[i];
 			var saliencyId = bar.saliencyId;
