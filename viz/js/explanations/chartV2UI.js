@@ -4,6 +4,7 @@ function getChartV2UI() {
     var chartCanvas = undefined;
     ui.whyButtonInfo = undefined;
     ui.rewardBarTooltipManager = undefined;
+    ui.backgroundColor = "#eeeeee";
     ui.renderChartDetailed = function(chartData){
         createRewardChartContainer();
         //var canvasWidth = $("#explanations-rewards").width;
@@ -31,14 +32,14 @@ function getChartV2UI() {
         var legendDiv = document.createElement("DIV");
         legendDiv.setAttribute("id", "legend-canvas");
         legendDiv.setAttribute("class", "flex-column");
-        legendDiv.setAttribute("style", "background-color:white;");
+        legendDiv.setAttribute("style", "background-color:" + this.backgroundColor + ";");
         $("#explanations-rewards").append(legendDiv);
 
         // create legend area where names and boxes will exist
         var legendRewards = document.createElement("DIV");
         legendRewards.setAttribute("id", "legend-rewards");
         legendRewards.setAttribute("class", "grid");
-        legendRewards.setAttribute("style", "background-color:white");
+        legendRewards.setAttribute("style", "background-color:" + this.backgroundColor + ";");
         $("#legend-canvas").append(legendRewards);
 
 		// append legend names and boxes to legend area
@@ -69,7 +70,7 @@ function getChartV2UI() {
 		$("#legend-rewards").append(rewardLegendTotal);
 
         var ctx = chartCanvas.getContext("2d");
-        $("#chartV2-canvas").css("background-color", "white");
+        $("#chartV2-canvas").css("background-color", this.backgroundColor);
         
 
         this.renderActionSeparatorLines(chartCanvas, chartData);
@@ -77,8 +78,9 @@ function getChartV2UI() {
         this.renderChartValueLines(chartCanvas, chartData, 4);
         this.renderZeroValueLabel(chartCanvas, chartData);
         
-        this.renderBars(chartCanvas,chartData);
         this.renderActionBars(chartCanvas, chartData);
+        this.renderBars(chartCanvas,chartData);
+        
         this.renderXAxis(chartCanvas, chartData);
 		this.renderYAxis(chartCanvas, chartData);
 
