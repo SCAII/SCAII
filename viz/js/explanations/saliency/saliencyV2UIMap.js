@@ -18,19 +18,19 @@ function getSaliencyV2UIMap() {
         return result;
     }
 	uimap.overlaySaliencyMapOntoGameReplica = function(ctx, cells, width, height, normalizationFactor) {
-        if (userStudyMode){
-            if (isTutorial()){
-                //tutorial saliencies are randomized
-                cells = getRandomCells(width * height);
-                var max = getMaxValueForLayer(cells);
-                if (max == 0) {
-                    normalizationFactor = 1;
-                }
-                else{
-                    normalizationFactor = 1/ max;
-                }
-            }
-        }
+        // if (userStudyMode){
+        //     if (isTutorial()){
+        //         //tutorial saliencies are randomized
+        //         cells = getRandomCells(width * height);
+        //         var max = getMaxValueForLayer(cells);
+        //         if (max == 0) {
+        //             normalizationFactor = 1;
+        //         }
+        //         else{
+        //             normalizationFactor = 1/ max;
+        //         }
+        //     }
+        // }
 		for (var x= 0; x < width; x++){
 			for (var y = 0; y < height; y++){
 				var index = height * x + y;
