@@ -9,7 +9,7 @@ function addColorToBars(rawChartData) {
         for (var j in rd.actions[i].bars) {
             rd.actions[i].bars[j].color = rd.colors[j];
         }
-        rd.actions[i].color = "lightgray";
+        rd.actions[i].color = 'rgba(150,150,150,0.5)';
     }
 
     return rd;

@@ -98,6 +98,60 @@ function addSelectionFunctions (rawChartData) {
             }
         }
     }
-
+    rd.clearShowSaliencies = function() {
+        for (var i in this.actionRewardNames){
+            var name = this.actionRewardNames[i];
+            var bar = this.actionRewardForNameMap[name];
+            bar.showSaliencyMap = false;
+        }
+        for (var i in this.actionNames){
+            var name = this.actionNames[i];
+            var bar = this.actionForNameMap[name];
+            bar.showSaliencyMap = false;
+        }
+    }
+    
+    rd.showSalienciesForRewardName = function(name) {
+        this.clearShowSaliencies();
+        for (var i in this.actionRewardNames){
+            var curName = this.actionRewardNames[i];
+            var bar = this.actionRewardForNameMap[curName];
+            if (bar.name == name){
+                bar.showSaliencyMap = true;
+            }
+        }
+    }
+    rd.showSalienciesForActionName = function(name) {
+        this.clearShowSaliencies();
+        for (var i in this.actionNames){
+            var curName = this.actionNames[i];
+            var action = this.actionForNameMap[curName];
+            if (action.name == name){
+                action.showSaliencyMap = true;
+            }
+        }
+    }
+    rd.getBarsFlaggedForShowingSaliency = function(){
+        var result = [];
+        for (var i in this.actionRewardNames){
+            var name = this.actionRewardNames[i];
+            var bar = this.actionRewardForNameMap[name];
+            if (bar.showSaliencyMap){
+                result.push(bar);
+            }
+        }
+        if (result.length != 0){
+            return result;
+        }
+        //check the actions
+        for (var i in this.actionNames){
+            var name = this.actionNames[i];
+            var bar = this.actionForNameMap[name];
+            if (bar.showSaliencyMap){
+                result.push(bar);
+            }
+        }
+        return result;
+    }
     return rd;
 }

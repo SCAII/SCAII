@@ -8,11 +8,32 @@ function getSaliencyV2UI() {
         addWhatButton();
     }
    
+    ui.getContextStringForDetailedSaliencyMapRow = function(barType){
+        if (barType == "action"){
+            return "Saliency maps for action";
+        }
+        else {
+            // assume "reward"
+            return "Saliency maps for reward";
+        }
+    }
+    
+    ui.getContextStringForCombinedSaliencyMapRow = function(barType){
+        if (barType == "action"){
+            return "Combined saliency map for action";
+        }
+        else {
+            // assume "reward"
+            return "Combined saliency map for reward";
+        }
+    }
 	ui.renderSaliencyDetailed = function(chartData) {
         $("#saliency-div").remove();
         createSaliencyContainers();
-        var selectedBars = chartData.getSelectedBars();
-        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('detailed', "reward");
+        
+        var selectedBars = chartData.getBarsFlaggedForShowingSaliency();
+        var rewardOrAction = selectedBars[0].type;
+        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('detailed', rewardOrAction);
 		
 		for (var i in selectedBars){
             var scaleFactor = 1.0;
@@ -26,8 +47,9 @@ function getSaliencyV2UI() {
 				console.log("ERROR - no Layer message for saliencyID " + saliencyId);
 			}
 			else {
-				var expLayers = layerMessage.getLayersList();
-				var nameContainerDiv = getNameDivForRow(i, bar,"?? used to be rank string??");
+                var expLayers = layerMessage.getLayersList();
+                var contextString = this.getContextStringForDetailedSaliencyMapRow(bar.type);
+				var nameContainerDiv = getNameDivForRow(i, bar, contextString);
 				$("#saliency-maps").append(nameContainerDiv);
                 var rowInfoString = getRowInfoString(bar);
 				//var normalizationFactor = getNormalizationFactor(expLayers);
@@ -52,8 +74,9 @@ function getSaliencyV2UI() {
 	ui.renderSaliencyCombined = function(chartData) {
         $("#saliency-div").remove();
         createSaliencyContainers();
-        var selectedBars = chartData.getSelectedBars();
-        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('combined', "reward");
+        var selectedBars = chartData.getBarsFlaggedForShowingSaliency();
+        var rewardOrAction = selectedBars[0].type;
+        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('combined', rewardOrAction);
 		for (var i in selectedBars){
 			var bar = selectedBars[i];
 			var saliencyId = bar.saliencyId;
@@ -62,8 +85,9 @@ function getSaliencyV2UI() {
 				console.log("ERROR - no Layer message for saliencyID " + saliencyId);
 			}
 			else {
-				var expLayers = layerMessage.getLayersList();
-				var nameContainerDiv = getNameDivForRow(i, bar, "??used to be rank string??");
+                var expLayers = layerMessage.getLayersList();
+                var contextString = this.getContextStringForCombinedSaliencyMapRow(bar.type);
+				var nameContainerDiv = getNameDivForRow(i, bar, contextString);
 				$("#saliency-maps").append(nameContainerDiv);
 				var rowInfoString = getRowInfoString(bar);
                 var aggregatedCells = getAggregatedCells(expLayers);
@@ -82,7 +106,13 @@ function getSaliencyV2UI() {
 
 function getRowInfoString(bar) {
     var parts = bar.fullName.split(".");
-    var result = parts[0] + ', ' + parts[1];
+    var result = "";
+    if (parts.length == 1){
+        result = parts[0]; 
+    }
+    else {
+        result = parts[0] + ', ' + parts[1];
+    } 
 	return result;
 }
 

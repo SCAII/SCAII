@@ -4,6 +4,7 @@ function getChartV2UI() {
     var chartCanvas = undefined;
     ui.whyButtonInfo = undefined;
     ui.rewardBarTooltipManager = undefined;
+    ui.backgroundColor = "#eeeeee";
     ui.renderChartDetailed = function(chartData, treatment){
         createRewardChartContainer();
         //var canvasWidth = $("#explanations-rewards").width;
@@ -31,14 +32,14 @@ function getChartV2UI() {
         var legendDiv = document.createElement("DIV");
         legendDiv.setAttribute("id", "legend-canvas");
         legendDiv.setAttribute("class", "flex-column");
-        legendDiv.setAttribute("style", "background-color:white;");
+        legendDiv.setAttribute("style", "background-color:" + this.backgroundColor + ";");
         $("#explanations-rewards").append(legendDiv);
 
         // create legend area where names and boxes will exist
         var legendRewards = document.createElement("DIV");
         legendRewards.setAttribute("id", "legend-rewards");
         legendRewards.setAttribute("class", "grid");
-        legendRewards.setAttribute("style", "background-color:white");
+        legendRewards.setAttribute("style", "background-color:" + this.backgroundColor + ";");
         $("#legend-canvas").append(legendRewards);
 
 		// append legend title to legend area
@@ -84,7 +85,7 @@ function getChartV2UI() {
 		$("#legend-rewards").append(rewardLegendTotal);
 
         var ctx = chartCanvas.getContext("2d");
-        $("#chartV2-canvas").css("background-color", "white");
+        $("#chartV2-canvas").css("background-color", this.backgroundColor);
         
 
         this.renderActionSeparatorLines(chartCanvas, chartData);
@@ -117,9 +118,15 @@ function getChartV2UI() {
 				chartData.highlightSimilarRewardBars(trueRewardBarName);
 			}
 			this.renderBars(chartCanvas, chartData, treatment);
-		}
+		}	
+        var bar = chartData.actionRewardForNameMap[rewardBarName];
+        chartData.showSalienciesForRewardName(bar.name);
+        currentExplManager.saliencyVisible = true;
+        currentExplManager.saliencyCombined = false;
+        currentExplManager.render();
         alert(" still works - " + rewardBarName);
     }
+
     ui.renderTitle = function (canvas, chartData) {
 		// NOTE: There are no tests for rendering the title
 		var ctx = canvas.getContext("2d");
@@ -171,6 +178,7 @@ function getChartV2UI() {
 			this.renderBar(ctx, bar, "normal");
 		}
 	}
+
 
 	ui.renderActionNames = function (canvas, chartData) {
 		chartData.positionActionLabels(30);
