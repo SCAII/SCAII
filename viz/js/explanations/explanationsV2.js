@@ -70,11 +70,16 @@ function addFunctionsToRawChart(rawChart){
     return ch;
 }
 
-function setDefaultSelections(chartData) {
+function setDefaultSelections(chartData,treatmentID) {
     var action = chartData.getMaxValueAction();
     var bar = chartData.getMaxValueBar(action.bars);
     bar.selected = true;
-    chartData.showSalienciesForRewardBar(bar);
+    if (treatmentID == "T1"){
+        chartData.showSalienciesForActionName(action.name);
+    }
+    else if (treatmentID == "T3"){
+        chartData.showSalienciesForRewardName(bar.name);
+    }
     return chartData;
 }
 function addConvenienceDataStructures(chartData) {
@@ -84,6 +89,8 @@ function addConvenienceDataStructures(chartData) {
         for(var i in chartData.actions){
             var action = chartData.actions[i];
             var actionName = action.name;
+            action.fullName = actionName;
+            action.type = "action";
             chartData.actionForNameMap[actionName] = action;
             chartData.actionNames.push(actionName);
         }
@@ -97,6 +104,7 @@ function addConvenienceDataStructures(chartData) {
             for (var j in action.bars){
                 var bar = action.bars[j];
                 bar.fullName = action.name+ "." + bar.name;
+                bar.type = "reward";
                 chartData.actionRewardForNameMap[bar.fullName] = bar;
                 chartData.actionRewardNames.push(bar.fullName);
             }
@@ -151,7 +159,7 @@ function getExplanationsV2Manager(){
         this.data = addFunctionsToRawChart(chartData);
         this.data = ensureActionValuesSet(this.data);
         this.data = addConvenienceDataStructures(this.data);
-        this.data = setDefaultSelections(this.data);
+        this.data = setDefaultSelections(this.data, this.treatmentID);
     }
     cm.setFilename = function(filename){
         this.filename = filename;

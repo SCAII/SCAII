@@ -92,7 +92,7 @@ function getChartV2UI() {
 
     ui.processRewardBarClick = function(rewardBarName, chartData){
         var bar = chartData.actionRewardForNameMap[rewardBarName];
-        chartData.showSalienciesForRewardBar(bar);
+        chartData.showSalienciesForRewardName(bar.name);
         currentExplManager.saliencyVisible = true;
         currentExplManager.saliencyCombined = false;
         currentExplManager.render();
