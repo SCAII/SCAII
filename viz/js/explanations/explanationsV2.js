@@ -62,6 +62,7 @@ function renderWhyButton(step, x, y){
 function addFunctionsToRawChart(rawChart){
     var ch = addColorToBars(rawChart);
     ch = addUtilityFunctions(ch);
+    ch.actions = ch.getActionsInQuadrantOrder(ch.actions);
     ch = addRankingFunctions(ch);
     ch = addSelectionFunctions(ch);
     ch = addTextFunctions(ch);

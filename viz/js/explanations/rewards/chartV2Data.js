@@ -13,6 +13,28 @@ function addUtilityFunctions(chart) {
         }
     }
 
+    ch.getActionsInQuadrantOrder = function(){
+        var quadrantNames = [ "Q1","Q2", "Q3", "Q4"];
+        var sortedActions = [];
+        for (var i in quadrantNames){
+            var quadrantName = quadrantNames[i];
+            for (var j in this.actions) {
+                var action = this.actions[j];
+                if (action.name.includes(quadrantName)){
+                    sortedActions.push(action);
+                }
+            }
+            
+        }
+        if (sortedActions.length < this.actions.length){
+            // one or more quadrant names didn't match, don't sort - must be a test context
+            return this.actions;
+        }
+        else {
+            return sortedActions;
+        }
+       
+    }
     // ch.getActionRewardForName = function (actionRewardName) {
     //     return ch.actionRewardForNameMap[rewardName];
     //     // for (var i in rd.actions) {

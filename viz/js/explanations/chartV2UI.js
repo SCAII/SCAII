@@ -123,7 +123,7 @@ function getChartV2UI() {
 
 	ui.renderActionBars = function (canvas, chartData){
 		// (EVAN) TODO: add test in here for actionBar Names?
-		var ctx = canvas.getContext("2d");
+        var ctx = canvas.getContext("2d");
 		for (var i in chartData.actions) {
 			var bar = chartData.actions[i];
 			chartData.positionActionBar(bar, i);
@@ -131,6 +131,7 @@ function getChartV2UI() {
 			this.renderBar(ctx, bar, "normal");
 		}
 	}
+
 
 	ui.renderActionNames = function (canvas, chartData) {
 		chartData.positionActionLabels(30);
