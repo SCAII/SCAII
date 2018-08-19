@@ -474,6 +474,7 @@ function handleScaiiPacket(sPacket) {
             if (userStudyMode) {
                 tabManager.finalStepsForChangeToTab();
             }
+            currentExplManager.setCurrentStep(sessionIndexManager.getCurrentIndex());
 		}
 		else if (commandType == proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE_COMPLETE){
             controlsManager.doneLoadReplayFile();

@@ -11,7 +11,8 @@ function handleExplanationDetails(explDetails){
         //currentExplManager.setChartData(getSeeSawChart());
         var saliency = explanationPoint.getSaliency();
         saliencyLookupMap = saliency.getSaliencyMapMap();
-        currentExplManager.setChartData(rawChart);
+        var step = sessionIndexManager.getCurrentIndex();
+        currentExplManager.setChartData(rawChart, step);
         currentExplManager.render();
 	}
 	else {
@@ -153,12 +154,33 @@ function getExplanationsV2Manager(){
     cm.showHoverScores = false;
     cm.chartUI = getChartV2UI();
     cm.saliencyUI = getSaliencyV2UI();
-
-    cm.setChartData = function(chartData){
-        this.data = addFunctionsToRawChart(chartData);
-        this.data = ensureActionValuesSet(this.data);
-        this.data = addConvenienceDataStructures(this.data);
-        this.data = setDefaultSelections(this.data, this.treatmentID);
+    cm.stepsWithExplanations = [];
+    cm.chartDataForStep = {};
+    cm.setChartData = function(rawChartData, step){
+        var cachedChartData = this.chartDataForStep[step];
+        if (cachedChartData == undefined) {
+            this.data = addFunctionsToRawChart(rawChartData);
+            this.data = ensureActionValuesSet(this.data);
+            this.data = addConvenienceDataStructures(this.data);
+            this.data = setDefaultSelections(this.data, this.treatmentID);
+            this.chartDataForStep[step] = this.data;
+            this.stepsWithExplanations.push(step);
+        }
+        else {
+            this.data = cachedChartData;
+        }
+        
+    }
+    cm.setCurrentStep = function(step){
+        // find first step less than or equal to this one
+        for (var i = this.stepsWithExplanations.length - 1; i >= 0; i--){
+            var curStep = this.stepsWithExplanations[i];
+            if (Number(curStep) <= Number(step)){
+                this.data = this.chartDataForStep[curStep];
+                this.render();
+                return;
+            }
+        }
     }
     cm.setFilename = function(filename){
         this.filename = filename;
