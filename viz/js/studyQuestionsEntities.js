@@ -32,7 +32,7 @@ function highlightShapeForClickCollectionFeedback(info){
             drawTriangle(info, "outline");
         }
         if (tm.showAllSaliencyForTreatment1 || tm.showSaliencyAll){
-            currentExplManager.saliencyUI.uimap.hideAllSaliencyMapOutlines();
+            //currentExplManager.saliencyUI.uimap.hideAllSaliencyMapOutlines();
         }
     }
 }
