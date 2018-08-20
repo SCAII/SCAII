@@ -222,7 +222,7 @@ function populateSaliencyQuestionSelector(){
 	};
 
 	var combinedSaliencyLabel = document.createElement("div");
-	combinedSaliencyLabel.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:14px;");
+	combinedSaliencyLabel.setAttribute("style", "margin-left:10px;margin-top:3px;font-family:Arial;font-size:14px;");
 	combinedSaliencyLabel.innerHTML = "relevance combined";
 	combinedSaliencyLabel.setAttribute("id","relevance-combined-label");
 
@@ -231,7 +231,7 @@ function populateSaliencyQuestionSelector(){
 	radioDetailedSaliency.setAttribute("name","saliencyView");
 	radioDetailedSaliency.setAttribute("id","relevance-detailed-radio");
 	radioDetailedSaliency.setAttribute("value","saliencyDetailed");
-    radioDetailedSaliency.setAttribute("style", "margin-left:20px; ");
+    radioDetailedSaliency.setAttribute("style", "margin-left:20px;");
     if (!currentExplManager.saliencyCombined){
         radioDetailedSaliency.setAttribute("checked", "true");
     }
@@ -242,7 +242,7 @@ function populateSaliencyQuestionSelector(){
 	};
 
 	var detailedSaliencyLabel = document.createElement("div");
-	detailedSaliencyLabel.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:14px;");
+	detailedSaliencyLabel.setAttribute("style", "margin-left:10px;margin-top:3px;font-family:Arial;font-size:14px;");
 	detailedSaliencyLabel.innerHTML = "relevance details";
 	detailedSaliencyLabel.setAttribute("id","relevance-detailed-label");
 	

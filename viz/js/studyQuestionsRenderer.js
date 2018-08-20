@@ -565,7 +565,7 @@ function ensureStudyControlScreenIsWideEnough(){
 }
 
 function clearQuestionControls(){
-	$("#why-radios").empty();
+	//$("#why-radios").empty();
 	$("#what-button-div").empty();
 	$("#reward-question-selector").empty();
 	$("#why-label").html(" ");
