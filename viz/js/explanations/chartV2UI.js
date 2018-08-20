@@ -94,7 +94,7 @@ function getChartV2UI() {
         this.renderZeroValueLabel(chartCanvas, chartData);
         
         this.renderActionBars(chartCanvas, chartData);
-        this.renderBars(chartCanvas,chartData, "none");
+        this.renderBars(chartCanvas,chartData, treatment);
         this.renderXAxis(chartCanvas, chartData);
 		this.renderYAxis(chartCanvas, chartData);
 

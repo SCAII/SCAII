@@ -47,7 +47,8 @@ function addGeometryFunctions(rawChartData) {
         // actionLinesOriginX
         // actionLinesOriginY = (canvasHeight - yAxisLength) / 2
         this.actionLinesLength = Math.floor(this.getMaxAbsRewardOrActionValue() * 2 * this.scalingFactor + 10);
-        this.actionLinesOriginY = (this.canvasHeight - this.yAxisLength) / 2;
+        var actionLineBasedOffYAxis = this.getMaxAbsRewardOrActionValue() * 2 * this.scalingFactor + 10;
+        this.actionLinesOriginY = (this.canvasHeight - actionLineBasedOffYAxis) / 2;
         for (var i = 1; i < this.actions.length; i++) {
             this.actionLinesOriginX.push(this.widthAvailableForGroup * i);
         }
