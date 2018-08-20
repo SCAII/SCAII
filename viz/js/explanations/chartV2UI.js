@@ -317,17 +317,20 @@ function getChartV2UI() {
 				chartData.positionRewardBar(bar, i, j);
 				chartData.dimensionRewardBar(bar);
 				if (bar.selected == true) {
-					if (treatment == "T3") {
-						this.renderBar(ctx, bar, "outlineT3");
-					}
-					else {
-						this.renderBar(ctx, bar, "outline");
-					}
+					var saveSelected = bar;
 				} else if (bar.highlight == true) {
 					this.renderBar(ctx, bar, "gradient");
 				} else {
 					this.renderBar(ctx, bar, "normal");
-				}
+				}	
+			}
+		}
+		if (saveSelected != undefined) {
+			if (treatment == "T3") {
+				this.renderBar(ctx, saveSelected, "outlineT3");
+			}
+			else {
+				this.renderBar(ctx, saveSelected, "outline");
 			}
 		}
 	}	
@@ -360,6 +363,7 @@ function getChartV2UI() {
 			var pattern = this.renderPattern(bar.color);
 			ctx.fillStyle = ctx.createPattern(pattern, 'repeat');
 			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+	
 		} else if (mode == "outline") {
 			ctx.clearRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
 			ctx.lineWidth = shape_outline_width;
