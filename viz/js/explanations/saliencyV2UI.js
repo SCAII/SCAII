@@ -26,14 +26,16 @@ function getSaliencyV2UI() {
             // assume "reward"
             return "Combined saliency map for reward";
         }
-    }
+	}
+
+
 	ui.renderSaliencyDetailed = function(chartData) {
         $("#saliency-div").remove();
         createSaliencyContainers();
         
         var selectedBars = chartData.getBarsFlaggedForShowingSaliency();
         var rewardOrAction = selectedBars[0].type;
-        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('detailed', rewardOrAction, chartData.actions);
+        this.uimap.normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('detailed', rewardOrAction, chartData.actions);
 		
 		for (var i in selectedBars){
             var scaleFactor = 1.0;
@@ -61,7 +63,7 @@ function getSaliencyV2UI() {
 					var width = expLayer.getWidth();
                     var height = expLayer.getHeight();
                     var realUIName = renameEntityInfoForIUI(name);
-					this.uimap.renderExplLayer(j + 1, i, realUIName, rowInfoString + realUIName, cells, width, height, normalizationFactor, scaleFactor);
+					this.uimap.renderExplLayer(saliencyId, Number( j ) + Number( 1 ), i, realUIName, rowInfoString + realUIName, cells, width, height, this.uimap.normalizationFactor, scaleFactor);
 				} 
 			}
         }
@@ -76,7 +78,7 @@ function getSaliencyV2UI() {
         createSaliencyContainers();
         var selectedBars = chartData.getBarsFlaggedForShowingSaliency();
         var rewardOrAction = selectedBars[0].type;
-        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('combined', rewardOrAction, chartData.actions);
+        this.uimap.normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('combined', rewardOrAction, chartData.actions);
 		for (var i in selectedBars){
 			var bar = selectedBars[i];
 			var saliencyId = bar.saliencyId;
@@ -95,12 +97,12 @@ function getSaliencyV2UI() {
 				//var normalizationFactor = getNormalizationFactorFromCells(aggregatedCells);
 				var width = expLayers[0].getWidth();
 				var height = expLayers[0].getHeight();
-				this.uimap.renderExplLayer(1, i, "all features cumulative", rowInfoString, aggregatedCells, width, height, normalizationFactor, 1.0);
+				this.uimap.renderExplLayer(saliencyId, 1, i, "all features cumulative", rowInfoString, aggregatedCells, width, height, this.uimap.normalizationFactor, 1.0);
 			}
 		}
 	}
 
-    return ui;
+    return ui;s
 }
 
 

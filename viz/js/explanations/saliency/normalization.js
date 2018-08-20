@@ -40,6 +40,25 @@ function getCellsForAllLayersOfSaliencyId(saliencyId){
 }
 
 
+function getCellsForSingleLayerForSaliencyId(saliencyId, desiredLayerName){
+    var layerMessage = saliencyLookupMap.get(saliencyId);
+    if (layerMessage == undefined){
+        console.log("ERROR - no Layer message for saliencyID " + saliencyId);
+    }
+    else {
+        var expLayers = layerMessage.getLayersList();
+        for (var i in expLayers){
+            var expLayer = expLayers[i];
+            var name = expLayer.getName();
+            if (name == desiredLayerName){
+                cellList = expLayer.getCellsList();
+                return cellList;
+            }
+        }
+    }
+    return undefined;
+}
+
 function addLayersToYieldSingleLayer(cellLists){
     var result = [];
     var length = cellLists[0].length;

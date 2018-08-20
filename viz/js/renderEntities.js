@@ -317,6 +317,7 @@ function renderCircle(si, shape) {
     shapePositionMap[si.shapeId] = shapePoints;
     //	highlightShape(ctx,shapeId,shapePositionMap);
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
+    studyModeColoring( shape, si );
     drawCircle(si, "normal");
     shapeInfoForHighlighting[si.shapeId] = si;
 }
@@ -336,6 +337,7 @@ function renderRectangle(si, shape) {
     shapePositionMap[si.shapeId] = shapePoints;
     //	highlightShape(ctx,shapeId,shapePositionMap);
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
+    studyModeColoring( shape, si );
     drawRect(si,"normal");
     shapeInfoForHighlighting[si.shapeId] = si;
 }
@@ -359,6 +361,7 @@ function renderOctagon(si, shape) {
     shapePositionMap[si.shapeId] = shapePoints;
     //	highlightShape(ctx,shapeId,shapePositionMap);
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
+    studyModeColoring( shape, si );
     drawOctagon(si, "normal");
     shapeInfoForHighlighting[si.shapeId] = si;
 }
@@ -372,6 +375,7 @@ function renderTriangle(si, shape) {
     //	highlightShape(ctx,shapeId,shapePositionMap);
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
     //drawTriangle(ctx, x, y, baseLen, orientation, colorRGBA);
+    studyModeColoring( shape, si );
     drawTriangle(si, "normal");
     shapeInfoForHighlighting[si.shapeId] = si;
 }
@@ -390,6 +394,7 @@ function renderTriangleAsKite(si, shape) {
     //	highlightShape(ctx,shapeId,shapePositionMap);
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
     //drawTriangle(ctx, x, y, baseLen, orientation, colorRGBA);
+    studyModeColoring( shape, si );
     drawKite(si, "normal");
     shapeInfoForHighlighting[si.shapeId] = si;
 }
@@ -403,6 +408,18 @@ function renderKite(si, shape) {
     shapePositionMap[si.shapeId] = shapePoints;
     //	highlightShape(ctx,shapeId,shapePositionMap);
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
+    studyModeColoring( shape, si );
     drawKite(si, "normal");
     shapeInfoForHighlighting[si.shapeId] = si;
+}
+
+function studyModeColoring( shape, si ){
+    if(userStudyMode){
+        if (shape.getColor( ).getG( ) == 181 ){
+            si.colorRGBA = "white";
+        }
+        else{
+            si.colorRGBA = "black";
+       }
+    }         
 }

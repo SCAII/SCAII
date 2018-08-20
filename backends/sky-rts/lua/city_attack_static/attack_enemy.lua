@@ -105,7 +105,7 @@ function _reset(rng, data)
         table.insert(out, damaged_big)
         table.insert(out, damaged_small)
         table.insert(out, friendly_small)
-    else
+    elseif generation == 3 then
         -- Q1, Q2, Q4, Q3 = 2, 4, 1, 3
         full_hp_small.pos = {x=35.0, y=10.0}
         damaged_small.pos = {x=13.8, y=8.0}
@@ -117,7 +117,6 @@ function _reset(rng, data)
         table.insert(out, full_hp_small)
         table.insert(out, friendly_small)
         table.insert(out, damaged_small)
-        
     end
 
     return out
@@ -142,11 +141,12 @@ function sky_init()
             body="triangle",
             base_len=2.0,
         },
-        kill_reward=70,
+        kill_reward=0,
         kill_type="Enemy Destroyed",
         dmg_deal_type="Enemy Damaged",
         death_penalty=0,
         damage_recv_penalty=0,
+        damage_deal_reward=0,
         speed=40.0,
         attack_range=0.3,
         attack_dmg=10,
@@ -167,7 +167,6 @@ function sky_init()
         death_type="Friend Destroyed",
         dmg_recv_type="Friend Damaged",
         dmg_deal_type="Enemy Damaged",
-        damage_deal_reward=0,
         attack_range=0.3,
         attack_dmg=5,
         attack_delay=0.2,
@@ -182,12 +181,11 @@ function sky_init()
             height=5.0,
         },
         can_move=false,
-        kill_reward=85,
+        kill_reward=70,
         kill_type="Enemy Destroyed",
         death_type="Friend Destroyed",
         dmg_recv_type="Friend Damaged",
         dmg_deal_type="Enemy Damaged",
-        damage_deal_reward=0,
         attack_range=0.3,
         attack_dmg=10,
         attack_delay=0.2,
@@ -251,6 +249,12 @@ function on_death(world, dead, cause)
     -- Note: we need to actually filter this out because otherwise games can stall indefinitely
     then 
         return 
+    end
+
+    world:emit_reward(1, "Living")
+    if world.generation ~= nil and world.generation > 3 then
+        world:victory(0)
+        return
     end
     
     if dead:unit_type() == "Ship" and dead:faction() == 0 then
