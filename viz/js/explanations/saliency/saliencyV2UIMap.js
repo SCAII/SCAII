@@ -19,89 +19,22 @@ function getSaliencyV2UIMap() {
         var result = 'DP-' + showingDecisionNumber + "-" + saliencyMapId;
         return result;
     }
-
-
-    /*************************************************************************************************
-     * Author:      Andrew Anderson
-     * Purpose:     Don't think normalization is needed to overlay onto the gameboard.
-     * Date made:   8/17/2018
-     * Date mod:    8/17/2018
-     *************************************************************************************************/
-    uimap.overlaySaliencyMapOntoGameboard = function( ctx, cells, width, height, gameboardFlag ){
-        // if( userStudyMode ){
-        //     if( isTutorial( ) ) {
-        //         cells = getRandomCells(width * height);
-        //         var max = getMaxValueForLayer(cells);
-        //         var normalizationFactor = 0;
-        //         if (max == 0) {
-        //             normalizationFactor = 1;
-        //         }
-        //         else{
-        //             normalizationFactor = 1/ max;
-        //         } 
-        //     }
-        // }
-        for( var x = 0; x < width; x++ ) {
-            for( var y = 0; y < height; y++ ) {
-                var index = height * x + y;
-                var cellValue = cells[ index ];
-                ctx.fillStyle = getOverlayOpacityBySaliencyRGBAString( cellValue, gameboardFlag );
-                ctx.fillRect(x*gameScaleFactor, y*gameScaleFactor, gameScaleFactor, gameScaleFactor);
-                ctx.fill();
-            }
-        }
-    }
-
-
  
 
 	uimap.overlaySaliencyMapOntoGameReplica = function(ctx, cells, width, height, normalizationFactor, gameboardFlag ) {
-        // if (userStudyMode){
-        //     if (isTutorial()){
-        //         //tutorial saliencies are randomized
-        //         cells = getRandomCells(width * height);
-        //         var max = getMaxValueForLayer(cells);
-        //         if (max == 0) {
-        //             normalizationFactor = 1;
-        //         }
-        //         else{
-        //             normalizationFactor = 1/ max;
-        //         }
-        //     }
-        // }
-            for (var x= 0; x < width; x++){
-                for (var y = 0; y < height; y++){
-                    var index = height * x + y;
-                    var cellValue = cells[index];
-                    //console.log( "normalization Factor: " + normalizationFactor );
-                    ctx.fillStyle = getOverlayOpacityBySaliencyRGBAString(cellValue * normalizationFactor, gameboardFlag);
-                    //console.log( "ctx.fillStyle: " + ctx.fillStyle );
-                    ctx.fillRect(x*gameScaleFactor, y*gameScaleFactor, gameScaleFactor, gameScaleFactor);
-                    ctx.fill();
-                }
+        for (var x= 0; x < width; x++){
+            for (var y = 0; y < height; y++){
+                var index = height * x + y;
+                var cellValue = cells[index];
+                //console.log( "normalization Factor: " + normalizationFactor );
+                ctx.fillStyle = getOverlayOpacityBySaliencyRGBAString(cellValue * normalizationFactor, gameboardFlag);
+                //console.log( "ctx.fillStyle: " + ctx.fillStyle );
+                ctx.fillRect(x*gameScaleFactor, y*gameScaleFactor, gameScaleFactor, gameScaleFactor);
+                ctx.fill();
             }
-            
+        }   
     }
     
-
-    /******************************************************************************************************************
-     * Author: Andrew Anderson
-     * Purpose: By inverting the operation for getOverlayOpacity... from * to /, I'm hoping that each selected map will
-     *          undo the selection by a value proportional to the original overlay.
-     * Date Made: 8/19/2018
-     * Date Mod:  8/19/2018
-     ******************************************************************************************************************/
-    uimap.subtractSaliencyMapFromGameReplica = function (ctx, cells, width, height, normalizationFactor ) {
-        for( var x = 0; x < width; x++ ){
-            for( var y = 0; y < height; y++ ){
-                var index = height * x + y;
-                var cellValue = cells[ index ];
-                ctx.fillStyle = getOverlayOpacityBySaliencyRGBAString( cellValue / normalizationFactor, gameboardFlag );
-                ctx.fillRect( x * gameScaleFactor, y * gameScaleFactor, gameScaleFactor, gameScaleFactor );
-                ctx.fill( );
-            }
-        }
-    }
 
     /**************************************************************************************
      * Author:      Andrew Anderson

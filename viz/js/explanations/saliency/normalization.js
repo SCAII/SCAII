@@ -31,12 +31,14 @@ function getCellsForAllLayersOfSaliencyId(saliencyId){
         var expLayers = layerMessage.getLayersList();
         for (var i in expLayers){
             var expLayer = expLayers[i];
+            var name = expLayer.getName();
             var cellList = expLayer.getCellsList();
             result.push(cellList);
         }
     }
     return result;
 }
+
 
 function getCellsForSingleLayerForSaliencyId(saliencyId, desiredLayerName){
     var layerMessage = saliencyLookupMap.get(saliencyId);
@@ -94,7 +96,7 @@ function getNormalizationFactorForAllBarSaliencies(barGroups){
     // gather up the cellList from each layer of all bars
     for (var i in barGroups){
         var group = barGroups[i];
-        var bars = group.getBarsList();
+        var bars = group.bars;
         for (var j in bars){
             var bar = bars[j];
             var saliencyId = bar.saliencyId;
@@ -136,7 +138,7 @@ function getNormalizationFactorForCombinedBarSaliencies(barGroups) {
     // gather up the cellList from each layer of all groups
     for (var i in barGroups){
         var group = barGroups[i];
-        var bars = group.getBarsList();
+        var bars = group.bars;
         for (var j in bars) {
             var bar = bars[j];
             var saliencyId = bar.saliencyId;

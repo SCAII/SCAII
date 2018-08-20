@@ -11,7 +11,8 @@ function handleExplanationDetails(explDetails){
         //currentExplManager.setChartData(getSeeSawChart());
         var saliency = explanationPoint.getSaliency();
         saliencyLookupMap = saliency.getSaliencyMapMap();
-        currentExplManager.setChartData(rawChart);
+        var step = sessionIndexManager.getCurrentIndex();
+        currentExplManager.setChartData(rawChart, step);
         currentExplManager.render();
 	}
 	else {
@@ -73,7 +74,6 @@ function addFunctionsToRawChart(rawChart){
 function setDefaultSelections(chartData,treatmentID) {
     var action = chartData.getMaxValueAction();
     var bar = chartData.getMaxValueBar(action.bars);
-    bar.selected = true;
     if (treatmentID == "T1"){
         chartData.showSalienciesForActionName(action.name);
     }
@@ -154,12 +154,33 @@ function getExplanationsV2Manager(){
     cm.showHoverScores = false;
     cm.chartUI = getChartV2UI();
     cm.saliencyUI = getSaliencyV2UI();
-
-    cm.setChartData = function(chartData){
-        this.data = addFunctionsToRawChart(chartData);
-        this.data = ensureActionValuesSet(this.data);
-        this.data = addConvenienceDataStructures(this.data);
-        this.data = setDefaultSelections(this.data, this.treatmentID);
+    cm.stepsWithExplanations = [];
+    cm.chartDataForStep = {};
+    cm.setChartData = function(rawChartData, step){
+        var cachedChartData = this.chartDataForStep[step];
+        if (cachedChartData == undefined) {
+            this.data = addFunctionsToRawChart(rawChartData);
+            this.data = ensureActionValuesSet(this.data);
+            this.data = addConvenienceDataStructures(this.data);
+            this.data = setDefaultSelections(this.data, this.treatmentID);
+            this.chartDataForStep[step] = this.data;
+            this.stepsWithExplanations.push(step);
+        }
+        else {
+            this.data = cachedChartData;
+        }
+        
+    }
+    cm.setCurrentStep = function(step){
+        // find first step less than or equal to this one
+        for (var i = this.stepsWithExplanations.length - 1; i >= 0; i--){
+            var curStep = this.stepsWithExplanations[i];
+            if (Number(curStep) <= Number(step)){
+                this.data = this.chartDataForStep[curStep];
+                this.render();
+                return;
+            }
+        }
     }
     cm.setFilename = function(filename){
         this.filename = filename;
@@ -244,13 +265,13 @@ function getExplanationsV2Manager(){
     
     cm.renderT2 = function(mode){
         if (this.chartVisible){
-            this.renderChartDetailed(mode);
+            this.renderChartDetailed(mode, "T2");
         }
     }
 
     cm.renderT3 = function(mode){
         if (this.chartVisible){
-            this.renderChartDetailed(mode);
+            this.renderChartDetailed(mode, "T3");
         }
         if (this.showSaliencyAccessButton && this.chartVisible){
             this.renderSaliencyAccessButton(mode);
@@ -263,13 +284,13 @@ function getExplanationsV2Manager(){
         }
     }
 
-    cm.renderChartDetailed = function(mode){
+    cm.renderChartDetailed = function(mode, treatment){
         if (mode == "trace"){
             this.renderLog.push("renderChartDetailed");
             return;
         }
         else {
-            this.chartUI.renderChartDetailed(this.data);
+            this.chartUI.renderChartDetailed(this.data, treatment);
         }
     }
     
