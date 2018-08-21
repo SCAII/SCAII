@@ -102,7 +102,7 @@ function getSaliencyV2UI() {
 		}
 	}
 
-    return ui;s
+    return ui;
 }
 
 

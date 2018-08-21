@@ -6,12 +6,10 @@ function getChartV2UI() {
     ui.rewardBarTooltipManager = undefined;
     ui.backgroundColor = "#eeeeee";
     ui.renderChartDetailed = function(chartData, treatment){
-        createRewardChartContainer();
-        //var canvasWidth = $("#explanations-rewards").width;
-        //var canvasHeight = $("#explanations-rewards").height;
         //specify dimensions
         var canvasHeight = 500;
         var canvasWidth = 700;
+        createRewardChartContainer(canvasHeight);
         chartData.initChartDimensions(canvasHeight, canvasWidth, 0.5, 0.0);
 
         // create canvas
@@ -25,14 +23,21 @@ function getChartV2UI() {
             var rewardBarName = chartData.getActionBarNameForCoordinates(x, y);
             currentExplManager.chartUI.processRewardBarClick(rewardBarName, chartData, e, treatment);
         }
+        // create chartCanvasContainer because some layout issues dealing with canvas directly
+        var chartCanvasContainer = document.createElement("div");
+        chartCanvasContainer.setAttribute("width", canvasWidth);
+        chartCanvasContainer.setAttribute("height", canvasHeight);
+        chartCanvasContainer.setAttribute("id", "chartV2-canvas-container");
         
-        $("#explanations-rewards").append(chartCanvas);
+        $("#explanations-rewards").append(chartCanvasContainer);
+        $("#chartV2-canvas-container").append(chartCanvas);
 
         // append legend div in explanationRewards so will be right of chartCanvas
         var legendDiv = document.createElement("DIV");
-        legendDiv.setAttribute("id", "legend-canvas");
+        //legendDiv.setAttribute("height", canvasHeight);
+        legendDiv.setAttribute("id", "legend-div");
         legendDiv.setAttribute("class", "flex-column");
-        legendDiv.setAttribute("style", "background-color:" + this.backgroundColor + ";");
+        legendDiv.setAttribute("style", "background-color:" + this.backgroundColor + ";height:" + canvasHeight + "px;");
         $("#explanations-rewards").append(legendDiv);
 
         // create legend area where names and boxes will exist
@@ -40,7 +45,7 @@ function getChartV2UI() {
         legendRewards.setAttribute("id", "legend-rewards");
         legendRewards.setAttribute("class", "grid");
         legendRewards.setAttribute("style", "background-color:" + this.backgroundColor + ";padding:6px");
-        $("#legend-canvas").append(legendRewards);
+        $("#legend-div").append(legendRewards);
 
 		// append legend title to legend area
 		var legendTitle = document.createElement("DIV");
@@ -451,7 +456,7 @@ function cleanExplanationUI() {
 }
 
 
-function createRewardChartContainer() {
+function createRewardChartContainer(canvasHeight) {
 	var rewardTitleContainer = document.createElement("DIV");
 	rewardTitleContainer.setAttribute("id", "rewards-titled-container");
 	rewardTitleContainer.setAttribute("class", "flex-column titled-container rewards-bg");
@@ -484,28 +489,29 @@ function createRewardChartContainer() {
 	whyRadios.setAttribute("style", "margin:auto;font-family:Arial;padding:10px;font-size:14px;");
 	//$("#rewards-titled-container").append(whyRadios);
 
-	var explanationRewards = document.createElement("DIV");
+    var explanationRewards = document.createElement("DIV");
+    explanationRewards.setAttribute("height", canvasHeight + "px");
 	explanationRewards.setAttribute("id", "explanations-rewards");
 	explanationRewards.setAttribute("class", "rewards-bg flex-row");
-	explanationRewards.setAttribute("style", "margin-left:20px; margin-right: 20px; margin-top: 20px; font-family:Arial;");
+	explanationRewards.setAttribute("style", "margin-left:20px; margin-right: 20px; margin-top: 20px; margin-bottom:0px; font-family:Arial;");
 	$("#rewards-titled-container").append(explanationRewards);
 
 	var whatDiv = document.createElement("DIV");
 	whatDiv.setAttribute("id", "what-div");
 	whatDiv.setAttribute("class", "flex-row rewards-bg");
-	whatDiv.setAttribute("style", "margin:auto;font-family:Arial;padding:10px;height:60px");
+	whatDiv.setAttribute("style", "font-family:Arial;padding:10px;height:60px");
 	$("#rewards-titled-container").append(whatDiv);
 
 	var whatButtonDiv = document.createElement("DIV");
 	whatButtonDiv.setAttribute("id", "what-button-div");
 	whatButtonDiv.setAttribute("class", "rewards-bg");
-	//whatButtonDiv.setAttribute("style", "margin:auto;");
+	whatButtonDiv.setAttribute("style", "margin-left: 200px;align-self:center;");
 	$("#what-div").append(whatButtonDiv);
 
 	var whatRadios = document.createElement("DIV");
 	whatRadios.setAttribute("id", "what-radios");
 	whatRadios.setAttribute("class", "flex-row rewards-bg");
-	whatRadios.setAttribute("style", "padding:6px;align-items:center");
+	whatRadios.setAttribute("style", "align-items:center;");
 	$("#what-div").append(whatRadios);
 
 	$("#rewards-titled-container").on("click", regionClickHandlerRewards);
@@ -513,7 +519,7 @@ function createRewardChartContainer() {
 	var whatSpacerDiv = document.createElement("DIV");
 	whatSpacerDiv.setAttribute("id", "what-spacer-div");
 	whatSpacerDiv.setAttribute("class", "rewards-bg");
-	whatSpacerDiv.setAttribute("style", "margin:auto;height:100%");
+	whatSpacerDiv.setAttribute("style", "margin:auto;");
 	$("#rewards-titled-container").append(whatSpacerDiv);
 }
 
