@@ -30,6 +30,7 @@ mod replay_util;
 use replay_sequencer::ReplaySequencer;
 mod explanations;
 use explanations::Explanations;
+mod study_util;
 
 #[cfg(test)]
 mod test;
@@ -117,7 +118,7 @@ impl Module for ReplayMessageQueue {
 impl Replay for ReplayMessageQueue {}
 
 #[allow(dead_code)]
-enum RunMode {
+pub enum RunMode {
     Live,
     Test,
 }
@@ -155,7 +156,7 @@ fn try_main() -> Result<(), Box<Error>> {
 }
 
 #[allow(unused_assignments)]
-fn run_replay(run_mode: RunMode) -> Result<(), Box<Error>> {
+pub fn run_replay(run_mode: RunMode) -> Result<(), Box<Error>> {
     let mut mode_is_test = true;
     let mut environment: Environment = Environment::new();
 
@@ -203,6 +204,7 @@ fn run_replay(run_mode: RunMode) -> Result<(), Box<Error>> {
         poll_timer_count: 5,
         //step_timer_count: 25,
         step_timer_count: 10,
+        user_study_questions: None,
     };
     let result = replay_manager.start();
     match result {

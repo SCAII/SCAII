@@ -1,9 +1,16 @@
-
 var masterEntities = {};
+var shapeLogStrings = {};
+var shapeInfoForHighlighting = {};
 
-
+function cleanEntities() {
+    masterEntities = {};
+    shapeLogStrings = {};
+    shapeInfoForHighlighting = {};
+}
 function handleEntities(entitiesList) {
-    cleanToolTips();
+    shapeInfoForHighlighting = {};
+    shapeLogStrings = {};
+    
     for (var i in entitiesList) {
         var entity = entitiesList[i];
         if (entity.hasId()) {
@@ -14,7 +21,7 @@ function handleEntities(entitiesList) {
                 }
                 else {
                     masterEntities[idString] = entity;
-                    copyMapsIntoUpdateablePosition(entity)
+                    copyMapsIntoUpdateablePosition(entity);
                 }
             }
             else {
@@ -31,10 +38,37 @@ function handleEntities(entitiesList) {
             console.log('-----ERROR----- no entity ID on entity');
         }
     }
-    renderState(gameboard_ctx, gameboard_canvas, masterEntities, gameScaleFactor, 0, 0, shapePositionMapForContext["game"]);
+    renderState(gameboard_canvas, masterEntities, gameScaleFactor, 0, 0, true);
     // disable zoom box for now
     //drawZoomBox(gameboard_ctx, gameboard_canvas, zoomBoxOriginX, zoomBoxOriginY, zoomFactor);
-    //renderState(gameboard_zoom_ctx, gameboard_zoom_canvas, masterEntities, zoomFactor, zoomBoxOriginX, zoomBoxOriginY, shapePositionMapForContext["zoom"]);
+    //renderState(gameboard_zoom_canvas, masterEntities, zoomFactor, zoomBoxOriginX, zoomBoxOriginY, shapePositionMapForContext["zoom"]);
+}
+
+function renderQuadrantGridlines(ctx){
+    ctx.save();
+    //starting path of the arrow from the start square to the end square and drawing the stroke
+    ctx.beginPath();
+    var width = gameboard_canvas.width;
+    var height = gameboard_canvas.height;
+    var x = width/2;
+    var y1 = 0; 
+    var y2 = height;
+
+
+    ctx.strokeStyle = "#444444";
+    ctx.lineWidth = 1;
+    ctx.moveTo(x, y1);
+    ctx.lineTo(x, y2);
+    ctx.stroke();
+
+    var x1 = 0;
+    var x2 = width;
+    var y = height / 2;
+ 
+    ctx.moveTo(x1, y);
+    ctx.lineTo(x2, y);
+    ctx.stroke();
+    ctx.restore();
 }
 
 function sortEntitiesAsPerUILayer(entities) {
@@ -84,26 +118,99 @@ function sortUiLayerEntities(entities) {
     }
     return entitiesSortedByLayer;
 }
-function renderState(ctx, canvas, entities, zoom_factor, xOffset, yOffset, shapePositionMap) {
-    clearGameBoard(ctx, canvas);
+
+function printEntity(entity){
+    var result = "............ID:"+ entity.getId() + " ";
+    if(entity.hasPos()){
+        result = result + "Pos:Y ";
+    }
+    else {
+        result = result + "Pos:- ";
+    }
+    var shapeList = entity.getShapesList();
+    result = result + "ShapeCount:" + shapeList.length + " ";
+	result = result + "del:" + entity.getDelete();
+    
+    console.log(result);
+}
+function renderState(canvas, entities, zoom_factor, xOffset, yOffset, generateTooltips) {
+    //console.log("--------renderState()--------");
+    var entityKeys = Object.keys(entities);
+    if (entityKeys.length == 0){
+        // if the gameboard has been cleared, just leave the prior move's entities in view
+        return;
+    }
+    var ctx = canvas.getContext("2d");
+    if (canvas == gameboard_canvas) {
+        cleanToolTips();
+    }
+    clearGameBoard(ctx, canvas,"game");
+    renderQuadrantGridlines(ctx);
     var uiLayerSortedEntities = sortEntitiesAsPerUILayer(entities);
-    for (var i in uiLayerSortedEntities) {
-        var entity = uiLayerSortedEntities[i];
-        if (entity != undefined) {
-            if (entity.hasPos()) {
-                var pos = entity.getPos();
-                if (pos.hasX() && pos.hasY()) {
-                    var x = pos.getX();
-                    var y = pos.getY();
-                    layoutEntityAtPosition(Number(i), ctx, x, y, entity, zoom_factor, xOffset, yOffset, shapePositionMap);
+    // until we obey layers, force the order based on the (should be only one in entity) shape
+    var orderOverride = ["octagon", "rect", "circle", "triangle", "kite", "arrow"];
+    for (var overrideIndex in orderOverride){
+        var shapeToRenderThisPass = orderOverride[overrideIndex];
+        //console.log(".....render shape " + shapeToRenderThisPass + "?")
+        for (var i in uiLayerSortedEntities) {
+            var entity = uiLayerSortedEntities[i];
+            if (entity != undefined) {
+                //printEntity(entity);
+                var doThisPass = false;
+                
+                //aFter lunch 
+                //    log entity and shape
+                 //   try with different file
+                //    (maybe this was a delta that had no shape info , just position)
+                if (entityHasShape(shapeToRenderThisPass,entity))  {
+                    doThisPass = true;
+                }
+                if (doThisPass) {
+                    if (entity.hasPos()) {
+                        var pos = entity.getPos();
+                        if (pos.hasX() && pos.hasY()) {
+                            var x = pos.getX();
+                            var y = pos.getY();
+                            layoutEntityAtPosition(Number(i), ctx, x, y, entity, zoom_factor, xOffset, yOffset, generateTooltips);
+                        }
+                    }
                 }
             }
         }
     }
 }
 
+function entityHasShape(shapeName, entity) {
+    var shapesList = entity.getShapesList();
+    if (shapesList.length == 0){
+        console.log("--------------------- SKIPPED NO-SHAPE ENTITY --------------------");
+        return false;
+    }
+    var shape = shapesList[0];
+    if (shapeName == "octagon"){
+        return shape.hasOctagon();
+    }
+    else if (shapeName == "rect"){
+        return shape.hasRect();
+    }
+    else if (shapeName == "circle"){
+        return shape.hasCircle();
+    }
+    else if (shapeName == "triangle"){
+        return shape.hasTriangle();
+    }
+    else if (shapeName == "kite"){
+        return shape.hasKite();
+    }
+    else if (shapeName == "arrow"){
+        return shape.hasArrow();
+    }
+    else {
+        return false;
+    }
+}
 
-function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOffset, yOffset, shapePositionMap) {
+function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOffset, yOffset, generateTooltips) {
     var entityX = zoom(x - xOffset);
     var entityY = zoom(y - yOffset);
     var shapesList = entity.getShapesList();
@@ -113,13 +220,15 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
         var si = shapeInfo;
         //
         si.entity = entity;
-        si.shapePositionMap = shapePositionMap;
         si.ctx = ctx;
         si.entityIndex = entityIndex;
         si.entityX = entityX;
         si.entityY = entityY;
         si.zoom_factor = zoom_factor;
         si.shapeId = getShapeId(entity, shape);
+
+        //console.log("....................layout shapeId: " + si.shapeId);
+
         setRelativePosition(si, shape);
         setAbsolutePosition(si);
         si.rotation_in_radians = shape.getRotation();
@@ -132,14 +241,15 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
             si.tooltipY = si.y - si.height / 2 - 10;
         }
         else if (shape.hasTriangle()) {
-            renderTriangle(si, shape);
-            si.tooltipX = si.x - (si.baseLen + 6) / 2 - 10;
-            si.tooltipY = si.y - (si.baseLen + 6) / 2 - 10;
+           // renderTriangle(si, shape);
+            renderTriangleAsKite(si, shape);
+            si.tooltipX = si.x - (si.baseLen + 6) / 2;
+            si.tooltipY = si.y - (si.baseLen + 6) / 2;
         }
         else if (shape.hasKite()) {
             renderKite(si, shape);
-            si.tooltipX = si.x - (si.baseLen + 6) / 2 - 10;
-            si.tooltipY = si.y - (si.baseLen + 6) / 2 - 10;
+            si.tooltipX = si.x - (si.baseLen + 6) / 2;
+            si.tooltipY = si.y - (si.baseLen + 6) / 2;
         }
         else if (shape.hasCircle()) {
             renderCircle(si, shape);
@@ -158,12 +268,15 @@ function layoutEntityAtPosition(entityIndex, ctx, x, y, entity, zoom_factor, xOf
             si.tooltipY = undefined;
         }
         if (si.tooltipX != undefined) {
-            createToolTips(si);
+            if (generateTooltips){
+                createToolTips(si);
+            }
         }
     }
 }
 
 function renderArrow(si, shape) {
+    si.type = "arrow";
     var arrow = shape.getArrow();
     if (!arrow.hasTargetPos()) {
         return;
@@ -188,10 +301,12 @@ function renderArrow(si, shape) {
     }
 
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
-    drawArrow(si);
+    drawArrowShape(si);
+    shapeInfoForHighlighting[si.shapeId] = si;
 }
 
 function renderCircle(si, shape) {
+    si.type = "circle";
     var circ = shape.getCircle();
     si.radius = zoom(40);
     if (circ.hasRadius()) {
@@ -199,13 +314,16 @@ function renderCircle(si, shape) {
     }
 
     var shapePoints = getShapePoints(si.x, si.y, si.radius + 6, si.shapeId);
-    si.shapePositionMap[si.shapeId] = shapePoints;
+    shapePositionMap[si.shapeId] = shapePoints;
     //	highlightShape(ctx,shapeId,shapePositionMap);
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
-    drawCircle(si);
+    studyModeColoring( shape, si );
+    drawCircle(si, "normal");
+    shapeInfoForHighlighting[si.shapeId] = si;
 }
 
 function renderRectangle(si, shape) {
+    si.type = "rect";
     var rect = shape.getRect();
     si.width = zoom(40);
     si.height = zoom(30);
@@ -216,13 +334,16 @@ function renderRectangle(si, shape) {
         si.height = zoom(rect.getHeight());
     }
     var shapePoints = getShapePoints(si.x, si.y, Math.max(si.width, si.height) + 6, si.shapeId);
-    si.shapePositionMap[si.shapeId] = shapePoints;
+    shapePositionMap[si.shapeId] = shapePoints;
     //	highlightShape(ctx,shapeId,shapePositionMap);
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
-    drawRect(si);
+    studyModeColoring( shape, si );
+    drawRect(si,"normal");
+    shapeInfoForHighlighting[si.shapeId] = si;
 }
 
 function renderOctagon(si, shape) {
+    si.type = "octagon";
     var oct = shape.getOctagon();
     si.edgeTop = zoom(40);
     si.edgeCorner = zoom(40);
@@ -237,290 +358,68 @@ function renderOctagon(si, shape) {
         si.edgeCorner = zoom(oct.getEdgeCorner());
     }
     var shapePoints = getShapePoints(si.x, si.y, Math.max(getOctagonHeight(si), getOctagonWidth(si)) + 6, si.shapeId);
-    si.shapePositionMap[si.shapeId] = shapePoints;
+    shapePositionMap[si.shapeId] = shapePoints;
     //	highlightShape(ctx,shapeId,shapePositionMap);
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
-    drawOctagon(si);
+    studyModeColoring( shape, si );
+    drawOctagon(si, "normal");
+    shapeInfoForHighlighting[si.shapeId] = si;
 }
 
-function renderTriangle(shapeInfo, shape) {
-    var si = shapeInfo;
+function renderTriangle(si, shape) {
+    si.type = "triangle";
     var triangle = shape.getTriangle();
     si.baseLen = zoom(triangle.getBaseLen());
     var shapePoints = getShapePoints(si.x, si.y, si.baseLen + 6, si.shapeId);
-    si.shapePositionMap[si.shapeId] = shapePoints;
+    shapePositionMap[si.shapeId] = shapePoints;
     //	highlightShape(ctx,shapeId,shapePositionMap);
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
     //drawTriangle(ctx, x, y, baseLen, orientation, colorRGBA);
-    drawTriangle(si);
+    studyModeColoring( shape, si );
+    drawTriangle(si, "normal");
+    shapeInfoForHighlighting[si.shapeId] = si;
 }
 
-function renderKite(shapeInfo, shape) {
-    var si = shapeInfo;
+function renderTriangleAsKite(si, shape) {
+    si.type = "kite";
+    var triangle = shape.getTriangle();
+    si.baseLen = zoom(triangle.getBaseLen());
+    var sizeFudgeFactor = 2.5;
+    si.baseLen = si.baseLen * sizeFudgeFactor;
+    var radians = 60 * Math.PI / 180;
+    si.width = (Math.tan(radians) * si.baseLen) / 2;
+    si.length = si.baseLen;
+    var shapePoints = getShapePoints(si.x, si.y, si.baseLen + 6, si.shapeId);
+    shapePositionMap[si.shapeId] = shapePoints;
+    //	highlightShape(ctx,shapeId,shapePositionMap);
+    si.colorRGBA = loadShapeColorAsRGBAString(shape);
+    //drawTriangle(ctx, x, y, baseLen, orientation, colorRGBA);
+    studyModeColoring( shape, si );
+    drawKite(si, "normal");
+    shapeInfoForHighlighting[si.shapeId] = si;
+}
+
+function renderKite(si, shape) {
+    si.type = "kite";
     var kite = shape.getKite();
     si.length = zoom(kite.getLength());
     si.width = zoom(kite.getWidth());
     var shapePoints = getShapePoints(si.x, si.y, Math.max(si.width, si.length), si.shapeId);
-    si.shapePositionMap[si.shapeId] = shapePoints;
+    shapePositionMap[si.shapeId] = shapePoints;
     //	highlightShape(ctx,shapeId,shapePositionMap);
     si.colorRGBA = loadShapeColorAsRGBAString(shape);
-    drawKite(si);
+    studyModeColoring( shape, si );
+    drawKite(si, "normal");
+    shapeInfoForHighlighting[si.shapeId] = si;
 }
 
-function drawCircle(shapeInfo) {
-    var si = shapeInfo;
-    var ctx = si.ctx;
-    ctx.save();
-    ctx.translate(si.x, si.y);
-    ctx.rotate(si.rotation_in_radians);
-    ctx.beginPath();
-    ctx.arc(0, 0, si.radius, 0, 2 * Math.PI);
-    ctx.stroke();
-    ctx.fill();
-    ctx.restore();
-}
-
-
-
-function drawRect(shapeInfo) {
-    var si = shapeInfo;
-    var ctx = si.ctx;
-    ctx.save();
-    ctx.translate(si.x, si.y);
-    ctx.rotate(si.rotation_in_radians);
-    x = 0;
-    y = 0;
-    var x1 = x - (si.height / 2);
-    //if (x1 < 0) {
-    //  x1 = 0;
-    //}
-    var y1 = y - (si.width / 2);
-    //if (y1 < 0) {
-    //  y1 = 0;
-    //}
-    var x2 = x + (si.height / 2);
-    var y2 = y + (si.width / 2);
-    ctx.beginPath();
-
-    ctx.lineWidth = shape_outline_width;
-    ctx.strokeStyle = shape_outline_color;
-    if (use_shape_color_for_outline) {
-        ctx.strokeStyle = si.colorRGBA;
-    }
-    ctx.strokeRect(x1, y1, si.height, si.width);
-    ctx.fillStyle = si.colorRGBA;
-    //ctx.fillStyle = colorRGBA;
-    ctx.fillRect(x1, y1, si.height, si.width);
-    ctx.restore();
-}
-
-
-function drawRectWithGradient(shapeInfo) {
-    var si = shapeInfo;
-    var ctx = si.ctx;
-    ctx.save();
-    ctx.translate(si.x, si.y);
-    ctx.rotate(si.rotation_in_radians);
-    x = 0;
-    y = 0;
-    var x1 = x - (si.height / 2);
-    //if (x1 < 0) {
-    //  x1 = 0;
-    //}
-    var y1 = y - (si.width / 2);
-    //if (y1 < 0) {
-    //  y1 = 0;
-    //}
-    var x2 = x + (si.height / 2);
-    var y2 = y + (si.width / 2);
-
-    var gradient = ctx.createLinearGradient(x1, si.y, x2, si.y);
-    gradient.addColorStop(0, si.colorRGBA);
-    gradient.addColorStop(1, 'white');
-    ctx.beginPath();
-
-    ctx.lineWidth = shape_outline_width;
-    ctx.strokeStyle = shape_outline_color;
-    if (use_shape_color_for_outline) {
-        ctx.strokeStyle = si.colorRGBA;
-    }
-    ctx.strokeRect(x1, y1, height, width);
-    ctx.fillStyle = gradient;
-    //ctx.fillStyle = colorRGBA;
-    ctx.fillRect(x1, y1, height, width);
-    ctx.restore();
-}
-
-function drawTriangle(shapeInfo) {
-    var si = shapeInfo;
-    var ctx = si.ctx;
-    ctx.save();
-    ctx.translate(si.x, si.y);
-    ctx.rotate(si.rotation_in_radians);
-    x = 0;
-    y = 0;
-    var radians = 60 * Math.PI / 180;
-    var height = (Math.tan(radians) * si.baseLen) / 2;
-    var yTip = y - height / 2;
-    var yBottom = y + height / 2;
-    var xTip = x;
-    var xBottomLeft = x - si.baseLen / 2;
-    var xBottomRight = x + si.baseLen / 2;
-    ctx.beginPath();
-    ctx.moveTo(xTip, yTip);
-    ctx.lineTo(xBottomRight, yBottom);
-    ctx.lineTo(xBottomLeft, yBottom);
-    ctx.closePath();
-
-    // the outline
-    ctx.lineWidth = shape_outline_width;
-    ctx.strokeStyle = shape_outline_color;
-    if (use_shape_color_for_outline) {
-        ctx.strokeStyle = si.colorRGBA;
-    }
-    ctx.stroke();
-
-    // the fill color
-    ctx.fillStyle = si.colorRGBA;
-    ctx.fill();
-    ctx.restore();
-}
-
-
-function drawKite(shapeInfo) {
-    var si = shapeInfo;
-    var ctx = si.ctx;
-    ctx.save();
-    ctx.translate(si.x, si.y);
-    ctx.rotate(si.rotation_in_radians);
-    x = 0;
-    y = 0;
-    var yTip = y;
-    var yBottom = y;
-    var xTip = x + si.width / 2;
-    var xBottom = x - si.width / 2;
-    var xLeftWing = x - si.width / 4;
-    var yLeftWing = y - si.length / 3;
-    var xRightWing = x - si.width / 4;
-    var yRightWing = y + si.length / 3;
-
-    var gradient = ctx.createLinearGradient(xBottom, yBottom, xTip, yTip);
-    gradient.addColorStop(0, si.colorRGBA);
-    gradient.addColorStop(1, 'white');
-
-    ctx.beginPath();
-    ctx.moveTo(xTip, yTip);
-    ctx.lineTo(xLeftWing, yLeftWing);
-    ctx.lineTo(xBottom, yBottom);
-    ctx.lineTo(xRightWing, yRightWing);
-    ctx.closePath();
-
-    // the outline
-    ctx.lineWidth = shape_outline_width;
-    ctx.strokeStyle = shape_outline_color;
-    if (use_shape_color_for_outline) {
-        ctx.strokeStyle = si.colorRGBA;
-    }
-    ctx.stroke();
-
-    // the fill color
-    //ctx.fillStyle = colorRGBA;
-    ctx.fillStyle = gradient;
-    ctx.fill();
-    ctx.restore();
-}
-
-
-function drawOctagon(shapeInfo) {
-    var si = shapeInfo;
-    var ctx = si.ctx;
-    ctx.save();
-    ctx.translate(si.x, si.y);
-    ctx.rotate(si.rotation_in_radians);
-    var x1 = si.x - si.edgeTop / 2;
-    var y1 = si.y - getOctagonHeight(si) / 2;
-    var x2 = si.x + si.edgeTop / 2;
-    var y2 = y1;
-
-    var x3 = si.x + getOctagonWidth(si) / 2;
-    var y3 = si.y - si.edgeLeft / 2;
-    var x4 = x3;
-    var y4 = si.y + si.edgeLeft / 2;
-
-    var x5 = x2;
-    var y5 = si.y + getOctagonHeight(si) / 2;
-    var x6 = x1;
-    var y6 = y5;
-
-    var x7 = si.x - getOctagonWidth(si) / 2;
-    var y7 = y4;
-    var x8 = x7;
-    var y8 = y3;
-
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.lineTo(x3, y3);
-    ctx.lineTo(x4, y4);
-    ctx.lineTo(x5, y5);
-    ctx.lineTo(x6, y6);
-    ctx.lineTo(x7, y7);
-    ctx.lineTo(x8, y8);
-    ctx.lineTo(x1, y1);
-    ctx.closePath();
-
-    // the outline
-    ctx.lineWidth = shape_outline_width;
-    ctx.strokeStyle = shape_outline_color;
-    if (use_shape_color_for_outline) {
-        ctx.strokeStyle = si.colorRGBA;
-    }
-    ctx.stroke();
-
-    // the fill color
-    ctx.fillStyle = si.colorRGBA;
-    ctx.fill();
-    ctx.restore();
-}
-
-function drawArrow(shapeInfo) {
-    var si = shapeInfo;
-    var fromx = si.x;
-    var fromy = si.y;
-    var tox = si.targetX;
-    var toy = si.targetY;
-    //variables to be used when creating the arrow
-
-    var ctx = si.ctx;
-    var headlen = si.headlength;
-
-    var angle = Math.atan2(toy - fromy, tox - fromx);
-    ctx.save();
-    //starting path of the arrow from the start square to the end square and drawing the stroke
-    ctx.beginPath();
-    ctx.moveTo(fromx, fromy);
-    ctx.lineTo(tox, toy);
-    ctx.strokeStyle = si.colorRGBA;
-    ctx.lineWidth = si.thickness;
-    ctx.stroke();
-
-    //starting a new path from the head of the arrow to one of the sides of the point
-    ctx.beginPath();
-    ctx.moveTo(tox, toy);
-    ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 7), toy - headlen * Math.sin(angle - Math.PI / 7));
-
-    //path from the side point of the arrow, to the other side point
-    ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 7), toy - headlen * Math.sin(angle + Math.PI / 7));
-
-    //path from the side point back to the tip of the arrow, and then again to the opposite side point
-    ctx.lineTo(tox, toy);
-    ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 7), toy - headlen * Math.sin(angle - Math.PI / 7));
-
-    //draws the paths created above
-    ctx.strokeStyle = si.colorRGBA;
-    ctx.lineWidth = si.thickness;
-    ctx.stroke();
-    ctx.fillStyle = si.colorRGBA;
-    ctx.fill();
-    ctx.restore();
+function studyModeColoring( shape, si ){
+    if(userStudyMode){
+        if (shape.getColor( ).getG( ) == 181 ){
+            si.colorRGBA = "white";
+        }
+        else{
+            si.colorRGBA = "black";
+       }
+    }         
 }

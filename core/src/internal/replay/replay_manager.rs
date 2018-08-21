@@ -3,7 +3,7 @@ use protos::endpoint::Endpoint;
 use protos::user_command::UserCommandType;
 use protos::{
     scaii_packet, ExplanationPoint, ModuleEndpoint, MultiMessage, RecorderConfig, ReplayControl,
-    ReplayEndpoint, ScaiiPacket,
+    ReplayEndpoint, ScaiiPacket, StudyQuestions,
 };
 use scaii_core::{Environment, ReplayAction, ReplayHeader, SerializedProtosScaiiPacket};
 use scaii_defs::protos;
@@ -17,12 +17,14 @@ use std::{thread, time};
 use super::explanations::Explanations;
 use super::pkt_util;
 use super::replay_sequencer::ReplaySequencer;
+use super::study_util;
 
 #[derive(Debug)]
 enum GameState {
     AwaitingUserPlayRequest,
     Running,
     Paused,
+    BrokenLink,
 }
 
 pub struct ReplayManager {
@@ -36,33 +38,36 @@ pub struct ReplayManager {
     pub test_mode: bool,
     pub poll_timer_count: u32,
     pub step_timer_count: u32,
+    pub user_study_questions: Option<study_util::UserStudyQuestions>
 }
 
 impl ReplayManager {
     pub fn start(&mut self) -> Result<(), Box<Error>> {
-        use super::{replay_util, test_util};
-        // startup viz via rpc
-        let mm = pkt_util::wrap_packet_in_multi_message(pkt_util::create_rpc_config_message()?);
-        self.env.route_messages(&mm);
-        self.env.update();
-        if self.test_mode {
-            let step_count: u32 = 300;
-            let interval: u32 = 5;
-            let replay_actions = test_util::concoct_replay_info(step_count, interval)
-                .expect("Error - problem generating test replay_info");
-            let replay_sequencer = ReplaySequencer::new(&replay_actions, false)?;
-            self.replay_sequencer = replay_sequencer;
-        } else {
-            let replay_filenames = replay_util::get_replay_filenames()?;
-            let replay_choice_config = pkt_util::get_replay_choice_config_message(replay_filenames);
-            let mm = pkt_util::wrap_packet_in_multi_message(replay_choice_config);
+        loop {
+            use super::{replay_util, test_util};
+            // startup viz via rpc
+            let mm = pkt_util::wrap_packet_in_multi_message(pkt_util::create_rpc_config_message()?);
             self.env.route_messages(&mm);
             self.env.update();
+            if self.test_mode {
+                let step_count: u32 = 300;
+                let interval: u32 = 5;
+                let replay_actions = test_util::concoct_replay_info(step_count, interval)
+                    .expect("Error - problem generating test replay_info");
+                let replay_sequencer = ReplaySequencer::new(&replay_actions, false)?;
+                self.replay_sequencer = replay_sequencer;
+            } else {
+                let replay_filenames = replay_util::get_replay_filenames()?;
+                let replay_choice_config = pkt_util::get_replay_choice_config_message(replay_filenames);
+                let mm = pkt_util::wrap_packet_in_multi_message(replay_choice_config);
+                self.env.route_messages(&mm);
+                self.env.update();
+            }
+            self.run_and_poll();
         }
-        self.run_and_poll()
     }
 
-    fn load_selected_replay_file(&mut self, filename: String) -> Result<(), Box<Error>> {
+    fn load_selected_replay_file(&mut self, filename: &String) -> Result<(), Box<Error>> {
         use super::{explanations, replay_util, ReplayError};
         use scaii_core;
         use std::path::PathBuf;
@@ -232,6 +237,14 @@ impl ReplayManager {
             )),
         };
         let result = self.send_pkt_to_viz(pkt)?;
+       /* match result {
+            Ok(ref vec) => {
+                println!("Size of result: {:?}", vec.len())
+            } 
+            _ => {
+                
+            }
+        }*/
         Ok(result)
     }
 
@@ -309,7 +322,19 @@ impl ReplayManager {
                         let filename: String = user_command_args[0].clone();
                         println!("load file {}!", filename);
                         game_state = GameState::AwaitingUserPlayRequest;
-                        self.load_selected_replay_file(filename)?;
+                        self.load_selected_replay_file(&filename)?;
+                        let mut user_study_questions = study_util::UserStudyQuestions {
+                            replay_filename: filename,
+                            answer_lines: Vec::new(),
+                        };
+                        let study_questions : Option<StudyQuestions> =  user_study_questions.get_questions()?;
+                        //let study_questions : Option<StudyQuestions> =  study_util::get_questions_for_replay(&filename)?;
+                        if study_questions != None {
+                            self.user_study_questions= Some(user_study_questions);
+                            let study_questions_pkt = pkt_util::get_study_questions_pkt(study_questions.unwrap());
+                            self.send_pkt_to_viz(study_questions_pkt)?;
+                        }
+                        
                     }
                     UserCommandType::Explain => {
                         println!(
@@ -380,7 +405,19 @@ impl ReplayManager {
                     }
                 }
             } else if scaii_defs::protos::is_error_pkt(scaii_pkt) {
-                // Error would have already been shown to user at UI
+                game_state = GameState::BrokenLink;
+            } else if scaii_defs::protos::is_study_question_answer_pkt(scaii_pkt) {
+                use scaii_defs::protos::StudyQuestionAnswer;
+                let sqa : StudyQuestionAnswer = scaii_defs::protos::get_study_question_answer_from_pkt(scaii_pkt).unwrap();
+                if let Some(ref mut user_study_questions) = self.user_study_questions {
+                    user_study_questions.persist_study_question_answer(sqa)?;
+                }
+            } else if scaii_defs::protos::is_log_file_entry_pkt(scaii_pkt) {
+                use scaii_defs::protos::LogFileEntry;
+                let lfe : LogFileEntry = scaii_defs::protos::get_log_file_entry_from_pkt(scaii_pkt).unwrap();
+                if let Some(ref mut user_study_questions) = self.user_study_questions {
+                    user_study_questions.persist_log_entry_incremental(lfe)?;
+                }
             } else {
                 println!(
                     "REPLAY unexpected pkt received by Viz polling {:?}",
@@ -512,12 +549,26 @@ impl ReplayManager {
             poll_timer_count = poll_timer_count - 1;
             if 0 == poll_timer_count {
                 game_state = self.execute_poll_step(game_state)?;
+                match game_state {
+                    GameState::BrokenLink => {
+                        return Ok(());
+                    }
+                    _ => {
+                    }
+                }
                 poll_timer_count = self.poll_timer_count.clone();
             }
             step_timer_count = step_timer_count - 1;
             if 0 == step_timer_count {
                 step_timer_count = self.step_timer_count.clone();
                 game_state = self.handle_step_nudge(game_state)?;
+                match game_state {
+                    GameState::BrokenLink => {
+                        return Ok(());
+                    }
+                    _ => {
+                    }
+                }
             }
         }
         Ok(())
@@ -534,7 +585,6 @@ impl ReplayManager {
                 self.tell_viz_load_complete()?;
             }
             GameState::Running => {
-                println!("executing run step");
                 game_state = self.execute_run_step()?;
             }
             GameState::Paused => {
@@ -543,6 +593,9 @@ impl ReplayManager {
               //     let _ignore_game_state = self.execute_run_step()?;
               //     game_state = GameState::Paused;
               // }
+            GameState::BrokenLink => {
+                // do nothing
+            }
         }
         Ok(game_state)
     }

@@ -1,0 +1,366 @@
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+7-12-2018,11:54:57:320,1531421697320,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,11:54:58:312,1531421698312,1,undefined,showQuestion:1.0,false,false,false,false,false,false
+7-12-2018,11:54:58:337,1531421698337,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,11:54:58:529,1531421698529,1,1.0,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,11:55:0:53,1531421700053,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,11:55:0:754,1531421700754,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,11:55:1:128,1531421701128,1,1.0,userClick:396_127;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,11:55:1:312,1531421701312,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,11:55:1:371,1531421701371,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,11:55:1:920,1531421701920,1,1.0,userClick:281_667;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,11:55:5:589,1531421705589,1,1.0,userClick:305_713;region:QnA;target:button-save;answerQuestion:1.0_"sdf"_NA_(7-12-2018,11:55:1:128,1531421701128,1,1.0,userClick:396_127;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false),false,false,false,false,false,false
+7-12-2018,11:55:23:463,1531421723463,1,1.0,userClick:466_361;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,11:55:27:488,1531421727488,1,1.0,userClick:271_421;region:gameArea;target:expl-control-canvas;timelineClick:64,false,false,false,false,false,false
+7-12-2018,11:55:28:615,1531421728615,1,1.0,userClick:480_351;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,11:55:30:832,1531421730832,1,1.0,showQuestion:74.0,false,false,false,false,false,false
+7-12-2018,11:55:31:156,1531421731156,1,74.0,stepIntoDecisionPoint:74,false,false,false,false,false,false
+7-12-2018,11:55:54:687,1531421754687,74,74.0,userClick:383_615;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,11:55:57:377,1531421757377,74,74.0,showQuestion:74.1,false,false,false,false,false,false
+7-12-2018,11:55:57:380,1531421757380,74,74.1,userClick:312_662;region:QnA;target:button-save;answerQuestion:74.0_"sdf"_NA_(NA),false,false,false,false,false,false
+7-12-2018,11:55:58:536,1531421758536,74,74.1,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,11:55:58:670,1531421758670,74,74.1,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,11:55:58:978,1531421758978,74,74.1,userClick:466_272;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,11:55:59:103,1531421759103,74,74.1,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,11:55:59:120,1531421759120,74,74.1,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,11:55:59:686,1531421759686,74,74.1,userClick:344_645;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,11:56:0:905,1531421760905,74,74.1,userClick:311_715;region:QnA;target:button-save;answerQuestion:74.1_"sdf"_NA_(7-12-2018,11:55:58:978,1531421758978,74,74.1,userClick:466_272;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false),false,false,false,false,false,false
+7-12-2018,11:56:2:167,1531421762167,74,74.1,userClick:470_363;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,11:56:14:154,1531421774154,74,74.1,showQuestion:119.0,false,false,false,false,false,false
+7-12-2018,11:56:14:439,1531421774439,74,119.0,stepIntoDecisionPoint:119,false,false,false,false,false,false
+7-12-2018,11:58:15:204,1531421895204,119,119.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,11:58:21:567,1531421901567,119,119.0,userClick:514_58;region:gameArea;target:replay-file-selector;touchReplayingGamefileSelector:NA,false,false,false,false,false,false
+7-12-2018,11:59:47:95,1531421987095,119,119.0,userClick:800_121;region:<REGION>;NA;NA,false,false,false,false,false,false
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+7-12-2018,12:1:26:745,1531422086745,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,12:1:28:927,1531422088927,1,undefined,showQuestion:1.0,false,false,false,false,false,false
+7-12-2018,12:1:29:242,1531422089242,1,1.0,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,12:1:29:304,1531422089304,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+7-12-2018,12:2:42:975,1531422162975,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,12:2:44:239,1531422164239,1,undefined,showQuestion:1.0,false,false,false,false,false,false
+7-12-2018,12:2:44:451,1531422164451,1,1.0,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,12:2:46:904,1531422166904,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:2:48:254,1531422168254,1,1.0,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:2:48:271,1531422168271,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:2:48:387,1531422168387,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:2:48:781,1531422168781,1,1.0,userClick:406_128;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:2:49:23,1531422169023,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:2:49:86,1531422169086,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:2:49:703,1531422169703,1,1.0,userClick:342_654;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:2:51:348,1531422171348,1,1.0,userClick:314_710;region:QnA;target:button-save;answerQuestion:1.0_"sdf"_NA_(7-12-2018,12:2:48:781,1531422168781,1,1.0,userClick:406_128;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false),false,false,false,false,false,false
+7-12-2018,12:2:52:189,1531422172189,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:2:52:454,1531422172454,1,1.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:2:52:470,1531422172470,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:2:52:554,1531422172554,1,1.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:2:52:638,1531422172638,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:2:54:328,1531422174328,1,1.0,userClick:475_361;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,12:2:56:143,1531422176143,1,1.0,userClick:263_427;region:gameArea;target:expl-control-canvas;timelineClick:61,false,false,false,false,false,false
+7-12-2018,12:2:57:631,1531422177631,1,1.0,userClick:463_362;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,12:3:0:709,1531422180709,1,1.0,showQuestion:74.1,false,false,false,false,false,false
+7-12-2018,12:3:1:6,1531422181006,1,74.1,stepIntoDecisionPoint:74,false,false,false,false,false,false
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+7-12-2018,12:3:47:984,1531422227984,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,12:3:48:953,1531422228953,1,undefined,showQuestion:1.0,false,false,false,false,false,false
+7-12-2018,12:3:49:169,1531422229169,1,1.0,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,12:3:50:705,1531422230705,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:3:51:104,1531422231104,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:3:51:950,1531422231950,1,1.0,userClick:401_127;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:3:52:185,1531422232185,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:3:52:238,1531422232238,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:3:52:775,1531422232775,1,1.0,userClick:331_653;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:3:54:173,1531422234173,1,1.0,userClick:295_712;region:QnA;target:button-save;answerQuestion:1.0_"sdf"_NA_(7-12-2018,12:3:51:950,1531422231950,1,1.0,userClick:401_127;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false),false,false,false,false,false,false
+7-12-2018,12:3:54:922,1531422234922,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:3:55:311,1531422235311,1,1.0,userClick:480_365;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,12:3:56:200,1531422236200,1,1.0,userClick:266_417;region:gameArea;target:expl-control-canvas;timelineClick:63,false,false,false,false,false,false
+7-12-2018,12:3:57:703,1531422237703,1,1.0,userClick:467_363;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,12:4:0:397,1531422240397,1,1.0,showQuestion:74.0,false,false,false,false,false,false
+7-12-2018,12:4:0:695,1531422240695,1,74.0,stepIntoDecisionPoint:74,false,false,false,false,false,false
+7-12-2018,12:4:6:637,1531422246637,74,74.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:4:7:8,1531422247008,74,74.0,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:4:7:575,1531422247575,74,74.0,userClick:223_647;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:4:10:655,1531422250655,74,74.0,userClick:306_712;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:4:11:631,1531422251631,74,74.0,userClick:306_712;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:4:14:807,1531422254807,74,74.0,userClick:293_726;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:4:15:200,1531422255200,74,74.0,userClick:293_726;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:4:15:438,1531422255438,74,74.0,userClick:293_726;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:4:17:4,1531422257004,74,74.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:4:17:137,1531422257137,74,74.0,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:4:17:255,1531422257255,74,74.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:4:17:405,1531422257405,74,74.0,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:4:17:678,1531422257678,74,74.0,userClick:477_274;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:4:18:0,1531422258000,74,74.0,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:4:18:188,1531422258188,74,74.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:4:19:622,1531422259622,74,74.0,showQuestion:74.1,false,false,false,false,false,false
+7-12-2018,12:4:19:622,1531422259622,74,74.1,userClick:305_748;region:QnA;target:button-save;answerQuestion:74.0_"dsf"_NA_(7-12-2018,12:4:17:678,1531422257678,74,74.0,userClick:477_274;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false),false,false,false,false,false,false
+7-12-2018,12:4:22:831,1531422262831,74,74.1,userClick:317_607;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:4:34:199,1531422274199,74,74.1,userClick:524_426;region:gameArea;target:expl-control-canvas;timelineClick:134,false,false,false,false,false,false
+7-12-2018,12:4:47:640,1531422287640,74,74.1,hideEntityTooltips:all,false,false,false,false,false,false
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+7-12-2018,12:4:57:503,1531422297503,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,12:4:58:655,1531422298655,1,undefined,showQuestion:1.0,false,false,false,false,false,false
+7-12-2018,12:4:58:737,1531422298737,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:4:59:2,1531422299002,1,1.0,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,12:5:12:808,1531422312808,1,1.0,userClick:273_644;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:5:24:688,1531422324688,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:5:25:206,1531422325206,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:5:25:240,1531422325240,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:5:25:572,1531422325572,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:5:25:836,1531422325836,1,1.0,userClick:395_127;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:5:25:953,1531422325953,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:5:26:23,1531422326023,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:5:26:744,1531422326744,1,1.0,userClick:311_657;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:5:28:45,1531422328045,1,1.0,userClick:308_711;region:QnA;target:button-save;answerQuestion:1.0_"sdf"_NA_(7-12-2018,12:5:25:836,1531422325836,1,1.0,userClick:395_127;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false),false,false,false,false,false,false
+7-12-2018,12:5:29:192,1531422329192,1,1.0,userClick:465_363;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,12:5:31:272,1531422331272,1,1.0,userClick:275_428;region:gameArea;target:expl-control-canvas;timelineClick:65,false,false,false,false,false,false
+7-12-2018,12:5:32:479,1531422332479,1,1.0,userClick:465_357;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,12:5:34:430,1531422334430,1,1.0,showQuestion:74.0,false,false,false,false,false,false
+7-12-2018,12:5:34:725,1531422334725,1,74.0,stepIntoDecisionPoint:74,false,false,false,false,false,false
+7-12-2018,12:5:38:156,1531422338156,74,74.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:5:38:640,1531422338640,74,74.0,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:5:38:933,1531422338933,74,74.0,userClick:472_274;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:5:39:217,1531422339217,74,74.0,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:5:39:983,1531422339983,74,74.0,userClick:322_657;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:5:41:522,1531422341522,74,74.0,showQuestion:74.1,false,false,false,false,false,false
+7-12-2018,12:5:41:523,1531422341523,74,74.1,userClick:304_713;region:QnA;target:button-save;answerQuestion:74.0_"sdf"_NA_(7-12-2018,12:5:38:933,1531422338933,74,74.0,userClick:472_274;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false),false,false,false,false,false,false
+7-12-2018,12:5:53:453,1531422353453,74,74.1,userClick:193_611;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:5:54:894,1531422354894,74,74.1,userClick:314_666;region:QnA;target:button-save;answerQuestion:74.1_"sdf"_NA_(NA),false,false,false,false,false,false
+7-12-2018,12:5:55:501,1531422355501,74,74.1,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:5:56:148,1531422356148,74,74.1,userClick:471_358;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,12:5:57:357,1531422357357,74,74.1,userClick:427_427;region:gameArea;target:expl-control-canvas;timelineClick:107,false,false,false,false,false,false
+7-12-2018,12:5:58:748,1531422358748,74,74.1,userClick:472_344;region:gameArea;NA;NA,false,false,false,false,false,false
+7-12-2018,12:5:59:91,1531422359091,74,74.1,userClick:471_353;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,12:6:1:759,1531422361759,74,74.1,showQuestion:119.0,false,false,false,false,false,false
+7-12-2018,12:6:2:13,1531422362013,74,119.0,stepIntoDecisionPoint:119,false,false,false,false,false,false
+7-12-2018,12:6:7:12,1531422367012,119,119.0,userClick:306_608;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:6:8:814,1531422368814,119,119.0,userClick:295_674;region:QnA;target:button-save;answerQuestion:119.0_"asd"_NA_(NA),false,false,false,false,false,false
+7-12-2018,12:6:9:957,1531422369957,119,119.0,userClick:472_363;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,12:6:12:116,1531422372116,119,119.0,userClick:551_426;region:gameArea;target:expl-control-canvas;timelineClick:141,false,false,false,false,false,false
+7-12-2018,12:6:13:244,1531422373244,119,119.0,userClick:482_361;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,12:6:13:870,1531422373870,119,119.0,showQuestion:summary.0,false,false,false,false,false,false
+7-12-2018,12:7:37:543,1531422457543,119,summary.0,userClick:360_614;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:7:38:856,1531422458856,119,summary.0,userClick:311_672;region:QnA;target:button-save;answerQuestion:summary.0_"sdf"_NA_(NA),false,false,false,false,false,false
+7-12-2018,12:9:19:874,1531422559874,119,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+7-12-2018,12:9:28:946,1531422568946,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,12:9:50:521,1531422590521,1,undefined,showQuestion:1.0,false,false,false,false,false,false
+7-12-2018,12:9:50:617,1531422590617,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:9:50:656,1531422590656,1,1.0,showEntityTooltip:friendly-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:9:50:671,1531422590671,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:9:50:896,1531422590896,1,1.0,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,12:10:12:905,1531422612905,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:10:14:522,1531422614522,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:10:14:607,1531422614607,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:10:14:722,1531422614722,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:10:14:740,1531422614740,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:10:14:956,1531422614957,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:10:14:988,1531422614988,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:10:15:155,1531422615155,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:10:15:424,1531422615424,1,1.0,userClick:400_136;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:10:15:561,1531422615561,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:10:15:573,1531422615573,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:10:16:943,1531422616943,1,1.0,userClick:276_651;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:10:33:682,1531422633682,1,1.0,userClick:300_714;region:QnA;target:button-save;answerQuestion:1.0_"sdf"_NA_(7-12-2018,12:10:15:424,1531422615424,1,1.0,userClick:400_136;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false),false,false,false,false,false,false
+7-12-2018,12:10:36:920,1531422636920,1,1.0,userClick:465_360;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,12:10:39:231,1531422639231,1,1.0,userClick:274_422;region:gameArea;target:expl-control-canvas;timelineClick:64,false,false,false,false,false,false
+7-12-2018,12:10:43:655,1531422643655,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:10:43:688,1531422643688,1,1.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:10:43:708,1531422643708,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:10:44:455,1531422644455,1,1.0,userClick:472_362;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,12:10:46:760,1531422646760,1,1.0,showQuestion:74.0,false,false,false,false,false,false
+7-12-2018,12:10:53:513,1531422653513,1,74.0,stepIntoDecisionPoint:74,false,false,false,false,false,false
+7-12-2018,12:11:0:739,1531422660739,74,74.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:11:1:224,1531422661224,74,74.0,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:11:3:395,1531422663395,74,74.0,userClick:476_268;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:11:4:881,1531422664881,74,74.0,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:11:4:907,1531422664907,74,74.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:11:5:439,1531422665439,74,74.0,userClick:216_647;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:11:28:11,1531422688011,74,74.0,showQuestion:74.1,false,false,false,false,false,false
+7-12-2018,12:11:28:13,1531422688013,74,74.1,userClick:308_720;region:QnA;target:button-save;answerQuestion:74.0_"asd"_NA_(7-12-2018,12:11:3:395,1531422663395,74,74.0,userClick:476_268;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false),false,false,false,false,false,false
+7-12-2018,12:18:48:756,1531423128756,74,74.1,hideEntityTooltips:all,false,false,false,false,false,false
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+7-12-2018,12:19:2:15,1531423142015,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,12:19:3:49,1531423143049,1,undefined,showQuestion:1.0,false,false,false,false,false,false
+7-12-2018,12:19:16:647,1531423156647,1,1.0,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,12:19:19:773,1531423159773,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:19:21:424,1531423161424,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:19:21:456,1531423161456,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:19:21:729,1531423161729,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:19:22:10,1531423162010,1,1.0,userClick:406_130;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:19:22:161,1531423162161,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:19:22:189,1531423162189,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:19:23:23,1531423163023,1,1.0,userClick:357_645;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:19:35:409,1531423175409,1,1.0,userClick:311_725;region:QnA;target:button-save;answerQuestion:1.0_"sdf"_NA_(7-12-2018,12:19:22:10,1531423162010,1,1.0,userClick:406_130;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false),false,false,false,false,false,false
+7-12-2018,12:19:38:223,1531423178223,1,1.0,userClick:476_357;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,12:19:42:848,1531423182848,1,1.0,userClick:270_421;region:gameArea;target:expl-control-canvas;timelineClick:63,false,false,false,false,false,false
+7-12-2018,12:19:48:640,1531423188640,1,1.0,userClick:468_361;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,12:19:51:107,1531423191107,1,1.0,showQuestion:74.0,false,false,false,false,false,false
+7-12-2018,12:21:16:955,1531423276955,1,74.0,stepIntoDecisionPoint:74,false,false,false,false,false,false
+7-12-2018,12:21:37:956,1531423297956,74,74.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:22:15:405,1531423335405,74,74.0,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:22:15:423,1531423335423,74,74.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:22:15:540,1531423335540,74,74.0,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:22:15:964,1531423335964,74,74.0,userClick:471_281;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:22:16:184,1531423336184,74,74.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:22:16:840,1531423336840,74,74.0,userClick:370_662;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:22:18:693,1531423338693,74,74.0,showQuestion:74.1,false,false,false,false,false,false
+7-12-2018,12:22:50:673,1531423370673,74,74.1,userClick:294_712;region:QnA;target:button-save;answerQuestion:74.0_"sad"_NA_(7-12-2018,12:22:15:964,1531423335964,74,74.0,userClick:471_281;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false),false,false,false,false,false,false
+7-12-2018,12:27:57:708,1531423677708,74,74.1,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:27:57:724,1531423677724,74,74.1,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:27:57:740,1531423677740,74,74.1,hideEntityTooltips:all,false,false,false,false,false,false
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+7-12-2018,12:30:43:517,1531423843518,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,12:30:45:384,1531423845384,1,undefined,showQuestion:1.0,false,false,false,false,false,false
+7-12-2018,12:31:34:57,1531423894057,1,1.0,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,12:31:36:524,1531423896524,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:31:36:975,1531423896975,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:31:37:280,1531423897280,1,1.0,userClick:400_135;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:31:37:368,1531423897368,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:31:37:377,1531423897377,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:31:37:896,1531423897896,1,1.0,userClick:281_651;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:31:45:802,1531423905802,1,1.0,userClick:296_725;region:QnA;target:button-save;answerQuestion:1.0_"sdf"_NA_(7-12-2018,12:31:37:280,1531423897280,1,1.0,userClick:400_135;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false),false,false,false,false,false,false
+7-12-2018,12:31:47:777,1531423907777,1,1.0,userClick:465_362;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,12:31:49:953,1531423909953,1,1.0,userClick:263_426;region:gameArea;target:expl-control-canvas;timelineClick:61,false,false,false,false,false,false
+7-12-2018,12:31:53:848,1531423913848,1,1.0,userClick:472_364;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,12:31:56:930,1531423916930,1,1.0,showQuestion:74.0,false,false,false,false,false,false
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+7-12-2018,12:34:26:789,1531424066789,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,12:34:28:504,1531424068504,1,undefined,showQuestion:1.0,false,false,false,false,false,false
+7-12-2018,12:34:28:707,1531424068707,1,1.0,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,12:34:28:817,1531424068817,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:34:29:958,1531424069958,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:34:30:317,1531424070317,1,1.0,userClick:393_137;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:34:30:390,1531424070390,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:34:30:430,1531424070430,1,1.0,userClick:393_137;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,12:34:30:456,1531424070456,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:34:31:216,1531424071216,1,1.0,userClick:346_645;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,12:34:32:631,1531424072631,1,1.0,userClick:305_725;region:QnA;target:button-save;answerQuestion:1.0_"sf"_NA_(7-12-2018,12:34:30:430,1531424070430,1,1.0,userClick:393_137;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false),false,false,false,false,false,false
+7-12-2018,12:34:33:745,1531424073745,1,1.0,userClick:466_362;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,12:34:34:210,1531424074210,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:34:38:144,1531424078144,1,1.0,userClick:256_426;region:gameArea;target:expl-control-canvas;timelineClick:60,false,false,false,false,false,false
+7-12-2018,12:34:38:974,1531424078974,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:34:39:257,1531424079257,1,1.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:34:39:905,1531424079905,1,1.0,userClick:470_352;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,12:34:43:535,1531424083535,1,1.0,showQuestion:74.0,false,false,false,false,false,false
+7-12-2018,12:34:43:831,1531424083831,1,74.0,stepIntoDecisionPoint:74,false,false,false,false,false,false
+7-12-2018,12:34:51:857,1531424091857,74,74.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:34:52:25,1531424092025,74,74.0,showEntityTooltip:friendly-Tank_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:34:52:105,1531424092105,74,74.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:34:52:191,1531424092191,74,74.0,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:34:52:589,1531424092589,74,74.0,userClick:473_272;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:34:52:712,1531424092712,74,74.0,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,12:34:52:741,1531424092741,74,74.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,12:34:53:312,1531424093312,74,74.0,userClick:384_672;region:QnA;NA;NA,false,false,false,false,false,false
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+7-12-2018,13:19:22:732,1531426762732,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,13:19:25:201,1531426765201,1,undefined,showQuestion:1.0,false,false,false,false,false,false
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+7-12-2018,13:20:2:195,1531426802195,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,13:20:12:74,1531426812074,1,undefined,showQuestion:1.0,false,false,false,false,false,false
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+7-12-2018,13:26:51:219,1531427211219,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,13:26:53:49,1531427213049,1,undefined,showQuestion:1.0,false,false,false,false,false,false
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+7-12-2018,13:27:52:156,1531427272156,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,13:27:54:113,1531427274113,1,undefined,showQuestion:1.0,false,false,false,false,false,false
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+7-12-2018,13:28:58:772,1531427338772,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+7-12-2018,13:31:47:566,1531427507566,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,13:31:49:42,1531427509042,1,undefined,showQuestion:1.0,false,false,false,false,false,false
+7-12-2018,13:32:21:736,1531427541736,1,1.0,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,13:32:26:561,1531427546561,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,13:32:27:58,1531427547059,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,13:32:27:270,1531427547270,1,1.0,userClick:401_127;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,13:32:27:339,1531427547339,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,13:32:27:399,1531427547399,1,1.0,showEntityTooltip:friendly-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+7-12-2018,13:32:28:369,1531427548369,1,1.0,userClick:347_648;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,13:32:33:563,1531427553563,1,1.0,userClick:296_721;region:QnA;target:button-save;answerQuestion:1.0_"sdf"_NA_(7-12-2018,13:32:27:270,1531427547270,1,1.0,userClick:401_127;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false),false,false,false,false,false,false
+7-12-2018,13:32:36:649,1531427556649,1,1.0,userClick:467_358;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,13:32:37:721,1531427557721,1,1.0,userClick:270_428;region:gameArea;target:expl-control-canvas;timelineClick:63,false,false,false,false,false,false
+7-12-2018,13:32:42:240,1531427562240,1,1.0,userClick:457_365;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,13:32:45:429,1531427565429,1,1.0,showQuestion:74.0,false,false,false,false,false,false
+7-12-2018,13:33:10:302,1531427590302,1,74.0,stepIntoDecisionPoint:74,false,false,false,false,false,false
+7-12-2018,13:33:15:752,1531427595752,74,74.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,13:33:16:191,1531427596191,74,74.0,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,13:33:16:553,1531427596553,74,74.0,userClick:467_274;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,13:33:16:937,1531427596937,74,74.0,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,13:33:16:951,1531427596951,74,74.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,13:33:17:879,1531427597879,74,74.0,userClick:325_655;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,13:33:20:318,1531427600318,74,74.0,showQuestion:74.1,false,false,false,false,false,false
+7-12-2018,13:33:40:760,1531427620760,74,74.1,userClick:317_713;region:QnA;target:button-save;answerQuestion:74.0_"sddsf"_NA_(7-12-2018,13:33:16:553,1531427596553,74,74.0,userClick:467_274;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false),false,false,false,false,false,false
+7-12-2018,13:33:44:175,1531427624175,74,74.1,userClick:304_628;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,13:33:51:216,1531427631216,74,74.1,userClick:308_673;region:QnA;target:button-save;answerQuestion:74.1_"sadfdsf"_NA_(NA),false,false,false,false,false,false
+7-12-2018,13:33:56:640,1531427636640,74,74.1,userClick:467_361;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,13:34:0:576,1531427640576,74,74.1,userClick:436_428;region:gameArea;target:expl-control-canvas;timelineClick:110,false,false,false,false,false,false
+7-12-2018,13:34:6:112,1531427646112,74,74.1,userClick:472_357;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,13:34:8:390,1531427648390,74,74.1,showQuestion:119.0,false,false,false,false,false,false
+7-12-2018,13:34:31:943,1531427671943,74,119.0,stepIntoDecisionPoint:119,false,false,false,false,false,false
+7-12-2018,13:34:37:73,1531427677073,119,119.0,userClick:302_620;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,13:34:41:931,1531427681931,119,119.0,userClick:310_661;region:QnA;target:button-save;answerQuestion:119.0_"dfg"_NA_(NA),false,false,false,false,false,false
+7-12-2018,13:34:45:610,1531427685610,119,119.0,userClick:467_361;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,13:34:54:16,1531427694016,119,119.0,showQuestion:summary.0,false,false,false,false,false,false
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+7-12-2018,13:37:7:560,1531427827560,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,13:37:8:586,1531427828586,1,undefined,showQuestion:1.0,false,false,false,false,false,false
+7-12-2018,13:37:8:912,1531427828912,1,1.0,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,13:37:8:987,1531427828987,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,13:37:11:330,1531427831330,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,13:37:11:544,1531427831544,1,1.0,userClick:394_130;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,13:37:11:658,1531427831658,1,1.0,showEntityTooltip:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+7-12-2018,13:37:11:667,1531427831667,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,13:37:12:481,1531427832481,1,1.0,userClick:238_650;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,13:37:15:959,1531427835959,1,1.0,userClick:292_716;region:QnA;target:button-save;answerQuestion:1.0_"sad"_NA_(7-12-2018,13:37:11:544,1531427831544,1,1.0,userClick:394_130;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_upperLeftQuadrant,false,false,false,false,false,false),false,false,false,false,false,false
+7-12-2018,13:37:16:809,1531427836809,1,1.0,userClick:465_352;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,13:37:19:192,1531427839192,1,1.0,userClick:271_418;region:gameArea;target:expl-control-canvas;timelineClick:64,false,false,false,false,false,false
+7-12-2018,13:37:21:792,1531427841792,1,1.0,userClick:471_361;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,13:37:24:283,1531427844283,1,1.0,showQuestion:74.0,false,false,false,false,false,false
+7-12-2018,13:37:24:644,1531427844644,1,74.0,stepIntoDecisionPoint:74,false,false,false,false,false,false
+7-12-2018,13:37:28:468,1531427848468,74,74.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,13:37:29:712,1531427849712,74,74.0,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,13:37:30:296,1531427850296,74,74.0,userClick:476_278;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+7-12-2018,13:37:30:618,1531427850618,74,74.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,13:37:31:369,1531427851369,74,74.0,userClick:296_640;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,13:37:32:177,1531427852177,74,74.0,showQuestion:74.1,false,false,false,false,false,false
+7-12-2018,13:37:32:181,1531427852181,74,74.1,userClick:297_711;region:QnA;target:button-save;answerQuestion:74.0_"asd"_NA_(7-12-2018,13:37:30:296,1531427850296,74,74.0,userClick:476_278;region:gameArea;target:gameboard;clickEntity:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false),false,false,false,false,false,false
+7-12-2018,13:37:32:885,1531427852885,74,74.1,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,13:37:36:233,1531427856233,74,74.1,userClick:241_605;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,13:37:40:944,1531427860944,74,74.1,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,13:37:42:940,1531427862940,74,74.1,userClick:293_666;region:QnA;target:button-save;answerQuestion:74.1_"dsa"_NA_(NA),false,false,false,false,false,false
+7-12-2018,13:37:44:177,1531427864177,74,74.1,userClick:464_362;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,13:37:46:625,1531427866625,74,74.1,userClick:433_432;region:gameArea;target:expl-control-canvas;timelineClick:109,false,false,false,false,false,false
+7-12-2018,13:37:47:947,1531427867947,74,74.1,userClick:475_353;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,13:37:50:442,1531427870442,74,74.1,showQuestion:119.0,false,false,false,false,false,false
+7-12-2018,13:37:50:758,1531427870758,74,119.0,stepIntoDecisionPoint:119,false,false,false,false,false,false
+7-12-2018,13:37:54:545,1531427874545,119,119.0,userClick:311_598;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,13:37:56:516,1531427876516,119,119.0,userClick:315_672;region:QnA;target:button-save;answerQuestion:119.0_"sdf"_NA_(NA),false,false,false,false,false,false
+7-12-2018,13:37:57:842,1531427877842,119,119.0,userClick:465_358;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,13:38:5:409,1531427885409,119,119.0,showQuestion:summary.0,false,false,false,false,false,false
+7-12-2018,13:38:33:361,1531427913361,119,summary.0,userClick:346_603;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,13:38:37:201,1531427917201,119,summary.0,userClick:311_651;region:QnA;NA;NA,false,false,false,false,false,false
+7-12-2018,13:38:40:289,1531427920289,119,summary.0,userClick:313_675;region:QnA;target:button-save;answerQuestion:summary.0_"sdf"_NA_(NA),false,false,false,false,false,false
+7-12-2018,13:38:42:569,1531427922569,119,summary.0,userClick:470_361;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+7-12-2018,13:38:47:90,1531427927090,119,summary.0,userClick:467_360;region:gameArea;target:pauseResumeButton;pause:NA,false,false,false,false,false,false
+7-12-2018,13:38:48:861,1531427928861,119,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,13:38:49:547,1531427929547,119,summary.0,userClick:501_67;region:gameArea;target:replay-file-selector;touchReplayingGamefileSelector:NA,false,false,false,false,false,false
+7-12-2018,13:38:50:836,1531427930836,119,summary.0,userClick:0_0;region:gameArea;NA;NA,false,false,false,false,false,false
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+7-12-2018,13:39:29:704,1531427969704,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,13:39:30:929,1531427970929,1,undefined,showQuestion:1.0,false,false,false,false,false,false
+7-12-2018,13:39:31:19,1531427971019,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,13:39:31:113,1531427971113,1,1.0,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+7-12-2018,13:39:31:132,1531427971132,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,13:39:31:470,1531427971470,1,1.0,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,13:39:31:562,1531427971562,1,1.0,userClick:528_61;region:gameArea;target:replay-file-selector;touchReplayingGamefileSelector:NA,false,false,false,false,false,false
+7-12-2018,13:39:32:194,1531427972194,1,1.0,userClick:0_0;region:gameArea;NA;NA,false,false,false,false,false,false
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+7-12-2018,13:40:54:347,1531428054347,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,13:40:55:618,1531428055618,1,undefined,showQuestion:1.0,false,false,false,false,false,false
+7-12-2018,13:40:55:827,1531428055827,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,13:40:56:77,1531428056077,1,1.0,showEntityTooltip:friendly-Tank_lowerLeftQuadrant,false,false,false,false,false,false
+7-12-2018,13:40:56:81,1531428056081,1,1.0,stepIntoDecisionPoint:1,false,false,false,false,false,false
+7-12-2018,13:40:56:121,1531428056121,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,13:40:56:282,1531428056282,1,1.0,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+7-12-2018,13:40:56:322,1531428056322,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+7-12-2018,13:40:57:274,1531428057274,1,1.0,userClick:516_66;region:gameArea;target:replay-file-selector;touchReplayingGamefileSelector:NA,false,false,false,false,false,false
+7-12-2018,13:40:58:74,1531428058074,1,1.0,userClick:0_0;region:gameArea;NA;NA,false,false,false,false,false,false

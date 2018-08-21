@@ -1,4 +1,4 @@
-function getClosestInRangeShapeId(ctx, x, y, shapePositionMap){
+function getClosestInRangeShapeId(ctx, x, y){
 	var closestId = undefined;
 	var closestDistance = undefined;
 	for (key in shapePositionMap) {
@@ -203,42 +203,6 @@ function getColorRGBA(r,g,b,a) {
       return 255;
     }
     else return value;
-  }
-  
-  
-function highlightShape(ctx, shapeId, shapePositionMap) {
-    if (-1 != $.inArray(shapeId,primaryHighlightedShapeIds)){
-        highlightShapePrimary(ctx,shapeId, shapePositionMap);
-    }
-    else if (-1 != $.inArray(shapeId,secondaryHighlightedShapeIds)){
-        highlightShapeSecondary(ctx, shapeId, shapePositionMap);
-    }
-    else {
-        // do nothing
-    }
-  }
-  
-  
-  function highlightShapePrimary(ctx, shapeId, shapePositionMap){
-    var shapePoints = shapePositionMap[shapeId];
-    ctx.beginPath();
-    ctx.arc(shapePoints.x, shapePoints.y, shapePoints.radius, 0, 2 * Math.PI, false);
-    //ctx.fillStyle = 'red';
-    //ctx.fill();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'red';
-    ctx.stroke();
-  }
-  
-  function highlightShapeSecondary(ctx, shapeId, shapePositionMap){
-    var shapePoints = shapePositionMap[shapeId];
-    ctx.beginPath();
-    ctx.arc(shapePoints.x, shapePoints.y, shapePoints.radius, 0, 2 * Math.PI, false);
-    //ctx.fillStyle = 'white';
-    //ctx.fill();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'white';
-    ctx.stroke();
   }
   
 function getOctagonHeight(si) {

@@ -24,6 +24,7 @@ struct ReplayConfig {
 #[cfg(target_os = "windows")]
 fn default_browser() -> String {
     "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe".to_string()
+    //r#"C:\\Program Files\\Mozilla Firefox\\firefox.exe"#.to_string()
 }
 #[cfg(target_os = "macos")]
 fn default_browser() -> String {

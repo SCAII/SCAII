@@ -9,10 +9,6 @@ function deleteShape(shapeList, shape) {
   }
 }
 
-function addShape(shapesList, shape) {
-  masterShapes.push(updateShape);
-}
-
 function updateMasterPosition(masterPos, updatePos) {
   if (updatePos != undefined) {
     if (updatePos.hasX()) {
@@ -171,7 +167,6 @@ function updateMasterEntity(master, update) {
   }
   var masterShapes = master.getShapesList();
   var updateShapes = update.getShapesList();
-  var newShapesToAdd = [];
   for (var i in updateShapes) {
     var updateShape = updateShapes[i];
     if (!updateShape.hasId()) {
@@ -181,17 +176,17 @@ function updateMasterEntity(master, update) {
     var updateShapeId = updateShape.getId();
     var masterShape = getShapeWithMatchingId(masterShapes, updateShapeId);
     if (masterShape == undefined) {
-      addShape(masterShapes, updateShape);
+        masterShapes.push(updateShape);
     }
     else {
-      if (updateShape.hasDelete() && updateShape.getDelete()) {
-        var fullShapeId = getShapeId(update, updeateShape);
-        removeFullShapeIdFromTrackingLists(fullShapeId);
-        deleteShape(masterShapes, masterShape);
-      }
-      else {
+    //   if (updateShape.hasDelete() && updateShape.getDelete()) {
+    //     var fullShapeId = getShapeId(update, updateShape);
+    //     removeFullShapeIdFromTrackingLists(fullShapeId);
+    //     deleteShape(masterShapes, masterShape);
+    //   }
+    //   else {
         updateMasterShape(masterShape, updateShape);
-      }
+    //   }
     }
   }
   updateMetadata(master, update);

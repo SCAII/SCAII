@@ -14,7 +14,8 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 	bcm.saliencyDisplayManager = saliencyDisplayManager;
 	bcm.isCombined = isCombined;
 	bcm.isRewardMode = isRewardMode;
-	
+    
+
 	bcm.convertGoogleChartSelectionsToSelectionsByName = function(googleChartSelections){
 		var selectionsByName = [];
 		console.log("SELECTION from getSelection() looks like: ");
@@ -119,7 +120,7 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 		return chartTable;
 	}
 
-
+    //NEW_CHART detailed rewards live in the Bar messages, combined rewards are obtained by adding up Bar messages
 
 	bcm.getTableForGoogleChartAggregateRewards = function() {
 		// need structure to look like this
@@ -276,24 +277,29 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 	
 		var options = {
 			//legend: { position: "none" },
-			title: this.barChartMessage.getTitle(),
+			//title: this.barChartMessage.getTitle(),
+			title: 'Expected Score by Action',
 			//chartArea: {width: '50%', left:70},
 			chartArea: {width: '50%', left:"15%"},
 			hAxis: {
-			  title: this.barChartMessage.getVTitle(),
+              title: this.barChartMessage.getVTitle(),
+              
 			  //minValue: 0
 			},
 			vAxis: {
-			  title: vAxisString,
+              textPosition: 'none',
+			  //title: vAxisString,
 			},
 			'width':700,
-			'height':400
+            'height':400,
+            colors: ['#7293CB','#E1974C',  '#84BA5B','#D35E60', '#9067A7', '#AB6857',  '#CCC210',  '#000044']
 		  };
 		  return options;
 	}
 	
 	
 	bcm.getSaliencyIdForActionNameAndBar = function(actionName, barName) {
+        //NEW_SAL sal ids looked up in bar and bar group
 		var barGroups = this.groupsList;
 		for (var i in barGroups){
 			var barGroup = barGroups[i];
@@ -373,46 +379,21 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 	bcm.addSelection = function(selection) {
 		return this.selectionManager.addSelection(selection);
 	}
-
+    bcm.clearSelections = function(selection) {
+		return this.selectionManager.clearSelections(selection);
+	}
 	bcm.getRowInfoForHighestRewardBar = function() {
 		var barGroup = this.getMaxValueBarGroup();
 		var actionName = barGroup.getName();
 		var bars = barGroup.getBarsList();
-		//var maxBarIndex = undefined;
-		var maxBar = undefined;
-		for (var i in bars){
-			var bar = bars[i];
-			if  (maxBar == undefined) {
-				maxBar = bar;
-			}
-			else if (bar.getValue() > maxBar.getValue()) {
-				maxBar = bar;
-			}
-			else {
-				//skip
-			}
-		}
+		var maxBar = getMaxValueBarFromList(bars);
 		return [ actionName, maxBar.getName()];
 	}
 
 	
 	bcm.getMaxValueBarGroup = function(){
-		var barGroups = this.groupsList;
-		var barGroupWithMaxValue = undefined;
-		for (var i in barGroups) {
-			barGroup = barGroups[i];
-			if (barGroupWithMaxValue == undefined) {
-				barGroupWithMaxValue = barGroup;
-			}
-			else {
-				var curValue = getValueForBarGroup(barGroup);
-				var maxValue = getValueForBarGroup(barGroupWithMaxValue);
-				if (curValue > maxValue) {
-					barGroupWithMaxValue = barGroup;
-				}
-			}
-		}
-		return barGroupWithMaxValue;
+        var barGroups = this.groupsList;
+        return getMaxValueBarGroupFromList(barGroups);
 	}
 	bcm.getChosenActionName = function() {
 		var group = this.getMaxValueBarGroup();
@@ -421,6 +402,55 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 	return bcm;
 }
 
+function getMaxValueBarFromList(bars){
+    var maxBar = undefined;
+    for (var i in bars){
+        var bar = bars[i];
+        if  (maxBar == undefined) {
+            maxBar = bar;
+        }
+        else if (bar.getValue() > maxBar.getValue()) {
+            maxBar = bar;
+        }
+        else {
+            //skip
+        }
+    }
+    return maxBar;
+}
+function getMaxValueBarGroupFromList(barGroups){
+    var barGroupWithMaxValue = undefined;
+    for (var i in barGroups) {
+        barGroup = barGroups[i];
+        if (barGroupWithMaxValue == undefined) {
+            barGroupWithMaxValue = barGroup;
+        }
+        else {
+            var curValue = getValueForBarGroup(barGroup);
+            var maxValue = getValueForBarGroup(barGroupWithMaxValue);
+            if (curValue > maxValue) {
+                barGroupWithMaxValue = barGroup;
+            }
+        }
+    }
+    return barGroupWithMaxValue;
+}
+function rankThings(things, maxFunction){
+    var result = [];
+    while (things.length > 0){
+        var maxThing = maxFunction(things);
+        result.push(maxThing);
+        var fewerThings = [];
+        for (var i in things){
+            var thing = things[i];
+            if (thing != maxThing) {
+                fewerThings.push(thing);
+            }
+        }
+        things = fewerThings;
+    }
+    return result;
+}
 
 function getRewardNameRowOneBarPerAction() {
 	var rewardNameRow = ['', 'total reward'];
@@ -445,38 +475,51 @@ var drawBarChart = function(chartData, options) {
 	
 }
 
-function selectHandler(e) {
-	var googleChartSelections = googleChart.getSelection();
-	var selectionsByName = activeBarChartManager.convertGoogleChartSelectionsToSelectionsByName(googleChartSelections);
-	if (mostRecentClickHadCtrlKeyDepressed){
-		for (var i in selectionsByName){
-			var selection = selectionsByName[i];
-			if (activeBarChartManager.isSelected(selection)) {
-				activeBarChartManager.removeSelection(selection);
-			}
-			else {
-				activeBarChartManager.addSelection(selection);
-			}
-		}
-		console.log('selections after ctrl-click: ' + activeBarChartManager.getSelections());
-		activeSaliencyDisplayManager.adjustCheckboxes(activeBarChartManager.getSelections());
-	}
-	else {
-		activeSaliencyDisplayManager.adjustCheckboxes(selectionsByName);
-		console.log('selections after click: ' + activeBarChartManager.getSelections());
-		
-	}
+// function selectHandler(e) {
+// 	var googleChartSelections = googleChart.getSelection();
+//     var selectionsByName = activeBarChartManager.convertGoogleChartSelectionsToSelectionsByName(googleChartSelections);
+//     // NEW_CHART needs to support multi-select
+// 	if (mostRecentClickHadCtrlKeyDepressed){
+// 		for (var i in selectionsByName){
+// 			var selection = selectionsByName[i];
+// 			if (activeBarChartManager.isSelected(selection)) {
+// 				activeBarChartManager.removeSelection(selection);
+// 			}
+// 			else {
+// 				activeBarChartManager.addSelection(selection);
+// 			}
+// 		}
+// 		console.log('selections after ctrl-click: ' + activeBarChartManager.getSelections());
+// 		activeSaliencyDisplayManager.adjustCheckboxes(activeBarChartManager.getSelections());
+// 	}
+// 	else {
+//         // NEW_CHART single-select on bar clears other bars
+//         activeBarChartManager.clearSelections();
+//         if (selectionsByName.length > 0){
+//             activeBarChartManager.addSelection(selectionsByName[0]);
+//             activeSaliencyDisplayManager.adjustCheckboxes(selectionsByName);
+//         }
+// 		console.log('selections after click: ' + activeBarChartManager.getSelections());
+// 	}
 	
-	var selection = activeBarChartManager.createGoogleChartSelections();
-	googleChart.setSelection(selection);
-	if (salienciesAreShowing) {
-		updateSaliencyContainers();
-	}
-	else {
-		initSaliencyContainers();
-		updateSaliencyContainers();
-	}
-}
+// 	var selection = activeBarChartManager.createGoogleChartSelections();
+//     googleChart.setSelection(selection);
+    
+    
+//     if (userStudyMode) {
+//         if (!studyTreatmentOld.showSaliencyAll){
+//             // bypass showing saliency 
+//             return;
+//         }
+//     }
+// 	if (replayState.salienciesAreShowing) {
+// 		updateSaliencyContainers();
+// 	}
+// 	else {
+// 		initSaliencyContainers();
+// 		updateSaliencyContainers();
+// 	}
+// }
 //'stroke-color: #871B47; stroke-opacity: 0.6; stroke-width: 8; fill-color: #BC5679; fill-opacity: 0.2'
 function getValueForBarGroup(barGroup) {
 	var statedValue = barGroup.getValue();
