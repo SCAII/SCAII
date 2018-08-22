@@ -141,7 +141,9 @@ function getSaliencyV2UIMap() {
         var outlineDiv = document.createElement("div");
         var outlineDivId =  "outline-div-DP" + showingDecisionNumber + "-" + nameForId;
         outlineDiv.setAttribute("id", outlineDivId);
-        outlineDiv.setAttribute("style","border-color:white;border-style:solid;border-width:6px;z-index:" + zIndexMap["saliencyHoverValue"] + "; position:relative; left:0px; top:-" + h + "px;background-color:transparent;width:"+ divW + "px;height:"+ divH + "px;");
+        // take the outline into account for positioning
+        var relativeTopValue = - Number(h) - Number(outlineWidth);
+        outlineDiv.setAttribute("style","border-color:white;border-style:solid;border-width:6px;z-index:" + zIndexMap["saliencyHoverValue"] + "; position:relative; left:0px; top:" + relativeTopValue + "px;background-color:transparent;width:"+ divW + "px;height:"+ divH + "px;");
         this.outlinesForSaliencyMap[this.getDPSpecificSaliencyMapKey(saliencyMapId)] = outlineDiv;
         
         // the div that will contain it should be a bit wider
