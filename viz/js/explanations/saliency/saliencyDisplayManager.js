@@ -79,20 +79,6 @@ const saliencyQuestionDetailed  = "(Showing areas of greatest attention by featu
 	// 	return false;
 	// }
 
-	// sdm.hideCheckboxes = function() {
-	// 	$("#saliency-checkboxes").empty();
-	// }
-	// sdm.renderCheckboxes = function() {
-	// 	if (showCheckboxes) {
-	// 		$("#saliency-checkboxes").empty();
-	// 		for (var i in this.activeCheckBoxes){
-	// 			var checkBox = this.activeCheckBoxes[i];
-	// 			var checkBoxLabel = this.activeCheckBoxLabels[i];
-	// 			$("#saliency-checkboxes").append(checkBox);
-	// 			$("#saliency-checkboxes").append(checkBoxLabel);
-	// 		}
-	// 	}
-    // }
     sdm.rankString = {};
     sdm.createRankStrings = function(barGroups) {
         //NEW_SAL UI friendly text to explain ranking of rowxs

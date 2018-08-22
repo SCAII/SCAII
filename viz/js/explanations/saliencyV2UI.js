@@ -163,27 +163,6 @@ function createSaliencyContainers() {
 	//saliencyGroup.setAttribute("style", "margin-left:20px; margin-top:20px; margin-right: 20px;");
 	$("#saliency-div").append(saliencyGroup);
 
-	
-	// selections area will be hidden so wedon't see checkboxes
-	var saliencySelections = document.createElement("DIV");
-	saliencySelections.setAttribute("id", "saliency-selections");
-	saliencySelections.setAttribute("class", "flex-column  saliencies-bg");
-	//saliencySelections.setAttribute("style", "visibility:hidden;");
-	$("#saliency-group").append(saliencySelections);
-
-	var saliencySelectionsTitle = document.createElement("DIV");
-	saliencySelectionsTitle.setAttribute("id", "saliency-selections-title");
-	saliencySelectionsTitle.setAttribute("class", "saliencies-bg");
-	saliencySelectionsTitle.html = 'Generating Rewards';
-	$("#saliency-selections").append(saliencySelectionsTitle);
-	
-	var saliencyCheckboxes = document.createElement("DIV");
-	saliencyCheckboxes.setAttribute("id", "saliency-checkboxes");
-	saliencyCheckboxes.setAttribute("class", "grid saliencies-bg");
-	$("#saliency-selections").append(saliencyCheckboxes);
-
-
-
 	var saliencyContent = document.createElement("DIV");
 	saliencyContent.setAttribute("id", "saliency-content");
 	saliencyContent.setAttribute("class", "flex-column saliencies-bg");
