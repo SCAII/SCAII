@@ -122,7 +122,8 @@ function getSaliencyV2UIMap() {
         gameboardOverlayCanvas.width  = gameboard_canvas.width * scaleFactor;
 		gameboardOverlayCanvas.height = gameboard_canvas.height * scaleFactor;
         var zIndex = Number(zIndexMap["saliencyHoverValue"]) + Number(gridX);
-        gameboardOverlayCanvas.setAttribute("id", "gameboardOverlay" + saliencyId + convertNameToLegalId( saliencyUIName ) );
+        var legalCssId = convertNameToLegalId("gameboardOverlay" + saliencyId + saliencyUIName ) 
+        gameboardOverlayCanvas.setAttribute("id", legalCssId);
         var gameboardOffset = $("#scaii-gameboard").offset( );
         var gameboardTop = gameboardOffset.top;
         var gameboardLeft = gameboardOffset.left;
@@ -189,7 +190,8 @@ function getSaliencyV2UIMap() {
 		outlineDiv.onclick = function( ) {
             mapDiv.removeChild( outlineDiv );
             // var canvas = gameboardOverlayLookupMap[ saliencyId ];
-            $("#gameboardOverlay" + saliencyId + convertNameToLegalId( saliencyUIName ) ).detach(  );
+            var legalCssId = convertNameToLegalId("gameboardOverlay" + saliencyId +  saliencyUIName );
+            $("#" +  legalCssId).detach(  );
             //this.subtractSaliencyMapFromGameReplica( gameboard_ctx, cells, gamePixelDimension, gamePixelDimension, this.normalizationFactor, 1  )
             //clearHighlightedShapesOnGameboard();
 		}
