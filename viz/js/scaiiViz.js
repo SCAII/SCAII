@@ -48,11 +48,11 @@ goog.require('proto.scaii.common.VizInit');
 */
 var userStudyMode = false;
 var main = function () {
-    runTests();
+    //runTests();
 	initUI();
 	var debug = true;
 	if (debug) {
-        userStudyMode = true;
+        //userStudyMode = true;
         if (userStudyMode) {
             removeFileSelectorEtc();
             tabManager = getTabManager();
