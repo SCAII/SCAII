@@ -67,7 +67,7 @@ function getChartV2UI() {
             var rewardBox = document.createElement("DIV");
             rewardBox.setAttribute("id", "legend-box-" + i);
             rewardBox.setAttribute("class", "r" + iPlusOne + "c1");
-            rewardBox.setAttribute("style", "background-color:" + chartData.colors[i] + ";height:17px;width:17px;position:relative;top:4px;");
+            rewardBox.setAttribute("style", "background-color:" + chartData.colors[i] + ";height:17px;width:17px;position:relative;top:2px;");
             $("#legend-rewards").append(rewardBox);
 
             var rewardInfo = document.createElement("DIV");
