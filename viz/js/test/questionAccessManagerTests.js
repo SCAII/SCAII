@@ -60,9 +60,9 @@ function runQuestionAccessManagerTests(failureChecker) {
     
 
 
-    fc.setCase("10 atOrPast waitForPredictionClick posed");
+    fc.setCase("10 finalDpRange waitForPredictionClick posed");
     qam.setQuestionStep(10);
-    qam.setRelationToFinalDecisionPoint("atOrPast");
+    qam.setRelationToFinalDecisionPoint("finalDpRange");
     qam.setQuestionType("waitForPredictionClick");
     qam.setQuestionState("posed");
     fc.assert(qam.getBlockRenderState(), "blockPastStep", "blockRender");
@@ -70,7 +70,7 @@ function runQuestionAccessManagerTests(failureChecker) {
     fc.assert(qam.getBlockRange()[1], 14, "blockRange 1");
     fc.assert(qam.getPlayButtonState(), "disabled", "playButtonState");
     
-    fc.setCase("10 atOrPast waitForPredictionClick answered");
+    fc.setCase("10 finalDpRange waitForPredictionClick answered");
     qam.setQuestionState("answered");
     fc.assert(qam.getBlockRenderState(), "noBlock", "blockRender");
     fc.assert(qam.getBlockRange()[0], "NA", "blockRange 0");

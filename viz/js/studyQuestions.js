@@ -142,8 +142,11 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
             if (this.squim.isStepPriorToLastDecisionPoint(currentStep)) {
                 this.accessManager.setRelationToFinalDecisionPoint("before");
             }
+            else if (currentStep == "summary") {
+                this.accessManager.setRelationToFinalDecisionPoint("finalStep");
+            }
             else {
-                this.accessManager.setRelationToFinalDecisionPoint("atOrPast");
+                this.accessManager.setRelationToFinalDecisionPoint("finalDpRange");
             }
             this.accessManager.express();
             renderDecisionPointLegend();
