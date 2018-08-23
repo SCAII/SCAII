@@ -80,7 +80,7 @@ function createTooltipDiv(text, rewardBar, canvas) {
 
     var tooltipContainer = document.createElement("div");
     tooltipContainer.setAttribute("id", "tooltip-container-" + rewardBar.fullName);
-    tooltipContainer.setAttribute("style", "position:absolute;left:" + (x + 9) + "px;top:" + y + "px;visibility:hidden");
+    tooltipContainer.setAttribute("style", "position:absolute;left:" + (x + 13) + "px;top:" + y + "px;visibility:hidden");
 
     var id = convertNameToLegalId("tooltip-" + rewardBar.fullName);
     var ttDiv = document.createElement("div");
@@ -104,7 +104,8 @@ function createTooltipDiv(text, rewardBar, canvas) {
     arrow.setAttribute("style", "position:relative;left:-10px;top:-" + ttDivHeight + "px;width:0; height:0; border-top: 10px solid transparent; border-bottom: 10px solid transparent; border-right:10px solid #00aabb;");
     tooltipContainer.appendChild(arrow);
 
-    //$("#tooltip-container-" + rewardBar.fullName).css("top", (y - ttDivHeight) + "px");
+    var ttContainerDiv = document.getElementById("tooltip-container-" + rewardBar.fullName);
+    ttContainerDiv.style.top = Number(y - (ttDivFromDOM.clientHeight / 2)) + "px";
 
     return id;
 }
