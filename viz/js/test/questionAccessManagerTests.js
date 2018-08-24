@@ -72,15 +72,16 @@ function runQuestionAccessManagerTests(failureChecker) {
     
     fc.setCase("10 finalDpRange waitForPredictionClick answered");
     qam.setQuestionState("answered");
-    fc.assert(qam.getBlockRenderState(), "noBlock", "blockRender");
-    fc.assert(qam.getBlockRange()[0], "NA", "blockRange 0");
-    fc.assert(qam.getBlockRange()[1], "NA", "blockRange 1");
+    fc.assert(qam.getBlockRenderState(), "blockFinalStep", "blockRender");
+    fc.assert(qam.getBlockRange()[0], 13, "blockRange 0");
+    fc.assert(qam.getBlockRange()[1], 14, "blockRange 1");
     fc.assert(qam.getPlayButtonState(), "enabled", "playButtonState");
 
 
 
-    fc.setCase("summary posed plain");
+    fc.setCase("summary finalStep posed plain");
     qam.setQuestionStep("summary");
+    qam.setRelationToFinalDecisionPoint("finalStep");
     qam.setQuestionState("posed");
     qam.setQuestionType("plain");
     fc.assert(qam.getBlockRenderState(), "noBlock", "blockRender");
@@ -88,7 +89,7 @@ function runQuestionAccessManagerTests(failureChecker) {
     fc.assert(qam.getBlockRange()[1], "NA", "blockRange 1");
     fc.assert(qam.getPlayButtonState(), "enabled", "playButtonState");
     
-    fc.setCase("summary answered plain");
+    fc.setCase("summary finalStep answered plain");
     qam.setQuestionState("answered");
     qam.setQuestionType("plain");
     fc.assert(qam.getBlockRenderState(), "noBlock", "blockRender");
