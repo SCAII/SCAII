@@ -105,6 +105,7 @@ function addConvenienceDataStructures(chartData) {
                 var bar = action.bars[j];
                 bar.fullName = action.name+ "." + bar.name;
                 bar.type = "reward";
+                bar.actionName = action.name;
                 chartData.actionRewardForNameMap[bar.fullName] = bar;
                 chartData.actionRewardNames.push(bar.fullName);
             }
@@ -164,6 +165,7 @@ function getExplanationsV2Manager(){
             this.data = ensureActionValuesSet(this.data);
             this.data = addConvenienceDataStructures(this.data);
             this.data = setDefaultSelections(this.data, this.treatmentID);
+            this.saliencyUI.buildSaliencyDetailed(this.data);
             this.chartDataForStep[step] = this.data;
             this.stepsWithExplanations.push(step);
         }

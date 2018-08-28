@@ -17,8 +17,9 @@ function getSaliencyV2UIMap() {
             for (var y = 0; y < Number(channel.height); y++){
                 var index = Number(channel.height) * Number(x) + Number(y);
                 var cellValue = channel.cells[index];
-                //console.log( "normalization Factor: " + normalizationFactor );
-                ctx.fillStyle = getOverlayOpacityBySaliencyRGBAString(cellValue * channel.normalizationFactor, gameboardFlag);
+                var normVal = lookupNormalizationValue(channel.normalizationKey);
+                //console.log( "normalization Factor: " + normVal );
+                ctx.fillStyle = getOverlayOpacityBySaliencyRGBAString(Number(cellValue) / Number(normVal), gameboardFlag);
                 //console.log( "ctx.fillStyle: " + ctx.fillStyle );
                 ctx.fillRect(x*gameScaleFactor, y*gameScaleFactor, gameScaleFactor, gameScaleFactor);
                 ctx.fill();
@@ -151,7 +152,7 @@ function getSaliencyV2UIMap() {
 
         if (!userStudyMode){
             saliencyCanvas.addEventListener('mousemove', function(evt) {
-                displayCellValue(evt, ch.height, ch.normalizationFactor, ch.cells);
+                displayCellValue(evt, ch.height, lookupNormalizationValue(ch.normalizationKey), ch.cells);
               }, false);
         }
         return saliencyCanvas;
@@ -192,6 +193,29 @@ function getSaliencyV2UIMap() {
     uimap.buildExplChannel = function(channel) {
         var ch = channel;
        
+        ch.valueSpan    = this.createValueSpan(ch);
+        ch.saliencyCanvas = this.buildSaliencyCanvas(ch);
+        ch.overlayCanvas  = this.buildOverlayCanvas(ch);
+        ch.outlineDiv     = this.buildOutlineDiv(ch, ch.saliencyCanvas);
+        ch.titledMapDiv   = this.buildTitledMapDiv(ch);
+        ch.titleDiv       = this.buildTitleDiv(ch);
+        ch.mapHostDiv     = this.buildMapHostDiv(ch, ch.saliencyCanvas);
+        ch.outlineDiv.onclick = function( ) {
+            // remove outline from mapHost
+            ch.mapHostDiv.removeChild( ch.outlineDiv );
+            ch.outlineActive = false;
+            console.log("CLICK_TO_REMOVE: " + ch.outlineDiv.getAttribute("id") +" from " + ch.mapHostDiv.getAttribute("id"));
+
+            // remove overlay from gameboard
+            var overlayCanvasId = ch.overlayCanvas.getAttribute("id");
+            $("#" +  overlayCanvasId).detach( );
+            ch.overlayActive = false;
+            console.log("CLICK_TO_REMOVE: " + overlayCanvasId);
+        }
+        ch.titledMapDiv.appendChild(ch.titleDiv);
+		ch.titledMapDiv.appendChild(ch.mapHostDiv);
+        ch.mapHostDiv.appendChild(ch.saliencyCanvas);
+        ch.mapHostDiv.appendChild(ch.valueSpan);
     }
 
     uimap.reviseStyleOverlayCanvasAtDisplayTime = function(channel, gridX){
@@ -217,30 +241,6 @@ function getSaliencyV2UIMap() {
 	uimap.renderExplChannel = function(gridX, gridY, channel) {
         var ch = channel;
 
-        ch.valueSpan    = this.createValueSpan(ch);
-        ch.saliencyCanvas = this.buildSaliencyCanvas(ch);
-        ch.overlayCanvas  = this.buildOverlayCanvas(ch);
-        ch.outlineDiv     = this.buildOutlineDiv(ch, ch.saliencyCanvas);
-        ch.titledMapDiv   = this.buildTitledMapDiv(ch);
-        ch.titleDiv       = this.buildTitleDiv(ch);
-        ch.mapHostDiv     = this.buildMapHostDiv(ch, ch.saliencyCanvas);
-        ch.outlineDiv.onclick = function( ) {
-            // remove outline from mapHost
-            ch.mapHostDiv.removeChild( ch.outlineDiv );
-            ch.outlineActive = false;
-            console.log("CLICK_TO_REMOVE: " + ch.outlineDiv.getAttribute("id") +" from " + ch.mapHostDiv.getAttribute("id"));
-
-            // remove overlay from gameboard
-            var overlayCanvasId = ch.overlayCanvas.getAttribute("id");
-            $("#" +  overlayCanvasId).detach( );
-            ch.overlayActive = false;
-            console.log("CLICK_TO_REMOVE: " + overlayCanvasId);
-        }
-        ch.titledMapDiv.appendChild(ch.titleDiv);
-		ch.titledMapDiv.appendChild(ch.mapHostDiv);
-        ch.mapHostDiv.appendChild(ch.saliencyCanvas);
-        ch.mapHostDiv.appendChild(ch.valueSpan);
-        
         this.styleTitledMapDivAtDisplayTime(ch, gridX, gridY);
         this.reviseStyleOverlayCanvasAtDisplayTime(ch, gridX);
 
@@ -308,7 +308,7 @@ function displayCellValue(evt, height, normalizationFactor, cells){
     var yForValueLookup = Math.floor(mousePos.y/gameScaleFactor);
     var index = height * xForValueLookup + yForValueLookup;
     var cellValue = cells[index];
-    var normValue = cellValue*normalizationFactor;
+    var normValue = Number(cellValue)/Number(normalizationFactor);
     //var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y + ' val: ' + normValue.toFixed(2);
     var top = (mousePos.y + 10 - (40 * gameScaleFactor)) + 'px'; // shift it to canvas above
     var left = (mousePos.x + 10) + 'px';
@@ -529,4 +529,7 @@ function processOutlineAndOverlay(channel){
             }
         }
     }
+}
+function lookupNormalizationValue(key){
+    return 123;
 }
