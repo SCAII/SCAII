@@ -18,6 +18,9 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, decisionPointS
     sim.progressWidth = progressWidth;
     sim.decisionPointSteps = decisionPointSteps;
     
+    sim.isAtDecisionPoint = function() {
+        return this.decisionPointSteps.includes(this.getCurrentIndex());
+    }
     sim.getDPThatStartsEpochForStep = function(step) {
         if (Number(step) > Number(this.replaySequencerMaxIndex)){
             return "NA";
@@ -333,6 +336,7 @@ function handleViz(vizData) {
 		        controlsManager.disablePauseResume();
             }
         }
+        currentExplManager.setWhyButtonAccessibility();
     }
     
 	if (sessionIndexManager.isAtEndOfGame()) {
@@ -507,7 +511,7 @@ function handleScaiiPacket(sPacket) {
             if (userStudyMode) {
                 tabManager.finalStepsForChangeToTab();
             }
-            currentExplManager.setCurrentStep(sessionIndexManager.getCurrentIndex());
+            currentExplManager.setCurrentStepAfterJump(sessionIndexManager.getCurrentIndex());
 		}
 		else if (commandType == proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE_COMPLETE){
             controlsManager.doneLoadReplayFile();

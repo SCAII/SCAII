@@ -169,9 +169,21 @@ function getExplanationsV2Manager(){
         else {
             this.data = cachedChartData;
         }
-        
     }
-    cm.setCurrentStep = function(step){
+
+    cm.setWhyButtonAccessibility = function() {
+        if (userStudyMode) {
+            // see if that step has a dp on it.  If so enable, else disable
+            if (sessionIndexManager.isAtDecisionPoint()){
+                $("#why-button").attr("disabled", "false");
+            }
+            else {
+                $("#why-button").attr("disabled", "true");
+            }
+        }
+    }
+
+    cm.setCurrentStepAfterJump = function(step){
         // find first step less than or equal to this one
         for (var i = this.stepsWithExplanations.length - 1; i >= 0; i--){
             var curStep = this.stepsWithExplanations[i];
@@ -182,6 +194,7 @@ function getExplanationsV2Manager(){
             }
         }
     }
+
     cm.setFilename = function(filename){
         this.filename = filename;
         if (filename.startsWith("tutorial")){
@@ -191,6 +204,7 @@ function getExplanationsV2Manager(){
             this.saliencyRandomized = false;
         }
     }
+
     cm.setUserStudyMode = function(val){
         this.userStudyMode = val;
         this.showLosingActionSmaller = val;
@@ -239,6 +253,7 @@ function getExplanationsV2Manager(){
             alert("unknown treatment name " +val);
         }
     }
+    
     cm.render = function(mode){
         cleanExplanationUI();
         this.renderLog = [];
