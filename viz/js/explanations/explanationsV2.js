@@ -156,6 +156,7 @@ function getExplanationsV2Manager(){
     cm.saliencyUI = getSaliencyV2UI();
     cm.stepsWithExplanations = [];
     cm.chartDataForStep = {};
+
     cm.setChartData = function(rawChartData, step){
         var cachedChartData = this.chartDataForStep[step];
         if (cachedChartData == undefined) {
@@ -169,6 +170,20 @@ function getExplanationsV2Manager(){
         else {
             this.data = cachedChartData;
         }
+    }
+
+    cm.applyFunctionToEachCachedDataset = function(f) {
+        for (var i in this.stepsWithExplanations){
+            var step = this.stepsWithExplanations[i];
+            var data = this.chartDataForStep[step];
+            f(data);
+        }
+    }
+    cm.hasExplDataForStep = function(step) {
+        if (this.chartDataForStep[step] == undefined) {
+            return false;
+        }
+        return true;
     }
 
     cm.setWhyButtonAccessibility = function() {
@@ -253,7 +268,7 @@ function getExplanationsV2Manager(){
             alert("unknown treatment name " +val);
         }
     }
-    
+
     cm.render = function(mode){
         cleanExplanationUI();
         this.renderLog = [];

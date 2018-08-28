@@ -421,30 +421,11 @@ function processWhyClick(step) {
 	}	
 	else {
 		currentExplManager.chartVisible = true;
-
 		// show explanation info for new step
-		selectedDecisionStep = explanationStep;
-		askBackendForExplanationRewardInfo(explanationStep);
+        selectedDecisionStep = explanationStep;
+        currentExplManager.render();
 	}
 }
-
-// function fullClearExplanationInfo() {
-// 	$("#explanations-rewards").empty();
-// 	$("#action-name-label").html(" ");
-// 	clearQuestionControls();
-// 	if ($("#rewards-titled-container").length) {
-// 		$("#rewards-titled-container").remove();
-// 	}	
-// 	if (currentExplManager != undefined) {
-// 		currentExplManager.chartVisible = false;
-// 		if (currentExplManager.saliencyVisible) {
-// 			$("#saliency-div").remove();
-// 		}
-// 		currentExplManager.saliencyVisible = false;
-// 	}
-
-// }
-
 
 function cleanExplanationUI() {
 	$("#explanations-rewards").empty();
@@ -452,7 +433,10 @@ function cleanExplanationUI() {
 	clearQuestionControls();
 	if ($("#rewards-titled-container").length) {
 		$("#rewards-titled-container").remove();
-	}	
+    }
+    if (currentExplManager != undefined) {
+        currentExplManager.applyFunctionToEachCachedDataset(detachTitleMapDivs);	// so they don't get tossed
+    }
 	$("#saliency-div").remove();
 }
 

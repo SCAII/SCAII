@@ -189,27 +189,9 @@ function getSaliencyV2UIMap() {
         return valueSpan;
     }
 
-    uimap.buildExplChannel = function(channel, gridX) {
+    uimap.buildExplChannel = function(channel) {
         var ch = channel;
-        ch.valueSpan    = this.createValueSpan(ch);
-        ch.saliencyCanvas = this.buildSaliencyCanvas(ch);
-        ch.overlayCanvas  = this.buildOverlayCanvas(ch);
-        ch.outlineDiv     = this.buildOutlineDiv(ch, ch.saliencyCanvas);
-        ch.titledMapDiv   = this.buildTitledMapDiv(ch);
-        ch.titleDiv       = this.buildTitleDiv(ch);
-        ch.mapHostDiv     = this.buildMapHostDiv(ch, ch.saliencyCanvas);
-        ch.outlineDiv.onclick = function( ) {
-            // remove outline from mapHost
-            ch.mapHostDiv.removeChild( ch.outlineDiv );
-            ch.outlineActive = false;
-            console.log("CLICK_TO_REMOVE: " + ch.outlineDiv.getAttribute("id") +" from " + ch.mapHostDiv.getAttribute("id"));
-
-            // remove overlay from gameboard
-            var overlayCanvasId = ch.overlayCanvas.getAttribute("id");
-            $("#" +  overlayCanvasId).detach( );
-            ch.overlayActive = false;
-            console.log("CLICK_TO_REMOVE: " + overlayCanvasId);
-        }
+       
     }
 
     uimap.reviseStyleOverlayCanvasAtDisplayTime = function(channel, gridX){
@@ -235,14 +217,34 @@ function getSaliencyV2UIMap() {
 	uimap.renderExplChannel = function(gridX, gridY, channel) {
         var ch = channel;
 
+        ch.valueSpan    = this.createValueSpan(ch);
+        ch.saliencyCanvas = this.buildSaliencyCanvas(ch);
+        ch.overlayCanvas  = this.buildOverlayCanvas(ch);
+        ch.outlineDiv     = this.buildOutlineDiv(ch, ch.saliencyCanvas);
+        ch.titledMapDiv   = this.buildTitledMapDiv(ch);
+        ch.titleDiv       = this.buildTitleDiv(ch);
+        ch.mapHostDiv     = this.buildMapHostDiv(ch, ch.saliencyCanvas);
+        ch.outlineDiv.onclick = function( ) {
+            // remove outline from mapHost
+            ch.mapHostDiv.removeChild( ch.outlineDiv );
+            ch.outlineActive = false;
+            console.log("CLICK_TO_REMOVE: " + ch.outlineDiv.getAttribute("id") +" from " + ch.mapHostDiv.getAttribute("id"));
+
+            // remove overlay from gameboard
+            var overlayCanvasId = ch.overlayCanvas.getAttribute("id");
+            $("#" +  overlayCanvasId).detach( );
+            ch.overlayActive = false;
+            console.log("CLICK_TO_REMOVE: " + overlayCanvasId);
+        }
+        ch.titledMapDiv.appendChild(ch.titleDiv);
+		ch.titledMapDiv.appendChild(ch.mapHostDiv);
+        ch.mapHostDiv.appendChild(ch.saliencyCanvas);
+        ch.mapHostDiv.appendChild(ch.valueSpan);
+        
         this.styleTitledMapDivAtDisplayTime(ch, gridX, gridY);
         this.reviseStyleOverlayCanvasAtDisplayTime(ch, gridX);
 
 		$("#saliency-maps").append(ch.titledMapDiv);
-        ch.titledMapDiv.appendChild(ch.titleDiv);
-		ch.titledMapDiv.appendChild(ch.mapHostDiv);
-        ch.mapHostDiv.appendChild(ch.saliencyCanvas);
-		ch.mapHostDiv.appendChild(ch.valueSpan);
 	}
 
     // uimap.hideAllSaliencyMapOutlines = function() {

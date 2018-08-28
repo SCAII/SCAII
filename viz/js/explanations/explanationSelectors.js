@@ -41,15 +41,16 @@ function configureExplanationSelectorDiamond(decisionPointNumber,step){
         var xPositionOfWhyButton = absoluteXExpCtrlPanel + x - 37;
         // why button rendering handled outside of chartV2 as chartV2 is created later upon explDetails arriving
         if (userStudyMode){
-            if (treatmentID == "1"){
+            if (treatmentID != "0"){
                 // send explain command to back end
-                askBackendForExplanationRewardInfo(step);
+                askForExplanationInfoIfDontHaveIt(step);
             }
-            else if (treatmentID == "2" ||treatmentID == "3"){
+            if (treatmentID == "2" ||treatmentID == "3"){
                 renderWhyButton(step, xPositionOfWhyButton, yPositionOfWhyButton);
             }
         }
         else {
+            askForExplanationInfoIfDontHaveIt(step);
             renderWhyButton(step, xPositionOfWhyButton, yPositionOfWhyButton);
         }
 		
@@ -57,10 +58,6 @@ function configureExplanationSelectorDiamond(decisionPointNumber,step){
         if (userStudyMode){
             userActionMonitor.stepToDecisionPoint(step);
             stateMonitor.setDecisionPoint(step);
-		}
-		if (currentExplManager.chartVisible){
-			// send a request to back end for focusing on this new step
-			askBackendForExplanationRewardInfo(step);
 		}
 		selectedDecisionStep = step;
 	}
@@ -110,6 +107,11 @@ function configureExplanationSelectorDiamond(decisionPointNumber,step){
     explanationBoxMap[step] = eBox;
 }
 
+function askForExplanationInfoIfDontHaveIt(step) {
+    if (!currentExplManager.hasExplDataForStep(step)){
+        askBackendForExplanationRewardInfo(step);
+    }
+}
 
 function getExplanationBox(left_x,right_x, upper_y, lower_y, step){
 	eBox = {};

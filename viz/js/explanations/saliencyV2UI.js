@@ -47,6 +47,7 @@ function getSaliencyV2UI() {
     }
 
 	ui.renderSaliencyDetailed = function(chartData) {
+        currentExplManager.applyFunctionToEachCachedDataset(detachTitleMapDivs);
         $("#saliency-div").remove();
         createSaliencyContainers();
         var selectedBars = chartData.getBarsFlaggedForShowingSaliency();
@@ -102,6 +103,7 @@ function getSaliencyV2UI() {
     
 
 	ui.renderSaliencyCombined = function(chartData) {
+        currentExplManager.applyFunctionToEachCachedDataset(detachTitleMapDivs)
         $("#saliency-div").remove();
         createSaliencyContainers();
         var selectedBars = chartData.getBarsFlaggedForShowingSaliency();
@@ -145,9 +147,40 @@ function getSaliencyV2UI() {
         this.configureIds(channel);
         this.uimap.buildExplChannel(channel);
     }
+
+ 
     return ui;
 }
 
+/*
+*  The titleMapDivs are loaded up in the creation phase and hooked into the UI at render phase.
+*  Thus, as we clean saliencies out prior to rendering other ones, we detach all those so they
+*  be be intact when needed again.
+*/
+function detachTitleMapDivs(chartData){
+    for (var i in chartData.actions){
+        var action = chartData.actions[i];
+        detachTitleMapDivsFromBar(action);
+        for (var j in action.bars){
+            var bar = action.bars[j];
+            detachTitleMapDivsFromBar(bar);
+        }
+    }
+}
+
+function detachTitleMapDivsFromBar(bar) {
+    if (bar.channels != undefined){
+        for (var i in bar.channels) {
+            var channel = bar.channels[i];
+            var id = channel.titledMapDiv.getAttribute("id");
+            $("#" + id).detach();
+        }
+    }
+    if (bar.combinedChannel != undefined) {
+        var id = combinedChannel.titledMapDiv.getAttribute("id");
+        $("#" + id).detach();
+    }
+}
 
 function getRowInfoString(bar) {
     var parts = bar.fullName.split(".");
