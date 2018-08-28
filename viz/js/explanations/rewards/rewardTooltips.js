@@ -54,6 +54,7 @@ function getRewardBarTooltipManager(canvas, chartData){
             var rewardBar = chartData.actionRewardForNameMap[this.chartData.actionRewardNames[i]];
             var toolContainerID = document.getElementById("tooltip-container-" + rewardBar.fullName);
             toolContainerID.style.visibility = "hidden";
+            $("#" + rewardBar.tooltipValueID).css("visibility","hidden");
         }
     }
     ttm.showTooltipForRewardBar = function(actionRewardName){

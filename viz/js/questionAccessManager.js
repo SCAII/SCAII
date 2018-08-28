@@ -58,26 +58,32 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
         this.setPlayButtonRenderState();
     }
     qam.setRelationToFinalDecisionPoint = function(relation) {
-        // before / atOrPast
+        // before / finalDpRange / finalStep
         this.relationToFinalDecisionPoint = relation;
         this.setBlockRenderState();
         this.setPlayButtonRenderState();
     }
     qam.blockRenderStateMap = {};
     qam.blockRenderStateMap["plain.posed.before"] = "blockPastRange";
-    qam.blockRenderStateMap["plain.posed.atOrPast"] = "noBlock";
+    qam.blockRenderStateMap["plain.posed.finalDpRange"] = "blockFinalStep";
+    qam.blockRenderStateMap["plain.posed.finalStep"] = "noBlock";
     qam.blockRenderStateMap["plain.answered.before"] = "blockPastRange";
-    qam.blockRenderStateMap["plain.answered.atOrPast"] = "noBlock";
+    qam.blockRenderStateMap["plain.answered.finalDpRange"] = "blockFinalStep";
+    qam.blockRenderStateMap["plain.answered.finalStep"] = "noBlock";
     
     qam.blockRenderStateMap["waitForClick.posed.before"] = "blockPastRange";
-    qam.blockRenderStateMap["waitForClick.posed.atOrPast"] = "noBlock";
+    qam.blockRenderStateMap["waitForClick.posed.finalDpRange"] = "blockFinalStep";
+    qam.blockRenderStateMap["waitForClick.posed.finalStep"] = "noBlock";
     qam.blockRenderStateMap["waitForClick.answered.before"] = "blockPastRange";
-    qam.blockRenderStateMap["waitForClick.answered.atOrPast"] = "noBlock";
+    qam.blockRenderStateMap["waitForClick.answered.finalDpRange"] = "blockFinalStep";
+    qam.blockRenderStateMap["waitForClick.answered.finalStep"] = "noBlock";
     
     qam.blockRenderStateMap["waitForPredictionClick.posed.before"] = "blockPastStep";
-    qam.blockRenderStateMap["waitForPredictionClick.posed.atOrPast"] = "blockPastStep";
+    qam.blockRenderStateMap["waitForPredictionClick.posed.finalDpRange"] = "blockPastStep";
+    qam.blockRenderStateMap["waitForPredictionClick.posed.finalStep"] = "noBlock";
     qam.blockRenderStateMap["waitForPredictionClick.answered.before"] = "blockPastRange";
-    qam.blockRenderStateMap["waitForPredictionClick.answered.atOrPast"] = "noBlock";
+    qam.blockRenderStateMap["waitForPredictionClick.answered.finalDpRange"] = "blockFinalStep";
+    qam.blockRenderStateMap["waitForPredictionClick.answered.finalStep"] = "noBlock";
 
     qam.setBlockRenderState = function(){
         if (this.questionStep != undefined &&
@@ -102,6 +108,9 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
         }
         else if (state == "blockPastRange"){
             return [Number(this.activeRange[1]) + 1, this.maxStep];
+        }
+        else if (state == "blockFinalStep") {
+            return [Number(this.maxStep - 1), this.maxStep];
         }
         else {
             // noBlock
@@ -143,6 +152,9 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
         }
         else if (this.blockRenderState == "blockPastStep"){
             this.blockPastStep(this.getBlockRange());
+        }
+        else if (this.blockRenderState == "blockFinalStep") {
+            this.blockFinalStep(this.getBlockRange());
         }
         else {
             this.clearTimelineBlock();
@@ -222,6 +234,36 @@ function getQuestionAccessManager(decisionPointSteps, maxStep) {
         var ecpOffset = $("#explanation-control-panel").offset();
         var y = ecpOffset.top;
         var width2 = x4 - x2 + 3;
+        var height = $("#explanation-control-panel").height();
+        // make blocking div from 0 -> rightXofLeftBlock
+        var gradientBars = "repeating-linear-gradient(135deg,rgba(100, 100, 100, 0.1),rgba(100, 100, 100, 0.3) 20px,rgba(100, 100, 100, 0.6) 20px,rgba(100, 100, 100, 0.7) 20px)";
+      
+        // make blocking div from leftXofRightBlock -> expl_ctrl_canvas.width
+        var rightBlockDiv = document.createElement("DIV");
+        rightBlockDiv.setAttribute("id", "right-block-div");
+        rightBlockDiv.setAttribute("style", "position:absolute;left:" + x2 + "px;top:" + y + "px;z-index:" + zIndexMap["clickBlockerRectangle"] 
+                                          + ";background:" + gradientBars + ";width:" + width2 + "px;height:" + height + "px;");
+        rightBlockDiv.onclick = function(e) {
+            if (userStudyMode){
+                var logLine = templateMap["right-block-div"];
+                logLine = logLine.replace("<TIME_LINE_BLCKR>", "NA");
+                targetClickHandler(e, logLine);
+                regionClickHandlerGameArea(e);
+                userActionMonitor.globalClick(e.clientX, e.clientY);
+            }
+        }
+        $("body").append(rightBlockDiv);
+    }
+    qam.blockFinalStep = function(rangePair) {
+        // calculate left window edge position
+        var x2 = getXOriginOfDecisionPointAtStep(Number(rangePair[0]));
+
+        var x4 = expl_ctrl_canvas.width;
+        
+        // get offset of explanation-control-panel relative to document
+        var ecpOffset = $("#explanation-control-panel").offset();
+        var y = ecpOffset.top;
+        var width2 = x4 - x2;
         var height = $("#explanation-control-panel").height();
         // make blocking div from 0 -> rightXofLeftBlock
         var gradientBars = "repeating-linear-gradient(135deg,rgba(100, 100, 100, 0.1),rgba(100, 100, 100, 0.3) 20px,rgba(100, 100, 100, 0.6) 20px,rgba(100, 100, 100, 0.7) 20px)";
