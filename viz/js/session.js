@@ -35,6 +35,21 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, decisionPointS
         }
         return result;
     }
+
+    sim.getStepThatStartsEpochForStep = function(step){
+        if (Number(step) > Number(this.replaySequencerMaxIndex)){
+            alert("step number higher than max!  Returning step 1");
+            return 1;
+        }
+        for (var i in this.decisionPointSteps){
+            var dpStep = this.decisionPointSteps[i];
+            if (Number(dpStep) <= Number(step)) {
+                return dpStep;
+            }
+        }
+        alert("step number less than 1!  Returning step 1");
+        return 1;
+    }
 	// progress bar is divided up in stepSizeAsKnownInReplaySequencer - 1 pieces
 	// because the first chunk of that we want to correspond to ReplaySequencer.scaii_pkts[1]
 	// since ReplaySequencer.scaii_pkts[0] corresponds to the initial state (prior to first "step")

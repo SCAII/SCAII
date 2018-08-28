@@ -13,9 +13,9 @@ function getSaliencyV2UIMap() {
 	}	
 
 	uimap.overlaySaliencyMapOntoGameReplica = function(ctx, channel, gameboardFlag ) {
-        for (var x= 0; x < channel.width; x++){
-            for (var y = 0; y < channel.height; y++){
-                var index = channel.height * x + y;
+        for (var x= 0; x < Number(channel.width); x++){
+            for (var y = 0; y < Number(channel.height); y++){
+                var index = Number(channel.height) * Number(x) + Number(y);
                 var cellValue = channel.cells[index];
                 //console.log( "normalization Factor: " + normalizationFactor );
                 ctx.fillStyle = getOverlayOpacityBySaliencyRGBAString(cellValue * channel.normalizationFactor, gameboardFlag);
@@ -23,6 +23,7 @@ function getSaliencyV2UIMap() {
                 ctx.fillRect(x*gameScaleFactor, y*gameScaleFactor, gameScaleFactor, gameScaleFactor);
                 ctx.fill();
             }
+            var foo = 3;
         }   
     }
     
@@ -87,9 +88,18 @@ function getSaliencyV2UIMap() {
     uimap.buildOverlayCanvas = function(channel){
         var canvas = document.createElement("canvas");
         canvas.setAttribute("id", channel.gameboardOverlayId);
+        canvas.height = gameboard_canvas.height;
+        canvas.width = gameboard_canvas.width;
         var ctx = canvas.getContext("2d");
         // canvas size should be same a gameboardHeight
-        this.renderSaliencyMap(canvas, ctx, channel);
+        //this.renderSaliencyMap(canvas, ctx, channel);
+        var gameboardOffset = $("#scaii-gameboard").offset( );
+        var gameboardTop = gameboardOffset.top;
+        var gameboardLeft = gameboardOffset.left;
+        var styleString = "position:absolute; left:" + gameboardLeft + "px; top:" + gameboardTop + "px;background-color:transparent;border-style:solid"
+        canvas.setAttribute("style", styleString);
+        console.log("canvas style string" + canvas.getAttribute("style"));
+        this.overlaySaliencyMapOntoGameReplica(ctx, channel, 0)
         return canvas;
     }
 
@@ -132,7 +142,7 @@ function getSaliencyV2UIMap() {
         });
         
 		saliencyCanvas.addEventListener('mouseleave', function(evt) {
-            valueSpan.setAttribute("style", 'visibility:hidden;');
+            ch.valueSpan.setAttribute("style", 'visibility:hidden;');
 			var logLine = templateMap["endMouseOverSaliencyMap"];
 			logLine = logLine.replace("<REGION>", "saliencyMap");
 			logLine = logLine.replace("<SLNCY_NAME>", ch.name);
@@ -202,12 +212,14 @@ function getSaliencyV2UIMap() {
         }
     }
 
-    uimap.styleOverlayCanvasAtDisplayTime = function(channel, gridX){
+    uimap.reviseStyleOverlayCanvasAtDisplayTime = function(channel, gridX){
         var gameboardOffset = $("#scaii-gameboard").offset( );
         var gameboardTop = gameboardOffset.top;
         var gameboardLeft = gameboardOffset.left;
         var zIndex = Number(zIndexMap["saliencyHoverValue"]) + Number(gridX);
-        channel.overlayCanvas.setAttribute("style","z-index:" + zIndex + "; position:absolute; left:" + gameboardLeft + "px; top:" + gameboardTop + "px;background-color:transparent;width:"+ gameboard_canvas.width + "px;height:"+ gameboard_canvas.height + "px; border-style:solid");
+        var styleString = "z-index:" + zIndex + "; position:absolute; left:" + gameboardLeft + "px; top:" + gameboardTop + "px;background-color:transparent;border-style:solid"
+        console.log(styleString);
+        channel.overlayCanvas.setAttribute("style",styleString);
     }
 
     uimap.styleTitledMapDivAtDisplayTime = function(channel, gridX, gridY){
@@ -224,7 +236,7 @@ function getSaliencyV2UIMap() {
         var ch = channel;
 
         this.styleTitledMapDivAtDisplayTime(ch, gridX, gridY);
-        this.styleOverlayCanvasAtDisplayTime(ch, gridX);
+        this.reviseStyleOverlayCanvasAtDisplayTime(ch, gridX);
 
 		$("#saliency-maps").append(ch.titledMapDiv);
         ch.titledMapDiv.appendChild(ch.titleDiv);
@@ -254,18 +266,15 @@ function getSaliencyV2UIMap() {
     uimap.mapHostDivIds = {};
 
     uimap.showOutlineOnSelectedSaliencyMap = function(channel) {
-        var mapHostDivId = this.mapHostDivIds          [ channel.id ];
-        var outlineDiv   = this.outlinesForSaliencyMap [ channel.id ];
-        outlineDiv.overlayedOntoMapHostDivId = mapHostDivId;
-        console.log("SHOW_OUTLINE: " + outlineDiv.getAttribute("id") + " onto " + mapHostDivId);
-        $("#" + mapHostDivId ).append( outlineDiv );
+        console.log("SHOW_OUTLINE: " + channel.outlineDiv.getAttribute("id") + " onto " + channel.mapHostDiv.getAttribute("id"));
+        channel.mapHostDiv.appendChild( channel.outlineDiv );
+        channel.outlineActive = true;
     }
 
-    uimap.overlaySelectedSaliencyMapOnGameboard = function(saliencyId, saliencyUIName) {
-        var canvas = this.gameboardOverlayLookupMap[ prependDPNumber(saliencyId + saliencyUIName) ];
-        console.log("OVERLAY:  " + canvas.getAttribute("id") + " looked up by " + prependDPNumber(saliencyId + saliencyUIName));
-        canvas.showingAsSaliencyOverlayOntoGameboard = true;
-        $("#scaii-gameboard").append( canvas );
+    uimap.overlaySelectedSaliencyMapOnGameboard = function(channel) {
+        console.log("OVERLAY:  " + channel.overlayCanvas.getAttribute("id"));
+        $("#scaii-gameboard").append( channel.overlayCanvas );
+        channel.overlayActive = true;
 	}
 
     return uimap;
@@ -514,7 +523,7 @@ function processOutlineAndOverlay(channel){
             if (activeQuestionDecisionPoint == showingDecisionNumber){
                 var uimap = currentExplManager.saliencyUI.uimap;
                 uimap.showOutlineOnSelectedSaliencyMap(channel);
-                uimap.overlaySelectedSaliencyMapOnGameboard( channel.saliencyId, channel.saliencyUIName);
+                uimap.overlaySelectedSaliencyMapOnGameboard( channel);
             }
         }
     }

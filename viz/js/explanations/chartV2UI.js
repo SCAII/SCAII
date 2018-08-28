@@ -409,7 +409,8 @@ function getChartV2UI() {
 var selectedDecisionStep = undefined;
 
 function processWhyClick(step) {
-	if (selectedDecisionStep == step && currentExplManager.chartVisible == true) {
+    var explanationStep = sessionIndexManager.getStepThatStartsEpochForStep(step);
+	if (selectedDecisionStep == explanationStep && currentExplManager.chartVisible == true) {
         currentExplManager.chartVisible = false;
         currentExplManager.saliencyVisible = false;
 		selectedDecisionStep = undefined;
@@ -422,8 +423,8 @@ function processWhyClick(step) {
 		currentExplManager.chartVisible = true;
 
 		// show explanation info for new step
-		selectedDecisionStep = step;
-		askBackendForExplanationRewardInfo(step);
+		selectedDecisionStep = explanationStep;
+		askBackendForExplanationRewardInfo(explanationStep);
 	}
 }
 
