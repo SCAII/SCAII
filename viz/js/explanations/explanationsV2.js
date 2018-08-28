@@ -200,7 +200,7 @@ function getExplanationsV2Manager(){
         this.chartVisible = false;
         this.showSaliencyAccessButton = true;
         this.saliencyVisible = false;
-        this.saliencyCombined = true;
+        this.saliencyCombined = !val;
     }
 
     cm.setUserStudyTreatment = function(val) {
@@ -209,7 +209,7 @@ function getExplanationsV2Manager(){
             this.chartVisible = false;
             this.showSaliencyAccessButton = false;
             this.saliencyVisible = false;
-            this.saliencyCombined = true;
+            this.saliencyCombined = false;
         }
         else if (val == "T1"){
             this.treatmentID = "T1";
@@ -232,7 +232,7 @@ function getExplanationsV2Manager(){
             this.chartVisible = false;
             this.showSaliencyAccessButton = true;
             this.saliencyVisible = false;
-            this.saliencyCombined = true;
+            this.saliencyCombined = false;
             
         }
         else {

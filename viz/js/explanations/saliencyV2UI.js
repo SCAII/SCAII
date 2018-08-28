@@ -269,11 +269,14 @@ function populateSaliencyQuestionSelector(){
 	detailedSaliencyLabel.setAttribute("style", "margin-left:10px;margin-top:3px;font-family:Arial;font-size:14px;");
 	detailedSaliencyLabel.innerHTML = "relevance details";
 	detailedSaliencyLabel.setAttribute("id","relevance-detailed-label");
+    
+    if (!userStudyMode) {
+        $("#what-radios").append(radioCombinedSaliency);
+        $("#what-radios").append(combinedSaliencyLabel);
+        $("#what-radios").append(radioDetailedSaliency);
+        $("#what-radios").append(detailedSaliencyLabel);
+    }
 	
-	$("#what-radios").append(radioCombinedSaliency);
-	$("#what-radios").append(combinedSaliencyLabel);
-	$("#what-radios").append(radioDetailedSaliency);
-	$("#what-radios").append(detailedSaliencyLabel);
 }
 
 
