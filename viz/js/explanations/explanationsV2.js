@@ -13,7 +13,6 @@ function handleExplanationDetails(explDetails){
         saliencyLookupMap = saliency.getSaliencyMapMap();
         var step = sessionIndexManager.getCurrentIndex();
         currentExplManager.setChartData(rawChart, step);
-        currentExplManager.render();
 	}
 	else {
 		console.log("MISSING expl point!");
@@ -175,6 +174,7 @@ function getExplanationsV2Manager(){
         else {
             this.data = cachedChartData;
         }
+        this.render();
     }
 
     cm.switchToExplanationsForThisDecisionPoint = function(step) {
@@ -257,7 +257,7 @@ function getExplanationsV2Manager(){
         }
         else if (val == "T1"){
             this.treatmentID = "T1";
-            this.chartVisible = false;
+            this.chartVisible = true;
             this.showSaliencyAccessButton = false;
             this.saliencyVisible = true;
             this.saliencyCombined = false;
@@ -265,7 +265,7 @@ function getExplanationsV2Manager(){
         }
         else if (val == "T2"){
             this.treatmentID = "T2";
-            this.chartVisible = false;
+            this.chartVisible = true;
             this.showSaliencyAccessButton = false;
             this.saliencyVisible = false;
             this.saliencyCombined = false;
@@ -273,9 +273,9 @@ function getExplanationsV2Manager(){
         }
         else if (val == "T3"){
             this.treatmentID = "T3";
-            this.chartVisible = false;
-            this.showSaliencyAccessButton = true;
-            this.saliencyVisible = false;
+            this.chartVisible = true;
+            this.showSaliencyAccessButton = false;
+            this.saliencyVisible = true;
             this.saliencyCombined = false;
             
         }

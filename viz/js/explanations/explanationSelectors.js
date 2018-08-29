@@ -41,13 +41,7 @@ function configureExplanationSelectorDiamond(decisionPointNumber,step){
         var xPositionOfWhyButton = absoluteXExpCtrlPanel + x - 37;
         // why button rendering handled outside of chartV2 as chartV2 is created later upon explDetails arriving
         if (userStudyMode){
-            if (treatmentID != "0"){
-                // send explain command to back end
-                setExplanationInfoForDPAtStep(step);
-            }
-            if (treatmentID == "2" ||treatmentID == "3"){
-                renderWhyButton(step, xPositionOfWhyButton, yPositionOfWhyButton);
-            }
+            setExplanationInfoForDPAtStep(step);
         }
         else {
             setExplanationInfoForDPAtStep(step);

@@ -5,7 +5,9 @@ function getSaliencyV2UI() {
     ui.renderSaliencyAccessControls = function() {
         clearSaliencyControls();
         populateSaliencyQuestionSelector();
-        addWhatButton();
+        if (!userStudyMode){
+            addWhatButton();
+        }
     }
    
     ui.getContextStringForDetailedSaliencyMapRow = function(barType){
