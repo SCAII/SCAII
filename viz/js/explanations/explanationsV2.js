@@ -249,7 +249,6 @@ function getExplanationsV2Manager(){
         this.showLosingActionSmaller = val;
         this.showHoverScores = !val;
 
-        this.showChartAccessButton = true;
         this.chartVisible = false;
         this.showSaliencyAccessButton = true;
         this.saliencyVisible = false;
@@ -276,7 +275,7 @@ function getExplanationsV2Manager(){
         }
         else if (val == "T1"){
             this.treatmentID = "T1";
-            this.chartVisible = true;
+            this.chartVisible = false;
             this.showSaliencyAccessButton = false;
             this.saliencyVisible = true;
             this.saliencyCombined = false;
