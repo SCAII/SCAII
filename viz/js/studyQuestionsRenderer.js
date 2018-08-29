@@ -199,12 +199,24 @@ function getStudyQuestionRenderer(questions) {
         $("#q-and-a-div").css("margin-top","20px");
         $("#q-and-a-div").css("padding","20px");
         if (qu.isClickCollectingQuestion()){
+            var clickPromptDiv = document.createElement("DIV");
+            clickPromptDiv.setAttribute("id", "click-prompt-div");
+            clickPromptDiv.setAttribute("style", "background-color:yellow");
+            clickPromptDiv.setAttribute("class", "flex-row");
+            $("#q-and-a-div").append(clickPromptDiv);
+
             var clickPrompt = document.createElement("DIV");
             clickPrompt.setAttribute("id", "click-prompt");
-            clickPrompt.setAttribute("style", "padding:10px;margin-bottom:8px;margin-left:0px;font-family:Arial;font-size:" + this.fontSize + ";background-color:yellow;");
+            clickPrompt.setAttribute("style", "padding:10px;margin-bottom:8px;margin-left:0px;font-family:Arial;font-size:" + this.fontSize + ";");
             clickPrompt.innerHTML =  questionIndicator + "(" + questionLetterMap[questionLetterIndex] + ")" + " " + qu.clickQuestionText;
             questionLetterIndex = questionLetterIndex + 1;
-            $("#q-and-a-div").append(clickPrompt);
+            $("#click-prompt-div").append(clickPrompt);
+
+            var updateSelection = document.createElement("DIV");
+            updateSelection.setAttribute("id", "selection-update-prompt");
+            updateSelection.setAttribute("style", "padding: 10px; margin-bottom:8px;font-family:Arial;font-size:" + this.fontSize + ";display:none");
+            //updateSelection.innerHTML = "Please Select";
+            $("#click-prompt-div").append(updateSelection);
         }
         // add a textArea for the question
         var quText = document.createElement("DIV");
@@ -255,8 +267,16 @@ function getStudyQuestionRenderer(questions) {
                     }
                     renderer.clickInfoFromUserActionMonitor = clickInfo;
                     renderer.removeMissingClickInfoMessage();
-                    $("#click-prompt").html("Most recent click logged (you can click more if needed).");
-                    $("#click-prompt").css("background-color", asqm.renderer.bg);
+                    //$("#click-prompt").html("Most recent click logged (you can click more if needed).");
+                    $("#click-prompt-div").css("background-color", asqm.renderer.bg);
+                    //$("#selection-update-prompt").css("background-color", asqm.renderer.bg);
+                    $("#selection-update-prompt").css("background-color", "yellow");
+                    $("#selection-update-prompt").css("display", "inline");
+                    $("#selection-update-prompt").stop(true);
+                    $("#selection-update-prompt").fadeTo(0, 1);
+                    //$("#selection-update-prompt").html("Selection Logged");
+                    $("#selection-update-prompt").html("Selection Updated");
+                    $("#selection-update-prompt").delay(300).fadeOut(400, "linear");
                 }
                 // var clickAckDiv = document.createElement("DIV");
                 // clickAckDiv.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:" + this.fontSize + ";padding-left:10px; padding-right:10px");

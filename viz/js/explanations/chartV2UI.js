@@ -316,7 +316,7 @@ function getChartV2UI() {
 		var ctx = canvas.getContext("2d");
 		for (var i=0; i<chartData.actions.length; i++) {
 			var action = chartData.actions[i];
-			for (var j=0; j<action.bars.length; j++) {
+			for (var j=0; j<chartData.rewardNames.length; j++) {
 				var bar = action.bars[j];
 				chartData.positionRewardBar(bar, i, j);
 				chartData.dimensionRewardBar(bar);
