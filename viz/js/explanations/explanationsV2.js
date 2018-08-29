@@ -165,7 +165,10 @@ function getExplanationsV2Manager(){
             this.data = ensureActionValuesSet(this.data);
             this.data = addConvenienceDataStructures(this.data);
             this.data = setDefaultSelections(this.data, this.treatmentID);
+            var start = Date.now();
             this.saliencyUI.buildSaliencyDetailed(this.data);
+            var end = Date.now();
+            console.log("Time: " + (Number(end) - Number(start)));
             this.chartDataForStep[step] = this.data;
             this.stepsWithExplanations.push(step);
         }

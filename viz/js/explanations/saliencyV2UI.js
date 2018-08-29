@@ -53,6 +53,7 @@ function getSaliencyV2UI() {
         //channel.id = convertNameToLegalId(rowInfoString + channelName);
         channel.cells = expLayer.getCellsList();;
         channel.normalizationKey = this.getNormalizationKey(bar, channel.name);
+        //console.log("the key is: " + channel.normalizationKey);
         channel.scaleFactor = 1.0;
         channel.saliencyId = bar.saliencyId;
         channel.id = convertNameToLegalId(prependDPNumber(bar.saliencyId + "--" + channel.name));

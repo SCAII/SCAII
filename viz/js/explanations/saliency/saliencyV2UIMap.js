@@ -99,7 +99,7 @@ function getSaliencyV2UIMap() {
         var gameboardLeft = gameboardOffset.left;
         var styleString = "position:absolute; left:" + gameboardLeft + "px; top:" + gameboardTop + "px;background-color:transparent;border-style:solid"
         canvas.setAttribute("style", styleString);
-        console.log("canvas style string" + canvas.getAttribute("style"));
+        //console.log("canvas style string" + canvas.getAttribute("style"));
         this.overlaySaliencyMapOntoGameReplica(ctx, channel, 0)
         return canvas;
     }
@@ -224,7 +224,7 @@ function getSaliencyV2UIMap() {
         var gameboardLeft = gameboardOffset.left;
         var zIndex = Number(zIndexMap["saliencyHoverValue"]) + Number(gridX);
         var styleString = "z-index:" + zIndex + "; position:absolute; left:" + gameboardLeft + "px; top:" + gameboardTop + "px;background-color:transparent;border-style:solid"
-        console.log(styleString);
+        //console.log(styleString);
         channel.overlayCanvas.setAttribute("style",styleString);
     }
 
@@ -293,7 +293,7 @@ function prependDPNumber(val) {
 function getDecisionPointPrefix() {
     var currentStep = sessionIndexManager.getCurrentIndex();
     var dp = sessionIndexManager.getDPThatStartsEpochForStep(currentStep);
-    console.log("dp: " + dp);
+    //console.log("dp: " + dp);
     return dp;
 }
 
@@ -530,6 +530,8 @@ function processOutlineAndOverlay(channel){
         }
     }
 }
-function lookupNormalizationValue(key){
-    return 123;
+function lookupNormalizationValue (key) {
+    //console.log("key is: " + key);
+    //console.log("the norm value is: " + normValues[key]);
+    return normValues[key];
 }
