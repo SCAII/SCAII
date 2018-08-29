@@ -43,14 +43,14 @@ function configureExplanationSelectorDiamond(decisionPointNumber,step){
         if (userStudyMode){
             if (treatmentID != "0"){
                 // send explain command to back end
-                askForExplanationInfoIfDontHaveIt(step);
+                setExplanationInfoForDPAtStep(step);
             }
             if (treatmentID == "2" ||treatmentID == "3"){
                 renderWhyButton(step, xPositionOfWhyButton, yPositionOfWhyButton);
             }
         }
         else {
-            askForExplanationInfoIfDontHaveIt(step);
+            setExplanationInfoForDPAtStep(step);
             renderWhyButton(step, xPositionOfWhyButton, yPositionOfWhyButton);
         }
 		
@@ -59,7 +59,7 @@ function configureExplanationSelectorDiamond(decisionPointNumber,step){
             userActionMonitor.stepToDecisionPoint(step);
             stateMonitor.setDecisionPoint(step);
 		}
-		selectedDecisionStep = step;
+        selectedDecisionStep = step;
 	}
 	else {
 		ctx.font = "12px Arial bold";
@@ -107,10 +107,13 @@ function configureExplanationSelectorDiamond(decisionPointNumber,step){
     explanationBoxMap[step] = eBox;
 }
 
-function askForExplanationInfoIfDontHaveIt(step) {
+function setExplanationInfoForDPAtStep(step) {
     // this is really "leaving epoch by other than jump"
     currentExplManager.applyFunctionToEachCachedDataset(detachChannelItem,"overlayCanvas");
-    if (!currentExplManager.hasExplDataForStep(step)){
+    if (currentExplManager.hasExplDataForStep(step)){
+        currentExplManager.switchToExplanationsForThisDecisionPoint(step);
+    }
+    else {
         askBackendForExplanationRewardInfo(step);
     }
 }

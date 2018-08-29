@@ -177,6 +177,11 @@ function getExplanationsV2Manager(){
         }
     }
 
+    cm.switchToExplanationsForThisDecisionPoint = function(step) {
+        this.data = this.chartDataForStep[step];
+        this.render();
+    }
+
     cm.applyFunctionToEachCachedDataset = function(f, key) {
         for (var i in this.stepsWithExplanations){
             var step = this.stepsWithExplanations[i];
