@@ -138,6 +138,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
 
             this.accessManager.setQuestionState("posed");
             this.accessManager.setQuestionType(qu.questionType);
+            currentExplManager.setQuestionType(qu.questionType);
             this.accessManager.setQuestionStep(currentStep);
             if (this.squim.isStepPriorToLastDecisionPoint(currentStep)) {
                 this.accessManager.setRelationToFinalDecisionPoint("before");
@@ -297,6 +298,7 @@ function acceptAnswer(e) {
     targetClickHandler(e, logLine);
 
     renderer.forgetQuestion();
+    currentExplManager.noteQuestionWasAnswered();
     if (squim.hasMoreQuestionsAtThisStep()) {
         renderState(gameboard_canvas, masterEntities, gameScaleFactor, 0, 0, true);
         asqm.poseNextQuestion();

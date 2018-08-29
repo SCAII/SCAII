@@ -11,12 +11,48 @@ var studyTreatmentOld = undefined;
 // ToDo - when strat jump- turn off incrementing index until receive set position.  Unblock incrementing on jump complete
 // then it will be apparent if we need to correct for ReplaySequencer's index pointing to next-packet-to-send rather than 
 // current packet in hand
-function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, progressWidth) {
+function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, decisionPointSteps, progressWidth) {
 	var sim = {};
 	sim.replaySequencerIndex  = 0;
 	sim.replaySequencerMaxIndex = stepSizeAsKnownInReplaySequencer - 1;
-	sim.progressWidth = progressWidth;
-	
+    sim.progressWidth = progressWidth;
+    sim.decisionPointSteps = decisionPointSteps;
+    
+    sim.isAtDecisionPoint = function() {
+        return this.decisionPointSteps.includes(this.getCurrentIndex());
+    }
+    sim.getDPThatStartsEpochForStep = function(step) {
+        if (Number(step) > Number(this.replaySequencerMaxIndex)){
+            return "NA";
+        }
+        var result = "DP1";
+        for (var i in this.decisionPointSteps){
+            var dpStep = this.decisionPointSteps[i];
+            if (Number(dpStep) <= Number(step)) {
+                var indexPlusOne = Number(i) + Number(1);
+                result = "DP" + indexPlusOne; 
+            }
+            else {
+                return result;
+            } 
+        }
+        return result;
+    }
+
+    sim.getStepThatStartsEpochForStep = function(step){
+        if (Number(step) > Number(this.replaySequencerMaxIndex)){
+            alert("step number higher than max!  Returning step 1");
+            return 1;
+        }
+        for (var i in this.decisionPointSteps){
+            var dpStep = this.decisionPointSteps[i];
+            if (Number(dpStep) <= Number(step)) {
+                return dpStep;
+            }
+        }
+        alert("step number less than 1!  Returning step 1");
+        return 1;
+    }
 	// progress bar is divided up in stepSizeAsKnownInReplaySequencer - 1 pieces
 	// because the first chunk of that we want to correspond to ReplaySequencer.scaii_pkts[1]
 	// since ReplaySequencer.scaii_pkts[0] corresponds to the initial state (prior to first "step")
@@ -253,7 +289,7 @@ function handleReplaySessionConfig(rsc, selectedStep) {
         liveModeInputBlocked = true;
     }
 	var timelineWidth = expl_ctrl_canvas.width - 2*timelineMargin;
-	sessionIndexManager = getSessionIndexManager(rsc.getStepCount(), timelineWidth);
+	sessionIndexManager = getSessionIndexManager(rsc.getStepCount(), rsc.getExplanationStepsList(), timelineWidth);
 	sessionIndexManager.setReplaySequencerIndex(0);
 }
 
@@ -300,6 +336,7 @@ function handleViz(vizData) {
 		        controlsManager.disablePauseResume();
             }
         }
+        currentExplManager.setWhyButtonAccessibility();
     }
     
 	if (sessionIndexManager.isAtEndOfGame()) {
@@ -474,7 +511,7 @@ function handleScaiiPacket(sPacket) {
             if (userStudyMode) {
                 tabManager.finalStepsForChangeToTab();
             }
-            currentExplManager.setCurrentStep(sessionIndexManager.getCurrentIndex());
+            currentExplManager.setCurrentStepAfterJump(sessionIndexManager.getCurrentIndex());
 		}
 		else if (commandType == proto.scaii.common.UserCommand.UserCommandType.SELECT_FILE_COMPLETE){
             controlsManager.doneLoadReplayFile();

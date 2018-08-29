@@ -41,15 +41,10 @@ function configureExplanationSelectorDiamond(decisionPointNumber,step){
         var xPositionOfWhyButton = absoluteXExpCtrlPanel + x - 37;
         // why button rendering handled outside of chartV2 as chartV2 is created later upon explDetails arriving
         if (userStudyMode){
-            if (treatmentID == "1"){
-                // send explain command to back end
-                askBackendForExplanationRewardInfo(step);
-            }
-            else if (treatmentID == "2" ||treatmentID == "3"){
-                renderWhyButton(step, xPositionOfWhyButton, yPositionOfWhyButton);
-            }
+            setExplanationInfoForDPAtStep(step);
         }
         else {
+            setExplanationInfoForDPAtStep(step);
             renderWhyButton(step, xPositionOfWhyButton, yPositionOfWhyButton);
         }
 		
@@ -58,11 +53,7 @@ function configureExplanationSelectorDiamond(decisionPointNumber,step){
             userActionMonitor.stepToDecisionPoint(step);
             stateMonitor.setDecisionPoint(step);
 		}
-		if (currentExplManager.chartVisible){
-			// send a request to back end for focusing on this new step
-			askBackendForExplanationRewardInfo(step);
-		}
-		selectedDecisionStep = step;
+        selectedDecisionStep = step;
 	}
 	else {
 		ctx.font = "12px Arial bold";
@@ -110,6 +101,16 @@ function configureExplanationSelectorDiamond(decisionPointNumber,step){
     explanationBoxMap[step] = eBox;
 }
 
+function setExplanationInfoForDPAtStep(step) {
+    // this is really "leaving epoch by other than jump"
+    currentExplManager.applyFunctionToEachCachedDataset(detachChannelItem,"overlayCanvas");
+    if (currentExplManager.hasExplDataForStep(step)){
+        currentExplManager.switchToExplanationsForThisDecisionPoint(step);
+    }
+    else {
+        askBackendForExplanationRewardInfo(step);
+    }
+}
 
 function getExplanationBox(left_x,right_x, upper_y, lower_y, step){
 	eBox = {};

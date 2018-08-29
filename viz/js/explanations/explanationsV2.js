@@ -13,7 +13,6 @@ function handleExplanationDetails(explDetails){
         saliencyLookupMap = saliency.getSaliencyMapMap();
         var step = sessionIndexManager.getCurrentIndex();
         currentExplManager.setChartData(rawChart, step);
-        currentExplManager.render();
 	}
 	else {
 		console.log("MISSING expl point!");
@@ -105,6 +104,7 @@ function addConvenienceDataStructures(chartData) {
                 var bar = action.bars[j];
                 bar.fullName = action.name+ "." + bar.name;
                 bar.type = "reward";
+                bar.actionName = action.name;
                 chartData.actionRewardForNameMap[bar.fullName] = bar;
                 chartData.actionRewardNames.push(bar.fullName);
             }
@@ -156,6 +156,8 @@ function getExplanationsV2Manager(){
     cm.saliencyUI = getSaliencyV2UI();
     cm.stepsWithExplanations = [];
     cm.chartDataForStep = {};
+    cm.currentQuestionType = undefined;
+
     cm.setChartData = function(rawChartData, step){
         var cachedChartData = this.chartDataForStep[step];
         if (cachedChartData == undefined) {
@@ -163,23 +165,73 @@ function getExplanationsV2Manager(){
             this.data = ensureActionValuesSet(this.data);
             this.data = addConvenienceDataStructures(this.data);
             this.data = setDefaultSelections(this.data, this.treatmentID);
+            var start = Date.now();
+            this.saliencyUI.buildSaliencyDetailed(this.data);
+            var end = Date.now();
+            console.log("Time: " + (Number(end) - Number(start)));
             this.chartDataForStep[step] = this.data;
             this.stepsWithExplanations.push(step);
         }
         else {
             this.data = cachedChartData;
         }
-        
+        this.render();
     }
-    cm.setCurrentStep = function(step){
+
+    cm.switchToExplanationsForThisDecisionPoint = function(step) {
+        this.data = this.chartDataForStep[step];
+        this.render();
+    }
+
+    cm.applyFunctionToEachCachedDataset = function(f, key) {
+        for (var i in this.stepsWithExplanations){
+            var step = this.stepsWithExplanations[i];
+            var data = this.chartDataForStep[step];
+            f(data, key);
+        }
+    }
+    cm.hasExplDataForStep = function(step) {
+        if (this.chartDataForStep[step] == undefined) {
+            return false;
+        }
+        return true;
+    }
+
+    cm.setWhyButtonAccessibility = function() {
+        if (userStudyMode) {
+            // see if that step has a dp on it.  If so enable, else disable
+            if (sessionIndexManager.isAtDecisionPoint()){
+                $("#why-button").attr("disabled", "false");
+            }
+            else {
+                $("#why-button").attr("disabled", "true");
+            }
+        }
+    }
+
+    cm.setCurrentStepAfterJump = function(step){
         // find first step less than or equal to this one
+        var existingData = this.data;
         for (var i = this.stepsWithExplanations.length - 1; i >= 0; i--){
             var curStep = this.stepsWithExplanations[i];
             if (Number(curStep) <= Number(step)){
                 this.data = this.chartDataForStep[curStep];
+                if (existingData != this.data){
+                    currentExplManager.applyFunctionToEachCachedDataset(detachChannelItem,"overlayCanvas");
+                }
                 this.render();
+                
                 return;
             }
+        }
+    }
+
+    cm.setQuestionType = function(type) {
+        this.currentQuestionType = type;
+        if (type == "waitForPredictionClick"){
+            this.chartVisible = false;
+            this.saliencyVisible = false;
+            this.render();
         }
     }
     cm.setFilename = function(filename){
@@ -191,16 +243,26 @@ function getExplanationsV2Manager(){
             this.saliencyRandomized = false;
         }
     }
+
     cm.setUserStudyMode = function(val){
         this.userStudyMode = val;
         this.showLosingActionSmaller = val;
         this.showHoverScores = !val;
 
-        this.showChartAccessButton = true;
         this.chartVisible = false;
         this.showSaliencyAccessButton = true;
         this.saliencyVisible = false;
-        this.saliencyCombined = true;
+        this.saliencyCombined = !val;
+    }
+
+    cm.noteQuestionWasAnswered = function(){
+        if (this.currentQuestionType == "waitForPredictionClick"){
+            this.resetExplanationVisibility();
+        }
+    }
+    cm.resetExplanationVisibility = function(){
+        this.setUserStudyTreatment(this.treatmentID);
+        this.render();
     }
 
     cm.setUserStudyTreatment = function(val) {
@@ -209,7 +271,7 @@ function getExplanationsV2Manager(){
             this.chartVisible = false;
             this.showSaliencyAccessButton = false;
             this.saliencyVisible = false;
-            this.saliencyCombined = true;
+            this.saliencyCombined = false;
         }
         else if (val == "T1"){
             this.treatmentID = "T1";
@@ -221,7 +283,7 @@ function getExplanationsV2Manager(){
         }
         else if (val == "T2"){
             this.treatmentID = "T2";
-            this.chartVisible = false;
+            this.chartVisible = true;
             this.showSaliencyAccessButton = false;
             this.saliencyVisible = false;
             this.saliencyCombined = false;
@@ -229,16 +291,17 @@ function getExplanationsV2Manager(){
         }
         else if (val == "T3"){
             this.treatmentID = "T3";
-            this.chartVisible = false;
-            this.showSaliencyAccessButton = true;
-            this.saliencyVisible = false;
-            this.saliencyCombined = true;
+            this.chartVisible = true;
+            this.showSaliencyAccessButton = false;
+            this.saliencyVisible = true;
+            this.saliencyCombined = false;
             
         }
         else {
             alert("unknown treatment name " +val);
         }
     }
+
     cm.render = function(mode){
         cleanExplanationUI();
         this.renderLog = [];

@@ -39,6 +39,7 @@ function runTests(){
     runChartDataTextTests(fc);
     runChartDataColorTests(fc);
     runRankingTests(fc);
+    runSessionTests(fc);
     var message = "";
     for (var i in fc.testNames){
         var testName = fc.testNames[i];

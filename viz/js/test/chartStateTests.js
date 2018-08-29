@@ -41,7 +41,7 @@ function runChartManagerTests(failureChecker) {
         
         fc.assert(cm.showSaliencyAccessButton, false, "showSaliencyAccessButton");
         fc.assert(cm.saliencyVisible, false, "saliencyVisible");
-        fc.assert(cm.saliencyCombined, true, "saliencyCombined");
+        fc.assert(cm.saliencyCombined, false, "saliencyCombined");
         cm.render("trace");
         fc.assert(cm.renderLog.length, 0,"renderLog.length");
 
@@ -54,7 +54,6 @@ function runChartManagerTests(failureChecker) {
         cm.setUserStudyTreatment("T1");
         
         fc.assert(cm.chartVisible, false, "chartVisible");
-        
         fc.assert(cm.showSaliencyAccessButton, false, "showSaliencyAccessButton");
         fc.assert(cm.saliencyVisible, true, "saliencyVisible");
         fc.assert(cm.saliencyCombined, false, "saliencyCombined");
@@ -70,13 +69,12 @@ function runChartManagerTests(failureChecker) {
         cm.setUserStudyMode(true);
         cm.setUserStudyTreatment("T2");
         
-        fc.assert(cm.chartVisible, false, "chartVisible");
-        
+        fc.assert(cm.chartVisible, true, "chartVisible");
         fc.assert(cm.showSaliencyAccessButton, false, "showSaliencyAccessButton");
         fc.assert(cm.saliencyVisible, false, "saliencyVisible");
         fc.assert(cm.saliencyCombined, false, "saliencyCombined");
         cm.render("trace");
-        fc.assert(cm.renderLog.length, 0,"renderLog.length"); 
+        fc.assert(cm.renderLog.length, 1,"renderLog.length"); 
 
         //
         fc.setCase("user study mode T3 defaults check");
@@ -86,14 +84,13 @@ function runChartManagerTests(failureChecker) {
         cm.setUserStudyMode(true);
         cm.setUserStudyTreatment("T3");
         
-        fc.assert(cm.showChartAccessButton, true, "showChartAccessButton");
-        fc.assert(cm.chartVisible, false, "chartVisible");
+        fc.assert(cm.chartVisible, true, "chartVisible");
         
-        fc.assert(cm.showSaliencyAccessButton, true, "showSaliencyAccessButton");
-        fc.assert(cm.saliencyVisible, false, "saliencyVisible");
-        fc.assert(cm.saliencyCombined, true, "saliencyCombined");
+        fc.assert(cm.showSaliencyAccessButton, false, "showSaliencyAccessButton");
+        fc.assert(cm.saliencyVisible, true, "saliencyVisible");
+        fc.assert(cm.saliencyCombined, false, "saliencyCombined");
         cm.render("trace");
-        fc.assert(cm.renderLog.length, 0,"renderLog.length"); 
+        fc.assert(cm.renderLog.length, 2,"renderLog.length"); 
     }
 
     { // non user study mode
@@ -173,20 +170,18 @@ function runChartManagerTests(failureChecker) {
         cm.render("trace");
         fc.assert(cm.renderLog.length, 2,"renderLog.length.a"); 
         fc.assert(cm.renderLog[0], "renderChartDetailed", "renderLog[1]a");
-        fc.assert(cm.renderLog[1], "renderSaliencyAccessButton", "renderLog[2]a");
+        fc.assert(cm.renderLog[1], "renderSaliencyDetailed", "renderLog[2]a");
 
         cm.saliencyVisible = true;
         cm.render("trace");
-        fc.assert(cm.renderLog.length, 3,"renderLog.length.c"); 
+        fc.assert(cm.renderLog.length, 2,"renderLog.length.c"); 
         fc.assert(cm.renderLog[0], "renderChartDetailed", "renderLog[1]c");
-        fc.assert(cm.renderLog[1], "renderSaliencyAccessButton", "renderLog[2]c");
-        fc.assert(cm.renderLog[2], "renderSaliencyCombined", "renderLog[3]c");
+        fc.assert(cm.renderLog[1], "renderSaliencyDetailed", "renderLog[2]c");
 
         cm.saliencyCombined = false;
         cm.render("trace");
-        fc.assert(cm.renderLog.length, 3,"renderLog.length.d"); 
+        fc.assert(cm.renderLog.length, 2,"renderLog.length.d"); 
         fc.assert(cm.renderLog[0], "renderChartDetailed", "renderLog[1]d");
-        fc.assert(cm.renderLog[1], "renderSaliencyAccessButton", "renderLog[2]d");
-        fc.assert(cm.renderLog[2], "renderSaliencyDetailed", "renderLog[3]d");
+        fc.assert(cm.renderLog[1], "renderSaliencyDetailed", "renderLog[2]d");
     }
 }

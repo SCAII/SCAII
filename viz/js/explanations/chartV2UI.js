@@ -408,7 +408,8 @@ function getChartV2UI() {
 var selectedDecisionStep = undefined;
 
 function processWhyClick(step) {
-	if (selectedDecisionStep == step && currentExplManager.chartVisible == true) {
+    var explanationStep = sessionIndexManager.getStepThatStartsEpochForStep(step);
+	if (selectedDecisionStep == explanationStep && currentExplManager.chartVisible == true) {
         currentExplManager.chartVisible = false;
         currentExplManager.saliencyVisible = false;
 		selectedDecisionStep = undefined;
@@ -419,30 +420,11 @@ function processWhyClick(step) {
 	}	
 	else {
 		currentExplManager.chartVisible = true;
-
 		// show explanation info for new step
-		selectedDecisionStep = step;
-		askBackendForExplanationRewardInfo(step);
+        selectedDecisionStep = explanationStep;
+        currentExplManager.render();
 	}
 }
-
-// function fullClearExplanationInfo() {
-// 	$("#explanations-rewards").empty();
-// 	$("#action-name-label").html(" ");
-// 	clearQuestionControls();
-// 	if ($("#rewards-titled-container").length) {
-// 		$("#rewards-titled-container").remove();
-// 	}	
-// 	if (currentExplManager != undefined) {
-// 		currentExplManager.chartVisible = false;
-// 		if (currentExplManager.saliencyVisible) {
-// 			$("#saliency-div").remove();
-// 		}
-// 		currentExplManager.saliencyVisible = false;
-// 	}
-
-// }
-
 
 function cleanExplanationUI() {
 	$("#explanations-rewards").empty();
@@ -450,7 +432,10 @@ function cleanExplanationUI() {
 	clearQuestionControls();
 	if ($("#rewards-titled-container").length) {
 		$("#rewards-titled-container").remove();
-	}	
+    }
+    if (currentExplManager != undefined) {
+        currentExplManager.applyFunctionToEachCachedDataset(detachChannelItem, "titledMapDiv");	// so they don't get tossed
+    }
 	$("#saliency-div").remove();
 }
 
