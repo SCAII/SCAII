@@ -156,6 +156,7 @@ function getExplanationsV2Manager(){
     cm.saliencyUI = getSaliencyV2UI();
     cm.stepsWithExplanations = [];
     cm.chartDataForStep = {};
+    cm.currentQuestionType = undefined;
 
     cm.setChartData = function(rawChartData, step){
         var cachedChartData = this.chartDataForStep[step];
@@ -225,6 +226,14 @@ function getExplanationsV2Manager(){
         }
     }
 
+    cm.setQuestionType = function(type) {
+        this.currentQuestionType = type;
+        if (type == "waitForPredictionClick"){
+            this.chartVisible = false;
+            this.saliencyVisible = false;
+            this.render();
+        }
+    }
     cm.setFilename = function(filename){
         this.filename = filename;
         if (filename.startsWith("tutorial")){
@@ -245,6 +254,16 @@ function getExplanationsV2Manager(){
         this.showSaliencyAccessButton = true;
         this.saliencyVisible = false;
         this.saliencyCombined = !val;
+    }
+
+    cm.noteQuestionWasAnswered = function(){
+        if (this.currentQuestionType == "waitForPredictionClick"){
+            this.resetExplanationVisibility();
+        }
+    }
+    cm.resetExplanationVisibility = function(){
+        this.setUserStudyTreatment(this.treatmentID);
+        this.render();
     }
 
     cm.setUserStudyTreatment = function(val) {
