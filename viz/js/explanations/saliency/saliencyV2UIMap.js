@@ -7,9 +7,9 @@ function getSaliencyV2UIMap() {
     uimap.saliencyMapPercentSize = 1.0;
     uimap.outlinesForSaliencyMap = {};
     uimap.currentlyHighlightedSaliencyMapKey = undefined;
-	uimap.renderSaliencyMap = function(canvas, ctx, cells, width, height, normalizationFactor){
+	uimap.renderSaliencyMap = function(canvas, ctx, cells, width, height, normalizationFactor, gameboardFlag){
 		renderState(canvas, masterEntities, gameScaleFactor, 0, 0,false);
-		this.overlaySaliencyMapOntoGameReplica(ctx, cells, width, height, normalizationFactor, 0);
+		this.overlaySaliencyMapOntoGameReplica(ctx, cells, width, height, normalizationFactor, gameboardFlag);
 	}	
     
     /*
@@ -44,14 +44,16 @@ function getSaliencyV2UIMap() {
      **************************************************************************************/
     uimap.cellsForSaliencyMapId = {};
     uimap.gameboardOverlayLookupMap = {};
+    
 
 	uimap.renderExplLayer = function(saliencyId, gridX, gridY, saliencyUIName, saliencyNameForId, cells, width, height, normalizationFactor, scaleFactor) {
-		var nameForId = convertNameToLegalId(saliencyNameForId);
+		var nameForId = convertNameToLegalId( saliencyNameForId );
 		var explCanvas = document.createElement("canvas");
         explCanvas.setAttribute("class", "explanation-canvas");
         var saliencyMapId = "saliencyMap_" + nameForId;
         //the line below is how we're storing the cells. For naming, we wrap the saliencyMapId into the current DP
         this.cellsForSaliencyMapId[ this.getDPSpecificSaliencyMapKey(saliencyMapId) ] = cells;
+        console.log( "cells for saliency map id: " + uimap.cellsForSaliencyMapId );
         explCanvas.setAttribute("id", saliencyMapId);
         explCanvas.onclick = function(e) {
             var x = e.offsetX;
@@ -113,7 +115,7 @@ function getSaliencyV2UIMap() {
 		// canvas size should be same a gameboardHeight
 		explCanvas.width  = gameboard_canvas.width * scaleFactor;
 		explCanvas.height = gameboard_canvas.height * scaleFactor;
-        this.renderSaliencyMap(explCanvas, explCtx, cells, width, height, normalizationFactor);
+        this.renderSaliencyMap(explCanvas, explCtx, cells, width, height, normalizationFactor, 0);
 
 
 
@@ -128,9 +130,9 @@ function getSaliencyV2UIMap() {
         var gameboardLeft = gameboardOffset.left;
         gameboardOverlayCanvas.setAttribute("style","z-index:" + zIndex + "; position:absolute; left:" + gameboardLeft + "px; top:" + gameboardTop + "px;background-color:transparent;width:"+ gameboardOverlayCanvas.width + "px;height:"+ gameboardOverlayCanvas.height + "px; border-style:solid");
         var gameboardOverlayContext = gameboardOverlayCanvas.getContext("2d");
-        gameboardOverlayContext.globalAlpha = 0.5;
+        //gameboardOverlayContext.globalAlpha = 0.5;
 		// canvas size should be same a gameboardHeight
-        this.renderSaliencyMap(gameboardOverlayCanvas, gameboardOverlayContext, cells, width, height, normalizationFactor);
+        this.renderSaliencyMap(gameboardOverlayCanvas, gameboardOverlayContext, cells, width, height, normalizationFactor, 1);
         this.gameboardOverlayLookupMap[ saliencyId + saliencyUIName ] = gameboardOverlayCanvas;
         
         var w = explCanvas.width;
@@ -449,7 +451,7 @@ function getOverlayOpacityBySaliencyRGBAStringQuantized(saliencyValue, gameboard
     }
 
     if( gameboardFlag == 0){
-        color['A'] = 0.5;
+        color['A'] = 1;
     }
     else{
         color['A'] = 0.5;

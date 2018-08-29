@@ -32,6 +32,7 @@ function getCellsForAllLayersOfSaliencyId(saliencyId){
         for (var i in expLayers){
             var expLayer = expLayers[i];
             var name = expLayer.getName();
+            console.log("Layer name:", name);
             var cellList = expLayer.getCellsList();
             result.push(cellList);
         }
@@ -112,6 +113,37 @@ function getNormalizationFactorForAllBarSaliencies(barGroups){
     // now get the normalizationFactor
     var normFactor = getNormalizationFactorByInvertingMaxValue(max);
     return normFactor;
+}
+
+function getNormalizationFactorForAllBarSalienciesNew(barGroups){
+    var out = [];
+    // gather up the cellList from each layer of all bars
+    for (var i in barGroups){
+        var group = barGroups[i];
+        var bars = group.bars;
+        for (var j in bars){
+            var bar = bars[j];
+            var saliencyId = bar.saliencyId;
+            console.log( "saliencyID: " + saliencyId );
+            var layerMessage = saliencyLookupMap.get(saliencyId);
+            if (layerMessage == undefined){
+                console.log("ERROR - no Layer message for saliencyID " + saliencyId);
+                continue;
+            }
+
+            var expLayers = layerMessage.getLayersList();
+            var name;
+            for (var i in expLayers){
+                var expLayer = expLayers[i];
+                name = expLayer.getName();
+                console.log("Layer name:", name);
+            }
+
+            out.push(1.0 / norm_dict[saliencyId][name]);
+        }
+    }
+
+    return out;
 }
 
 
