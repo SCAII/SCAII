@@ -108,6 +108,8 @@ function configureExplanationSelectorDiamond(decisionPointNumber,step){
 }
 
 function askForExplanationInfoIfDontHaveIt(step) {
+    // this is really "leaving epoch by other than jump"
+    currentExplManager.applyFunctionToEachCachedDataset(detachChannelItem,"overlayCanvas");
     if (!currentExplManager.hasExplDataForStep(step)){
         askBackendForExplanationRewardInfo(step);
     }

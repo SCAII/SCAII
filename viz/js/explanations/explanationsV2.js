@@ -174,11 +174,11 @@ function getExplanationsV2Manager(){
         }
     }
 
-    cm.applyFunctionToEachCachedDataset = function(f) {
+    cm.applyFunctionToEachCachedDataset = function(f, key) {
         for (var i in this.stepsWithExplanations){
             var step = this.stepsWithExplanations[i];
             var data = this.chartDataForStep[step];
-            f(data);
+            f(data, key);
         }
     }
     cm.hasExplDataForStep = function(step) {
@@ -202,11 +202,16 @@ function getExplanationsV2Manager(){
 
     cm.setCurrentStepAfterJump = function(step){
         // find first step less than or equal to this one
+        var existingData = this.data;
         for (var i = this.stepsWithExplanations.length - 1; i >= 0; i--){
             var curStep = this.stepsWithExplanations[i];
             if (Number(curStep) <= Number(step)){
                 this.data = this.chartDataForStep[curStep];
+                if (existingData != this.data){
+                    currentExplManager.applyFunctionToEachCachedDataset(detachChannelItem,"overlayCanvas");
+                }
                 this.render();
+                
                 return;
             }
         }

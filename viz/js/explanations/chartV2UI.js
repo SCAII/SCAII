@@ -435,7 +435,7 @@ function cleanExplanationUI() {
 		$("#rewards-titled-container").remove();
     }
     if (currentExplManager != undefined) {
-        currentExplManager.applyFunctionToEachCachedDataset(detachSaliencyDivs);	// so they don't get tossed
+        currentExplManager.applyFunctionToEachCachedDataset(detachChannelItem, "titledMapDiv");	// so they don't get tossed
     }
 	$("#saliency-div").remove();
 }

@@ -83,8 +83,6 @@ function getSaliencyV2UI() {
         }
     }
      
-  
-
     ui.buildSaliencyDetailed = function(chartData) {
          for (var i in chartData.actions){
             var action = chartData.actions[i];
@@ -100,7 +98,7 @@ function getSaliencyV2UI() {
     }
 
 	ui.renderSaliencyDetailed = function(chartData) {
-        currentExplManager.applyFunctionToEachCachedDataset(detachSaliencyDivs);
+        currentExplManager.applyFunctionToEachCachedDataset(detachChannelItem, "titledMapDiv");
         $("#saliency-div").remove();
         createSaliencyContainers();
         var selectedBars = chartData.getBarsFlaggedForShowingSaliency();
@@ -130,7 +128,7 @@ function getSaliencyV2UI() {
     
 
 	ui.renderSaliencyCombined = function(chartData) {
-        currentExplManager.applyFunctionToEachCachedDataset(detachSaliencyDivs)
+        currentExplManager.applyFunctionToEachCachedDataset(detachChannelItem, "titledMapDiv");
         $("#saliency-div").remove();
         createSaliencyContainers();
         var selectedBars = chartData.getBarsFlaggedForShowingSaliency();
@@ -184,32 +182,32 @@ function getSaliencyV2UI() {
 *  Thus, as we clean saliencies out prior to rendering other ones, we detach all those so they
 *  be be intact when needed again.
 */
-function detachSaliencyDivs(chartData){
+function detachChannelItem(chartData, itemName){
     for (var i in chartData.actions){
         var action = chartData.actions[i];
-        detachSaliencyDivsFromBar(action);
+        detachChannelItemFromBar(action, itemName);
         for (var j in action.bars){
             var bar = action.bars[j];
-            detachSaliencyDivsFromBar(bar);
+            detachChannelItemFromBar(bar, itemName);
         }
     }
 }
 
-function detachSaliencyDivsFromBar(bar) {
+function detachChannelItemFromBar(bar, itemName) {
     if (bar.channels != undefined){
         for (var i in bar.channels) {
             var channel = bar.channels[i];
-            var id = channel.titledMapDiv.getAttribute("id");
-            $("#" + id).detach();
-            id = channel.overlayCanvas.getAttribute("id");
-            $("#" + id).detach();
+            if (channel[itemName] != undefined) {
+                var id = channel[itemName].getAttribute("id");
+                $("#" + id).detach();
+            }
         }
     }
     if (bar.combinedChannel != undefined) {
-        var id = combinedChannel.titledMapDiv.getAttribute("id");
-        $("#" + id).detach();
-        id = combinedChannel.overlayCanvas.getAttribute("id");
+        if (combinedChannel[itemName] != undefined) {
+            var id = combinedChannel[itemName].getAttribute("id");
             $("#" + id).detach();
+        }
     }
 }
 
