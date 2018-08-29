@@ -12,6 +12,16 @@ function getSaliencyV2UIMap() {
 		this.overlaySaliencyMapOntoGameReplica(ctx, channel, 0);
 	}	
 
+  
+    /*
+    Must take into account current filename, current decision point, and saliencyMapId
+    */
+   
+    uimap.getDPSpecificSaliencyMapKey = function(saliencyMapId) {
+    var result = 'DP-' + showingDecisionNumber + "-" + saliencyMapId;
+    return result;
+    }
+
 	uimap.overlaySaliencyMapOntoGameReplica = function(ctx, channel, gameboardFlag ) {
         for (var x= 0; x < Number(channel.width); x++){
             for (var y = 0; y < Number(channel.height); y++){
@@ -24,8 +34,7 @@ function getSaliencyV2UIMap() {
                 ctx.fillRect(x*gameScaleFactor, y*gameScaleFactor, gameScaleFactor, gameScaleFactor);
                 ctx.fill();
             }
-            var foo = 3;
-        }   
+        }
     }
     
 
@@ -99,12 +108,15 @@ function getSaliencyV2UIMap() {
         var gameboardLeft = gameboardOffset.left;
         var styleString = "position:absolute; left:" + gameboardLeft + "px; top:" + gameboardTop + "px;background-color:transparent;border-style:solid"
         canvas.setAttribute("style", styleString);
+        ctx.globalAlpha = 0.5;
         //console.log("canvas style string" + canvas.getAttribute("style"));
-        this.overlaySaliencyMapOntoGameReplica(ctx, channel, 0)
+        this.overlaySaliencyMapOntoGameReplica(ctx, channel, 0);
         return canvas;
     }
 
     uimap.buildOutlineDiv = function(channel, explCanvas){
+        
+
         var w = explCanvas.width;
         var h = explCanvas.height;
         var outlineWidth = 6;
@@ -384,7 +396,7 @@ function getOverlayOpacityBySaliencyRGBAStringOld(saliencyValue) {
 
 
 var countsPerBin = {};
-function getOverlayOpacityBySaliencyRGBAString(saliencyValue, gameboardFlag) {
+function getOverlayOpacityBySaliencyRGBAStringQuantized(saliencyValue, gameboardFlag) {
     var reverseSaliency = 1.0 - saliencyValue;
     var color = {};
     //color['R'] = 0;
@@ -401,80 +413,44 @@ function getOverlayOpacityBySaliencyRGBAString(saliencyValue, gameboardFlag) {
      * Red - (0.81, 1.00]
      ******************************************************************/
     if( saliencyValue <= 0.05 ){
-        color['R'] = 59;
-        color['G'] = 72;
-        color['B'] = 241;
-        if (countsPerBin["A"] == undefined){
-            countsPerBin["A"] =1;
-        }
-        else {
-            countsPerBin["A"] = Number(countsPerBin["A"]) + Number( 1 ); 
-        }
-    }
-    //Yellow
-    else if( saliencyValue > 0.05 && saliencyValue <= 0.24 ) {
-        color['R'] = 250;
-        color['G'] = 218;
-        color['B'] = 94;
-        if (countsPerBin["B"] == undefined){
-            countsPerBin["B"] =1;
-        }
-        else {
-            countsPerBin["B"] = Number(countsPerBin["B"]) + Number( 1 ); 
-        }
-    }
+      color['R'] = 59;
+      color['G'] = 72;
+      color['B'] = 241;
+  }
+  //Yellow
+  else if( saliencyValue > 0.05 && saliencyValue <= 0.24 ) {
+      color['R'] = 250;
+      color['G'] = 218;
+      color['B'] = 94;
+  }
   
-    //Yellow/Orange
-    else if( saliencyValue > 0.24 && saliencyValue <= 0.43 ) {
-        color['R'] = 255;
-        color['G'] = 174;
-        color['B'] = 66;
-        if (countsPerBin["C"] == undefined){
-            countsPerBin["C"] =1;
-        }
-        else {
-            countsPerBin["C"] = Number(countsPerBin["C"]) + Number( 1 ); 
-        }
-    }
+  //Yellow/Orange
+  else if( saliencyValue > 0.24 && saliencyValue <= 0.43 ) {
+      color['R'] = 255;
+      color['G'] = 174;
+      color['B'] = 66;
+  }
   
-    //Orange
-    else if( saliencyValue > 0.43 && saliencyValue <= 0.62 ) {
-        color['R'] = 255;
-        color['G'] = 102;
-        color['B'] = 0;
-    if (countsPerBin["D"] == undefined){
-        countsPerBin["D"] =1;
-    }
-    else {
-        countsPerBin["D"] = Number(countsPerBin["D"]) + Number( 1 ); 
-    }
-    }
+  //Orange
+  else if( saliencyValue > 0.43 && saliencyValue <= 0.62 ) {
+      color['R'] = 255;
+      color['G'] = 102;
+      color['B'] = 0;
+  }
   
-    //Orange/Red
-    else if( saliencyValue > 0.62 && saliencyValue <= 0.81 ) {
-        color['R'] = 255;
-        color['G'] = 69;
-        color['B'] = 0;
-        if (countsPerBin["E"] == undefined){
-            countsPerBin["E"] =1;
-        }
-        else {
-            countsPerBin["E"] = Number(countsPerBin["E"]) + Number( 1 ); 
-        }
-    }
+  //Orange/Red
+  else if( saliencyValue > 0.62 && saliencyValue <= 0.81 ) {
+      color['R'] = 255;
+      color['G'] = 69;
+      color['B'] = 0;
+  }
   
-    //Red
-    else {
-        color['R'] = 255;
-        color['G'] = 0;
-        color['R'] = 0;
-        if (countsPerBin["F"] == undefined){
-            countsPerBin["F"] =1;
-        }
-        else {
-            countsPerBin["F"] = Number(countsPerBin["F"]) + Number( 1 ); 
-        }
-    }
+  //Red
+  else {
+      color['R'] = 255;
+      color['G'] = 0;
+      color['R'] = 0;
+  }
     if( gameboardFlag == 0){
         color['A'] = reverseSaliency;
     }
@@ -484,6 +460,81 @@ function getOverlayOpacityBySaliencyRGBAString(saliencyValue, gameboardFlag) {
     //color['A'] = 0.5;
     //color['A'] = saliencyValue;
     var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
+    return result;
+  }
+
+  function getOverlayOpacityBySaliencyRGBAStringHeatMap(saliencyValue, gameboardFlag) {
+    var reverseSaliency = 1.0 - saliencyValue;
+    var color = {};
+    if( saliencyValue < 0.33 ){
+        color[ 'R' ] = ( saliencyValue * 3.0 ) * 255.0;
+        color[ 'G' ] = 0;
+        color[ 'B' ] = 0;
+    }
+    else if( saliencyValue < 0.66 ){
+        color[ 'R' ] = 255;
+        color[ 'G' ] = ( ( saliencyValue - 0.33 ) * 3.0 ) * 255.0;
+        color[ 'B' ] = 0;
+    }
+  
+    //Red
+    else {
+        color[ 'R' ] = 255;
+        color[ 'G' ] = 255;
+        color[ 'B' ] = ( (saliencyValue - 0.66 ) * 3.0 ) * 255.0;
+    }
+
+    if( gameboardFlag == 0){
+        color['A'] = 0.5;
+    }
+    else{
+        color['A'] = 0.5;
+    }
+    //color['A'] = 0.5;
+    //color['A'] = saliencyValue;
+    var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
+    if( color[ 'B' ] > 255 ){
+        console.log ( "HALP!" );
+    }
+    return result;
+  }
+
+  function getOverlayOpacityBySaliencyRGBAStringRainbow(saliencyValue, gameboardFlag) {
+    var reverseSaliency = 1.0 - saliencyValue;
+    var color = {};
+    if( saliencyValue < 0.25 ){
+        color[ 'R' ] = 0;
+        color[ 'G' ] = ( saliencyValue * 4 ) * 255;
+        color[ 'B' ] = 255;
+    }
+    else if( saliencyValue < 0.5 ){
+        color[ 'R' ] = 0;
+        color[ 'G' ] = 255;
+        color[ 'B' ] = (1 - (saliencyValue - 0.25 ) * 4 ) * 255;
+    }
+    else if( saliencyValue < 0.75 ){
+        color[ 'R' ] = (saliencyValue - 0.5 ) * 4 * 255;
+        color[ 'G' ] = 255;
+        color[ 'B' ] = 0;
+    }
+    else {
+        color[ 'R' ] = 255;
+        color[ 'G' ] = ( 1 - ( saliencyValue - 0.75 ) * 4 ) * 255;
+        color[ 'B' ] = 0;
+    }
+
+    if( gameboardFlag == 0){
+        color['A'] = 0.5;
+    }
+    else{
+        color['A'] = 0.5;
+    }
+    //color['A'] = 0.5;
+    //color['A'] = saliencyValue;
+    var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
+    if( color[ 'B' ] > 255 ){
+        console.log ( "HALP!" );
+    }
     return result;
   }
 
@@ -535,3 +586,15 @@ function lookupNormalizationValue (key) {
     //console.log("the norm value is: " + normValues[key]);
     return normValues[key];
 }
+
+  /**************************************************************************************************
+   * Authors:       Andrew Anderson & Jon Dodge
+   * Purpose:       Many ways to map values onto colours, and we want to make this be extensible.
+   * Date Made:     8/23/2018
+   * Date Mod:      8/23/2018
+   **************************************************************************************************/
+  function getOverlayOpacityBySaliencyRGBAString(saliencyValue, gameboardFlag) {
+    //return getOverlayOpacityBySaliencyRGBAStringQuantized(saliencyValue, gameboardFlag);
+    return getOverlayOpacityBySaliencyRGBAStringHeatMap( saliencyValue, gameboardFlag );
+    //return getOverlayOpacityBySaliencyRGBAStringRainbow( saliencyValue, gameboardFlag );
+  }

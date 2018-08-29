@@ -129,7 +129,6 @@ function getChartV2UI() {
         currentExplManager.saliencyVisible = true;
         currentExplManager.saliencyCombined = false;
         currentExplManager.render();
-        alert(" still works - " + rewardBarName);
     }
 
     ui.renderTitle = function (canvas, chartData) {
