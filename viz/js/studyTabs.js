@@ -64,6 +64,7 @@ function getTabManager() {
         var indexOfNextTab = Number(this.currentTabIndex) + 1;
         var ti = this.tabInfos[indexOfNextTab];
         this.openTab(ti.cssId, ti.fileName, ti.loadingMessage, true);
+        activeStudyQuestionManager.renderer.renderWaitScreen();
     }
 
     tm.getCurrentCssId = function(){
