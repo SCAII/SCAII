@@ -27,7 +27,7 @@ function getTabManager() {
         this.tabInfos.push(ti);
     }
     tm.addTabInfo("tab-tutorial","Tutorial","maintab", "tutorial.scr","Loading tutorial...");
-    tm.addTabInfo("tab-task1","Task 1","maintab", "MainTask.scr", "Loading DPs 1 - 4");
+    tm.addTabInfo("tab-task1","Task 1","maintab", "task1.scr", "Loading DPs 1 - 4");
     tm.addTabInfo("tab-task2","Task 2","maintab", "task2.scr", "Loading DPs 5 - 8");
     tm.addTabInfo("tab-task3","Task 3","maintab", "task3.scr", "Loading DPs 9 - 11");
     tm.addTabInfo("tab-task4","Task 4","maintab", "task4.scr", "Loading DPs 12 - 14");
