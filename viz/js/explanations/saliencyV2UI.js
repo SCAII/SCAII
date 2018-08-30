@@ -85,27 +85,22 @@ function getSaliencyV2UI() {
             }
         }
     }
-     
-    ui.buildSaliencyDetailed = function(chartData) {
-         for (var i in chartData.actions){
-            var action = chartData.actions[i];
-            if (action.saliencyId == undefined) {
-                continue;
-            }
-            this.buildSaliencyDetailedForBar(action);
-            for (var j in action.bars){
-                var bar = action.bars[j];
-                this.buildSaliencyDetailedForBar(bar);
-            }
-        }
-    }
 
 	ui.renderSaliencyDetailed = function(chartData) {
+        var step = sessionIndexManager.getCurrentIndex();
+        var dpEntityList = currentExplManager.entityListForDP[step];
         currentExplManager.applyFunctionToEachCachedDataset(detachChannelItem, "titledMapDiv");
         $("#saliency-div").remove();
         createSaliencyContainers();
         var selectedBars = chartData.getBarsFlaggedForShowingSaliency();
         
+        var start = Date.now();
+        for (var i in selectedBars){
+            var bar = selectedBars[i];
+            this.buildSaliencyDetailedForBar(bar);
+        }
+        var end = Date.now();
+        console.log("Time: " + (Number(end) - Number(start)));
 		for (var i in selectedBars){
             var bar = selectedBars[i];
             //render

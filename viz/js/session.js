@@ -91,6 +91,10 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, decisionPointS
 		//$("#why-button").remove();
 		this.replaySequencerIndex = index;
         //console.log('');
+
+        if (this.decisionPointSteps.includes(index)){
+            currentExplManager.captureEntitiesForDecisionPoint(index);
+        }
         //console.log('replaySequencerIndex is now ' + index);
         var displayVal = this.getStepCountToDisplay();
         //console.log('display Step value : ' + displayVal);

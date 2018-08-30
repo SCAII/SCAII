@@ -86,7 +86,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     }
     sqm.poseFirstQuestion = function() {
         var step = this.squim.getCurrentStep();
-        jumpToStep(step);
+        jumpToStep(step);// FIXME comment this out first
         this.poseCurrentQuestion();
     }
     
@@ -96,7 +96,9 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         var newStep = this.squim.getCurrentStep();
         if (priorStep != newStep && !this.squim.isCurrentQuestionSummary()) {
             // move to next step
-            jumpToStep(newStep);
+            // Jump because we are avoiding the final step of the epoch which is blank and we don't want to render it for long time.
+            // this causes backing up to prior keyframe and moving forward 
+            jumpToStep(newStep);  
         }
         this.poseCurrentQuestion();
     }

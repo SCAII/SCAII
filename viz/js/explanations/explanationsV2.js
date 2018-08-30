@@ -30,7 +30,7 @@ function askBackendForExplanationRewardInfo(stepNumber) {
 		//console.log("no need to move - already at step with explanation");
 	}
 	else {
-		jumpToStep(stepNumber);
+		jumpToStep(stepNumber);//FIXME - can get rid of this?
 	}
 }
 
@@ -157,7 +157,32 @@ function getExplanationsV2Manager(){
     cm.stepsWithExplanations = [];
     cm.chartDataForStep = {};
     cm.currentQuestionType = undefined;
+    cm.entityListForDP = {};
 
+    cm.captureEntitiesForDecisionPoint = function(step) {
+        if (this.entityListForDP[step] == undefined){
+            this.entityListForDP[step] = this.cloneMasterEntitiesList();
+        }
+    }
+
+    cm.cloneMasterEntitiesList = function() {
+        var clone = {};
+        for (var i in masterEntities) {
+            var entity = masterEntities[i];
+            var entityClone = new proto.scaii.common.Entity;
+            entityClone.setId(entity.getId());
+            if (entity.hasPos()){
+                copyPos(entity, entityClone);
+            }
+            var shapesList = entity.getShapesList();
+            for (var j in shapesList){
+                var shape = shapesList[j];
+                copyShapeIntoCloneEntity(shape, entityClone);
+            }
+            clone[entityClone.getId()]= entityClone;
+        }
+        return clone;
+    }
     cm.setChartData = function(rawChartData, step){
         var cachedChartData = this.chartDataForStep[step];
         if (cachedChartData == undefined) {
@@ -165,10 +190,6 @@ function getExplanationsV2Manager(){
             this.data = ensureActionValuesSet(this.data);
             this.data = addConvenienceDataStructures(this.data);
             this.data = setDefaultSelections(this.data, this.treatmentID);
-            var start = Date.now();
-            this.saliencyUI.buildSaliencyDetailed(this.data);
-            var end = Date.now();
-            console.log("Time: " + (Number(end) - Number(start)));
             this.chartDataForStep[step] = this.data;
             this.stepsWithExplanations.push(step);
         }
