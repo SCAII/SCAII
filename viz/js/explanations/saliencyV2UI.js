@@ -95,14 +95,11 @@ function getSaliencyV2UI() {
         createSaliencyContainers();
         var selectedBars = chartData.getBarsFlaggedForShowingSaliency();
         
-        var start = Date.now();
         for (var i in selectedBars){
-			bar.dpEntityList = dpEntityList;
             var bar = selectedBars[i];
+			bar.dpEntityList = dpEntityList;
             this.buildSaliencyDetailedForBar(bar);
         }
-        var end = Date.now();
-        console.log("Time: " + (Number(end) - Number(start)));
 		for (var i in selectedBars){
             var bar = selectedBars[i];
             //render

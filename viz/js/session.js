@@ -88,8 +88,8 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, decisionPointS
 	}
 	
 	sim.setReplaySequencerIndex = function(index) {
-        currentDP = getDPThatStartsEpochForStep(this.replaySequencerIndex);
-        nextDP = getDPThatStartsEpochForStep(index);
+        var currentDP = sessionIndexManager.getDPThatStartsEpochForStep(this.replaySequencerIndex);
+        var nextDP = sessionIndexManager.getDPThatStartsEpochForStep(index);
         if (currentDP != nextDP){
             epochIsChanging();
         }

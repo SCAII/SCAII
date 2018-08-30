@@ -173,7 +173,9 @@ function getExplanationsV2Manager(){
     }
 
     cm.cleanOverlaysAndOutlines = function() {
-        this.saliencyUI.removeAllOverlaysAndOutlines(this.data);
+        if (this.date != undefined) {
+            this.saliencyUI.removeAllOverlaysAndOutlines(this.data);
+        }
     }
     
     cm.cloneMasterEntitiesList = function() {
