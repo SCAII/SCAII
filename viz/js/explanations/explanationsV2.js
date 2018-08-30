@@ -172,6 +172,10 @@ function getExplanationsV2Manager(){
         }
     }
 
+    cm.cleanOverlaysAndOutlines = function() {
+        this.saliencyUI.removeAllOverlaysAndOutlines(this.data);
+    }
+    
     cm.cloneMasterEntitiesList = function() {
         var clone = {};
         for (var i in masterEntities) {

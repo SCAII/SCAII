@@ -339,4 +339,5 @@ function acceptAnswer(e) {
         asqm.accessManager.setQuestionState("answered");
     }
     asqm.accessManager.express();
+    currentExplManager.cleanOverlaysAndOutlines();
 }

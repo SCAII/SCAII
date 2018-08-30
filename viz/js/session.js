@@ -88,6 +88,11 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, decisionPointS
 	}
 	
 	sim.setReplaySequencerIndex = function(index) {
+        currentDP = getDPThatStartsEpochForStep(this.replaySequencerIndex);
+        nextDP = getDPThatStartsEpochForStep(index);
+        if (currentDP != nextDP){
+            epochIsChanging();
+        }
 		//$("#why-button").remove();
 		this.replaySequencerIndex = index;
         //console.log('');
@@ -539,4 +544,7 @@ function handleScaiiPacket(sPacket) {
 		console.log('unexpected message from system!');
 	}
 	return result;
+}
+function epochIsChanging() {
+    currentExplManager.cleanOverlaysAndOutlines();
 }

@@ -113,8 +113,50 @@ function getSaliencyV2UI() {
                 this.uimap.renderExplChannel(Number(j) + Number(1), i, ch);
             }
         }
+        this.engageActiveOverlaysAndOutlines(selectedBars);
+        // when answer question remove all overlays and outlines , but don't set flags to false
 	}
 
+    ui.removeAllOverlaysAndOutlines = function(chartData) {
+        for (var i in chartData.actions){
+            var action = chartData.actions[i];
+            this.removeAllOverlaysAndOutlinesFromBar(action);
+            for (var j in action.bars){
+                var bar = action.bars[j];
+                this.removeAllOverlaysAndOutlinesFromBar(bar);
+            }
+        }
+    }
+
+    ui.removeAllOverlaysAndOutlinesFromBar = function(bar) {
+        var channels = bar.channels;
+        for (j in channels) {
+            var channel = channels[j];
+            if (channel.overlayActive){
+                $("#" + channel.overlayCanvas.getAttribute("id")).detach();
+            }
+            if (channel.outlineActive) {
+                $("#" + channel.outlineDiv.getAttribute("id")).detach();
+            }
+        }
+    }
+
+    ui.engageActiveOverlaysAndOutlines = function(selectedBars) {
+        for (var i in selectedBars){
+            var bar = selectedBars[i];
+            var channels = bar.channels;
+            for (j in channels) {
+                var channel = channels[j];
+                if (channel.overlayActive){
+                    $("#scaii-gameboard").append( channel.overlayCanvas );
+                }
+                if (channel.outlineActive) {
+                    channel.mapHostDiv.appendChild( channel.outlineDiv );
+                }
+            }
+            this.buildSaliencyDetailedForBar(bar);
+        }
+    }
     ui.configureIds = function(channel){
         channel.saliencyMapId       = "saliencyMap--" + channel.id;
         channel.gameboardOverlayId  = "gameOverlay--" + channel.id;
