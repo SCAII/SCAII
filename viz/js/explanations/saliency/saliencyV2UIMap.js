@@ -8,7 +8,7 @@ function getSaliencyV2UIMap() {
     uimap.outlinesForSaliencyMap = {};
     uimap.currentlyHighlightedSaliencyMapKey = undefined;
 	uimap.renderSaliencyMap = function(canvas, ctx, channel, gameboardFlag){
-		renderState(canvas, masterEntities, gameScaleFactor, 0, 0,false);
+		renderState(canvas, channel.dpEntityList, gameScaleFactor, 0, 0,false);
 		this.overlaySaliencyMapOntoGameReplica(ctx, channel, 0, gameboardFlag);
 	}	
   

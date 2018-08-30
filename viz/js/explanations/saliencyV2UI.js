@@ -47,7 +47,8 @@ function getSaliencyV2UI() {
     }
 
     ui.configureBarChannel = function(bar, channel, expLayer){
-        var name = expLayer.getName();
+		var name = expLayer.getName();
+		channel.dpEntityList = bar.dpEntityList;
         channel.width = expLayer.getWidth();
         channel.height = expLayer.getHeight();
         channel.name = renameEntityInfoForIUI(name);
@@ -96,6 +97,7 @@ function getSaliencyV2UI() {
         
         var start = Date.now();
         for (var i in selectedBars){
+			bar.dpEntityList = dpEntityList;
             var bar = selectedBars[i];
             this.buildSaliencyDetailedForBar(bar);
         }
