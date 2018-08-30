@@ -173,11 +173,11 @@ function getExplanationsV2Manager(){
     }
 
     cm.cleanOverlaysAndOutlines = function() {
-        if (this.date != undefined) {
+        if (this.data != undefined) {
             this.saliencyUI.removeAllOverlaysAndOutlines(this.data);
         }
     }
-    
+
     cm.cloneMasterEntitiesList = function() {
         var clone = {};
         for (var i in masterEntities) {
