@@ -102,11 +102,15 @@ function addConvenienceDataStructures(chartData) {
             var action = chartData.actions[i];
             for (var j in action.bars){
                 var bar = action.bars[j];
-                bar.fullName = action.name+ "." + bar.name;
-                bar.type = "reward";
-                bar.actionName = action.name;
-                chartData.actionRewardForNameMap[bar.fullName] = bar;
-                chartData.actionRewardNames.push(bar.fullName);
+                if (bar.name == "Living") {
+                    //Do nothing
+                } else {
+                    bar.fullName = action.name+ "." + bar.name;
+                    bar.type = "reward";
+                    bar.actionName = action.name;
+                    chartData.actionRewardForNameMap[bar.fullName] = bar;
+                    chartData.actionRewardNames.push(bar.fullName);
+                }
             }
         }
     }
@@ -117,7 +121,10 @@ function addConvenienceDataStructures(chartData) {
             var action = chartData.actions[i];
             for (var j in action.bars){
                 var bar = action.bars[j];
-                if (!chartData.rewardNames.includes(bar.name)) {
+                if (bar.name == "Living") {
+                    //Do nothing
+                }
+                else if (!chartData.rewardNames.includes(bar.name)) {
                     chartData.rewardNames.push(bar.name);
                 }
             }
