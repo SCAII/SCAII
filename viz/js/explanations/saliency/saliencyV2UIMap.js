@@ -58,7 +58,7 @@ function getSaliencyV2UIMap() {
         var gameboardLeft = gameboardOffset.left;
         var styleString = "position:absolute; left:" + gameboardLeft + "px; top:" + gameboardTop + "px;background-color:transparent;border-style:solid"
         canvas.setAttribute("style", styleString);
-        //ctx.globalAlpha = 0.5;
+        ctx.globalAlpha = 0.5;
         this.overlaySaliencyMapOntoGameReplica(ctx, channel, 0, 1);
         return canvas;
     }
@@ -89,7 +89,8 @@ function getSaliencyV2UIMap() {
         saliencyCanvas.onclick = function(e) {
             processSaliencyMapClick(e, ch);
         }
-		var explCtx = saliencyCanvas.getContext("2d");
+        var explCtx = saliencyCanvas.getContext("2d");
+        explCtx.globalAlpha = 1.0;
 		// canvas size should be same a gameboardHeight
 		saliencyCanvas.width  = gameboard_canvas.width * ch.scaleFactor;
 		saliencyCanvas.height = gameboard_canvas.height * ch.scaleFactor;
