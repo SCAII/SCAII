@@ -172,9 +172,16 @@ function getExplanationsV2Manager(){
         }
     }
 
-    cm.cleanOverlaysAndOutlines = function() {
+    cm.removeOverlaysAndOutlines = function() {
         if (this.data != undefined) {
             this.saliencyUI.removeAllOverlaysAndOutlines(this.data);
+        }
+    }
+
+    cm.removeAndForgetOverlaysAndOutlines = function () {
+        if (this.data != undefined) {
+            this.saliencyUI.removeAllOverlaysAndOutlines(this.data);
+            this.saliencyUI.forgetAllOverlaysAndOutlines(this.data);
         }
     }
 
@@ -339,6 +346,9 @@ function getExplanationsV2Manager(){
     cm.render = function(mode){
         cleanExplanationUI();
         this.renderLog = [];
+        if (this.data == undefined) {
+            return;
+        }
         if (this.treatmentID == "T0"){
             // no action
         } 

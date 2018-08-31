@@ -546,5 +546,5 @@ function handleScaiiPacket(sPacket) {
 	return result;
 }
 function epochIsChanging() {
-    currentExplManager.cleanOverlaysAndOutlines();
+    currentExplManager.removeOverlaysAndOutlines();
 }

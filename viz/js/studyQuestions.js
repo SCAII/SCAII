@@ -115,6 +115,8 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     }
 
     sqm.poseCurrentQuestion = function() {
+        currentExplManager.removeAndForgetOverlaysAndOutlines();
+
         var qid = this.squim.getCurrentQuestionId();
         if (tabManager.wasQuestionAnsweredAlready(qid)){
             return;
@@ -339,5 +341,5 @@ function acceptAnswer(e) {
         asqm.accessManager.setQuestionState("answered");
     }
     asqm.accessManager.express();
-    currentExplManager.cleanOverlaysAndOutlines();
+    //currentExplManager.removeOverlaysAndOutlines();
 }

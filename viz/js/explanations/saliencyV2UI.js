@@ -139,6 +139,27 @@ function getSaliencyV2UI() {
             }
         }
     }
+    
+    ui.forgetAllOverlaysAndOutlines = function(chartData) {
+        for (var i in chartData.actions){
+            var action = chartData.actions[i];
+            this.forgetAllOverlaysAndOutlinesFromBar(action);
+            for (var j in action.bars){
+                var bar = action.bars[j];
+                this.forgetAllOverlaysAndOutlinesFromBar(bar);
+            }
+        }
+    }
+
+    ui.forgetAllOverlaysAndOutlinesFromBar = function(bar) {
+        var channels = bar.channels;
+        for (j in channels) {
+            var channel = channels[j];
+            channel.overlayActive = false;
+            channel.outlineActive = false;
+        }
+    }
+
 
     ui.engageActiveOverlaysAndOutlines = function(selectedBars) {
         for (var i in selectedBars){
