@@ -198,6 +198,7 @@ function getTabManager() {
             this.rememberStateUponDeparture(tabId);
         }
         cleanExplanationUI();
+        epochIsChanging();
         var indexOfTargetTab = this.getIndexOfTabWithId(tabId);
         this.setTabIndex(indexOfTargetTab);
         loadTab(tabId, replayFileForTab, loadingMessage);
@@ -239,7 +240,6 @@ function loadTab(tabId, replayFileForTab, loadingMessage){
     showLoadingScreen(loadingMessage);
     controlsManager.registerJQueryHandleForWaitCursor($("#loading-div"));
     loadReplayFile(replayFileForTab);
-    epochIsChanging();
     $("#" + tabId).attr("disabled", false);
 }
 

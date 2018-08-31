@@ -367,7 +367,9 @@ function getExplanationsV2Manager(){
     }
 
     cm.renderT1 = function(mode){
-        this.renderSaliencyDetailed(mode);
+        if (this.saliencyVisible) {
+            this.renderSaliencyDetailed(mode);
+        }
     }
     
     cm.renderT2 = function(mode){
