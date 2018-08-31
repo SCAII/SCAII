@@ -58,7 +58,7 @@ function getSaliencyV2UIMap() {
         var gameboardLeft = gameboardOffset.left;
         var styleString = "position:absolute; left:" + gameboardLeft + "px; top:" + gameboardTop + "px;background-color:transparent;border-style:solid"
         canvas.setAttribute("style", styleString);
-        ctx.globalAlpha = 0.5;
+        ctx.globalAlpha = 0.7;
         this.overlaySaliencyMapOntoGameReplica(ctx, channel, 0, 1);
         return canvas;
     }
