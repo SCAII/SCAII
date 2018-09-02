@@ -1,8 +1,0 @@
-1;0;waitForPredictionClick:gameboard:On the game map (above), which object do you think the agent will send the tank to attack? Please click on that object.;Why do you think that the agent will attack this object? (a few sentences, as detailed as possible)
-38;0;waitForPredictionClick:gameboard:On the game map (above), which object do you think the agent will send the tank to attack? Please click on that object.;Why do you think that the agent will attack this object? (a few sentences, as detailed as possible)
-38;1;waitForClick:saliencyMap:Which saliency map (below) do you think is the most influential in this decision? (Please click on it);Why was this map the most influential? (A few sentences, as detailed as possible)
-121;0;waitForPredictionClick:gameboard:On the game map (above), which object do you think the agent will send the tank to attack? Please click on that object.;Why do you think that the agent will attack this object? (a few sentences, as detailed as possible)
-171;1;waitForClick:saliencyMap:Which saliency map (below) do you think is the most influential in this decision? (Please click on it);Why was this map the most influential? (A few sentences, as detailed as possible)
-235;1;waitForClick:saliencyMap:Which saliency map (below) do you think is the least influential in this decision? (Please click on it);Why was this map the most influential? (A few sentences, as detailed as possible)
-296;1;plain:NA:NA;Why was this map the most influential? (A few sentences, as detailed as possible)
-summary;0;plain:NA:NA;Please describe the steps in the agent's approach or method. (A few sentences, as detailed as possible.)

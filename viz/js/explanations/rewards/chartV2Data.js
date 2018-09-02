@@ -112,6 +112,9 @@ function addUtilityFunctions(chart) {
                 }
             }
         }
+        if (maxNegValue == undefined) {
+            maxNegValue = 0.0;
+        }
         return Math.abs(maxNegValue);
     }
     ch.getMaxAbsValNegativeAction = function() {
@@ -122,7 +125,7 @@ function addUtilityFunctions(chart) {
                 max = Math.max(max, Math.abs(value));
             }
         }
-        return max;
+        return Number(max);
     }
     return ch;
 }

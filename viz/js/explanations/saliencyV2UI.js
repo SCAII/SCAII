@@ -5,7 +5,9 @@ function getSaliencyV2UI() {
     ui.renderSaliencyAccessControls = function() {
         clearSaliencyControls();
         populateSaliencyQuestionSelector();
-        addWhatButton();
+        if (!userStudyMode){
+            addWhatButton();
+        }
     }
    
     ui.getContextStringForDetailedSaliencyMapRow = function(barType){
@@ -28,83 +30,246 @@ function getSaliencyV2UI() {
         }
 	}
 
+    ui.getNormalizationKey = function(bar, channelName){
+         // actionName   rewardName  channelName
+        var actionName = "";
+        var rewardName = "";
+        if (bar.type == "action"){
+            actionName = bar.fullName;
+            rewardName = "Reward Sum Total";
+        }
+        else {
+            actionName = bar.actionName;
+            rewardName = bar.name;
+        }
+
+        return actionName + "-" + rewardName + "-" + channelName;
+    }
+
+    ui.configureBarChannel = function(bar, channel, expLayer){
+		var name = expLayer.getName();
+		channel.dpEntityList = bar.dpEntityList;
+        channel.width = expLayer.getWidth();
+        channel.height = expLayer.getHeight();
+        channel.name = renameEntityInfoForIUI(name);
+        //bar.channelNames.push(name);
+        //channel.id = convertNameToLegalId(rowInfoString + channelName);
+        channel.cells = expLayer.getCellsList();;
+        channel.normalizationKey = this.getNormalizationKey(bar, channel.name);
+        //console.log("the key is: " + channel.normalizationKey);
+        channel.scaleFactor = 1.0;
+        channel.saliencyId = bar.saliencyId;
+        channel.id = convertNameToLegalId(prependDPNumber(bar.saliencyId + "--" + channel.name));
+        channel.overlayActive = false;
+        channel.outlineActive = false;
+        this.configureIds(channel);
+        this.uimap.buildExplChannel(channel);
+    }
+
+   
+    ui.buildSaliencyDetailedForBar = function(bar){
+        var layerMessage = saliencyLookupMap.get(bar.saliencyId);
+        if (layerMessage == undefined){
+            console.log("ERROR - no Layer message for saliencyID " + bar.saliencyId);
+            return;
+        }
+        
+        // configure
+        var expLayers = layerMessage.getLayersList();
+        if (bar.channels == undefined){
+            bar.channels = {};
+            for (var j in expLayers) {
+                var channel = {};
+                bar.channels[j] = channel;
+                expLayer = expLayers[j];
+                this.configureBarChannel(bar, channel, expLayer);
+            }
+        }
+    }
 
 	ui.renderSaliencyDetailed = function(chartData) {
+        var step = sessionIndexManager.getCurrentIndex();
+        var dpEntityList = currentExplManager.entityListForDP[step];
+        currentExplManager.applyFunctionToEachCachedDataset(detachChannelItem, "titledMapDiv");
         $("#saliency-div").remove();
         createSaliencyContainers();
+        var selectedBars = chartData.getBarsFlaggedForShowingSaliency();
         
-        var selectedBars = chartData.getBarsFlaggedForShowingSaliency();
-        var rewardOrAction = selectedBars[0].type;
-        this.uimap.normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('detailed', rewardOrAction, chartData.actions);
-		
+        for (var i in selectedBars){
+            var bar = selectedBars[i];
+			bar.dpEntityList = dpEntityList;
+            this.buildSaliencyDetailedForBar(bar);
+        }
 		for (var i in selectedBars){
-            var scaleFactor = 1.0;
-            // if (i > 0){
-            //     scaleFactor = 0.8;
-            // }
-			var bar = selectedBars[i];
-			var saliencyId = bar.saliencyId;
-			var layerMessage = saliencyLookupMap.get(saliencyId);
-			if (layerMessage == undefined){
-				console.log("ERROR - no Layer message for saliencyID " + saliencyId);
-			}
-			else {
-                var expLayers = layerMessage.getLayersList();
-                var contextString = this.getContextStringForDetailedSaliencyMapRow(bar.type);
-				var nameContainerDiv = getNameDivForRow(i, bar, contextString);
-				$("#saliency-maps").append(nameContainerDiv);
-                var rowInfoString = getRowInfoString(bar);
-				//var normalizationFactor = getNormalizationFactor(expLayers);
-				for (var j in expLayers) {
-					expLayer = expLayers[j];
-					//console.log('found layer ' + expLayer.getName());
-					var name = expLayer.getName();
-					var cells = expLayer.getCellsList();
-					var width = expLayer.getWidth();
-                    var height = expLayer.getHeight();
-                    var realUIName = renameEntityInfoForIUI(name);
-					this.uimap.renderExplLayer(saliencyId, Number( j ) + Number( 1 ), i, realUIName, rowInfoString + realUIName, cells, width, height, this.uimap.normalizationFactor, scaleFactor);
-				} 
-			}
+            var bar = selectedBars[i];
+            //render
+            var contextString = this.getContextStringForDetailedSaliencyMapRow(bar.type);
+            var nameContainerDiv = getNameDivForRow(i, bar, contextString);
+            $("#saliency-maps").append(nameContainerDiv);
+
+            for (var j in bar.channels){
+                var ch = bar.channels[j];
+                this.uimap.renderExplChannel(Number(j) + Number(1), i, ch);
+            }
         }
-        if (this.uimap.currentlyHighlightedSaliencyMapKey != undefined) {
-            this.uimap.showSaliencyMapOutline(this.uimap.currentlyHighlightedSaliencyMapKey);
-        }
+        this.engageActiveOverlaysAndOutlines(selectedBars);
+        // when answer question remove all overlays and outlines , but don't set flags to false
 	}
 
-	
+    ui.removeAllOverlaysAndOutlines = function(chartData) {
+        for (var i in chartData.actions){
+            var action = chartData.actions[i];
+            this.removeAllOverlaysAndOutlinesFromBar(action);
+            for (var j in action.bars){
+                var bar = action.bars[j];
+                this.removeAllOverlaysAndOutlinesFromBar(bar);
+            }
+        }
+    }
+
+    ui.removeAllOverlaysAndOutlinesFromBar = function(bar) {
+        var channels = bar.channels;
+        for (j in channels) {
+            var channel = channels[j];
+            if (channel.overlayActive){
+                $("#" + channel.overlayCanvas.getAttribute("id")).detach();
+            }
+            if (channel.outlineActive) {
+                $("#" + channel.outlineDiv.getAttribute("id")).detach();
+            }
+        }
+    }
+    
+    ui.forgetAllOverlaysAndOutlines = function(chartData) {
+        for (var i in chartData.actions){
+            var action = chartData.actions[i];
+            this.forgetAllOverlaysAndOutlinesFromBar(action);
+            for (var j in action.bars){
+                var bar = action.bars[j];
+                this.forgetAllOverlaysAndOutlinesFromBar(bar);
+            }
+        }
+    }
+
+    ui.forgetAllOverlaysAndOutlinesFromBar = function(bar) {
+        var channels = bar.channels;
+        for (j in channels) {
+            var channel = channels[j];
+            channel.overlayActive = false;
+            channel.outlineActive = false;
+        }
+    }
+
+
+    ui.engageActiveOverlaysAndOutlines = function(selectedBars) {
+        for (var i in selectedBars){
+            var bar = selectedBars[i];
+            var channels = bar.channels;
+            for (j in channels) {
+                var channel = channels[j];
+                if (channel.overlayActive){
+                    $("#scaii-gameboard").append( channel.overlayCanvas );
+                }
+                if (channel.outlineActive) {
+                    channel.mapHostDiv.appendChild( channel.outlineDiv );
+                }
+            }
+            this.buildSaliencyDetailedForBar(bar);
+        }
+    }
+    ui.configureIds = function(channel){
+        channel.saliencyMapId       = "saliencyMap--" + channel.id;
+        channel.gameboardOverlayId  = "gameOverlay--" + channel.id;
+        channel.outlineDivId        = "outlineDiv--"  + channel.id;
+        channel.titledMapDivId      = "titledMapDiv-" + channel.id;
+        channel.titleId             = "title--"       + channel.id;
+        channel.mapHostDivId        = "mapHost --"    + channel.id;
+    }
+    
+
 	ui.renderSaliencyCombined = function(chartData) {
+        currentExplManager.applyFunctionToEachCachedDataset(detachChannelItem, "titledMapDiv");
         $("#saliency-div").remove();
         createSaliencyContainers();
         var selectedBars = chartData.getBarsFlaggedForShowingSaliency();
         var rewardOrAction = selectedBars[0].type;
-        this.uimap.normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('combined', rewardOrAction, chartData.actions);
+        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('combined', rewardOrAction, chartData.actions);
 		for (var i in selectedBars){
-			var bar = selectedBars[i];
-			var saliencyId = bar.saliencyId;
-			var layerMessage = saliencyLookupMap.get(saliencyId);
-			if (layerMessage == undefined){
-				console.log("ERROR - no Layer message for saliencyID " + saliencyId);
-			}
-			else {
-                var expLayers = layerMessage.getLayersList();
-                var contextString = this.getContextStringForCombinedSaliencyMapRow(bar.type);
-				var nameContainerDiv = getNameDivForRow(i, bar, contextString);
-				$("#saliency-maps").append(nameContainerDiv);
-				var rowInfoString = getRowInfoString(bar);
-                var aggregatedCells = getAggregatedCells(expLayers);
-                
-				//var normalizationFactor = getNormalizationFactorFromCells(aggregatedCells);
-				var width = expLayers[0].getWidth();
-				var height = expLayers[0].getHeight();
-				this.uimap.renderExplLayer(saliencyId, 1, i, "all features cumulative", rowInfoString, aggregatedCells, width, height, this.uimap.normalizationFactor, 1.0);
-			}
-		}
+            var bar = selectedBars[i];
+            // configure
+            if (bar.combinedChannel == undefined) {
+                this.configureCombinedChannelForBar(bar, normalizationFactor);
+            }
+            // render
+            var ch = bar.combinedChannel;
+            ch.nameContainerDiv = getNameDivForRow(i, bar, ch.contextString);
+            $("#saliency-maps").append(ch.nameContainerDiv);
+			this.uimap.renderExplChannel(1, i, ch);
+        }
+        // this.uimap.reviveAppropriateGameboardOverlays();
 	}
 
+    ui.configureCombinedChannelForBar = function(bar, normalizationFactor){
+        var layerMessage = saliencyLookupMap.get(bar.saliencyId);
+        if (layerMessage == undefined){
+            console.log("ERROR - no Layer message for saliencyID " + bar.saliencyId);
+            return;
+        }
+        var channel = {};
+        bar.combinedChannel = channel;
+        var expLayers = layerMessage.getLayersList();
+        channel.contextString = this.getContextStringForCombinedSaliencyMapRow(bar.type);
+        channel.width = expLayers[0].getWidth();
+        channel.height = expLayers[0].getHeight();
+        channel.name = "all features cumulative";
+        channel.cells = getAggregatedCells(expLayers);
+        channel.normalizationFactor = normalizationFactor;
+        channel.scaleFactor = 1.0;
+        channel.saliencyId = bar.saliencyId;
+        channel.id = convertNameToLegalId(prependDPNumber(bar.saliencyId + "--" + channel.name));
+        channel.overlayActive = false;
+        channel.outlineActive = false;
+        this.configureIds(channel);
+        this.uimap.buildExplChannel(channel);
+    }
+
+ 
     return ui;
 }
 
+/*
+*  The titleMapDivs are loaded up in the creation phase and hooked into the UI at render phase.
+*  Thus, as we clean saliencies out prior to rendering other ones, we detach all those so they
+*  be be intact when needed again.
+*/
+function detachChannelItem(chartData, itemName){
+    for (var i in chartData.actions){
+        var action = chartData.actions[i];
+        detachChannelItemFromBar(action, itemName);
+        for (var j in action.bars){
+            var bar = action.bars[j];
+            detachChannelItemFromBar(bar, itemName);
+        }
+    }
+}
+
+function detachChannelItemFromBar(bar, itemName) {
+    if (bar.channels != undefined){
+        for (var i in bar.channels) {
+            var channel = bar.channels[i];
+            if (channel[itemName] != undefined) {
+                var id = channel[itemName].getAttribute("id");
+                $("#" + id).detach();
+            }
+        }
+    }
+    if (bar.combinedChannel != undefined) {
+        if (combinedChannel[itemName] != undefined) {
+            var id = combinedChannel[itemName].getAttribute("id");
+            $("#" + id).detach();
+        }
+    }
+}
 
 function getRowInfoString(bar) {
     var parts = bar.fullName.split(".");
@@ -226,11 +391,15 @@ function populateSaliencyQuestionSelector(){
 	detailedSaliencyLabel.setAttribute("style", "margin-left:10px;margin-top:3px;font-family:Arial;font-size:14px;");
 	detailedSaliencyLabel.innerHTML = "relevance details";
 	detailedSaliencyLabel.setAttribute("id","relevance-detailed-label");
+    
+    // turning off combined saliency every where for now, so always hide buttons
+    if (!userStudyMode && false) {
+        $("#what-radios").append(radioCombinedSaliency);
+        $("#what-radios").append(combinedSaliencyLabel);
+        $("#what-radios").append(radioDetailedSaliency);
+        $("#what-radios").append(detailedSaliencyLabel);
+    }
 	
-	$("#what-radios").append(radioCombinedSaliency);
-	$("#what-radios").append(combinedSaliencyLabel);
-	$("#what-radios").append(radioDetailedSaliency);
-	$("#what-radios").append(detailedSaliencyLabel);
 }
 
 

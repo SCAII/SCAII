@@ -197,21 +197,21 @@ function getLabelForInfo(s){
     return label;
 }
 function getDamageDealtStringForUnit(unitType){
-    var result = "deals damage: ";
+    var result = "Attack Damage: ";
     if (unitType == "Tank"){
-        return result + "50 dmg / sec";
+        return result + "50 points/sec";
     }
     else if (unitType == "City"){
-        return result + "0 dmg";
+        return result + "0 points/sec";
     }
     else if (unitType == "Town"){
-        return result + "0 dmg";
+        return result + "0 points/sec";
     }
     else if (unitType == "Big Fort"){
-        return result + "50 dmg / sec";
+        return result + "50 points/sec";
     }
     else if (unitType == "Small Fort"){
-        return result + "25 dmg / sec";
+        return result + "25 points/sec";
     }
     else {
         return result + "unknown";
@@ -258,7 +258,7 @@ function collectHitpointsForConciseMessage(ttInfo,nonDebugKeys){
     }
     var hpFloored = Math.floor(Number(hp));
     var maxHpFloored = Math.floor(Number(maxHp));
-    var hpString = "Health: " + hpFloored + "/" + maxHpFloored;
+    var hpString = "Health: " + hpFloored + " of " + maxHpFloored;
     return hpString;
 }
 function renameEntityInfoForIUI(s) {

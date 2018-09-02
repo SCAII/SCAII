@@ -1,5 +1,0 @@
-1;0;waitForClick:gameboard_saliencyMap_rewardBar:Click on the Top-left object;What is your favourite colour?
-79;0;waitForPredictionClick:gameboard:Click on the bottom-right object; Where are you from?
-79;1;plain:NA:NA;Why are you participant in this study?
-135;0;plain:NA:NA;Do you like this kind of thing?
-summary;0;plain:NA:NA;What is the average speed of a European swallow?

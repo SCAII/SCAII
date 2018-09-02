@@ -27,7 +27,10 @@ function getTabManager() {
         this.tabInfos.push(ti);
     }
     tm.addTabInfo("tab-tutorial","Tutorial","maintab", "tutorial.scr","Loading tutorial...");
-    tm.addTabInfo("tab-task1","Task 1","maintab", "MainTask.scr", "Loading Task 1...");
+    tm.addTabInfo("tab-task1","Task 1","maintab", "task1.scr", "Loading DPs 1 - 4");
+    tm.addTabInfo("tab-task2","Task 2","maintab", "task2.scr", "Loading DPs 5 - 8");
+    tm.addTabInfo("tab-task3","Task 3","maintab", "task3.scr", "Loading DPs 9 - 11");
+    tm.addTabInfo("tab-task4","Task 4","maintab", "task4.scr", "Loading DPs 12 - 14");
     //tm.addTabInfo("tab-task2","Task 2","maintab", "NextTask.scr", "Loading Task 2...");
 
     for (var i in tm.tabInfos){
@@ -61,6 +64,7 @@ function getTabManager() {
         var indexOfNextTab = Number(this.currentTabIndex) + 1;
         var ti = this.tabInfos[indexOfNextTab];
         this.openTab(ti.cssId, ti.fileName, ti.loadingMessage, true);
+        activeStudyQuestionManager.renderer.renderWaitScreen();
     }
 
     tm.getCurrentCssId = function(){
@@ -194,6 +198,7 @@ function getTabManager() {
             this.rememberStateUponDeparture(tabId);
         }
         cleanExplanationUI();
+        epochIsChanging();
         var indexOfTargetTab = this.getIndexOfTabWithId(tabId);
         this.setTabIndex(indexOfTargetTab);
         loadTab(tabId, replayFileForTab, loadingMessage);

@@ -1,0 +1,28 @@
+candidate3	steps:123	DPs: 1,56,99
+	Jed using as tutorial
+
+candidate4	steps:153	DPs: 1,62,94
+
+candidate6	steps:169	DPs: 1,37,108
+
+candidate7	steps:110	DPs: 1,75
+
+candidate8	steps:119	DPs: 1,63,105
+
+candidate9	steps:119	DPs: 1,59
+
+candidate10	steps:135	DPs: 1,61,82,114
+	Jed using as MainTask
+
+candidate16	steps:153	DPs: 1,59,82,121
+
+candidate20	steps:128	DPs: 1,61,93
+
+candidate24	steps:158	DPs: 1,59,135
+
+candidate27	steps:134	DPs: 1,71,92
+
+candidate28	steps:254	DPs: 1,71,134,222
+
+candidate29	steps:193	DPs: 1,75,124
+

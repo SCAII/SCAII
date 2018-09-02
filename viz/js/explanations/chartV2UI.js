@@ -67,7 +67,7 @@ function getChartV2UI() {
             var rewardBox = document.createElement("DIV");
             rewardBox.setAttribute("id", "legend-box-" + i);
             rewardBox.setAttribute("class", "r" + iPlusOne + "c1");
-            rewardBox.setAttribute("style", "background-color:" + chartData.colors[i] + ";height:17px;width:17px;position:relative;top:4px;");
+            rewardBox.setAttribute("style", "background-color:" + chartData.colors[i] + ";height:17px;width:17px;position:relative;top:2px;");
             $("#legend-rewards").append(rewardBox);
 
             var rewardInfo = document.createElement("DIV");
@@ -129,7 +129,6 @@ function getChartV2UI() {
         currentExplManager.saliencyVisible = true;
         currentExplManager.saliencyCombined = false;
         currentExplManager.render();
-        alert(" still works - " + rewardBarName);
     }
 
     ui.renderTitle = function (canvas, chartData) {
@@ -317,7 +316,7 @@ function getChartV2UI() {
 		var ctx = canvas.getContext("2d");
 		for (var i=0; i<chartData.actions.length; i++) {
 			var action = chartData.actions[i];
-			for (var j=0; j<action.bars.length; j++) {
+			for (var j=0; j<chartData.rewardNames.length; j++) {
 				var bar = action.bars[j];
 				chartData.positionRewardBar(bar, i, j);
 				chartData.dimensionRewardBar(bar);
@@ -409,7 +408,8 @@ function getChartV2UI() {
 var selectedDecisionStep = undefined;
 
 function processWhyClick(step) {
-	if (selectedDecisionStep == step && currentExplManager.chartVisible == true) {
+    var explanationStep = sessionIndexManager.getStepThatStartsEpochForStep(step);
+	if (selectedDecisionStep == explanationStep && currentExplManager.chartVisible == true) {
         currentExplManager.chartVisible = false;
         currentExplManager.saliencyVisible = false;
 		selectedDecisionStep = undefined;
@@ -420,30 +420,11 @@ function processWhyClick(step) {
 	}	
 	else {
 		currentExplManager.chartVisible = true;
-
 		// show explanation info for new step
-		selectedDecisionStep = step;
-		askBackendForExplanationRewardInfo(step);
+        selectedDecisionStep = explanationStep;
+        currentExplManager.render();
 	}
 }
-
-// function fullClearExplanationInfo() {
-// 	$("#explanations-rewards").empty();
-// 	$("#action-name-label").html(" ");
-// 	clearQuestionControls();
-// 	if ($("#rewards-titled-container").length) {
-// 		$("#rewards-titled-container").remove();
-// 	}	
-// 	if (currentExplManager != undefined) {
-// 		currentExplManager.chartVisible = false;
-// 		if (currentExplManager.saliencyVisible) {
-// 			$("#saliency-div").remove();
-// 		}
-// 		currentExplManager.saliencyVisible = false;
-// 	}
-
-// }
-
 
 function cleanExplanationUI() {
 	$("#explanations-rewards").empty();
@@ -451,7 +432,10 @@ function cleanExplanationUI() {
 	clearQuestionControls();
 	if ($("#rewards-titled-container").length) {
 		$("#rewards-titled-container").remove();
-	}	
+    }
+    if (currentExplManager != undefined) {
+        currentExplManager.applyFunctionToEachCachedDataset(detachChannelItem, "titledMapDiv");	// so they don't get tossed
+    }
 	$("#saliency-div").remove();
 }
 

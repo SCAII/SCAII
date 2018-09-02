@@ -8,6 +8,7 @@ function cleanEntities() {
     shapeInfoForHighlighting = {};
 }
 function handleEntities(entitiesList) {
+    // if masterEntities empty, then here comes a 
     shapeInfoForHighlighting = {};
     shapeLogStrings = {};
     

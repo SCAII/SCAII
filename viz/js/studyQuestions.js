@@ -86,7 +86,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     }
     sqm.poseFirstQuestion = function() {
         var step = this.squim.getCurrentStep();
-        jumpToStep(step);
+        jumpToStep(step);// FIXME comment this out first
         this.poseCurrentQuestion();
     }
     
@@ -96,7 +96,9 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         var newStep = this.squim.getCurrentStep();
         if (priorStep != newStep && !this.squim.isCurrentQuestionSummary()) {
             // move to next step
-            jumpToStep(newStep);
+            // Jump because we are avoiding the final step of the epoch which is blank and we don't want to render it for long time.
+            // this causes backing up to prior keyframe and moving forward 
+            jumpToStep(newStep);  
         }
         this.poseCurrentQuestion();
     }
@@ -113,6 +115,8 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     }
 
     sqm.poseCurrentQuestion = function() {
+        currentExplManager.removeAndForgetOverlaysAndOutlines();
+
         var qid = this.squim.getCurrentQuestionId();
         if (tabManager.wasQuestionAnsweredAlready(qid)){
             return;
@@ -138,12 +142,16 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
 
             this.accessManager.setQuestionState("posed");
             this.accessManager.setQuestionType(qu.questionType);
+            currentExplManager.setQuestionType(qu.questionType);
             this.accessManager.setQuestionStep(currentStep);
             if (this.squim.isStepPriorToLastDecisionPoint(currentStep)) {
                 this.accessManager.setRelationToFinalDecisionPoint("before");
             }
+            else if (currentStep == "summary") {
+                this.accessManager.setRelationToFinalDecisionPoint("finalStep");
+            }
             else {
-                this.accessManager.setRelationToFinalDecisionPoint("atOrPast");
+                this.accessManager.setRelationToFinalDecisionPoint("finalDpRange");
             }
             this.accessManager.express();
             renderDecisionPointLegend();
@@ -294,6 +302,7 @@ function acceptAnswer(e) {
     targetClickHandler(e, logLine);
 
     renderer.forgetQuestion();
+    currentExplManager.noteQuestionWasAnswered();
     if (squim.hasMoreQuestionsAtThisStep()) {
         renderState(gameboard_canvas, masterEntities, gameScaleFactor, 0, 0, true);
         asqm.poseNextQuestion();
@@ -332,4 +341,5 @@ function acceptAnswer(e) {
         asqm.accessManager.setQuestionState("answered");
     }
     asqm.accessManager.express();
+    //currentExplManager.removeOverlaysAndOutlines();
 }
