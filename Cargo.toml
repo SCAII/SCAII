@@ -3,6 +3,7 @@ members = [
     "core",
     "scaii_defs",
     "backends/sky-rts",
+    "util/replay-fix"
 ]
 
 [profile.release]

@@ -107,11 +107,14 @@ class Explanation():
     def with_bar_chart(self, chart):
         self._proto.bar_chart.CopyFrom(chart.to_proto())
 
-    def to_proto(self, packet, verify=True):
+    def to_proto(self, packet, verify=True, is_recorder=True):
         if verify:
             self.verify()
 
-        packet.recorder_step.action.explanation.CopyFrom(self._proto)
+        if is_recorder:
+            packet.recorder_step.action.explanation.CopyFrom(self._proto)
+        else:
+            packet.action.explanation.CopyFrom(self._proto)
 
     def verify(self):
         if not self._proto.bar_chart:

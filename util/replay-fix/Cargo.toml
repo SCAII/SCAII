@@ -1,0 +1,18 @@
+[package]
+name = "replay-fix"
+version = "0.1.0"
+authors = ["Zoe Juozapaitis <Jragonmiris@gmail.com>"]
+
+[dependencies]
+websocket = "0.20"
+scaii-core= { path="../../core" }
+scaii_defs = { path="../../scaii_defs" }
+sky-rts = { path="../../backends/sky-rts" }
+glob = "0.2.11"
+failure = "0.1.2"
+log = "0.4"
+env_logger = "0.5.13"
+clap = "2.32"
+cd-manager = "0.1"
+prost = "0.3"
+bincode = "0.9.2"

@@ -4,28 +4,13 @@ use protos::cfg::WhichModule;
 use protos::scaii_packet::SpecificMsg;
 use protos::ScaiiPacket;
 use scaii_core;
+pub use scaii_core::load_replay_file;
 use scaii_core::{ReplayAction, SerializedProtosSerializationResponse};
 use scaii_defs::protos;
 use std::error::Error;
 use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
-
-pub fn load_replay_file(path: &Path) -> Result<Vec<ReplayAction>, Box<Error>> {
-    //use super::ReplayAction;
-    let replay_file = File::open(path).expect("file not found");
-    let mut replay_vec: Vec<ReplayAction> = Vec::new();
-    let mut reader = BufReader::new(replay_file);
-
-    while let Ok(action) =
-        deserialize_from::<BufReader<File>, ReplayAction, Infinite>(&mut reader, Infinite)
-    {
-        replay_vec.push(action);
-    }
-
-    //print_replay_actions(&replay_actions);
-    Ok(replay_vec)
-}
 
 #[allow(dead_code)]
 fn print_replay_actions(replay_vec: &Vec<ReplayAction>) {

@@ -9,7 +9,7 @@ use scaii_defs::{Module, Recorder};
 use std::error::Error;
 use std::fmt;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use bincode::{serialize, Infinite};
 use prost::Message;
@@ -104,6 +104,7 @@ pub struct RecorderManager {
     is_recording: bool,
     writable_file: Option<File>,
 }
+
 impl RecorderManager {
     pub fn new() -> Result<Self, Box<Error>> {
         let replay_dir_path_buf = get_default_replay_dir()?;
@@ -409,4 +410,47 @@ fn get_serialized_action(action: &protos::Action) -> Result<Vec<u8>, Box<Error>>
     let mut action_data: Vec<u8> = Vec::new();
     action.encode(&mut action_data)?;
     Ok(action_data)
+}
+
+pub fn load_replay_file<P: AsRef<Path>>(path: P) -> Result<Vec<ReplayAction>, Box<Error>> {
+    use bincode::{deserialize_from, Infinite};
+    use std::io::BufReader;
+
+    let replay_file = File::open(path).expect("file not found");
+    let mut replay_vec: Vec<ReplayAction> = Vec::new();
+    let mut reader = BufReader::new(replay_file);
+
+    while let Ok(action) =
+        deserialize_from::<BufReader<File>, ReplayAction, Infinite>(&mut reader, Infinite)
+    {
+        replay_vec.push(action);
+    }
+
+    //print_replay_actions(&replay_actions);
+    Ok(replay_vec)
+}
+
+pub fn save_replay_file<P: AsRef<Path>>(
+    path: P,
+    actions: &[ReplayAction],
+) -> Result<(), Box<Error>> {
+    use bincode;
+    use bincode::Infinite;
+    use std::fs;
+    use std::io::BufWriter;
+
+    let replay_file = File::create(&path)?;
+    let mut writer = BufWriter::new(replay_file);
+
+    for action in actions {
+        if let Err(e) = bincode::serialize_into(&mut writer, &action, Infinite) {
+            let replay_file = writer.into_inner();
+            drop(replay_file);
+            // Clean up
+            fs::remove_file(path)?;
+            return Err(e);
+        }
+    }
+
+    Ok(())
 }

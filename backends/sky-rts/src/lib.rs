@@ -117,6 +117,19 @@ impl<'a, 'b> Context<'a, 'b> {
             awaiting_msgs: vec![],
         }
     }
+
+    pub fn force_send_state(&mut self) {
+        self.rts.force_send_state();
+    }
+
+    pub fn set_replay_mode(&mut self, mode: bool) {
+        self.rts.replay_mode(mode);
+    }
+
+    pub fn force_update(&mut self) {
+        self.awaiting_msgs.push(self.rts.update());
+    }
+
     /// Causes the RNG state to diverge after serialization,
     /// so that reloading will not yield the same outputs.
     fn diverge(&mut self) {

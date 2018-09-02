@@ -86,7 +86,11 @@ pub(super) fn register_world_resources(world: &mut World) {
     world.add_resource(Deserializing(false));
     world.add_resource(CumReward::default());
     world.add_resource(DataStore::default());
+    world.add_resource(ForceSendState::default());
 }
+
+#[derive(Default, Debug, Clone, PartialEq)]
+pub struct ForceSendState(pub bool);
 
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct RtsState(pub State);

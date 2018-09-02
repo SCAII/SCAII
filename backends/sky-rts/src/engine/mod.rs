@@ -102,6 +102,11 @@ impl<'a, 'b> Rts<'a, 'b> {
         }
     }
 
+    pub fn force_send_state(&mut self) {
+        use engine::resources::ForceSendState;
+        self.world.write_resource::<ForceSendState>().0 = true;
+    }
+
     pub fn replay_mode(&mut self, mode: bool) {
         use engine::resources::ReplayMode;
         self.world.write_resource::<ReplayMode>().0 = mode;
@@ -395,7 +400,9 @@ impl<'a, 'b> Rts<'a, 'b> {
             mm.packets.push(render_packet);
         }
 
-        if self.world.read_resource::<ReplayMode>().0 {
+        if self.world.read_resource::<ReplayMode>().0
+            && !self.world.read_resource::<ForceSendState>().0
+        {
             return mm;
         }
 
@@ -498,6 +505,18 @@ impl<'a, 'b> Rts<'a, 'b> {
             };
 
             packets.push(render_packet);
+        }
+
+        if self.world.read_resource::<ForceSendState>().0 {
+            let state = ScaiiPacket {
+                src: protos::BACKEND_ENDPOINT,
+                dest: protos::AGENT_ENDPOINT,
+                specific_msg: Some(protos::scaii_packet::SpecificMsg::State(
+                    self.world.read_resource::<RtsState>().0.clone(),
+                )),
+            };
+
+            packets.push(state);
         }
 
         self.world.write_resource::<Deserializing>().0 = false;

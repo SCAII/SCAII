@@ -34,3 +34,4 @@ class MoveList(Action):
 
         self.env_actions = actions.SerializeToString()
         super().to_proto(packet)
+    

@@ -30,9 +30,9 @@ pub use scaii_config::*;
 pub(crate) mod internal;
 //...but expose ReplayAction so Replay can access it in Recorder (Replay is a binary so different crate)
 pub use internal::recorder::{
-    get_default_replay_dir, get_default_replay_file_path, ActionWrapper, ReplayAction,
-    ReplayHeader, SerializationInfo, SerializedProtosAction, SerializedProtosEndpoint,
-    SerializedProtosScaiiPacket, SerializedProtosSerializationResponse,
+    get_default_replay_dir, get_default_replay_file_path, load_replay_file, save_replay_file,
+    ActionWrapper, ReplayAction, ReplayHeader, SerializationInfo, SerializedProtosAction,
+    SerializedProtosEndpoint, SerializedProtosScaiiPacket, SerializedProtosSerializationResponse,
 };
 pub use internal::rpc::get_rpc_config_for_viz;
 
