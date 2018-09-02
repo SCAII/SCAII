@@ -392,7 +392,8 @@ function populateSaliencyQuestionSelector(){
 	detailedSaliencyLabel.innerHTML = "relevance details";
 	detailedSaliencyLabel.setAttribute("id","relevance-detailed-label");
     
-    if (!userStudyMode) {
+    // turning off combined saliency every where for now, so always hide buttons
+    if (!userStudyMode && false) {
         $("#what-radios").append(radioCombinedSaliency);
         $("#what-radios").append(combinedSaliencyLabel);
         $("#what-radios").append(radioDetailedSaliency);

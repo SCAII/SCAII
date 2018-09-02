@@ -293,7 +293,9 @@ function getExplanationsV2Manager(){
         this.chartVisible = false;
         this.showSaliencyAccessButton = true;
         this.saliencyVisible = false;
-        this.saliencyCombined = !val;
+        //.saliencyCombined = !val;
+        // turn off combined saliency for now
+        this.saliencyCombined = false;
     }
 
     cm.noteQuestionWasAnswered = function(){
