@@ -3,6 +3,7 @@ function getStateMonitor() {
     sm = {};
 
     sm.logFileName = undefined;
+    sm.currentReplayFileName = undefined;
     sm.sentHeader = false;
     sm.clickListener = undefined;
     sm.mostRecentLogLine = undefined;
@@ -29,7 +30,7 @@ function getStateMonitor() {
             var time = this.getTime();
             var sec = this.getSecondsSince1970();
 
-            logLine = logLine.replace("<FILE_NAME>", this.logFileName);
+            logLine = logLine.replace("<FILE_NAME>", this.currentReplayFileName);
             logLine = logLine.replace("<DATE>", date);
             logLine = logLine.replace("<TIME>", time);
             logLine = logLine.replace("<1970_SEC>", sec);

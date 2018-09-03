@@ -173,7 +173,8 @@ function handleStudyQuestions(studyQuestions){
 	//logLine = getTemplateMap();
 	studyTreatmentOld = getTreatmentManagerOld(treatmentID);
 	console.log(treatmentID);
-	console.log(answerFilename);
+    console.log(answerFilename);
+    stateMonitor.currentReplayFileName = chosenFile;
     stateMonitor.logFileName = answerFilename;
     // make div to hold the winning action name
     var winningActionLabel = document.createElement("div");
