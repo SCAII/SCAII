@@ -113,7 +113,7 @@ function getChartV2UI() {
     ui.processRewardBarClick = function(rewardBarName, chartData, e, treatment){
 		var logLine = templateMap["selectedRewardBar"];
 		logLine = logLine.replace("<SLCT_RWRD_BAR>", rewardBarName);
-		targetClickHandler(e, logLine);
+		chartTargetClickHandler("rewardBar", logLine);
 		if (rewardBarName != "None") {
 			chartData.clearRewardBarSelections();
 			chartData.selectSingleRewardBar(rewardBarName);
