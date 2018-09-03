@@ -174,7 +174,7 @@ function getSaliencyV2UI() {
                     channel.mapHostDiv.appendChild( channel.outlineDiv );
                 }
             }
-            this.buildSaliencyDetailedForBar(bar);
+            //this.buildSaliencyDetailedForBar(bar);
         }
     }
     ui.configureIds = function(channel){
