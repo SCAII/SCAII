@@ -53,6 +53,7 @@ function getUserActionMonitor() {
     uam.globalClick = function(x,y) {
         if (chartClickProcessing) {
             rememberedGlobalChartClick = [x,y];
+            finishChartClickProcessing(x,y);
             return;
         }
         if (this.pendingLogLine == undefined) {
@@ -264,26 +265,24 @@ function setHandlers() {
         logLine = logLine.replace("<RPL_GAME_PRGSS>", "NA");
         targetClickHandler(e, logLine);
     });
-    $("#scaii-interface")         .on("mousemove", function(e) { 
-        var div = document.getElementById("explanations-rewards");
-        if (div == undefined) { return;}
-        var rect = div.getBoundingClientRect();
-        var x = e.clientX;
-        var y = e.clientY;
-        if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom) {
-            chartClickProcessing = true;
-            if (rememberedGlobalChartClick != undefined) {
-                userActionMonitor.regionClick("rewards");
-                userActionMonitor.compileChartClickEvent();
-            }
-        }
-        else {
-            chartClickProcessing = false;
-        }
-        
-    })
    
 }
+function finishChartClickProcessing(x,y) {
+    var div = document.getElementById("explanations-rewards");
+    if (div == undefined) { return;}
+    var rect = div.getBoundingClientRect();
+    if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom) {
+        chartClickProcessing = true;
+        if (rememberedGlobalChartClick != undefined) {
+            userActionMonitor.regionClick("rewards");
+            userActionMonitor.compileChartClickEvent();
+        }
+    }
+    else {
+        chartClickProcessing = false;
+    }
+}
+
 function getShapeLogString(isFriend, type,hitPoints, maxHitPoints){
     var result;
     if (isFriend){

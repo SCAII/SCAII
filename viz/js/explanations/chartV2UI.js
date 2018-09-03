@@ -123,7 +123,7 @@ function getChartV2UI() {
 				chartData.highlightSimilarRewardBars(trueRewardBarName);
 			}
 			this.renderBars(chartCanvas, chartData, treatment);
-		}	
+        }
         var bar = chartData.actionRewardForNameMap[rewardBarName];
         chartData.showSalienciesForRewardName(bar.name);
         currentExplManager.saliencyVisible = true;
