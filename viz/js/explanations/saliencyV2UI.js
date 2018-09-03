@@ -89,6 +89,7 @@ function getSaliencyV2UI() {
 
 	ui.renderSaliencyDetailed = function(chartData) {
         var step = sessionIndexManager.getCurrentIndex();
+        step = sessionIndexManager.getStepThatStartsEpochForStep(step);
         var dpEntityList = currentExplManager.entityListForDP[step];
         currentExplManager.applyFunctionToEachCachedDataset(detachChannelItem, "titledMapDiv");
         $("#saliency-div").remove();
@@ -97,8 +98,10 @@ function getSaliencyV2UI() {
         
         for (var i in selectedBars){
             var bar = selectedBars[i];
-			bar.dpEntityList = dpEntityList;
-            this.buildSaliencyDetailedForBar(bar);
+            if (bar.channels == undefined){
+                bar.dpEntityList = dpEntityList;
+                this.buildSaliencyDetailedForBar(bar);
+            }
         }
 		for (var i in selectedBars){
             var bar = selectedBars[i];
