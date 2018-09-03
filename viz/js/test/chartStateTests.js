@@ -25,7 +25,7 @@ function runChartManagerTests(failureChecker) {
         
         fc.assert(cm.showSaliencyAccessButton, true, "showSaliencyAccessButton");
         fc.assert(cm.saliencyVisible, false, "saliencyVisible");
-        fc.assert(cm.saliencyCombined, true, "saliencyCombined");
+        fc.assert(cm.saliencyCombined, false, "saliencyCombined");
         cm.render("trace");
         fc.assert(cm.renderLog.length, 0,"renderLog.length");
     
@@ -113,7 +113,7 @@ function runChartManagerTests(failureChecker) {
         fc.assert(cm.renderLog.length, 3,"renderLog.length.c"); 
         fc.assert(cm.renderLog[0], "renderChartDetailed", "renderLog[1]c");
         fc.assert(cm.renderLog[1], "renderSaliencyAccessButton", "renderLog[2]c");
-        fc.assert(cm.renderLog[2], "renderSaliencyCombined", "renderLog[3]c");
+        fc.assert(cm.renderLog[2], "renderSaliencyDetailed", "renderLog[3]c");
 
         cm.saliencyCombined = false;
         cm.render("trace");
