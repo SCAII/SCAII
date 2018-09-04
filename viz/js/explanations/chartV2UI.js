@@ -138,7 +138,7 @@ function getChartV2UI() {
 		ctx.save();
 		ctx.fillStyle = "black";
 		ctx.font = "bold 20px Arial";
-		ctx.fillText("Chart Title", chartData.canvasWidth / 2 - chartData.groupWidthMargin, chartData.canvasHeight * .07);
+		ctx.fillText(" ", chartData.canvasWidth / 2 - chartData.groupWidthMargin, chartData.canvasHeight * .07);
 		ctx.restore();
 	}
     ui.renderLegendTitle = function (canvas, chartData) {
@@ -167,10 +167,31 @@ function getChartV2UI() {
 			var name = document.getElementById("legend-name-" + i);
 			//font stuff in here for css
 			var content = document.createTextNode("for " + chartData.rewardNames[i] + " on all future maps");
+			/**********************************************************************************************
+			 * Author: Andrew Anderson
+			 * Purpose: Changing Friend Damaged to "Friendly Fort Damaged" without trying to break things
+			 * Date made: 9/4/2018
+			 * Date mod:  9/4/2018
+			 **********************************************************************************************/
+			if ( chartData.rewardNames[i] == "Friend Damaged" ){
+				var content = document.createTextNode( "for Friendly Fort Damaged on all future maps" );
+			}
+			if ( chartData.rewardNames[i] == "Friend Destroyed" ){
+				var content = document.createTextNode( "for Friendly Fort Destroyed on all future maps" );
+			}
+			if ( chartData.rewardNames[i] == "Enemy Damaged" ){
+				var content = document.createTextNode( "for Enemy Fort Damaged on all future maps" );
+			}
+			if ( chartData.rewardNames[i] == "Enemy Destroyed" ){
+				var content = document.createTextNode( "for Enemy Fort Destroyed on all future maps" );
+			}
+			/**********************************************************************************************
+			 * 									END OF RENAMING
+			 *********************************************************************************************/
 			name.appendChild(content);
 		}	
 		var totalName = document.getElementById("legend-total-name");
-		var totalContent = document.createTextNode("Reward Total");
+		var totalContent = document.createTextNode("Sum of above rewards");
 		totalName.appendChild(totalContent);
 	}
 

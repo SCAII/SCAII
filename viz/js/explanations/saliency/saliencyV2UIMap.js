@@ -126,12 +126,22 @@ function getSaliencyV2UIMap() {
         return titledMapDiv;
     }
 
-    uimap.buildTitleDiv = function(channel){
+    uimap.buildTitleDivOld = function(channel){
         var ch = channel;
         var titleDiv   = document.createElement("div");
         titleDiv.setAttribute("id", ch.titleId);
         titleDiv.innerHTML = ch.name;
         titleDiv.setAttribute("style", "font-family:Fira Sans;font-size:16px;padding-left:6px;padding-right:6px;padding-top:6px;padding-bottom:2px;text-align:center;height:30px;");
+        return titleDiv;
+    }
+
+    uimap.buildTitleDiv = function(channel){
+        var ch = channel;
+        var titleDiv   = document.createElement("div");
+        titleDiv.setAttribute("id", ch.titleId);
+        var name = ch.name;
+        titleDiv.innerHTML = "Attention paid to: " + name.bold( );
+        titleDiv.setAttribute("style", "font-family:Fira Sans;font-size:16px;padding-left:6px;padding-right:6px;padding-top:6px;padding-bottom:2px;text-align:center;height:40px;");
         return titleDiv;
     }
         
