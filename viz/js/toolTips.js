@@ -258,7 +258,7 @@ function collectHitpointsForConciseMessage(ttInfo,nonDebugKeys){
     }
     var hpFloored = Math.floor(Number(hp));
     var maxHpFloored = Math.floor(Number(maxHp));
-    var hpString = "Health: " + hpFloored + " of " + maxHpFloored;
+    var hpString = "Health Points: " + hpFloored + " of " + maxHpFloored;
     return hpString;
 }
 function renameEntityInfoForIUI(s) {
