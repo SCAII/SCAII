@@ -123,12 +123,13 @@ function getChartV2UI() {
 				chartData.highlightSimilarRewardBars(trueRewardBarName);
 			}
 			this.renderBars(chartCanvas, chartData, treatment);
+			var bar = chartData.actionRewardForNameMap[rewardBarName];
+			chartData.showSalienciesForRewardName(bar.name);
+			currentExplManager.saliencyVisible = true;
+			currentExplManager.saliencyCombined = false;
+			currentExplManager.render();
         }
-        var bar = chartData.actionRewardForNameMap[rewardBarName];
-        chartData.showSalienciesForRewardName(bar.name);
-        currentExplManager.saliencyVisible = true;
-        currentExplManager.saliencyCombined = false;
-        currentExplManager.render();
+       
     }
 
     ui.renderTitle = function (canvas, chartData) {
