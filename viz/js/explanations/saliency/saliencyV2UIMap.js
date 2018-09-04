@@ -433,7 +433,7 @@ function getOverlayOpacityBySaliencyRGBAStringQuantized(saliencyValue, gameboard
     }
     else if( saliencyValue < 0.66 ){
         color[ 'R' ] = 255;
-        color[ 'G' ] = ( ( saliencyValue - 0.33 ) * 3.0 ) * 255.0;
+        color[ 'G' ] = ( ( saliencyValue - 0.3333333 ) * 3.0 ) * 255.0;
         color[ 'B' ] = 0;
     }
   
@@ -441,7 +441,7 @@ function getOverlayOpacityBySaliencyRGBAStringQuantized(saliencyValue, gameboard
     else {
         color[ 'R' ] = 255;
         color[ 'G' ] = 255;
-        color[ 'B' ] = ( (saliencyValue - 0.66 ) * 3.0 ) * 255.0;
+        color[ 'B' ] = ( (saliencyValue - 0.666666 ) * 3.0 ) * 255.0;
     }
 
     if( gameboardFlag == 0){
@@ -455,6 +455,11 @@ function getOverlayOpacityBySaliencyRGBAStringQuantized(saliencyValue, gameboard
     var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
     if( color[ 'B' ] > 255 ){
         console.log ( "HALP!" );
+        console.log( "Saliency Value:" + saliencyValue );
+        console.log( "Math: " + (saliencyValue - 0.66) * 3.0 );
+        console.log( "Blue: " + color[ 'B' ] );
+        console.log( "Red: " + color[ 'R' ] );
+        console.log( "Green: " + color[ 'G' ] );
     }
     return result;
   }
@@ -494,6 +499,7 @@ function getOverlayOpacityBySaliencyRGBAStringQuantized(saliencyValue, gameboard
     var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
     if( color[ 'B' ] > 255 ){
         console.log ( "HALP!" );
+        console.log ( "Blue: " + color[ 'B' ] );
     }
     return result;
   }

@@ -64,7 +64,7 @@ function getStudyQuestionRenderer(questions) {
         var fuText = document.createElement("DIV");
         fuText.setAttribute("id", "followup-text");
         fuText.setAttribute("style", "margin-left:0px;margin-top:14px;font-family:Arial;font-size:" + this.fontSize + ";background-color:" + this.bg + ";");
-        fuText.innerHTML =  prefix + "What, if anything, would you ask the intelligent agent at this point?";
+        fuText.innerHTML =  prefix + "What, if anything, do you want to ask the AI at this point?";
         $("#q-and-a-div").append(fuText);
         var ta = document.createElement("textarea");
         ta.setAttribute("id", "followup-textarea");
