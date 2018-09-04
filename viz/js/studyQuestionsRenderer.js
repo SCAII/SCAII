@@ -297,6 +297,10 @@ function getStudyQuestionRenderer(questions) {
     sqr.isClickInRegion = function(clickInfo, regionIndicator) {
         var matchDetector = "target:" + regionIndicator;
         if (clickInfo.includes(matchDetector)){
+            var barMatchDetector = "selectedRewardBar:None";
+            if (regionIndicator == "rewardBar" && clickInfo.includes(barMatchDetector)) {
+                return false;
+            }
             return true;
         }
         return false;
