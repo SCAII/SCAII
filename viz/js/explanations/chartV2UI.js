@@ -61,7 +61,7 @@ function getChartV2UI() {
 			var rewardDesc = document.createElement('DIV');
 			rewardDesc.setAttribute("id", "legend-desc-" + i);
 			rewardDesc.setAttribute("class", "r" + iPlusOne + "c0");
-			rewardDesc.setAttribute("style", "height:20px;width:100px;position:relative;left:15px;padding-top:3px");
+			rewardDesc.setAttribute("style", "height:20px;width:100px;position:relative;left:15px;padding-top:3px;padding-right:5px");
 			$("#legend-rewards").append(rewardDesc);
 
             var rewardBox = document.createElement("DIV");
@@ -73,7 +73,7 @@ function getChartV2UI() {
             var rewardInfo = document.createElement("DIV");
 			rewardInfo.setAttribute("id", "legend-name-" + i);
             rewardInfo.setAttribute("class", "r" + iPlusOne + "c2");
-            rewardInfo.setAttribute("style", "height:20px;padding-top:3px");
+            rewardInfo.setAttribute("style", "height:20px;padding-top:3px;padding-left:3px");
             $("#legend-rewards").append(rewardInfo);
 
         }
@@ -86,7 +86,7 @@ function getChartV2UI() {
 		var rewardLegendTotal = document.createElement("DIV");
 		rewardLegendTotal.setAttribute("id", "legend-total-name");
 		rewardLegendTotal.setAttribute("class", "r" + Number(chartData.rewardNames.length + 1) + "c2");
-		rewardLegendTotal.setAttribute("style", "height:20px;padding-top:3px");
+		rewardLegendTotal.setAttribute("style", "height:20px;padding-top:3px;padding-left:3px");
 		$("#legend-rewards").append(rewardLegendTotal);
 
         var ctx = chartCanvas.getContext("2d");
