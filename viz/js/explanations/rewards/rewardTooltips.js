@@ -118,7 +118,7 @@ function createValueTooltipDiv (text, rewardBar, canvas) {
     var canvas_bounds = canvas.getBoundingClientRect();
     var x = rewardBar.tooltipOriginX + canvas_bounds.left;
     var y = rewardBar.tooltipOriginY  + canvas_bounds.top;
-    ttDiv.setAttribute("style", 'position:absolute;visibility:hidden;padding:4px;z-index:' + zIndexMap["tooltip"] + ';left:' + x + 'px;top:' + y + 'px;color:black;font-family:Arial');
+    ttDiv.setAttribute("style", 'position:absolute;visibility:hidden;padding:4px;pointer-events:none;z-index:' + zIndexMap["tooltip"] + ';left:' + x + 'px;top:' + y + 'px;color:black;font-family:Arial');
     var textNode = document.createTextNode(text);
     ttDiv.append(textNode)
     $("#explanations-rewards").append(ttDiv);

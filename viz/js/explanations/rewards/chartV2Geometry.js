@@ -201,13 +201,21 @@ function addGeometryFunctions(rawChartData) {
         }
         if (isHeightNegative){
             // height is negative which means maxY is > originY
-            if (y < originY || y > (originY + height)) {
+            if (height < 5) {
+                if (y > (originY - 8) || y < (originY + height + 8)) {
+                    return true;
+                }
+            } else if (y < originY || y > (originY + height)) {
                 return false; // its outside a negative bar
             }
         }
         else {
             // height is positive which means maxY is < originY
-            if (y > originY || y < (originY - height)) {
+            if (height < 5) {
+                if (y < (originY + 8) || y > (originY - height - 8)) {
+                    return true;
+                }
+            } else if (y > originY || y < (originY - height)) {
                 return false;  // it's outside a positive bar
             }
         }
