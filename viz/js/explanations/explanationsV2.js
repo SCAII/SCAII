@@ -275,6 +275,17 @@ function getExplanationsV2Manager(){
             this.render();
         }
     }
+    cm.setExplanationVisibility = function(currentDPIndex, step) {
+        if (this.currentQuestionType == "waitForPredictionClick" && currentDPIndex.includes(step)) {
+            this.chartVisible = false;
+            this.saliencyVisible = false;
+            this.render();
+        } else {
+            this.chartVisible = true;
+            this.saliencyVisible = true;
+            this.render();
+        }
+    }
     cm.setFilename = function(filename){
         this.filename = filename;
         if (filename.startsWith("tutorial")){

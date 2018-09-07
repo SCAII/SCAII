@@ -331,5 +331,6 @@ function jumpToStep(step){
     stageUserCommand(userCommand);
     controlsManager.userJumped();
     cleanEntities();
-    cleanToolTips();
+	cleanToolTips();
+	currentExplManager.setExplanationVisibility(activeStudyQuestionManager.squim.decisionPointSteps, step);
 }
