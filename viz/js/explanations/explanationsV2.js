@@ -276,7 +276,7 @@ function getExplanationsV2Manager(){
         }
     }
     cm.setExplanationVisibility = function(currentDPIndex, step) {
-        if (this.currentQuestionType == "waitForPredictionClick" && currentDPIndex.includes(step)) {
+        if (this.currentQuestionType == "waitForPredictionClick" && currentDPIndex == step) {
             this.chartVisible = false;
             this.saliencyVisible = false;
             this.render();
