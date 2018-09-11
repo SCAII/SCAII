@@ -165,6 +165,7 @@ function getExplanationsV2Manager(){
     cm.chartDataForStep = {};
     cm.currentQuestionType = undefined;
     cm.entityListForDP = {};
+    cm.waitForClickDP = 0;
 
     cm.captureEntitiesForDecisionPoint = function(step) {
         if (this.entityListForDP[step] == undefined){
@@ -276,7 +277,10 @@ function getExplanationsV2Manager(){
         }
     }
     cm.setExplanationVisibility = function(currentDPIndex, step) {
-        if (this.currentQuestionType == "waitForPredictionClick" && currentDPIndex == step) {
+        if (this.waitForClickDP < currentDPIndex.length && step > currentDPIndex[this.waitForClickDP]) {
+            this.waitForClickDP++;
+        }
+        if (this.currentQuestionType == "waitForPredictionClick" && currentDPIndex[this.waitForClickDP] == step) {
             this.chartVisible = false;
             this.saliencyVisible = false;
             this.render();

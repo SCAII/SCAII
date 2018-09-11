@@ -332,5 +332,6 @@ function jumpToStep(step){
     controlsManager.userJumped();
     cleanEntities();
 	cleanToolTips();
-	currentExplManager.setExplanationVisibility(activeStudyQuestionManager.squim.decisionPointSteps[sessionIndexManager.getCurrentIndex()], step);
+	//var currIndex = sessionIndexManager.getCurrentIndex();
+	currentExplManager.setExplanationVisibility(activeStudyQuestionManager.squim.decisionPointSteps, step);
 }
