@@ -1,0 +1,51 @@
+original format:                            "date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,"
+
+stepIntoDecisionPoint:                      "tutorial.scr,9-13-2018,12:9:0:335,1536865740335,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false"
+
+showQuestion: 
+
+hideEntityTooltips:                         "tutorial.scr,9-13-2018,12:15:3:802,1536866103802,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false"
+
+showEntityTooltip:                          "tutorial.scr,9-13-2018,12:15:4:83,1536866104083,1,1.0,showEntityTooltip:friendly-City_lowerLeftQuadrant,false,false,false,false,false,false"
+
+userClick:                                  "tutorial.scr,9-13-2018,12:16:12:890,1536866172890,1,1.0,userClick:297_639;region:QnA;NA;NA,false,false,false,false,false,false"
+
+answerQuestion.userClick.NA:
+
+answerQuestion.userClick.clickEntity:
+
+answerQuestion.userClick.selectedRewardBar:
+
+answerQuestion.userClick.clickSaliencyMap:
+
+timelineClick:
+
+jumpToDecisionPoint:
+
+clickTimeLineBlocker:
+
+play:
+
+pause:
+
+touchStepProgressLabel:
+
+clickGameQuadrant:
+
+clickEntity:                                "tutorial.scr,9-13-2018,12:20:54:902,1536866454902,1,1.0,userClick:515_260;region:gameArea;target:gameboard;clickEntity:friendly-Big Fort_lowerRightQuadrant_200_198,false,false,false,false,false,false"
+
+clickActionLabel:                           
+
+clickActionLabelDenied:                     "tutorial.scr,9-13-2018,12:22:39:120,1536866559120,1,1.0,userClick:469_478;region:gameArea;target:actionLabel-step-75-action-AttackQ4;clickActionLabelDenied:D2ESCAPED-COLON Attack Q4,false,false,false,false,false,false"  
+
+selectedRewardBar:
+
+clickSaliencyMap:
+
+startMouseOverSaliencyMap:
+
+endMouseOverSaliencyMap:
+
+touchCumRewardLabel:
+
+touchCumRewardValueFor:

@@ -1,12 +1,20 @@
-def get_extraction_map() {
-    templateMap = {}
-    templateMap["stepIntoDecisionPoint"] =  "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,stepIntoDecisionPoint"
-    templateMap["showQuestion"] =           "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,showQuestion"
-    templateMap["hideEntityTooltips"] =     "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,hideEntityTooltips"
-    templateMap["showEntityTooltip"] =      "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,showEntityTooltip.entityInfo,showEntityTooltip.tipQuadrant"
+def get_extraction_map(): 
+    extractionMap = {}
+    extractionMap["stepIntoDecisionPoint"] =  "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,stepIntoDecisionPoint"
+    extractionMap["showQuestion"] =           "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,showQuestion"
+    extractionMap["hideEntityTooltips"] =     "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,hideEntityTooltips"
+    extractionMap["showEntityTooltip"] =      "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,showEntityTooltip.entityInfo,showEntityTooltip.tipQuadrant"
 
+    extractionMap["userClick"] =              "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,userClick.target,userClick.targetDetail" #both targets are NA
+
+    extractionMap["answerQuestion.userClick.NA"] =            ("fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,"
+                                            "userClick.region,OMIT,userClick.target,OMIT,userClick.answerQuestion.clickStep,"
+                                            "userClick.answerQuestion.questionIndex,userClick.answerQuestion.answer1,"
+                                            "userClick.answerQuestion.answer2,"
+                                            "userClick.answerQuestion.userClick") # this is for when answerQuestion for click is NA
     #For click on gamemap
-    templateMap["button-save"] =            ("fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,"
+    extractionMap["answerQuestion.userClick.clickEntity"] =            
+                                            ("fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,"
                                             "userClick.region,OMIT,userClick.target,OMIT,userClick.answerQuestion.clickStep,"
                                             "userClick.answerQuestion.questionIndex,userClick.answerQuestion.answer1,"
                                             "userClick.answerQuestion.answer2,"
@@ -20,7 +28,8 @@ def get_extraction_map() {
                                                 "userClick.answerQuestion.userClick.clickEntity.coordX,"
                                                 "userClick.answerQuestion.userClick.clickEntity.coordY")
     #For click on rewardBar
-    templateMap["button-save"] =            ("fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,"
+    extractionMap["answerQuestion.userClick.selectedRewardBar"] =            
+                                            ("fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,"
                                             "userClick.region,OMIT,userClick.target,OMIT,userClick.answerQuestion.clickStep,"
                                             "userClick.answerQuestion.questionIndex,userClick.answerQuestion.answer1,"
                                             "userClick.answerQuestion.answer2,"
@@ -31,7 +40,8 @@ def get_extraction_map() {
                                                 "OMIT,userClick.answerQuestion.userClick.region,OMIT,userClick.answerQuestion.userClick.target,"
                                                 "OMIT,userClick.answerQuestion.userClick.selectedRewardBar")
     #For click on saliencyMap
-    templateMap["button-save"] =            ("fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,"
+    extractionMap["answerQuestion.userClick.clickSaliencyMap"] =            
+                                            ("fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,"
                                             "userClick.region,OMIT,userClick.target,OMIT,userClick.answerQuestion.clickStep,"
                                             "userClick.answerQuestion.questionIndex,userClick.answerQuestion.answer1,"
                                             "userClick.answerQuestion.answer2,"
@@ -44,21 +54,21 @@ def get_extraction_map() {
                                                 "userClick.answerQuestion.userClick.clickSaliencyMap.clickGameEntity,"
                                                 "userClick.answerQuestion.userClick.clickSaliencyMap.clickQuadrant")
 
-    templateMap["expl-control-canvas"] =    "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.timelineClick"
-    templateMap["decisionPointList"] =      "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.jumpToDecisionPoint"
-    templateMap["right-block-div"] =        "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.clickTimeLineBlocker" # add logic so if NA change to yes
-    templateMap["rewindButton"] =           "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.rewind" # add logic so if NA change to yes
-    templateMap["playButton"] =             "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.play" # add logic so if NA change to yes
-    templateMap["pauseButton"] =            "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.pause" # add logic so if NA change to yes
-    templateMap["touch-step-progress-label"] =  "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.touchStepProgressLabel" # add logic so if NA change to yes
-    templateMap["gameboardBackground"] =    "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.clickGameQuadrant"
-    templateMap["gameboard"] =              "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.clickEntity.clickGameEntity,userClick.clickEntity.clickQuadrant,userClick.clickEntity.coordX,userClick.clickEntity.coordY"
-    templateMap["clickActionLabel"] =       "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.clickActionLabel"
-    templateMap["clickActionLabelDenied"] = "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.clickActionLabelDenied"
-    templateMap["selectedRewardBar"] =      "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.selectedRewardBar"
-    templateMap["clickSaliencyMap"] =       "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.clickSaliencyMap,userClick.clickSaliencyMap.clickGameEntity,userClick.clickSaliencyMap.clickQuadrant"
-    templateMap["startMouseOverSaliencyMap"] =  "fileName,date,time,1970Sec,decisionPoint,questionId,region:userClick.region,OMIT,userClick.target,OMIT,startMouseOverSaliencyMap"
-    templateMap["endMouseOverSaliencyMap"] =    "fileName,date,time,1970Sec,decisionPoint,questionId,region:userClick.region,OMIT,userClick.target,OMIT,endMouseOverSaliencyMap"
-    templateMap["touchCumRewardLabel"] =    "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.touchCumRewardLabel"
-    templateMap["touchCumRewardValueFor"] = "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.touchCumRewardValueFor"
-}
+    extractionMap["timelineClick"] =              "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.timelineClick"
+    extractionMap["jumpToDecisionPoint"] =        "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.jumpToDecisionPoint"
+    extractionMap["clickTimeLineBlocker"] =       "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.clickTimeLineBlocker" # add logic so if NA change to yes
+    extractionMap["play"] =                       "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.play" # add logic so if NA change to yes
+    extractionMap["pause"] =                      "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.pause" # add logic so if NA change to yes
+    extractionMap["touchStepProgressLabel"] =     "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.touchStepProgressLabel" # add logic so if NA change to yes
+    extractionMap["clickGameQuadrant"] =          "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.clickGameQuadrant"
+    extractionMap["clickEntity"] =                "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.clickEntity.clickGameEntity,userClick.clickEntity.clickQuadrant,userClick.clickEntity.coordX,userClick.clickEntity.coordY"
+    extractionMap["clickActionLabel"] =           "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.clickActionLabel"
+    extractionMap["clickActionLabelDenied"] =     "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.clickActionLabelDenied"
+    extractionMap["selectedRewardBar"] =          "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.selectedRewardBar"
+    extractionMap["clickSaliencyMap"] =           "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.clickSaliencyMap,userClick.clickSaliencyMap.clickGameEntity,userClick.clickSaliencyMap.clickQuadrant"
+    extractionMap["startMouseOverSaliencyMap"] =  "fileName,date,time,1970Sec,decisionPoint,questionId,region:userClick.region,OMIT,userClick.target,OMIT,startMouseOverSaliencyMap"
+    extractionMap["endMouseOverSaliencyMap"] =    "fileName,date,time,1970Sec,decisionPoint,questionId,region:userClick.region,OMIT,userClick.target,OMIT,endMouseOverSaliencyMap"
+    extractionMap["touchCumRewardLabel"] =        "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.touchCumRewardLabel"
+    extractionMap["touchCumRewardValueFor"] =     "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.touchCumRewardValueFor"
+
+    return extractionMap
