@@ -7,14 +7,13 @@ def get_extraction_map():
 
     extractionMap["userClick"] =              "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,userClick.target,userClick.targetDetail" #both targets are NA
 
-    extractionMap["answerQuestion.userClick.NA"] =            ("fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,"
+    extractionMap["answerQuestion.userClick.NA"] = ("fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,"
                                             "userClick.region,OMIT,userClick.target,OMIT,userClick.answerQuestion.clickStep,"
                                             "userClick.answerQuestion.questionIndex,userClick.answerQuestion.answer1,"
                                             "userClick.answerQuestion.answer2,"
                                             "userClick.answerQuestion.userClick") # this is for when answerQuestion for click is NA
     #For click on gamemap
-    extractionMap["answerQuestion.userClick.clickEntity"] =            
-                                            ("fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,"
+    extractionMap["answerQuestion.userClick.clickEntity"] =  ("fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,"
                                             "userClick.region,OMIT,userClick.target,OMIT,userClick.answerQuestion.clickStep,"
                                             "userClick.answerQuestion.questionIndex,userClick.answerQuestion.answer1,"
                                             "userClick.answerQuestion.answer2,"
@@ -28,8 +27,7 @@ def get_extraction_map():
                                                 "userClick.answerQuestion.userClick.clickEntity.coordX,"
                                                 "userClick.answerQuestion.userClick.clickEntity.coordY")
     #For click on rewardBar
-    extractionMap["answerQuestion.userClick.selectedRewardBar"] =            
-                                            ("fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,"
+    extractionMap["answerQuestion.userClick.selectedRewardBar"] = ("fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,"
                                             "userClick.region,OMIT,userClick.target,OMIT,userClick.answerQuestion.clickStep,"
                                             "userClick.answerQuestion.questionIndex,userClick.answerQuestion.answer1,"
                                             "userClick.answerQuestion.answer2,"
@@ -40,8 +38,7 @@ def get_extraction_map():
                                                 "OMIT,userClick.answerQuestion.userClick.region,OMIT,userClick.answerQuestion.userClick.target,"
                                                 "OMIT,userClick.answerQuestion.userClick.selectedRewardBar")
     #For click on saliencyMap
-    extractionMap["answerQuestion.userClick.clickSaliencyMap"] =            
-                                            ("fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,"
+    extractionMap["answerQuestion.userClick.clickSaliencyMap"] = ("fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,"
                                             "userClick.region,OMIT,userClick.target,OMIT,userClick.answerQuestion.clickStep,"
                                             "userClick.answerQuestion.questionIndex,userClick.answerQuestion.answer1,"
                                             "userClick.answerQuestion.answer2,"

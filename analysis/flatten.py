@@ -1,21 +1,69 @@
-def parse_line(line):
-    key = ""
-    fields = line.split('<')
-    if ("answerQuestion" in line):
-        # decide based on click info types
+def parse_line(line, extraction_map):
+    key = get_key_for_line(line)
+    extraction_guide = extraction_map[key]
+    obj = get_blank_line_object()
+    final_line = replace_all_delimeters_with_commas(line)
+    guide_parts = extraction_guide.split(",")
+    final_line_parts = final_line.split(",")
+    if (len(guide_parts) != len(final_line_parts)):
+        print("ERROR - guide field count {} line field count {}".format(len(guide_parts),len(final_line_parts)))
+        print("original line    : {}".format(line))
+        print("all commas line  : {}".format(final_line))
+        print("extraction guide : {}".format(extraction_guide))
+        raise SystemExit
+    field_count = len(guide_parts)
+    for i in range(field_count):
+        col_name = guide_parts[i]
+        if (col_name != "OMIT"):
+            obj[col_name] = final_line_parts[i]
+    return obj
 
-    else if ("userClick" in line):
-        # use secondary discriminator as key
-        primary_field  = fields[6]
-        primary_field_parts = primary_field.split(':')
+def replace_all_delimeters_with_commas(line):
+    no_colons = line.replace(":",",")
+    no_semicolons = no_colons.replace(";", ",")
+    no_underscores = no_semicolons.replace("_",",")
+    no_left_parens = no_underscores.replace("(",",")
+    no_right_parens = no_left_parens.replace(")",",")
+    return no_right_parens
 
+def get_key_for_line(line):
+    key = "UNKNOWN"
+    fields = line.split(',')
+    if ("userClick" in line):
+        key = get_key_for_user_click_line(line)
+    elif ("startMouseOverSaliencyMap" in line):
+        key = "startMouseOverSaliencyMap"
+    elif ("endMouseOverSaliencyMap" in line):
+        key = "endMouseOverSaliencyMap"
     else:
         # uses primary discriminator as key
-        primary_field  = fields[6]
-        primary_field_parts = primary_field.split(';')
-        primary_field_first_part = primary_field_parts[0]
-        key = primary_field_first_part_parts[0]
+        field  = fields[6]
+        subfields = field.split(';')
+        subfield0 = subfields[0]
+        subsubfields = subfield0.split(':')
+        key = subsubfields[0]
+    return key
 
+def get_key_for_user_click_line(line):
+    if ("answerQuestion" in line):
+        #need to look into the saved off click
+        if ("(NA)" in line):
+            key = "answerQuestion.userClick.NA"
+        elif ("clickEntity" in line):
+            key = "answerQuestion.userClick.clickEntity"
+        elif ("selectedRewardBar" in line):
+            key = "answerQuestion.userClick.selectedRewardBar"
+        elif ("clickSaliencyMap" in line):
+            key = "answerQuestion.userClick.clickSaliencyMap" 
+    else:
+        # use secondary discriminator as key
+        fields = line.split(',')
+        field  = fields[6]
+        subfields = field.split(';')
+        subfield3 = subfields[3]
+        subsubfields = subfield3.split(':')
+        key = subsubfields[0]
+    return key
 
 def get_blank_line_object():
     obj = {}
