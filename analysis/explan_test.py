@@ -21,6 +21,7 @@ class TestFlatteningExplan(unittest.TestCase):
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
 
+        self.assertEqual(obj["userClick"], "yes")
         self.assertEqual(obj["userClick.coordX"], "721")
         self.assertEqual(obj["userClick.coordY"], "277")
         self.assertEqual(obj["userClick.region"], "scaii-interface")
@@ -91,6 +92,7 @@ class TestFlatteningExplan(unittest.TestCase):
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
 
+        self.assertEqual(obj["userClick"], "yes")
         self.assertEqual(obj["userClick.coordX"], "771")
         self.assertEqual(obj["userClick.coordY"], "514")
         self.assertEqual(obj["userClick.region"], "saliencyMap")
@@ -162,6 +164,7 @@ class TestFlatteningExplan(unittest.TestCase):
         self.assertEqual(obj["startMouseOverSaliencyMap"], "Tank")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
 
+        self.assertEqual(obj["userClick"], "NA")
         self.assertEqual(obj["userClick.coordX"], "NA")
         self.assertEqual(obj["userClick.coordY"], "NA")
         self.assertEqual(obj["userClick.region"], "saliencyMap")
@@ -231,6 +234,7 @@ class TestFlatteningExplan(unittest.TestCase):
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "Tank")
 
+        self.assertEqual(obj["userClick"], "NA")
         self.assertEqual(obj["userClick.coordX"], "NA")
         self.assertEqual(obj["userClick.coordY"], "NA")
         self.assertEqual(obj["userClick.region"], "saliencyMap")

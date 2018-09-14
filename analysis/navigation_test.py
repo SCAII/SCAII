@@ -26,6 +26,7 @@ class TestFlatteningNavigation(unittest.TestCase):
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
 
+        self.assertEqual(obj["userClick"], "NA")
         self.assertEqual(obj["userClick.coordX"], "NA")
         self.assertEqual(obj["userClick.coordY"], "NA")
         self.assertEqual(obj["userClick.region"], "NA")
@@ -94,6 +95,7 @@ class TestFlatteningNavigation(unittest.TestCase):
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
 
+        self.assertEqual(obj["userClick"], "yes")
         self.assertEqual(obj["userClick.coordX"], "328")
         self.assertEqual(obj["userClick.coordY"], "401")
         self.assertEqual(obj["userClick.region"], "gameArea")
@@ -162,6 +164,7 @@ class TestFlatteningNavigation(unittest.TestCase):
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
 
+        self.assertEqual(obj["userClick"], "yes")
         self.assertEqual(obj["userClick.coordX"], "245")
         self.assertEqual(obj["userClick.coordY"], "406")
         self.assertEqual(obj["userClick.region"], "gameArea")
@@ -231,6 +234,7 @@ class TestFlatteningNavigation(unittest.TestCase):
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
 
+        self.assertEqual(obj["userClick"], "yes")
         self.assertEqual(obj["userClick.coordX"], "301")
         self.assertEqual(obj["userClick.coordY"], "422")
         self.assertEqual(obj["userClick.region"], "gameArea")
@@ -299,6 +303,7 @@ class TestFlatteningNavigation(unittest.TestCase):
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
 
+        self.assertEqual(obj["userClick"], "yes")
         self.assertEqual(obj["userClick.coordX"], "486")
         self.assertEqual(obj["userClick.coordY"], "337")
         self.assertEqual(obj["userClick.region"], "gameArea")
@@ -367,6 +372,7 @@ class TestFlatteningNavigation(unittest.TestCase):
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
 
+        self.assertEqual(obj["userClick"], "yes")
         self.assertEqual(obj["userClick.coordX"], "481")
         self.assertEqual(obj["userClick.coordY"], "341")
         self.assertEqual(obj["userClick.region"], "gameArea")
@@ -435,6 +441,7 @@ class TestFlatteningNavigation(unittest.TestCase):
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
 
+        self.assertEqual(obj["userClick"], "yes")
         self.assertEqual(obj["userClick.coordX"], "70")
         self.assertEqual(obj["userClick.coordY"], "337")
         self.assertEqual(obj["userClick.region"], "gameArea")

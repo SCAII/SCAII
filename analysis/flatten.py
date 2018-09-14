@@ -149,6 +149,7 @@ def get_blank_line_object():
     obj["startMouseOverSaliencyMap"] = "NA"
     obj["endMouseOverSaliencyMap"] = "NA"
 
+    obj["userClick"] = "NA"
     obj["userClick.coordX"] = "NA"
     obj["userClick.coordY"] = "NA"
     obj["userClick.region"] = "NA"
