@@ -26,7 +26,7 @@ class TestFlatteningGameboard(unittest.TestCase):
         self.assertEqual(obj["userClick.region"], "gameArea")
         self.assertEqual(obj["userClick.target"], "gameboardBackground")
         self.assertEqual(obj["userClick.answerQuestion.clickStep"], "NA")
-        self.assertEqual(obj["userClick.answerQuestion.questionIndex"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.questionId"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer1"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer2"], "NA")
 
@@ -97,7 +97,7 @@ class TestFlatteningGameboard(unittest.TestCase):
         self.assertEqual(obj["userClick.region"], "gameArea")
         self.assertEqual(obj["userClick.target"], "gameboard")
         self.assertEqual(obj["userClick.answerQuestion.clickStep"], "NA")
-        self.assertEqual(obj["userClick.answerQuestion.questionIndex"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.questionId"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer1"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer2"], "NA")
 
@@ -166,7 +166,7 @@ class TestFlatteningGameboard(unittest.TestCase):
         self.assertEqual(obj["userClick.region"], "NA")
         self.assertEqual(obj["userClick.target"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.clickStep"], "NA")
-        self.assertEqual(obj["userClick.answerQuestion.questionIndex"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.questionId"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer1"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer2"], "NA")
 
@@ -235,7 +235,7 @@ class TestFlatteningGameboard(unittest.TestCase):
         self.assertEqual(obj["userClick.region"], "NA")
         self.assertEqual(obj["userClick.target"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.clickStep"], "NA")
-        self.assertEqual(obj["userClick.answerQuestion.questionIndex"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.questionId"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer1"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer2"], "NA")
 

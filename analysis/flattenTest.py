@@ -4,6 +4,7 @@ from gameboard_test import TestFlatteningGameboard
 from explan_test import TestFlatteningExplan
 from navigation_test import TestFlatteningNavigation
 from non_interactive_test import TestFlatteningNonInteractive
+from q_and_a_test import TestFlatteningQa
 import flatten as flatten
 import gameboard_test as gameboard_test
 

@@ -27,7 +27,7 @@ class TestFlatteningExplan(unittest.TestCase):
         self.assertEqual(obj["userClick.region"], "scaii-interface")
         self.assertEqual(obj["userClick.target"], "rewardBar")
         self.assertEqual(obj["userClick.answerQuestion.clickStep"], "NA")
-        self.assertEqual(obj["userClick.answerQuestion.questionIndex"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.questionId"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer1"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer2"], "NA")
 
@@ -98,7 +98,7 @@ class TestFlatteningExplan(unittest.TestCase):
         self.assertEqual(obj["userClick.region"], "saliencyMap")
         self.assertEqual(obj["userClick.target"], "saliencyMap--DP1-2_EnemyDestroyed--Size")
         self.assertEqual(obj["userClick.answerQuestion.clickStep"], "NA")
-        self.assertEqual(obj["userClick.answerQuestion.questionIndex"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.questionId"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer1"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer2"], "NA")
 
@@ -170,7 +170,7 @@ class TestFlatteningExplan(unittest.TestCase):
         self.assertEqual(obj["userClick.region"], "saliencyMap")
         self.assertEqual(obj["userClick.target"], "saliencyMap--DP1-2_EnemyDestroyed--Tank")
         self.assertEqual(obj["userClick.answerQuestion.clickStep"], "NA")
-        self.assertEqual(obj["userClick.answerQuestion.questionIndex"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.questionId"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer1"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer2"], "NA")
 
@@ -240,7 +240,7 @@ class TestFlatteningExplan(unittest.TestCase):
         self.assertEqual(obj["userClick.region"], "saliencyMap")
         self.assertEqual(obj["userClick.target"], "saliencyMap--DP1-2_EnemyDestroyed--Tank")
         self.assertEqual(obj["userClick.answerQuestion.clickStep"], "NA")
-        self.assertEqual(obj["userClick.answerQuestion.questionIndex"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.questionId"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer1"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer2"], "NA")
 

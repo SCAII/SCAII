@@ -155,7 +155,7 @@ def get_blank_line_object():
     obj["userClick.region"] = "NA"
     obj["userClick.target"] = "NA"
     obj["userClick.answerQuestion.clickStep"] = "NA"
-    obj["userClick.answerQuestion.questionIndex"] = "NA"
+    obj["userClick.answerQuestion.questionId"] = "NA"
     obj["userClick.answerQuestion.answer1"] = "NA"
     obj["userClick.answerQuestion.answer2"] = "NA"
 

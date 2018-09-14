@@ -27,8 +27,7 @@ class TestCore(unittest.TestCase):
     userClick.coordY
     userClick.region
     userClick.target
-    userClick.answerQuestion.clickStep
-    userClick.answerQuestion.questionIndex
+    userClick.answerQuestion.questionId
     userClick.answerQuestion.answer1
     userClick.answerQuestion.answer2
 
