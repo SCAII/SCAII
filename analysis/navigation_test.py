@@ -63,8 +63,8 @@ class test_flattening_navigation(unittest.TestCase):
 
         self.assertEqual(obj["userClick.clickEntity.clickGameEntity"], "NA")
         self.assertEqual(obj["userClick.clickEntity.clickQuadrant"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordX"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordY"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordX"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordY"], "NA")
 
         self.assertEqual(obj["userClick.clickActionLabel"], "NA")
         self.assertEqual(obj["userClick.clickActionLabelDenied"], "NA")
@@ -130,8 +130,8 @@ class test_flattening_navigation(unittest.TestCase):
 
         self.assertEqual(obj["userClick.clickEntity.clickGameEntity"], "NA")
         self.assertEqual(obj["userClick.clickEntity.clickQuadrant"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordX"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordY"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordX"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordY"], "NA")
 
         self.assertEqual(obj["userClick.clickActionLabel"], "NA")
         self.assertEqual(obj["userClick.clickActionLabelDenied"], "NA")
@@ -197,8 +197,8 @@ class test_flattening_navigation(unittest.TestCase):
 
         self.assertEqual(obj["userClick.clickEntity.clickGameEntity"], "NA")
         self.assertEqual(obj["userClick.clickEntity.clickQuadrant"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordX"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordY"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordX"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordY"], "NA")
 
         self.assertEqual(obj["userClick.clickActionLabel"], "NA")
         self.assertEqual(obj["userClick.clickActionLabelDenied"], "NA")
@@ -264,8 +264,8 @@ class test_flattening_navigation(unittest.TestCase):
 
         self.assertEqual(obj["userClick.clickEntity.clickGameEntity"], "NA")
         self.assertEqual(obj["userClick.clickEntity.clickQuadrant"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordX"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordY"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordX"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordY"], "NA")
 
         self.assertEqual(obj["userClick.clickActionLabel"], "NA")
         self.assertEqual(obj["userClick.clickActionLabelDenied"], "NA")
@@ -331,8 +331,8 @@ class test_flattening_navigation(unittest.TestCase):
 
         self.assertEqual(obj["userClick.clickEntity.clickGameEntity"], "NA")
         self.assertEqual(obj["userClick.clickEntity.clickQuadrant"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordX"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordY"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordX"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordY"], "NA")
 
         self.assertEqual(obj["userClick.clickActionLabel"], "NA")
         self.assertEqual(obj["userClick.clickActionLabelDenied"], "NA")
@@ -399,8 +399,8 @@ class test_flattening_navigation(unittest.TestCase):
 
         self.assertEqual(obj["userClick.clickEntity.clickGameEntity"], "NA")
         self.assertEqual(obj["userClick.clickEntity.clickQuadrant"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordX"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordY"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordX"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordY"], "NA")
 
         self.assertEqual(obj["userClick.clickActionLabel"], "NA")
         self.assertEqual(obj["userClick.clickActionLabelDenied"], "NA")
@@ -467,8 +467,8 @@ class test_flattening_navigation(unittest.TestCase):
 
         self.assertEqual(obj["userClick.clickEntity.clickGameEntity"], "NA")
         self.assertEqual(obj["userClick.clickEntity.clickQuadrant"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordX"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordY"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordX"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordY"], "NA")
 
         self.assertEqual(obj["userClick.clickActionLabel"], "NA")
         self.assertEqual(obj["userClick.clickActionLabelDenied"], "NA")

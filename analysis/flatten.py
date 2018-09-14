@@ -1,8 +1,11 @@
 def parse_line(line, extraction_map):
+    print("---------parsing line------")
     key = get_key_for_line(line)
     extraction_guide = extraction_map[key]
     obj = get_blank_line_object()
-    final_line = replace_all_delimeters_with_commas(line)
+    semi_final_line = replace_all_delimeters_with_commas_after_field_6(line)
+    # get rid of ignored data at end of line so can compare field counts.
+    final_line = semi_final_line.replace(",false,false,false,false,false,false", "")
     guide_parts = extraction_guide.split(",")
     final_line_parts = final_line.split(",")
     if (len(guide_parts) != len(final_line_parts)):
@@ -15,8 +18,24 @@ def parse_line(line, extraction_map):
     for i in range(field_count):
         col_name = guide_parts[i]
         if (col_name != "OMIT"):
+            print("colname {} gets val {}".format(col_name, final_line_parts[i]))
             obj[col_name] = final_line_parts[i]
     return obj
+
+def replace_all_delimeters_with_commas_after_field_6(line):
+    fields = line.split(",")
+    # go through each field, after the first 6
+    new_string = ""
+    for i in range(len(fields)):
+        if (i == 0):
+             new_string = "{}".format(fields[i])
+        elif (i < 6):
+            # copy without changing
+            new_string = "{},{}".format(new_string, fields[i])
+        else:
+            # replace delims
+            new_string = "{},{}".format(new_string, replace_all_delimeters_with_commas(fields[i]))
+    return new_string
 
 def replace_all_delimeters_with_commas(line):
     no_colons = line.replace(":",",")
@@ -63,6 +82,8 @@ def get_key_for_user_click_line(line):
         subfield3 = subfields[3]
         subsubfields = subfield3.split(':')
         key = subsubfields[0]
+        if (key == "NA"):
+            key = "userClick"
     return key
 
 def get_blank_line_object():
@@ -124,8 +145,8 @@ def get_blank_line_object():
 
     obj["userClick.clickEntity.clickGameEntity"] = "NA"
     obj["userClick.clickEntity.clickQuadrant"] = "NA"
-    obj["userClick.clickEntity.clickCoordX"] = "NA"
-    obj["userClick.clickEntity.clickCoordY"] = "NA"
+    obj["userClick.clickEntity.coordX"] = "NA"
+    obj["userClick.clickEntity.coordY"] = "NA"
 
     obj["userClick.clickActionLabel"] = "NA"
     obj["userClick.clickActionLabelDenied"] = "NA"

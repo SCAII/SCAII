@@ -1,14 +1,18 @@
+import unittest
+from flatten import parse_line
+import extractionMap as extractionMap
 # selectedRewardBar:            "tutorial.scr,9-13-2018,12:23:47:489,1536866627489,1,1.0,userClick:721_277;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q1.Enemy Destroyed,false,false,false,false,false,false"
 # clickSaliencyMap:             "tutorial.scr,9-13-2018,12:29:33:803,1536866973803,1,1.0,userClick:817_509;region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Size;clickSaliencyMap:Size_(NA_upperRightQuadrant),false,false,false,false,false,false"
 #                               "tutorial.scr,9-13-2018,12:30:6:570,1536867006570,1,1.0,userClick:771_514;region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Size;clickSaliencyMap:Size_(friendly-Big Fort_upperLeftQuadrant),false,false,false,false,false,false"
 # startMouseOverSaliencyMap:    "tutorial.scr,9-13-2018,12:23:49:897,1536866629897,1,1.0,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false"
 # endMouseOverSaliencyMap:      "tutorial.scr,9-13-2018,12:23:49:910,1536866629910,1,1.0,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Tank;endMouseOverSaliencyMap:Tank,false,false,false,false,false,false"
 
-class test_flattening_explan(unittest.TestCase):
+class TestFlatteningExplan(unittest.TestCase):
 
     def test_selectedRewardBar(self):
         line = "tutorial.scr,9-13-2018,12:23:47:489,1536866627489,1,1.0,userClick:721_277;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q1.Enemy Destroyed,false,false,false,false,false,false"
-        obj = flatten.parse_line(line)
+        extraction_map = extractionMap.get_extraction_map()
+        obj = parse_line(line,extraction_map)
         self.assertEqual(obj["stepIntoDecisionPoint"], "NA")
         self.assertEqual(obj["showQuestion"], "NA")
         self.assertEqual(obj["hideEntityTooltips"], "NA")
@@ -59,8 +63,8 @@ class test_flattening_explan(unittest.TestCase):
 
         self.assertEqual(obj["userClick.clickEntity.clickGameEntity"], "NA")
         self.assertEqual(obj["userClick.clickEntity.clickQuadrant"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordX"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordY"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordX"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordY"], "NA")
 
         self.assertEqual(obj["userClick.clickActionLabel"], "NA")
         self.assertEqual(obj["userClick.clickActionLabelDenied"], "NA")
@@ -77,7 +81,8 @@ class test_flattening_explan(unittest.TestCase):
     def test_clickSaliencyMap(self):
         line = "tutorial.scr,9-13-2018,12:30:6:570,1536867006570,1,1.0,userClick:771_514;region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Size;clickSaliencyMap:Size_(friendly-Big Fort_upperLeftQuadrant),false,false,false,false,false,false"
         #line = "tutorial.scr,9-13-2018,12:29:33:803,1536866973803,1,1.0,userClick:817_509;region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Size;clickSaliencyMap:Size_(NA_upperRightQuadrant),false,false,false,false,false,false"
-        obj = flatten.parse_line(line)
+        extraction_map = extractionMap.get_extraction_map()
+        obj = parse_line(line,extraction_map)
         self.assertEqual(obj["stepIntoDecisionPoint"], "NA")
         self.assertEqual(obj["showQuestion"], "NA")
         self.assertEqual(obj["hideEntityTooltips"], "NA")
@@ -128,8 +133,8 @@ class test_flattening_explan(unittest.TestCase):
 
         self.assertEqual(obj["userClick.clickEntity.clickGameEntity"], "NA")
         self.assertEqual(obj["userClick.clickEntity.clickQuadrant"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordX"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordY"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordX"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordY"], "NA")
 
         self.assertEqual(obj["userClick.clickActionLabel"], "NA")
         self.assertEqual(obj["userClick.clickActionLabelDenied"], "NA")
@@ -145,7 +150,8 @@ class test_flattening_explan(unittest.TestCase):
 
     def test_startMouseOverSaliencyMap(self):
         line = "tutorial.scr,9-13-2018,12:23:49:897,1536866629897,1,1.0,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false"
-        obj = flatten.parse_line(line)
+        extraction_map = extractionMap.get_extraction_map()
+        obj = parse_line(line,extraction_map)
         self.assertEqual(obj["stepIntoDecisionPoint"], "NA")
         self.assertEqual(obj["showQuestion"], "NA")
         self.assertEqual(obj["hideEntityTooltips"], "NA")
@@ -196,8 +202,8 @@ class test_flattening_explan(unittest.TestCase):
 
         self.assertEqual(obj["userClick.clickEntity.clickGameEntity"], "NA")
         self.assertEqual(obj["userClick.clickEntity.clickQuadrant"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordX"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordY"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordX"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordY"], "NA")
 
         self.assertEqual(obj["userClick.clickActionLabel"], "NA")
         self.assertEqual(obj["userClick.clickActionLabelDenied"], "NA")
@@ -213,7 +219,8 @@ class test_flattening_explan(unittest.TestCase):
 
     def test_endMouseOverSaliencyMap(self):
         line = "tutorial.scr,9-13-2018,12:23:49:910,1536866629910,1,1.0,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Tank;endMouseOverSaliencyMap:Tank,false,false,false,false,false,false"
-        obj = flatten.parse_line(line)
+        extraction_map = extractionMap.get_extraction_map()
+        obj = parse_line(line,extraction_map)
         self.assertEqual(obj["stepIntoDecisionPoint"], "NA")
         self.assertEqual(obj["showQuestion"], "NA")
         self.assertEqual(obj["hideEntityTooltips"], "NA")
@@ -264,8 +271,8 @@ class test_flattening_explan(unittest.TestCase):
 
         self.assertEqual(obj["userClick.clickEntity.clickGameEntity"], "NA")
         self.assertEqual(obj["userClick.clickEntity.clickQuadrant"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordX"], "NA")
-        self.assertEqual(obj["userClick.clickEntity.clickCoordY"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordX"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordY"], "NA")
 
         self.assertEqual(obj["userClick.clickActionLabel"], "NA")
         self.assertEqual(obj["userClick.clickActionLabelDenied"], "NA")
