@@ -1,3 +1,7 @@
+import unittest
+
+from flatten import parse_line
+import extractionMap as extractionMap
 # stepIntoDecisionPoint:                      "tutorial.scr,9-13-2018,12:9:0:335,1536865740335,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false"
 # timelineClick:                              "tutorial.scr,9-13-2018,13:59:37:648,1536872377648,75,75.2,userClick:328_401;region:gameArea;target:expl-control-canvas;timelineClick:106,false,false,false,false,false,false"
 
@@ -8,11 +12,12 @@
 # pause:                                      "tutorial.scr,9-13-2018,13:46:11:665,1536871571665,1,1.0,userClick:481_341;region:gameArea;target:pauseResumeButton;pause:NA,false,false,false,false,false,false"
 # touchStepProgressLabel:                     "tutorial.scr,9-13-2018,13:57:30:581,1536872250581,75,75.2,userClick:70_337;region:gameArea;target:step-value;touchStepProgressLabel:NA,false,false,false,false,false,false"
 
-class test_flattening_navigation(unittest.TestCase):
+class TestFlatteningNavigation(unittest.TestCase):
 
     def test_stepIntoDecisionPoint(self):
         line = "tutorial.scr,9-13-2018,12:9:0:335,1536865740335,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false"
-        obj = flatten.parse_line(line)
+        extraction_map = extractionMap.get_extraction_map()
+        obj = parse_line(line,extraction_map)
         self.assertEqual(obj["stepIntoDecisionPoint"], "1")
         self.assertEqual(obj["showQuestion"], "NA")
         self.assertEqual(obj["hideEntityTooltips"], "NA")
@@ -79,7 +84,8 @@ class test_flattening_navigation(unittest.TestCase):
 
     def test_timelineClick(self):
         line = "tutorial.scr,9-13-2018,13:59:37:648,1536872377648,75,75.2,userClick:328_401;region:gameArea;target:expl-control-canvas;timelineClick:106,false,false,false,false,false,false"
-        obj = flatten.parse_line(line)
+        extraction_map = extractionMap.get_extraction_map()
+        obj = parse_line(line,extraction_map)
         self.assertEqual(obj["stepIntoDecisionPoint"], "NA")
         self.assertEqual(obj["showQuestion"], "NA")
         self.assertEqual(obj["hideEntityTooltips"], "NA")
@@ -146,7 +152,8 @@ class test_flattening_navigation(unittest.TestCase):
 
     def test_jumpToDecisionPoint(self):
         line = "tutorial.scr,9-13-2018,16:29:14:251,1536881354251,75,75.2,userClick:245_406;region:gameArea;target:decisionPointList;jumpToDecisionPoint:75,false,false,false,false,false,false"
-        obj = flatten.parse_line(line)
+        extraction_map = extractionMap.get_extraction_map()
+        obj = parse_line(line,extraction_map)
         self.assertEqual(obj["stepIntoDecisionPoint"], "NA")
         self.assertEqual(obj["showQuestion"], "NA")
         self.assertEqual(obj["hideEntityTooltips"], "NA")
@@ -212,8 +219,10 @@ class test_flattening_navigation(unittest.TestCase):
         self.assertEqual(obj["userClick.touchCumRewardValueFor"], "NA")
 
     def test_clickTimeLineBlocker(self):
+        print("THIS ONE")
         line = "tutorial.scr,9-13-2018,13:55:13:920,1536872113920,1,1.2,userClick:301_422;region:gameArea;target:right-block-div;clickTimeLineBlocker:NA,false,false,false,false,false,false"
-        obj = flatten.parse_line(line)
+        extraction_map = extractionMap.get_extraction_map()
+        obj = parse_line(line,extraction_map)
         self.assertEqual(obj["stepIntoDecisionPoint"], "NA")
         self.assertEqual(obj["showQuestion"], "NA")
         self.assertEqual(obj["hideEntityTooltips"], "NA")
@@ -222,10 +231,10 @@ class test_flattening_navigation(unittest.TestCase):
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
 
-        self.assertEqual(obj["userClick.coordX"], "NA")
-        self.assertEqual(obj["userClick.coordY"], "NA")
-        self.assertEqual(obj["userClick.region"], "NA")
-        self.assertEqual(obj["userClick.target"], "NA")
+        self.assertEqual(obj["userClick.coordX"], "301")
+        self.assertEqual(obj["userClick.coordY"], "422")
+        self.assertEqual(obj["userClick.region"], "gameArea")
+        self.assertEqual(obj["userClick.target"], "right-block-div")
         self.assertEqual(obj["userClick.answerQuestion.clickStep"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.questionIndex"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer1"], "NA")
@@ -280,7 +289,8 @@ class test_flattening_navigation(unittest.TestCase):
 
     def test_play(self):
         line = "tutorial.scr,9-13-2018,13:46:10:103,1536871570103,1,1.0,userClick:486_337;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false"
-        obj = flatten.parse_line(line)
+        extraction_map = extractionMap.get_extraction_map()
+        obj = parse_line(line,extraction_map)
         self.assertEqual(obj["stepIntoDecisionPoint"], "NA")
         self.assertEqual(obj["showQuestion"], "NA")
         self.assertEqual(obj["hideEntityTooltips"], "NA")
@@ -289,10 +299,10 @@ class test_flattening_navigation(unittest.TestCase):
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
 
-        self.assertEqual(obj["userClick.coordX"], "NA")
-        self.assertEqual(obj["userClick.coordY"], "NA")
-        self.assertEqual(obj["userClick.region"], "NA")
-        self.assertEqual(obj["userClick.target"], "NA")
+        self.assertEqual(obj["userClick.coordX"], "486")
+        self.assertEqual(obj["userClick.coordY"], "337")
+        self.assertEqual(obj["userClick.region"], "gameArea")
+        self.assertEqual(obj["userClick.target"], "pauseResumeButton")
         self.assertEqual(obj["userClick.answerQuestion.clickStep"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.questionIndex"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer1"], "NA")
@@ -347,7 +357,8 @@ class test_flattening_navigation(unittest.TestCase):
 
     def test_pause(self):
         line = "tutorial.scr,9-13-2018,13:46:11:665,1536871571665,1,1.0,userClick:481_341;region:gameArea;target:pauseResumeButton;pause:NA,false,false,false,false,false,false"
-        obj = flatten.parse_line(line)
+        extraction_map = extractionMap.get_extraction_map()
+        obj = parse_line(line,extraction_map)
         self.assertEqual(obj["stepIntoDecisionPoint"], "NA")
         self.assertEqual(obj["showQuestion"], "NA")
         self.assertEqual(obj["hideEntityTooltips"], "NA")
@@ -356,10 +367,10 @@ class test_flattening_navigation(unittest.TestCase):
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
 
-        self.assertEqual(obj["userClick.coordX"], "NA")
-        self.assertEqual(obj["userClick.coordY"], "NA")
-        self.assertEqual(obj["userClick.region"], "NA")
-        self.assertEqual(obj["userClick.target"], "NA")
+        self.assertEqual(obj["userClick.coordX"], "481")
+        self.assertEqual(obj["userClick.coordY"], "341")
+        self.assertEqual(obj["userClick.region"], "gameArea")
+        self.assertEqual(obj["userClick.target"], "pauseResumeButton")
         self.assertEqual(obj["userClick.answerQuestion.clickStep"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.questionIndex"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer1"], "NA")
@@ -391,7 +402,6 @@ class test_flattening_navigation(unittest.TestCase):
         self.assertEqual(obj["userClick.timelineClick"], "NA")
         self.assertEqual(obj["userClick.jumpToDecisionPoint"], "NA")
         self.assertEqual(obj["userClick.clickTimeLineBlocker"], "NA")
-        self.assertEqual(obj["userClick.rewind"], "NA")
         self.assertEqual(obj["userClick.play"], "NA")
         self.assertEqual(obj["userClick.pause"], "yes")
         self.assertEqual(obj["userClick.touchStepProgressLabel"], "NA")
@@ -415,7 +425,8 @@ class test_flattening_navigation(unittest.TestCase):
 
     def test_touchStepProgressLabel(self):
         line = "tutorial.scr,9-13-2018,13:57:30:581,1536872250581,75,75.2,userClick:70_337;region:gameArea;target:step-value;touchStepProgressLabel:NA,false,false,false,false,false,false"
-        obj = flatten.parse_line(line)
+        extraction_map = extractionMap.get_extraction_map()
+        obj = parse_line(line,extraction_map)
         self.assertEqual(obj["stepIntoDecisionPoint"], "NA")
         self.assertEqual(obj["showQuestion"], "NA")
         self.assertEqual(obj["hideEntityTooltips"], "NA")
@@ -424,10 +435,10 @@ class test_flattening_navigation(unittest.TestCase):
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
 
-        self.assertEqual(obj["userClick.coordX"], "NA")
-        self.assertEqual(obj["userClick.coordY"], "NA")
-        self.assertEqual(obj["userClick.region"], "NA")
-        self.assertEqual(obj["userClick.target"], "NA")
+        self.assertEqual(obj["userClick.coordX"], "70")
+        self.assertEqual(obj["userClick.coordY"], "337")
+        self.assertEqual(obj["userClick.region"], "gameArea")
+        self.assertEqual(obj["userClick.target"], "step-value")
         self.assertEqual(obj["userClick.answerQuestion.clickStep"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.questionIndex"], "NA")
         self.assertEqual(obj["userClick.answerQuestion.answer1"], "NA")
@@ -459,7 +470,6 @@ class test_flattening_navigation(unittest.TestCase):
         self.assertEqual(obj["userClick.timelineClick"], "NA")
         self.assertEqual(obj["userClick.jumpToDecisionPoint"], "NA")
         self.assertEqual(obj["userClick.clickTimeLineBlocker"], "NA")
-        self.assertEqual(obj["userClick.rewind"], "NA")
         self.assertEqual(obj["userClick.play"], "NA")
         self.assertEqual(obj["userClick.pause"], "NA")
         self.assertEqual(obj["userClick.touchStepProgressLabel"], "yes")

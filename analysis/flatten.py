@@ -20,9 +20,17 @@ def parse_line(line, extraction_map):
     field_count = len(guide_parts)
     for i in range(field_count):
         col_name = guide_parts[i]
-        if (col_name != "OMIT"):
-            print("colname {} gets val {}".format(col_name, final_line_parts[i]))
-            obj[col_name] = final_line_parts[i]
+        if ("NOTE_PRESENCE" in col_name):
+            col_name_parts = col_name.split(">")
+            true_col_name = col_name_parts[1]
+            obj[true_col_name] = "yes"
+        elif (col_name == "OMIT"):
+            # skip this one
+            continue
+        else:
+            unescaped_value = unescape_all(final_line_parts[i])
+            print("colname {} gets val {}".format(col_name, unescaped_value))
+            obj[col_name] = unescaped_value
     return obj
 
 def replace_all_delimeters_with_commas_after_field_6(line):
@@ -95,6 +103,13 @@ def special_line_case(key):
         return True
     else:
         return False
+
+def unescape_all(s):
+    with_underscore = s.replace("ESCAPED-UNDERSCORE", "_")
+    with_comma = with_underscore.replace("ESCAPED-COMMA", ",")
+    with_colon = with_comma.replace("ESCAPED-COLON", ":")
+    with_semicolon = with_colon.replace("ESCAPED-SEMICOLON", ";")
+    return with_semicolon
 
 def escape_underscore(key, line):
     if (key == "clickSaliencyMap"):
