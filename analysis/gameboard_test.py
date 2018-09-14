@@ -82,7 +82,6 @@ class TestFlatteningGameboard(unittest.TestCase):
         line = "tutorial.scr,9-13-2018,12:20:54:902,1536866454902,1,1.0,userClick:515_260;region:gameArea;target:gameboard;clickEntity:friendly-Big Fort_lowerRightQuadrant_200_198,false,false,false,false,false,false"
         extraction_map = extractionMap.get_extraction_map()
         obj = parse_line(line,extraction_map)
-        print(obj)
         self.assertEqual(obj["stepIntoDecisionPoint"], "NA")
         self.assertEqual(obj["showQuestion"], "NA")
         self.assertEqual(obj["hideEntityTooltips"], "NA")
@@ -133,7 +132,6 @@ class TestFlatteningGameboard(unittest.TestCase):
 
         self.assertEqual(obj["userClick.clickEntity.clickGameEntity"], "friendly-Big Fort")
         self.assertEqual(obj["userClick.clickEntity.clickQuadrant"], "lowerRightQuadrant")
-        print(obj)
         self.assertEqual(obj["userClick.clickEntity.coordX"], "200")
         self.assertEqual(obj["userClick.clickEntity.coordY"], "198")
 

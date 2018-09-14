@@ -81,7 +81,10 @@ class TestCore(unittest.TestCase):
     userClick.touchCumRewardValueFor
     '''
     def test_comma_replace(self):
-        self.assertEqual(replace_all_delimeters_with_commas(",x_x(x)x:x;x"), ",x,x,x,x,x,x")
+        #removed the ) because there is no instance where a field is followed by it so: ")," would turn into ,, or ,
+        #                                                                                                          ^ if that ',' is before the ',false,false,false,false,false,false'
+        #                                                                                                          at end of line will create extra unneeded field
+        self.assertEqual(replace_all_delimeters_with_commas(",x_x(x,x:x;x"), ",x,x,x,x,x,x")
 
     def test_get_key_for_line(self):
         self.assertEqual("stepIntoDecisionPoint",get_key_for_line("tutorial.scr,9-13-2018,12:9:0:335,1536865740335,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false"))

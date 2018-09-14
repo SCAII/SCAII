@@ -3,6 +3,9 @@ def parse_line(line, extraction_map):
     key = get_key_for_line(line)
     extraction_guide = extraction_map[key]
     obj = get_blank_line_object()
+    flag = special_line_case(key)
+    if (flag == True):
+        line = escape_underscore(key, line)
     semi_final_line = replace_all_delimeters_with_commas_after_field_6(line)
     # get rid of ignored data at end of line so can compare field counts.
     final_line = semi_final_line.replace(",false,false,false,false,false,false", "")
@@ -38,11 +41,12 @@ def replace_all_delimeters_with_commas_after_field_6(line):
     return new_string
 
 def replace_all_delimeters_with_commas(line):
-    no_colons = line.replace(":",",")
+    no_under_and_left_parens = line.replace("_(", ",")
+    no_colons = no_under_and_left_parens.replace(":",",")
     no_semicolons = no_colons.replace(";", ",")
     no_underscores = no_semicolons.replace("_",",")
     no_left_parens = no_underscores.replace("(",",")
-    no_right_parens = no_left_parens.replace(")",",")
+    no_right_parens = no_left_parens.replace(")","")
     return no_right_parens
 
 def get_key_for_line(line):
@@ -85,6 +89,34 @@ def get_key_for_user_click_line(line):
         if (key == "NA"):
             key = "userClick"
     return key
+
+def special_line_case(key):
+    if (key == "clickSaliencyMap" or key == "startMouseOverSaliencyMap" or key == "endMouseOverSaliencyMap"):
+        return True
+    else:
+        return False
+
+def escape_underscore(key, line):
+    if (key == "clickSaliencyMap"):
+        fields = line.split(',')
+        field = fields[6]
+        subfields = field.split(';')
+        subfield2 = subfields[2]
+        subsubfields = subfield2.split(':')
+        target_replace = subsubfields[1]
+        new_target_replace = target_replace.replace("_", "ESCAPED-UNDERSCORE")
+
+
+        subsubfields[1] = new_target_replace
+        new_subsubfields = ':'.join([str(i) for i in subsubfields])
+        subfields[2] = new_subsubfields
+        new_subfields = ';'.join([str(j) for j in subfields])
+        fields[6] = new_subfields
+        new_line = ','.join([str(k) for k in fields])
+        return new_line
+    else: 
+        new_line = line.replace("_", "ESCAPED-UNDERSCORE")
+        return new_line
 
 def get_blank_line_object():
     obj = {}
@@ -137,7 +169,6 @@ def get_blank_line_object():
     obj["userClick.timelineClick"] = "NA"
     obj["userClick.jumpToDecisionPoint"] = "NA"
     obj["userClick.clickTimeLineBlocker"] = "NA"
-    obj["userClick.rewind"] = "NA"
     obj["userClick.play"] = "NA"
     obj["userClick.pause"] = "NA"
     obj["userClick.touchStepProgressLabel"] = "NA"

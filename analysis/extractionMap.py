@@ -63,8 +63,8 @@ def get_extraction_map():
     extractionMap["clickActionLabelDenied"] =     "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.clickActionLabelDenied"
     extractionMap["selectedRewardBar"] =          "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.selectedRewardBar"
     extractionMap["clickSaliencyMap"] =           "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.clickSaliencyMap,userClick.clickSaliencyMap.clickGameEntity,userClick.clickSaliencyMap.clickQuadrant"
-    extractionMap["startMouseOverSaliencyMap"] =  "fileName,date,time,1970Sec,decisionPoint,questionId,region:userClick.region,OMIT,userClick.target,OMIT,startMouseOverSaliencyMap"
-    extractionMap["endMouseOverSaliencyMap"] =    "fileName,date,time,1970Sec,decisionPoint,questionId,region:userClick.region,OMIT,userClick.target,OMIT,endMouseOverSaliencyMap"
+    extractionMap["startMouseOverSaliencyMap"] =  "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,region:userClick.region,OMIT,userClick.target,OMIT,startMouseOverSaliencyMap"
+    extractionMap["endMouseOverSaliencyMap"] =    "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,region:userClick.region,OMIT,userClick.target,OMIT,endMouseOverSaliencyMap"
     extractionMap["touchCumRewardLabel"] =        "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.touchCumRewardLabel"
     extractionMap["touchCumRewardValueFor"] =     "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.touchCumRewardValueFor"
 
