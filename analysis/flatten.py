@@ -111,6 +111,7 @@ def unescape_all(s):
     with_comma = with_underscore.replace("ESCAPED-COMMA", ",")
     with_colon = with_comma.replace("ESCAPED-COLON", ":")
     with_semicolon = with_colon.replace("ESCAPED-SEMICOLON", ";")
+    with_semicolon = with_colon.replace("ESCAPED-NEWLINE", "\n")
     return with_semicolon
 
 def escape_underscore(key, line):
