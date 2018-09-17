@@ -528,7 +528,13 @@ function handleScaiiPacket(sPacket) {
             if (userStudyMode){
                 if (!hasShownWelcomeScreen){
                     // can't be tab hop, must be first screen shown
-                    clearLoadingScreen();
+					clearLoadingScreen();
+					var logLine = templateMap["waitForResearcherStart"];
+                    logLine = logLine.replace("<CONTINUE_BUTTON>", "yes");
+                    logLine = logLine.replace("<REGION>", "waitScreen");
+                    logLine = logLine.replace("<TARGET>", "enter-welcome-screen");
+                    userActionMonitor.pendingLogLine = logLine;
+                    stateMonitor.setUserAction(logLine);	
                     showUserIdScreen();
                 }
                 else {
