@@ -364,7 +364,7 @@ function getStudyQuestionRenderer(questions) {
         question.setAttribute("id", "user-wait-question");
         question.setAttribute("style", "margin-left:100px;font-family:Arial;font-size:32px;padding:10px;");
         question.innerHTML = "Please wait for the researcher to tell you to continue.";
-        
+
         $("#user-wait-question-row").append(question);
 
 
@@ -409,7 +409,12 @@ function getStudyQuestionRenderer(questions) {
         next.setAttribute("disabled", "true");
         next.setAttribute("style", "margin-left:280px;font-family:Arial;font-size:18px;padding:10px;");
         next.innerHTML = "Continue";
-        next.onclick = function() {
+        next.onclick = function(e) {
+            var logLine = templateMap["waitForResearcherEnd"]
+            logLine = logLine.replace("<CONTINUE_BUTTON>", "yes");
+            logLine = logLine.replace("<REGION>", "waitScreen");
+            logLine = logLine.replace("<TARGET>", "user-wait-button-continue");
+            stateMonitor.setUserAction(logLine);
             $("#user-wait-div").remove();
         }
         $("#user-wait-button-row").append(next);
@@ -486,6 +491,11 @@ function showUserIdScreen(){
     next.innerHTML = "Start";
     next.onclick = function() {
         clearUserIdScreen();
+        var logLine = templateMap["waitForResearcherStart"]
+        logLine = logLine.replace("<CONTINUE_BUTTON>", "yes");
+        logLine = logLine.replace("<REGION>", "waitScreen");
+        logLine = logLine.replace("<TARGET>", "user-id-button-next");
+        stateMonitor.setUserAction(logLine);
     }
     $("#user-id-button-row").append(next);
     hasShownWelcomeScreen = true;

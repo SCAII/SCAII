@@ -28,7 +28,7 @@ function getSaliencyV2UIMap() {
                 var cellValue = channel.cells[index];
                 var normVal = lookupNormalizationValue(channel.normalizationKey);
                 //console.log( "normalization Factor: " + normVal );
-                console.log( channel.name );
+                //console.log( channel.name );
                 //console.log( "Cell Value: " + Number( cellValue ) );
                 ctx.fillStyle = getOverlayOpacityBySaliencyRGBAString(Number(cellValue) / Number(normVal), gameboardFlag, cellValue);
                 //console.log( "ctx.fillStyle: " + ctx.fillStyle );
