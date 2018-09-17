@@ -64,6 +64,12 @@ function getTabManager() {
         var indexOfNextTab = Number(this.currentTabIndex) + 1;
         var ti = this.tabInfos[indexOfNextTab];
         this.openTab(ti.cssId, ti.fileName, ti.loadingMessage, true);
+        var logLine = templateMap["waitForResearcherStart"];
+        logLine = logLine.replace("<CONTINUE_BUTTON>", "yes");
+        logLine = logLine.replace("<REGION>", "waitScreen");
+        logLine = logLine.replace("<TARGET>", "enter-wait-screen");
+        userActionMonitor.pendingLogLine = logLine;
+        stateMonitor.setUserAction(logLine);
         activeStudyQuestionManager.renderer.renderWaitScreen();
     }
 

@@ -491,10 +491,10 @@ function showUserIdScreen(){
     next.innerHTML = "Start";
     next.onclick = function() {
         clearUserIdScreen();
-        var logLine = templateMap["waitForResearcherStart"]
+        var logLine = templateMap["waitForResearcherEnd"]
         logLine = logLine.replace("<CONTINUE_BUTTON>", "yes");
         logLine = logLine.replace("<REGION>", "waitScreen");
-        logLine = logLine.replace("<TARGET>", "user-id-button-next");
+        logLine = logLine.replace("<TARGET>", "user-wait-button-continue");
         stateMonitor.setUserAction(logLine);
     }
     $("#user-id-button-row").append(next);
