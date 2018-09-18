@@ -67,5 +67,7 @@ def get_extraction_map():
     extractionMap["endMouseOverSaliencyMap"] =    "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.region,OMIT,userClick.target,OMIT,endMouseOverSaliencyMap"
     extractionMap["touchCumRewardLabel"] =        "fileName,date,time,1970Sec,decisionPoint,questionId,NOTE_PRESENCE>userClick,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.touchCumRewardLabel"
     extractionMap["touchCumRewardValueFor"] =     "fileName,date,time,1970Sec,decisionPoint,questionId,NOTE_PRESENCE>userClick,userClick.coordX,userClick.coordY,OMIT,userClick.region,OMIT,userClick.target,OMIT,userClick.touchCumRewardValueFor"
+    extractionMap["waitForResearcherStart"] =     "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.region,OMIT,userClick.target,OMIT,waitForResearcherStart"
+    extractionMap["waitForResearcherEnd"] =       "fileName,date,time,1970Sec,decisionPoint,questionId,OMIT,userClick.region,OMIT,userClick.target,OMIT,waitForResearcherEnd"
 
     return extractionMap

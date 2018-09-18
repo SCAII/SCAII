@@ -74,6 +74,10 @@ def get_key_for_line(line):
         key = "startMouseOverSaliencyMap"
     elif ("endMouseOverSaliencyMap" in line):
         key = "endMouseOverSaliencyMap"
+    elif ("waitForResearcherStart" in line):
+        key = "waitForResearcherStart"
+    elif ("waitForResearcherEnd" in line):
+        key = "waitForResearcherEnd"
     else:
         # uses primary discriminator as key
         field  = fields[6]
@@ -184,6 +188,8 @@ def get_blank_line_object():
     obj["showEntityTooltip.tipQuadrant"] = "NA"
     obj["startMouseOverSaliencyMap"] = "NA"
     obj["endMouseOverSaliencyMap"] = "NA"
+    obj["waitForResearcherStart"] = "NA"
+    obj["waitForResearcherEnd"] = "NA"
 
     obj["userClick"] = "NA"
     obj["userClick.coordX"] = "NA"

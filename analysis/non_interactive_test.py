@@ -20,6 +20,8 @@ class TestFlatteningNonInteractive(unittest.TestCase):
         self.assertEqual(obj["showEntityTooltip.tipQuadrant"], "NA")
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
+        self.assertEqual(obj["waitForResearcherStart"], "NA")
+        self.assertEqual(obj["waitForResearcherEnd"], "NA")
 
         self.assertEqual(obj["userClick"], "yes")
         self.assertEqual(obj["userClick.coordX"], "297")
@@ -89,6 +91,8 @@ class TestFlatteningNonInteractive(unittest.TestCase):
         self.assertEqual(obj["showEntityTooltip.tipQuadrant"], "NA")
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
+        self.assertEqual(obj["waitForResearcherStart"], "NA")
+        self.assertEqual(obj["waitForResearcherEnd"], "NA")
 
         self.assertEqual(obj["userClick"], "yes")
         self.assertEqual(obj["userClick.coordX"], "476")
@@ -158,6 +162,8 @@ class TestFlatteningNonInteractive(unittest.TestCase):
         self.assertEqual(obj["showEntityTooltip.tipQuadrant"], "NA")
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
+        self.assertEqual(obj["waitForResearcherStart"], "NA")
+        self.assertEqual(obj["waitForResearcherEnd"], "NA")
 
         self.assertEqual(obj["userClick"], "yes")
         self.assertEqual(obj["userClick.coordX"], "469")
@@ -227,6 +233,8 @@ class TestFlatteningNonInteractive(unittest.TestCase):
         self.assertEqual(obj["showEntityTooltip.tipQuadrant"], "NA")
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
+        self.assertEqual(obj["waitForResearcherStart"], "NA")
+        self.assertEqual(obj["waitForResearcherEnd"], "NA")
 
         self.assertEqual(obj["userClick"], "yes")
         self.assertEqual(obj["userClick.coordX"], "85")
@@ -296,6 +304,8 @@ class TestFlatteningNonInteractive(unittest.TestCase):
         self.assertEqual(obj["showEntityTooltip.tipQuadrant"], "NA")
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
+        self.assertEqual(obj["waitForResearcherStart"], "NA")
+        self.assertEqual(obj["waitForResearcherEnd"], "NA")
 
         self.assertEqual(obj["userClick"], "yes")
         self.assertEqual(obj["userClick.coordX"], "206")
