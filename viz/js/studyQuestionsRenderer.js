@@ -465,7 +465,7 @@ function showUserIdScreen(){
     question.setAttribute("id", "user-id-question");
     question.setAttribute("style", "margin-left:100px;font-family:Arial;font-size:70px;padding:10px;");
     if (isTutorial()){
-        question.innerHTML = "Welcome to the XAI User Study.<br><br>  Your study ID is:  " + activeStudyQuestionManager.userId;
+        question.innerHTML = "Welcome to the XAI User Study.<br><br>  Your participant ID is:  " + activeStudyQuestionManager.userId;
     }
     else {
         question.innerHTML = "Please wait for the researcher to signal when to begin.";
