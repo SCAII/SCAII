@@ -67,6 +67,7 @@ def replace_all_delimeters_with_commas(line):
 def get_key_for_line(line):
     key = "UNKNOWN"
     fields = line.split(',')
+    print("{}".format(line))
     if ("userClick" in line):
         key = get_key_for_user_click_line(line)
     elif ("startMouseOverSaliencyMap" in line):
@@ -83,6 +84,7 @@ def get_key_for_line(line):
     return key
 
 def get_key_for_user_click_line(line):
+    key = "UNKNOWN"
     if ("answerQuestion" in line):
         #need to look into the saved off click
         if ("(NA)" in line):
@@ -122,6 +124,7 @@ def unescape_all(s):
     with_comma = with_underscore.replace("ESCAPED-COMMA", ",")
     with_colon = with_comma.replace("ESCAPED-COLON", ":")
     with_semicolon = with_colon.replace("ESCAPED-SEMICOLON", ";")
+    with_semicolon = with_colon.replace("ESCAPED-NEWLINE", "\n")
     return with_semicolon
 
 def escape_underscore(key, line):
