@@ -96,8 +96,8 @@ class TestFlatteningQa(unittest.TestCase):
         self.assertEqual(obj["userClick.coordY"], "654")
         self.assertEqual(obj["userClick.region"], "QnA")
         self.assertEqual(obj["userClick.target"], "button-save")
-        self.assertEqual(obj["userClick.answerQuestion.clickStep"], "75")
-        self.assertEqual(obj["userClick.answerQuestion.questionId"], "2")
+        self.assertEqual(obj["userClick.answerQuestion.clickStep"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.questionId"], "75.2")
         self.assertEqual(obj["userClick.answerQuestion.answer1"], "\"asdf\"")
         self.assertEqual(obj["userClick.answerQuestion.answer2"], "NA") # TODO: ask jed if leave as NA or yes
 
@@ -166,8 +166,8 @@ class TestFlatteningQa(unittest.TestCase):
         self.assertEqual(obj["userClick.coordY"], "688")
         self.assertEqual(obj["userClick.region"], "QnA")
         self.assertEqual(obj["userClick.target"], "button-save")
-        self.assertEqual(obj["userClick.answerQuestion.clickStep"], "1")
-        self.assertEqual(obj["userClick.answerQuestion.questionId"], "2")
+        self.assertEqual(obj["userClick.answerQuestion.clickStep"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.questionId"], "1.2")
         self.assertEqual(obj["userClick.answerQuestion.answer1"], "\"Goodbye\"")
         self.assertEqual(obj["userClick.answerQuestion.answer2"], "NA")
 
@@ -236,8 +236,8 @@ class TestFlatteningQa(unittest.TestCase):
         self.assertEqual(obj["userClick.coordY"], "693")
         self.assertEqual(obj["userClick.region"], "QnA")
         self.assertEqual(obj["userClick.target"], "button-save")
-        self.assertEqual(obj["userClick.answerQuestion.clickStep"], "1")
-        self.assertEqual(obj["userClick.answerQuestion.questionId"], "1")
+        self.assertEqual(obj["userClick.answerQuestion.clickStep"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.questionId"], "1.1")
         self.assertEqual(obj["userClick.answerQuestion.answer1"], "\"Hello Debugger\"")
         self.assertEqual(obj["userClick.answerQuestion.answer2"], "NA")
 
@@ -306,8 +306,8 @@ class TestFlatteningQa(unittest.TestCase):
         self.assertEqual(obj["userClick.coordY"], "700")
         self.assertEqual(obj["userClick.region"], "QnA")
         self.assertEqual(obj["userClick.target"], "button-save")
-        self.assertEqual(obj["userClick.answerQuestion.clickStep"], "1")
-        self.assertEqual(obj["userClick.answerQuestion.questionId"], "0")
+        self.assertEqual(obj["userClick.answerQuestion.clickStep"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.questionId"], "1.0")
         self.assertEqual(obj["userClick.answerQuestion.answer1"], "\"asdf\"")
         self.assertEqual(obj["userClick.answerQuestion.answer2"], "NA")
 

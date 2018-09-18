@@ -154,8 +154,6 @@ class TestFlatteningExplan(unittest.TestCase):
         line = "tutorial.scr,9-13-2018,12:23:49:897,1536866629897,1,1.0,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false"
         extraction_map = extractionMap.get_extraction_map()
         obj = parse_line(line,extraction_map)
-        print("**************************")
-        print(obj)
         self.assertEqual(obj["stepIntoDecisionPoint"], "NA")
         self.assertEqual(obj["showQuestion"], "NA")
         self.assertEqual(obj["hideEntityTooltips"], "NA")
