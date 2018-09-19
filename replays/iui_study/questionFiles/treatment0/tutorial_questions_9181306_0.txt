@@ -1,0 +1,8 @@
+1;0;plain:NA:NA;How many quadrants does the game map have?
+1;1;plain:NA:NA;What are the quadrant names?
+75;0;plain:NA:NA;What is the current health of the object in Q2?
+75;1;plain:NA:NA;What is the name of the object in Q1?
+75;2;plain:NA:NA;What is the maximum health of the object in Q4?
+124;0;plain:NA:NA;What is the attack damage of a friendly city?
+124;1;plain:NA:NA;What is the maximum health of a friendly small fort?
+summary;0;plain:NA:NA;At the end of the main task, you will see questions like this. For now, please just type "I am happy to be here".

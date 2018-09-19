@@ -1,0 +1,9 @@
+1;1;waitForClick:rewardBar:Please click on the Friendly Fort Destroyed bar to the right;What does this bar mean?
+1;2;waitForClick:gameboard:Click on the Top-left object;What color are friendly units on the game map?
+75;0;waitForClick:saliencyMap:Please click on the Friend/Enemy map below.;Which object(s) is this map covering?
+75;1;plain:NA:NA;What is the attack damage of the big enemy forts?
+75;2;waitForClick:gameboard:Click on the least healthy big enemy fort;What is the maximum health of a small enemy fort?
+75;3;plain:NA:NA;What is the maximum health of a big enemy fort?
+124;0;plain:NA:NA;What is the attack damage of a large city?
+124;1;plain:NA:NA;What is the maximum health of a friendly small fort?
+summary;0;plain:NA:NA;At the end of the main task, you will see questions like this. For now, please just type "I am happy to be here".

@@ -1,0 +1,11 @@
+1;0;waitForPredictionClick:gameboard:On the game map (above), which object do you think the AI will send the tank to attack? Please click on that object.;Why do you think that the AI will attack this object? (A few sentences, as detailed as possible).
+1;1;waitForClick:gameboard:After playing this decision, click on the object on the game map (above) that you think the agent was paying the most attention to.;For what reason(s) would the AI pay attention to this object? (A few sentences, as detailed as possible)
+1;2;plain:NA:NA;Do you think there is a flaw in the AI's reasoning? If so, what is that flaw?
+63;0;waitForPredictionClick:gameboard:On the game map (above), which object do you think the AI will send the tank to attack? Please click on that object.;Why do you think that the AI will attack this object? (A few sentences, as detailed as possible).
+63;1;waitForClick:gameboard:After playing this decision, click on the object on the game map (above) that you think the AI was paying the most attention to.;For what reason(s) would the AI pay attention to this object? (A few sentences, as detailed as possible)
+63;2;plain:NA:NA;Do you think there is a flaw in the AI's reasoning? If so, what is that flaw?
+105;0;waitForPredictionClick:gameboard:On the game map (above), which object do you think the AI will send the tank to attack? Please click on that object.;Why do you think that the AI will attack this object? (A few sentences, as detailed as possible).
+105;1;waitForClick:gameboard:After playing this decision, click on the object on the game map (above) that you think the AI was paying the most attention to.;For what reason(s) would the AI pay attention to this object? (A few sentences, as detailed as possible)
+105;2;plain:NA:NA;Do you think there is a flaw in the AI's reasoning? If so, what is that flaw?
+summary;0;plain:NA:NA;Please describe the steps in the AI's approach or method. (A few sentences, as detailed as possible.)
+
