@@ -8,6 +8,9 @@ def parse_line(line, extraction_map):
     answer_flag = special_answer_case(key)
     if (flag == True):
         line = escape_underscore(key, line)
+    
+    if (answer_flag == True or key == "answerQuestion.userClick.NA"):
+        line = escape_parenth(line)
 
     if (answer_flag == True):
         semi_final_line = replace_all_delimeters_with_commas_after_field_6_and_answer_field(key, line)
@@ -129,7 +132,9 @@ def unescape_all(s):
     with_colon = with_comma.replace("ESCAPED-COLON", ":")
     with_semicolon = with_colon.replace("ESCAPED-SEMICOLON", ";")
     with_semicolon = with_colon.replace("ESCAPED-NEWLINE", "\n")
-    return with_semicolon
+    with_left_parenth = with_semicolon.replace("ESCAPED-LEFT-PARENTH", "(")
+    with_right_parenth = with_left_parenth.replace("ESCAPED-RIGHT-PARENTH", ")")
+    return with_right_parenth
 
 def escape_underscore(key, line):
     if (key == "clickSaliencyMap"):
@@ -152,6 +157,35 @@ def escape_underscore(key, line):
     else: 
         new_line = line.replace("_", "ESCAPED-UNDERSCORE")
         return new_line
+
+def escape_parenth (line):
+
+    fields = line.split(",")
+    field  = fields[6]
+    subfields = field.split(';')
+    subfield3 = subfields[3]
+    subsubfields = subfield3.split(':')
+    answer_fields = subsubfields[1]
+    answer_subfields = answer_fields.split('_')
+    answer_one = answer_subfields[1]
+    answer_two = answer_subfields[2]
+
+    new_answer_one = answer_one.replace("(", "ESCAPED-LEFT-PARENTH")
+    new_answer_two = answer_two.replace("(", "ESCAPED-LEFT-PARENTH")
+    new_new_answer_one = new_answer_one.replace(")", "ESCAPED-RIGHT-PARENTH")
+    new_new_answer_two = new_answer_two.replace(")", "ESCAPED-RIGHT-PARENTH")
+
+    answer_subfields[1] = new_new_answer_one
+    answer_subfields[2] = new_new_answer_two
+    new_answer_fields = '_'.join([str(h) for h in answer_subfields])
+    subsubfields[1] = new_answer_fields
+    new_subfield3 = ':'.join([str(i) for i in subsubfields])
+    subfields[3] = new_subfield3
+    new_field = ';'.join([str(j) for j in subfields])
+    fields[6] = new_field
+    new_line = ','.join([str(k) for k in fields])
+
+    return new_line
 
 def replace_all_delimeters_with_commas_after_field_6_and_answer_field(key, line):
 
