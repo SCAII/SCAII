@@ -3,10 +3,17 @@ def parse_line(line, extraction_map):
     key = get_key_for_line(line)
     extraction_guide = extraction_map[key]
     obj = get_blank_line_object()
+
     flag = special_line_case(key)
+    answer_flag = special_answer_case(key)
     if (flag == True):
         line = escape_underscore(key, line)
-    semi_final_line = replace_all_delimeters_with_commas_after_field_6(line)
+
+    if (answer_flag == True):
+        semi_final_line = replace_all_delimeters_with_commas_after_field_6_and_answer_field(key, line)
+    else:
+        semi_final_line = replace_all_delimeters_with_commas_after_field_6(line)
+    
     # get rid of ignored data at end of line so can compare field counts.
     final_line = semi_final_line.replace(",false,false,false,false,false,false", "")
     guide_parts = extraction_guide.split(",")
@@ -67,6 +74,10 @@ def get_key_for_line(line):
         key = "startMouseOverSaliencyMap"
     elif ("endMouseOverSaliencyMap" in line):
         key = "endMouseOverSaliencyMap"
+    elif ("waitForResearcherStart" in line):
+        key = "waitForResearcherStart"
+    elif ("waitForResearcherEnd" in line):
+        key = "waitForResearcherEnd"
     else:
         # uses primary discriminator as key
         field  = fields[6]
@@ -106,6 +117,12 @@ def special_line_case(key):
     else:
         return False
 
+def special_answer_case(key):
+    if (key == "answerQuestion.userClick.clickEntity" or key == "answerQuestion.userClick.selectedRewardBar" or key == "answerQuestion.userClick.clickSaliencyMap"):
+        return True
+    else:
+        return False
+
 def unescape_all(s):
     with_underscore = s.replace("ESCAPED-UNDERSCORE", "_")
     with_comma = with_underscore.replace("ESCAPED-COMMA", ",")
@@ -136,6 +153,26 @@ def escape_underscore(key, line):
         new_line = line.replace("_", "ESCAPED-UNDERSCORE")
         return new_line
 
+def replace_all_delimeters_with_commas_after_field_6_and_answer_field(key, line):
+
+
+    entries = line.split('_(', 1)
+    start_of_click_answer_entry = entries[1]
+    find_end_of_click_answer = start_of_click_answer_entry.split(')')
+
+    answer_entry = find_end_of_click_answer[0]
+    button_save_info = entries[0]
+
+    if (key == "answerQuestion.userClick.clickSaliencyMap"):
+        answer_entry = escape_underscore("clickSaliencyMap", answer_entry)
+
+    new_string = replace_all_delimeters_with_commas_after_field_6(button_save_info)
+    new_answer_string = replace_all_delimeters_with_commas_after_field_6(answer_entry)
+
+    new_new_string = new_string + ',' + new_answer_string
+
+    return new_new_string
+
 def get_blank_line_object():
     obj = {}
     obj["fileName"] = "NA"
@@ -151,6 +188,8 @@ def get_blank_line_object():
     obj["showEntityTooltip.tipQuadrant"] = "NA"
     obj["startMouseOverSaliencyMap"] = "NA"
     obj["endMouseOverSaliencyMap"] = "NA"
+    obj["waitForResearcherStart"] = "NA"
+    obj["waitForResearcherEnd"] = "NA"
 
     obj["userClick"] = "NA"
     obj["userClick.coordX"] = "NA"

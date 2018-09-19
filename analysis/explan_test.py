@@ -6,6 +6,8 @@ import extractionMap as extractionMap
 #                               "tutorial.scr,9-13-2018,12:30:6:570,1536867006570,1,1.0,userClick:771_514;region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Size;clickSaliencyMap:Size_(friendly-Big Fort_upperLeftQuadrant),false,false,false,false,false,false"
 # startMouseOverSaliencyMap:    "tutorial.scr,9-13-2018,12:23:49:897,1536866629897,1,1.0,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false"
 # endMouseOverSaliencyMap:      "tutorial.scr,9-13-2018,12:23:49:910,1536866629910,1,1.0,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Tank;endMouseOverSaliencyMap:Tank,false,false,false,false,false,false"
+# waitForResearcherStart:       "task1.scr,9-18-2018,13:23:21:67,1537302201067,1,61.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false"
+# waitForResearcherEnd:         "task1.scr,9-18-2018,13:23:27:957,1537302207957,61,61.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false"
 
 class TestFlatteningExplan(unittest.TestCase):
 
@@ -20,6 +22,8 @@ class TestFlatteningExplan(unittest.TestCase):
         self.assertEqual(obj["showEntityTooltip.tipQuadrant"], "NA")
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
+        self.assertEqual(obj["waitForResearcherStart"], "NA")
+        self.assertEqual(obj["waitForResearcherEnd"], "NA")
 
         self.assertEqual(obj["userClick"], "yes")
         self.assertEqual(obj["userClick.coordX"], "721")
@@ -91,6 +95,8 @@ class TestFlatteningExplan(unittest.TestCase):
         self.assertEqual(obj["showEntityTooltip.tipQuadrant"], "NA")
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
+        self.assertEqual(obj["waitForResearcherStart"], "NA")
+        self.assertEqual(obj["waitForResearcherEnd"], "NA")
 
         self.assertEqual(obj["userClick"], "yes")
         self.assertEqual(obj["userClick.coordX"], "771")
@@ -154,8 +160,6 @@ class TestFlatteningExplan(unittest.TestCase):
         line = "tutorial.scr,9-13-2018,12:23:49:897,1536866629897,1,1.0,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false"
         extraction_map = extractionMap.get_extraction_map()
         obj = parse_line(line,extraction_map)
-        print("**************************")
-        print(obj)
         self.assertEqual(obj["stepIntoDecisionPoint"], "NA")
         self.assertEqual(obj["showQuestion"], "NA")
         self.assertEqual(obj["hideEntityTooltips"], "NA")
@@ -163,6 +167,8 @@ class TestFlatteningExplan(unittest.TestCase):
         self.assertEqual(obj["showEntityTooltip.tipQuadrant"], "NA")
         self.assertEqual(obj["startMouseOverSaliencyMap"], "Tank")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
+        self.assertEqual(obj["waitForResearcherStart"], "NA")
+        self.assertEqual(obj["waitForResearcherEnd"], "NA")
 
         self.assertEqual(obj["userClick"], "NA")
         self.assertEqual(obj["userClick.coordX"], "NA")
@@ -233,6 +239,8 @@ class TestFlatteningExplan(unittest.TestCase):
         self.assertEqual(obj["showEntityTooltip.tipQuadrant"], "NA")
         self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
         self.assertEqual(obj["endMouseOverSaliencyMap"], "Tank")
+        self.assertEqual(obj["waitForResearcherStart"], "NA")
+        self.assertEqual(obj["waitForResearcherEnd"], "NA")
 
         self.assertEqual(obj["userClick"], "NA")
         self.assertEqual(obj["userClick.coordX"], "NA")
@@ -290,3 +298,146 @@ class TestFlatteningExplan(unittest.TestCase):
 
         self.assertEqual(obj["userClick.touchCumRewardLabel"], "NA")
         self.assertEqual(obj["userClick.touchCumRewardValueFor"], "NA")
+
+    def test_waitForResearcherStart(self):
+        line = "task1.scr,9-18-2018,13:23:21:67,1537302201067,1,61.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false"
+        extraction_map = extractionMap.get_extraction_map()
+        obj = parse_line(line,extraction_map)
+        self.assertEqual(obj["stepIntoDecisionPoint"], "NA")
+        self.assertEqual(obj["showQuestion"], "NA")
+        self.assertEqual(obj["hideEntityTooltips"], "NA")
+        self.assertEqual(obj["showEntityTooltip.entityInfo"], "NA")
+        self.assertEqual(obj["showEntityTooltip.tipQuadrant"], "NA")
+        self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
+        self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
+        self.assertEqual(obj["waitForResearcherStart"], "yes")
+        self.assertEqual(obj["waitForResearcherEnd"], "NA")
+
+        self.assertEqual(obj["userClick"], "NA")
+        self.assertEqual(obj["userClick.coordX"], "NA")
+        self.assertEqual(obj["userClick.coordY"], "NA")
+        self.assertEqual(obj["userClick.region"], "waitScreen")
+        self.assertEqual(obj["userClick.target"], "enter-wait-screen")
+        self.assertEqual(obj["userClick.answerQuestion.clickStep"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.questionId"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.answer1"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.answer2"], "NA")
+
+        self.assertEqual(obj["userClick.answerQuestion.userClick"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.fileName"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.date"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.time"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.1970Sec"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.decisionPoint"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.questionId"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.coordX"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.coordY"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.region"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.target"], "NA")
+
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickEntity.clickGameEntity"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickEntity.clickQuadrant"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickEntity.coordX"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickEntity.coordY"], "NA")
+
+        self.assertEqual(obj["userClick.answerQuestion.userClick.selectedRewardBar"], "NA")
+
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickSaliencyMap"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickSaliencyMap.clickGameEntity"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickSaliencyMap.clickQuadrant"], "NA")
+
+        self.assertEqual(obj["userClick.timelineClick"], "NA")
+        self.assertEqual(obj["userClick.jumpToDecisionPoint"], "NA")
+        self.assertEqual(obj["userClick.clickTimeLineBlocker"], "NA")
+        self.assertEqual(obj["userClick.play"], "NA")
+        self.assertEqual(obj["userClick.pause"], "NA")
+        self.assertEqual(obj["userClick.touchStepProgressLabel"], "NA")
+        self.assertEqual(obj["userClick.clickGameQuadrant"], "NA")
+
+        self.assertEqual(obj["userClick.clickEntity.clickGameEntity"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.clickQuadrant"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordX"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordY"], "NA")
+
+        self.assertEqual(obj["userClick.clickActionLabel"], "NA")
+        self.assertEqual(obj["userClick.clickActionLabelDenied"], "NA")
+        self.assertEqual(obj["userClick.selectedRewardBar"], "NA")
+
+        self.assertEqual(obj["userClick.clickSaliencyMap"], "NA")
+        self.assertEqual(obj["userClick.clickSaliencyMap.clickGameEntity"], "NA")
+        self.assertEqual(obj["userClick.clickSaliencyMap.clickQuadrant"], "NA")
+
+        self.assertEqual(obj["userClick.touchCumRewardLabel"], "NA")
+        self.assertEqual(obj["userClick.touchCumRewardValueFor"], "NA")
+
+    def test_waitForResearcherEnd(self):
+        line = "task1.scr,9-18-2018,13:23:27:957,1537302207957,61,61.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false"
+        extraction_map = extractionMap.get_extraction_map()
+        obj = parse_line(line,extraction_map)
+        self.assertEqual(obj["stepIntoDecisionPoint"], "NA")
+        self.assertEqual(obj["showQuestion"], "NA")
+        self.assertEqual(obj["hideEntityTooltips"], "NA")
+        self.assertEqual(obj["showEntityTooltip.entityInfo"], "NA")
+        self.assertEqual(obj["showEntityTooltip.tipQuadrant"], "NA")
+        self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
+        self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
+        self.assertEqual(obj["waitForResearcherStart"], "NA")
+        self.assertEqual(obj["waitForResearcherEnd"], "yes")
+
+        self.assertEqual(obj["userClick"], "NA")
+        self.assertEqual(obj["userClick.coordX"], "NA")
+        self.assertEqual(obj["userClick.coordY"], "NA")
+        self.assertEqual(obj["userClick.region"], "waitScreen")
+        self.assertEqual(obj["userClick.target"], "user-wait-button-continue")
+        self.assertEqual(obj["userClick.answerQuestion.clickStep"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.questionId"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.answer1"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.answer2"], "NA")
+
+        self.assertEqual(obj["userClick.answerQuestion.userClick"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.fileName"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.date"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.time"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.1970Sec"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.decisionPoint"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.questionId"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.coordX"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.coordY"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.region"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.target"], "NA")
+
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickEntity.clickGameEntity"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickEntity.clickQuadrant"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickEntity.coordX"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickEntity.coordY"], "NA")
+
+        self.assertEqual(obj["userClick.answerQuestion.userClick.selectedRewardBar"], "NA")
+
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickSaliencyMap"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickSaliencyMap.clickGameEntity"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickSaliencyMap.clickQuadrant"], "NA")
+
+        self.assertEqual(obj["userClick.timelineClick"], "NA")
+        self.assertEqual(obj["userClick.jumpToDecisionPoint"], "NA")
+        self.assertEqual(obj["userClick.clickTimeLineBlocker"], "NA")
+        self.assertEqual(obj["userClick.play"], "NA")
+        self.assertEqual(obj["userClick.pause"], "NA")
+        self.assertEqual(obj["userClick.touchStepProgressLabel"], "NA")
+        self.assertEqual(obj["userClick.clickGameQuadrant"], "NA")
+
+        self.assertEqual(obj["userClick.clickEntity.clickGameEntity"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.clickQuadrant"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordX"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.coordY"], "NA")
+
+        self.assertEqual(obj["userClick.clickActionLabel"], "NA")
+        self.assertEqual(obj["userClick.clickActionLabelDenied"], "NA")
+        self.assertEqual(obj["userClick.selectedRewardBar"], "NA")
+
+        self.assertEqual(obj["userClick.clickSaliencyMap"], "NA")
+        self.assertEqual(obj["userClick.clickSaliencyMap.clickGameEntity"], "NA")
+        self.assertEqual(obj["userClick.clickSaliencyMap.clickQuadrant"], "NA")
+
+        self.assertEqual(obj["userClick.touchCumRewardLabel"], "NA")
+        self.assertEqual(obj["userClick.touchCumRewardValueFor"], "NA")
+
