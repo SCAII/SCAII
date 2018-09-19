@@ -85,7 +85,7 @@ def get_events_for_treatment(t):
     map["timelineClick"]              = [ "0", "1", "2", "3"]
     map["jumpToDecisionPoint"]        = [ "0", "1", "2", "3"]
     map["clickTimeLineBlocker"]       = [ "0", "1", "2", "3"]
-    map["rewind"]                     = [ "0", "1", "2", "3"]
+    #map["rewind"]                     = [ "0", "1", "2", "3"]
     map["play"]                       = [ "0", "1", "2", "3"]
     map["pause"]                      = [ "0", "1", "2", "3"]
     map["touchStepProgressLabel"]     = [ "0", "1", "2", "3"]
@@ -99,14 +99,52 @@ def get_events_for_treatment(t):
     map["endMouseOverSaliencyMap"]    = [      "1",      "3"]
     map["touchCumRewardLabel"]        = [ "0", "1", "2", "3"]
     map["touchCumRewardValueFor"]     = [ "0", "1", "2", "3"]
+    map["waitForResearcherStart"]     = [ "0", "1", "2", "3"]
+    map["waitForResearcherEnd"]       = [ "0", "1", "2", "3"]
     result = []
     for key in map:
         treatments_supported = map[key]
         if t in treatments_supported:
             result.append(key)
-    result.sort
+    result.sort()
     return result
 
+def tasks_present_check(filepath):
+    print("\n\ntask integrity checking...")
+    f = open(filepath)
+    lines = f.readlines()
+    prior_file = ""
+    files_seen = []
+    for line in lines:
+        parts = line.split(",")
+        cur_file = parts[0]
+        if (cur_file != prior_file):
+            # skip the first row
+            if (cur_file != "date"):
+                files_seen.append(parts[0])
+        prior_file = cur_file
+    if not(is_correct_files_in_play(files_seen)):
+        print("FAIL: files don't match the sequence tutorial, task1, task2, task3, task4")
+        print(files_seen)
+    else:
+        print("PASS:Tasks data present for tutorial, task1, task2, task3, task4")
+    f.close()
+
+def is_correct_files_in_play(files):
+    if (len(files) != 5):
+        return False
+    if (files[0] != "tutorial.scr"):
+        return False
+    if (files[1] != "task1.scr"):
+        return False
+    if (files[2] != "task2.scr"):
+        return False
+    if (files[3] != "task3.scr"):
+        return False
+    if (files[4] != "task4.scr"):
+        return False
+    return True
 
 if __name__ == '__main__':
     histogram(sys.argv[1])
+    tasks_present_check(sys.argv[1])
