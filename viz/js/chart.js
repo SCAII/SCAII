@@ -292,7 +292,7 @@ function getBarChartManager(barChartMessage,selectionManager,saliencyDisplayMana
 			},
 			'width':700,
             'height':400,
-            colors: ['#7293CB','#E1974C',  '#84BA5B','#D35E60', '#9067A7', '#AB6857',  '#CCC210',  '#000044']
+            colors: ['#1B2D4B','#E1974C',  '#84BA5B','#D35E60', '#9067A7', '#AB6857',  '#CCC210',  '#000044']
 		  };
 		  return options;
 	}

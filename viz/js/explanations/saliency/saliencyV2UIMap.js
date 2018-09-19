@@ -28,7 +28,9 @@ function getSaliencyV2UIMap() {
                 var cellValue = channel.cells[index];
                 var normVal = lookupNormalizationValue(channel.normalizationKey);
                 //console.log( "normalization Factor: " + normVal );
-                ctx.fillStyle = getOverlayOpacityBySaliencyRGBAString(Number(cellValue) / Number(normVal), gameboardFlag);
+                //console.log( channel.name );
+                //console.log( "Cell Value: " + Number( cellValue ) );
+                ctx.fillStyle = getOverlayOpacityBySaliencyRGBAString(Number(cellValue) / Number(normVal), gameboardFlag, cellValue);
                 //console.log( "ctx.fillStyle: " + ctx.fillStyle );
                 ctx.fillRect(x*gameScaleFactor, y*gameScaleFactor, gameScaleFactor, gameScaleFactor);
                 ctx.fill();
@@ -423,7 +425,7 @@ function getOverlayOpacityBySaliencyRGBAStringQuantized(saliencyValue, gameboard
     return result;
   }
 
-  function getOverlayOpacityBySaliencyRGBAStringHeatMap(saliencyValue, gameboardFlag) {
+  function getOverlayOpacityBySaliencyRGBAStringHeatMap(saliencyValue, gameboardFlag, cellValue) {
     var reverseSaliency = 1.0 - saliencyValue;
     var color = {};
     if( saliencyValue < 0.33 ){
@@ -453,14 +455,14 @@ function getOverlayOpacityBySaliencyRGBAStringQuantized(saliencyValue, gameboard
     //color['A'] = 0.5;
     //color['A'] = saliencyValue;
     var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
-    if( color[ 'B' ] > 255 ){
-        console.log ( "HALP!" );
-        console.log( "Saliency Value:" + saliencyValue );
-        console.log( "Math: " + (saliencyValue - 0.66) * 3.0 );
-        console.log( "Blue: " + color[ 'B' ] );
-        console.log( "Red: " + color[ 'R' ] );
-        console.log( "Green: " + color[ 'G' ] );
-    }
+    // if( color[ 'B' ] > 255 ){
+    //     console.log( "Cell Value: " + cellValue );
+    //     console.log( "Saliency Value:" + saliencyValue );
+    //     console.log( "Math: " + (saliencyValue - 0.66) * 3.0 );
+    //     console.log( "Blue: " + color[ 'B' ] );
+    //     console.log( "Red: " + color[ 'R' ] );
+    //     console.log( "Green: " + color[ 'G' ] );
+    // }
     return result;
   }
 
@@ -559,8 +561,8 @@ function lookupNormalizationValue (key) {
    * Date Made:     8/23/2018
    * Date Mod:      8/23/2018
    **************************************************************************************************/
-  function getOverlayOpacityBySaliencyRGBAString(saliencyValue, gameboardFlag) {
+  function getOverlayOpacityBySaliencyRGBAString(saliencyValue, gameboardFlag, cellValue) {
     //return getOverlayOpacityBySaliencyRGBAStringQuantized(saliencyValue, gameboardFlag);
-    return getOverlayOpacityBySaliencyRGBAStringHeatMap( saliencyValue, gameboardFlag );
+    return getOverlayOpacityBySaliencyRGBAStringHeatMap( saliencyValue, gameboardFlag, cellValue );
     //return getOverlayOpacityBySaliencyRGBAStringRainbow( saliencyValue, gameboardFlag );
   }

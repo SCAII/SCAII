@@ -13,7 +13,7 @@ import extractionMap as extractionMap
 def main():
     # filepath = sys.argv[1]
     #of = open("../../../formatted_answer_9181396_3.txt")
-    filepath = "../../../replays/answers_9181306_0.txt"
+    filepath = "../../../replays/answers_9190903_1.txt"
 
     # if not os.path.isfile(filepath):
     #     print("File path {} does not exist. Exiting...".format(filepath))
