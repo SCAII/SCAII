@@ -75,6 +75,6 @@ var main = function () {
 	}
 }
 function debug(position, message){
-	$("#debug" + position).html(message);
+	//$("#debug" + position).html(message);
 }
 main();

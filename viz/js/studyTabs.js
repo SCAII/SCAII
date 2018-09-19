@@ -58,7 +58,7 @@ function getTabManager() {
 
     tm.setTabIndex = function(index) {
         this.currentTabIndex = index;
-        $("#debug2").html("tab index is now" + index);
+        //$("#debug2").html("tab index is now" + index);
     }
     tm.nextTab = function() {
         var indexOfNextTab = Number(this.currentTabIndex) + 1;
@@ -209,7 +209,7 @@ function getTabManager() {
         this.setTabIndex(indexOfTargetTab);
         loadTab(tabId, replayFileForTab, loadingMessage);
         enableTab(tabId);
-        $("#debug1").html("tab is " + tabId);
+        //$("#debug1").html("tab is " + tabId);
     }
     return tm;
 }
