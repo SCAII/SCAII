@@ -148,6 +148,15 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
                 this.accessManager.setRelationToFinalDecisionPoint("before");
             }
             else if (currentStep == "summary") {
+                if (!tabManager.hasNextTab()) {
+                    var logLine = templateMap["waitForResearcherStart"];
+                    logLine = logLine.replace("<CONTINUE_BUTTON>", "yes");
+                    logLine = logLine.replace("<REGION>", "waitScreen");
+                    logLine = logLine.replace("<TARGET>", "enter-wait-screen");
+                    userActionMonitor.pendingLogLine = logLine;
+                    stateMonitor.setUserAction(logLine);
+                    this.renderer.renderWaitScreen();
+                }
                 this.accessManager.setRelationToFinalDecisionPoint("finalStep");
             }
             else {
@@ -176,6 +185,12 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     }
 
     sqm.makeUserWaitForInstructions = function(){
+        var logLine = templateMap["waitForResearcherStart"];
+        logLine = logLine.replace("<CONTINUE_BUTTON>", "yes");
+        logLine = logLine.replace("<REGION>", "waitScreen");
+        logLine = logLine.replace("<TARGET>", "enter-wait-screen");
+        userActionMonitor.pendingLogLine = logLine;
+        stateMonitor.setUserAction(logLine);
         this.renderer.renderWaitScreen();
     }
     
@@ -335,7 +350,7 @@ function acceptAnswer(e) {
                 tabManager.nextTab();
             }
             else {
-                renderer.poseThankYouScreen();
+                // renderer.poseThankYouScreen();
             }
         }
         asqm.accessManager.setQuestionState("answered");

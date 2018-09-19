@@ -95,7 +95,8 @@ function configureRewindButton(){
 	rewindButton.setAttribute("id", "rewindButton");
 	rewindButton.innerHTML = '<img src="imgs/rewind.png", height="14px" width="14px"/>';
 	rewindButton.onclick = tryRewind;
-	$("#rewind-control").append(rewindButton);
+	// Removing due to bugs found in study
+	//$("#rewind-control").append(rewindButton);
 	$("#rewindButton").css("padding-top","4px");
 	$("#rewindButton").css("margin-left","150px");
 	$("#rewindButton").css("opacity", "0.6");
@@ -109,7 +110,7 @@ function configurePauseResumeButton(){
 	$("#pause-play-control").append(pauseResumeButton);
 	$("#pauseResumeButton").css("padding-top","2px");
 	$("#pauseResumeButton").css("padding-bottom","0px");
-	$("#pauseResumeButton").css("margin-left","20px");
+	$("#pauseResumeButton").css("margin-left","158px");
 	pauseResumeButton.onclick = tryPause;
 	$("#pauseResumeButton").css("opacity", "0.6");
 	pauseResumeButton.disabled = true;

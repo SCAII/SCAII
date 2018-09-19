@@ -197,21 +197,21 @@ function getLabelForInfo(s){
     return label;
 }
 function getDamageDealtStringForUnit(unitType){
-    var result = "Attack Damage: ";
+    var result = "Avg Attack Damage: ";
     if (unitType == "Tank"){
-        return result + "50 points/sec";
+        return result + "1 point/step";
     }
     else if (unitType == "City"){
-        return result + "0 points/sec";
+        return result + "0 points/step";
     }
     else if (unitType == "Town"){
-        return result + "0 points/sec";
+        return result + "0 points/step";
     }
     else if (unitType == "Big Fort"){
-        return result + "50 points/sec";
+        return result + "2 points/step";
     }
     else if (unitType == "Small Fort"){
-        return result + "25 points/sec";
+        return result + "1 point/step";
     }
     else {
         return result + "unknown";
@@ -238,10 +238,10 @@ function collectUnitInfoForConciseMessage(ttInfo, nonDebugKeys) {
 
     var friendLabel = document.createElement("div");
     if (isFriend == "true"){
-        return "Friendly " + unitType;
+        return "Name: Friendly " + unitType;
     }
     else {
-        return "Enemy " + unitType;
+        return "Name: Enemy " + unitType;
     }
 }
 

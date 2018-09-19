@@ -317,26 +317,31 @@ function getStudyQuestionRenderer(questions) {
         // target:rewardBar
         // target:saliencyMap
     }
-    sqr.poseThankYouScreen = function(){
-        var div = document.createElement("DIV");
-        div.setAttribute("id", "thank-you-div");
-        div.setAttribute("class", "flex-column");
-        var widthNeededToCoverEverything = this.getWidthNeededToHideEverything();
-        div.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:" + zIndexMap["allTheWayToFront"] + ";margin:auto;font-family:Arial;padding:10px;width:" + widthNeededToCoverEverything + "px;height:1600px;background-color:" + this.bg + ";");
-        $('body').append(div);
+    /*********************************************************************************************************
+     * Author: Andrew Anderson
+     * Purpose: Renders the thank you screen at the end. I'll be commenting it out.
+     * Date Modified: 9/6/2018
+     ********************************************************************************************************/
+    // sqr.poseThankYouScreen = function(){
+    //     var div = document.createElement("DIV");
+    //     div.setAttribute("id", "thank-you-div");
+    //     div.setAttribute("class", "flex-column");
+    //     var widthNeededToCoverEverything = this.getWidthNeededToHideEverything();
+    //     div.setAttribute("style", "position:absolute;left:0px;top:0px;z-index:" + zIndexMap["allTheWayToFront"] + ";margin:auto;font-family:Arial;padding:10px;width:" + widthNeededToCoverEverything + "px;height:1600px;background-color:" + this.bg + ";");
+    //     $('body').append(div);
 
-        var row = document.createElement("DIV");
-        row.setAttribute("id", "thank-you-row");
-        row.setAttribute("class", "flex-row");
-        row.setAttribute("style", "margin-top:150px;font-family:Arial;padding:10px;");
-        $("#thank-you-div").append(row);
+    //     var row = document.createElement("DIV");
+    //     row.setAttribute("id", "thank-you-row");
+    //     row.setAttribute("class", "flex-row");
+    //     row.setAttribute("style", "margin-top:150px;font-family:Arial;padding:10px;");
+    //     $("#thank-you-div").append(row);
         
-        var thanks = document.createElement("DIV");
-        thanks.setAttribute("id", "thanks");
-        thanks.setAttribute("style", "margin-left:100px;font-family:Arial;font-size:18px;padding:10px;");
-        thanks.innerHTML = "Thank you for your participation in this study!";
-        $("#thank-you-row").append(thanks);
-    }
+    //     var thanks = document.createElement("DIV");
+    //     thanks.setAttribute("id", "thanks");
+    //     thanks.setAttribute("style", "margin-left:100px;font-family:Arial;font-size:18px;padding:10px;");
+    //     thanks.innerHTML = "Thank you for your participation in this study!";
+    //     $("#thank-you-row").append(thanks);
+    // }
 
     sqr.getWidthNeededToHideEverything = function(){
         return 3000;
@@ -359,7 +364,7 @@ function getStudyQuestionRenderer(questions) {
         question.setAttribute("id", "user-wait-question");
         question.setAttribute("style", "margin-left:100px;font-family:Arial;font-size:32px;padding:10px;");
         question.innerHTML = "Please wait for the researcher to tell you to continue.";
-        
+
         $("#user-wait-question-row").append(question);
 
 
@@ -404,7 +409,12 @@ function getStudyQuestionRenderer(questions) {
         next.setAttribute("disabled", "true");
         next.setAttribute("style", "margin-left:280px;font-family:Arial;font-size:18px;padding:10px;");
         next.innerHTML = "Continue";
-        next.onclick = function() {
+        next.onclick = function(e) {
+            var logLine = templateMap["waitForResearcherEnd"]
+            logLine = logLine.replace("<CONTINUE_BUTTON>", "yes");
+            logLine = logLine.replace("<REGION>", "waitScreen");
+            logLine = logLine.replace("<TARGET>", "user-wait-button-continue");
+            stateMonitor.setUserAction(logLine);
             $("#user-wait-div").remove();
         }
         $("#user-wait-button-row").append(next);
@@ -481,6 +491,11 @@ function showUserIdScreen(){
     next.innerHTML = "Start";
     next.onclick = function() {
         clearUserIdScreen();
+        var logLine = templateMap["waitForResearcherEnd"]
+        logLine = logLine.replace("<CONTINUE_BUTTON>", "yes");
+        logLine = logLine.replace("<REGION>", "waitScreen");
+        logLine = logLine.replace("<TARGET>", "user-wait-button-continue");
+        stateMonitor.setUserAction(logLine);
     }
     $("#user-id-button-row").append(next);
     hasShownWelcomeScreen = true;
