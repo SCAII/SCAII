@@ -197,7 +197,7 @@ function getLabelForInfo(s){
     return label;
 }
 function getDamageDealtStringForUnit(unitType){
-    var result = "Avg Attack Damage: ";
+    var result = "Attack Damage per step: ";
     if (unitType == "Tank"){
         return result + "Low";
     }
