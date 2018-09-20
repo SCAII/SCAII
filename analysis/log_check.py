@@ -2,6 +2,8 @@ import sys
 from flatten import get_key_for_line
 from extractionMap import get_extraction_map
 
+test_results = {}
+
 def histogram(filename):
     hist = {}
     print("processing log file {}".format(filename))
@@ -125,9 +127,11 @@ def tasks_present_check(filepath):
         prior_file = cur_file
     if not(is_correct_files_in_play(files_seen)):
         print("FAIL: files don't match the sequence tutorial, task1, task2, task3, task4")
+        test_results["tasks_present_check"] = "FAIL"
         print(files_seen)
     else:
         print("PASS:Tasks data present for tutorial, task1, task2, task3, task4")
+        test_results["tasks_present_check"] = "pass"
     f.close()
 
 def is_correct_files_in_play(files):
@@ -146,6 +150,7 @@ def is_correct_files_in_play(files):
     return True
 
 def q_and_a_integrity(filepath):
+    test_results["q_and_a_integrity"] = "pass"
     print("\n\nq_and_a integrity checking...")
     f = open(filepath)
     lines = f.readlines()
@@ -183,6 +188,7 @@ def q_and_a_integrity(filepath):
         
         if value != "posed,answered,":
             print("  \t{}\t\t{}\t***  ERROR! ***".format(key, value))
+            test_results["q_and_a_integrity"] = "FAIL"
         else:
             print("OK\t{}".format(key))
     f.close()
@@ -191,3 +197,6 @@ if __name__ == '__main__':
     histogram(sys.argv[1])
     tasks_present_check(sys.argv[1])
     q_and_a_integrity(sys.argv[1])
+    print("\n\n\n")
+    for key in test_results:
+        print("     {}\ttest {}".format(test_results[key], key))
