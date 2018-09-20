@@ -18,7 +18,8 @@ def parse_line(line, extraction_map):
         semi_final_line = replace_all_delimeters_with_commas_after_field_6(line)
     
     # get rid of ignored data at end of line so can compare field counts.
-    final_line = semi_final_line.replace(",false,false,false,false,false,false\n", "")
+    almost_final_line = semi_final_line.replace(",false,false,false,false,false,false\n", "")
+    final_line = almost_final_line.replace(",false,false,false,false,false,false", "")
     guide_parts = extraction_guide.split(",")
     final_line_parts = final_line.split(",")
     if (len(guide_parts) != len(final_line_parts)):
@@ -126,12 +127,12 @@ def special_answer_case(key):
     else:
         return False
 
-def unescape_all(s):
+def unescape_all(s):    
+    #with_comma = with_underscore.replace("ESCAPED-COMMA", ",")
+    #with_newline = with_comma.replace("ESCAPED-NEWLINE", "\n")
     with_underscore = s.replace("ESCAPED-UNDERSCORE", "_")
-    with_comma = with_underscore.replace("ESCAPED-COMMA", ",")
-    with_colon = with_comma.replace("ESCAPED-COLON", ":")
+    with_colon = with_underscore.replace("ESCAPED-COLON", ":")
     with_semicolon = with_colon.replace("ESCAPED-SEMICOLON", ";")
-    with_semicolon = with_colon.replace("ESCAPED-NEWLINE", "\n")
     with_left_parenth = with_semicolon.replace("ESCAPED-LEFT-PARENTH", "(")
     with_right_parenth = with_left_parenth.replace("ESCAPED-RIGHT-PARENTH", ")")
     return with_right_parenth
