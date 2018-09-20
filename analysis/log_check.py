@@ -1,0 +1,225 @@
+import sys
+from flatten import get_key_for_line
+from extractionMap import get_extraction_map
+
+test_results = {}
+
+def histogram(filename):
+    hist = {}
+    print("processing log file {}".format(filename))
+    f = open(filename)
+    lines = f.readlines()
+    print("read {} lines".format(len(lines)))
+    for line in lines:
+        t = get_type_for_line(line)
+        if t == "UNKOWN":
+            print("line had unknown type: {}".format(line))
+        hist[t] = hist.get(t, 0) + 1
+
+    f.close()
+    treatment = get_treatment_from_filename(filename)
+    types = get_events_for_treatment(treatment)
+    
+    print("\n\nline types present")
+    for typ in types:
+        if (typ in hist):
+            print("\t{}\t\t{}".format(hist[typ], typ))
+
+    print("\n\nmissing line types:")
+    for typ in types:
+        if not (typ in hist):
+            print("\t{}\t\t{}".format(0, typ))
+
+    if "UNKNOWN" in hist:
+        print("\n\nunknown line types:")
+        print("\t{}\t\t{}".format(hist["UNKNOWN"], "UNKNOWN"))
+
+def get_type_for_line(line):
+    t = "UNKNOWN"
+    fields = line.split(',')
+    #print("{}".format(line))
+    if ("userClick" in line):
+        t = get_type_for_user_click_line(line)
+    elif ("startMouseOverSaliencyMap" in line):
+        t = "startMouseOverSaliencyMap"
+    elif ("endMouseOverSaliencyMap" in line):
+        t = "endMouseOverSaliencyMap"
+    elif ("waitForResearcherStart" in line):
+        t = "waitForResearcherStart"
+    elif ("waitForResearcherEnd" in line):
+        t = "waitForResearcherEnd"
+    else:
+        # uses primary discriminator as key
+        field  = fields[6]
+        subfields = field.split(';')
+        subfield0 = subfields[0]
+        subsubfields = subfield0.split(':')
+        t = subsubfields[0]
+    return t
+
+def get_type_for_user_click_line(line):
+    t = "UNKNOWN"
+    if ("(NA)" in line):
+        t = "userClick"
+    else:
+        parts = line.split(",")
+        user_click_type_field = parts[6]
+        user_click_subfields = user_click_type_field.split(";")
+        user_click_type_subfield = user_click_subfields[3]
+        type_subfield_parts = user_click_type_subfield.split(":")
+        t = type_subfield_parts[0]
+    return t
+
+def get_treatment_from_filename(filepath):
+    import ntpath
+    fname = ntpath.basename(filepath)
+    parts = fname.split(".")
+    fileroot = parts[0]
+    fileroot_parts = fileroot.split("_")
+    treatment = fileroot_parts[2]
+    print("found treatment {}".format(treatment))
+    return treatment
+
+def get_events_for_treatment(t):
+    map = {}
+    map["stepIntoDecisionPoint"]      = [ "0", "1", "2", "3"]
+    map["showQuestion"]               = [ "0", "1", "2", "3"]
+    map["hideEntityTooltips"]         = [ "0", "1", "2", "3"]
+    map["showEntityTooltip"]          = [ "0", "1", "2", "3"]
+    map["userClick"]                  = [ "0", "1", "2", "3"]
+    map["answerQuestion"]             = [ "0", "1", "2", "3"]
+    map["timelineClick"]              = [ "0", "1", "2", "3"]
+    map["jumpToDecisionPoint"]        = [ "0", "1", "2", "3"]
+    map["clickTimeLineBlocker"]       = [ "0", "1", "2", "3"]
+    #map["rewind"]                     = [ "0", "1", "2", "3"]
+    map["play"]                       = [ "0", "1", "2", "3"]
+    map["pause"]                      = [ "0", "1", "2", "3"]
+    map["touchStepProgressLabel"]     = [ "0", "1", "2", "3"]
+    map["clickGameQuadrant"]          = [ "0", "1", "2", "3"]
+    map["clickEntity"]                = [ "0", "1", "2", "3"]
+    map["clickActionLabel"]           = [ "0", "1", "2", "3"]
+    map["clickActionLabelDenied"]     = [ "0", "1", "2", "3"]
+    map["selectedRewardBar"]          = [           "2", "3"]
+    map["clickSaliencyMap"]           = [      "1",      "3"]
+    map["startMouseOverSaliencyMap"]  = [      "1",      "3"]
+    map["endMouseOverSaliencyMap"]    = [      "1",      "3"]
+    map["touchCumRewardLabel"]        = [ "0", "1", "2", "3"]
+    map["touchCumRewardValueFor"]     = [ "0", "1", "2", "3"]
+    map["waitForResearcherStart"]     = [ "0", "1", "2", "3"]
+    map["waitForResearcherEnd"]       = [ "0", "1", "2", "3"]
+    result = []
+    for key in map:
+        treatments_supported = map[key]
+        if t in treatments_supported:
+            result.append(key)
+    result.sort()
+    return result
+
+def tasks_present_check(filepath):
+    print("\n\ntask integrity checking...")
+    f = open(filepath)
+    lines = f.readlines()
+    prior_file = ""
+    files_seen = []
+    for line in lines:
+        parts = line.split(",")
+        cur_file = parts[0]
+        if (cur_file != prior_file):
+            # skip the first row
+            if (cur_file != "date"):
+                files_seen.append(parts[0])
+        prior_file = cur_file
+    if not(is_correct_files_in_play(files_seen)):
+        print("FAIL: files don't match the sequence tutorial, task1, task2, task3, task4")
+        test_results["tasks_present_check"] = "FAIL"
+        print(files_seen)
+    else:
+        print("PASS:Tasks data present for tutorial, task1, task2, task3, task4")
+        test_results["tasks_present_check"] = "pass"
+    f.close()
+
+def is_correct_files_in_play(files):
+    if (len(files) != 5):
+        return False
+    if (files[0] != "tutorial.scr"):
+        return False
+    if (files[1] != "task1.scr"):
+        return False
+    if (files[2] != "task2.scr"):
+        return False
+    if (files[3] != "task3.scr"):
+        return False
+    if (files[4] != "task4.scr"):
+        return False
+    return True
+
+def q_and_a_integrity(filepath):
+    test_results["q_and_a_integrity"] = "pass"
+    print("\n\nq_and_a integrity checking...")
+    f = open(filepath)
+    lines = f.readlines()
+    # make key with filename+question_id
+    register = {}
+    keys_seen = []
+    for line in lines:
+        parts = line.split(",")
+        cur_file = parts[0]
+        if "showQuestion" in line:
+            question_id = line.split(",")[6].split(":")[1]
+            #print("showQuestion   {}".format(question_id))
+            key = cur_file + "_" + question_id
+            if not(key in keys_seen):
+                keys_seen.append(key)
+            if not(key in register):
+                register[key] = "posed,"
+            else:
+                register[key] = register[key] + "posed,"
+            
+
+        if "answerQuestion" in line:
+            question_id = line.split(",")[6].split(";")[3].split("_")[0].split(":")[1]
+            #print("answerQuestion {}".format(question_id))
+            key = cur_file + "_" + question_id
+            if not(key in keys_seen):
+                keys_seen.append(key)
+            if not(key in register):
+                register[key] = "answered,"
+            else:
+                register[key] = register[key] + "answered,"
+
+    for key in keys_seen:
+        value = register[key]
+        
+        if value != "posed,answered,":
+            print("  \t{}\t\t{}\t***  ERROR! ***".format(key, value))
+            test_results["q_and_a_integrity"] = "FAIL"
+        else:
+            print("OK\t{}".format(key))
+    f.close()
+
+def header_check(filepath):
+    test_results["header_check"] = "pass"
+    cnt = 0
+    print("\n\nq_and_a integrity checking...")
+    f = open(filepath)
+    lines = f.readlines()
+    for line in lines:
+        if ("date,time,secSince1970,decisionPoint,questionId,userAction" in line):
+            cnt += 1
+
+    if(cnt > 1):
+        print("***  ERROR!  ***")
+        test_results["header_check"] = "FAIL"
+        print("Looks like the logfile contains data from more than one session")
+
+    f.close()
+
+if __name__ == '__main__':
+    histogram(sys.argv[1])
+    tasks_present_check(sys.argv[1])
+    q_and_a_integrity(sys.argv[1])
+    header_check(sys.argv[1])
+    print("\n\n\n")
+    for key in test_results:
+        print("     {}\ttest {}".format(test_results[key], key))
+    
