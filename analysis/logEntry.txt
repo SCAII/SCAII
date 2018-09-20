@@ -1,0 +1,130 @@
+original format:                            "date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,"
+
+//Q&A
+showQuestion:                               "tutorial.scr,9-13-2018,13:53:41:122,1536872021122,1,1.1,showQuestion:1.2,false,false,false,false,false,false"
+
+answerQuestion.userClick.NA:                "tutorial.scr,9-13-2018,13:56:6:505,1536872166505,75,75.2,userClick:317_654;region:QnA;target:button-save;answerQuestion:75.2_\"asdf\"_NA_(NA),false,false,false,false,false,false"
+
+answerQuestion.userClick.clickEntity:       "tutorial.scr,9-13-2018,13:54:7:873,1536872047873,1,1.2,userClick:299_688;region:QnA;target:button-save;answerQuestion:1.2_\"Goodbye\"_NA_(tutorial.scr,9-13-2018,13:54:3:26,1536872043026,1,1.2,userClick:391_152;region:gameArea;target:gameboard;clickEntity:friendly-Big Fort_upperLeftQuadrant_76_90,false,false,false,false,false,false),false,false,false,false,false,false"
+
+answerQuestion.userClick.selectedRewardBar: "tutorial.scr,9-13-2018,13:53:41:130,1536872021130,1,1.2,userClick:290_693;region:QnA;target:button-save;answerQuestion:1.1_\"Hello Debugger\"_NA_(tutorial.scr,9-13-2018,13:53:35:594,1536872015594,1,1.1,userClick:751_330;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q1.Friend Destroyed,false,false,false,false,false,false),false,false,false,false,false,false"
+
+answerQuestion.userClick.clickSaliencyMap:  "tutorial.scr,9-13-2018,13:52:25:581,1536871945581,1,1.1,userClick:310_700;region:QnA;target:button-save;answerQuestion:1.0_\"asdf\"_NA_(tutorial.scr,9-13-2018,12:30:6:570,1536867006570,1,1.0,userClick:771_514;region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Size;clickSaliencyMap:Size_(friendly-Big Fort_upperLeftQuadrant),false,false,false,false,false,false),false,false,false,false,false,false"
+
+//NAVIGATION
+
+stepIntoDecisionPoint:                      "tutorial.scr,9-13-2018,12:9:0:335,1536865740335,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false"
+
+timelineClick:                              "tutorial.scr,9-13-2018,13:59:37:648,1536872377648,75,75.2,userClick:328_401;region:gameArea;target:expl-control-canvas;timelineClick:106,false,false,false,false,false,false"
+
+jumpToDecisionPoint:                        "tutorial.scr,9-13-2018,16:29:14:251,1536881354251,75,75.2,userClick:245_406;region:gameArea;target:decisionPointList;jumpToDecisionPoint:75,false,false,false,false,false,false"
+                                            
+clickTimeLineBlocker:                       "tutorial.scr,9-13-2018,13:55:13:920,1536872113920,1,1.2,userClick:301_422;region:gameArea;target:right-block-div;clickTimeLineBlocker:NA,false,false,false,false,false,false"
+
+play:                                       "tutorial.scr,9-13-2018,13:46:10:103,1536871570103,1,1.0,userClick:486_337;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false"
+
+pause:                                      "tutorial.scr,9-13-2018,13:46:11:665,1536871571665,1,1.0,userClick:481_341;region:gameArea;target:pauseResumeButton;pause:NA,false,false,false,false,false,false"
+
+touchStepProgressLabel:                     "tutorial.scr,9-13-2018,13:57:30:581,1536872250581,75,75.2,userClick:70_337;region:gameArea;target:step-value;touchStepProgressLabel:NA,false,false,false,false,false,false"
+
+//GAMEBOARD
+clickGameQuadrant:                          "tutorial.scr,9-13-2018,13:48:5:219,1536871685219,1,1.0,userClick:473_106;region:gameArea;target:gameboardBackground;clickGameQuadrant:upperRightQuadrant,false,false,false,false,false,false"
+
+clickEntity:                                "tutorial.scr,9-13-2018,12:20:54:902,1536866454902,1,1.0,userClick:515_260;region:gameArea;target:gameboard;clickEntity:friendly-Big Fort_lowerRightQuadrant_200_198,false,false,false,false,false,false"
+
+hideEntityTooltips:                         "tutorial.scr,9-13-2018,12:15:3:802,1536866103802,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false"
+
+showEntityTooltip:                          "tutorial.scr,9-13-2018,12:15:4:83,1536866104083,1,1.0,showEntityTooltip:friendly-City_lowerLeftQuadrant,false,false,false,false,false,false"
+
+//NON-INTERACTIVE
+userClick:                                  "tutorial.scr,9-13-2018,12:16:12:890,1536866172890,1,1.0,userClick:297_639;region:QnA;NA;NA,false,false,false,false,false,false"
+
+clickActionLabel:                           "tutorial.scr,9-13-2018,13:58:54:296,1536872334296,75,75.2,userClick:476_477;region:gameArea;target:actionLabel-step-75-action-AttackQ4;clickActionLabel:D2ESCAPED-COLON Attack Q4,false,false,false,false,false,false"
+
+clickActionLabelDenied:                     "tutorial.scr,9-13-2018,12:22:39:120,1536866559120,1,1.0,userClick:469_478;region:gameArea;target:actionLabel-step-75-action-AttackQ4;clickActionLabelDenied:D2ESCAPED-COLON Attack Q4,false,false,false,false,false,false"  
+
+touchCumRewardLabel:                        "tutorial.scr,9-13-2018,13:48:47:455,1536871727455,1,1.0,userClick:85_80;region:gameArea;target:null;touchCumRewardLabel:total score,false,false,false,false,false,false"
+
+touchCumRewardValueFor:                     "tutorial.scr,9-13-2018,13:49:23:343,1536871763343,1,1.0,userClick:206_75;region:gameArea;target:rewardtotalscore;touchCumRewardValueFor:total score,false,false,false,false,false,false"
+
+//EXPLANATIONS
+selectedRewardBar:                          "tutorial.scr,9-13-2018,12:23:47:489,1536866627489,1,1.0,userClick:721_277;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q1.Enemy Destroyed,false,false,false,false,false,false"
+
+clickSaliencyMap:                           "tutorial.scr,9-13-2018,12:29:33:803,1536866973803,1,1.0,userClick:817_509;region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Size;clickSaliencyMap:Size_(NA_upperRightQuadrant),false,false,false,false,false,false"
+                                            "tutorial.scr,9-13-2018,12:30:6:570,1536867006570,1,1.0,userClick:771_514;region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Size;clickSaliencyMap:Size_(friendly-Big Fort_upperLeftQuadrant),false,false,false,false,false,false"
+
+startMouseOverSaliencyMap:                  "tutorial.scr,9-13-2018,12:23:49:897,1536866629897,1,1.0,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false"
+
+endMouseOverSaliencyMap:                    "tutorial.scr,9-13-2018,12:23:49:910,1536866629910,1,1.0,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Tank;endMouseOverSaliencyMap:Tank,false,false,false,false,false,false"
+
+
+
+FUNCTION WILL LOOK LIKE:
+
+class test_flattening_(unittest.TestCase):
+    def test_(self):
+        line = 
+        obj = flatten.parse_line(line)
+        self.assertEqual(obj["stepIntoDecisionPoint"], "NA")
+        self.assertEqual(obj["showQuestion"], "NA")
+        self.assertEqual(obj["hideEntityTooltips"], "NA")
+        self.assertEqual(obj["showEntityTooltip.entityInfo"], "NA")
+        self.assertEqual(obj["showEntityTooltip.tipQuadrant"], "NA")
+        self.assertEqual(obj["startMouseOverSaliencyMap"], "NA")
+        self.assertEqual(obj["endMouseOverSaliencyMap"], "NA")
+
+        self.assertEqual(obj["userClick.coordX"], "NA")
+        self.assertEqual(obj["userClick.coordY"], "NA")
+        self.assertEqual(obj["userClick.region"], "NA")
+        self.assertEqual(obj["userClick.target"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.clickStep"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.questionIndex"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.answer1"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.answer2"], "NA")
+
+        self.assertEqual(obj["userClick.answerQuestion.userClick"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.fileName"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.date"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.time"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.1970Sec"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.decisionPoint"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.questionId"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.coordX"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.coordY"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.region"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.target"], "NA")
+
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickEntity.clickGameEntity"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickEntity.clickQuadrant"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickEntity.coordX"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickEntity.coordY"], "NA")
+
+        self.assertEqual(obj["userClick.answerQuestion.userClick.selectedRewardBar"], "NA")
+
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickSaliencyMap"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickSaliencyMap.clickGameEntity"], "NA")
+        self.assertEqual(obj["userClick.answerQuestion.userClick.clickSaliencyMap.clickQuadrant"], "NA")
+
+        self.assertEqual(obj["userClick.timelineClick"], "NA")
+        self.assertEqual(obj["userClick.jumpToDecisionPoint"], "NA")
+        self.assertEqual(obj["userClick.clickTimeLineBlocker"], "NA")
+        self.assertEqual(obj["userClick.play"], "NA")
+        self.assertEqual(obj["userClick.pause"], "NA")
+        self.assertEqual(obj["userClick.touchStepProgressLabel"], "NA")
+        self.assertEqual(obj["userClick.clickGameQuadrant"], "NA")
+
+        self.assertEqual(obj["userClick.clickEntity.clickGameEntity"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.clickQuadrant"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.clickCoordX"], "NA")
+        self.assertEqual(obj["userClick.clickEntity.clickCoordY"], "NA")
+
+        self.assertEqual(obj["userClick.clickActionLabel"], "NA")
+        self.assertEqual(obj["userClick.clickActionLabelDenied"], "NA")
+        self.assertEqual(obj["userClick.selectedRewardBar"], "NA")
+
+        self.assertEqual(obj["userClick.clickSaliencyMap"], "NA")
+        self.assertEqual(obj["userClick.clickSaliencyMap.clickGameEntity"], "NA")
+        self.assertEqual(obj["userClick.clickSaliencyMap.clickQuadrant"], "NA")
+
+        self.assertEqual(obj["userClick.touchCumRewardLabel"], "NA")
+        self.assertEqual(obj["userClick.touchCumRewardValueFor"], "NA")
