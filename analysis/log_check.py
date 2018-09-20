@@ -42,6 +42,10 @@ def get_type_for_line(line):
         t = "startMouseOverSaliencyMap"
     elif ("endMouseOverSaliencyMap" in line):
         t = "endMouseOverSaliencyMap"
+    elif ("waitForResearcherStart" in line):
+        t = "waitForResearcherStart"
+    elif ("waitForResearcherEnd" in line):
+        t = "waitForResearcherEnd"
     else:
         # uses primary discriminator as key
         field  = fields[6]
