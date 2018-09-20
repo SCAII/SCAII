@@ -145,6 +145,49 @@ def is_correct_files_in_play(files):
         return False
     return True
 
+def q_and_a_integrity(filepath):
+    print("\n\nq_and_a integrity checking...")
+    f = open(filepath)
+    lines = f.readlines()
+    # make key with filename+question_id
+    register = {}
+    keys_seen = []
+    for line in lines:
+        parts = line.split(",")
+        cur_file = parts[0]
+        if "showQuestion" in line:
+            question_id = line.split(",")[6].split(":")[1]
+            #print("showQuestion   {}".format(question_id))
+            key = cur_file + "_" + question_id
+            if not(key in keys_seen):
+                keys_seen.append(key)
+            if not(key in register):
+                register[key] = "posed,"
+            else:
+                register[key] = register[key] + "posed,"
+            
+
+        if "answerQuestion" in line:
+            question_id = line.split(",")[6].split(";")[3].split("_")[0].split(":")[1]
+            #print("answerQuestion {}".format(question_id))
+            key = cur_file + "_" + question_id
+            if not(key in keys_seen):
+                keys_seen.append(key)
+            if not(key in register):
+                register[key] = "answered,"
+            else:
+                register[key] = register[key] + "answered,"
+
+    for key in keys_seen:
+        value = register[key]
+        
+        if value != "posed,answered,":
+            print("  \t{}\t\t{}\t***  ERROR! ***".format(key, value))
+        else:
+            print("OK\t{}".format(key))
+    f.close()
+
 if __name__ == '__main__':
     histogram(sys.argv[1])
     tasks_present_check(sys.argv[1])
+    q_and_a_integrity(sys.argv[1])
