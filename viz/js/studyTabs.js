@@ -68,7 +68,6 @@ function getTabManager() {
         logLine = logLine.replace("<CONTINUE_BUTTON>", "yes");
         logLine = logLine.replace("<REGION>", "waitScreen");
         logLine = logLine.replace("<TARGET>", "enter-wait-screen");
-        userActionMonitor.pendingLogLine = logLine;
         stateMonitor.setUserAction(logLine);
         activeStudyQuestionManager.renderer.renderWaitScreen();
     }

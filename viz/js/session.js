@@ -533,7 +533,6 @@ function handleScaiiPacket(sPacket) {
                     logLine = logLine.replace("<CONTINUE_BUTTON>", "yes");
                     logLine = logLine.replace("<REGION>", "waitScreen");
                     logLine = logLine.replace("<TARGET>", "enter-welcome-screen");
-                    userActionMonitor.pendingLogLine = logLine;
                     stateMonitor.setUserAction(logLine);	
                     showUserIdScreen();
                 }
