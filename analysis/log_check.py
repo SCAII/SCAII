@@ -191,7 +191,23 @@ def q_and_a_integrity(filepath):
             print("OK\t{}".format(key))
     f.close()
 
+def header_check(filepath):
+    cnt = 0
+    print("\n\nq_and_a integrity checking...")
+    f = open(filepath)
+    lines = f.readlines()
+    for line in lines:
+        if ("date,time,secSince1970,decisionPoint,questionId,userAction" in line):
+            cnt += 1
+
+    if(cnt > 1):
+        print("***  ERROR!  ***")
+        print("Looks like the logfile contains data from more than one session")
+
+    f.close()
+
 if __name__ == '__main__':
     histogram(sys.argv[1])
     tasks_present_check(sys.argv[1])
     q_and_a_integrity(sys.argv[1])
+    header_check(sys.argv[1])
