@@ -599,4 +599,3 @@ task4.scr,9-20-2018,10:48:43:709,1537465723709,105,summary.0,region:saliencyMap;
 task4.scr,9-20-2018,10:48:43:725,1537465723725,105,summary.0,region:saliencyMap;target:saliencyMap--DP3-2_CityDestroyed--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
 task4.scr,9-20-2018,10:48:43:726,1537465723726,105,summary.0,region:saliencyMap;target:saliencyMap--DP3-2_CityDestroyed--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
 task4.scr,9-20-2018,10:48:43:741,1537465723741,105,summary.0,region:saliencyMap;target:saliencyMap--DP3-2_CityDestroyed--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
-
