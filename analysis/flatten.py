@@ -18,7 +18,7 @@ def parse_line(line, extraction_map):
         semi_final_line = replace_all_delimeters_with_commas_after_field_6(line)
     
     # get rid of ignored data at end of line so can compare field counts.
-    final_line = semi_final_line.replace(",false,false,false,false,false,false", "")
+    final_line = semi_final_line.replace(",false,false,false,false,false,false\n", "")
     guide_parts = extraction_guide.split(",")
     final_line_parts = final_line.split(",")
     if (len(guide_parts) != len(final_line_parts)):
