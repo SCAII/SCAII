@@ -153,7 +153,6 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
                     logLine = logLine.replace("<CONTINUE_BUTTON>", "yes");
                     logLine = logLine.replace("<REGION>", "waitScreen");
                     logLine = logLine.replace("<TARGET>", "enter-wait-screen");
-                    userActionMonitor.pendingLogLine = logLine;
                     stateMonitor.setUserAction(logLine);
                     this.renderer.renderWaitScreen();
                 }
@@ -189,7 +188,6 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         logLine = logLine.replace("<CONTINUE_BUTTON>", "yes");
         logLine = logLine.replace("<REGION>", "waitScreen");
         logLine = logLine.replace("<TARGET>", "enter-wait-screen");
-        userActionMonitor.pendingLogLine = logLine;
         stateMonitor.setUserAction(logLine);
         this.renderer.renderWaitScreen();
     }
