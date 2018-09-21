@@ -200,25 +200,72 @@ def q_and_a_integrity(filepath):
 def header_check(filepath):
     test_results["header_check"] = "pass"
     cnt = 0
+    line_cnt = 0
     print("\n\nq_and_a integrity checking...")
     f = open(filepath)
     lines = f.readlines()
     for line in lines:
+        line_cnt += 1
         if ("date,time,secSince1970,decisionPoint,questionId,userAction" in line):
             cnt += 1
 
     if(cnt > 1):
         print("***  ERROR!  ***")
         test_results["header_check"] = "FAIL"
-        print("Looks like the logfile contains data from more than one session")
+        print("on line: {}\nLooks like the logfile contains data from more than one session".format(line_cnt))
 
     f.close()
 
+def blank_line_check(filepath):
+    test_results["blank_line_check"] = "pass"
+    line_cnt = 0
+    f = open(filepath)
+    lines = f.readlines()
+    for line in lines:
+        line_cnt += 1
+        if (line == '\n'):
+            print("***  ERROR!  ***")
+            test_results["header_check"] = "FAIL"
+            print("on line: {}\nLooks like logfile contains empty line. Exiting...".format(line_cnt))
+            sys.exit()
+    f.close()
+
+def answer_question_integrity(filepath):
+    test_results["answer_question_integrity"] = "pass"
+    line_cnt = 0
+    f = open(filepath)
+    lines = f.readlines()
+    user_click_entity = ""
+    user_click_rewardbar = ""
+    user_click_saliency = ""
+    types_user_click = [user_click_entity, user_click_rewardbar, user_click_saliency]
+    for line in lines:
+        line_cnt += 1
+        if ("button-save" in line and (not "(NA)" in line)):
+            for i in types_user_click:
+                if not (line.find(types_user_click[i])):
+                    print("***  ERROR!  ***")
+                    print(line)
+                    print(types_user_click)
+                    test_results["answer_question_integrity"] = "FAIL"
+                    print("on line: {}\nA answer save log has no previous instance of its saved click information.".format(line_cnt))
+        elif ("clickEntity" in line):
+            temp_user_click_entity = line
+            types_user_click[0] = temp_user_click_entity.replace("\n", "")
+        elif ("selectedRewardBar" in line):
+            temp_user_click_rewardbar = line
+            types_user_click[1] = temp_user_click_rewardbar.replace("\n", "")
+        elif ("clickSaliencyMap" in line):
+            temp_user_click_saliency = line
+            types_user_click[2] = temp_user_click_saliency.replace("\n", "")
+        
 if __name__ == '__main__':
+    blank_line_check(sys.argv[1])
     histogram(sys.argv[1])
     tasks_present_check(sys.argv[1])
     q_and_a_integrity(sys.argv[1])
     header_check(sys.argv[1])
+    answer_question_integrity(sys.argv[1])
     print("\n\n\n")
     for key in test_results:
         print("     {}\ttest {}".format(test_results[key], key))
