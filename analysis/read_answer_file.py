@@ -32,7 +32,21 @@ def main():
     #of_path = file_path + of_name
     of_path = os.path.join(file_path, of_name)
 
-    of = open(of_path, 'x')
+    if os.path.isfile(of_path):
+        print("File {} already exists. Would you like to:".format(of_path))
+        print("Exit (1)\nOverwrite (2)")
+        user_file_choice = input()
+        if (user_file_choice == '1'):
+            print("Exiting...")
+            sys.exit()
+        elif (user_file_choice == '2'):
+            print("Overwriting...")
+            of = open(of_path, 'w')
+        else:
+            print("Invalid choice. Exiting...")
+            sys.exit()
+    else:
+        of = open(of_path, 'w')
 
     of.write("fileName,date,time,1970Sec,decisionPoint,questionId,stepIntoDecisionPoint,showQuestion,hideEntityTooltips,showEntityTooltip.entityInfo,showEntityTooltip.tipQuadrant,startMouseOverSaliencyMap,endMouseOverSaliencyMap,waitForResearcherStart,waitForResearcherEnd,userClick,userClick.coordX,userClick.coordY,userClick.region,userClick.target,userClick.answerQuestion.clickStep,userClick.answerQuestion.questionId,userClick.answerQuestion.answer1,userClick.answerQuestion.answer2,userClick.answerQuestion.userClick,userClick.answerQuestion.userClick.fileName,userClick.answerQuestion.userClick.date,userClick.answerQuestion.userClick.time,userClick.answerQuestion.userClick.1970Sec,userClick.answerQuestion.userClick.decisionPoint,userClick.answerQuestion.userClick.questionId,userClick.answerQuestion.userClick.coordX,userClick.answerQuestion.userClick.coordY,userClick.answerQuestion.userClick.region,userClick.answerQuestion.userClick.target,userClick.answerQuestion.userClick.clickEntity.clickGameEntity,userClick.answerQuestion.userClick.clickEntity.clickQuadrant,userClick.answerQuestion.userClick.clickEntity.coordX,userClick.answerQuestion.userClick.clickEntity.coordY,userClick.answerQuestion.userClick.selectedRewardBar,userClick.answerQuestion.userClick.clickSaliencyMap,userClick.answerQuestion.userClick.clickSaliencyMap.clickGameEntity,userClick.answerQuestion.userClick.clickSaliencyMap.clickQuadrant,userClick.timelineClick,userClick.jumpToDecisionPoint,userClick.clickTimeLineBlocker,userClick.play,userClick.pause,userClick.touchStepProgressLabel,userClick.clickGameQuadrant,userClick.clickEntity.clickGameEntity,userClick.clickEntity.clickQuadrant,userClick.clickEntity.coordX,userClick.clickEntity.coordY,userClick.clickActionLabel,userClick.clickActionLabelDenied,userClick.selectedRewardBar,userClick.clickSaliencyMap,userClick.clickSaliencyMap.clickGameEntity,userClick.clickSaliencyMap.clickQuadrant,userClick.touchCumRewardLabel,userClick.touchCumRewardValueFor")
     of.write("\n")

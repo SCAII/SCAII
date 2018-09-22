@@ -277,12 +277,57 @@ def load_reference_questions():
     questions["3"] = ["task1.scr_1.0","task1.scr_1.1","task1.scr_1.2","task1.scr_1.3","task1.scr_61.0","task1.scr_61.1","task1.scr_61.2","task1.scr_61.3","task1.scr_82.0","task1.scr_82.1","task1.scr_82.2","task1.scr_82.3","task1.scr_114.0","task1.scr_114.1","task1.scr_114.2","task1.scr_114.3","task2.scr_1.0","task2.scr_1.1","task2.scr_1.2","task2.scr_1.3","task2.scr_59.0","task2.scr_59.1","task2.scr_59.2","task2.scr_59.3","task2.scr_82.0","task2.scr_82.1","task2.scr_82.2","task2.scr_82.3","task2.scr_121.0","task2.scr_121.1","task2.scr_121.2","task2.scr_121.3","task3.scr_1.0","task3.scr_1.1","task3.scr_1.2","task3.scr_1.3","task3.scr_56.0","task3.scr_56.1","task3.scr_56.2","task3.scr_56.3","task3.scr_99.0","task3.scr_99.1","task3.scr_99.2","task3.scr_99.3","task4.scr_1.0","task4.scr_1.1","task4.scr_1.2","task4.scr_1.3","task4.scr_63.0","task4.scr_63.1","task4.scr_63.2","task4.scr_62.3","task4.scr_105.0","task4.scr_105.1","task4.scr_105.2","task4.scr_105.3","task4.scr_summary.0","tutorial.scr_1.1","tutorial.scr_1.2","tutorial.scr_75.0","tutorial.scr_75.1","tutorial.scr_75.2","tutorial.scr_75.3","tutorial.scr_124.0","tutorial.scr_124.1","tutorial.scr_summary.0"]
 
 
+def blank_line_check(filepath):
+    #test_results["blank_line_check"] = "pass"
+    line_cnt = 0
+    f = open(filepath)
+    lines = f.readlines()
+    for line in lines:
+        line_cnt += 1
+        if (line == '\n'):
+            print("***  ERROR!  ***")
+            #test_results["header_check"] = "FAIL"
+            print("on line: {}\nLooks like logfile contains empty line. Exiting...".format(line_cnt))
+            sys.exit()
+    f.close()
+
+def answer_question_integrity(filepath):
+    #test_results["answer_question_integrity"] = "pass"
+    line_cnt = 0
+    f = open(filepath)
+    lines = f.readlines()
+    user_click_entity = ""
+    user_click_rewardbar = ""
+    user_click_saliency = ""
+    types_user_click = [user_click_entity, user_click_rewardbar, user_click_saliency]
+    for line in lines:
+        line_cnt += 1
+        if ("button-save" in line and (not "(NA)" in line)):
+            for i in types_user_click:
+                if not (line.find(types_user_click[i])):
+                    print("***  ERROR!  ***")
+                    print(line)
+                    print(types_user_click)
+                    #test_results["answer_question_integrity"] = "FAIL"
+                    print("on line: {}\nA answer save log has no previous instance of its saved click information.".format(line_cnt))
+        elif ("clickEntity" in line):
+            temp_user_click_entity = line
+            types_user_click[0] = temp_user_click_entity.replace("\n", "")
+        elif ("selectedRewardBar" in line):
+            temp_user_click_rewardbar = line
+            types_user_click[1] = temp_user_click_rewardbar.replace("\n", "")
+        elif ("clickSaliencyMap" in line):
+            temp_user_click_saliency = line
+            types_user_click[2] = temp_user_click_saliency.replace("\n", "")
+        
 if __name__ == '__main__':
     load_reference_questions()
+    blank_line_check(sys.argv[1])
     histogram(sys.argv[1])
     tasks_present_check(sys.argv[1])
     q_and_a_integrity(sys.argv[1])
     header_check(sys.argv[1])
+    answer_question_integrity(sys.argv[1])
 
     print("\n")
     for key in errors:
