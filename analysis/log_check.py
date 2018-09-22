@@ -2,41 +2,52 @@ import sys
 from flatten import get_key_for_line
 from extractionMap import get_extraction_map
 
-test_results = {}
-
+errors = {}
+ignored_lines = []
+primary_type_field_index = 6
 def histogram(filename):
+    errors["histogram"] = []
     hist = {}
     print("processing log file {}".format(filename))
+    treatment = get_treatment_from_filename(filename)
+    types = get_events_for_treatment(treatment)
     f = open(filename)
     lines = f.readlines()
     print("read {} lines".format(len(lines)))
+    line_num = 1
     for line in lines:
-        t = get_type_for_line(line)
-        if t == "UNKOWN":
-            print("line had unknown type: {}".format(line))
-        hist[t] = hist.get(t, 0) + 1
+        if line.startswith("#"):
+            ignored_lines.append(line)
+        else:
+            t = get_type_for_line(line, line_num, types)
+            if t == "UNKOWN":
+                errors["histogram"].append("line {} had unknown type: {}".format(line_num, line))
+            hist[t] = hist.get(t, 0) + 1
+            line_num += 1
 
     f.close()
-    treatment = get_treatment_from_filename(filename)
-    types = get_events_for_treatment(treatment)
     
-    print("\n\nline types present")
+    print("\nline types present")
     for typ in types:
         if (typ in hist):
             print("\t{}\t\t{}".format(hist[typ], typ))
 
-    print("\n\nmissing line types:")
+    print("\nmissing line types:")
     for typ in types:
         if not (typ in hist):
             print("\t{}\t\t{}".format(0, typ))
 
     if "UNKNOWN" in hist:
-        print("\n\nunknown line types:")
+        print("\nunknown line types:")
         print("\t{}\t\t{}".format(hist["UNKNOWN"], "UNKNOWN"))
 
-def get_type_for_line(line):
+def get_type_for_line(line, line_num, types):
+    errors["get_type_for_line"] = []
     t = "UNKNOWN"
     fields = line.split(',')
+    if len(fields) < 7:
+        errors["get_type_for_line"].append("ERROR - malformed line detected at line {} :  {}".format(line_num, line))
+        return "UNKNOWN"
     #print("{}".format(line))
     if ("userClick" in line):
         t = get_type_for_user_click_line(line)
@@ -50,11 +61,13 @@ def get_type_for_line(line):
         t = "waitForResearcherEnd"
     else:
         # uses primary discriminator as key
-        field  = fields[6]
+        field  = fields[primary_type_field_index]
         subfields = field.split(';')
         subfield0 = subfields[0]
         subsubfields = subfield0.split(':')
         t = subsubfields[0]
+    if not t in types:
+        errors["get_type_for_line"].append("ERROR - unknown type '{}' detected at line {} :  {}".format(t, line_num, line))
     return t
 
 def get_type_for_user_click_line(line):
@@ -63,7 +76,7 @@ def get_type_for_user_click_line(line):
         t = "userClick"
     else:
         parts = line.split(",")
-        user_click_type_field = parts[6]
+        user_click_type_field = parts[primary_type_field_index]
         user_click_subfields = user_click_type_field.split(";")
         user_click_type_subfield = user_click_subfields[3]
         type_subfield_parts = user_click_type_subfield.split(":")
@@ -76,8 +89,17 @@ def get_treatment_from_filename(filepath):
     parts = fname.split(".")
     fileroot = parts[0]
     fileroot_parts = fileroot.split("_")
+    if len(fileroot_parts) != 3:
+        print("filename malformed - missing treatmentID - should be answers_<participantID>_<treatmentID>.txt")
+        sys.exit(0)
+    if fileroot_parts[0] != "answers":
+        print("filename malformed - filename should start with 'answers_' -  answers_<participantID>_<treatmentID>.txt")
+        sys.exit(0)
     treatment = fileroot_parts[2]
     print("found treatment {}".format(treatment))
+    if (treatment != "0" and treatment != "1" and treatment != "2" and treatment!= "3"):
+        print("unknown treatmentId in filename - should be one of 0,1,2,3")
+        sys.exit(0)
     return treatment
 
 def get_events_for_treatment(t):
@@ -116,9 +138,10 @@ def get_events_for_treatment(t):
     return result
 
 def tasks_present_check(filepath):
-    print("\n\ntask integrity checking...")
+    errors["tasks_present_check"] = []
+    print("\ntask integrity checking...")
     f = open(filepath)
-    lines = f.readlines()
+    lines = remove_comments(f.readlines())
     prior_file = ""
     files_seen = []
     for line in lines:
@@ -130,12 +153,9 @@ def tasks_present_check(filepath):
                 files_seen.append(parts[0])
         prior_file = cur_file
     if not(is_correct_files_in_play(files_seen)):
-        print("FAIL: files don't match the sequence tutorial, task1, task2, task3, task4")
-        test_results["tasks_present_check"] = "FAIL"
-        print(files_seen)
+        errors["tasks_present_check"].append("filenames don't match the sequence tutorial, task1, task2, task3, task4: {}".format(files_seen))
     else:
-        print("PASS:Tasks data present for tutorial, task1, task2, task3, task4")
-        test_results["tasks_present_check"] = "pass"
+        print("Task data present for tutorial, task1, task2, task3, task4")
     f.close()
 
 def is_correct_files_in_play(files):
@@ -153,11 +173,18 @@ def is_correct_files_in_play(files):
         return False
     return True
 
+def remove_comments(lines):
+    result = []
+    for line in lines:
+        if not line.startswith("#"):
+            result.append(line)
+    return result
+
 def q_and_a_integrity(filepath):
-    test_results["q_and_a_integrity"] = "pass"
-    print("\n\nq_and_a integrity checking...")
+    errors["q_and_a_integrity"] = []
+    print("\nq_and_a integrity checking...")
     f = open(filepath)
-    lines = f.readlines()
+    lines = remove_comments(f.readlines())
     # make key with filename+question_id
     register = {}
     keys_seen = []
@@ -165,7 +192,7 @@ def q_and_a_integrity(filepath):
         parts = line.split(",")
         cur_file = parts[0]
         if "showQuestion" in line:
-            question_id = line.split(",")[6].split(":")[1]
+            question_id = line.split(",")[primary_type_field_index].split(":")[1]
             #print("showQuestion   {}".format(question_id))
             key = cur_file + "_" + question_id
             if not(key in keys_seen):
@@ -177,7 +204,7 @@ def q_and_a_integrity(filepath):
             
 
         if "answerQuestion" in line:
-            question_id = line.split(",")[6].split(";")[3].split("_")[0].split(":")[1]
+            question_id = line.split(",")[primary_type_field_index].split(";")[3].split("_")[0].split(":")[1]
             #print("answerQuestion {}".format(question_id))
             key = cur_file + "_" + question_id
             if not(key in keys_seen):
@@ -189,35 +216,41 @@ def q_and_a_integrity(filepath):
 
     for key in keys_seen:
         value = register[key]
-        
-        if value != "posed,answered,":
+        if value == "posed,":
             print("  \t{}\t\t{}\t***  ERROR! ***".format(key, value))
-            test_results["q_and_a_integrity"] = "FAIL"
+            errors["q_and_a_integrity"].append("  \t{}\t\t{}\tERROR - question posed, not answered".format(key, value))
+        elif value == "answered,":
+            print("  \t{}\t\t{}\t***  ERROR! ***".format(key, value))
+            errors["q_and_a_integrity"].append("  \t{}\t\t{}\tERROR - question answered, not posed".format(key, value))
+        elif value != "posed,answered,":
+            print("  \t{}\t\t{}\t***  ERROR! ***".format(key, value))
+            errors["q_and_a_integrity"].append("  \t{}\t\t{}\tERROR - should have been 'posed,answered,'".format(key, value))
         else:
             print("OK\t{}".format(key))
     f.close()
 
 def header_check(filepath):
-    test_results["header_check"] = "pass"
+    errors["header_check"] = []
     cnt = 0
-    line_cnt = 0
-    print("\n\nq_and_a integrity checking...")
+    print("\nq_and_a integrity checking...")
     f = open(filepath)
-    lines = f.readlines()
+    lines = remove_comments(f.readlines())
     for line in lines:
-        line_cnt += 1
         if ("date,time,secSince1970,decisionPoint,questionId,userAction" in line):
             cnt += 1
 
     if(cnt > 1):
         print("***  ERROR!  ***")
-        test_results["header_check"] = "FAIL"
-        print("on line: {}\nLooks like the logfile contains data from more than one session".format(line_cnt))
-
+        errors["header_check"].append("found too many header lines : {}".format(cnt))
+        print("Looks like the logfile contains data from more than one session")
+    if(cnt == 0):
+        print("***  ERROR!  ***")
+        errors["header_check"].append("Header line missing - should start with 'date,time,secSince1970'")
+        print("Looks like the logfile is missing the header file")
     f.close()
 
 def blank_line_check(filepath):
-    test_results["blank_line_check"] = "pass"
+    #test_results["blank_line_check"] = "pass"
     line_cnt = 0
     f = open(filepath)
     lines = f.readlines()
@@ -225,13 +258,13 @@ def blank_line_check(filepath):
         line_cnt += 1
         if (line == '\n'):
             print("***  ERROR!  ***")
-            test_results["header_check"] = "FAIL"
+            #test_results["header_check"] = "FAIL"
             print("on line: {}\nLooks like logfile contains empty line. Exiting...".format(line_cnt))
             sys.exit()
     f.close()
 
 def answer_question_integrity(filepath):
-    test_results["answer_question_integrity"] = "pass"
+    #test_results["answer_question_integrity"] = "pass"
     line_cnt = 0
     f = open(filepath)
     lines = f.readlines()
@@ -247,7 +280,7 @@ def answer_question_integrity(filepath):
                     print("***  ERROR!  ***")
                     print(line)
                     print(types_user_click)
-                    test_results["answer_question_integrity"] = "FAIL"
+                    #test_results["answer_question_integrity"] = "FAIL"
                     print("on line: {}\nA answer save log has no previous instance of its saved click information.".format(line_cnt))
         elif ("clickEntity" in line):
             temp_user_click_entity = line
@@ -266,7 +299,19 @@ if __name__ == '__main__':
     q_and_a_integrity(sys.argv[1])
     header_check(sys.argv[1])
     answer_question_integrity(sys.argv[1])
-    print("\n\n\n")
-    for key in test_results:
-        print("     {}\ttest {}".format(test_results[key], key))
+
+    print("\n")
+    for key in errors:
+        error_list = errors[key]
+        if len(error_list) == 0:
+            print("\tpass\t{}".format(key))
+        else:
+            print("\tFAIL\t{}".format(key))
+            for error in error_list:
+                print("\t\t\t{}".format(error))
+
+    if (len(ignored_lines) > 0):
+        print("\n\n\tIGNORED {} lines".format(len(ignored_lines)))
+        for line in ignored_lines:
+            print("\n\t\t{}".format(line))
     
