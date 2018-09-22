@@ -5,6 +5,8 @@ from extractionMap import get_extraction_map
 errors = {}
 ignored_lines = []
 primary_type_field_index = 6
+questions = {}
+
 def histogram(filename):
     errors["histogram"] = []
     hist = {}
@@ -227,7 +229,24 @@ def q_and_a_integrity(filepath):
             errors["q_and_a_integrity"].append("  \t{}\t\t{}\tERROR - should have been 'posed,answered,'".format(key, value))
         else:
             print("OK\t{}".format(key))
+    treatment = get_treatment_from_filename(filepath)
+    question_file_questions = questions[treatment]
+    ensure_all_questions_present(keys_seen, question_file_questions, treatment)
     f.close()
+
+def ensure_all_questions_present(seen, needed, treatment):
+    matches = []
+    for key in seen:
+        if key in needed:
+            matches.append(key)
+    for match in matches:
+        needed.remove(match)
+    for match in matches:
+        seen.remove(match)
+    for missing in needed:
+        errors["q_and_a_integrity"].append("  \tERROR - treatment{} question {} not reflected in answer file".format(treatment,missing))
+    for extra in seen:
+        errors["q_and_a_integrity"].append("  \tERROR - treatment{} question {} present but not in original question file".format(treatment, extra))
 
 def header_check(filepath):
     errors["header_check"] = []
@@ -249,7 +268,17 @@ def header_check(filepath):
         print("Looks like the logfile is missing the header file")
     f.close()
 
+
+    
+def load_reference_questions():
+    questions["0"] = ["task1.scr_1.0","task1.scr_1.1","task1.scr_1.2","task1.scr_61.0","task1.scr_61.1","task1.scr_61.2","task1.scr_82.0","task1.scr_82.1","task1.scr_82.2","task1.scr_114.0","task1.scr_114.1","task1.scr_114.2","task2.scr_1.0","task2.scr_1.1","task2.scr_1.2","task2.scr_59.0","task2.scr_59.1","task2.scr_59.2","task2.scr_82.0","task2.scr_82.1","task2.scr_82.2","task2.scr_121.0","task2.scr_121.1","task2.scr_121.2","task3.scr_1.0","task3.scr_1.1","task3.scr_1.2","task3.scr_56.0","task3.scr_56.1","task3.scr_56.2","task3.scr_99.0","task3.scr_99.1","task3.scr_99.2","task4.scr_1.0","task4.scr_1.1","task4.scr_1.2","task4.scr_63.0","task4.scr_63.1","task4.scr_63.2","task4.scr_105.0","task4.scr_105.1","task4.scr_105.2","task4.scr_summary.0","tutorial.scr_1.0","tutorial.scr_1.1","tutorial.scr_75.0","tutorial.scr_75.1","tutorial.scr_75.2","tutorial.scr_124.0","tutorial.scr_124.1","tutorial.scr_summary.0"]
+    questions["1"] = ["task1.scr_1.0","task1.scr_1.1","task1.scr_1.2","task1.scr_61.0","task1.scr_61.1","task1.scr_61.2","task1.scr_82.0","task1.scr_82.1","task1.scr_82.2","task1.scr_114.0","task1.scr_114.1","task1.scr_114.2","task2.scr_1.0","task2.scr_1.1","task2.scr_1.2","task2.scr_59.0","task2.scr_59.1","task2.scr_59.2","task2.scr_82.0","task2.scr_82.1","task2.scr_82.2","task2.scr_121.0","task2.scr_121.1","task2.scr_121.2","task3.scr_1.0","task3.scr_1.1","task3.scr_1.2","task3.scr_56.0","task3.scr_56.1","task3.scr_56.2","task3.scr_99.0","task3.scr_99.1","task3.scr_99.2","task4.scr_1.0","task4.scr_1.1","task4.scr_1.2","task4.scr_63.0","task4.scr_63.1","task4.scr_63.2","task4.scr_105.0","task4.scr_105.1","task4.scr_105.2","task4.scr_summary.0","tutorial.scr_1.0","tutorial.scr_1.1","tutorial.scr_75.0","tutorial.scr_75.1","tutorial.scr_75.2","tutorial.scr_124.0","tutorial.scr_124.1","tutorial.scr_124.2","tutorial.scr_summary.0"]
+    questions["2"] = ["task1.scr_1.0","task1.scr_1.1","task1.scr_1.2","task1.scr_61.0","task1.scr_61.1","task1.scr_61.2","task1.scr_82.0","task1.scr_82.1","task1.scr_82.2","task1.scr_114.0","task1.scr_114.1","task1.scr_114.2","task2.scr_1.0","task2.scr_1.1","task2.scr_1.2","task2.scr_59.0","task2.scr_59.1","task2.scr_59.2","task2.scr_82.0","task2.scr_82.1","task2.scr_82.2","task2.scr_121.0","task2.scr_121.1","task2.scr_121.2","task3.scr_1.0","task3.scr_1.1","task3.scr_1.2","task3.scr_56.0","task3.scr_56.1","task3.scr_56.2","task3.scr_99.0","task3.scr_99.1","task3.scr_99.2","task4.scr_1.0","task4.scr_1.1","task4.scr_1.2","task4.scr_63.0","task4.scr_63.1","task4.scr_63.2","task4.scr_105.0","task4.scr_105.1","task4.scr_105.2","task4.scr_summary.0","tutorial.scr_1.0","tutorial.scr_75.0","tutorial.scr_75.1","tutorial.scr_75.2","tutorial.scr_124.0","tutorial.scr_124.1","tutorial.scr_124.2","tutorial.scr_summary.0"]
+    questions["3"] = ["task1.scr_1.0","task1.scr_1.1","task1.scr_1.2","task1.scr_1.3","task1.scr_61.0","task1.scr_61.1","task1.scr_61.2","task1.scr_61.3","task1.scr_82.0","task1.scr_82.1","task1.scr_82.2","task1.scr_82.3","task1.scr_114.0","task1.scr_114.1","task1.scr_114.2","task1.scr_114.3","task2.scr_1.0","task2.scr_1.1","task2.scr_1.2","task2.scr_1.3","task2.scr_59.0","task2.scr_59.1","task2.scr_59.2","task2.scr_59.3","task2.scr_82.0","task2.scr_82.1","task2.scr_82.2","task2.scr_82.3","task2.scr_121.0","task2.scr_121.1","task2.scr_121.2","task2.scr_121.3","task3.scr_1.0","task3.scr_1.1","task3.scr_1.2","task3.scr_1.3","task3.scr_56.0","task3.scr_56.1","task3.scr_56.2","task3.scr_56.3","task3.scr_99.0","task3.scr_99.1","task3.scr_99.2","task3.scr_99.3","task4.scr_1.0","task4.scr_1.1","task4.scr_1.2","task4.scr_1.3","task4.scr_63.0","task4.scr_63.1","task4.scr_63.2","task4.scr_62.3","task4.scr_105.0","task4.scr_105.1","task4.scr_105.2","task4.scr_105.3","task4.scr_summary.0","tutorial.scr_1.1","tutorial.scr_1.2","tutorial.scr_75.0","tutorial.scr_75.1","tutorial.scr_75.2","tutorial.scr_75.3","tutorial.scr_124.0","tutorial.scr_124.1","tutorial.scr_summary.0"]
+
+
 if __name__ == '__main__':
+    load_reference_questions()
     histogram(sys.argv[1])
     tasks_present_check(sys.argv[1])
     q_and_a_integrity(sys.argv[1])
@@ -269,4 +298,4 @@ if __name__ == '__main__':
         print("\n\n\tIGNORED {} lines".format(len(ignored_lines)))
         for line in ignored_lines:
             print("\n\t\t{}".format(line))
-    
+
