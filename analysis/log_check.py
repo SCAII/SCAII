@@ -278,22 +278,24 @@ def load_reference_questions():
 
 
 def blank_line_check(filepath):
-    #test_results["blank_line_check"] = "pass"
+    errors["blank_line_check"] = []
     line_cnt = 0
+    print("\nblank_line_check checking...")
     f = open(filepath)
     lines = f.readlines()
     for line in lines:
         line_cnt += 1
         if (line == '\n'):
             print("***  ERROR!  ***")
-            #test_results["header_check"] = "FAIL"
-            print("on line: {}\nLooks like logfile contains empty line. Exiting...".format(line_cnt))
+            errors["blank_line_check"].append("found entry with no information : {}".format(line_cnt))
+            print("Looks like logfile contains entry with no information (blank) : {}".format(line_cnt))
             sys.exit()
     f.close()
 
 def answer_question_integrity(filepath):
-    #test_results["answer_question_integrity"] = "pass"
+    errors["answer_question_integrity"] = []
     line_cnt = 0
+    print("\nanswer_question_integrity checking...")
     f = open(filepath)
     lines = f.readlines()
     user_click_entity = ""
@@ -302,14 +304,19 @@ def answer_question_integrity(filepath):
     types_user_click = [user_click_entity, user_click_rewardbar, user_click_saliency]
     for line in lines:
         line_cnt += 1
-        if ("button-save" in line and (not "(NA)" in line)):
-            for i in types_user_click:
-                if not (line.find(types_user_click[i])):
-                    print("***  ERROR!  ***")
-                    print(line)
-                    print(types_user_click)
-                    #test_results["answer_question_integrity"] = "FAIL"
-                    print("on line: {}\nA answer save log has no previous instance of its saved click information.".format(line_cnt))
+        if (("button-save" in line) and (not "(NA)" in line)):
+            if ((types_user_click[0] != "") and ("clickEntity" in line) and (types_user_click[0] not in line)):
+                print("***  ERROR!  ***")
+                errors["answer_question_integrity"].append("ERROR - answer question with clickEntity answer not found in earlier log entries : {}".format(line_cnt))
+                print("Looks like logfile contains an entry in the saved answer not found previously in the log file")
+            elif ((types_user_click[1] != "") and "selectedRewardBar" in line and (types_user_click[1] not in line)):
+                print("***  ERROR!  ***")
+                errors["answer_question_integrity"].append("ERROR - answer question with selectedRewardBar answer not found in earlier log entries : {}".format(line_cnt))
+                print("Looks like logfile contains an entry in the saved answer not found previously in the log file")
+            elif ((types_user_click[2] != "") and "clickSaliencyMap" in line and (types_user_click[2] not in line)):
+                print("***  ERROR!  ***")
+                errors["answer_question_integrity"].append("ERROR - answer question with clickSaliencyMap answer not found in earlier log entries : {}".format(line_cnt))
+                print("Looks like logfile contains an entry in the saved answer not found previously in the log file")
         elif ("clickEntity" in line):
             temp_user_click_entity = line
             types_user_click[0] = temp_user_click_entity.replace("\n", "")
