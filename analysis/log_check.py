@@ -1,6 +1,7 @@
 import sys
 from flatten import get_key_for_line
 from extractionMap import get_extraction_map
+from datetime import datetime, date, time
 
 errors = {}
 ignored_lines = []
@@ -353,32 +354,37 @@ def waitscreen_integrity(filepath):
                 print("Looks like logfile has unmatched case for start or end screen log entires : start count: {} != end count: {} : Line:{}".format(startscreen_cnt, endscreen_cnt, line_cnt))
     f.close()
     
-# def timesequence_integrity(filepath):
-#     erros["timesequence_integrity"] = []
-#     line_cnt = 0
-#     prev_date = ""
-#     prev_time = ""
-#     prev_sec_1970 = ""
-#     print("\ntimesequence_integrity checking...")
-#     f = open(filepath)
-#     lines = f.readlines()
-#     for line in lines:
-#         line_cnt += 1
-#         fields = line.split(",")
-#         date = fields[1]
-#         time = fields[2]
-#         sec_1970 = fields[3]
-#         if (prev_date = "" and prev_time = "" and prev_sec_1970 = ""):
-#             prev_date = date
-#             prev_time = time
-#             prev_sec_1970 = sec_1970
-#             #NEEDS TO BE CONVERTED OR SPLIT EVEN MORE KILL ME
-#             # DATE IS HARDSET AND SHOULD NOT CHANGE
-#             # Time Should be no larger than two hours and never less than, time should change upward and dep. on hour, sec should change constantly (can't measure that)
-#         elif (prev_date )
-
+def timesequence_integrity(filepath):
+    errors["timesequence_integrity"] = []
+    prior_dt = datetime.strptime("1/1/18 00:01", "%d/%m/%y %H:%M")
+    prior_sec_1970 = int("1500000000000")
+    print("\ntimesequence_integrity checking...")
+    f = open(filepath)
+    lines = f.readlines()
+    line_num = 1
+    for line in lines:
+        if line.startswith("date"):
+            continue
+        fields = line.split(",")
+        date_field = fields[1]
+        time_field = fields[2]
+        sec_1970 = int(fields[3])
+        if sec_1970 < prior_sec_1970:
+            errors["timesequence_integrity"].append("sec_1970 sequence out of order at line {}: prior line: {} ... this line {}".format(line_num, prior_sec_1970,sec_1970))
         
-#     f.close()
+        #9-19-2018,16:45:26:91
+        [month,day, year] = date_field.split("-")
+        [h, m, s, msec] = time_field.split(":")
+        d = date(int(year), int(month), int(day))
+        t = time(int(h),int(m),int(s),int(msec))
+        dt = datetime.combine(d, t)
+        #print("datetime: {}".format(dt))
+        if (dt < prior_dt):
+            errors["timesequence_integrity"].append("Time sequence outof order at line {}: prior line: {} ... this line {}".format(line_num, prior_dt,dt))
+        prior_dt = dt
+        prior_sec_1970 = sec_1970
+        line_num += 1
+    f.close()
 
 if __name__ == '__main__':
     load_reference_questions()
@@ -389,7 +395,7 @@ if __name__ == '__main__':
     header_check(sys.argv[1])
     answer_question_integrity(sys.argv[1])
     waitscreen_integrity(sys.argv[1])
-    #timesequence_integrity(sys.argv[1])
+    timesequence_integrity(sys.argv[1])
 
     print("\n")
     for key in errors:
