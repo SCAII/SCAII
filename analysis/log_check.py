@@ -289,19 +289,20 @@ def blank_line_check(filepath):
             print("***  ERROR!  ***")
             errors["blank_line_check"].append("found entry with no information : {}".format(line_cnt))
             print("Looks like logfile contains entry with no information (blank) : {}".format(line_cnt))
+            f.close()
             sys.exit()
     f.close()
 
 def answer_question_integrity(filepath):
     errors["answer_question_integrity"] = []
     line_cnt = 0
-    print("\nanswer_question_integrity checking...")
-    f = open(filepath)
-    lines = f.readlines()
     user_click_entity = ""
     user_click_rewardbar = ""
     user_click_saliency = ""
     types_user_click = [user_click_entity, user_click_rewardbar, user_click_saliency]
+    print("\nanswer_question_integrity checking...")
+    f = open(filepath)
+    lines = f.readlines()
     for line in lines:
         line_cnt += 1
         if (("button-save" in line) and (not "(NA)" in line)):
@@ -326,7 +327,59 @@ def answer_question_integrity(filepath):
         elif ("clickSaliencyMap" in line):
             temp_user_click_saliency = line
             types_user_click[2] = temp_user_click_saliency.replace("\n", "")
+    f.close()
         
+def waitscreen_integrity(filepath):
+    errors["waitscreen_integrity"] = []
+    line_cnt = 0
+    startscreen_cnt = 0
+    endscreen_cnt = 0
+    print("\nwaitscreen_integrity checking...")
+    f = open(filepath)
+    lines = f.readlines()
+    for line in lines:
+        line_cnt += 1
+        if ("waitForResearcherStart" in line):
+            startscreen_cnt += 1
+            if (startscreen_cnt != (endscreen_cnt + 1)):
+                print("***  ERROR!  ***")
+                errors["waitscreen_integrity"].append("ERROR - waitScreen start and end logs are unequal. Unmatched case start:{} != end:{} : line:{}".format(startscreen_cnt, (endscreen_cnt + 1), line_cnt))
+                print("Looks like logfile has unmatched case for start or end screen log entires : start count: {} != end count: {} : Line:{}".format(startscreen_cnt, endscreen_cnt, line_cnt))
+        elif ("waitForResearcherEnd" in line):
+            endscreen_cnt += 1
+            if (startscreen_cnt != endscreen_cnt):
+                print("***  ERROR!  ***")
+                errors["waitscreen_integrity"].append("ERROR - waitScreen start and end logs are unequal. Unmatched case start:{} != end:{} : line:{}".format(startscreen_cnt, endscreen_cnt, line_cnt))
+                print("Looks like logfile has unmatched case for start or end screen log entires : start count: {} != end count: {} : Line:{}".format(startscreen_cnt, endscreen_cnt, line_cnt))
+    f.close()
+    
+# def timesequence_integrity(filepath):
+#     erros["timesequence_integrity"] = []
+#     line_cnt = 0
+#     prev_date = ""
+#     prev_time = ""
+#     prev_sec_1970 = ""
+#     print("\ntimesequence_integrity checking...")
+#     f = open(filepath)
+#     lines = f.readlines()
+#     for line in lines:
+#         line_cnt += 1
+#         fields = line.split(",")
+#         date = fields[1]
+#         time = fields[2]
+#         sec_1970 = fields[3]
+#         if (prev_date = "" and prev_time = "" and prev_sec_1970 = ""):
+#             prev_date = date
+#             prev_time = time
+#             prev_sec_1970 = sec_1970
+#             #NEEDS TO BE CONVERTED OR SPLIT EVEN MORE KILL ME
+#             # DATE IS HARDSET AND SHOULD NOT CHANGE
+#             # Time Should be no larger than two hours and never less than, time should change upward and dep. on hour, sec should change constantly (can't measure that)
+#         elif (prev_date )
+
+        
+#     f.close()
+
 if __name__ == '__main__':
     load_reference_questions()
     blank_line_check(sys.argv[1])
@@ -335,6 +388,8 @@ if __name__ == '__main__':
     q_and_a_integrity(sys.argv[1])
     header_check(sys.argv[1])
     answer_question_integrity(sys.argv[1])
+    waitscreen_integrity(sys.argv[1])
+    #timesequence_integrity(sys.argv[1])
 
     print("\n")
     for key in errors:
