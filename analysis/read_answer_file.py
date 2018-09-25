@@ -4,6 +4,7 @@ import ntpath
 
 import unittest
 
+import log_check
 from flatten import get_blank_line_object
 from flatten import replace_all_delimeters_with_commas
 from flatten import get_key_for_line
@@ -19,10 +20,18 @@ def path_before_leaf(path):
     return head[0]
 
 def main():
+    if (len(sys.argv) != 2):
+        print("No file path given. Exiting...")
+        sys.exit()
     filepath = sys.argv[1]
 
     if not os.path.isfile(filepath):
         print("File path {} does not exist. Exiting...".format(filepath))
+        sys.exit()
+
+    error_check = log_check.start_log_check()
+    if (error_check == True):
+        print("Errors found. Quiting before writing...")
         sys.exit()
 
     file_name = path_leaf(filepath)
