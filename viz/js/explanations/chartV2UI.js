@@ -131,25 +131,26 @@ function getChartV2UI() {
 	}
 
     ui.processRewardBarClick = function(rewardBarName, chartData, e, treatment){
-		var logLine = templateMap["selectedRewardBar"];
-		logLine = logLine.replace("<SLCT_RWRD_BAR>", rewardBarName);
-		chartTargetClickHandler("rewardBar", logLine);
-		if (rewardBarName != "None") {
-			chartData.clearRewardBarSelections();
-			chartData.selectSingleRewardBar(rewardBarName);
-			if (treatment == "T3") {
-				chartData.clearHighlightSelections();
-				var trueRewardBarName = rewardBarName.split(".")[1];
-				chartData.highlightSimilarRewardBars(trueRewardBarName);
-			}
-			this.renderBars(chartCanvas, chartData, treatment);
-			var bar = chartData.actionRewardForNameMap[rewardBarName];
-			chartData.showSalienciesForRewardName(bar.name);
-			currentExplManager.saliencyVisible = true;
-			currentExplManager.saliencyCombined = false;
-			currentExplManager.render();
+        if (!isSaliencyMapSwitchBlockedByQuestion(treatment)){
+            var logLine = templateMap["selectedRewardBar"];
+            logLine = logLine.replace("<SLCT_RWRD_BAR>", rewardBarName);
+            chartTargetClickHandler("rewardBar", logLine);
+            if (rewardBarName != "None") {
+                chartData.clearRewardBarSelections();
+                chartData.selectSingleRewardBar(rewardBarName);
+                if (treatment == "T3") {
+                    chartData.clearHighlightSelections();
+                    var trueRewardBarName = rewardBarName.split(".")[1];
+                    chartData.highlightSimilarRewardBars(trueRewardBarName);
+                }
+                this.renderBars(chartCanvas, chartData, treatment);
+                var bar = chartData.actionRewardForNameMap[rewardBarName];
+                chartData.showSalienciesForRewardName(bar.name);
+                currentExplManager.saliencyVisible = true;
+                currentExplManager.saliencyCombined = false;
+                currentExplManager.render();
+            }
         }
-       
     }
 
     ui.renderTitle = function (canvas, chartData) {
@@ -611,4 +612,20 @@ function addWhatButton() {
 		e.preventDefault();
 		processWhatClick();
 	})
+}
+
+// with T3's question design, once the user selects a rewardbar, we want to ensure that
+// they don't change the saliency map (by clicking on another bar) before answering the 
+// saliency map question - otherwise non-relevant maps might be in play.
+function isSaliencyMapSwitchBlockedByQuestion(treatment){
+    if (treatment != "T3"){
+        return false;
+    }
+    // we know it's T3
+    var isSaliencyMapClickQuestion = activeStudyQuestionManager.isCurrentQuestionWaitForClickOnSaliencyMap();
+    var isSaliencyMapRelatedQuestion = activeStudyQuestionManager.isPlainQuestionFocusedOnPriorChosenSaliencyMap();
+    if (isSaliencyMapClickQuestion || isSaliencyMapRelatedQuestion) {
+        return true;
+    }
+    return false;
 }
