@@ -386,7 +386,7 @@ def timesequence_integrity(filepath):
         line_num += 1
     f.close()
 
-if __name__ == '__main__':
+def start_log_check():
     load_reference_questions()
     blank_line_check(sys.argv[1])
     histogram(sys.argv[1])
@@ -397,6 +397,7 @@ if __name__ == '__main__':
     waitscreen_integrity(sys.argv[1])
     timesequence_integrity(sys.argv[1])
 
+    error_flip = False
     print("\n")
     for key in errors:
         error_list = errors[key]
@@ -406,9 +407,12 @@ if __name__ == '__main__':
             print("\tFAIL\t{}".format(key))
             for error in error_list:
                 print("\t\t\t{}".format(error))
+            error_flip = True
 
     if (len(ignored_lines) > 0):
         print("\n\n\tIGNORED {} lines".format(len(ignored_lines)))
         for line in ignored_lines:
             print("\n\t\t{}".format(line))
+        error_flip = True
 
+    return error_flip
