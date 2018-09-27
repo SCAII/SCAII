@@ -532,6 +532,8 @@ function escapeAnswerFileDelimetersFromTextString(s) {
     s = s.replace(/_/g, "ESCAPED-UNDERSCORE");
     s = s.replace(/:/g, "ESCAPED-COLON");
     s = s.replace(/;/g, "ESCAPED-SEMICOLON");
+    s = s.replace(/\(/g, "ESCAPED-LEFT-PAREN");
+    s = s.replace(/\)/g, "ESCAPED-RIGHT-PAREN");
     return s;
 }
 
