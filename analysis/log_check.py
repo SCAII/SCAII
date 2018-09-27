@@ -416,3 +416,8 @@ def start_log_check():
         error_flip = True
 
     return error_flip
+
+
+
+if __name__ == '__main__':
+    start_log_check()
