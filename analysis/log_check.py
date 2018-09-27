@@ -155,24 +155,25 @@ def tasks_present_check(filepath):
             if (cur_file != "date"):
                 files_seen.append(parts[0])
         prior_file = cur_file
-    if not(is_correct_files_in_play(files_seen)):
-        errors["tasks_present_check"].append("filenames don't match the sequence tutorial, task1, task2, task3, task4: {}".format(files_seen))
-    else:
-        print("Task data present for tutorial, task1, task2, task3, task4")
+    if is_correct_files_in_play(files_seen):
+        print("all tasks represented by log entries.")
     f.close()
 
 def is_correct_files_in_play(files):
-    if (len(files) != 5):
+    if not ("tutorial.scr" in files):
+        errors["tasks_present_check"].append("no log lines present for tutorial.scr")
         return False
-    if (files[0] != "tutorial.scr"):
+    if not ("task1.scr" in files):
+        errors["tasks_present_check"].append("no log lines present for task1.scr")
         return False
-    if (files[1] != "task1.scr"):
+    if not ("task2.scr" in files):
+        errors["tasks_present_check"].append("no log lines present for task2.scr")
         return False
-    if (files[2] != "task2.scr"):
+    if not ("task3.scr" in files):
+        errors["tasks_present_check"].append("no log lines present for task3.scr")
         return False
-    if (files[3] != "task3.scr"):
-        return False
-    if (files[4] != "task4.scr"):
+    if not ("task4.scr" in files):
+        errors["tasks_present_check"].append("no log lines present for task4.scr")
         return False
     return True
 
