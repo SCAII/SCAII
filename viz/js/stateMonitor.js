@@ -91,6 +91,20 @@ function getStateMonitor() {
         this.detailedSaliency = true;
     }
 
+    sm.getWaitForResearcherStart = function () {
+        var logLine = templateMap["waitForResearcherStart"];
+        logLine = logLine.replace("<CONTINUE_BUTTON>", "yes");
+        logLine = logLine.replace("<REGION>", "waitScreen");
+        logLine = logLine.replace("<TARGET>", "enter-wait-screen");
+        return logLine
+    }
+    sm.getWaitForResearcherEnd = function () {
+        var logLine = templateMap["waitForResearcherEnd"]
+        logLine = logLine.replace("<CONTINUE_BUTTON>", "yes");
+        logLine = logLine.replace("<REGION>", "waitScreen");
+        logLine = logLine.replace("<TARGET>", "user-wait-button-continue");
+        return logLine
+    }
 
     sm.getSaliencyHeader = function () {
         return "combinedSaliency,detailedSaliency,"
