@@ -149,11 +149,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
             }
             else if (currentStep == "summary") {
                 if (!tabManager.hasNextTab()) {
-                    var logLine = templateMap["waitForResearcherStart"];
-                    logLine = logLine.replace("<CONTINUE_BUTTON>", "yes");
-                    logLine = logLine.replace("<REGION>", "waitScreen");
-                    logLine = logLine.replace("<TARGET>", "enter-wait-screen");
-                    userActionMonitor.pendingLogLine = logLine;
+                    var logLine = stateMonitor.getWaitForResearcherStart()
                     stateMonitor.setUserAction(logLine);
                     this.renderer.renderWaitScreen();
                 }
@@ -185,11 +181,7 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
     }
 
     sqm.makeUserWaitForInstructions = function(){
-        var logLine = templateMap["waitForResearcherStart"];
-        logLine = logLine.replace("<CONTINUE_BUTTON>", "yes");
-        logLine = logLine.replace("<REGION>", "waitScreen");
-        logLine = logLine.replace("<TARGET>", "enter-wait-screen");
-        userActionMonitor.pendingLogLine = logLine;
+        var logLine = stateMonitor.getWaitForResearcherStart()
         stateMonitor.setUserAction(logLine);
         this.renderer.renderWaitScreen();
     }

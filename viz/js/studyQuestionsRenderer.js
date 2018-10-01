@@ -410,10 +410,7 @@ function getStudyQuestionRenderer(questions) {
         next.setAttribute("style", "margin-left:280px;font-family:Arial;font-size:18px;padding:10px;");
         next.innerHTML = "Continue";
         next.onclick = function(e) {
-            var logLine = templateMap["waitForResearcherEnd"]
-            logLine = logLine.replace("<CONTINUE_BUTTON>", "yes");
-            logLine = logLine.replace("<REGION>", "waitScreen");
-            logLine = logLine.replace("<TARGET>", "user-wait-button-continue");
+            var logLine = stateMonitor.getWaitForResearcherEnd()
             stateMonitor.setUserAction(logLine);
             $("#user-wait-div").remove();
         }
@@ -491,10 +488,7 @@ function showUserIdScreen(){
     next.innerHTML = "Start";
     next.onclick = function() {
         clearUserIdScreen();
-        var logLine = templateMap["waitForResearcherEnd"]
-        logLine = logLine.replace("<CONTINUE_BUTTON>", "yes");
-        logLine = logLine.replace("<REGION>", "waitScreen");
-        logLine = logLine.replace("<TARGET>", "user-wait-button-continue");
+        var logLine = stateMonitor.getWaitForResearcherEnd()
         stateMonitor.setUserAction(logLine);
     }
     $("#user-id-button-row").append(next);

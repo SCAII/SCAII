@@ -37,26 +37,23 @@ function runTests(){
     //1 - allPosChart
     //2 - allNeg
     var type = 2;
-    var chartType = undefined;
     var chartTesting = undefined;
     if (type == 0) {
-        chartType = getSeeSawChart();
         chartTesting = "seeSaw";
     } else if (type == 1) {
-        chartType = getAllPositivesChart();
         chartTesting = "allPositives";
     } else {
-        chartType = getAllNegativesChart();
         chartTesting = "allNegatives";
     }
-    runChartDataGeometryTests(fc, chartType, chartTesting);
+    runChartDataGeometryTests(fc, chartTesting);
     runChartDataTextTests(fc);
     runChartDataColorTests(fc);
     runRankingTests(fc);
     runSessionTests(fc);
-    //runRankingTests(fc, chartType, chartTesting);
-    //runMsxChartDataColorTests(fc, chartType, chartTesting);
-    //runMsxRankingTests(fc, chartType, chartTesting);
+
+    runMsxChartDataColorTests(fc, chartTesting);
+    runMsxRankingTests(fc, chartTesting);
+    //runMsxGeometryTests (fc, chartTesting) {
     var message = "";
     for (var i in fc.testNames){
         var testName = fc.testNames[i];

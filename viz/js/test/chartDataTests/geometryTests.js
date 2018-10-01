@@ -1,6 +1,13 @@
-function runChartDataGeometryTests(failureChecker, chartType, chartTesting) {
+function runChartDataGeometryTests(failureChecker, chartTesting) {
     // test geometry
-    var ch = chartType;
+
+    if (chartTesting == "seeSaw") {
+        var ch = getSeeSawChart();
+    } else if (chartTesting == "allPositives") {
+        var ch = getAllPositivesChart();
+    } else {
+        var ch = getAllNegativesChart();
+    }
     ch = addUtilityFunctions(ch);
     var fc = failureChecker;
 

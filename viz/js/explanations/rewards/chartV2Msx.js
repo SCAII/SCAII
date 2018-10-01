@@ -1,18 +1,28 @@
 function addMsxToBars(rawChartData) {
     var rd = rawChartData;
-    rd.colors = ['#7293CB', '#E1974C', '#84BA5B', '#D35E60', '#9067A7', '#AB6857', '#CCC210', '#000044'];
     for (var i in rd.actions) {
-        rd.actions[i].msxMaxValueAction = false;
+        var action = rd.actions[i];
+        action.msxMaxValueAction = false;
         for (var j in rd.actions[i].bars) {
-            rd.actions[i].bars[j].msxColor = "grey";
-            rd.actions[i].bars[j].msxImportantBar = false;
+            var bar = rd.actions[i].bars[j];
+            bar.msxColor = "grey";
+            bar.msxImportantBar = false;
         }
     }
+    rd = sortMsxBars(rd);
+    return rd;
+}
+
+function sortMsxBars(rawChartData) {
+    var rd = rawChartData;
+    //TODO: Automate grabbing the colors for the graph
+    rd.colors = ['#1B2D4B','#E1974C',  '#30481E','#D7E400', '#372541', '#9AE004',  '#CCC210',  '#000044'];
     var maxBarGroup = rd.getMaxValueAction();
     for (var i in rd.actions) {
         var action = rd.actions[i];
         if (action.name != maxBarGroup.name) {
             var importantNames = getMinBarAdvantagesRowNBarsPerAction(rd.actions[i], maxBarGroup);
+            console.log(importantNames);
             for (var j in action.bars) {
                 var bar = action.bars[j];
                 for (var k in importantNames) {
