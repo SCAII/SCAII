@@ -521,7 +521,7 @@ function processOutlineAndOverlay(channel){
         if (activeStudyQuestionManager.renderer.controlsWaitingForClick.length == 0) {
             return;
         }
-        if (tm.showAllSaliencyForTreatment1 || tm.showSaliencyAll){
+        if (currentExplManager.saliencyVisible){
             var activeQuestionDecisionPoint = activeStudyQuestionManager.squim.getCurrentDecisionPointNumber();
             if (activeQuestionDecisionPoint == showingDecisionNumber){
                 var uimap = currentExplManager.saliencyUI.uimap;
