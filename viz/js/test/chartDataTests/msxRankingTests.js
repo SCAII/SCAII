@@ -1,8 +1,15 @@
-function runMsxRankingTests (failureChecker, chartType, chartTesting) {
+function runMsxRankingTests (failureChecker, chartTesting) {
     //rd.colors = ['#7293CB','#E1974C',  '#84BA5B','#D35E60', '#9067A7', '#AB6857',  '#CCC210',  '#000044']
     var fc = failureChecker;
     fc.setTestName("MsxRankingTests");
-    var ch = chartType;
+
+    if (chartTesting == "seeSaw") {
+        var ch = getSeeSawChart();
+    } else if (chartTesting == "allPositives") {
+        var ch = getAllPositivesChart();
+    } else {
+        var ch = getAllNegativesChart();
+    }
     ch = addUtilityFunctions(ch);
 
     ch = addMsxToBars(ch);
@@ -33,56 +40,56 @@ function runMsxRankingTests (failureChecker, chartType, chartTesting) {
 
     if (chartTesting == "seeSaw") {
         fc.setCase("seeSaw rank important bars");
-        fc.assert(ch.actions[0].bars[0].importantBar, false, "msx important Bar 0.0");
-        fc.assert(ch.actions[0].bars[1].importantBar, false, "msx important Bar 0.1");
-        fc.assert(ch.actions[0].bars[2].importantBar, false, "msx important Bar 0.2");
+        fc.assert(ch.actions[0].bars[0].msxImportantBar, true, "msx important Bar 0.0");
+        fc.assert(ch.actions[0].bars[1].msxImportantBar, false, "msx important Bar 0.1");
+        fc.assert(ch.actions[0].bars[2].msxImportantBar, true, "msx important Bar 0.2");
 
-        fc.assert(ch.actions[1].bars[0].importantBar, false, "msx important Bar 1.0");
-        fc.assert(ch.actions[1].bars[1].importantBar, false, "msx important Bar 1.1");
-        fc.assert(ch.actions[1].bars[2].importantBar, false, "msx important Bar 1.2");
+        fc.assert(ch.actions[1].bars[0].msxImportantBar, false, "msx important Bar 1.0");
+        fc.assert(ch.actions[1].bars[1].msxImportantBar, false, "msx important Bar 1.1");
+        fc.assert(ch.actions[1].bars[2].msxImportantBar, true, "msx important Bar 1.2");
 
-        fc.assert(ch.actions[2].bars[0].importantBar, false, "msx important Bar 2.0");
-        fc.assert(ch.actions[2].bars[1].importantBar, false, "msx important Bar 2.1");
-        fc.assert(ch.actions[2].bars[2].importantBar, false, "msx important Bar 2.2");
+        fc.assert(ch.actions[2].bars[0].msxImportantBar, false, "msx important Bar 2.0");
+        fc.assert(ch.actions[2].bars[1].msxImportantBar, false, "msx important Bar 2.1");
+        fc.assert(ch.actions[2].bars[2].msxImportantBar, false, "msx important Bar 2.2");
 
-        fc.assert(ch.actions[3].bars[0].importantBar, false, "msx important Bar 3.0");
-        fc.assert(ch.actions[3].bars[1].importantBar, false, "msx important Bar 3.1");
-        fc.assert(ch.actions[3].bars[2].importantBar, false, "msx important Bar 3.2");
+        fc.assert(ch.actions[3].bars[0].msxImportantBar, false, "msx important Bar 3.0");
+        fc.assert(ch.actions[3].bars[1].msxImportantBar, false, "msx important Bar 3.1");
+        fc.assert(ch.actions[3].bars[2].msxImportantBar, true, "msx important Bar 3.2");
     } else if (chartTesting == "allPositives") {
         fc.setCase("allPositives rank important bars");
 
-        fc.assert(ch.actions[0].bars[0].importantBar, false, "msx important Bar 0.0");
-        fc.assert(ch.actions[0].bars[1].importantBar, false, "msx important Bar 0.1");
-        fc.assert(ch.actions[0].bars[2].importantBar, false, "msx important Bar 0.2");
+        fc.assert(ch.actions[0].bars[0].msxImportantBar, false, "msx important Bar 0.0");
+        fc.assert(ch.actions[0].bars[1].msxImportantBar, false, "msx important Bar 0.1");
+        fc.assert(ch.actions[0].bars[2].msxImportantBar, true, "msx important Bar 0.2");
 
-        fc.assert(ch.actions[1].bars[0].importantBar, false, "msx important Bar 1.0");
-        fc.assert(ch.actions[1].bars[1].importantBar, false, "msx important Bar 1.1");
-        fc.assert(ch.actions[1].bars[2].importantBar, false, "msx important Bar 1.2");
+        fc.assert(ch.actions[1].bars[0].msxImportantBar, false, "msx important Bar 1.0");
+        fc.assert(ch.actions[1].bars[1].msxImportantBar, true, "msx important Bar 1.1");
+        fc.assert(ch.actions[1].bars[2].msxImportantBar, false, "msx important Bar 1.2");
 
-        fc.assert(ch.actions[2].bars[0].importantBar, false, "msx important Bar 2.0");
-        fc.assert(ch.actions[2].bars[1].importantBar, false, "msx important Bar 2.1");
-        fc.assert(ch.actions[2].bars[2].importantBar, false, "msx important Bar 2.2");
+        fc.assert(ch.actions[2].bars[0].msxImportantBar, true, "msx important Bar 2.0");
+        fc.assert(ch.actions[2].bars[1].msxImportantBar, false, "msx important Bar 2.1");
+        fc.assert(ch.actions[2].bars[2].msxImportantBar, false, "msx important Bar 2.2");
 
-        fc.assert(ch.actions[3].bars[0].importantBar, false, "msx important Bar 3.0");
-        fc.assert(ch.actions[3].bars[1].importantBar, false, "msx important Bar 3.1");
-        fc.assert(ch.actions[3].bars[2].importantBar, false, "msx important Bar 3.2");
+        fc.assert(ch.actions[3].bars[0].msxImportantBar, false, "msx important Bar 3.0");
+        fc.assert(ch.actions[3].bars[1].msxImportantBar, false, "msx important Bar 3.1");
+        fc.assert(ch.actions[3].bars[2].msxImportantBar, false, "msx important Bar 3.2");
     } else if (chartTesting == "allNegatives") {
         fc.setCase("allNegatives rank importantBars");
 
-        fc.assert(ch.actions[0].bars[0].importantBar, false, "msx important Bar 0.0");
-        fc.assert(ch.actions[0].bars[1].importantBar, false, "msx important Bar 0.1");
-        fc.assert(ch.actions[0].bars[2].importantBar, false, "msx important Bar 0.2");
+        fc.assert(ch.actions[0].bars[0].msxImportantBar, false, "msx important Bar 0.0");
+        fc.assert(ch.actions[0].bars[1].msxImportantBar, false, "msx important Bar 0.1");
+        fc.assert(ch.actions[0].bars[2].msxImportantBar, false, "msx important Bar 0.2");
 
-        fc.assert(ch.actions[1].bars[0].importantBar, false, "msx important Bar 1.0");
-        fc.assert(ch.actions[1].bars[1].importantBar, false, "msx important Bar 1.1");
-        fc.assert(ch.actions[1].bars[2].importantBar, false, "msx important Bar 1.2");
+        fc.assert(ch.actions[1].bars[0].msxImportantBar, true, "msx important Bar 1.0");
+        fc.assert(ch.actions[1].bars[1].msxImportantBar, false, "msx important Bar 1.1");
+        fc.assert(ch.actions[1].bars[2].msxImportantBar, false, "msx important Bar 1.2");
 
-        fc.assert(ch.actions[2].bars[0].msxImportantBar, false, "msx important Bar 2.0");
-        fc.assert(ch.actions[2].bars[1].importantBar, false, "msx important Bar 2.1");
-        fc.assert(ch.actions[2].bars[2].importantBar, false, "msx important Bar 2.2");
+        fc.assert(ch.actions[2].bars[0].msxImportantBar, true, "msx important Bar 2.0");
+        fc.assert(ch.actions[2].bars[1].msxImportantBar, false, "msx important Bar 2.1");
+        fc.assert(ch.actions[2].bars[2].msxImportantBar, false, "msx important Bar 2.2");
 
-        fc.assert(ch.actions[3].bars[0].importantBar, false, "msx important Bar 3.0");
-        fc.assert(ch.actions[3].bars[1].importantBar, false, "msx important Bar 3.1");
-        fc.assert(ch.actions[3].bars[2].importantBar, false, "msx important Bar 3.2");
+        fc.assert(ch.actions[3].bars[0].msxImportantBar, true, "msx important Bar 3.0");
+        fc.assert(ch.actions[3].bars[1].msxImportantBar, false, "msx important Bar 3.1");
+        fc.assert(ch.actions[3].bars[2].msxImportantBar, false, "msx important Bar 3.2");
     }
 }
