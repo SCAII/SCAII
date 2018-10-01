@@ -248,17 +248,7 @@ function loadSelectedReplayFile() {
     loadReplayFile(filename);
 }
 
-//var replayState = undefined;
-//var replayStateForFilename = {};
-
 function loadReplayFile(filename) {
-    // var rs = replayStateForFilename[filename];
-    // if (rs == undefined){
-    //     rs = {};
-    //     initExplanationFields(rs);
-    //     replayStateForFilename[filename] = rs;
-    //     replayState = rs;
-    // }
     $("#cue-arrow-div").remove();
     if (userActionMonitor != undefined) {
         userActionMonitor.clickListener = undefined;

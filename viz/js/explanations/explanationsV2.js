@@ -451,13 +451,3 @@ function getExplanationsV2Manager(){
     }
     return cm;
 }
-
-
-// function restoreChartIfReturningToTab(step){
-//     if (isTargetStepChartVisible()) {
-//         var targetStep = getTargetStepFromReturnInfo();
-//         if (targetStep != undefined && targetStep == step) {
-//             processWhyClick(step);
-//         }
-//     }
-// }

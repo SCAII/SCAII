@@ -204,34 +204,3 @@ function getNormalizationFactorForDisplayStyleAndResolution(style, resolution, a
     return f(actions);
 }
 
-// function getNormalizationFactorFromCells(cells) {
-// 	var max = getMaxValueForLayer(cells);
-// 	var factor = undefined;
-// 	if (max == 0) {
-// 		factor = 1;
-// 	}
-// 	else{
-// 		factor = 1/ max;
-// 	}
-	 
-// 	return factor;
-// }
-
-// var getNormalizationFactor = function(expLayers){
-// 	var max = 0.0
-// 	for (var i in expLayers) {
-// 		expLayer = expLayers[i];
-// 		var value = getMaxValueForLayer(expLayer.getCellsList());
-// 		if (value > max) {
-// 			max = value;
-// 		}
-// 	} 
-//     var factor = undefined;
-// 	if (max == 0) {
-// 		factor = 1;
-// 	}
-// 	else{
-// 		factor = 1/ max;
-// 	}
-// 	return factor;
-// }

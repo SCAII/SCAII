@@ -221,24 +221,6 @@ function getSaliencyV2UIMap() {
 		$("#saliency-maps").append(ch.titledMapDiv);
 	}
 
-    // uimap.hideAllSaliencyMapOutlines = function() {
-    //     //NEW_SAL user may highlight saliency map for a question
-    //     var keys = Object.keys(this.outlinesForSaliencyMap);
-    //     for (var i in keys){
-    //         var key = keys[i];
-    //         var outlineId = this.outlinesForSaliencyMap[key];
-    //         $("#" + outlineId).css("visibility", "hidden");
-    //     }
-    //     this.currentlyHighlightedSaliencyMapKey = undefined;
-    // }
-
-    // uimap.showSaliencyMapOutline = function(saliencyMapKey) {
-    //     this.currentlyHighlightedSaliencyMapKey = saliencyMapKey;
-    //     var outlineId = this.outlinesForSaliencyMap[saliencyMapKey];
-    //     $("#" + outlineId).css("visibility", "visible");
-    // }
-
-
     uimap.mapHostDivIds = {};
 
     uimap.showOutlineOnSelectedSaliencyMap = function(channel) {

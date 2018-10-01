@@ -179,14 +179,7 @@ function updateMasterEntity(master, update) {
         masterShapes.push(updateShape);
     }
     else {
-    //   if (updateShape.hasDelete() && updateShape.getDelete()) {
-    //     var fullShapeId = getShapeId(update, updateShape);
-    //     removeFullShapeIdFromTrackingLists(fullShapeId);
-    //     deleteShape(masterShapes, masterShape);
-    //   }
-    //   else {
         updateMasterShape(masterShape, updateShape);
-    //   }
     }
   }
   updateMetadata(master, update);
