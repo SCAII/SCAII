@@ -22,18 +22,6 @@ function hideAllTooltips(evt) {
         $("#" + sId).addClass('tooltip-invisible');
     }
 }
-// function removeFullShapeIdFromTrackingLists(fullShapeId){
-//     removeMemoryOfToolTip(selectedToolTipIds, entityHPToolTipIds, fullShapeId);
-//     removeMemoryOfToolTip(hoveredAllDataToolTipIds, entityAllDataToolTipIds, fullShapeId);
-//   }
-  
-// function removeMemoryOfToolTip(someDict, someArray, someId) {
-//     var index = someArray.indexOf(someId);
-//     if (index !== -1) {
-//       someArray.splice(index, 1);
-//       delete someDict[someId];
-//     }
-// }
   
 function cleanToolTips(){
     if (entityHPToolTipIds != undefined) {
