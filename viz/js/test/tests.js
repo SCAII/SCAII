@@ -53,6 +53,7 @@ function runTests(){
 
     runMsxChartDataColorTests(fc, chartTesting);
     runMsxRankingTests(fc, chartTesting);
+    //runMsxGeometryTests (fc, chartTesting) {
     var message = "";
     for (var i in fc.testNames){
         var testName = fc.testNames[i];
