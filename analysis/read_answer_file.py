@@ -29,9 +29,9 @@ def main():
         print("File path {} does not exist. Exiting...".format(filepath))
         sys.exit()
 
-    error_check = log_check.start_log_check()
+    error_check = log_check.start_log_check(True, sys.argv[1])
     if (error_check == True):
-        print("Errors found. Quiting before writing...")
+        print("Errors found. Quitting before writing...")
         sys.exit()
 
     file_name = path_leaf(filepath)

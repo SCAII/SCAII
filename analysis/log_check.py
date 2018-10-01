@@ -7,42 +7,39 @@ errors = {}
 ignored_lines = []
 primary_type_field_index = 6
 questions = {}
+summary_output = ""
 
-def histogram(filename):
+def histogram(lines, filename, verbose, treatment):
+    global summary_output
     errors["histogram"] = []
     hist = {}
-    print("processing log file {}".format(filename))
-    treatment = get_treatment_from_filename(filename)
     types = get_events_for_treatment(treatment)
-    f = open(filename)
-    lines = f.readlines()
-    print("read {} lines".format(len(lines)))
+    if verbose:
+        print("{} lines in file {}".format(len(lines), filename))
+    else:
+        summary_output = "{:5d} lines in file {}".format(len(lines), filename)
     line_num = 1
     for line in lines:
-        if line.startswith("#"):
-            ignored_lines.append(line)
-        else:
-            t = get_type_for_line(line, line_num, types)
-            if t == "UNKOWN":
-                errors["histogram"].append("line {} had unknown type: {}".format(line_num, line))
-            hist[t] = hist.get(t, 0) + 1
-            line_num += 1
+        t = get_type_for_line(line, line_num, types)
+        if t == "UNKOWN":
+            errors["histogram"].append("line {} had unknown type: {}".format(line_num, line))
+        hist[t] = hist.get(t, 0) + 1
+        line_num += 1
 
-    f.close()
-    
-    print("\nline types present")
-    for typ in types:
-        if (typ in hist):
-            print("\t{}\t\t{}".format(hist[typ], typ))
+    if verbose:
+        print("\nline types present")
+        for typ in types:
+            if (typ in hist):
+                print("\t{}\t\t{}".format(hist[typ], typ))
 
-    print("\nmissing line types:")
-    for typ in types:
-        if not (typ in hist):
-            print("\t{}\t\t{}".format(0, typ))
+        print("\nmissing line types:")
+        for typ in types:
+            if not (typ in hist):
+                print("\t{}\t\t{}".format(0, typ))
 
-    if "UNKNOWN" in hist:
-        print("\nunknown line types:")
-        print("\t{}\t\t{}".format(hist["UNKNOWN"], "UNKNOWN"))
+        if "UNKNOWN" in hist:
+            print("\nunknown line types:")
+            print("\t{}\t\t{}".format(hist["UNKNOWN"], "UNKNOWN"))
 
 def get_type_for_line(line, line_num, types):
     errors["get_type_for_line"] = []
@@ -75,7 +72,7 @@ def get_type_for_line(line, line_num, types):
 
 def get_type_for_user_click_line(line):
     t = "UNKNOWN"
-    if ("(NA)" in line):
+    if ("(NA)" in line or "NA;NA,false,false,false,false,false,false" in line):
         t = "userClick"
     else:
         parts = line.split(",")
@@ -86,7 +83,7 @@ def get_type_for_user_click_line(line):
         t = type_subfield_parts[0]
     return t
 
-def get_treatment_from_filename(filepath):
+def get_treatment_from_filename(filepath, verbose):
     import ntpath
     fname = ntpath.basename(filepath)
     parts = fname.split(".")
@@ -99,7 +96,8 @@ def get_treatment_from_filename(filepath):
         print("filename malformed - filename should start with 'answers_' -  answers_<participantID>_<treatmentID>.txt")
         sys.exit(0)
     treatment = fileroot_parts[2]
-    print("found treatment {}".format(treatment))
+    if verbose:
+        print("found treatment {}".format(treatment))
     if (treatment != "0" and treatment != "1" and treatment != "2" and treatment!= "3"):
         print("unknown treatmentId in filename - should be one of 0,1,2,3")
         sys.exit(0)
@@ -140,11 +138,10 @@ def get_events_for_treatment(t):
     result.sort()
     return result
 
-def tasks_present_check(filepath):
+def tasks_present_check(lines,verbose):
     errors["tasks_present_check"] = []
-    print("\ntask integrity checking...")
-    f = open(filepath)
-    lines = remove_comments(f.readlines())
+    if verbose:
+        print("\ntask integrity checking...")
     prior_file = ""
     files_seen = []
     for line in lines:
@@ -156,8 +153,8 @@ def tasks_present_check(filepath):
                 files_seen.append(parts[0])
         prior_file = cur_file
     if is_correct_files_in_play(files_seen):
-        print("all tasks represented by log entries.")
-    f.close()
+        if verbose:
+            print("all tasks represented by log entries.")
 
 def is_correct_files_in_play(files):
     if not ("tutorial.scr" in files):
@@ -177,18 +174,11 @@ def is_correct_files_in_play(files):
         return False
     return True
 
-def remove_comments(lines):
-    result = []
-    for line in lines:
-        if not line.startswith("#"):
-            result.append(line)
-    return result
 
-def q_and_a_integrity(filepath):
+def q_and_a_integrity(lines, treatment, verbose):
     errors["q_and_a_integrity"] = []
-    print("\nq_and_a integrity checking...")
-    f = open(filepath)
-    lines = remove_comments(f.readlines())
+    if verbose:
+        print("\nq_and_a integrity checking...")
     # make key with filename+question_id
     register = {}
     keys_seen = []
@@ -221,20 +211,23 @@ def q_and_a_integrity(filepath):
     for key in keys_seen:
         value = register[key]
         if value == "posed,":
-            print("  \t{}\t\t{}\t***  ERROR! ***".format(key, value))
+            if verbose:
+                print("  \t{}\t\t{}\t***  ERROR! ***".format(key, value))
             errors["q_and_a_integrity"].append("  \t{}\t\t{}\tERROR - question posed, not answered".format(key, value))
         elif value == "answered,":
-            print("  \t{}\t\t{}\t***  ERROR! ***".format(key, value))
+            if verbose:
+                print("  \t{}\t\t{}\t***  ERROR! ***".format(key, value))
             errors["q_and_a_integrity"].append("  \t{}\t\t{}\tERROR - question answered, not posed".format(key, value))
         elif value != "posed,answered,":
-            print("  \t{}\t\t{}\t***  ERROR! ***".format(key, value))
+            if verbose:
+                print("  \t{}\t\t{}\t***  ERROR! ***".format(key, value))
             errors["q_and_a_integrity"].append("  \t{}\t\t{}\tERROR - should have been 'posed,answered,'".format(key, value))
         else:
-            print("OK\t{}".format(key))
-    treatment = get_treatment_from_filename(filepath)
+            if verbose:
+                print("OK\t{}".format(key))
     question_file_questions = questions[treatment]
     ensure_all_questions_present(keys_seen, question_file_questions, treatment)
-    f.close()
+
 
 def ensure_all_questions_present(seen, needed, treatment):
     matches = []
@@ -250,76 +243,70 @@ def ensure_all_questions_present(seen, needed, treatment):
     for extra in seen:
         errors["q_and_a_integrity"].append("  \tERROR - treatment{} question {} present but not in original question file".format(treatment, extra))
 
-def header_check(filepath):
+def header_check(lines, verbose):
     errors["header_check"] = []
     cnt = 0
-    print("\nq_and_a integrity checking...")
-    f = open(filepath)
-    lines = remove_comments(f.readlines())
+    if verbose:
+        print("\nq_and_a integrity checking...")
     for line in lines:
         if ("date,time,secSince1970,decisionPoint,questionId,userAction" in line):
             cnt += 1
 
     if(cnt > 1):
-        print("***  ERROR!  ***")
         errors["header_check"].append("found too many header lines : {}".format(cnt))
-        print("Looks like the logfile contains data from more than one session")
+        if verbose:
+            print("Error! Looks like the logfile contains data from more than one session")
     if(cnt == 0):
-        print("***  ERROR!  ***")
         errors["header_check"].append("Header line missing - should start with 'date,time,secSince1970'")
-        print("Looks like the logfile is missing the header file")
-    f.close()
+        if verbose:
+            print("Looks like the logfile is missing the header file")
 
 
     
 def load_reference_questions():
     questions["0"] = ["task1.scr_1.0","task1.scr_1.1","task1.scr_1.2","task1.scr_61.0","task1.scr_61.1","task1.scr_61.2","task1.scr_82.0","task1.scr_82.1","task1.scr_82.2","task1.scr_114.0","task1.scr_114.1","task1.scr_114.2","task2.scr_1.0","task2.scr_1.1","task2.scr_1.2","task2.scr_59.0","task2.scr_59.1","task2.scr_59.2","task2.scr_82.0","task2.scr_82.1","task2.scr_82.2","task2.scr_121.0","task2.scr_121.1","task2.scr_121.2","task3.scr_1.0","task3.scr_1.1","task3.scr_1.2","task3.scr_56.0","task3.scr_56.1","task3.scr_56.2","task3.scr_99.0","task3.scr_99.1","task3.scr_99.2","task4.scr_1.0","task4.scr_1.1","task4.scr_1.2","task4.scr_63.0","task4.scr_63.1","task4.scr_63.2","task4.scr_105.0","task4.scr_105.1","task4.scr_105.2","task4.scr_summary.0","tutorial.scr_1.0","tutorial.scr_1.1","tutorial.scr_75.0","tutorial.scr_75.1","tutorial.scr_75.2","tutorial.scr_124.0","tutorial.scr_124.1","tutorial.scr_summary.0"]
     questions["1"] = ["task1.scr_1.0","task1.scr_1.1","task1.scr_1.2","task1.scr_61.0","task1.scr_61.1","task1.scr_61.2","task1.scr_82.0","task1.scr_82.1","task1.scr_82.2","task1.scr_114.0","task1.scr_114.1","task1.scr_114.2","task2.scr_1.0","task2.scr_1.1","task2.scr_1.2","task2.scr_59.0","task2.scr_59.1","task2.scr_59.2","task2.scr_82.0","task2.scr_82.1","task2.scr_82.2","task2.scr_121.0","task2.scr_121.1","task2.scr_121.2","task3.scr_1.0","task3.scr_1.1","task3.scr_1.2","task3.scr_56.0","task3.scr_56.1","task3.scr_56.2","task3.scr_99.0","task3.scr_99.1","task3.scr_99.2","task4.scr_1.0","task4.scr_1.1","task4.scr_1.2","task4.scr_63.0","task4.scr_63.1","task4.scr_63.2","task4.scr_105.0","task4.scr_105.1","task4.scr_105.2","task4.scr_summary.0","tutorial.scr_1.0","tutorial.scr_1.1","tutorial.scr_75.0","tutorial.scr_75.1","tutorial.scr_75.2","tutorial.scr_124.0","tutorial.scr_124.1","tutorial.scr_124.2","tutorial.scr_summary.0"]
-    questions["2"] = ["task1.scr_1.0","task1.scr_1.1","task1.scr_1.2","task1.scr_61.0","task1.scr_61.1","task1.scr_61.2","task1.scr_82.0","task1.scr_82.1","task1.scr_82.2","task1.scr_114.0","task1.scr_114.1","task1.scr_114.2","task2.scr_1.0","task2.scr_1.1","task2.scr_1.2","task2.scr_59.0","task2.scr_59.1","task2.scr_59.2","task2.scr_82.0","task2.scr_82.1","task2.scr_82.2","task2.scr_121.0","task2.scr_121.1","task2.scr_121.2","task3.scr_1.0","task3.scr_1.1","task3.scr_1.2","task3.scr_56.0","task3.scr_56.1","task3.scr_56.2","task3.scr_99.0","task3.scr_99.1","task3.scr_99.2","task4.scr_1.0","task4.scr_1.1","task4.scr_1.2","task4.scr_63.0","task4.scr_63.1","task4.scr_63.2","task4.scr_105.0","task4.scr_105.1","task4.scr_105.2","task4.scr_summary.0","tutorial.scr_1.0","tutorial.scr_75.0","tutorial.scr_75.1","tutorial.scr_75.2","tutorial.scr_124.0","tutorial.scr_124.1","tutorial.scr_124.2","tutorial.scr_summary.0"]
-    questions["3"] = ["task1.scr_1.0","task1.scr_1.1","task1.scr_1.2","task1.scr_1.3","task1.scr_61.0","task1.scr_61.1","task1.scr_61.2","task1.scr_61.3","task1.scr_82.0","task1.scr_82.1","task1.scr_82.2","task1.scr_82.3","task1.scr_114.0","task1.scr_114.1","task1.scr_114.2","task1.scr_114.3","task2.scr_1.0","task2.scr_1.1","task2.scr_1.2","task2.scr_1.3","task2.scr_59.0","task2.scr_59.1","task2.scr_59.2","task2.scr_59.3","task2.scr_82.0","task2.scr_82.1","task2.scr_82.2","task2.scr_82.3","task2.scr_121.0","task2.scr_121.1","task2.scr_121.2","task2.scr_121.3","task3.scr_1.0","task3.scr_1.1","task3.scr_1.2","task3.scr_1.3","task3.scr_56.0","task3.scr_56.1","task3.scr_56.2","task3.scr_56.3","task3.scr_99.0","task3.scr_99.1","task3.scr_99.2","task3.scr_99.3","task4.scr_1.0","task4.scr_1.1","task4.scr_1.2","task4.scr_1.3","task4.scr_63.0","task4.scr_63.1","task4.scr_63.2","task4.scr_62.3","task4.scr_105.0","task4.scr_105.1","task4.scr_105.2","task4.scr_105.3","task4.scr_summary.0","tutorial.scr_1.1","tutorial.scr_1.2","tutorial.scr_75.0","tutorial.scr_75.1","tutorial.scr_75.2","tutorial.scr_75.3","tutorial.scr_124.0","tutorial.scr_124.1","tutorial.scr_summary.0"]
+    questions["2"] = ["task1.scr_1.0","task1.scr_1.1","task1.scr_1.2","task1.scr_61.0","task1.scr_61.1","task1.scr_61.2","task1.scr_82.0","task1.scr_82.1","task1.scr_82.2","task1.scr_114.0","task1.scr_114.1","task1.scr_114.2","task2.scr_1.0","task2.scr_1.1","task2.scr_1.2","task2.scr_59.0","task2.scr_59.1","task2.scr_59.2","task2.scr_82.0","task2.scr_82.1","task2.scr_82.2","task2.scr_121.0","task2.scr_121.1","task2.scr_121.2","task3.scr_1.0","task3.scr_1.1","task3.scr_1.2","task3.scr_56.0","task3.scr_56.1","task3.scr_56.2","task3.scr_99.0","task3.scr_99.1","task3.scr_99.2","task4.scr_1.0","task4.scr_1.1","task4.scr_1.2","task4.scr_63.0","task4.scr_63.1","task4.scr_63.2","task4.scr_105.0","task4.scr_105.1","task4.scr_105.2","task4.scr_summary.0","tutorial.scr_1.0","tutorial.scr_1.1","tutorial.scr_75.0","tutorial.scr_75.1","tutorial.scr_75.2","tutorial.scr_124.0","tutorial.scr_124.1","tutorial.scr_124.2","tutorial.scr_summary.0"]
+    #questions["3"] = ["task1.scr_1.0","task1.scr_1.1","task1.scr_1.2","task1.scr_1.3","task1.scr_61.0","task1.scr_61.1","task1.scr_61.2","task1.scr_61.3","task1.scr_82.0","task1.scr_82.1","task1.scr_82.2","task1.scr_82.3","task1.scr_114.0","task1.scr_114.1","task1.scr_114.2","task1.scr_114.3","task2.scr_1.0","task2.scr_1.1","task2.scr_1.2","task2.scr_1.3","task2.scr_59.0","task2.scr_59.1","task2.scr_59.2","task2.scr_59.3","task2.scr_82.0","task2.scr_82.1","task2.scr_82.2","task2.scr_82.3","task2.scr_121.0","task2.scr_121.1","task2.scr_121.2","task2.scr_121.3","task3.scr_1.0","task3.scr_1.1","task3.scr_1.2","task3.scr_1.3","task3.scr_56.0","task3.scr_56.1","task3.scr_56.2","task3.scr_56.3","task3.scr_99.0","task3.scr_99.1","task3.scr_99.2","task3.scr_99.3","task4.scr_1.0","task4.scr_1.1","task4.scr_1.2","task4.scr_1.3","task4.scr_63.0","task4.scr_63.1","task4.scr_63.2","task4.scr_62.3","task4.scr_105.0","task4.scr_105.1","task4.scr_105.2","task4.scr_105.3","task4.scr_summary.0","tutorial.scr_1.1","tutorial.scr_1.2","tutorial.scr_75.0","tutorial.scr_75.1","tutorial.scr_75.2","tutorial.scr_75.3","tutorial.scr_124.0","tutorial.scr_124.1","tutorial.scr_summary.0"]
+    questions["3"] = ["task1.scr_1.0","task1.scr_1.1","task1.scr_1.2","task1.scr_1.3","task1.scr_61.0","task1.scr_61.1","task1.scr_61.2","task1.scr_61.3","task1.scr_82.0","task1.scr_82.1","task1.scr_82.2","task1.scr_82.3","task1.scr_114.0","task1.scr_114.1","task1.scr_114.2","task1.scr_114.3","task2.scr_1.0","task2.scr_1.1","task2.scr_1.2","task2.scr_1.3","task2.scr_59.0","task2.scr_59.1","task2.scr_59.2","task2.scr_59.3","task2.scr_82.0","task2.scr_82.1","task2.scr_82.2","task2.scr_82.3","task2.scr_121.0","task2.scr_121.1","task2.scr_121.2","task2.scr_121.3","task3.scr_1.0","task3.scr_1.1","task3.scr_1.2","task3.scr_1.3","task3.scr_56.0","task3.scr_56.1","task3.scr_56.2","task3.scr_56.3","task3.scr_99.0","task3.scr_99.1","task3.scr_99.2","task3.scr_99.3","task4.scr_1.0","task4.scr_1.1","task4.scr_1.2","task4.scr_1.3","task4.scr_63.0","task4.scr_63.1","task4.scr_63.2","task4.scr_63.3","task4.scr_105.0","task4.scr_105.1","task4.scr_105.2","task4.scr_105.3","task4.scr_summary.0","tutorial.scr_1.0","tutorial.scr_1.1","tutorial.scr_1.2","tutorial.scr_75.0","tutorial.scr_75.1","tutorial.scr_75.2","tutorial.scr_124.0","tutorial.scr_124.1","tutorial.scr_124.2","tutorial.scr_summary.0"]
 
 
-def blank_line_check(filepath):
+def blank_line_check(lines, verbose):
     errors["blank_line_check"] = []
     line_cnt = 0
-    print("\nblank_line_check checking...")
-    f = open(filepath)
-    lines = f.readlines()
+    if verbose:
+        print("\nblank_line_check checking...")
     for line in lines:
         line_cnt += 1
         if (line == '\n'):
-            print("***  ERROR!  ***")
             errors["blank_line_check"].append("found entry with no information : {}".format(line_cnt))
-            print("Looks like logfile contains entry with no information (blank) : {}".format(line_cnt))
-            f.close()
-            sys.exit()
-    f.close()
+            if verbose:
+                print("ERROR! Looks like logfile contains entry with no information (blank) : {}".format(line_cnt))
 
-def answer_question_integrity(filepath):
+def answer_question_integrity(lines, verbose):
     errors["answer_question_integrity"] = []
     line_cnt = 0
     user_click_entity = ""
     user_click_rewardbar = ""
     user_click_saliency = ""
     types_user_click = [user_click_entity, user_click_rewardbar, user_click_saliency]
-    print("\nanswer_question_integrity checking...")
-    f = open(filepath)
-    lines = f.readlines()
+    if verbose:
+        print("\nanswer_question_integrity checking...")
     for line in lines:
         line_cnt += 1
         if (("button-save" in line) and (not "(NA)" in line)):
             if ((types_user_click[0] != "") and ("clickEntity" in line) and (types_user_click[0] not in line)):
-                print("***  ERROR!  ***")
                 errors["answer_question_integrity"].append("ERROR - answer question with clickEntity answer not found in earlier log entries : {}".format(line_cnt))
-                print("Looks like logfile contains an entry in the saved answer not found previously in the log file")
+                if verbose:
+                    print("Error! Looks like logfile contains an entry in the saved answer not found previously in the log file")
             elif ((types_user_click[1] != "") and "selectedRewardBar" in line and (types_user_click[1] not in line)):
-                print("***  ERROR!  ***")
                 errors["answer_question_integrity"].append("ERROR - answer question with selectedRewardBar answer not found in earlier log entries : {}".format(line_cnt))
-                print("Looks like logfile contains an entry in the saved answer not found previously in the log file")
+                if verbose:
+                    print("Error! Looks like logfile contains an entry in the saved answer not found previously in the log file")
             elif ((types_user_click[2] != "") and "clickSaliencyMap" in line and (types_user_click[2] not in line)):
-                print("***  ERROR!  ***")
                 errors["answer_question_integrity"].append("ERROR - answer question with clickSaliencyMap answer not found in earlier log entries : {}".format(line_cnt))
-                print("Looks like logfile contains an entry in the saved answer not found previously in the log file")
+                if verbose:
+                    print("Error! Looks like logfile contains an entry in the saved answer not found previously in the log file")
         elif ("clickEntity" in line):
             temp_user_click_entity = line
             types_user_click[0] = temp_user_click_entity.replace("\n", "")
@@ -329,43 +316,43 @@ def answer_question_integrity(filepath):
         elif ("clickSaliencyMap" in line):
             temp_user_click_saliency = line
             types_user_click[2] = temp_user_click_saliency.replace("\n", "")
-    f.close()
         
-def waitscreen_integrity(filepath):
+def waitscreen_integrity(lines, verbose):
     errors["waitscreen_integrity"] = []
     line_cnt = 0
     startscreen_cnt = 0
     endscreen_cnt = 0
-    print("\nwaitscreen_integrity checking...")
-    f = open(filepath)
-    lines = f.readlines()
+    if verbose:
+        print("\nwaitscreen_integrity checking...")
     for line in lines:
         line_cnt += 1
         if ("waitForResearcherStart" in line):
             startscreen_cnt += 1
             if (startscreen_cnt != (endscreen_cnt + 1)):
-                print("***  ERROR!  ***")
                 errors["waitscreen_integrity"].append("ERROR - waitScreen start and end logs are unequal. Unmatched case start:{} != end:{} : line:{}".format(startscreen_cnt, (endscreen_cnt + 1), line_cnt))
-                print("Looks like logfile has unmatched case for start or end screen log entires : start count: {} != end count: {} : Line:{}".format(startscreen_cnt, endscreen_cnt, line_cnt))
+                if verbose:
+                    print("Error! Looks like logfile has unmatched case for start or end screen log entires : start count: {} != end count: {} : Line:{}".format(startscreen_cnt, endscreen_cnt, line_cnt))
+                startscreen_cnt = endscreen_cnt + 1
         elif ("waitForResearcherEnd" in line):
             endscreen_cnt += 1
             if (startscreen_cnt != endscreen_cnt):
-                print("***  ERROR!  ***")
                 errors["waitscreen_integrity"].append("ERROR - waitScreen start and end logs are unequal. Unmatched case start:{} != end:{} : line:{}".format(startscreen_cnt, endscreen_cnt, line_cnt))
-                print("Looks like logfile has unmatched case for start or end screen log entires : start count: {} != end count: {} : Line:{}".format(startscreen_cnt, endscreen_cnt, line_cnt))
-    f.close()
+                if verbose:
+                    print("Error! Looks like logfile has unmatched case for start or end screen log entires : start count: {} != end count: {} : Line:{}".format(startscreen_cnt, endscreen_cnt, line_cnt))
+                startscreen_cnt = endscreen_cnt
+    if (startscreen_cnt != endscreen_cnt):
+        errors["waitscreen_integrity"].append("ERROR - waitScreen start and end logs are unequal. ")
+        if verbose:
+            print("Error! Looks like logfile has unmatched case for start or end screen log entires : start count: {} != end count: {}".format(startscreen_cnt, endscreen_cnt))
     
-def timesequence_integrity(filepath):
+def timesequence_integrity(lines, verbose):
     errors["timesequence_integrity"] = []
     prior_dt = datetime.strptime("1/1/18 00:01", "%d/%m/%y %H:%M")
     prior_sec_1970 = int("1500000000000")
-    print("\ntimesequence_integrity checking...")
-    f = open(filepath)
-    lines = f.readlines()
+    if verbose:
+        print("\ntimesequence_integrity checking...")
     line_num = 1
     for line in lines:
-        if line.startswith("date"):
-            continue
         fields = line.split(",")
         date_field = fields[1]
         time_field = fields[2]
@@ -385,40 +372,69 @@ def timesequence_integrity(filepath):
         prior_dt = dt
         prior_sec_1970 = sec_1970
         line_num += 1
-    f.close()
 
-def start_log_check():
+def get_error_count(error_lists):
+    count = 0
+    for k,v in error_lists.items():
+        for error in v:
+            count += 1
+    return count
+
+def filter_lines_to_ignore(lines):
+    result = []
+    header_lines = []
+    for line in lines:
+        if line.startswith("#") or line.startswith("clickHitPoints"):
+            ignored_lines.append(line)
+        elif line.startswith("date"):
+            header_lines.append(line)
+        else:
+            result.append(line)
+    return result
+
+def start_log_check(verbose, filepath):
+    treatment = get_treatment_from_filename(filepath, verbose)
+    f = open(filepath)
+    lines = f.readlines()
+    f.close()
+    header_check(lines, verbose)
+
+    lines = filter_lines_to_ignore(lines)
     load_reference_questions()
-    blank_line_check(sys.argv[1])
-    histogram(sys.argv[1])
-    tasks_present_check(sys.argv[1])
-    q_and_a_integrity(sys.argv[1])
-    header_check(sys.argv[1])
-    answer_question_integrity(sys.argv[1])
-    waitscreen_integrity(sys.argv[1])
-    timesequence_integrity(sys.argv[1])
+    blank_line_check(lines, verbose)
+    histogram(lines, filepath, verbose, treatment)
+    tasks_present_check(lines, verbose)
+    q_and_a_integrity(lines, treatment, verbose)
+    
+    answer_question_integrity(lines, verbose)
+    waitscreen_integrity(lines, verbose)
+    timesequence_integrity(lines, verbose)
 
     error_flip = False
-    print("\n")
-    for key in errors:
-        error_list = errors[key]
-        if len(error_list) == 0:
-            print("\tpass\t{}".format(key))
-        else:
-            print("\tFAIL\t{}".format(key))
-            for error in error_list:
-                print("\t\t\t{}".format(error))
+    if verbose:
+        for key in errors:
+            error_list = errors[key]
+            if len(error_list) == 0:
+                print("\tpass\t{}".format(key))
+            else:
+                print("\tFAIL\t{}".format(key))
+                for error in error_list:
+                    print("\t\t\t{}".format(error))
+                error_flip = True
+
+        if (len(ignored_lines) > 0):
+            print("\n\n\tIGNORED {} lines".format(len(ignored_lines)))
+            for line in ignored_lines:
+                print("\n\t\t{}".format(line))
             error_flip = True
-
-    if (len(ignored_lines) > 0):
-        print("\n\n\tIGNORED {} lines".format(len(ignored_lines)))
-        for line in ignored_lines:
-            print("\n\t\t{}".format(line))
-        error_flip = True
-
+    else:
+        if get_error_count(errors) > 0:
+            print("[{}]  =======>> FAIL".format(summary_output))
+        else:
+            print("{}\tp".format(summary_output))
     return error_flip
 
 
 
 if __name__ == '__main__':
-    start_log_check()
+    start_log_check(True,sys.argv[1])
