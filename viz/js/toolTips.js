@@ -185,21 +185,21 @@ function getLabelForInfo(s){
     return label;
 }
 function getDamageDealtStringForUnit(unitType){
-    var result = "Avg Attack Damage: ";
+    var result = "Attack Damage per step: ";
     if (unitType == "Tank"){
-        return result + "1 point/step";
+        return result + "Low";
     }
     else if (unitType == "City"){
-        return result + "0 points/step";
+        return result + "None (0)";
     }
     else if (unitType == "Town"){
-        return result + "0 points/step";
+        return result + "None (0)";
     }
     else if (unitType == "Big Fort"){
-        return result + "2 points/step";
+        return result + "High";
     }
     else if (unitType == "Small Fort"){
-        return result + "1 point/step";
+        return result + "Low";
     }
     else {
         return result + "unknown";

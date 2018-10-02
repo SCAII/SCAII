@@ -460,9 +460,9 @@ function showUserIdScreen(){
     
     var question = document.createElement("DIV");
     question.setAttribute("id", "user-id-question");
-    question.setAttribute("style", "margin-left:100px;font-family:Arial;font-size:18px;padding:10px;");
+    question.setAttribute("style", "margin-left:100px;font-family:Arial;font-size:70px;padding:10px;");
     if (isTutorial()){
-        question.innerHTML = "Welcome to the XAI User Study.  Your study ID is:  " + activeStudyQuestionManager.userId;
+        question.innerHTML = "Welcome to the XAI User Study.<br><br>  Your participant ID is:  " + activeStudyQuestionManager.userId;
     }
     else {
         question.innerHTML = "Please wait for the researcher to signal when to begin.";
@@ -528,6 +528,7 @@ function escapeAnswerFileDelimetersFromTextString(s) {
     s = s.replace(/;/g, "ESCAPED-SEMICOLON");
     s = s.replace(/\(/g, "ESCAPED-LEFT-PARENTH");
     s = s.replace(/\)/g, "ESCAPED-RIGHT-PARENTH");
+    s = s.replace(/\n/g, "ESCAPED-NEWLINE");
     return s;
 }
 

@@ -114,6 +114,27 @@ function getStudyQuestionManager(questions, userId, treatmentId) {
         }
     }
 
+    sqm.isPlainQuestionFocusedOnPriorChosenSaliencyMap = function(){
+        var qid = this.squim.getCurrentQuestionId();
+        var qu = this.questionMap[qid];
+        if (qu.questionType == 'plain'){
+            if (qu.questionText.includes("From looking at the saliency maps (below)")){
+                return true;
+            }
+        }
+        return false;
+         
+    }
+    sqm.isCurrentQuestionWaitForClickOnSaliencyMap = function(){
+        var qid = this.squim.getCurrentQuestionId();
+        var qu = this.questionMap[qid];
+        if (qu.questionType == 'waitForClick' || qu.questionType == 'waitForPredictionClick'){
+            if (qu.regionsToAllow.length == 1 && qu.regionsToAllow[0] == "saliencyMap"){
+                return true;
+            }
+        }
+        return false;
+    }
     sqm.poseCurrentQuestion = function() {
         currentExplManager.removeAndForgetOverlaysAndOutlines();
 

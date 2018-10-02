@@ -1,0 +1,1013 @@
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+tutorial.scr,9-18-2018,12:57:28:319,1537300648319,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+tutorial.scr,9-18-2018,12:57:28:319,1537300648319,1,undefined,showQuestion:1.0,false,false,false,false,false,false
+tutorial.scr,9-18-2018,12:57:28:324,1537300648324,1,1.0,region:waitScreen;target:enter-welcome-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:6:42:241,1537301202241,1,1.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:6:42:536,1537301202536,1,1.0,stepIntoDecisionPoint:1,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:10:915,1537301230915,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:11:15,1537301231015,1,1.0,showEntityTooltip:friendly-Tank_lowerRightQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:11:414,1537301231414,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:12:316,1537301232316,1,1.0,showEntityTooltip:friendly-Tank_lowerRightQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:12:365,1537301232365,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:12:616,1537301232616,1,1.0,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:13:933,1537301233933,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:13:984,1537301233984,1,1.0,showEntityTooltip:friendly-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:14:901,1537301234901,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:14:967,1537301234967,1,1.0,showEntityTooltip:friendly-City_lowerLeftQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:15:719,1537301235719,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:16:185,1537301236185,1,1.0,showEntityTooltip:friendly-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:16:854,1537301236854,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:17:320,1537301237320,1,1.0,showEntityTooltip:friendly-City_upperRightQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:17:336,1537301237336,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:24:225,1537301244225,1,1.0,showEntityTooltip:friendly-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:24:743,1537301244743,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:25:110,1537301245110,1,1.0,showEntityTooltip:friendly-City_lowerLeftQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:25:409,1537301245409,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:25:810,1537301245810,1,1.0,showEntityTooltip:friendly-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:26:144,1537301246144,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:26:177,1537301246177,1,1.0,showEntityTooltip:friendly-City_upperRightQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:26:193,1537301246193,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:26:632,1537301246632,1,1.0,showEntityTooltip:friendly-City_upperRightQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:27:194,1537301247194,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:46:554,1537301266554,1,1.0,userClick:430_595;region:QnA;NA;NA,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:51:422,1537301271422,1,1.0,showQuestion:1.1,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:7:51:423,1537301271423,1,1.1,userClick:314_657;region:QnA;target:button-save;answerQuestion:1.0_"4"_NA_(NA),false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:8:3:138,1537301283138,1,1.1,userClick:423_590;region:QnA;NA;NA,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:8:19:70,1537301299070,1,1.1,userClick:289_651;region:QnA;target:button-save;answerQuestion:1.1_"Q1ESCAPED-COMMA Q2ESCAPED-COMMA Q3ESCAPED-COMMA Q4"_NA_(NA),false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:8:42:217,1537301322217,1,1.1,userClick:428_337;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:9:3:938,1537301343938,1,1.1,showQuestion:75.0,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:9:3:941,1537301343941,1,75.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:9:4:225,1537301344225,1,75.0,stepIntoDecisionPoint:75,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:9:54:952,1537301394952,75,75.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:11:19:732,1537301479732,75,75.0,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:11:19:917,1537301479917,75,75.0,showEntityTooltip:friendly-Tank_lowerRightQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:13:37:862,1537301617862,75,75.0,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:13:37:966,1537301617966,75,75.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:13:42:869,1537301622869,75,75.0,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:13:43:621,1537301623621,75,75.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:13:44:416,1537301624416,75,75.0,userClick:440_589;region:QnA;NA;NA,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:13:46:595,1537301626595,75,75.0,showQuestion:75.1,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:13:46:597,1537301626597,75,75.1,userClick:321_650;region:QnA;target:button-save;answerQuestion:75.0_"31"_NA_(NA),false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:13:49:259,1537301629259,75,75.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:13:49:275,1537301629275,75,75.1,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:13:49:625,1537301629625,75,75.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:13:55:414,1537301635414,75,75.1,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:13:56:231,1537301636231,75,75.1,userClick:505_593;region:QnA;NA;NA,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:14:5:67,1537301645067,75,75.1,showQuestion:75.2,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:14:5:67,1537301645067,75,75.2,userClick:323_649;region:QnA;target:button-save;answerQuestion:75.1_"Enemy Small Fort"_NA_(NA),false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:14:8:40,1537301648040,75,75.2,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:14:8:224,1537301648224,75,75.2,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:14:14:362,1537301654362,75,75.2,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:14:15:342,1537301655342,75,75.2,userClick:496_601;region:QnA;NA;NA,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:14:18:914,1537301658914,75,75.2,userClick:312_659;region:QnA;target:button-save;answerQuestion:75.2_"70"_NA_(NA),false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:14:26:599,1537301666599,75,75.2,userClick:428_340;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:14:40:618,1537301680618,75,75.2,showQuestion:124.0,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:14:40:619,1537301680619,75,124.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:14:40:907,1537301680907,75,124.0,stepIntoDecisionPoint:124,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:14:46:815,1537301686815,124,124.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:15:36:463,1537301736463,124,124.0,userClick:412_405;region:gameArea;target:expl-control-canvas;timelineClick:137,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:15:37:352,1537301737352,124,124.0,userClick:422_400;region:gameArea;target:expl-control-canvas;timelineClick:141,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:15:38:7,1537301738007,124,124.0,userClick:442_403;region:gameArea;target:expl-control-canvas;timelineClick:149,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:15:39:431,1537301739431,124,124.0,userClick:448_403;region:gameArea;target:expl-control-canvas;timelineClick:151,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:15:40:536,1537301740536,124,124.0,userClick:443_404;region:gameArea;target:expl-control-canvas;timelineClick:149,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:15:42:414,1537301742414,124,124.0,userClick:445_404;region:gameArea;target:expl-control-canvas;timelineClick:150,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:15:55:245,1537301755245,124,124.0,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:15:55:726,1537301755726,124,124.0,showEntityTooltip:friendly-City_lowerLeftQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:15:57:880,1537301757880,124,124.0,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:15:57:996,1537301757996,124,124.0,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:15:58:13,1537301758013,124,124.0,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:15:58:230,1537301758230,124,124.0,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:16:0:206,1537301760206,124,124.0,userClick:322_608;region:QnA;NA;NA,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:16:3:977,1537301763977,124,124.0,showQuestion:124.1,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:16:3:979,1537301763979,124,124.1,userClick:296_653;region:QnA;target:button-save;answerQuestion:124.0_"0"_NA_(NA),false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:16:8:573,1537301768573,124,124.1,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:16:9:14,1537301769014,124,124.1,showEntityTooltip:friendly-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:16:11:374,1537301771374,124,124.1,userClick:510_588;region:QnA;NA;NA,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:16:15:832,1537301775832,124,124.1,userClick:299_651;region:QnA;target:button-save;answerQuestion:124.1_"50"_NA_(NA),false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:16:21:854,1537301781854,124,124.1,userClick:430_341;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:16:34:326,1537301794326,124,124.1,showQuestion:summary.0,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:17:12:486,1537301832486,124,summary.0,userClick:356_609;region:QnA;NA;NA,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:17:19:1,1537301839001,124,summary.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+tutorial.scr,9-18-2018,13:17:19:1,1537301839001,124,summary.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task1.scr,9-18-2018,13:17:22:600,1537301842600,124,summary.0,stepIntoDecisionPoint:1,false,false,false,false,false,false
+task1.scr,9-18-2018,13:17:22:600,1537301842600,1,summary.0,showQuestion:1.0,false,false,false,false,false,false
+task1.scr,9-18-2018,13:17:45:6,1537301865006,1,1.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task1.scr,9-18-2018,13:17:52:875,1537301872875,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:17:52:958,1537301872958,1,1.0,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:17:52:992,1537301872992,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:17:53:291,1537301873291,1,1.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:17:53:859,1537301873859,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:17:54:310,1537301874310,1,1.0,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:17:54:627,1537301874627,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:17:55:777,1537301875777,1,1.0,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:17:56:511,1537301876511,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:17:56:794,1537301876794,1,1.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:17:57:345,1537301877345,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:17:57:445,1537301877445,1,1.0,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:17:58:298,1537301878298,1,1.0,userClick:399_265;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_lowerLeftQuadrant_84_202,false,false,false,false,false,false
+task1.scr,9-18-2018,13:17:58:519,1537301878519,1,1.0,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:17:58:596,1537301878596,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:18:5:952,1537301885952,1,1.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:18:6:370,1537301886370,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:18:6:686,1537301886686,1,1.0,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:18:7:774,1537301887774,1,1.0,userClick:484_679;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:18:43:958,1537301923958,1,1.0,showQuestion:1.1,false,false,false,false,false,false
+task1.scr,9-18-2018,13:18:43:961,1537301923961,1,1.1,userClick:312_731;region:QnA;target:button-save;answerQuestion:1.0_"Because it is an enemy that has the least amount of health remaining of any enemies and will deal the least amount of damage of all enemies present."_NA_(task1.scr,9-18-2018,13:17:58:298,1537301878298,1,1.0,userClick:399_265;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_lowerLeftQuadrant_84_202,false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-18-2018,13:19:0:370,1537301940371,1,1.1,userClick:429_338;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:19:43:549,1537301983549,1,1.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:19:43:683,1537301983683,1,1.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:19:43:849,1537301983849,1,1.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:19:43:933,1537301983933,1,1.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:19:44:233,1537301984233,1,1.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:19:46:969,1537301986969,1,1.1,userClick:384_138;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_69_75,false,false,false,false,false,false
+task1.scr,9-18-2018,13:19:47:269,1537301987269,1,1.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:19:47:453,1537301987453,1,1.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:19:51:717,1537301991717,1,1.1,userClick:342_679;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:19:55:861,1537301995861,1,1.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:19:56:509,1537301996509,1,1.1,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:19:56:976,1537301996976,1,1.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:19:57:210,1537301997210,1,1.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:19:59:562,1537301999562,1,1.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:19:59:628,1537301999628,1,1.1,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:21:50:105,1537302110105,1,1.1,showQuestion:1.2,false,false,false,false,false,false
+task1.scr,9-18-2018,13:21:50:107,1537302110107,1,1.2,userClick:315_734;region:QnA;target:button-save;answerQuestion:1.1_"Because its main objective is to attack enemiesESCAPED-COMMA which means this object or only one other could be the source of its main attention. AlsoESCAPED-COMMA it is a bigger object than the other enemy objectESCAPED-COMMA which perhaps gives it more points during D1."_NA_(task1.scr,9-18-2018,13:19:46:969,1537301986969,1,1.1,userClick:384_138;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_69_75,false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-18-2018,13:21:57:358,1537302117358,1,1.2,userClick:331_602;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:22:23:237,1537302143237,1,1.2,userClick:486_605;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:22:47:421,1537302167421,1,1.2,userClick:234_700;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:23:12:695,1537302192695,1,1.2,userClick:309_751;region:QnA;target:button-save;answerQuestion:1.2_"YesESCAPED-COMMA it did not have enough steps to defeat the chosen targetESCAPED-COMMA but it would have had enough steps to defeat the target in Q3."_"If it was aware that it did not have enough steps to defeat its chosen target."_(NA),false,false,false,false,false,false
+task1.scr,9-18-2018,13:23:20:644,1537302200644,1,1.2,userClick:428_334;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:23:21:65,1537302201065,1,1.2,showQuestion:61.0,false,false,false,false,false,false
+task1.scr,9-18-2018,13:23:21:67,1537302201067,1,61.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task1.scr,9-18-2018,13:23:21:353,1537302201353,1,61.0,stepIntoDecisionPoint:61,false,false,false,false,false,false
+task1.scr,9-18-2018,13:23:27:957,1537302207957,61,61.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task1.scr,9-18-2018,13:23:40:627,1537302220627,61,61.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:23:40:676,1537302220676,61,61.0,showEntityTooltip:friendly-Tank_lowerLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:23:40:777,1537302220777,61,61.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:23:41:117,1537302221117,61,61.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:23:43:217,1537302223217,61,61.0,userClick:400_151;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_85_88,false,false,false,false,false,false
+task1.scr,9-18-2018,13:23:43:229,1537302223229,61,61.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:23:43:513,1537302223513,61,61.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:23:49:173,1537302229173,61,61.0,userClick:480_668;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:24:49:103,1537302289103,61,61.0,showQuestion:61.1,false,false,false,false,false,false
+task1.scr,9-18-2018,13:24:49:104,1537302289104,61,61.1,userClick:303_737;region:QnA;target:button-save;answerQuestion:61.0_"Because it appears to attack the largest enemyESCAPED-COMMA if that is an option (that isESCAPED-COMMA the enemy with the most max health points)ESCAPED-COMMA regardless of current health points."_NA_(task1.scr,9-18-2018,13:23:43:217,1537302223217,61,61.0,userClick:400_151;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_85_88,false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-18-2018,13:24:55:684,1537302295684,61,61.1,userClick:427_340;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:25:4:779,1537302304779,61,61.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:25:5:312,1537302305312,61,61.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:25:6:579,1537302306579,61,61.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:25:6:880,1537302306880,61,61.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:25:7:848,1537302307848,61,61.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:25:7:864,1537302307864,61,61.1,showEntityTooltip:friendly-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:25:13:52,1537302313052,61,61.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:25:13:219,1537302313219,61,61.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:25:13:235,1537302313235,61,61.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:25:17:999,1537302317999,61,61.1,userClick:389_130;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_74_67,false,false,false,false,false,false
+task1.scr,9-18-2018,13:25:18:228,1537302318228,61,61.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:25:18:323,1537302318323,61,61.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:25:18:339,1537302318339,61,61.1,showEntityTooltip:friendly-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:25:21:332,1537302321332,61,61.1,userClick:374_680;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:26:11:656,1537302371656,61,61.1,showQuestion:61.2,false,false,false,false,false,false
+task1.scr,9-18-2018,13:26:11:658,1537302371658,61,61.2,userClick:304_737;region:QnA;target:button-save;answerQuestion:61.1_"Because it had the most max health points. Perhaps this aspect of it's reasoning is because the largest enemies deal the most damage."_NA_(task1.scr,9-18-2018,13:25:17:999,1537302317999,61,61.1,userClick:389_130;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_74_67,false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-18-2018,13:26:15:780,1537302375780,61,61.2,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:26:16:181,1537302376181,61,61.2,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:26:16:465,1537302376465,61,61.2,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:26:17:715,1537302377715,61,61.2,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:26:18:16,1537302378016,61,61.2,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:26:18:782,1537302378782,61,61.2,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:26:18:883,1537302378883,61,61.2,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:26:19:49,1537302379049,61,61.2,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:26:19:516,1537302379516,61,61.2,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:26:20:0,1537302380000,61,61.2,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:26:20:485,1537302380485,61,61.2,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:26:24:569,1537302384569,61,61.2,userClick:248_614;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:27:33:408,1537302453408,61,61.2,userClick:321_750;region:QnA;target:button-save;answerQuestion:61.2_"YesESCAPED-COMMA it should instead prioritize enemies that it can full defeat (bring the current health points to zero)"_"Did you decide this because of the max health points of the enemyESCAPED-COMMA or the level of damage of the enemy."_(NA),false,false,false,false,false,false
+task1.scr,9-18-2018,13:27:34:296,1537302454296,61,61.2,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:27:35:719,1537302455719,61,61.2,userClick:426_336;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:27:36:179,1537302456179,61,61.2,showQuestion:82.0,false,false,false,false,false,false
+task1.scr,9-18-2018,13:27:36:180,1537302456180,61,82.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task1.scr,9-18-2018,13:27:36:405,1537302456405,61,82.0,stepIntoDecisionPoint:82,false,false,false,false,false,false
+task1.scr,9-18-2018,13:27:43:718,1537302463718,82,82.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task1.scr,9-18-2018,13:27:50:993,1537302470993,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:27:51:228,1537302471228,82,82.0,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:27:53:170,1537302473170,82,82.0,userClick:501_147;region:gameArea;target:gameboard;clickEntity:enemy-Tank_upperRightQuadrant_186_84,false,false,false,false,false,false
+task1.scr,9-18-2018,13:27:53:596,1537302473596,82,82.0,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:27:53:646,1537302473646,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:27:59:606,1537302479606,82,82.0,userClick:413_664;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:28:33:63,1537302513063,82,82.0,showQuestion:82.1,false,false,false,false,false,false
+task1.scr,9-18-2018,13:28:33:65,1537302513065,82,82.1,userClick:306_739;region:QnA;target:button-save;answerQuestion:82.0_"MainlyESCAPED-COMMA because it is the only enemy object on the boardESCAPED-COMMA but also because it prioritizes tanks over other objects."_NA_(task1.scr,9-18-2018,13:27:53:170,1537302473170,82,82.0,userClick:501_147;region:gameArea;target:gameboard;clickEntity:enemy-Tank_upperRightQuadrant_186_84,false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-18-2018,13:28:42:308,1537302522308,82,82.1,userClick:433_336;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:28:52:899,1537302532899,82,82.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:28:53:300,1537302533300,82,82.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:28:53:483,1537302533483,82,82.1,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:28:54:34,1537302534034,82,82.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:28:54:118,1537302534118,82,82.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:28:56:3,1537302536003,82,82.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:28:56:171,1537302536171,82,82.1,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:28:59:33,1537302539033,82,82.1,userClick:502_142;region:gameArea;target:gameboard;clickEntity:enemy-Tank_upperRightQuadrant_187_79,false,false,false,false,false,false
+task1.scr,9-18-2018,13:28:59:388,1537302539388,82,82.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:28:59:473,1537302539473,82,82.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:29:6:987,1537302546987,82,82.1,userClick:399_672;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:29:51:153,1537302591153,82,82.1,showQuestion:82.2,false,false,false,false,false,false
+task1.scr,9-18-2018,13:29:51:154,1537302591154,82,82.2,userClick:305_737;region:QnA;target:button-save;answerQuestion:82.1_"Because it is both the only enemy on the board at this decision point and because it is attacking an ally. "_NA_(task1.scr,9-18-2018,13:28:59:33,1537302539033,82,82.1,userClick:502_142;region:gameArea;target:gameboard;clickEntity:enemy-Tank_upperRightQuadrant_187_79,false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-18-2018,13:29:55:589,1537302595589,82,82.2,userClick:417_609;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:30:10:372,1537302610372,82,82.2,userClick:364_703;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:30:16:13,1537302616013,82,82.2,userClick:306_752;region:QnA;target:button-save;answerQuestion:82.2_"NoESCAPED-COMMA I do not think there was a flaw."_"Nothing at this point."_(NA),false,false,false,false,false,false
+task1.scr,9-18-2018,13:30:17:804,1537302617804,82,82.2,userClick:430_338;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:30:18:68,1537302618068,82,82.2,showQuestion:114.0,false,false,false,false,false,false
+task1.scr,9-18-2018,13:30:18:69,1537302618069,82,114.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task1.scr,9-18-2018,13:30:18:324,1537302618324,82,114.0,stepIntoDecisionPoint:114,false,false,false,false,false,false
+task1.scr,9-18-2018,13:30:24:180,1537302624180,114,114.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task1.scr,9-18-2018,13:30:31:764,1537302631764,114,114.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:30:32:115,1537302632115,114,114.0,showEntityTooltip:enemy-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:30:33:304,1537302633304,114,114.0,userClick:504_259;region:gameArea;target:gameboard;clickEntity:enemy-Tank_lowerRightQuadrant_189_196,false,false,false,false,false,false
+task1.scr,9-18-2018,13:30:33:649,1537302633649,114,114.0,showEntityTooltip:enemy-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:30:33:667,1537302633668,114,114.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:30:35:308,1537302635308,114,114.0,userClick:393_667;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:31:37:280,1537302697280,114,114.0,showQuestion:114.1,false,false,false,false,false,false
+task1.scr,9-18-2018,13:31:37:281,1537302697281,114,114.1,userClick:326_738;region:QnA;target:button-save;answerQuestion:114.0_"Because it will always attack enemy tanks over anything elseESCAPED-COMMA probably because this accomplishes both the goal of attacking an enemy AND defending an ally."_NA_(task1.scr,9-18-2018,13:30:33:304,1537302633304,114,114.0,userClick:504_259;region:gameArea;target:gameboard;clickEntity:enemy-Tank_lowerRightQuadrant_189_196,false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-18-2018,13:31:44:923,1537302704923,114,114.1,userClick:432_341;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:31:51:964,1537302711964,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:31:52:52,1537302712052,114,114.1,showEntityTooltip:enemy-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:31:52:214,1537302712214,114,114.1,showEntityTooltip:friendly-Town_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:31:52:235,1537302712235,114,114.1,showEntityTooltip:enemy-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:31:52:867,1537302712867,114,114.1,showEntityTooltip:friendly-Town_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:31:54:172,1537302714172,114,114.1,showEntityTooltip:enemy-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:31:54:683,1537302714683,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:31:55:0,1537302715000,114,114.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:31:55:952,1537302715952,114,114.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:31:57:351,1537302717351,114,114.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:31:57:585,1537302717585,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:5:792,1537302725792,114,114.1,showEntityTooltip:enemy-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:7:43,1537302727043,114,114.1,showEntityTooltip:friendly-Town_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:7:93,1537302727093,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:7:692,1537302727692,114,114.1,showEntityTooltip:enemy-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:9:295,1537302729295,114,114.1,showEntityTooltip:friendly-Town_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:9:328,1537302729328,114,114.1,showEntityTooltip:enemy-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:10:11,1537302730011,114,114.1,showEntityTooltip:friendly-Town_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:11:581,1537302731581,114,114.1,showEntityTooltip:enemy-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:12:499,1537302732499,114,114.1,showEntityTooltip:friendly-Town_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:13:212,1537302733212,114,114.1,showEntityTooltip:enemy-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:13:464,1537302733464,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:13:633,1537302733633,114,114.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:13:665,1537302733665,114,114.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:13:715,1537302733715,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:14:83,1537302734083,114,114.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:14:115,1537302734115,114,114.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:15:50,1537302735050,114,114.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:15:83,1537302735083,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:15:350,1537302735350,114,114.1,showEntityTooltip:enemy-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:20:121,1537302740121,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:20:220,1537302740220,114,114.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:20:255,1537302740255,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:20:571,1537302740571,114,114.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:21:32,1537302741032,114,114.1,userClick:388_145;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_upperLeftQuadrant_73_82,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:21:211,1537302741211,114,114.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:21:289,1537302741289,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:21:389,1537302741389,114,114.1,showEntityTooltip:friendly-Town_lowerLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:26:923,1537302746923,114,114.1,userClick:405_681;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:37:351,1537302757351,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:37:383,1537302757383,114,114.1,showEntityTooltip:enemy-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:37:402,1537302757402,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:37:754,1537302757754,114,114.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:38:535,1537302758535,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:39:154,1537302759154,114,114.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:40:971,1537302760971,114,114.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:40:987,1537302760987,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:41:170,1537302761170,114,114.1,showEntityTooltip:enemy-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:42:989,1537302762989,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:43:72,1537302763072,114,114.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:43:155,1537302763155,114,114.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:43:172,1537302763172,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:43:602,1537302763602,114,114.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:44:423,1537302764423,114,114.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:44:440,1537302764440,114,114.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:44:473,1537302764473,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:44:642,1537302764642,114,114.1,showEntityTooltip:enemy-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:46:875,1537302766875,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:47:58,1537302767058,114,114.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:47:963,1537302767963,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:48:444,1537302768444,114,114.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:49:43,1537302769043,114,114.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:49:715,1537302769715,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:49:727,1537302769727,114,114.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:49:761,1537302769761,114,114.1,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,13:32:50:962,1537302770962,114,114.1,userClick:387_675;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:33:49:159,1537302829159,114,114.1,userClick:310_683;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:33:51:639,1537302831639,114,114.1,userClick:315_701;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:33:53:212,1537302833212,114,114.1,showQuestion:114.2,false,false,false,false,false,false
+task1.scr,9-18-2018,13:33:53:213,1537302833213,114,114.2,userClick:290_738;region:QnA;target:button-save;answerQuestion:114.1_"Perhaps because it recognized that the tank did not pose an immediate threat and the chosen object was equivalent to the object in Q1ESCAPED-COMMA but had less health."_NA_(task1.scr,9-18-2018,13:32:21:32,1537302741032,114,114.1,userClick:388_145;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_upperLeftQuadrant_73_82,false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-18-2018,13:33:57:255,1537302837255,114,114.2,userClick:246_606;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:34:17:135,1537302857135,114,114.2,userClick:239_695;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-18-2018,13:34:28:26,1537302868026,114,114.2,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task1.scr,9-18-2018,13:34:28:27,1537302868027,114,114.2,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task2.scr,9-18-2018,13:34:31:784,1537302871784,114,114.2,stepIntoDecisionPoint:1,false,false,false,false,false,false
+task2.scr,9-18-2018,13:34:31:784,1537302871784,1,114.2,showQuestion:1.0,false,false,false,false,false,false
+task2.scr,9-18-2018,13:34:48:211,1537302888211,1,1.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:21:986,1537302921986,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:22:620,1537302922620,1,1.0,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:23:119,1537302923119,1,1.0,userClick:523_146;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_upperRightQuadrant_208_83,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:23:138,1537302923138,1,1.0,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:23:887,1537302923887,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:25:267,1537302925267,1,1.0,userClick:409_679;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:40:887,1537302940887,1,1.0,showQuestion:1.1,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:40:888,1537302940888,1,1.1,userClick:290_736;region:QnA;target:button-save;answerQuestion:1.0_"MainlyESCAPED-COMMA because this is the only enemy on the board."_NA_(task2.scr,9-18-2018,13:35:23:119,1537302923119,1,1.0,userClick:523_146;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_upperRightQuadrant_208_83,false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:42:994,1537302942994,1,1.1,userClick:415_344;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:50:860,1537302950860,1,1.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:51:261,1537302951261,1,1.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:51:311,1537302951311,1,1.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:51:427,1537302951427,1,1.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:51:890,1537302951890,1,1.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:51:945,1537302951945,1,1.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:52:228,1537302952228,1,1.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:52:245,1537302952245,1,1.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:52:931,1537302952931,1,1.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:53:90,1537302953090,1,1.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:53:112,1537302953112,1,1.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:53:329,1537302953329,1,1.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:53:683,1537302953683,1,1.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:53:730,1537302953730,1,1.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:53:802,1537302953802,1,1.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:54:218,1537302954218,1,1.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:54:297,1537302954297,1,1.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:54:330,1537302954330,1,1.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:54:987,1537302954987,1,1.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:55:114,1537302955114,1,1.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:55:866,1537302955866,1,1.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:55:953,1537302955953,1,1.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:55:997,1537302955997,1,1.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:56:499,1537302956499,1,1.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:56:516,1537302956516,1,1.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:57:322,1537302957322,1,1.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:57:417,1537302957417,1,1.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:57:615,1537302957615,1,1.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:57:666,1537302957666,1,1.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:35:57:732,1537302957732,1,1.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:36:0:947,1537302960947,1,1.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:36:1:502,1537302961502,1,1.1,userClick:522_141;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_upperRightQuadrant_207_78,false,false,false,false,false,false
+task2.scr,9-18-2018,13:36:1:778,1537302961778,1,1.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:36:1:837,1537302961837,1,1.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:36:1:869,1537302961869,1,1.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:36:4:498,1537302964498,1,1.1,userClick:387_681;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:36:28:431,1537302988431,1,1.1,showQuestion:1.2,false,false,false,false,false,false
+task2.scr,9-18-2018,13:36:28:432,1537302988433,1,1.2,userClick:301_736;region:QnA;target:button-save;answerQuestion:1.1_"Because it is the only enemy on the board and none of the allies are in danger."_NA_(task2.scr,9-18-2018,13:36:1:502,1537302961502,1,1.1,userClick:522_141;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_upperRightQuadrant_207_78,false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-18-2018,13:36:31:442,1537302991442,1,1.2,userClick:376_611;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:36:41:227,1537303001227,1,1.2,userClick:358_695;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:36:46:755,1537303006755,1,1.2,userClick:318_766;region:QnA;target:button-save;answerQuestion:1.2_"NoESCAPED-COMMA there is no flaw."_"Nothing at this point."_(NA),false,false,false,false,false,false
+task2.scr,9-18-2018,13:36:47:657,1537303007657,1,1.2,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:36:48:707,1537303008707,1,1.2,userClick:419_339;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:36:49:93,1537303009093,1,1.2,showQuestion:59.0,false,false,false,false,false,false
+task2.scr,9-18-2018,13:36:49:94,1537303009094,1,59.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task2.scr,9-18-2018,13:36:49:311,1537303009311,1,59.0,stepIntoDecisionPoint:59,false,false,false,false,false,false
+task2.scr,9-18-2018,13:37:0:266,1537303020266,59,59.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task2.scr,9-18-2018,13:37:10:742,1537303030742,59,59.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:37:10:776,1537303030776,59,59.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:37:10:792,1537303030792,59,59.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:37:10:860,1537303030860,59,59.0,showEntityTooltip:friendly-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:37:10:926,1537303030926,59,59.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:37:10:944,1537303030944,59,59.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:37:12:210,1537303032210,59,59.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:37:12:476,1537303032476,59,59.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:37:13:361,1537303033361,59,59.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:37:13:594,1537303033594,59,59.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:37:14:694,1537303034694,59,59.0,userClick:392_136;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_77_73,false,false,false,false,false,false
+task2.scr,9-18-2018,13:37:14:794,1537303034794,59,59.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:37:14:962,1537303034962,59,59.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:37:17:802,1537303037802,59,59.0,userClick:338_685;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:38:33:821,1537303113821,59,59.0,showQuestion:59.1,false,false,false,false,false,false
+task2.scr,9-18-2018,13:38:33:824,1537303113824,59,59.1,userClick:312_731;region:QnA;target:button-save;answerQuestion:59.0_"It appears to attack enemies with the highest max health (or perhaps the highest level of damage). ThusESCAPED-COMMA Q2 or Q3. Yet it also appears to choose enemies with the lowest current healthESCAPED-COMMA thus Q2."_NA_(task2.scr,9-18-2018,13:37:14:694,1537303034694,59,59.0,userClick:392_136;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_77_73,false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-18-2018,13:38:35:529,1537303115529,59,59.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:38:35:562,1537303115562,59,59.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:38:35:612,1537303115612,59,59.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:38:36:122,1537303116122,59,59.1,userClick:427_339;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:38:46:371,1537303126371,59,59.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:38:47:338,1537303127338,59,59.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:38:47:389,1537303127389,59,59.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:38:47:423,1537303127423,59,59.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:38:47:672,1537303127672,59,59.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:38:48:638,1537303128638,59,59.1,userClick:392_125;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_77_62,false,false,false,false,false,false
+task2.scr,9-18-2018,13:38:48:858,1537303128858,59,59.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:38:48:941,1537303128941,59,59.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:38:51:26,1537303131026,59,59.1,userClick:355_673;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:39:31:39,1537303171039,59,59.1,showQuestion:59.2,false,false,false,false,false,false
+task2.scr,9-18-2018,13:39:31:41,1537303171041,59,59.2,userClick:320_743;region:QnA;target:button-save;answerQuestion:59.1_"Because it's max health was the highest of all the enemies and it's current health was the lowest of the enemies with that matched its max health."_NA_(task2.scr,9-18-2018,13:38:48:638,1537303128638,59,59.1,userClick:392_125;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_77_62,false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-18-2018,13:39:36:406,1537303176406,59,59.2,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:39:36:740,1537303176740,59,59.2,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:39:38:692,1537303178692,59,59.2,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:39:39:593,1537303179593,59,59.2,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:39:40:459,1537303180459,59,59.2,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:39:40:543,1537303180543,59,59.2,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:39:40:562,1537303180562,59,59.2,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:39:40:828,1537303180828,59,59.2,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:39:40:861,1537303180861,59,59.2,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:39:41:12,1537303181012,59,59.2,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:39:41:294,1537303181294,59,59.2,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:39:42:4,1537303182004,59,59.2,userClick:480_616;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:19:990,1537303219990,59,59.2,userClick:339_697;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:24:735,1537303224735,59,59.2,userClick:302_755;region:QnA;target:button-save;answerQuestion:59.2_"I think it should prioritize ability to defeat before next decision pointESCAPED-COMMA but in this case it made the right call."_"nothing right now."_(NA),false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:25:400,1537303225400,59,59.2,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:25:432,1537303225432,59,59.2,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:25:533,1537303225533,59,59.2,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:26:230,1537303226230,59,59.2,userClick:415_339;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:26:452,1537303226452,59,59.2,showQuestion:82.0,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:26:453,1537303226453,59,82.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:26:727,1537303226727,59,82.0,stepIntoDecisionPoint:82,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:31:437,1537303231437,82,82.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:36:391,1537303236391,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:37:142,1537303237142,82,82.0,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:38:142,1537303238142,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:38:426,1537303238426,82,82.0,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:38:510,1537303238510,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:39:194,1537303239194,82,82.0,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:39:761,1537303239761,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:40:118,1537303240118,82,82.0,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:40:928,1537303240928,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:41:262,1537303241262,82,82.0,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:41:830,1537303241830,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:42:174,1537303242174,82,82.0,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:42:686,1537303242686,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:42:813,1537303242813,82,82.0,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:43:213,1537303243213,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:43:331,1537303243331,82,82.0,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:43:765,1537303243765,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:44:126,1537303244126,82,82.0,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:49:286,1537303249286,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:49:385,1537303249385,82,82.0,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:49:603,1537303249603,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:49:869,1537303249869,82,82.0,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:50:336,1537303250336,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:50:519,1537303250519,82,82.0,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:51:138,1537303251138,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:51:270,1537303251270,82,82.0,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:51:371,1537303251371,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:51:558,1537303251558,82,82.0,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:52:410,1537303252410,82,82.0,userClick:391_138;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_upperLeftQuadrant_76_75,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:52:598,1537303252598,82,82.0,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:52:671,1537303252671,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:40:59:478,1537303259478,82,82.0,userClick:338_677;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:31:513,1537303291513,82,82.0,showQuestion:82.1,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:31:515,1537303291515,82,82.1,userClick:286_742;region:QnA;target:button-save;answerQuestion:82.0_"Because in a similar situationESCAPED-COMMA it chose against attacking the enemy tank and attacked instead the enemy building."_NA_(task2.scr,9-18-2018,13:40:52:410,1537303252410,82,82.0,userClick:391_138;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_upperLeftQuadrant_76_75,false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:33:576,1537303293576,82,82.1,userClick:426_339;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:45:818,1537303305818,82,82.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:46:2,1537303306002,82,82.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:46:185,1537303306185,82,82.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:46:634,1537303306634,82,82.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:46:785,1537303306785,82,82.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:47:721,1537303307721,82,82.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:47:737,1537303307737,82,82.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:48:203,1537303308203,82,82.1,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:49:104,1537303309104,82,82.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:53:325,1537303313325,82,82.1,showEntityTooltip:friendly-City_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:53:358,1537303313358,82,82.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:53:558,1537303313558,82,82.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:53:574,1537303313574,82,82.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:53:849,1537303313849,82,82.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:54:8,1537303314008,82,82.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:55:253,1537303315253,82,82.1,userClick:385_143;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_upperLeftQuadrant_70_80,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:55:977,1537303315977,82,82.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:56:44,1537303316044,82,82.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:56:77,1537303316077,82,82.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:56:128,1537303316128,82,82.1,showEntityTooltip:friendly-City_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:41:58:97,1537303318097,82,82.1,userClick:409_673;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:42:13:926,1537303333926,82,82.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:42:14:425,1537303334425,82,82.1,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:42:15:75,1537303335075,82,82.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:42:15:444,1537303335444,82,82.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:42:15:537,1537303335537,82,82.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:42:15:794,1537303335794,82,82.1,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:42:16:361,1537303336361,82,82.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:42:16:377,1537303336377,82,82.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:42:16:711,1537303336711,82,82.1,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:42:17:795,1537303337795,82,82.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:42:17:912,1537303337912,82,82.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:42:17:945,1537303337945,82,82.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:42:43:4,1537303363004,82,82.1,showQuestion:82.2,false,false,false,false,false,false
+task2.scr,9-18-2018,13:42:43:6,1537303363006,82,82.2,userClick:321_738;region:QnA;target:button-save;answerQuestion:82.1_"Because it was able to defeat it before next Decision Point. "_NA_(task2.scr,9-18-2018,13:41:55:253,1537303315253,82,82.1,userClick:385_143;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_upperLeftQuadrant_70_80,false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-18-2018,13:42:44:129,1537303364129,82,82.2,userClick:269_613;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:1:545,1537303381545,82,82.2,userClick:313_698;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:2:232,1537303382232,82,82.2,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:2:415,1537303382415,82,82.2,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:3:600,1537303383600,82,82.2,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:3:683,1537303383683,82,82.2,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:3:700,1537303383700,82,82.2,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:3:717,1537303383717,82,82.2,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:3:966,1537303383966,82,82.2,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:4:516,1537303384516,82,82.2,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:4:534,1537303384534,82,82.2,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:4:800,1537303384800,82,82.2,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:5:917,1537303385917,82,82.2,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:6:786,1537303386786,82,82.2,userClick:453_693;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:27:807,1537303407807,82,82.2,userClick:320_756;region:QnA;target:button-save;answerQuestion:82.2_"YesESCAPED-COMMA perhaps it should have chosen to attack the tank instead."_"Does it try to avoid enemy tanksESCAPED-COMMA to a certain extent?"_(NA),false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:29:46,1537303409046,82,82.2,userClick:429_336;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:29:426,1537303409426,82,82.2,showQuestion:121.0,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:29:428,1537303409428,82,121.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:29:710,1537303409710,82,121.0,stepIntoDecisionPoint:121,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:41:342,1537303421342,121,121.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:53:321,1537303433321,121,121.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:53:637,1537303433637,121,121.0,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:54:471,1537303434471,121,121.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:54:806,1537303434806,121,121.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:55:523,1537303435523,121,121.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:55:656,1537303435656,121,121.0,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:55:723,1537303435723,121,121.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:55:973,1537303435973,121,121.0,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:56:439,1537303436439,121,121.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:56:856,1537303436856,121,121.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:57:777,1537303437777,121,121.0,userClick:393_149;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_78_86,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:57:791,1537303437791,121,121.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:57:924,1537303437924,121,121.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:43:58:886,1537303438886,121,121.0,userClick:409_682;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:44:42:78,1537303482078,121,121.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:44:42:645,1537303482645,121,121.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:44:43:194,1537303483194,121,121.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:44:43:261,1537303483261,121,121.0,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:44:43:295,1537303483295,121,121.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:44:43:512,1537303483512,121,121.0,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:44:44:129,1537303484129,121,121.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:44:45:760,1537303485760,121,121.0,showQuestion:121.1,false,false,false,false,false,false
+task2.scr,9-18-2018,13:44:45:763,1537303485763,121,121.1,userClick:316_737;region:QnA;target:button-save;answerQuestion:121.0_"Because it is (1) an enemyESCAPED-COMMA and (2) the enemy with the most max health or max level of damage."_NA_(task2.scr,9-18-2018,13:43:57:777,1537303437777,121,121.0,userClick:393_149;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_78_86,false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-18-2018,13:44:48:285,1537303488285,121,121.1,userClick:416_337;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:44:58:790,1537303498790,121,121.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:44:59:224,1537303499224,121,121.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:44:59:242,1537303499242,121,121.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:44:59:408,1537303499408,121,121.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:44:59:442,1537303499442,121,121.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:44:59:992,1537303499992,121,121.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:45:0:74,1537303500074,121,121.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:45:0:726,1537303500726,121,121.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:45:0:777,1537303500777,121,121.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:45:0:876,1537303500876,121,121.1,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:45:1:243,1537303501243,121,121.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:45:1:359,1537303501359,121,121.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:45:1:444,1537303501444,121,121.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:45:1:560,1537303501560,121,121.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:45:2:222,1537303502222,121,121.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:45:3:106,1537303503106,121,121.1,userClick:393_131;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_78_68,false,false,false,false,false,false
+task2.scr,9-18-2018,13:45:3:125,1537303503125,121,121.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-18-2018,13:45:3:344,1537303503344,121,121.1,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-18-2018,13:45:5:222,1537303505222,121,121.1,userClick:353_675;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:45:38:31,1537303538031,121,121.1,showQuestion:121.2,false,false,false,false,false,false
+task2.scr,9-18-2018,13:45:38:33,1537303538033,121,121.2,userClick:315_736;region:QnA;target:button-save;answerQuestion:121.1_"Perhaps because it can cause the most damageESCAPED-COMMA but I'm not sure anymore."_NA_(task2.scr,9-18-2018,13:45:3:106,1537303503106,121,121.1,userClick:393_131;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_78_68,false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-18-2018,13:45:42:35,1537303542035,121,121.2,userClick:257_609;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:45:51:539,1537303551539,121,121.2,userClick:349_700;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-18-2018,13:45:56:373,1537303556373,121,121.2,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task2.scr,9-18-2018,13:45:56:375,1537303556375,121,121.2,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task3.scr,9-18-2018,13:45:59:91,1537303559091,121,121.2,stepIntoDecisionPoint:1,false,false,false,false,false,false
+task3.scr,9-18-2018,13:45:59:91,1537303559091,1,121.2,showQuestion:1.0,false,false,false,false,false,false
+task3.scr,9-18-2018,13:46:1:291,1537303561291,1,1.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task3.scr,9-18-2018,13:46:12:688,1537303572688,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:46:12:755,1537303572755,1,1.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:46:12:770,1537303572770,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:46:13:105,1537303573105,1,1.0,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:46:14:372,1537303574372,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:46:14:856,1537303574856,1,1.0,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:46:16:332,1537303576332,1,1.0,userClick:511_149;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperRightQuadrant_196_86,false,false,false,false,false,false
+task3.scr,9-18-2018,13:46:16:344,1537303576344,1,1.0,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:46:16:592,1537303576592,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:46:19:656,1537303579656,1,1.0,userClick:290_682;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:46:50:568,1537303610568,1,1.0,userClick:529_667;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:46:59:308,1537303619308,1,1.0,showQuestion:1.1,false,false,false,false,false,false
+task3.scr,9-18-2018,13:46:59:310,1537303619310,1,1.1,userClick:322_733;region:QnA;target:button-save;answerQuestion:1.0_"Because it is (1) an enemy and (2) it has the most max health or highest level of damage."_NA_(task3.scr,9-18-2018,13:46:16:332,1537303576332,1,1.0,userClick:511_149;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperRightQuadrant_196_86,false,false,false,false,false,false),false,false,false,false,false,false
+task3.scr,9-18-2018,13:47:5:576,1537303625576,1,1.1,userClick:430_341;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:47:14:760,1537303634760,1,1.1,userClick:460_677;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:47:18:525,1537303638525,1,1.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:47:18:860,1537303638860,1,1.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:47:18:896,1537303638896,1,1.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:47:19:259,1537303639259,1,1.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:47:19:409,1537303639409,1,1.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:47:19:460,1537303639460,1,1.1,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:47:19:626,1537303639626,1,1.1,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:47:20:964,1537303640964,1,1.1,userClick:515_124;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperRightQuadrant_200_61,false,false,false,false,false,false
+task3.scr,9-18-2018,13:47:20:965,1537303640965,1,1.1,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:47:21:211,1537303641211,1,1.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:47:21:227,1537303641227,1,1.1,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:47:22:672,1537303642672,1,1.1,userClick:449_674;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:47:57:788,1537303677788,1,1.1,showQuestion:1.2,false,false,false,false,false,false
+task3.scr,9-18-2018,13:47:57:788,1537303677788,1,1.2,userClick:309_728;region:QnA;target:button-save;answerQuestion:1.1_"Because it is the enemy that deals the most damage. (Maybe because this makes it the most dangerous to allies)"_NA_(task3.scr,9-18-2018,13:47:20:964,1537303640964,1,1.1,userClick:515_124;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperRightQuadrant_200_61,false,false,false,false,false,false),false,false,false,false,false,false
+task3.scr,9-18-2018,13:48:0:800,1537303680800,1,1.2,userClick:355_615;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:48:27:614,1537303707614,1,1.2,userClick:110_719;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:48:33:185,1537303713185,1,1.2,userClick:318_754;region:QnA;target:button-save;answerQuestion:1.2_"YesESCAPED-COMMA it should have attacked the enemy in Q3ESCAPED-COMMA because it had the highest chance to defeat it."_"Nothing at the moment."_(NA),false,false,false,false,false,false
+task3.scr,9-18-2018,13:48:34:294,1537303714294,1,1.2,userClick:422_340;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:48:34:787,1537303714787,1,1.2,stepIntoDecisionPoint:56,false,false,false,false,false,false
+task3.scr,9-18-2018,13:48:34:788,1537303714788,56,1.2,showQuestion:56.0,false,false,false,false,false,false
+task3.scr,9-18-2018,13:48:34:789,1537303714789,56,56.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task3.scr,9-18-2018,13:48:35:259,1537303715259,56,56.0,stepIntoDecisionPoint:56,false,false,false,false,false,false
+task3.scr,9-18-2018,13:48:39:918,1537303719918,56,56.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task3.scr,9-18-2018,13:48:44:662,1537303724662,56,56.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:48:44:946,1537303724946,56,56.0,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:48:45:466,1537303725466,56,56.0,userClick:511_143;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperRightQuadrant_196_80,false,false,false,false,false,false
+task3.scr,9-18-2018,13:48:45:702,1537303725702,56,56.0,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:48:45:880,1537303725880,56,56.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:48:46:447,1537303726447,56,56.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:48:47:418,1537303727418,56,56.0,userClick:408_265;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_lowerLeftQuadrant_93_202,false,false,false,false,false,false
+task3.scr,9-18-2018,13:48:47:465,1537303727465,56,56.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:48:48:622,1537303728622,56,56.0,userClick:321_654;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:48:50:871,1537303730871,56,56.0,userClick:363_677;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:24:933,1537303764933,56,56.0,showQuestion:56.1,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:24:934,1537303764934,56,56.1,userClick:312_736;region:QnA;target:button-save;answerQuestion:56.0_"Because it is (1) an enemyESCAPED-COMMA (2) an enemy with the highest max healthESCAPED-COMMA and (3) it has the least amount of current health."_NA_(task3.scr,9-18-2018,13:48:47:418,1537303727418,56,56.0,userClick:408_265;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_lowerLeftQuadrant_93_202,false,false,false,false,false,false),false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:26:358,1537303766358,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:27:2,1537303767002,56,56.1,userClick:420_331;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:27:976,1537303767976,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:28:292,1537303768292,56,56.1,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:28:402,1537303768402,56,56.1,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:28:866,1537303768866,56,56.1,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:28:910,1537303768910,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:28:943,1537303768943,56,56.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:28:977,1537303768977,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:29:278,1537303769278,56,56.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:29:811,1537303769811,56,56.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:30:458,1537303770458,56,56.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:30:495,1537303770495,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:30:778,1537303770778,56,56.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:30:796,1537303770796,56,56.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:31:370,1537303771370,56,56.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:31:395,1537303771395,56,56.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:31:722,1537303771722,56,56.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:31:745,1537303771745,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:31:913,1537303771913,56,56.1,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:32:355,1537303772355,56,56.1,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:33:594,1537303773594,56,56.1,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:33:707,1537303773707,56,56.1,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:34:594,1537303774594,56,56.1,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:34:664,1537303774664,56,56.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:34:714,1537303774714,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:34:982,1537303774982,56,56.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:35:16,1537303775016,56,56.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:35:482,1537303775482,56,56.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:35:515,1537303775515,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:35:722,1537303775722,56,56.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:35:799,1537303775799,56,56.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:36:586,1537303776586,56,56.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:36:671,1537303776671,56,56.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:36:978,1537303776978,56,56.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:37:16,1537303777016,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:37:151,1537303777151,56,56.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:37:555,1537303777555,56,56.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:37:718,1537303777718,56,56.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:38:52,1537303778052,56,56.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:38:102,1537303778102,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:38:652,1537303778652,56,56.1,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:40:153,1537303780153,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:40:303,1537303780303,56,56.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:40:870,1537303780870,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:41:170,1537303781170,56,56.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:43:489,1537303783489,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:44:489,1537303784489,56,56.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:44:774,1537303784774,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:44:941,1537303784941,56,56.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:44:973,1537303784973,56,56.1,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:47:126,1537303787126,56,56.1,userClick:505_128;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperRightQuadrant_190_65,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:47:435,1537303787435,56,56.1,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:47:510,1537303787510,56,56.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:47:526,1537303787526,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:47:642,1537303787642,56,56.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:47:659,1537303787659,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:52:179,1537303792179,56,56.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:52:212,1537303792212,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:52:379,1537303792379,56,56.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:52:513,1537303792513,56,56.1,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:54:347,1537303794347,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:54:649,1537303794649,56,56.1,showEntityTooltip:friendly-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:54:665,1537303794665,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:54:915,1537303794915,56,56.1,showEntityTooltip:friendly-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:54:965,1537303794965,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:55:531,1537303795531,56,56.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:55:618,1537303795618,56,56.1,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:56:65,1537303796065,56,56.1,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:56:100,1537303796100,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:49:57:794,1537303797794,56,56.1,userClick:419_671;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:50:6:208,1537303806208,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:50:6:291,1537303806291,56,56.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:50:7:275,1537303807275,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:50:7:626,1537303807626,56,56.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:50:8:309,1537303808309,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:50:8:943,1537303808943,56,56.1,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:50:9:461,1537303809461,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:50:9:661,1537303809661,56,56.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:50:10:211,1537303810211,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:50:10:311,1537303810311,56,56.1,showEntityTooltip:friendly-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:50:10:344,1537303810344,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:50:10:629,1537303810629,56,56.1,showEntityTooltip:friendly-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:50:14:548,1537303814548,56,56.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:50:40:875,1537303840875,56,56.1,showQuestion:56.2,false,false,false,false,false,false
+task3.scr,9-18-2018,13:50:40:876,1537303840876,56,56.2,userClick:307_738;region:QnA;target:button-save;answerQuestion:56.1_"Not sureESCAPED-COMMA perhaps because it was in the first quadrantESCAPED-COMMA but I really don't know."_NA_(task3.scr,9-18-2018,13:49:47:126,1537303787126,56,56.1,userClick:505_128;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperRightQuadrant_190_65,false,false,false,false,false,false),false,false,false,false,false,false
+task3.scr,9-18-2018,13:50:43:96,1537303843096,56,56.2,userClick:332_606;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:50:58:223,1537303858223,56,56.2,userClick:313_602;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:50:59:496,1537303859496,56,56.2,userClick:308_707;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:51:12:545,1537303872545,56,56.2,userClick:310_759;region:QnA;target:button-save;answerQuestion:56.2_"YesESCAPED-COMMA it should have attacked the enemy in Q3."_"Why did it choose the enemy in Q1?"_(NA),false,false,false,false,false,false
+task3.scr,9-18-2018,13:51:15:975,1537303875975,56,56.2,userClick:427_339;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:51:16:220,1537303876220,56,56.2,showQuestion:99.0,false,false,false,false,false,false
+task3.scr,9-18-2018,13:51:16:221,1537303876221,56,99.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task3.scr,9-18-2018,13:51:16:474,1537303876474,56,99.0,stepIntoDecisionPoint:99,false,false,false,false,false,false
+task3.scr,9-18-2018,13:51:21:6,1537303881006,99,99.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task3.scr,9-18-2018,13:51:27:579,1537303887579,99,99.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:51:27:779,1537303887779,99,99.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:51:28:121,1537303888121,99,99.0,userClick:387_247;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_lowerLeftQuadrant_72_184,false,false,false,false,false,false
+task3.scr,9-18-2018,13:51:28:130,1537303888130,99,99.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:51:28:363,1537303888363,99,99.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:51:29:206,1537303889206,99,99.0,userClick:399_679;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:51:51:18,1537303911018,99,99.0,showQuestion:99.1,false,false,false,false,false,false
+task3.scr,9-18-2018,13:51:51:20,1537303911020,99,99.1,userClick:311_732;region:QnA;target:button-save;answerQuestion:99.0_"Because it has the highest max health of all enemies on the board."_NA_(task3.scr,9-18-2018,13:51:28:121,1537303888121,99,99.0,userClick:387_247;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_lowerLeftQuadrant_72_184,false,false,false,false,false,false),false,false,false,false,false,false
+task3.scr,9-18-2018,13:51:58:694,1537303918694,99,99.1,userClick:429_344;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:52:7:895,1537303927895,99,99.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:52:11:531,1537303931531,99,99.1,showEntityTooltip:friendly-City_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:52:11:549,1537303931549,99,99.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:52:11:832,1537303931832,99,99.1,showEntityTooltip:friendly-City_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:52:13:950,1537303933950,99,99.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:52:14:134,1537303934134,99,99.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:52:14:151,1537303934151,99,99.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:52:14:622,1537303934622,99,99.1,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:52:18:587,1537303938587,99,99.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:52:23:542,1537303943542,99,99.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:52:25:458,1537303945458,99,99.1,userClick:403_149;region:gameArea;target:gameboard;clickEntity:friendly-Tank_upperLeftQuadrant_88_86,false,false,false,false,false,false
+task3.scr,9-18-2018,13:52:25:828,1537303945828,99,99.1,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-18-2018,13:52:25:911,1537303945911,99,99.1,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-18-2018,13:52:29:270,1537303949270,99,99.1,userClick:455_669;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:53:3:770,1537303983770,99,99.1,showQuestion:99.2,false,false,false,false,false,false
+task3.scr,9-18-2018,13:53:3:772,1537303983772,99,99.2,userClick:308_732;region:QnA;target:button-save;answerQuestion:99.1_"Because its health is nearly depletedESCAPED-COMMA thus it chose an enemy with the lowest max health."_NA_(task3.scr,9-18-2018,13:52:25:458,1537303945458,99,99.1,userClick:403_149;region:gameArea;target:gameboard;clickEntity:friendly-Tank_upperLeftQuadrant_88_86,false,false,false,false,false,false),false,false,false,false,false,false
+task3.scr,9-18-2018,13:53:5:631,1537303985631,99,99.2,userClick:251_614;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:53:15:286,1537303995286,99,99.2,userClick:346_695;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:53:32:544,1537304012544,99,99.2,userClick:316_770;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-18-2018,13:53:33:33,1537304013033,99,99.2,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task3.scr,9-18-2018,13:53:33:35,1537304013035,99,99.2,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task4.scr,9-18-2018,13:53:35:906,1537304015906,99,99.2,stepIntoDecisionPoint:1,false,false,false,false,false,false
+task4.scr,9-18-2018,13:53:35:906,1537304015906,1,99.2,showQuestion:1.0,false,false,false,false,false,false
+task4.scr,9-18-2018,13:53:37:895,1537304017895,1,1.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task4.scr,9-18-2018,13:53:45:786,1537304025786,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:53:45:936,1537304025936,1,1.0,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:53:48:172,1537304028172,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:53:48:255,1537304028255,1,1.0,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:53:49:22,1537304029022,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:53:49:139,1537304029139,1,1.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:53:50:6,1537304030006,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:53:50:657,1537304030657,1,1.0,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:53:51:674,1537304031674,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:53:53:611,1537304033611,1,1.0,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:53:53:626,1537304033626,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:53:53:727,1537304033727,1,1.0,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:53:58:475,1537304038475,1,1.0,userClick:507_127;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperRightQuadrant_192_64,false,false,false,false,false,false
+task4.scr,9-18-2018,13:53:58:497,1537304038497,1,1.0,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:53:58:747,1537304038747,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:53:59:784,1537304039784,1,1.0,userClick:328_662;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:18:264,1537304058264,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:18:296,1537304058296,1,1.0,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:18:313,1537304058313,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:18:563,1537304058563,1,1.0,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:18:831,1537304058831,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:18:881,1537304058881,1,1.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:19:231,1537304059231,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:19:431,1537304059431,1,1.0,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:19:731,1537304059731,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:20:31,1537304060031,1,1.0,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:20:499,1537304060499,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:22:251,1537304062251,1,1.0,showQuestion:1.1,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:22:252,1537304062252,1,1.1,userClick:320_732;region:QnA;target:button-save;answerQuestion:1.0_"Because it is an enemy with the highest max health and the lowest current health."_NA_(task4.scr,9-18-2018,13:53:58:475,1537304038475,1,1.0,userClick:507_127;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperRightQuadrant_192_64,false,false,false,false,false,false),false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:23:837,1537304063837,1,1.1,userClick:432_334;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:32:714,1537304072714,1,1.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:32:781,1537304072781,1,1.1,showEntityTooltip:friendly-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:32:798,1537304072798,1,1.1,showEntityTooltip:friendly-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:32:948,1537304072948,1,1.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:33:53,1537304073053,1,1.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:34:126,1537304074126,1,1.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:35:213,1537304075213,1,1.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:35:413,1537304075413,1,1.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:35:869,1537304075869,1,1.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:36:286,1537304076286,1,1.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:36:484,1537304076484,1,1.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:36:634,1537304076634,1,1.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:40:997,1537304080997,1,1.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:41:29,1537304081029,1,1.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:41:150,1537304081150,1,1.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:41:173,1537304081173,1,1.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:41:246,1537304081246,1,1.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:41:293,1537304081293,1,1.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:41:317,1537304081317,1,1.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:42:633,1537304082633,1,1.1,userClick:525_277;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_lowerRightQuadrant_210_214,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:42:861,1537304082861,1,1.1,showEntityTooltip:enemy-Big Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:54:44:277,1537304084277,1,1.1,userClick:449_682;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,13:55:56:395,1537304156395,1,1.1,showQuestion:1.2,false,false,false,false,false,false
+task4.scr,9-18-2018,13:55:56:397,1537304156397,1,1.2,userClick:302_729;region:QnA;target:button-save;answerQuestion:1.1_"I believe it chooses it's target based also on the white tanks current health. ThusESCAPED-COMMA since it was at max healthESCAPED-COMMA it felt itself capable of attacking more dangerous enemiesESCAPED-COMMA thus it chose the most healthy and most dangerous enemy."_NA_(task4.scr,9-18-2018,13:54:42:633,1537304082633,1,1.1,userClick:525_277;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_lowerRightQuadrant_210_214,false,false,false,false,false,false),false,false,false,false,false,false
+task4.scr,9-18-2018,13:55:59:935,1537304159935,1,1.2,userClick:339_614;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,13:56:29:104,1537304189104,1,1.2,userClick:216_699;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,13:56:48:386,1537304208386,1,1.2,userClick:304_761;region:QnA;target:button-save;answerQuestion:1.2_"PerhapsESCAPED-COMMA it should prioritize defeating enemies over dealing large amounts of damage."_"Does it take its own current health into consideration?"_(NA),false,false,false,false,false,false
+task4.scr,9-18-2018,13:56:49:172,1537304209172,1,1.2,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:56:49:424,1537304209424,1,1.2,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:56:49:472,1537304209472,1,1.2,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:56:50:24,1537304210024,1,1.2,userClick:421_342;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task4.scr,9-18-2018,13:56:50:283,1537304210283,1,1.2,showQuestion:63.0,false,false,false,false,false,false
+task4.scr,9-18-2018,13:56:50:285,1537304210285,1,63.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task4.scr,9-18-2018,13:56:50:552,1537304210552,1,63.0,stepIntoDecisionPoint:63,false,false,false,false,false,false
+task4.scr,9-18-2018,13:56:54:993,1537304214993,63,63.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task4.scr,9-18-2018,13:56:58:196,1537304218196,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:56:58:297,1537304218297,63,63.0,showEntityTooltip:friendly-Tank_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:56:59:397,1537304219397,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:56:59:847,1537304219847,63,63.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:0:981,1537304220981,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:1:165,1537304221165,63,63.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:1:949,1537304221949,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:2:337,1537304222337,63,63.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:3:484,1537304223484,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:3:586,1537304223586,63,63.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:3:600,1537304223600,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:3:801,1537304223801,63,63.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:4:468,1537304224468,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:4:552,1537304224552,63,63.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:4:648,1537304224648,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:4:904,1537304224904,63,63.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:5:852,1537304225852,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:5:919,1537304225919,63,63.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:6:920,1537304226920,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:7:3,1537304227003,63,63.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:7:672,1537304227672,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:7:721,1537304227721,63,63.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:7:754,1537304227754,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:7:904,1537304227904,63,63.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:7:921,1537304227921,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:8:187,1537304228187,63,63.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:8:671,1537304228671,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:9:57,1537304229057,63,63.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:9:956,1537304229956,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:10:55,1537304230055,63,63.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:10:539,1537304230539,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:11:289,1537304231289,63,63.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:12:8,1537304232008,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:12:241,1537304232241,63,63.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:13:708,1537304233708,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:13:760,1537304233760,63,63.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:19:781,1537304239781,63,63.0,userClick:507_257;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_lowerRightQuadrant_192_194,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:19:833,1537304239833,63,63.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:19:898,1537304239898,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:20:561,1537304240561,63,63.0,userClick:478_688;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:41:867,1537304261867,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:42:1,1537304262001,63,63.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:42:18,1537304262018,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:42:301,1537304262301,63,63.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:42:968,1537304262968,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:43:154,1537304263154,63,63.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:45:486,1537304265486,63,63.0,userClick:400_260;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_lowerLeftQuadrant_85_197,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:46:54,1537304266054,63,63.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:46:255,1537304266255,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:57:49:754,1537304269754,63,63.0,userClick:309_675;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:7:198,1537304287198,63,63.0,showQuestion:63.1,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:7:200,1537304287200,63,63.1,userClick:311_736;region:QnA;target:button-save;answerQuestion:63.0_"Because it own health is half and thus it believes it can attack the higher of the two enemies."_NA_(task4.scr,9-18-2018,13:57:45:486,1537304265486,63,63.0,userClick:400_260;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_lowerLeftQuadrant_85_197,false,false,false,false,false,false),false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:8:899,1537304288899,63,63.1,userClick:424_325;region:gameArea;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:9:290,1537304289290,63,63.1,userClick:427_334;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:11:991,1537304291991,63,63.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:12:176,1537304292176,63,63.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:12:874,1537304292874,63,63.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:12:907,1537304292907,63,63.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:13:514,1537304293514,63,63.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:14:115,1537304294115,63,63.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:14:160,1537304294160,63,63.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:14:528,1537304294528,63,63.1,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:14:544,1537304294544,63,63.1,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:15:66,1537304295066,63,63.1,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:15:129,1537304295129,63,63.1,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:15:194,1537304295194,63,63.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:17:530,1537304297530,63,63.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:19:27,1537304299027,63,63.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:19:250,1537304299250,63,63.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:19:332,1537304299332,63,63.1,showEntityTooltip:friendly-Tank_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:19:827,1537304299827,63,63.1,showEntityTooltip:friendly-Tank_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:20:130,1537304300130,63,63.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:21:134,1537304301134,63,63.1,userClick:395_259;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_lowerLeftQuadrant_80_196,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:21:291,1537304301291,63,63.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,13:58:22:794,1537304302794,63,63.1,userClick:434_675;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,13:59:23:516,1537304363516,63,63.1,showQuestion:63.2,false,false,false,false,false,false
+task4.scr,9-18-2018,13:59:23:517,1537304363517,63,63.2,userClick:310_733;region:QnA;target:button-save;answerQuestion:63.1_"Either because it felt its own health to be very low and thus chose the lowest health of the two enemiesESCAPED-COMMA OR it felt its own health to be reasonably high and thus chose the more dangerous of the enemies."_NA_(task4.scr,9-18-2018,13:58:21:134,1537304301134,63,63.1,userClick:395_259;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_lowerLeftQuadrant_80_196,false,false,false,false,false,false),false,false,false,false,false,false
+task4.scr,9-18-2018,13:59:24:873,1537304364873,63,63.2,userClick:270_608;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,13:59:31:708,1537304371708,63,63.2,userClick:294_691;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,13:59:48:973,1537304388973,63,63.2,userClick:293_758;region:QnA;target:button-save;answerQuestion:63.2_"No"_"If it prioritizes enemy health over enemy damage level"_(NA),false,false,false,false,false,false
+task4.scr,9-18-2018,13:59:50:788,1537304390788,63,63.2,userClick:429_336;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task4.scr,9-18-2018,13:59:51:215,1537304391215,63,63.2,showQuestion:105.0,false,false,false,false,false,false
+task4.scr,9-18-2018,13:59:51:216,1537304391216,63,105.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task4.scr,9-18-2018,13:59:51:496,1537304391496,63,105.0,stepIntoDecisionPoint:105,false,false,false,false,false,false
+task4.scr,9-18-2018,13:59:55:667,1537304395667,105,105.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:3:102,1537304403102,105,105.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:3:152,1537304403152,105,105.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:3:168,1537304403168,105,105.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:3:419,1537304403419,105,105.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:4:295,1537304404295,105,105.0,userClick:508_267;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_lowerRightQuadrant_193_204,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:4:333,1537304404333,105,105.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:4:419,1537304404419,105,105.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:5:754,1537304405754,105,105.0,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:6:255,1537304406255,105,105.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:7:39,1537304407039,105,105.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:9:668,1537304409668,105,105.0,userClick:463_672;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:33:723,1537304433723,105,105.0,showQuestion:105.1,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:33:725,1537304433725,105,105.1,userClick:316_739;region:QnA;target:button-save;answerQuestion:105.0_"Because the white tank's health is low and this it will choose an enemy that deals low damage."_NA_(task4.scr,9-18-2018,14:0:4:295,1537304404295,105,105.0,userClick:508_267;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_lowerRightQuadrant_193_204,false,false,false,false,false,false),false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:35:160,1537304435160,105,105.1,userClick:436_333;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:37:43,1537304437043,105,105.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:37:75,1537304437075,105,105.1,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:37:110,1537304437110,105,105.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:37:310,1537304437310,105,105.1,showEntityTooltip:friendly-Tank_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:37:431,1537304437431,105,105.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:37:929,1537304437929,105,105.1,showEntityTooltip:friendly-Tank_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:37:944,1537304437944,105,105.1,showEntityTooltip:friendly-Tank_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:38:424,1537304438424,105,105.1,showEntityTooltip:friendly-Tank_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:38:560,1537304438560,105,105.1,showEntityTooltip:friendly-Tank_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:39:211,1537304439211,105,105.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:40:312,1537304440312,105,105.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:40:762,1537304440762,105,105.1,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:41:263,1537304441263,105,105.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:41:413,1537304441413,105,105.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:41:464,1537304441464,105,105.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:41:663,1537304441663,105,105.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:42:530,1537304442530,105,105.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:42:647,1537304442647,105,105.1,showEntityTooltip:friendly-Tank_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:42:731,1537304442731,105,105.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:45:63,1537304445063,105,105.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:45:888,1537304445888,105,105.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:45:901,1537304445901,105,105.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:45:917,1537304445917,105,105.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:46:983,1537304446983,105,105.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:48:234,1537304448234,105,105.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:50:137,1537304450137,105,105.1,showEntityTooltip:friendly-Tank_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:50:754,1537304450754,105,105.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:50:820,1537304450820,105,105.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:51:138,1537304451138,105,105.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:51:500,1537304451500,105,105.1,userClick:399_261;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_lowerLeftQuadrant_84_198,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:51:688,1537304451688,105,105.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:53:239,1537304453239,105,105.1,userClick:429_681;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:54:290,1537304454290,105,105.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:54:841,1537304454841,105,105.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:55:904,1537304455904,105,105.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:56:91,1537304456091,105,105.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:56:159,1537304456159,105,105.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:56:175,1537304456175,105,105.1,showEntityTooltip:friendly-Tank_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:56:208,1537304456208,105,105.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:56:375,1537304456375,105,105.1,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:56:859,1537304456859,105,105.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:56:943,1537304456943,105,105.1,showEntityTooltip:friendly-Tank_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:56:992,1537304456992,105,105.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:57:293,1537304457293,105,105.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:0:58:461,1537304458461,105,105.1,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:1:9:887,1537304469887,105,105.1,showEntityTooltip:friendly-Tank_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:1:9:920,1537304469920,105,105.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-18-2018,14:1:22:841,1537304482841,105,105.1,userClick:358_668;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,14:1:24:992,1537304484992,105,105.1,userClick:377_680;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,14:1:39:446,1537304499446,105,105.1,showQuestion:105.2,false,false,false,false,false,false
+task4.scr,9-18-2018,14:1:39:447,1537304499447,105,105.2,userClick:295_734;region:QnA;target:button-save;answerQuestion:105.1_"As it has the most current health and has the highest level of damage to deal."_NA_(task4.scr,9-18-2018,14:0:51:500,1537304451500,105,105.1,userClick:399_261;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_lowerLeftQuadrant_84_198,false,false,false,false,false,false),false,false,false,false,false,false
+task4.scr,9-18-2018,14:1:41:538,1537304501538,105,105.2,userClick:276_606;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,14:2:5:690,1537304525690,105,105.2,userClick:351_705;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,14:2:12:771,1537304532771,105,105.2,userClick:324_760;region:QnA;target:button-save;answerQuestion:105.2_"YesESCAPED-COMMA it's health is too low for such a dangerous enemy."_"Why it chose this enemy."_(NA),false,false,false,false,false,false
+task4.scr,9-18-2018,14:2:14:73,1537304534073,105,105.2,userClick:422_343;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task4.scr,9-18-2018,14:2:14:445,1537304534445,105,105.2,showQuestion:summary.0,false,false,false,false,false,false
+task4.scr,9-18-2018,14:2:14:446,1537304534446,105,summary.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task4.scr,9-18-2018,14:3:25:454,1537304605454,105,summary.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task4.scr,9-18-2018,14:3:32:750,1537304612750,105,summary.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:46:806,1537304626806,105,summary.0,stepIntoDecisionPoint:1,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:48:471,1537304628471,1,summary.0,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:48:766,1537304628766,1,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:49:416,1537304629416,1,summary.0,showEntityTooltip:enemy-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:50:534,1537304630534,1,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:50:666,1537304630666,1,summary.0,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:50:767,1537304630767,1,summary.0,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:50:968,1537304630968,1,summary.0,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:51:500,1537304631500,1,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:51:784,1537304631784,1,summary.0,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:52:384,1537304632384,1,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:52:869,1537304632869,1,summary.0,showEntityTooltip:enemy-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:53:337,1537304633337,1,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:54:846,1537304634846,1,summary.0,userClick:313_408;region:gameArea;target:expl-control-canvas;timelineClick:71,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:56:477,1537304636477,1,summary.0,userClick:469_397;region:gameArea;target:decisionPointList;jumpToDecisionPoint:114,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:56:644,1537304636644,1,summary.0,stepIntoDecisionPoint:114,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:57:423,1537304637423,114,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:57:590,1537304637590,114,summary.0,showEntityTooltip:friendly-Tank_lowerLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:57:607,1537304637607,114,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:57:906,1537304637906,114,summary.0,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:58:674,1537304638674,114,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:59:215,1537304639215,114,summary.0,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:59:642,1537304639642,114,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:59:675,1537304639675,114,summary.0,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:59:725,1537304639725,114,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:3:59:758,1537304639758,114,summary.0,showEntityTooltip:enemy-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:0:926,1537304640926,114,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:1:966,1537304641966,114,summary.0,userClick:352_410;region:gameArea;target:decisionPointList;jumpToDecisionPoint:82,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:2:246,1537304642246,114,summary.0,stepIntoDecisionPoint:82,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:2:643,1537304642643,82,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:2:978,1537304642978,82,summary.0,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:4:445,1537304644445,82,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:4:462,1537304644462,82,summary.0,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:4:995,1537304644995,82,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:5:45,1537304645045,82,summary.0,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:6:129,1537304646129,82,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:6:510,1537304646510,82,summary.0,showEntityTooltip:friendly-Tank_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:6:964,1537304646964,82,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:7:862,1537304647862,82,summary.0,userClick:278_408;region:gameArea;target:decisionPointList;jumpToDecisionPoint:61,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:8:126,1537304648126,82,summary.0,stepIntoDecisionPoint:61,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:8:650,1537304648650,61,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:8:665,1537304648665,61,summary.0,showEntityTooltip:friendly-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:8:682,1537304648682,61,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:8:732,1537304648732,61,summary.0,showEntityTooltip:friendly-Tank_lowerLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:9:54,1537304649054,61,summary.0,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:9:866,1537304649866,61,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:9:949,1537304649949,61,summary.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:10:599,1537304650599,61,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:10:650,1537304650650,61,summary.0,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-18-2018,14:4:10:967,1537304650967,61,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:4:14:307,1537304654307,61,summary.0,stepIntoDecisionPoint:1,false,false,false,false,false,false
+task4.scr,9-18-2018,14:4:15:415,1537304655415,1,summary.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-18-2018,14:4:16:344,1537304656344,1,summary.0,userClick:492_605;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,14:5:53:986,1537304753986,1,summary.0,userClick:289_621;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,14:6:4:945,1537304764945,1,summary.0,userClick:245_598;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,14:6:12:713,1537304772713,1,summary.0,userClick:473_640;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-18-2018,14:10:26:931,1537305026931,1,summary.0,userClick:310_672;region:QnA;target:button-save;answerQuestion:summary.0_"First offESCAPED-COMMA it appears to take all game variables into considerationESCAPED-COMMA except perhaps the max health of an enemy and name. So Current Health of all objectsESCAPED-COMMA color of all objectsESCAPED-COMMA and level of damage of all objects are considered. It will first determine if there are both white and black objects to attackESCAPED-COMMA and then rule out all white objects if so. ThenESCAPED-COMMA it will determine which enemy to attackESCAPED-COMMA based first on the white tank's current health and then based on the enemies' current health and damage level. I am not sure how all of this is weightedESCAPED-COMMA but it appears that if it considers the white tanks current health to be below a certain thresholdESCAPED-COMMA it will chose an enemy with the lowest damage level. OtherwiseESCAPED-COMMA it will attack enemies with the highest damage level and current health. The threshold also appears to be more of a spectrumESCAPED-COMMA with enemies in the middle of these factors to be chosen in some cases as well."_NA_(NA),false,false,false,false,false,false
