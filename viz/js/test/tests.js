@@ -36,7 +36,7 @@ function runTests(){
     //0 - seeSawChart
     //1 - allPosChart
     //2 - allNeg
-    var type = 2;
+    var type = 1;
     var chartTesting = undefined;
     if (type == 0) {
         chartTesting = "seeSaw";
@@ -53,7 +53,7 @@ function runTests(){
 
     runMsxChartDataColorTests(fc, chartTesting);
     runMsxRankingTests(fc, chartTesting);
-    //runMsxGeometryTests (fc, chartTesting) {
+    runMsxGeometryTests (fc, chartTesting);
     var message = "";
     for (var i in fc.testNames){
         var testName = fc.testNames[i];
