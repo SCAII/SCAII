@@ -40,12 +40,12 @@ function sortMsxBars(rawChartData) {
     }
     return rd;
 }
-function getMinBarAdvantagesRowNBarsPerAction(actions, maxBarGroup) {
+function getMinBarAdvantagesRowNBarsPerAction(action, maxBarGroup) {
     var typeDiff = 0, totalNegDiff = 0, totalPos = 0;
     var posDiff = [];
     var namePosDiff = [];
-    for(var i in actions.bars) {
-        var bar = actions.bars[i];
+    for(var i in action.bars) {
+        var bar = action.bars[i];
         var maxBar = maxBarGroup.bars[i];
         typeDiff = maxBar.value - bar.value;
         if(typeDiff >= 0) {
@@ -56,11 +56,11 @@ function getMinBarAdvantagesRowNBarsPerAction(actions, maxBarGroup) {
             totalNegDiff += Math.abs(typeDiff);
         }
     }
-    var finalReturn = (sortRewardDescending(posDiff, totalPos, namePosDiff, totalNegDiff));
+    var finalReturn = (getMinSufficientBarNames(posDiff, totalPos, namePosDiff, totalNegDiff));
     console.log("-------------------------------");
     return finalReturn;
 }
-function sortRewardDescending(posDiff, totalPos, namePosDiff, totalNegDiff) {
+function getMinSufficientBarNames(posDiff, totalPos, namePosDiff, totalNegDiff) {
     var temp, swap;
     var importantNames = [];
     for(var i = 0; i < totalPos-1; i++) {
