@@ -1,13 +1,16 @@
 function runMsxRankingTests (failureChecker, chartTesting) {
     //rd.colors = ['#7293CB','#E1974C',  '#84BA5B','#D35E60', '#9067A7', '#AB6857',  '#CCC210',  '#000044']
     var fc = failureChecker;
-    fc.setTestName("MsxRankingTests");
+    
 
     if (chartTesting == "seeSaw") {
+        fc.setTestName("MsxRankingTests - seesaw");
         var ch = getSeeSawChart();
     } else if (chartTesting == "allPositives") {
+        fc.setTestName("MsxRankingTests - all Pos");
         var ch = getAllPositivesChart();
     } else {
+        fc.setTestName("MsxRankingTests - all Neg");
         var ch = getAllNegativesChart();
     }
     ch = addUtilityFunctions(ch);

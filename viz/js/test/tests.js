@@ -33,27 +33,32 @@ function runTests(){
     runChartManagerTests(fc);
     runChartDataSelectionTests(fc);
 
-    //0 - seeSawChart
-    //1 - allPosChart
-    //2 - allNeg
-    var type = 1;
-    var chartTesting = undefined;
-    if (type == 0) {
-        chartTesting = "seeSaw";
-    } else if (type == 1) {
-        chartTesting = "allPositives";
-    } else {
-        chartTesting = "allNegatives";
-    }
-    runChartDataGeometryTests(fc, chartTesting);
     runChartDataTextTests(fc);
     runChartDataColorTests(fc);
     runRankingTests(fc);
     runSessionTests(fc);
 
-    runMsxChartDataColorTests(fc, chartTesting);
-    runMsxRankingTests(fc, chartTesting);
-    runMsxGeometryTests (fc, chartTesting);
+    var chartTypes = [0,1,2];
+    //0 - seeSawChart
+    //1 - allPosChart
+    //2 - allNeg
+    for (var i in chartTypes){
+        var type = chartTypes[i];
+        var chartTesting = undefined;
+        if (type == 0) {
+            chartTesting = "seeSaw";
+        } else if (type == 1) {
+            chartTesting = "allPositives";
+        } else {
+            chartTesting = "allNegatives";
+        }
+        runChartDataGeometryTests(fc, chartTesting);
+        
+        runMsxChartDataColorTests(fc, chartTesting);
+        runMsxRankingTests(fc, chartTesting);
+        runMsxGeometryTests (fc, chartTesting);
+    }
+    
     var message = "";
     for (var i in fc.testNames){
         var testName = fc.testNames[i];
