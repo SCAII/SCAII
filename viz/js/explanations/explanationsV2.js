@@ -166,6 +166,7 @@ function getExplanationsV2Manager(){
     cm.currentQuestionType = undefined;
     cm.entityListForDP = {};
     cm.waitForClickDP = 0;
+    cm.actionsRanked = [];
 
     cm.captureEntitiesForDecisionPoint = function(step) {
         if (this.entityListForDP[step] == undefined){
@@ -213,6 +214,7 @@ function getExplanationsV2Manager(){
             this.data = setDefaultSelections(this.data, this.treatmentID);
             this.chartDataForStep[step] = this.data;
             this.stepsWithExplanations.push(step);
+            this.actionsRanked = rankThings(this.data.actions, getThingWithMaxValue);
         }
         else {
             this.data = cachedChartData;
