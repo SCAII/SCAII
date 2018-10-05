@@ -1,12 +1,14 @@
 function runMsxChartDataColorTests (failureChecker, chartTesting) {
     //rd.colors = ['#1B2D4B','#E1974C',  '#30481E','#D7E400', '#372541', '#9AE004',  '#CCC210',  '#000044'];
     var fc = failureChecker;
-    fc.setTestName("MsxChartDataColorTests");
     if (chartTesting == "seeSaw") {
+        fc.setTestName("MsxChartDataColorTests - seeSaw");
         var ch = getSeeSawChart();
     } else if (chartTesting == "allPositives") {
+        fc.setTestName("MsxChartDataColorTests - allPos");
         var ch = getAllPositivesChart();
     } else {
+        fc.setTestName("MsxChartDataColorTests - allNeg");
         var ch = getAllNegativesChart();
     }
     ch = addUtilityFunctions(ch);

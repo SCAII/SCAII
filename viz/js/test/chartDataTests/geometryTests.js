@@ -1,17 +1,20 @@
 function runChartDataGeometryTests(failureChecker, chartTesting) {
     // test geometry
-
+    var fc = failureChecker;
     if (chartTesting == "seeSaw") {
+        fc.setTestName("chart data geometry test - seesaw");
         var ch = getSeeSawChart();
     } else if (chartTesting == "allPositives") {
+        fc.setTestName("chart data geometry test - all Pos");
         var ch = getAllPositivesChart();
     } else {
+        fc.setTestName("chart data geometry test - all Neg");
         var ch = getAllNegativesChart();
     }
     ch = addUtilityFunctions(ch);
-    var fc = failureChecker;
+    
 
-    fc.setTestName("chart data geometry test");
+    
     // action names are action_0, action_1...action_3
     // rewardnames are action action_0.reward_0, action_0.reward_1
 

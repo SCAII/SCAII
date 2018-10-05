@@ -1,12 +1,14 @@
 function runMsxGeometryTests (failureChecker, chartTesting) {
 
     var fc = failureChecker;
-    fc.setTestName("MsxGeometryTests");
     if (chartTesting == "seeSaw") {
+        fc.setTestName("MsxGeometryTests - seeSaw");
         var ch = getSeeSawChart();
     } else if (chartTesting == "allPositives") {
+        fc.setTestName("MsxGeometryTests -  allPos");
         var ch = getAllPositivesChart();
     } else {
+        fc.setTestName("MsxGeometryTests - allNeg");
         var ch = getAllNegativesChart();
     }
     ch = addUtilityFunctions(ch);
