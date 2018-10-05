@@ -1,28 +1,54 @@
-candidate3	steps:123	DPs: 1,56,99
-	Jed using as tutorial
+final mappingL
 
-candidate4	steps:153	DPs: 1,62,94
+candidate29 -> tutorial.scr
+candidate10 -> task1.scr
+candidate16 -> task2.scr
+candidate3 -> task3.scr
+candidate8 -> task4.scr
 
-candidate6	steps:169	DPs: 1,37,108
+General format: I’ll put the candidate (3, etc), a decision point, and an analysis.
+If there’s no decision point, it’s of the whole file. 
 
-candidate7	steps:110	DPs: 1,75
+Candidate 3. (Main Task 3) (steps:123	DPs: 1,56,99)
+D2 - Attacks a big tower with higher HP for no reason. Chart says paranoia on city damage
+	
+Candidate 4. (steps:153	DPs: 1,62,94)
+D1 - Goes after full HP big tower - chart reveals it’s because it shortening its life limits random noise (since it’s not going to be around to see anything too bad).
+	
 
-candidate8	steps:119	DPs: 1,63,105
+Candidate 6. (steps:169	DPs: 1,37,108)
+D1 - Attacks tower with meaningfully higher HP.
+                        D3 - Goes after a big tower & dies when it could do a small tower and get a bonus
+	
 
-candidate9	steps:119	DPs: 1,59
+Candidate 7. (steps:110	DPs: 1,75)
+D1 - Goes after a big fort with more health, when it could have done a weaker big fortSimilar to previous
+                        D2 - Borderline, could maybe kill small tower
 
-candidate10	steps:135	DPs: 1,61,82,114
-	Jed using as MainTask
 
-candidate16	steps:153	DPs: 1,59,82,121
+Candidate 8. (Main Task 4) (steps:119	DPs: 1,63,105)
+D1 - High HP big tower again
 
-candidate20	steps:128	DPs: 1,61,93
+Candidate 9. (steps:119	DPs: 1,59)
+D2 - Picks a big tower when it could pick a small, then dies
 
-candidate24	steps:158	DPs: 1,59,135
+Candidate 10 (Main Task 1). (steps:135	DPs: 1,61,82,114)
+D1 - Same bug as before, but a tank is present in this game (not present in earlier ones)
 
-candidate27	steps:134	DPs: 1,71,92
+Candidate 16 (Main Task 2). (steps:153	DPs: 1,59,82,121)
 
-candidate28	steps:254	DPs: 1,71,134,222
+Candidate 20. (steps:128	DPs: 1,61,93)
+Has to pick a friend to kill, but has no bugs
 
-candidate29	steps:193	DPs: 1,75,124
+Candidate 24. (steps:158	DPs: 1,59,135)
+Picks a HP small over a low HP big it could kill to get a lot of points (the exact opposite of the problem we’ve been seeing regularly in the earlier ones).
+
+Candidate 27 (steps:134	DPs: 1,71,92)
+Instance of defending a city (no bugs)
+
+Candidate 28 (steps:254	DPs: 1,71,134,222)
+Forced to attack a fort or city, but picks a higher HP fort, over a smaller HP one that’d give fewer negative points from Friendly Damage
+
+Candidate 29 (Tutorial)  (steps:193	DPs: 1,75,124)
+Same conundrum as 28, but it picks correctly (no bug)
 
