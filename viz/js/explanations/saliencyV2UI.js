@@ -177,7 +177,6 @@ function getSaliencyV2UI() {
                     channel.mapHostDiv.appendChild( channel.outlineDiv );
                 }
             }
-            //this.buildSaliencyDetailedForBar(bar);
         }
     }
     ui.configureIds = function(channel){
@@ -189,51 +188,59 @@ function getSaliencyV2UI() {
         channel.mapHostDivId        = "mapHost --"    + channel.id;
     }
     
-
 	ui.renderSaliencyCombined = function(chartData) {
+        var step = sessionIndexManager.getCurrentIndex();
+        step = sessionIndexManager.getStepThatStartsEpochForStep(step);
+        var dpEntityList = currentExplManager.entityListForDP[step];
         currentExplManager.applyFunctionToEachCachedDataset(detachChannelItem, "titledMapDiv");
         $("#saliency-div").remove();
         createSaliencyContainers();
         var selectedBars = chartData.getBarsFlaggedForShowingSaliency();
-        var rewardOrAction = selectedBars[0].type;
-        var normalizationFactor = getNormalizationFactorForDisplayStyleAndResolution('combined', rewardOrAction, chartData.actions);
+        
+        for (var i in selectedBars){
+            var bar = selectedBars[i];
+            if (bar.channels == undefined){
+                bar.dpEntityList = dpEntityList;
+                this.configureCombinedChannelForBar(bar);
+            }
+        }
 		for (var i in selectedBars){
             var bar = selectedBars[i];
-            // configure
-            if (bar.combinedChannel == undefined) {
-                this.configureCombinedChannelForBar(bar, normalizationFactor);
-            }
-            // render
-            var ch = bar.combinedChannel;
-            ch.nameContainerDiv = getNameDivForRow(i, bar, ch.contextString);
-            $("#saliency-maps").append(ch.nameContainerDiv);
-			this.uimap.renderExplChannel(1, i, ch);
+            //render
+            var contextString = this.getContextStringForDetailedSaliencyMapRow(bar.type);
+            var nameContainerDiv = getNameDivForRow(i, bar, contextString);
+            $("#saliency-maps").append(nameContainerDiv);
+
+            
+            this.uimap.renderExplChannel(1, i, bar.combinedChannel);
+
         }
-        // this.uimap.reviveAppropriateGameboardOverlays();
+        this.engageActiveOverlaysAndOutlines(selectedBars);
+        // when answer question remove all overlays and outlines , but don't set flags to false
 	}
 
-    ui.configureCombinedChannelForBar = function(bar, normalizationFactor){
+    ui.configureCombinedChannelForBar = function(bar){
         var layerMessage = saliencyLookupMap.get(bar.saliencyId);
         if (layerMessage == undefined){
             console.log("ERROR - no Layer message for saliencyID " + bar.saliencyId);
             return;
         }
-        var channel = {};
-        bar.combinedChannel = channel;
+        var combinedChannel = {};
+        bar.combinedChannel = combinedChannel;
         var expLayers = layerMessage.getLayersList();
-        channel.contextString = this.getContextStringForCombinedSaliencyMapRow(bar.type);
-        channel.width = expLayers[0].getWidth();
-        channel.height = expLayers[0].getHeight();
-        channel.name = "all features cumulative";
-        channel.cells = getAggregatedCells(expLayers);
-        channel.normalizationFactor = normalizationFactor;
-        channel.scaleFactor = 1.0;
-        channel.saliencyId = bar.saliencyId;
-        channel.id = convertNameToLegalId(prependDPNumber(bar.saliencyId + "--" + channel.name));
-        channel.overlayActive = false;
-        channel.outlineActive = false;
-        this.configureIds(channel);
-        this.uimap.buildExplChannel(channel);
+        combinedChannel.contextString = this.getContextStringForCombinedSaliencyMapRow(bar.type);
+        combinedChannel.width = expLayers[0].getWidth();
+        combinedChannel.height = expLayers[0].getHeight();
+        combinedChannel.name = "all features cumulative";
+        combinedChannel.cells = getAggregatedCells(expLayers);
+        combinedChannel.normalizationKey = "Combined-standin-saliency";// FIXME (Evan)
+        combinedChannel.scaleFactor = 1.0;
+        combinedChannel.saliencyId = bar.saliencyId;
+        combinedChannel.id = convertNameToLegalId(prependDPNumber(bar.saliencyId + "--" + combinedChannel.name));
+        combinedChannel.overlayActive = false;
+        combinedChannel.outlineActive = false;
+        this.configureIds(combinedChannel);
+        this.uimap.buildExplChannel(combinedChannel);
     }
 
  
@@ -367,7 +374,7 @@ function populateSaliencyQuestionSelector(){
 	radioCombinedSaliency.onclick = function(e) {
         currentExplManager.saliencyCombined = true;
         targetClickHandler(e, "setSaliencyView:combinedSaliency");
-        currentExplManager.render();
+        currentExplManager.render("live");
 	};
 
 	var combinedSaliencyLabel = document.createElement("div");
@@ -387,7 +394,7 @@ function populateSaliencyQuestionSelector(){
 	radioDetailedSaliency.onclick = function(e) {
         currentExplManager.saliencyCombined = false;
         targetClickHandler(e, "setSaliencyView:detailedSaliency");
-        currentExplManager.render();
+        currentExplManager.render("live");
 	};
 
 	var detailedSaliencyLabel = document.createElement("div");
@@ -396,7 +403,7 @@ function populateSaliencyQuestionSelector(){
 	detailedSaliencyLabel.setAttribute("id","relevance-detailed-label");
     
     // turning off combined saliency every where for now, so always hide buttons
-    if (!userStudyMode && false) {
+    if (!userStudyMode) {
         $("#what-radios").append(radioCombinedSaliency);
         $("#what-radios").append(combinedSaliencyLabel);
         $("#what-radios").append(radioDetailedSaliency);
@@ -418,13 +425,13 @@ function processWhatClick() {
         currentExplManager.saliencyVisible = false;
         $("#what-questions").toggleClass('saliency-active');
         $("#what-label").toggleClass('saliency-active');
-        currentExplManager.render();
+        currentExplManager.render("live");
     }
     else {
         currentExplManager.saliencyVisible = true;
         $("#what-questions").toggleClass('saliency-active');
         $("#what-label").toggleClass('saliency-active');
-        currentExplManager.render();
+        currentExplManager.render("live");
     }
 }
 

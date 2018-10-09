@@ -145,7 +145,12 @@ function getSessionIndexManager(stepSizeAsKnownInReplaySequencer, decisionPointS
 
 var treatmentID = undefined;
 
+// Since studyMode is controlled at front end, backend is unaware which mode and will always send 
+// questions if it finds them.  So, we need to check userStudyMode here.
 function handleStudyQuestions(studyQuestions){
+    if (!userStudyMode) {
+        return;
+    }
     var questions = studyQuestions.getStudyQuestionsList();
     var userId = studyQuestions.getUserId();
     treatmentID = studyQuestions.getTreatmentId();
@@ -156,14 +161,12 @@ function handleStudyQuestions(studyQuestions){
     if (questions.length == 0) {
         return;
     }
-    if (userStudyMode) {
-        if (tabManager.currentTabHasQuestionManager()){
-            activeStudyQuestionManager = tabManager.getStudyQuestionManagerForCurrentTab();
-        }
-        else {
-            activeStudyQuestionManager = getStudyQuestionManager(questions, userId, treatmentID);
-            tabManager.setStudyQuestionManagerForCurrentTab(activeStudyQuestionManager);
-        }
+    if (tabManager.currentTabHasQuestionManager()){
+        activeStudyQuestionManager = tabManager.getStudyQuestionManagerForCurrentTab();
+    }
+    else {
+        activeStudyQuestionManager = getStudyQuestionManager(questions, userId, treatmentID);
+        tabManager.setStudyQuestionManagerForCurrentTab(activeStudyQuestionManager);
     }
 
     if (userActionMonitor == undefined) {  userActionMonitor = getUserActionMonitor(); }

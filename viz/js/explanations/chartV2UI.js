@@ -131,25 +131,28 @@ function getChartV2UI() {
 	}
 
     ui.processRewardBarClick = function(rewardBarName, chartData, e, treatment){
-        if (!isSaliencyMapSwitchBlockedByQuestion(treatment)){
-            var logLine = templateMap["selectedRewardBar"];
-            logLine = logLine.replace("<SLCT_RWRD_BAR>", rewardBarName);
-            chartTargetClickHandler("rewardBar", logLine);
-            if (rewardBarName != "None") {
-                chartData.clearRewardBarSelections();
-                chartData.selectSingleRewardBar(rewardBarName);
-                if (treatment == "T3") {
-                    chartData.clearHighlightSelections();
-                    var trueRewardBarName = rewardBarName.split(".")[1];
-                    chartData.highlightSimilarRewardBars(trueRewardBarName);
-                }
-                this.renderBars(chartCanvas, chartData, treatment);
-                var bar = chartData.actionRewardForNameMap[rewardBarName];
-                chartData.showSalienciesForRewardName(bar.name);
-                currentExplManager.saliencyVisible = true;
-                currentExplManager.saliencyCombined = false;
-                currentExplManager.render();
+        if (userStudyMode){
+            if (isSaliencyMapSwitchBlockedByQuestion(treatment)){
+                return;
             }
+        }
+        var logLine = templateMap["selectedRewardBar"];
+        logLine = logLine.replace("<SLCT_RWRD_BAR>", rewardBarName);
+        chartTargetClickHandler("rewardBar", logLine);
+        if (rewardBarName != "None") {
+            chartData.clearRewardBarSelections();
+            chartData.selectSingleRewardBar(rewardBarName);
+            if (treatment == "T3" || treatment== "NA") {
+                chartData.clearHighlightSelections();
+                var trueRewardBarName = rewardBarName.split(".")[1];
+                chartData.highlightSimilarRewardBars(trueRewardBarName);
+            }
+            this.renderBars(chartCanvas, chartData, treatment);
+            var bar = chartData.actionRewardForNameMap[rewardBarName];
+            chartData.showSalienciesForRewardName(bar.name);
+            currentExplManager.saliencyVisible = true;
+            currentExplManager.saliencyCombined = false;
+            currentExplManager.render("live");
         }
     }
 
@@ -375,7 +378,10 @@ function getChartV2UI() {
 		if (saveSelected != undefined) {
 			if (treatment == "T3") {
 				this.renderBar(ctx, saveSelected, "outlineT3");
-			}
+            }
+            else if (treatment == "NA") {
+                this.renderBar(ctx, saveSelected, "outlineBlue");
+            }
 			else {
 				this.renderBar(ctx, saveSelected, "outline");
 			}
@@ -411,7 +417,21 @@ function getChartV2UI() {
 			ctx.fillStyle = ctx.createPattern(pattern, 'repeat');
 			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
 	
-		} else if (mode == "outline") {
+		} else if (mode == "outlineBlue") {
+			ctx.clearRect(upperLeftOriginX, upperLeftOriginY + 10, bar.width, bar.height - 10);
+			ctx.lineWidth = 10;
+			ctx.strokeStyle = "blue";
+			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+
+			var rgbaBarColor = hexToRgbA(bar.color);
+			ctx.fillStyle = rgbaBarColor + " 0.7)";
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+
+			var pattern = this.renderPattern(bar.color);
+			ctx.fillStyle = ctx.createPattern(pattern, 'repeat');
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+	
+        } else if (mode == "outline") {
 			ctx.clearRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
 			ctx.lineWidth = shape_outline_width;
 			ctx.strokeStyle = "white";
@@ -456,7 +476,7 @@ function processWhyClick(step) {
         currentExplManager.chartVisible = false;
         currentExplManager.saliencyVisible = false;
 		selectedDecisionStep = undefined;
-		currentExplManager.render();
+		currentExplManager.render("live");
 		// engage selection color for supporting areas
 		//$("#why-questions").toggleClass('active');
 		//$("#why-label").toggleClass('active');
@@ -465,7 +485,7 @@ function processWhyClick(step) {
 		currentExplManager.chartVisible = true;
 		// show explanation info for new step
         selectedDecisionStep = explanationStep;
-        currentExplManager.render();
+        currentExplManager.render("live");
 	}
 }
 
@@ -541,7 +561,9 @@ function createRewardChartContainer(canvasHeight) {
 	whatRadios.setAttribute("style", "align-items:center;");
 	$("#what-div").append(whatRadios);
 
-	$("#rewards-titled-container").on("click", regionClickHandlerRewards);
+    if (userStudyMode){
+        $("#rewards-titled-container").on("click", regionClickHandlerRewards);
+    }
 	
 	var whatSpacerDiv = document.createElement("DIV");
 	whatSpacerDiv.setAttribute("id", "what-spacer-div");

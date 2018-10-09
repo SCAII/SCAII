@@ -13,46 +13,54 @@ normValues["Q#-Reward_Name-Friend/Enemy"];
 */
 //Attack 
 //Q1
+normValues["Combined-standin-saliency"]                = 190.0;
 normValues["Attack Q1-City Damaged-HP"]                = 190.7863;
 normValues["Attack Q1-City Damaged-Tank"]              = 56.2004;
 normValues["Attack Q1-City Damaged-Size"]              = 70.9827;
 normValues["Attack Q1-City Damaged-City/Fort"]         = 182.99;
 normValues["Attack Q1-City Damaged-Friend/Enemy"]      = 83.7192;
+normValues["Attack Q1-City Damaged Combined"]          = 1.0;
 
 normValues["Attack Q1-City Destroyed-HP"]              = 250.9802;
 normValues["Attack Q1-City Destroyed-Tank"]            = 38.6506;
 normValues["Attack Q1-City Destroyed-Size"]            = 114.8999;
 normValues["Attack Q1-City Destroyed-City/Fort"]       = 292.5494;
 normValues["Attack Q1-City Destroyed-Friend/Enemy"]    = 97.1712;
+normValues["Attack Q1-City Destroyed Combined"]        = 1.0;
 
 normValues["Attack Q1-Enemy Damaged-HP"]               = 120.4472;
 normValues["Attack Q1-Enemy Damaged-Tank"]             = 43.8559;
 normValues["Attack Q1-Enemy Damaged-Size"]             = 39.8917;
 normValues["Attack Q1-Enemy Damaged-City/Fort"]        = 49.5792;
 normValues["Attack Q1-Enemy Damaged-Friend/Enemy"]     = 29.0898;
+normValues["Attack Q1-Enemy Damaged Combined"]         = 1.0;
 
 normValues["Attack Q1-Enemy Destroyed-HP"]             = 279.9385;
 normValues["Attack Q1-Enemy Destroyed-Tank"]           = 60.3665;
 normValues["Attack Q1-Enemy Destroyed-Size"]           = 57.6483;
 normValues["Attack Q1-Enemy Destroyed-City/Fort"]      = 77.1343;
 normValues["Attack Q1-Enemy Destroyed-Friend/Enemy"]   = 96.5246;
+normValues["Attack Q1-Enemy Destroyed Combined"]       = 1.0;
 
 normValues["Attack Q1-Friend Damaged-HP"]              = 147.2241;
 normValues["Attack Q1-Friend Damaged-Tank"]            = 24.8987;
 normValues["Attack Q1-Friend Damaged-Size"]            = 51.6285;
 normValues["Attack Q1-Friend Damaged-City/Fort"]       = 71.5709;
 normValues["Attack Q1-Friend Damaged-Friend/Enemy"]    = 114.2507;
+normValues["Attack Q1-Friend Damaged Combined"]        = 1.0;
 
 normValues["Attack Q1-Friend Destroyed-HP"]            = 177.1023;
 normValues["Attack Q1-Friend Destroyed-Tank"]          = 32.846;
 normValues["Attack Q1-Friend Destroyed-Size"]          = 47.2841;
 normValues["Attack Q1-Friend Destroyed-City/Fort"]     = 92.6937;
 normValues["Attack Q1-Friend Destroyed-Friend/Enemy"]  = 136.0281;
+normValues["Attack Q1-Friend Combined"]                = 1.0;
 
 normValues["Attack Q1-Reward Sum Total-HP"]            = 438.089;
 normValues["Attack Q1-Reward Sum Total-Tank"]          = 122.7647;
 normValues["Attack Q1-Reward Sum Total-Size"]          = 258.1726;
 normValues["Attack Q1-Reward Sum Total-City/Fort"]     = 381.8545;
+normValues["Attack Q1-Reward Sum Total-Friend/Enemy"]  = 381.5173;
 normValues["Attack Q1-Reward Sum Total-Friend/Enemy"]  = 381.5173;
 
 //Q2

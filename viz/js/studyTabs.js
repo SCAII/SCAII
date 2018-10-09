@@ -177,7 +177,7 @@ function getTabManager() {
                 clearLoadingScreen();
             }
             currentExplManager = returnInfo.chartV2;
-            currentExplManager.render();
+            currentExplManager.render("live");
         }
     }
 

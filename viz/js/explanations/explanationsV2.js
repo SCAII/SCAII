@@ -79,6 +79,10 @@ function setDefaultSelections(chartData,treatmentID) {
     else if (treatmentID == "T3"){
         chartData.showSalienciesForRewardName(bar.name);
     }
+    else if (treatmentID == "NA"){
+        chartData.selectSingleRewardBar(bar.fullName);
+        chartData.showSalienciesForRewardName(bar.name);
+    }
     return chartData;
 }
 function addConvenienceDataStructures(chartData) {
@@ -219,12 +223,12 @@ function getExplanationsV2Manager(){
         else {
             this.data = cachedChartData;
         }
-        this.render();
+        this.render("live");
     }
 
     cm.switchToExplanationsForThisDecisionPoint = function(step) {
         this.data = this.chartDataForStep[step];
-        this.render();
+        this.render("live");
     }
 
     cm.applyFunctionToEachCachedDataset = function(f, key) {
@@ -263,7 +267,7 @@ function getExplanationsV2Manager(){
                 if (existingData != this.data){
                     currentExplManager.applyFunctionToEachCachedDataset(detachChannelItem,"overlayCanvas");
                 }
-                this.render();
+                this.render("live");
                 
                 return;
             }
@@ -275,7 +279,7 @@ function getExplanationsV2Manager(){
         if (type == "waitForPredictionClick"){
             this.chartVisible = false;
             this.saliencyVisible = false;
-            this.render();
+            this.render("live");
         }
     }
     cm.setExplanationVisibility = function(currentDPIndex, step) {
@@ -285,11 +289,11 @@ function getExplanationsV2Manager(){
         if (this.currentQuestionType == "waitForPredictionClick" && currentDPIndex[this.waitForClickDP] == step) {
             this.chartVisible = false;
             this.saliencyVisible = false;
-            this.render();
+            this.render("live");
         } else {
             this.chartVisible = true;
             this.saliencyVisible = true;
-            this.render();
+            this.render("live");
         }
     }
     cm.setFilename = function(filename){
@@ -322,7 +326,7 @@ function getExplanationsV2Manager(){
     }
     cm.resetExplanationVisibility = function(){
         this.setUserStudyTreatment(this.treatmentID);
-        this.render();
+        this.render("live");
     }
 
     cm.setUserStudyTreatment = function(val) {
@@ -376,10 +380,13 @@ function getExplanationsV2Manager(){
         } else if (this.treatmentID == "T2"){
             this.renderT2(mode);
         } 
-        else {
+        else if (this.treatmentID == "T3"){
             // normal mode falls through to here and matches T3 as desired
             this.renderT3(mode);
         } 
+        else {
+            this.renderNoTreatment(mode);
+        }
         if (this.userStudyMode){
             ensureStudyControlScreenIsWideEnough();
         }
@@ -400,6 +407,29 @@ function getExplanationsV2Manager(){
     cm.renderT3 = function(mode){
         if (this.chartVisible){
             this.renderChartDetailed(mode, "T3");
+        }
+        if (this.showSaliencyAccessButton && this.chartVisible){
+            this.renderSaliencyAccessButton(mode);
+        }
+        if (this.saliencyVisible && this.saliencyCombined){
+            this.renderSaliencyCombined(mode);
+        }
+        if (this.saliencyVisible && !this.saliencyCombined){
+            this.renderSaliencyDetailed(mode);
+        }
+    }
+
+    cm.renderNoTreatment = function(mode){
+        if (this.chartVisible){
+            var selectedBars = this.data.getSelectedBars();
+            if (selectedBars.length > 0){
+                var selectedBar = selectedBars[0];
+                var rewardBarName = selectedBar.fullName;
+                this.data.clearHighlightSelections();
+                var trueRewardBarName = rewardBarName.split(".")[1];
+                this.data.highlightSimilarRewardBars(trueRewardBarName);
+            }
+            this.renderChartDetailed(mode, "NA");
         }
         if (this.showSaliencyAccessButton && this.chartVisible){
             this.renderSaliencyAccessButton(mode);
