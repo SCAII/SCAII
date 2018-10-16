@@ -116,7 +116,7 @@ function getSaliencyV2UIMap() {
 
         if (!userStudyMode){
             saliencyCanvas.addEventListener('mousemove', function(evt) {
-                displayCellValue(evt, ch.height, lookupNormalizationValue(ch.normalizationKey), ch.cells);
+                displayCellValue(evt, ch.height, lookupNormalizationValue(ch.normalizationKey), ch.cells, saliencyCanvas, ch.valueSpan);
               }, false);
         }
         return saliencyCanvas;
@@ -258,7 +258,7 @@ function getDecisionPointPrefixForActiveQuestions() {
     return 'DP-' + activeStudyQuestionManager.squim.getCurrentDecisionPointNumber();
 }
 
-function displayCellValue(evt, height, normalizationFactor, cells){
+function displayCellValue(evt, height, normalizationFactor, cells, explCanvas, valueSpan){
     var mousePos = getMousePos(explCanvas, evt);
     var xForValueLookup = Math.floor(mousePos.x / gameScaleFactor);
     var yForValueLookup = Math.floor(mousePos.y/gameScaleFactor);

@@ -199,7 +199,7 @@ function getSaliencyV2UI() {
         
         for (var i in selectedBars){
             var bar = selectedBars[i];
-            if (bar.channels == undefined){
+            if (bar.combinedChannel == undefined){
                 bar.dpEntityList = dpEntityList;
                 this.configureCombinedChannelForBar(bar);
             }
@@ -228,10 +228,11 @@ function getSaliencyV2UI() {
         var combinedChannel = {};
         bar.combinedChannel = combinedChannel;
         var expLayers = layerMessage.getLayersList();
+        combinedChannel.dpEntityList = bar.dpEntityList;
         combinedChannel.contextString = this.getContextStringForCombinedSaliencyMapRow(bar.type);
         combinedChannel.width = expLayers[0].getWidth();
         combinedChannel.height = expLayers[0].getHeight();
-        combinedChannel.name = "all features cumulative";
+        combinedChannel.name = "all features";
         combinedChannel.cells = getAggregatedCells(expLayers);
         combinedChannel.normalizationKey = "Combined-standin-saliency";// FIXME (Evan)
         combinedChannel.scaleFactor = 1.0;
@@ -274,8 +275,8 @@ function detachChannelItemFromBar(bar, itemName) {
         }
     }
     if (bar.combinedChannel != undefined) {
-        if (combinedChannel[itemName] != undefined) {
-            var id = combinedChannel[itemName].getAttribute("id");
+        if (bar.combinedChannel[itemName] != undefined) {
+            var id = bar.combinedChannel[itemName].getAttribute("id");
             $("#" + id).detach();
         }
     }
@@ -373,7 +374,9 @@ function populateSaliencyQuestionSelector(){
     }
 	radioCombinedSaliency.onclick = function(e) {
         currentExplManager.saliencyCombined = true;
-        targetClickHandler(e, "setSaliencyView:combinedSaliency");
+        if (userStudyMode){
+            targetClickHandler(e, "setSaliencyView:combinedSaliency");
+        }
         currentExplManager.render("live");
 	};
 
@@ -393,7 +396,9 @@ function populateSaliencyQuestionSelector(){
     }
 	radioDetailedSaliency.onclick = function(e) {
         currentExplManager.saliencyCombined = false;
-        targetClickHandler(e, "setSaliencyView:detailedSaliency");
+        if (userStudyMode){
+            targetClickHandler(e, "setSaliencyView:detailedSaliency");
+        }
         currentExplManager.render("live");
 	};
 
