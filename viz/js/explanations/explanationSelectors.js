@@ -37,8 +37,14 @@ function configureExplanationSelectorDiamond(decisionPointNumber,step){
         var absoluteXExpCtrlPanel = rectForExplanationControlPanel.left;
         var absoluteYExpCtrlPanel = rectForExplanationControlPanel.top;
 
-		var yPositionOfWhyButton = absoluteYExpCtrlPanel + 60;// relative to the next container below
-        var xPositionOfWhyButton = absoluteXExpCtrlPanel + x - 37;
+        var yPositionOfWhyButton = absoluteYExpCtrlPanel + 60;// relative to the next container below
+        if(navigator.userAgent.indexOf("Firefox") != -1 ) {
+            var xPositionOfWhyButton = absoluteXExpCtrlPanel + x - 37;
+        } 
+        else {
+            var xPositionOfWhyButton = absoluteXExpCtrlPanel + x - 26;
+        }     
+        
         // why button rendering handled outside of chartV2 as chartV2 is created later upon explDetails arriving
         if (userStudyMode){
             setExplanationInfoForDPAtStep(step);
