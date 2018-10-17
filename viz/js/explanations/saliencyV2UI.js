@@ -163,8 +163,20 @@ function getSaliencyV2UI() {
         }
     }
 
-
-    ui.engageActiveOverlaysAndOutlines = function(selectedBars) {
+    ui.engageActiveOverlaysAndOutlinesSaliencyCombined = function(selectedBars){
+        for (var i in selectedBars){
+            var bar = selectedBars[i];
+            var combinedChannel = bar.combinedChannel;
+            if (combinedChannel.overlayActive){
+                $("#scaii-gameboard").append( combinedChannel.overlayCanvas );
+            }
+            if (combinedChannel.outlineActive) {
+                combinedChannel.mapHostDiv.appendChild( combinedChannel.outlineDiv );
+            }
+        }
+    }
+    
+    ui.engageActiveOverlaysAndOutlinesSaliencyDetailed = function(selectedBars){
         for (var i in selectedBars){
             var bar = selectedBars[i];
             var channels = bar.channels;
@@ -179,6 +191,16 @@ function getSaliencyV2UI() {
             }
         }
     }
+
+    ui.engageActiveOverlaysAndOutlines = function(selectedBars) {
+        if (currentExplManager.saliencyCombined){
+           this.engageActiveOverlaysAndOutlinesSaliencyCombined(selectedBars);
+        }
+        else {
+            this.engageActiveOverlaysAndOutlinesSaliencyDetailed(selectedBars);
+        }
+    }
+
     ui.configureIds = function(channel){
         channel.saliencyMapId       = "saliencyMap--" + channel.id;
         channel.gameboardOverlayId  = "gameOverlay--" + channel.id;
@@ -382,6 +404,7 @@ function populateSaliencyQuestionSelector(){
         if (userStudyMode){
             targetClickHandler(e, "setSaliencyView:combinedSaliency");
         }
+        removeAnySaliencyOverlaysFromGameboard();
         currentExplManager.render("live");
 	};
 
@@ -404,6 +427,7 @@ function populateSaliencyQuestionSelector(){
         if (userStudyMode){
             targetClickHandler(e, "setSaliencyView:detailedSaliency");
         }
+        removeAnySaliencyOverlaysFromGameboard();
         currentExplManager.render("live");
 	};
 
