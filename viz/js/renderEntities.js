@@ -39,6 +39,7 @@ function handleEntities(entitiesList) {
             console.log('-----ERROR----- no entity ID on entity');
         }
     }
+    removeAnySaliencyOverlaysFromGameboard();
     renderState(gameboard_canvas, masterEntities, gameScaleFactor, 0, 0, true);
     // disable zoom box for now
     //drawZoomBox(gameboard_ctx, gameboard_canvas, zoomBoxOriginX, zoomBoxOriginY, zoomFactor);

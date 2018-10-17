@@ -248,6 +248,11 @@ function getSaliencyV2UI() {
     return ui;
 }
 
+
+function removeAnySaliencyOverlaysFromGameboard(){
+    $("[id^='gameOverlay--']").detach();
+}
+
 /*
 *  The titleMapDivs are loaded up in the creation phase and hooked into the UI at render phase.
 *  Thus, as we clean saliencies out prior to rendering other ones, we detach all those so they

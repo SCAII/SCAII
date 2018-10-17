@@ -66,8 +66,6 @@ function getSaliencyV2UIMap() {
     }
 
     uimap.buildOutlineDiv = function(channel, explCanvas){
-        
-
         var w = explCanvas.width;
         var h = explCanvas.height;
         var outlineWidth = 6;
@@ -97,8 +95,11 @@ function getSaliencyV2UIMap() {
 		saliencyCanvas.width  = gameboard_canvas.width * ch.scaleFactor;
 		saliencyCanvas.height = gameboard_canvas.height * ch.scaleFactor;
         this.renderSaliencyMap(saliencyCanvas, explCtx, ch, 0);
+        return saliencyCanvas;
+    }
 
-        saliencyCanvas.addEventListener('mouseenter', function(evt) {
+    uimap.addEventsToSaliencyCanvas = function(ch){
+        ch.saliencyCanvas.addEventListener('mouseenter', function(evt) {
 			ch.valueSpan.setAttribute("style", 'visibility:hidden;');
 			var logLine = templateMap["startMouseOverSaliencyMap"];
 			logLine = logLine.replace("<REGION>", "saliencyMap");
@@ -106,7 +107,7 @@ function getSaliencyV2UIMap() {
 			targetHoverHandler(evt, logLine);
         });
         
-		saliencyCanvas.addEventListener('mouseleave', function(evt) {
+		ch.saliencyCanvas.addEventListener('mouseleave', function(evt) {
             ch.valueSpan.setAttribute("style", 'visibility:hidden;');
 			var logLine = templateMap["endMouseOverSaliencyMap"];
 			logLine = logLine.replace("<REGION>", "saliencyMap");
@@ -115,11 +116,10 @@ function getSaliencyV2UIMap() {
         });
 
         if (!userStudyMode){
-            saliencyCanvas.addEventListener('mousemove', function(evt) {
-                displayCellValue(evt, ch.height, lookupNormalizationValue(ch.normalizationKey), ch.cells, saliencyCanvas, ch.valueSpan);
+            ch.saliencyCanvas.addEventListener('mousemove', function(evt) {
+                displayCellValue(evt, ch.height, lookupNormalizationValue(ch.normalizationKey), ch.cells, ch.saliencyCanvas, ch.valueSpan);
               }, false);
         }
-        return saliencyCanvas;
     }
 
     uimap.buildTitledMapDiv = function(channel){
@@ -167,8 +167,9 @@ function getSaliencyV2UIMap() {
     uimap.buildExplChannel = function(channel) {
         var ch = channel;
        
-        ch.valueSpan    = this.createValueSpan(ch);
         ch.saliencyCanvas = this.buildSaliencyCanvas(ch);
+        ch.valueSpan    = this.createValueSpan(ch);
+        this.addEventsToSaliencyCanvas(ch);
         ch.overlayCanvas  = this.buildOverlayCanvas(ch);
         ch.outlineDiv     = this.buildOutlineDiv(ch, ch.saliencyCanvas);
         ch.titledMapDiv   = this.buildTitledMapDiv(ch);
@@ -224,6 +225,7 @@ function getSaliencyV2UIMap() {
     uimap.mapHostDivIds = {};
 
     uimap.showOutlineOnSelectedSaliencyMap = function(channel) {
+        channel.valueSpan.innerHTML = "";
         console.log("SHOW_OUTLINE: " + channel.outlineDiv.getAttribute("id") + " onto " + channel.mapHostDiv.getAttribute("id"));
         channel.mapHostDiv.appendChild( channel.outlineDiv );
         channel.outlineActive = true;
@@ -512,10 +514,21 @@ function processSaliencyMapClick(e, ch){
         //targetClickHandler(e, "clickSaliencyMap:" + ch.name + "_(" + getQuadrantName(x,y) + ")");
     }
     if (userStudyMode){
+        processOutlineAndOverlayUserStudyMode(ch);
+    }
+    else {
         processOutlineAndOverlay(ch);
     }
 }
+
 function processOutlineAndOverlay(channel){
+    if (currentExplManager.saliencyVisible){
+        var uimap = currentExplManager.saliencyUI.uimap;
+        uimap.showOutlineOnSelectedSaliencyMap(channel);
+        uimap.overlaySelectedSaliencyMapOnGameboard( channel);
+    }
+}
+function processOutlineAndOverlayUserStudyMode(channel){
     var legalClickTargetRegions = activeStudyQuestionManager.getLegalInstrumentationTargetsForCurrentQuestion();
     if (activeStudyQuestionManager.renderer.isLegalRegionToClickOn("target:saliencyMap", legalClickTargetRegions)){
         if (activeStudyQuestionManager.renderer.controlsWaitingForClick.length == 0) {
