@@ -74,7 +74,8 @@ function getSaliencyV2UIMap() {
         var outlineDiv = document.createElement("div");
         outlineDiv.setAttribute("id", channel.outlineDivId);
         // take the outline into account for positioning
-        var relativeTopValue = - Number(h) - Number(outlineWidth);
+        var fudgeFactorToCompensateForNotSureWhat = 4;
+        var relativeTopValue = - Number(h) - fudgeFactorToCompensateForNotSureWhat;
         outlineDiv.setAttribute("style","border-color:white;border-style:solid;border-width:6px;z-index:" + zIndexMap["saliencyHoverValue"] + "; position:relative; left:0px; top:" + relativeTopValue + "px;background-color:transparent;width:"+ divW + "px;height:"+ divH + "px;");
         return outlineDiv;
     }
