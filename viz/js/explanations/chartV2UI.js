@@ -418,10 +418,18 @@ function getChartV2UI() {
 			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
 	
 		} else if (mode == "outlineBlue") {
-			ctx.clearRect(upperLeftOriginX, upperLeftOriginY + 10, bar.width, bar.height - 10);
-			ctx.lineWidth = 10;
-			ctx.strokeStyle = "blue";
-			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+            var adjustedBarHeight = 0;
+            if (bar.value > 0) {
+                upperLeftOriginOutline = upperLeftOriginY - 3;
+                heightOutline = bar.height + 3;
+            }
+            else {
+                upperLeftOriginOutline = upperLeftOriginY;
+                heightOutline = bar.height + 3;
+            }	
+			ctx.clearRect(upperLeftOriginX - 3, upperLeftOriginOutline, bar.width + 6, heightOutline);
+            ctx.strokeStyle = "blue";
+			ctx.strokeRect(upperLeftOriginX - 3, upperLeftOriginOutline, bar.width + 6, heightOutline);
 
 			var rgbaBarColor = hexToRgbA(bar.color);
 			ctx.fillStyle = rgbaBarColor + " 0.7)";
