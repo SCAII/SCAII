@@ -64,7 +64,6 @@ function addLabelForAction(title, index, step){
 					var logLine = templateMap["clickActionLabel"];
 					logLine = logLine.replace("<CLCK_ACT>", escapeAnswerFileDelimetersFromTextString(fullName));
 					targetClickHandler(evt, logLine);
-                    //targetClickHandler(evt, "clickActionLabel:" + escapeAnswerFileDelimetersFromTextString(fullName));
                 }
             }
             jumpToStep(step);
