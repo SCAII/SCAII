@@ -1,6 +1,7 @@
 import sys
 import os
 import ntpath
+import errno
 
 import unittest
 
@@ -19,27 +20,80 @@ def path_before_leaf(path):
     head = ntpath.split(path)
     return head[0]
 
-def main():
-    if (len(sys.argv) != 2):
-        print("No file path given. Exiting...")
+def check_dirpath(filepath, fileGiven):
+    path_list = filepath.split(os.sep)
+    if fileGiven == 0 and len(path_list) > 2:
+        print("Incorrect amount of paths given exiting")
         sys.exit()
-    filepath = sys.argv[1]
+    elif fileGiven == 1 and len(path_list) > 3:
+        print("Incorrect amount of paths given exiting")
+        sys.exit()
+    if path_list[0] is "formatted":
+        print("Incorrect field for first directory specified. Should be 'formated' - actually is: {}").format(path_list[0])
+        sys.exit()
+    safe = 0
+    for i in range(4):
+        if ("T" + i) in path_list[1]:
+            safe += 1
+    if safe > 1 or safe == 0:
+        print("Incorrect format exiting")
+        sys.exit()
+    
+    print("Input given is correct. Creating directory...")
 
-    if not os.path.isfile(filepath):
-        print("File path {} does not exist. Exiting...".format(filepath))
+def check_file(filepath):
+    file_name = path_leaf(filepath)
+
+    if not ".txt" in file_name: 
+        print("incorrect input not a text file")
+
+    file_id = file_name.split('_')
+    if len(file_id) != 3:
+        print("Incorrect file given. Exiting...")
+        sys.exit()
+    safe = 0
+    for i in range(4):
+        if chr(i + 48) in file_id[2]:
+            safe += 1
+    if safe > 1 or safe == 0:
+        print("Incorrect format exiting")
         sys.exit()
 
-    error_check = log_check.start_log_check(True, sys.argv[1])
+    print("Input given is correct. Creating formatted file...")
+
+def run_file(filepath):
+
+    check_file(filepath)
+
+    file_path = path_before_leaf(filepath)
+    file_name = path_leaf(filepath)
+
+    treatment = file_name.split('_')
+    remove_txt = treatment[2].split('.')
+    directory_name = "T" + remove_txt[0]
+
+    of_name_txt = os.path.join(file_path, "formatted")
+    of_name_treatment = os.path.join(of_name_txt, directory_name)
+    if not os.path.exists(of_name_txt) or not os.path.exists(of_name_treatment):
+        print("Directory not made yet. Creating...")
+        try:
+            os.mkdir(of_name_txt)
+            os.mkdir(of_name_treatment)
+        except OSError as exc:
+            if exc.errno != errno.EEXIST:
+                raise
+
+    formatted_name = "formatted_" + file_name
+    of_path = os.path.join(of_name_treatment, formatted_name)
+    # formatted file needs to be made then you can do this change of filetype
+    # new_name = of_name_txt.replace('.txt', '.csv')
+    # of_name = os.rename(of_name_txt, new_name)
+    # of_path = os.path.join(file_path, of_name)
+
+    error_check = log_check.start_log_check(True, filepath)
     if (error_check == True):
         print("Errors found. Quitting before writing...")
-        sys.exit()
-
-    file_name = path_leaf(filepath)
-    file_path = path_before_leaf(filepath)
-
-    of_name = "formatted_" + file_name
-    #of_path = file_path + of_name
-    of_path = os.path.join(file_path, of_name)
+        return 1
 
     if os.path.isfile(of_path):
         print("File {} already exists. Would you like to:".format(of_path))
@@ -47,13 +101,13 @@ def main():
         user_file_choice = input()
         if (user_file_choice == '1'):
             print("Exiting...")
-            sys.exit()
+            return 1
         elif (user_file_choice == '2'):
             print("Overwriting...")
             of = open(of_path, 'w')
         else:
             print("Invalid choice. Exiting...")
-            sys.exit()
+            return 1
     else:
         of = open(of_path, 'w')
 
@@ -131,6 +185,30 @@ def main():
                 of.write(obj["userClick.touchCumRewardValueFor"])
                 of.write("\n")
     of.close()
+    return 0
+
+def main():
+    if (len(sys.argv) != 2):
+        print("No file path given. Exiting...")
+        sys.exit()
+    filepath = sys.argv[1]
+
+    if os.path.isdir(filepath):
+        print("Directory specified grabbing all .txt files")
+        all_files = os.listdir(filepath)
+        count = 0
+        for i in all_files:
+            if "answers" in all_files[count]:
+                txt_answer_file = all_files[count]
+                print(txt_answer_file)
+                txt_answer_path = os.path.join(filepath, txt_answer_file)
+                print(txt_answer_path)
+                check = run_file(txt_answer_path)
+                if check == 1:
+                    print("Error in file stopping. Moving on to next if any...")
+            count += 1
+    else:
+        run_file(filepath)
 
 if __name__ == '__main__':
     main()
