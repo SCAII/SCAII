@@ -176,15 +176,21 @@ function getChartV2UI() {
 			var desc = document.getElementById("legend-desc-" + i);
 			var damagedOrDestroyed = chartData.rewardNames[i].split(" ");
 			var type;
-			if (damagedOrDestroyed[1] == "Damaged") {
-				type = "score";
-			} else if (damagedOrDestroyed[1] == "Destroyed") {
-				if (damagedOrDestroyed[0] == "Enemy") {
-					type = "bonus";
-				} else {
-					type = "penalty";
-				}
+			if (damagedOrDestroyed[0] == "Enemy") {
+				type = "reward";
+			} else {
+				type = "penalty";
 			}
+			// var damagedOrDestroyed = chartData.rewardNames[i].split(" ");
+			// if (damagedOrDestroyed[1] == "Damaged") {
+			// 	type = "score";
+			// } else if (damagedOrDestroyed[1] == "Destroyed") {
+			// 	if (damagedOrDestroyed[0] == "Enemy") {
+			// 		type = "bonus";
+			// 	} else {
+			// 		type = "penalty";
+			// 	}
+			// }
 			var descContent = document.createTextNode("This " + type);
 			desc.append(descContent);
 
@@ -197,6 +203,12 @@ function getChartV2UI() {
 			 * Date made: 9/4/2018
 			 * Date mod:  9/4/2018
 			 **********************************************************************************************/
+			if ( chartData.rewardNames[i] == "City Damaged") {
+				var content = document.createTextNode( "for Friendly City Damaged on all future maps" );
+			}
+			if ( chartData.rewardNames[i] == "City Destroyed") {
+				var content = document.createTextNode( "for Friendly City Destroyed on all future maps" );
+			}
 			if ( chartData.rewardNames[i] == "Friend Damaged" ){
 				var content = document.createTextNode( "for Friendly Fort Damaged on all future maps" );
 			}
