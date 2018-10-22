@@ -410,6 +410,22 @@ function getOverlayOpacityBySaliencyRGBAStringQuantized(saliencyValue, gameboard
     return result;
   }
 
+  /************
+   * Author - Evan Newman
+   * 
+   */
+
+function getOverlayOpacityBySaliencyRGBAStringOneColor(saliencyValue, gameboardFlag) {
+    var color = {}
+    color['R'] = (saliencyValue * 255);
+    color['B'] = (saliencyValue * 255);
+    color['G'] = 0;
+    color['A'] = 1;
+
+    var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
+    return result;
+}
+
   function getOverlayOpacityBySaliencyRGBAStringHeatMap(saliencyValue, gameboardFlag, cellValue) {
     var reverseSaliency = 1.0 - saliencyValue;
     var color = {};
@@ -559,6 +575,7 @@ function lookupNormalizationValue (key) {
    **************************************************************************************************/
   function getOverlayOpacityBySaliencyRGBAString(saliencyValue, gameboardFlag, cellValue) {
     //return getOverlayOpacityBySaliencyRGBAStringQuantized(saliencyValue, gameboardFlag);
-    return getOverlayOpacityBySaliencyRGBAStringHeatMap( saliencyValue, gameboardFlag, cellValue );
+    //return getOverlayOpacityBySaliencyRGBAStringHeatMap( saliencyValue, gameboardFlag, cellValue );
+    return getOverlayOpacityBySaliencyRGBAStringOneColor(saliencyValue, gameboardFlag);
     //return getOverlayOpacityBySaliencyRGBAStringRainbow( saliencyValue, gameboardFlag );
   }
