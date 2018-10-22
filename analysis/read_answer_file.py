@@ -85,10 +85,6 @@ def run_file(filepath):
 
     formatted_name = "formatted_" + file_name
     of_path = os.path.join(of_name_treatment, formatted_name)
-    # formatted file needs to be made then you can do this change of filetype
-    # new_name = of_name_txt.replace('.txt', '.csv')
-    # of_name = os.rename(of_name_txt, new_name)
-    # of_path = os.path.join(file_path, of_name)
 
     error_check = log_check.start_log_check(True, filepath)
     if (error_check == True):
@@ -185,6 +181,11 @@ def run_file(filepath):
                 of.write(obj["userClick.touchCumRewardValueFor"])
                 of.write("\n")
     of.close()
+
+    # formatted file needs to be made then change filetype from '.txt' to '.csv'
+    new_name = of_path.replace('.txt', '.csv')
+    output = os.rename(of_path, new_name)
+
     return 0
 
 def main():

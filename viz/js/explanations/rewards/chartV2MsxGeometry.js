@@ -11,7 +11,6 @@ function addMsxGeometryFunctions(rawChartData) {
             rd.rewardBarWidth = Math.floor(rd.widthAvailableForRewardBar - (rewardSpacerWidth));
             //biggest bar should take up .75 of canvasHeight/2  (120 * scalingFactor == 3/4 * canvasHeight/2) (we assumed scalingFactor == 2)
             rd.scalingFactor = ( ((rd.canvasHeight / 2) * 0.75) / rd.getMaxAbsoluteValueReward() ).toFixed(2);
-            console.log("SCALING FACT: " + rd.scalingFactor);
     }
 
     rd.positionMsxRewardBar = function (maxValueAction, rewardBar, actionIndex, rewardIndex) {
@@ -22,7 +21,6 @@ function addMsxGeometryFunctions(rawChartData) {
                 rewardBar.originX = Math.floor((rd.groupWidthMargin * 2) + (rewardIndex * rd.rewardBarWidth));
             } else {
                 rewardBar.originX = Math.floor(rd.widthAvailableForGroup + rd.groupWidthMargin + (rewardIndex * rd.rewardBarWidth));
-                console.log("X is apparently: " + rewardBar.originX);
             }
             rewardBar.originY = rd.canvasHeight / 2;
 
