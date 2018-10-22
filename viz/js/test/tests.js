@@ -23,6 +23,7 @@ function getFailureChecker() {
         else {
             this.fails[this.currentTestName] = Number(this.fails[this.currentTestName]) + 1;
             this.failText[this.currentTestName].push(this.context + " : " + message);
+            this.failText[this.currentTestName].push("Expected: " + b + " | Result: " + a);
         }
     }
     return fc;
