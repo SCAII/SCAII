@@ -419,7 +419,7 @@ function getOverlayOpacityBySaliencyRGBAStringOneColor(saliencyValue, gameboardF
     var color = {}
     color['R'] = (saliencyValue * 255);
     color['B'] = (saliencyValue * 255);
-    color['G'] = 0;
+    color['G'] = (saliencyValue * 255);
     color['A'] = 1;
 
     var result = 'rgba(' + color['R'] + ',' + color['G'] + ',' + color['B'] + ',' + color['A'] + ')';
