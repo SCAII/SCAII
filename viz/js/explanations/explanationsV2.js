@@ -400,13 +400,13 @@ function getExplanationsV2Manager(){
     
     cm.renderT2 = function(mode){
         if (this.chartVisible){
-            this.renderChartDetailed(mode, "T2");
+            this.renderChart(mode, "T2");
         }
     }
 
     cm.renderT3 = function(mode){
         if (this.chartVisible){
-            this.renderChartDetailed(mode, "T3");
+            this.renderChart(mode, "T3");
         }
         if (this.showSaliencyAccessButton && this.chartVisible){
             this.renderSaliencyAccessButton(mode);
@@ -429,7 +429,7 @@ function getExplanationsV2Manager(){
                 var trueRewardBarName = rewardBarName.split(".")[1];
                 this.data.highlightSimilarRewardBars(trueRewardBarName);
             }
-            this.renderChartDetailed(mode, "NA");
+            this.renderChart(mode, "NA");
         }
         if (this.showSaliencyAccessButton && this.chartVisible){
             this.renderSaliencyAccessButton(mode);
@@ -442,13 +442,13 @@ function getExplanationsV2Manager(){
         }
     }
 
-    cm.renderChartDetailed = function(mode, treatment){
+    cm.renderChart = function(mode, treatment){
         if (mode == "trace"){
-            this.renderLog.push("renderChartDetailed");
+            this.renderLog.push("renderChart");
             return;
         }
         else {
-            this.chartUI.renderChartDetailed(this.data, treatment);
+            this.chartUI.renderChart(this.data, treatment);
         }
     }
     

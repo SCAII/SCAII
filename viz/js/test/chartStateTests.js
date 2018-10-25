@@ -105,20 +105,20 @@ function runChartManagerTests(failureChecker) {
         cm.chartVisible = true;
         cm.render("trace");
         fc.assert(cm.renderLog.length, 2,"renderLog.length.a"); 
-        fc.assert(cm.renderLog[0], "renderChartDetailed", "renderLog[1]a");
+        fc.assert(cm.renderLog[0], "renderChart", "renderLog[1]a");
         fc.assert(cm.renderLog[1], "renderSaliencyAccessButton", "renderLog[2]a");
 
         cm.saliencyVisible = true;
         cm.render("trace");
         fc.assert(cm.renderLog.length, 3,"renderLog.length.c"); 
-        fc.assert(cm.renderLog[0], "renderChartDetailed", "renderLog[1]c");
+        fc.assert(cm.renderLog[0], "renderChart", "renderLog[1]c");
         fc.assert(cm.renderLog[1], "renderSaliencyAccessButton", "renderLog[2]c");
         fc.assert(cm.renderLog[2], "renderSaliencyDetailed", "renderLog[3]c");
 
         cm.saliencyCombined = false;
         cm.render("trace");
         fc.assert(cm.renderLog.length, 3,"renderLog.length.d"); 
-        fc.assert(cm.renderLog[0], "renderChartDetailed", "renderLog[1]d");
+        fc.assert(cm.renderLog[0], "renderChart", "renderLog[1]d");
         fc.assert(cm.renderLog[1], "renderSaliencyAccessButton", "renderLog[2]d");
         fc.assert(cm.renderLog[2], "renderSaliencyDetailed", "renderLog[3]d");
 
@@ -153,7 +153,7 @@ function runChartManagerTests(failureChecker) {
         cm.chartVisible = true;
         cm.render("trace");
         fc.assert(cm.renderLog.length, 1,"renderLog.length.a"); 
-        fc.assert(cm.renderLog[0], "renderChartDetailed", "renderLog[1]a");
+        fc.assert(cm.renderLog[0], "renderChart", "renderLog[1]a");
     }
 
     { // T3
@@ -169,19 +169,19 @@ function runChartManagerTests(failureChecker) {
         cm.chartVisible = true;
         cm.render("trace");
         fc.assert(cm.renderLog.length, 2,"renderLog.length.a"); 
-        fc.assert(cm.renderLog[0], "renderChartDetailed", "renderLog[1]a");
+        fc.assert(cm.renderLog[0], "renderChart", "renderLog[1]a");
         fc.assert(cm.renderLog[1], "renderSaliencyDetailed", "renderLog[2]a");
 
         cm.saliencyVisible = true;
         cm.render("trace");
         fc.assert(cm.renderLog.length, 2,"renderLog.length.c"); 
-        fc.assert(cm.renderLog[0], "renderChartDetailed", "renderLog[1]c");
+        fc.assert(cm.renderLog[0], "renderChart", "renderLog[1]c");
         fc.assert(cm.renderLog[1], "renderSaliencyDetailed", "renderLog[2]c");
 
         cm.saliencyCombined = false;
         cm.render("trace");
         fc.assert(cm.renderLog.length, 2,"renderLog.length.d"); 
-        fc.assert(cm.renderLog[0], "renderChartDetailed", "renderLog[1]d");
+        fc.assert(cm.renderLog[0], "renderChart", "renderLog[1]d");
         fc.assert(cm.renderLog[1], "renderSaliencyDetailed", "renderLog[2]d");
     }
 }

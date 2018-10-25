@@ -5,7 +5,7 @@ function getChartV2UI() {
     ui.whyButtonInfo = undefined;
     ui.rewardBarTooltipManager = undefined;
     ui.backgroundColor = "#eeeeee";
-    ui.renderChartDetailed = function(chartData, treatment){
+    ui.renderChart = function(chartData, treatment){
         //specify dimensions
         var canvasHeight = 500;
         var canvasWidth = 700;
