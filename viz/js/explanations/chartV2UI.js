@@ -1,17 +1,41 @@
+var chartStyle = "basic";
+
 function getChartV2UI() {
+    var uis = {};
+
+    uis.renderChart = function(chartData, treatment){
+        var canvasHeight = 500;
+        var canvasWidth = 700;
+        createRewardChartContainer(canvasHeight);
+        if (userStudyMode){
+            this.chart = getBasicChartUI();
+        }
+        else if (chartStyle == "basic"){
+            this.chart = getBasicChartUI();
+        }
+        else if (chartStyle == "msx"){
+            this.chart = getMsxChartUI();
+        }
+        else {
+            this.chart = getAdvantageChartUI();
+        }
+        this.chart.renderChart(chartData, treatment,canvasHeight, canvasWidth);
+    }
+    return uis;
+}
+
+
+
+function getBasicChartUI() {
     var ui = {};
 
     var chartCanvas = undefined;
     ui.whyButtonInfo = undefined;
     ui.rewardBarTooltipManager = undefined;
     ui.backgroundColor = "#eeeeee";
-    ui.renderChart = function(chartData, treatment){
+    ui.renderChart = function(chartData, treatment, canvasHeight, canvasWidth){
         //specify dimensions
-        var canvasHeight = 500;
-        var canvasWidth = 700;
-        createRewardChartContainer(canvasHeight);
         chartData.initChartDimensions(canvasHeight, canvasWidth, 0.5, 0.0);
-
         // create canvas
         chartCanvas = document.createElement("canvas");
         chartCanvas.setAttribute("width", canvasWidth);
@@ -538,12 +562,15 @@ function createRewardChartContainer(canvasHeight) {
 	//$("#why-questions-div").append(whyLabel);
 
 
-	var whyRadios = document.createElement("DIV");
-	whyRadios.setAttribute("id", "why-radios");
-	whyRadios.setAttribute("class", "rewards-bg flex-row");
-	whyRadios.setAttribute("style", "margin:auto;font-family:Arial;padding:10px;font-size:14px;");
-	//$("#rewards-titled-container").append(whyRadios);
-
+    if (!userStudyMode){
+        var whyRadios = document.createElement("DIV");
+        whyRadios.setAttribute("id", "why-radios");
+        whyRadios.setAttribute("class", "rewards-bg flex-row");
+        whyRadios.setAttribute("style", "margin:auto;font-family:Arial;padding:10px;font-size:14px;");
+        $("#rewards-titled-container").append(whyRadios);
+        populateRewardsSelector();
+    }
+	
     var explanationRewards = document.createElement("DIV");
     explanationRewards.setAttribute("height", canvasHeight + "px");
 	explanationRewards.setAttribute("id", "explanations-rewards");
@@ -582,36 +609,60 @@ function createRewardChartContainer(canvasHeight) {
 
 
 
-function populateRewardQuestionSelector() {
-	//$("#why-radios").empty();
+function populateRewardsSelector() {
+    $("#why-radios").empty();
+    //basic
+	var radioBasicRewards = document.createElement("input");
+	radioBasicRewards.setAttribute("type", "radio");
+	radioBasicRewards.setAttribute("id", "radio-basic-rewards");
+	radioBasicRewards.setAttribute("name", "rewardView");
+	radioBasicRewards.setAttribute("value", "rewardBasic");
+	radioBasicRewards.setAttribute("style", "margin-left:20px; ");
+	radioBasicRewards.setAttribute("checked", "checked");
+	radioBasicRewards.onclick = function(e) {
+        chartStyle = "basic";
+        currentExplManager.render("live");
+	};
+	var basicRewardsLabel = document.createElement("div");
+	basicRewardsLabel.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:14px;");
+	basicRewardsLabel.innerHTML = "Basic Reward View";
+	$("#why-radios").append(radioBasicRewards);
+    $("#why-radios").append(basicRewardsLabel);
 
-	// REWARDS SECTION
+    // msx
+    var radioMsxRewards = document.createElement("input");
+	radioMsxRewards.setAttribute("type", "radio");
+	radioMsxRewards.setAttribute("id", "radio-msx-rewards");
+	radioMsxRewards.setAttribute("name", "rewardView");
+	radioMsxRewards.setAttribute("value", "rewardMsx");
+	radioMsxRewards.setAttribute("style", "margin-left:20px; ");
+	radioMsxRewards.onclick = function(e) {
+        chartStyle = "msx";
+		currentExplManager.render("live");
+	};
+	var msxRewardsLabel = document.createElement("div");
+	msxRewardsLabel.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:14px;");
+	msxRewardsLabel.innerHTML = "MSX Reward View";
+	$("#why-radios").append(radioMsxRewards);
+    $("#why-radios").append(msxRewardsLabel);
 
-	// NEW_CHART showing or not
-	// NEW_CHART user study yes/no
-	var radioDetailedRewards = document.createElement("input");
-	radioDetailedRewards.setAttribute("type", "radio");
-	radioDetailedRewards.setAttribute("id", "radio-detailed-rewards");
-	radioDetailedRewards.setAttribute("name", "rewardView");
-	radioDetailedRewards.setAttribute("value", "rewardDetailed");
-	radioDetailedRewards.setAttribute("style", "margin-left:20px; ");
-	radioDetailedRewards.setAttribute("checked", "true");
-	// radioDetailedRewards.onclick = function(e) {
-	// 	var logLine = templateMap["setRewardView"];
-	// 	logLine = logLine.replace("<SET_RWRD_VIEW>", "detailedRewards");
-	//     targetClickHandler(e, logLine);
-	//     if (userStudyMode) {
-	//         stateMonitor.showedDetailedRewards();
-	//     }
-	// 	//showRewards("rewards.detailed");
-	// };
-
-	var detailedRewardsLabel = document.createElement("div");
-	detailedRewardsLabel.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:14px;");
-	detailedRewardsLabel.innerHTML = "detailed rewards";
-
-	//$("#why-radios").append(radioDetailedRewards);
-	//$("#why-radios").append(detailedRewardsLabel);
+    // advantage
+    var radioAdvantageRewards = document.createElement("input");
+	radioAdvantageRewards.setAttribute("type", "radio");
+	radioAdvantageRewards.setAttribute("id", "radio-advantage-rewards");
+	radioAdvantageRewards.setAttribute("name", "rewardView");
+	radioAdvantageRewards.setAttribute("value", "rewardAdvantage");
+	radioAdvantageRewards.setAttribute("style", "margin-left:20px; ");
+	radioAdvantageRewards.onclick = function(e) {
+        chartStyle = "advantage";
+		currentExplManager.render("live");
+	};
+	var advantageRewardsLabel = document.createElement("div");
+	advantageRewardsLabel.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:14px;");
+	advantageRewardsLabel.innerHTML = "Advantage Reward View";
+	$("#why-radios").append(radioAdvantageRewards);
+    $("#why-radios").append(advantageRewardsLabel);
+    
 }
 
 
