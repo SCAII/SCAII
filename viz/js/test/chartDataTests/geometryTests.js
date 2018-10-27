@@ -1,4 +1,4 @@
-function runChartDataGeometryTests(failureChecker, chartTesting) {
+function runBasicChartGeometryTests(failureChecker, chartTesting) {
     // test geometry
     var fc = failureChecker;
     if (chartTesting == "seeSaw") {
@@ -49,138 +49,140 @@ function runChartDataGeometryTests(failureChecker, chartTesting) {
         2   -20     40      -60     80
         3   30      -60     90      -120
     */
-    ch = addGeometryFunctions(ch);
-    ch.initChartDimensions(640.0, 816.0, 0.2, 0.0);
+    ch = addBasicChartGeometryFunctions(ch);
+    var bcg = ch.basicChartGeometry;
+    var rewardForName = ch.actionRewardForNameMap;
+    bcg.initChartDimensions(640.0, 816.0, 0.2, 0.0);
 
     fc.setCase("bar postioning");
-    ch.positionRewardBar(ch.actionRewardForNameMap["action_0.reward_0"], 0, 0);
-    fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].originX, 20.0, "originX 0.0");// 20.0 + 0*1 + 0
-    fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].originY, 320.0, "originY 0.0");// 160 
+    bcg.positionRewardBar(rewardForName["action_0.reward_0"], 0, 0);
+    fc.assert(rewardForName["action_0.reward_0"].basicChartGeometry.originX, 20.0, "originX 0.0");// 20.0 + 0*1 + 0
+    fc.assert(rewardForName["action_0.reward_0"].basicChartGeometry.originY, 320.0, "originY 0.0");// 160 
 
     // bar.originX = i*widthAvailableForGroup + groupWidthMargin + rewardSpacerWidth * (j + 1) + j *(rewardBarWidth)
-    ch.positionRewardBar(ch.actionRewardForNameMap["action_0.reward_1"], 0, 1);
-    fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].originX, 74.0, "originX 0.1");//  20.0 + 0 * (2) + 54 == 74.0
-    fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].originY, 320.0, "originY 0.1");// 320 
+    bcg.positionRewardBar(rewardForName["action_0.reward_1"], 0, 1);
+    fc.assert(rewardForName["action_0.reward_1"].basicChartGeometry.originX, 74.0, "originX 0.1");//  20.0 + 0 * (2) + 54 == 74.0
+    fc.assert(rewardForName["action_0.reward_1"].basicChartGeometry.originY, 320.0, "originY 0.1");// 320 
 
-    ch.positionRewardBar(ch.actionRewardForNameMap["action_0.reward_2"], 0, 2);
-    fc.assert(ch.actionRewardForNameMap["action_0.reward_2"].originX, 128.0, "originX 0.2");//  20.0 + 0 * (3) + 108 == 128.0
-    fc.assert(ch.actionRewardForNameMap["action_0.reward_2"].originY, 320.0, "originY 0.2");// 320 
+    bcg.positionRewardBar(rewardForName["action_0.reward_2"], 0, 2);
+    fc.assert(rewardForName["action_0.reward_2"].basicChartGeometry.originX, 128.0, "originX 0.2");//  20.0 + 0 * (3) + 108 == 128.0
+    fc.assert(rewardForName["action_0.reward_2"].basicChartGeometry.originY, 320.0, "originY 0.2");// 320 
 
-    ch.positionRewardBar(ch.actionRewardForNameMap["action_1.reward_0"], 1, 0);
-    fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].originX, 224.0, "originX 1.0");// 204 + 20.0 + 0 * (1) + 0 == 224.0
-    fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].originY, 320.0, "originY 1.0");// 320
+    bcg.positionRewardBar(rewardForName["action_1.reward_0"], 1, 0);
+    fc.assert(rewardForName["action_1.reward_0"].basicChartGeometry.originX, 224.0, "originX 1.0");// 204 + 20.0 + 0 * (1) + 0 == 224.0
+    fc.assert(rewardForName["action_1.reward_0"].basicChartGeometry.originY, 320.0, "originY 1.0");// 320
 
-    ch.positionRewardBar(ch.actionRewardForNameMap["action_1.reward_1"], 1, 1);//skip test here but need later
-    ch.positionRewardBar(ch.actionRewardForNameMap["action_1.reward_2"], 1, 2);//skip test here but need later
+    bcg.positionRewardBar(rewardForName["action_1.reward_1"], 1, 1);//skip test here but need later
+    bcg.positionRewardBar(rewardForName["action_1.reward_2"], 1, 2);//skip test here but need later
 
-    ch.positionRewardBar(ch.actionRewardForNameMap["action_2.reward_0"], 2, 0);//skip test here but need later
-    ch.positionRewardBar(ch.actionRewardForNameMap["action_2.reward_1"], 2, 1);
-    fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].originX, 482.0, "originX 2.1");// 408 + 20.0 + 0 * (2) + 54 == 482.0
-    fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].originY, 320.0, "originY 2.1");// 320
-    ch.positionRewardBar(ch.actionRewardForNameMap["action_2.reward_2"], 2, 2);//skip test here but need later
+    bcg.positionRewardBar(rewardForName["action_2.reward_0"], 2, 0);//skip test here but need later
+    bcg.positionRewardBar(rewardForName["action_2.reward_1"], 2, 1);
+    fc.assert(rewardForName["action_2.reward_1"].basicChartGeometry.originX, 482.0, "originX 2.1");// 408 + 20.0 + 0 * (2) + 54 == 482.0
+    fc.assert(rewardForName["action_2.reward_1"].basicChartGeometry.originY, 320.0, "originY 2.1");// 320
+    bcg.positionRewardBar(rewardForName["action_2.reward_2"], 2, 2);//skip test here but need later
 
-    ch.positionRewardBar(ch.actionRewardForNameMap["action_3.reward_0"], 3, 0);//skip test here but need later
-    ch.positionRewardBar(ch.actionRewardForNameMap["action_3.reward_1"], 3, 1);//skip test here but need later
-    ch.positionRewardBar(ch.actionRewardForNameMap["action_3.reward_2"], 3, 2);
-    fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].originX, 740.0, "originX 3.2");// 612 + 20.0 + 0 * (3) + 108 == 740.0
-    fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].originY, 320.0, "originY 3.2");// 320 
+    bcg.positionRewardBar(rewardForName["action_3.reward_0"], 3, 0);//skip test here but need later
+    bcg.positionRewardBar(rewardForName["action_3.reward_1"], 3, 1);//skip test here but need later
+    bcg.positionRewardBar(rewardForName["action_3.reward_2"], 3, 2);
+    fc.assert(rewardForName["action_3.reward_2"].basicChartGeometry.originX, 740.0, "originX 3.2");// 612 + 20.0 + 0 * (3) + 108 == 740.0
+    fc.assert(rewardForName["action_3.reward_2"].basicChartGeometry.originY, 320.0, "originY 3.2");// 320 
 
 
     if (chartTesting == "seeSaw") {
         fc.setCase("bar dimensioning seeSaw");
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_0.reward_0"]);
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].height, 20.0, "originHeight 0.0");
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].width, 54.0, "originWidth 0.0");
+        bcg.dimensionRewardBar(rewardForName["action_0.reward_0"]);
+        fc.assert(rewardForName["action_0.reward_0"].basicChartGeometry.height, 20.0, "originHeight 0.0");
+        fc.assert(rewardForName["action_0.reward_0"].basicChartGeometry.width, 54.0, "originWidth 0.0");
 
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_0.reward_1"]);
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].height, 40.0, "originHeight 0.1");
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].width, 54.0, "originWidth 0");
+        bcg.dimensionRewardBar(rewardForName["action_0.reward_1"]);
+        fc.assert(rewardForName["action_0.reward_1"].basicChartGeometry.height, 40.0, "originHeight 0.1");
+        fc.assert(rewardForName["action_0.reward_1"].basicChartGeometry.width, 54.0, "originWidth 0");
 
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_0.reward_2"]);
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_2"].height, 60.0, "originHeight 0.2");
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_2"].width, 54.0, "originWidth 0.2");
+        bcg.dimensionRewardBar(rewardForName["action_0.reward_2"]);
+        fc.assert(rewardForName["action_0.reward_2"].basicChartGeometry.height, 60.0, "originHeight 0.2");
+        fc.assert(rewardForName["action_0.reward_2"].basicChartGeometry.width, 54.0, "originWidth 0.2");
 
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_1.reward_0"]);
-        fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].height, 80.0, "originHeight 1.0");
-        fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].width, 54.0, "originWidth 1.0");
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_1.reward_1"]);
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_1.reward_2"]);
+        bcg.dimensionRewardBar(rewardForName["action_1.reward_0"]);
+        fc.assert(rewardForName["action_1.reward_0"].basicChartGeometry.height, 80.0, "originHeight 1.0");
+        fc.assert(rewardForName["action_1.reward_0"].basicChartGeometry.width, 54.0, "originWidth 1.0");
+        bcg.dimensionRewardBar(rewardForName["action_1.reward_1"]);
+        bcg.dimensionRewardBar(rewardForName["action_1.reward_2"]);
 
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_2.reward_0"]);
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_2.reward_1"]);
-        fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].height, 160.0, "originHeight 2.1");
-        fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].width, 54.0, "originWidth 2.1");
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_2.reward_2"]);
+        bcg.dimensionRewardBar(rewardForName["action_2.reward_0"]);
+        bcg.dimensionRewardBar(rewardForName["action_2.reward_1"]);
+        fc.assert(rewardForName["action_2.reward_1"].basicChartGeometry.height, 160.0, "originHeight 2.1");
+        fc.assert(rewardForName["action_2.reward_1"].basicChartGeometry.width, 54.0, "originWidth 2.1");
+        bcg.dimensionRewardBar(rewardForName["action_2.reward_2"]);
 
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_3.reward_0"]);
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_3.reward_1"]);
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_3.reward_2"]);
-        fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].height, 240.0, "originHeight 3.2");
-        fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].width, 54.0, "originWidth 3.2");
+        bcg.dimensionRewardBar(rewardForName["action_3.reward_0"]);
+        bcg.dimensionRewardBar(rewardForName["action_3.reward_1"]);
+        bcg.dimensionRewardBar(rewardForName["action_3.reward_2"]);
+        fc.assert(rewardForName["action_3.reward_2"].basicChartGeometry.height, 240.0, "originHeight 3.2");
+        fc.assert(rewardForName["action_3.reward_2"].basicChartGeometry.width, 54.0, "originWidth 3.2");
     }
     else if (chartTesting == "allPositives") {
         fc.setCase("bar dimensioning allPositives");
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_0.reward_0"]);
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].height, 0.0, "originHeight 0.0");
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].width, 54.0, "originWidth 0.0");
+        bcg.dimensionRewardBar(rewardForName["action_0.reward_0"]);
+        fc.assert(rewardForName["action_0.reward_0"].basicChartGeometry.height, 0.0, "originHeight 0.0");
+        fc.assert(rewardForName["action_0.reward_0"].basicChartGeometry.width, 54.0, "originWidth 0.0");
 
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_0.reward_1"]);
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].height, 0.0, "originHeight 0.1");
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].width, 54.0, "originWidth 0");
+        bcg.dimensionRewardBar(rewardForName["action_0.reward_1"]);
+        fc.assert(rewardForName["action_0.reward_1"].basicChartGeometry.height, 0.0, "originHeight 0.1");
+        fc.assert(rewardForName["action_0.reward_1"].basicChartGeometry.width, 54.0, "originWidth 0");
 
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_0.reward_2"]);
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_2"].height, 0.0, "originHeight 0.2");
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_2"].width, 54.0, "originWidth 0.2");
+        bcg.dimensionRewardBar(rewardForName["action_0.reward_2"]);
+        fc.assert(rewardForName["action_0.reward_2"].basicChartGeometry.height, 0.0, "originHeight 0.2");
+        fc.assert(rewardForName["action_0.reward_2"].basicChartGeometry.width, 54.0, "originWidth 0.2");
 
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_1.reward_0"]);
-        fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].height, 29.2, "originHeight 1.0");
-        fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].width, 54.0, "originWidth 1.0");
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_1.reward_1"]);
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_1.reward_2"]);
+        bcg.dimensionRewardBar(rewardForName["action_1.reward_0"]);
+        fc.assert(rewardForName["action_1.reward_0"].basicChartGeometry.height, 29.2, "originHeight 1.0");
+        fc.assert(rewardForName["action_1.reward_0"].basicChartGeometry.width, 54.0, "originWidth 1.0");
+        bcg.dimensionRewardBar(rewardForName["action_1.reward_1"]);
+        bcg.dimensionRewardBar(rewardForName["action_1.reward_2"]);
 
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_2.reward_0"]);
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_2.reward_1"]);
-        fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].height, 58.4, "originHeight 2.1");
-        fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].width, 54.0, "originWidth 2.1");
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_2.reward_2"]);
+        bcg.dimensionRewardBar(rewardForName["action_2.reward_0"]);
+        bcg.dimensionRewardBar(rewardForName["action_2.reward_1"]);
+        fc.assert(rewardForName["action_2.reward_1"].basicChartGeometry.height, 58.4, "originHeight 2.1");
+        fc.assert(rewardForName["action_2.reward_1"].basicChartGeometry.width, 54.0, "originWidth 2.1");
+        bcg.dimensionRewardBar(rewardForName["action_2.reward_2"]);
 
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_3.reward_0"]);
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_3.reward_1"]);
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_3.reward_2"]);
-        fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].height, 87.6, "originHeight 3.2");
-        fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].width, 54.0, "originWidth 3.2");
+        bcg.dimensionRewardBar(rewardForName["action_3.reward_0"]);
+        bcg.dimensionRewardBar(rewardForName["action_3.reward_1"]);
+        bcg.dimensionRewardBar(rewardForName["action_3.reward_2"]);
+        fc.assert(rewardForName["action_3.reward_2"].basicChartGeometry.height, 87.6, "originHeight 3.2");
+        fc.assert(rewardForName["action_3.reward_2"].basicChartGeometry.width, 54.0, "originWidth 3.2");
 
     } else if (chartTesting == "allNegatives") {
         fc.setCase("bar dimensioning allNegatives");
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_0.reward_0"]);
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].height, 7.3, "originHeight 0.0");
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].width, 54.0, "originWidth 0.0");
+        bcg.dimensionRewardBar(rewardForName["action_0.reward_0"]);
+        fc.assert(rewardForName["action_0.reward_0"].basicChartGeometry.height, 7.3, "originHeight 0.0");
+        fc.assert(rewardForName["action_0.reward_0"].basicChartGeometry.width, 54.0, "originWidth 0.0");
 
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_0.reward_1"]);
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].height, 14.6, "originHeight 0.1");
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].width, 54.0, "originWidth 0");
+        bcg.dimensionRewardBar(rewardForName["action_0.reward_1"]);
+        fc.assert(rewardForName["action_0.reward_1"].basicChartGeometry.height, 14.6, "originHeight 0.1");
+        fc.assert(rewardForName["action_0.reward_1"].basicChartGeometry.width, 54.0, "originWidth 0");
 
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_0.reward_2"]);
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_2"].height, 21.9, "originHeight 0.2");
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_2"].width, 54.0, "originWidth 0.2");
+        bcg.dimensionRewardBar(rewardForName["action_0.reward_2"]);
+        fc.assert(rewardForName["action_0.reward_2"].basicChartGeometry.height, 21.9, "originHeight 0.2");
+        fc.assert(rewardForName["action_0.reward_2"].basicChartGeometry.width, 54.0, "originWidth 0.2");
 
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_1.reward_0"]);
-        fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].height, 29.2, "originHeight 1.0");
-        fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].width, 54.0, "originWidth 1.0");
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_1.reward_1"]);
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_1.reward_2"]);
+        bcg.dimensionRewardBar(rewardForName["action_1.reward_0"]);
+        fc.assert(rewardForName["action_1.reward_0"].basicChartGeometry.height, 29.2, "originHeight 1.0");
+        fc.assert(rewardForName["action_1.reward_0"].basicChartGeometry.width, 54.0, "originWidth 1.0");
+        bcg.dimensionRewardBar(rewardForName["action_1.reward_1"]);
+        bcg.dimensionRewardBar(rewardForName["action_1.reward_2"]);
 
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_2.reward_0"]);
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_2.reward_1"]);
-        fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].height, 58.4, "originHeight 2.1");
-        fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].width, 54.0, "originWidth 2.1");
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_2.reward_2"]);
+        bcg.dimensionRewardBar(rewardForName["action_2.reward_0"]);
+        bcg.dimensionRewardBar(rewardForName["action_2.reward_1"]);
+        fc.assert(rewardForName["action_2.reward_1"].basicChartGeometry.height, 58.4, "originHeight 2.1");
+        fc.assert(rewardForName["action_2.reward_1"].basicChartGeometry.width, 54.0, "originWidth 2.1");
+        bcg.dimensionRewardBar(rewardForName["action_2.reward_2"]);
 
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_3.reward_0"]);
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_3.reward_1"]);
-        ch.dimensionRewardBar(ch.actionRewardForNameMap["action_3.reward_2"]);
-        fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].height, 87.6, "originHeight 3.2");
-        fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].width, 54.0, "originWidth 3.2");
+        bcg.dimensionRewardBar(rewardForName["action_3.reward_0"]);
+        bcg.dimensionRewardBar(rewardForName["action_3.reward_1"]);
+        bcg.dimensionRewardBar(rewardForName["action_3.reward_2"]);
+        fc.assert(rewardForName["action_3.reward_2"].basicChartGeometry.height, 87.6, "originHeight 3.2");
+        fc.assert(rewardForName["action_3.reward_2"].basicChartGeometry.width, 54.0, "originWidth 3.2");
     }
 
     //NEED TO ADD TEST TO POSITION TOTAL ACTION BAR
@@ -192,21 +194,21 @@ function runChartDataGeometryTests(failureChecker, chartTesting) {
     // x coord == groupWidthmargin + i * (widthAvailableForGroup)
     // y coord == the axis location == canvas_height / 2
     fc.setCase("action bar positioning");
-    ch.positionActionBar(ch.actionForNameMap["action_0"], 0);
-    fc.assert(ch.actionForNameMap["action_0"].originX, 20.0, "originX action_0");// 20  + 0
-    fc.assert(ch.actionForNameMap["action_0"].originY, 320.0, "originY action_0");// 320 
+    bcg.positionActionBar(ch.actionForNameMap["action_0"], 0);
+    fc.assert(ch.actionForNameMap["action_0"].basicChartGeometry.originX, 20.0, "originX action_0");// 20  + 0
+    fc.assert(ch.actionForNameMap["action_0"].basicChartGeometry.originY, 320.0, "originY action_0");// 320 
 
-    ch.positionActionBar(ch.actionForNameMap["action_1"], 1);
-    fc.assert(ch.actionForNameMap["action_1"].originX, 224.0, "originX action_1");// 20  + 204
-    fc.assert(ch.actionForNameMap["action_1"].originY, 320.0, "originY action_1");// 320 
+    bcg.positionActionBar(ch.actionForNameMap["action_1"], 1);
+    fc.assert(ch.actionForNameMap["action_1"].basicChartGeometry.originX, 224.0, "originX action_1");// 20  + 204
+    fc.assert(ch.actionForNameMap["action_1"].basicChartGeometry.originY, 320.0, "originY action_1");// 320 
 
-    ch.positionActionBar(ch.actionForNameMap["action_2"], 2);
-    fc.assert(ch.actionForNameMap["action_2"].originX, 428.0, "originX action_2");// 20 + 408
-    fc.assert(ch.actionForNameMap["action_2"].originY, 320.0, "originY action_2");// 320 
+    bcg.positionActionBar(ch.actionForNameMap["action_2"], 2);
+    fc.assert(ch.actionForNameMap["action_2"].basicChartGeometry.originX, 428.0, "originX action_2");// 20 + 408
+    fc.assert(ch.actionForNameMap["action_2"].basicChartGeometry.originY, 320.0, "originY action_2");// 320 
 
-    ch.positionActionBar(ch.actionForNameMap["action_3"], 3);
-    fc.assert(ch.actionForNameMap["action_3"].originX, 632.0, "originX action_3");// 20  + 612
-    fc.assert(ch.actionForNameMap["action_3"].originY, 320.0, "originY action_3");// 320 
+    bcg.positionActionBar(ch.actionForNameMap["action_3"], 3);
+    fc.assert(ch.actionForNameMap["action_3"].basicChartGeometry.originX, 632.0, "originX action_3");// 20  + 612
+    fc.assert(ch.actionForNameMap["action_3"].basicChartGeometry.originY, 320.0, "originY action_3");// 320 
     //
     //
     if (chartTesting == "seeSaw") {
@@ -214,19 +216,19 @@ function runChartDataGeometryTests(failureChecker, chartTesting) {
         // DIMENSION TOTAL ACTION BAR
         // width == widthAvailableForRewardBars== 192
         // height == sum of the bars
-        ch.dimensionActionBar(ch.actionForNameMap["action_0"]);
+        bcg.dimensionActionBar(ch.actionForNameMap["action_0"]);
         fc.assert(ch.actionForNameMap["action_0"].height, 40.0, "originHeight action_0");  // Abs((10  -20 + 30) * scallingFactor of 2)
         fc.assert(ch.actionForNameMap["action_0"].width, 164.0, "originWidth action_0");
 
-        ch.dimensionActionBar(ch.actionForNameMap["action_1"]);
+        bcg.dimensionActionBar(ch.actionForNameMap["action_1"]);
         fc.assert(ch.actionForNameMap["action_1"].height, 100.0, "originHeight action_1"); //  Abs((-40 + 50 - 60) * scallingFacotr of 2)
         fc.assert(ch.actionForNameMap["action_1"].width, 164.0, "originWidth action_1");
 
-        ch.dimensionActionBar(ch.actionForNameMap["action_2"]);
+        bcg.dimensionActionBar(ch.actionForNameMap["action_2"]);
         fc.assert(ch.actionForNameMap["action_2"].height, 160.0, "originHeight action_2"); // Abs((70 - 80 + 90) * scallingFacotr of 2)
         fc.assert(ch.actionForNameMap["action_2"].width, 164.0, "originWidth action_2");
 
-        ch.dimensionActionBar(ch.actionForNameMap["action_3"]);
+        bcg.dimensionActionBar(ch.actionForNameMap["action_3"]);
         fc.assert(ch.actionForNameMap["action_3"].height, 220.0, "originHeight action_3");  // Abs((-100 + 110 - 120) * scallingFactor of 2)
         fc.assert(ch.actionForNameMap["action_3"].width, 164.0, "originWidth action_3");
     }
@@ -235,19 +237,19 @@ function runChartDataGeometryTests(failureChecker, chartTesting) {
         // DIMENSION TOTAL ACTION BAR
         // width == widthAvailableForRewardBars== 192
         // height == sum of the bars
-        ch.dimensionActionBar(ch.actionForNameMap["action_0"]);
+        bcg.dimensionActionBar(ch.actionForNameMap["action_0"]);
         fc.assert(ch.actionForNameMap["action_0"].height, 0.0, "originHeight action_0");  // Abs((10  -20 + 30) * scallingFactor of 2)
         fc.assert(ch.actionForNameMap["action_0"].width, 164.0, "originWidth action_0");
 
-        ch.dimensionActionBar(ch.actionForNameMap["action_1"]);
+        bcg.dimensionActionBar(ch.actionForNameMap["action_1"]);
         fc.assert(ch.actionForNameMap["action_1"].height, 73.0, "originHeight action_1"); //  Abs((-40 + 50 - 60) * scallingFacotr of 2)
         fc.assert(ch.actionForNameMap["action_1"].width, 164.0, "originWidth action_1");
 
-        ch.dimensionActionBar(ch.actionForNameMap["action_2"]);
+        bcg.dimensionActionBar(ch.actionForNameMap["action_2"]);
         fc.assert(ch.actionForNameMap["action_2"].height, 175.2, "originHeight action_2"); // Abs((70 - 80 + 90) * scallingFacotr of 2)
         fc.assert(ch.actionForNameMap["action_2"].width, 164.0, "originWidth action_2");
 
-        ch.dimensionActionBar(ch.actionForNameMap["action_3"]);
+        bcg.dimensionActionBar(ch.actionForNameMap["action_3"]);
         fc.assert(ch.actionForNameMap["action_3"].height, 240.9, "originHeight action_3");  // Abs((-100 + 110 - 120) * scallingFactor of 2)
         fc.assert(ch.actionForNameMap["action_3"].width, 164.0, "originWidth action_3");
     }
@@ -256,19 +258,19 @@ function runChartDataGeometryTests(failureChecker, chartTesting) {
         // DIMENSION TOTAL ACTION BAR
         // width == widthAvailableForRewardBars== 192
         // height == sum of the bars
-        ch.dimensionActionBar(ch.actionForNameMap["action_0"]);
+        bcg.dimensionActionBar(ch.actionForNameMap["action_0"]);
         fc.assert(ch.actionForNameMap["action_0"].height, 43.8, "originHeight action_0");  // Abs((10  -20 + 30) * scallingFactor of 2)
         fc.assert(ch.actionForNameMap["action_0"].width, 164.0, "originWidth action_0");
 
-        ch.dimensionActionBar(ch.actionForNameMap["action_1"]);
+        bcg.dimensionActionBar(ch.actionForNameMap["action_1"]);
         fc.assert(ch.actionForNameMap["action_1"].height, 109.5, "originHeight action_1"); //  Abs((-40 + 50 - 60) * scallingFacotr of 2)
         fc.assert(ch.actionForNameMap["action_1"].width, 164.0, "originWidth action_1");
 
-        ch.dimensionActionBar(ch.actionForNameMap["action_2"]);
+        bcg.dimensionActionBar(ch.actionForNameMap["action_2"]);
         fc.assert(ch.actionForNameMap["action_2"].height, 175.2, "originHeight action_2"); // Abs((70 - 80 + 90) * scallingFacotr of 2)
         fc.assert(ch.actionForNameMap["action_2"].width, 164.0, "originWidth action_2");
 
-        ch.dimensionActionBar(ch.actionForNameMap["action_3"]);
+        bcg.dimensionActionBar(ch.actionForNameMap["action_3"]);
         fc.assert(ch.actionForNameMap["action_3"].height, 240.9, "originHeight action_3");  // Abs((-100 + 110 - 120) * scallingFactor of 2)
         fc.assert(ch.actionForNameMap["action_3"].width, 164.0, "originWidth action_3");
     }
@@ -287,7 +289,7 @@ function runChartDataGeometryTests(failureChecker, chartTesting) {
             204 widthAvailableForGroup == canvasWidth / actionCount 
             20 == groupWidthMargin = (widthAvailableForGroup * .2) / 2
         */
-        ch.positionActionLabels(20);
+        bcg.positionActionLabels(20);
 
         fc.assert(ch.actions[0].actionLabelOriginX, 102.0, "actions_0.X");// 20 + 0 * 204 + 82 = 102
         fc.assert(ch.actions[0].actionLabelOriginY, 580.0, "actions_0.Y");//  320 + 120*2 + 20 = 580
@@ -303,7 +305,7 @@ function runChartDataGeometryTests(failureChecker, chartTesting) {
     }
     else if (chartTesting == "allPositives") {
         fc.setCase("action labels positioning allPositives");
-        ch.positionActionLabels(20);
+        bcg.positionActionLabels(20);
 
         fc.assert(ch.actions[0].actionLabelOriginX, 102.0, "actions_0.X");// 20 + 0 * 204 + 82 = 102
         fc.assert(ch.actions[0].actionLabelOriginY, 340.0, "actions_0.Y");//  320 + 0*2 + 20 = 0
@@ -320,7 +322,7 @@ function runChartDataGeometryTests(failureChecker, chartTesting) {
     else if (chartTesting == "allNegatives") {
         fc.setCase("action labels positioning allNegatives");
 
-        ch.positionActionLabels(20);
+        bcg.positionActionLabels(20);
 
         fc.assert(ch.actions[0].actionLabelOriginX, 102.0, "actions_0.X");// 20 + 0 * 204 + 82 = 102
         fc.assert(ch.actions[0].actionLabelOriginY, 580.9, "actions_0.Y");//  320 + 330*.73 + 20 = 580.9
@@ -341,7 +343,7 @@ function runChartDataGeometryTests(failureChecker, chartTesting) {
         // value  i * maxAbsValue / 4
         // pixel distance 
         // assume scaling factor of 2 pixels per 1 value, so value of 120 is 240 pixels
-        ch.positionValueMarkers(4); //give something with maxPosValue and maxNegValue
+        bcg.positionValueMarkers(4); //give something with maxPosValue and maxNegValue
         fc.assert(ch.positiveMarkerValues[0], 30.0, "line 1 value");
         fc.assert(ch.positiveMarkerYPixelsFromXAxis[0], 60.0, "line 1 pixel distance");
         fc.assert(ch.positiveMarkerValues[1], 60.0, "line 2 value");
@@ -354,7 +356,7 @@ function runChartDataGeometryTests(failureChecker, chartTesting) {
     else if (chartTesting == "allPositives") {
         fc.setCase("value markers positioning allPositives");
         //scalingFactor = (canvasHeight / 2) * 0.75 / this.getMaxAbsRewardOrActionValue(); == .72
-        ch.positionValueMarkers(4); //give something with maxPosValue and maxNegValue
+        bcg.positionValueMarkers(4); //give something with maxPosValue and maxNegValue
         fc.assert(ch.positiveMarkerValues[0], 82.0, "line 1 value");
         fc.assert(ch.positiveMarkerYPixelsFromXAxis[0], 59.86, "line 1 pixel distance");
         fc.assert(ch.positiveMarkerValues[1], 164.0, "line 2 value");
@@ -367,7 +369,7 @@ function runChartDataGeometryTests(failureChecker, chartTesting) {
     else if (chartTesting == "allNegatives") {
         fc.setCase("value markers positioning allNegatives");
         //scalingFactor = (canvasHeight / 2) * 0.75 / this.getMaxAbsRewardOrActionValue(); == .72
-        ch.positionValueMarkers(4); //give something with maxPosValue and maxNegValue
+        bcg.positionValueMarkers(4); //give something with maxPosValue and maxNegValue
         fc.assert(ch.positiveMarkerValues[0], 82.0, "line 1 value");
         fc.assert(ch.positiveMarkerYPixelsFromXAxis[0], 59.86, "line 1 pixel distance");
         fc.assert(ch.positiveMarkerValues[1], 164.0, "line 2 value");
@@ -384,33 +386,33 @@ function runChartDataGeometryTests(failureChecker, chartTesting) {
         //scalingFactor = (canvasHeight / 2) * 0.75 / this.getMaxAbsRewardOrActionValue();
         // 60 == lineSpacing = maxAbsoluteValue * scaling factor / 4
         // y = (canvasHeight / 2) + (1 + Number(i)) * linSpacing
-        ch.positionValueLines(4);
-        fc.assert(ch.positiveLineLength, 776.0, "line distance" + ch.positiveLineLength);
-        fc.assert(ch.positiveLineOriginX, 20.0, "line originX");
-        fc.assert(ch.positiveLineOriginY[0], 380.0, "line 0 positionY"); //320 + 60
-        fc.assert(ch.positiveLineOriginY[1], 440.0, "line 1 positionY"); //320 + 120
-        fc.assert(ch.positiveLineOriginY[2], 500.0, "line 2 positionY"); //320 + 180
-        fc.assert(ch.positiveLineOriginY[3], 560.0, "line 3 positionY"); //320 + 240
+        bcg.positionValueLines(4);
+        fc.assert(bcg.positiveLineLength, 776.0, "line distance" + ch.positiveLineLength);
+        fc.assert(bcg.positiveLineOriginX, 20.0, "line originX");
+        fc.assert(bcg.positiveLineOriginY[0], 380.0, "line 0 positionY"); //320 + 60
+        fc.assert(bcg.positiveLineOriginY[1], 440.0, "line 1 positionY"); //320 + 120
+        fc.assert(bcg.positiveLineOriginY[2], 500.0, "line 2 positionY"); //320 + 180
+        fc.assert(bcg.positiveLineOriginY[3], 560.0, "line 3 positionY"); //320 + 240
     }
     else if (chartTesting == "allPositives") {
         fc.setCase("value line positioning allPositives");
-        ch.positionValueLines(4);
-        fc.assert(ch.positiveLineLength, 776.0, "line distance" + ch.positiveLineLength);
-        fc.assert(ch.positiveLineOriginX, 20.0, "line originX");
-        fc.assert(ch.positiveLineOriginY[0], 380.0, "line 0 positionY" + ch.positiveLineOriginY[0]); //320 + 165
-        fc.assert(ch.positiveLineOriginY[1], 440.0, "line 1 positionY"); //320 + 330
-        fc.assert(ch.positiveLineOriginY[2], 500.0, "line 2 positionY"); //320 + 495
-        fc.assert(ch.positiveLineOriginY[3], 560.0, "line 3 positionY"); //320 + 660
+        bcg.positionValueLines(4);
+        fc.assert(bcg.positiveLineLength, 776.0, "line distance" + ch.positiveLineLength);
+        fc.assert(bcg.positiveLineOriginX, 20.0, "line originX");
+        fc.assert(bcg.positiveLineOriginY[0], 380.0, "line 0 positionY" + ch.positiveLineOriginY[0]); //320 + 165
+        fc.assert(bcg.positiveLineOriginY[1], 440.0, "line 1 positionY"); //320 + 330
+        fc.assert(bcg.positiveLineOriginY[2], 500.0, "line 2 positionY"); //320 + 495
+        fc.assert(bcg.positiveLineOriginY[3], 560.0, "line 3 positionY"); //320 + 660
     }
     else if (chartTesting == "allNegatives") {
         fc.setCase("value line positioning allNegatives");
-        ch.positionValueLines(4);
-        fc.assert(ch.positiveLineLength, 776.0, "line distance" + ch.positiveLineLength);
-        fc.assert(ch.positiveLineOriginX, 20.0, "line originX");
-        fc.assert(ch.positiveLineOriginY[0], 380.0, "line 0 positionY"); //320 + 165
-        fc.assert(ch.positiveLineOriginY[1], 440.0, "line 1 positionY"); //320 + 330
-        fc.assert(ch.positiveLineOriginY[2], 500.0, "line 2 positionY"); //320 + 495
-        fc.assert(ch.positiveLineOriginY[3], 560.0, "line 3 positionY"); //320 + 660
+        bcg.positionValueLines(4);
+        fc.assert(bcg.positiveLineLength, 776.0, "line distance" + ch.positiveLineLength);
+        fc.assert(bcg.positiveLineOriginX, 20.0, "line originX");
+        fc.assert(bcg.positiveLineOriginY[0], 380.0, "line 0 positionY"); //320 + 165
+        fc.assert(bcg.positiveLineOriginY[1], 440.0, "line 1 positionY"); //320 + 330
+        fc.assert(bcg.positiveLineOriginY[2], 500.0, "line 2 positionY"); //320 + 495
+        fc.assert(bcg.positiveLineOriginY[3], 560.0, "line 3 positionY"); //320 + 660
     }
 
     if (chartTesting == "seeSaw") {
@@ -418,101 +420,101 @@ function runChartDataGeometryTests(failureChecker, chartTesting) {
         Tooltips will assume sit at 3/4 the height of bar
         tooltipHeight = 50;
         tooltipWidth = 75;
-        ch.toolTip.originX = ch.actionRewardForNameMap["action_i.reward_j"].originX + rewardBarWidth
+        ch.toolTip.originX = rewardForName["action_i.reward_j"].basicChartGeometry.originX + rewardBarWidth
         ch.toolTip.originY = (canvasHeight / 2) - ((ch.rewardBar[i].bars[j].value * scallingFactor) * 0.75)
         */
         fc.setCase("tooltips positioning seeSaw");
-        ch.positionTooltips();
+        bcg.positionTooltips();
 
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].tooltipOriginX, 74.0, "tooltip X aciton_0.reward_0");
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].tooltipOriginY, 305.0, "tooltip Y aciton_0.reward_0"); //320 - 10 * 2 * .75
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].tooltipOriginX, 128.0, "tooltip X aciton_0.reward_1");
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].tooltipOriginY, 350.0, "tooltip Y aciton_0.reward_1"); // 320 - 20 * 2 * .75
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_2"].tooltipOriginX, 182.0, "tooltip X aciton_0.reward_2");
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_2"].tooltipOriginY, 275.0, "tooltip Y aciton_0.reward_2"); // 320 - 30 * 2 * .75
+        fc.assert(rewardForName["action_0.reward_0"].basicChartGeometry.tooltipOriginX, 74.0, "tooltip X aciton_0.reward_0");
+        fc.assert(rewardForName["action_0.reward_0"].basicChartGeometry.tooltipOriginY, 305.0, "tooltip Y aciton_0.reward_0"); //320 - 10 * 2 * .75
+        fc.assert(rewardForName["action_0.reward_1"].basicChartGeometry.tooltipOriginX, 128.0, "tooltip X aciton_0.reward_1");
+        fc.assert(rewardForName["action_0.reward_1"].basicChartGeometry.tooltipOriginY, 350.0, "tooltip Y aciton_0.reward_1"); // 320 - 20 * 2 * .75
+        fc.assert(rewardForName["action_0.reward_2"].basicChartGeometry.tooltipOriginX, 182.0, "tooltip X aciton_0.reward_2");
+        fc.assert(rewardForName["action_0.reward_2"].basicChartGeometry.tooltipOriginY, 275.0, "tooltip Y aciton_0.reward_2"); // 320 - 30 * 2 * .75
 
-        fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].tooltipOriginX, 278.0, "tooltip X aciton_1.reward_0");
-        fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].tooltipOriginY, 380.0, "tooltip Y aciton_1.reward_0"); // 320 - 40 * 2 * .75
+        fc.assert(rewardForName["action_1.reward_0"].basicChartGeometry.tooltipOriginX, 278.0, "tooltip X aciton_1.reward_0");
+        fc.assert(rewardForName["action_1.reward_0"].basicChartGeometry.tooltipOriginY, 380.0, "tooltip Y aciton_1.reward_0"); // 320 - 40 * 2 * .75
 
-        fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].tooltipOriginX, 536.0, "tooltip X aciton_2.reward_1");
-        fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].tooltipOriginY, 440.0, "tooltip Y aciton_2.reward_1");
+        fc.assert(rewardForName["action_2.reward_1"].basicChartGeometry.tooltipOriginX, 536.0, "tooltip X aciton_2.reward_1");
+        fc.assert(rewardForName["action_2.reward_1"].basicChartGeometry.tooltipOriginY, 440.0, "tooltip Y aciton_2.reward_1");
 
-        fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].tooltipOriginX, 794.0, "tooltip X aciton_3.reward_2");
-        fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].tooltipOriginY, 500.0, "tooltip Y aciton_3.reward_2"); // 320 - 120 * 2 * .75
+        fc.assert(rewardForName["action_3.reward_2"].basicChartGeometry.tooltipOriginX, 794.0, "tooltip X aciton_3.reward_2");
+        fc.assert(rewardForName["action_3.reward_2"].basicChartGeometry.tooltipOriginY, 500.0, "tooltip Y aciton_3.reward_2"); // 320 - 120 * 2 * .75
     }
     else if (chartTesting == "allPositives") {
         fc.setCase("tooltips positioning allPositives");
-        ch.positionTooltips();
+        bcg.positionTooltips();
 
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].tooltipOriginX, 74.0, "tooltip X aciton_0.reward_0");
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].tooltipOriginY, 320.0, "tooltip Y aciton_0.reward_0"); //320 - 0 * .73 * .75
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].tooltipOriginX, 128.0, "tooltip X aciton_0.reward_1");
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].tooltipOriginY, 320.0, "tooltip Y aciton_0.reward_1"); // 320 - 0 * .73 * .75
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_2"].tooltipOriginX, 182.0, "tooltip X aciton_0.reward_2");
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_2"].tooltipOriginY, 320.0, "tooltip Y aciton_0.reward_2"); // 320 - 0 * .73 * .75
+        fc.assert(rewardForName["action_0.reward_0"].basicChartGeometry.tooltipOriginX, 74.0, "tooltip X aciton_0.reward_0");
+        fc.assert(rewardForName["action_0.reward_0"].basicChartGeometry.tooltipOriginY, 320.0, "tooltip Y aciton_0.reward_0"); //320 - 0 * .73 * .75
+        fc.assert(rewardForName["action_0.reward_1"].basicChartGeometry.tooltipOriginX, 128.0, "tooltip X aciton_0.reward_1");
+        fc.assert(rewardForName["action_0.reward_1"].basicChartGeometry.tooltipOriginY, 320.0, "tooltip Y aciton_0.reward_1"); // 320 - 0 * .73 * .75
+        fc.assert(rewardForName["action_0.reward_2"].basicChartGeometry.tooltipOriginX, 182.0, "tooltip X aciton_0.reward_2");
+        fc.assert(rewardForName["action_0.reward_2"].basicChartGeometry.tooltipOriginY, 320.0, "tooltip Y aciton_0.reward_2"); // 320 - 0 * .73 * .75
 
-        fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].tooltipOriginX, 278.0, "tooltip X aciton_1.reward_0");
-        fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].tooltipOriginY, 298.1, "tooltip Y aciton_1.reward_0"); // 320 - 40 * .73 * .75
+        fc.assert(rewardForName["action_1.reward_0"].basicChartGeometry.tooltipOriginX, 278.0, "tooltip X aciton_1.reward_0");
+        fc.assert(rewardForName["action_1.reward_0"].basicChartGeometry.tooltipOriginY, 298.1, "tooltip Y aciton_1.reward_0"); // 320 - 40 * .73 * .75
 
-        fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].tooltipOriginX, 536.0, "tooltip X aciton_2.reward_1");
-        fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].tooltipOriginY, 276.2, "tooltip Y aciton_2.reward_1"); // 320 - 80 * .73 * .75
+        fc.assert(rewardForName["action_2.reward_1"].basicChartGeometry.tooltipOriginX, 536.0, "tooltip X aciton_2.reward_1");
+        fc.assert(rewardForName["action_2.reward_1"].basicChartGeometry.tooltipOriginY, 276.2, "tooltip Y aciton_2.reward_1"); // 320 - 80 * .73 * .75
 
-        fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].tooltipOriginX, 794.0, "tooltip X aciton_3.reward_2");
-        fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].tooltipOriginY, 254.3, "tooltip Y aciton_3.reward_2"); // 320 - 120 * .73 * .75
+        fc.assert(rewardForName["action_3.reward_2"].basicChartGeometry.tooltipOriginX, 794.0, "tooltip X aciton_3.reward_2");
+        fc.assert(rewardForName["action_3.reward_2"].basicChartGeometry.tooltipOriginY, 254.3, "tooltip Y aciton_3.reward_2"); // 320 - 120 * .73 * .75
     }
     else if (chartTesting == "allNegatives") {
         fc.setCase("tooltips positioning allNegatives");
-        ch.positionTooltips();
+        bcg.positionTooltips();
 
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].tooltipOriginX, 74.0, "tooltip X aciton_0.reward_0");
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_0"].tooltipOriginY, 325.475, "tooltip Y aciton_0.reward_0"); //320 - -10 * .73 * .75
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].tooltipOriginX, 128.0, "tooltip X aciton_0.reward_1");
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_1"].tooltipOriginY, 330.95, "tooltip Y aciton_0.reward_1"); // 320 - -20 * .73 * .75
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_2"].tooltipOriginX, 182.0, "tooltip X aciton_0.reward_2");
-        fc.assert(ch.actionRewardForNameMap["action_0.reward_2"].tooltipOriginY, 336.425, "tooltip Y aciton_0.reward_2"); // 320 - -30 * .73 * .75
+        fc.assert(rewardForName["action_0.reward_0"].basicChartGeometry.tooltipOriginX, 74.0, "tooltip X aciton_0.reward_0");
+        fc.assert(rewardForName["action_0.reward_0"].basicChartGeometry.tooltipOriginY, 325.475, "tooltip Y aciton_0.reward_0"); //320 - -10 * .73 * .75
+        fc.assert(rewardForName["action_0.reward_1"].basicChartGeometry.tooltipOriginX, 128.0, "tooltip X aciton_0.reward_1");
+        fc.assert(rewardForName["action_0.reward_1"].basicChartGeometry.tooltipOriginY, 330.95, "tooltip Y aciton_0.reward_1"); // 320 - -20 * .73 * .75
+        fc.assert(rewardForName["action_0.reward_2"].basicChartGeometry.tooltipOriginX, 182.0, "tooltip X aciton_0.reward_2");
+        fc.assert(rewardForName["action_0.reward_2"].basicChartGeometry.tooltipOriginY, 336.425, "tooltip Y aciton_0.reward_2"); // 320 - -30 * .73 * .75
 
-        fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].tooltipOriginX, 278.0, "tooltip X aciton_1.reward_0");
-        fc.assert(ch.actionRewardForNameMap["action_1.reward_0"].tooltipOriginY, 341.9, "tooltip Y aciton_1.reward_0"); // 320 - -40 * .73 * .75
+        fc.assert(rewardForName["action_1.reward_0"].basicChartGeometry.tooltipOriginX, 278.0, "tooltip X aciton_1.reward_0");
+        fc.assert(rewardForName["action_1.reward_0"].basicChartGeometry.tooltipOriginY, 341.9, "tooltip Y aciton_1.reward_0"); // 320 - -40 * .73 * .75
 
-        fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].tooltipOriginX, 536.0, "tooltip X aciton_2.reward_1");
-        fc.assert(ch.actionRewardForNameMap["action_2.reward_1"].tooltipOriginY, 363.8, "tooltip Y aciton_2.reward_1"); // 320 - -80 * .73 * .75
+        fc.assert(rewardForName["action_2.reward_1"].basicChartGeometry.tooltipOriginX, 536.0, "tooltip X aciton_2.reward_1");
+        fc.assert(rewardForName["action_2.reward_1"].basicChartGeometry.tooltipOriginY, 363.8, "tooltip Y aciton_2.reward_1"); // 320 - -80 * .73 * .75
 
-        fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].tooltipOriginX, 794.0, "tooltip X aciton_3.reward_2");
-        fc.assert(ch.actionRewardForNameMap["action_3.reward_2"].tooltipOriginY, 385.7, "tooltip Y aciton_3.reward_2"); // 320 - -120 * .73 * .75
+        fc.assert(rewardForName["action_3.reward_2"].basicChartGeometry.tooltipOriginX, 794.0, "tooltip X aciton_3.reward_2");
+        fc.assert(rewardForName["action_3.reward_2"].basicChartGeometry.tooltipOriginY, 385.7, "tooltip Y aciton_3.reward_2"); // 320 - -120 * .73 * .75
     }
 
     fc.setCase("xAxisLine positioning");
     // xAxisLength = width - 2 * groupWidthMargin
     // xAxisOriginX = groupWidthMargin;
     // xAxisOriginY = height / 2
-    ch.positionXAxisLine();
-    fc.assert(ch.xAxisOriginX, 20.0, "xAxisOriginX");
-    fc.assert(ch.xAxisOriginY, 320.0, "xAxisOriginY");
-    fc.assert(ch.xAxisLength, 776.0, "xAxisLength");
+    bcg.positionXAxisLine();
+    fc.assert(bcg.xAxisOriginX, 20.0, "xAxisOriginX");
+    fc.assert(bcg.xAxisOriginY, 320.0, "xAxisOriginY");
+    fc.assert(bcg.xAxisLength, 776.0, "xAxisLength");
 
     if (chartTesting == "seeSaw") {
         fc.setCase("yAxisLine positioning");
         // yAxisLength = maxAbsRewardValue * 2 * scalingFactor + aBitMore
         // yAxisOriginX = groupWidthMargin;
         // yAxisOriginY = (canvasHeight - yAxisLength) / 2
-        ch.positionYAxisLine();
-        fc.assert(ch.yAxisOriginX, 20.0, "yAxisOriginX");
-        fc.assert(ch.yAxisOriginY, 75.0, "yAxisOriginY");
-        fc.assert(ch.yAxisLength, 490.0, "yAxisLength");
+        bcg.positionYAxisLine();
+        fc.assert(bcg.yAxisOriginX, 20.0, "yAxisOriginX");
+        fc.assert(bcg.yAxisOriginY, 75.0, "yAxisOriginY");
+        fc.assert(bcg.yAxisLength, 490.0, "yAxisLength");
     }
     else if (chartTesting == "allPositives") {
         fc.setCase("yAxisLine positioning");
-        ch.positionYAxisLine();
-        fc.assert(ch.yAxisOriginX, 20.0, "yAxisOriginX");
-        fc.assert(ch.yAxisOriginY, 74.1, "yAxisOriginY");
-        fc.assert(ch.yAxisLength, 491.8, "yAxisLength");
+        bcg.positionYAxisLine();
+        fc.assert(bcg.yAxisOriginX, 20.0, "yAxisOriginX");
+        fc.assert(bcg.yAxisOriginY, 74.1, "yAxisOriginY");
+        fc.assert(bcg.yAxisLength, 491.8, "yAxisLength");
     }
     else if (chartTesting == "allNegatives") {
         fc.setCase("yAxisLine positioning");
-        ch.positionYAxisLine();
-        fc.assert(ch.yAxisOriginX, 20.0, "yAxisOriginX");
-        fc.assert(ch.yAxisOriginY, 74.1, "yAxisOriginY");
-        fc.assert(ch.yAxisLength, 491.8, "yAxisLength");
+        bcg.positionYAxisLine();
+        fc.assert(bcg.yAxisOriginX, 20.0, "yAxisOriginX");
+        fc.assert(bcg.yAxisOriginY, 74.1, "yAxisOriginY");
+        fc.assert(bcg.yAxisLength, 491.8, "yAxisLength");
     }
 
     fc.setCase("isPointInBox");
@@ -530,97 +532,97 @@ function runChartDataGeometryTests(failureChecker, chartTesting) {
 
     if (chartTesting == "seeSaw") {
         fc.setCase("bar click/mouse move detection seeSaw");
-        fc.assert(ch.getActionBarNameForCoordinates(25, 310), "action_0.reward_0", "hit action_0.reward_0");
-        fc.assert(ch.getActionBarNameForCoordinates(80, 330), "action_0.reward_1", "hit action_0.reward_1");
-        fc.assert(ch.getActionBarNameForCoordinates(130, 310), "action_0.reward_2", "hit action_0.reward_2");
+        fc.assert(bcg.getActionBarNameForCoordinates(25, 310), "action_0.reward_0", "hit action_0.reward_0");
+        fc.assert(bcg.getActionBarNameForCoordinates(80, 330), "action_0.reward_1", "hit action_0.reward_1");
+        fc.assert(bcg.getActionBarNameForCoordinates(130, 310), "action_0.reward_2", "hit action_0.reward_2");
 
-        fc.assert(ch.getActionBarNameForCoordinates(230, 340), "action_1.reward_0", "hit action_1.reward_0");
+        fc.assert(bcg.getActionBarNameForCoordinates(230, 340), "action_1.reward_0", "hit action_1.reward_0");
 
-        fc.assert(ch.getActionBarNameForCoordinates(500, 360), "action_2.reward_1", "hit action_2.reward_1"); // -80 * 2
+        fc.assert(bcg.getActionBarNameForCoordinates(500, 360), "action_2.reward_1", "hit action_2.reward_1"); // -80 * 2
 
-        fc.assert(ch.getActionBarNameForCoordinates(760, 380), "action_3.reward_2", "hit action_3.reward_2"); // -120 * 2
+        fc.assert(bcg.getActionBarNameForCoordinates(760, 380), "action_3.reward_2", "hit action_3.reward_2"); // -120 * 2
 
         // far miss
-        fc.assert(ch.getActionBarNameForCoordinates(1, 1), "None", "miss upper left corner");
-        fc.assert(ch.getActionBarNameForCoordinates(800, 630), "None", "miss lower right corner");
+        fc.assert(bcg.getActionBarNameForCoordinates(1, 1), "None", "miss upper left corner");
+        fc.assert(bcg.getActionBarNameForCoordinates(800, 630), "None", "miss lower right corner");
 
         //close miss
-        fc.assert(ch.getActionBarNameForCoordinates(19, 310), "None", "close miss ");
+        fc.assert(bcg.getActionBarNameForCoordinates(19, 310), "None", "close miss ");
 
         //hit corner
-        fc.assert(ch.getActionBarNameForCoordinates(20, 300), "action_0.reward_0", "hit corner");// canvasHeight/2 - smallestBarHeight * scalingFactor (i.e. 10*2)
+        fc.assert(bcg.getActionBarNameForCoordinates(20, 300), "action_0.reward_0", "hit corner");// canvasHeight/2 - smallestBarHeight * scalingFactor (i.e. 10*2)
     }
     else if (chartTesting == "allPositives") {
         fc.setCase("bar click/mouse move detection allPositives");
-        fc.assert(ch.getActionBarNameForCoordinates(25, 320), "action_0.reward_0", "hit action_0.reward_0");
-        fc.assert(ch.getActionBarNameForCoordinates(80, 320), "action_0.reward_1", "hit action_0.reward_1");
-        fc.assert(ch.getActionBarNameForCoordinates(130, 320), "action_0.reward_2", "hit action_0.reward_2");
+        fc.assert(bcg.getActionBarNameForCoordinates(25, 320), "action_0.reward_0", "hit action_0.reward_0");
+        fc.assert(bcg.getActionBarNameForCoordinates(80, 320), "action_0.reward_1", "hit action_0.reward_1");
+        fc.assert(bcg.getActionBarNameForCoordinates(130, 320), "action_0.reward_2", "hit action_0.reward_2");
 
-        fc.assert(ch.getActionBarNameForCoordinates(230, 290.8), "action_1.reward_0", "hit action_1.reward_0");
+        fc.assert(bcg.getActionBarNameForCoordinates(230, 290.8), "action_1.reward_0", "hit action_1.reward_0");
 
-        fc.assert(ch.getActionBarNameForCoordinates(500, 261.6), "action_2.reward_1", "hit action_2.reward_1"); // -80 * 2
+        fc.assert(bcg.getActionBarNameForCoordinates(500, 261.6), "action_2.reward_1", "hit action_2.reward_1"); // -80 * 2
 
-        fc.assert(ch.getActionBarNameForCoordinates(760, 232.4), "action_3.reward_2", "hit action_3.reward_2"); // -120 * 2
+        fc.assert(bcg.getActionBarNameForCoordinates(760, 232.4), "action_3.reward_2", "hit action_3.reward_2"); // -120 * 2
 
         // far miss
-        fc.assert(ch.getActionBarNameForCoordinates(1, 1), "None", "miss upper left corner");
-        fc.assert(ch.getActionBarNameForCoordinates(800, 630), "None", "miss lower right corner");
+        fc.assert(bcg.getActionBarNameForCoordinates(1, 1), "None", "miss upper left corner");
+        fc.assert(bcg.getActionBarNameForCoordinates(800, 630), "None", "miss lower right corner");
 
         //close miss
-        fc.assert(ch.getActionBarNameForCoordinates(19, 310), "None", "close miss ");
+        fc.assert(bcg.getActionBarNameForCoordinates(19, 310), "None", "close miss ");
 
         //hit corner
-        fc.assert(ch.getActionBarNameForCoordinates(20, 320), "action_0.reward_0", "hit corner");// canvasHeight/2 - smallestBarHeight * scalingFactor (i.e. 10*2)
+        fc.assert(bcg.getActionBarNameForCoordinates(20, 320), "action_0.reward_0", "hit corner");// canvasHeight/2 - smallestBarHeight * scalingFactor (i.e. 10*2)
     }
     else if (chartTesting == "allNegatives") {
         fc.setCase("bar click/mouse move detection allNegatives");
-        fc.assert(ch.getActionBarNameForCoordinates(25, 327.3), "action_0.reward_0", "hit action_0.reward_0");
-        fc.assert(ch.getActionBarNameForCoordinates(80, 334.6), "action_0.reward_1", "hit action_0.reward_1");
-        fc.assert(ch.getActionBarNameForCoordinates(130, 341.9), "action_0.reward_2", "hit action_0.reward_2");
+        fc.assert(bcg.getActionBarNameForCoordinates(25, 327.3), "action_0.reward_0", "hit action_0.reward_0");
+        fc.assert(bcg.getActionBarNameForCoordinates(80, 334.6), "action_0.reward_1", "hit action_0.reward_1");
+        fc.assert(bcg.getActionBarNameForCoordinates(130, 341.9), "action_0.reward_2", "hit action_0.reward_2");
 
-        fc.assert(ch.getActionBarNameForCoordinates(230, 349.2), "action_1.reward_0", "hit action_1.reward_0");
+        fc.assert(bcg.getActionBarNameForCoordinates(230, 349.2), "action_1.reward_0", "hit action_1.reward_0");
 
-        fc.assert(ch.getActionBarNameForCoordinates(500, 378.4), "action_2.reward_1", "hit action_2.reward_1"); // -80 * 2
+        fc.assert(bcg.getActionBarNameForCoordinates(500, 378.4), "action_2.reward_1", "hit action_2.reward_1"); // -80 * 2
 
-        fc.assert(ch.getActionBarNameForCoordinates(760, 407.6), "action_3.reward_2", "hit action_3.reward_2"); // -120 * 2
+        fc.assert(bcg.getActionBarNameForCoordinates(760, 407.6), "action_3.reward_2", "hit action_3.reward_2"); // -120 * 2
 
         // far miss
-        fc.assert(ch.getActionBarNameForCoordinates(1, 1), "None", "miss upper left corner");
-        fc.assert(ch.getActionBarNameForCoordinates(800, 630), "None", "miss lower right corner");
+        fc.assert(bcg.getActionBarNameForCoordinates(1, 1), "None", "miss upper left corner");
+        fc.assert(bcg.getActionBarNameForCoordinates(800, 630), "None", "miss lower right corner");
 
         //close miss
-        fc.assert(ch.getActionBarNameForCoordinates(19, 310), "None", "close miss ");
+        fc.assert(bcg.getActionBarNameForCoordinates(19, 310), "None", "close miss ");
 
         //hit corner
-        fc.assert(ch.getActionBarNameForCoordinates(20, 320), "action_0.reward_0", "hit corner");// canvasHeight/2 - smallestBarHeight * scalingFactor (i.e. 10*2)
+        fc.assert(bcg.getActionBarNameForCoordinates(20, 320), "action_0.reward_0", "hit corner");// canvasHeight/2 - smallestBarHeight * scalingFactor (i.e. 10*2)
     }
 
     if (chartTesting == "seeSaw") {
         fc.setCase("position Action Separators seeSaw");
-        ch.positionActionSeparatorLines();
-        fc.assert(ch.actionLinesOriginX[0], 204.0, "actionLineOriginX 0");
-        fc.assert(ch.actionLinesOriginX[1], 408.0, "actionLineOriginX 1");
-        fc.assert(ch.actionLinesOriginX[2], 612.0, "actionLineOriginX 2");
-        fc.assert(ch.actionLinesOriginY, 75.0, "actionLineOriginY");
-        fc.assert(ch.actionLinesLength, 490.0, "actionLineLength");
+        bcg.positionActionSeparatorLines();
+        fc.assert(bcg.actionLinesOriginX[0], 204.0, "actionLineOriginX 0");
+        fc.assert(bcg.actionLinesOriginX[1], 408.0, "actionLineOriginX 1");
+        fc.assert(bcg.actionLinesOriginX[2], 612.0, "actionLineOriginX 2");
+        fc.assert(bcg.actionLinesOriginY, 75.0, "actionLineOriginY");
+        fc.assert(bcg.actionLinesLength, 490.0, "actionLineLength");
     }
     else if (chartTesting == "allPositives") {
         fc.setCase("position Action Separators allPositives");
-        ch.positionActionSeparatorLines();
-        fc.assert(ch.actionLinesOriginX[0], 204.0, "actionLineOriginX 0");
-        fc.assert(ch.actionLinesOriginX[1], 408.0, "actionLineOriginX 1");
-        fc.assert(ch.actionLinesOriginX[2], 612.0, "actionLineOriginX 2");
-        fc.assert(ch.actionLinesOriginY, 74.1, "actionLineOriginY");
-        fc.assert(ch.actionLinesLength, 491.0, "actionLineLength");
+        bcg.positionActionSeparatorLines();
+        fc.assert(bcg.actionLinesOriginX[0], 204.0, "actionLineOriginX 0");
+        fc.assert(bcg.actionLinesOriginX[1], 408.0, "actionLineOriginX 1");
+        fc.assert(bcg.actionLinesOriginX[2], 612.0, "actionLineOriginX 2");
+        fc.assert(bcg.actionLinesOriginY, 74.1, "actionLineOriginY");
+        fc.assert(bcg.actionLinesLength, 491.0, "actionLineLength");
     }
     else if (chartTesting == "allNegatives") {
         fc.setCase("position Action Separators allNegatives");
-        ch.positionActionSeparatorLines();
-        fc.assert(ch.actionLinesOriginX[0], 204.0, "actionLineOriginX 0");
-        fc.assert(ch.actionLinesOriginX[1], 408.0, "actionLineOriginX 1");
-        fc.assert(ch.actionLinesOriginX[2], 612.0, "actionLineOriginX 2");
-        fc.assert(ch.actionLinesOriginY, 74.1, "actionLineOriginY");
-        fc.assert(ch.actionLinesLength, 491.0, "actionLineLength");
+        bcg.positionActionSeparatorLines();
+        fc.assert(bcg.actionLinesOriginX[0], 204.0, "actionLineOriginX 0");
+        fc.assert(bcg.actionLinesOriginX[1], 408.0, "actionLineOriginX 1");
+        fc.assert(bcg.actionLinesOriginX[2], 612.0, "actionLineOriginX 2");
+        fc.assert(bcg.actionLinesOriginY, 74.1, "actionLineOriginY");
+        fc.assert(bcg.actionLinesLength, 491.0, "actionLineLength");
     }
 
     /*

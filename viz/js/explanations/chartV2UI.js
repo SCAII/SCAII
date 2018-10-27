@@ -35,7 +35,7 @@ function getBasicChartUI() {
     ui.backgroundColor = "#eeeeee";
     ui.renderChart = function(chartData, treatment, canvasHeight, canvasWidth){
         //specify dimensions
-        chartData.initChartDimensions(canvasHeight, canvasWidth, 0.5, 0.0);
+        chartData.basicChartGeometry.initChartDimensions(canvasHeight, canvasWidth, 0.5, 0.0);
         // create canvas
         chartCanvas = document.createElement("canvas");
         chartCanvas.setAttribute("width", canvasWidth);
@@ -138,19 +138,19 @@ function getBasicChartUI() {
         
 
         this.renderActionSeparatorLines(chartCanvas, chartData);
-        this.renderChartValueLabels(chartCanvas, chartData, 4);
-        this.renderChartValueLines(chartCanvas, chartData, 4);
-        this.renderZeroValueLabel(chartCanvas, chartData);
+        this.renderChartValueLabels(chartCanvas, chartData.basicChartGeometry, 4);
+        this.renderChartValueLines(chartCanvas, chartData.basicChartGeometry, 4);
+        this.renderZeroValueLabel(chartCanvas, chartData.basicChartGeometry);
         
         this.renderActionBars(chartCanvas, chartData);
         this.renderBars(chartCanvas,chartData, treatment);
-        this.renderXAxis(chartCanvas, chartData);
-		this.renderYAxis(chartCanvas, chartData);
+        this.renderXAxis(chartCanvas, chartData.basicChartGeometry);
+		this.renderYAxis(chartCanvas, chartData.basicChartGeometry);
 
 		this.renderActionNames(chartCanvas, chartData);
 		this.renderLegend(chartData);
-		this.renderLegendTitle(chartCanvas, chartData);
-        this.renderTitle(chartCanvas, chartData);
+		this.renderLegendTitle();
+        this.renderTitle(chartCanvas, chartData.basicChartGeometry);
         this.rewardBarTooltipManager = getRewardBarTooltipManager(chartCanvas,chartData);
 	}
 
@@ -167,9 +167,9 @@ function getBasicChartUI() {
             chartData.clearRewardBarSelections();
             chartData.selectSingleRewardBar(rewardBarName);
             if (treatment == "T3" || treatment== "NA") {
-                chartData.clearHighlightSelections();
+                chartData.clearHighlightSelections(); // FIXME?  need to be different for diff charts?
                 var trueRewardBarName = rewardBarName.split(".")[1];
-                chartData.highlightSimilarRewardBars(trueRewardBarName);
+                chartData.highlightSimilarRewardBars(trueRewardBarName); // FIXME?  need to be different for diff charts?
             }
             this.renderBars(chartCanvas, chartData, treatment);
             var bar = chartData.actionRewardForNameMap[rewardBarName];
@@ -180,16 +180,17 @@ function getBasicChartUI() {
         }
     }
 
-    ui.renderTitle = function (canvas, chartData) {
-		// NOTE: There are no tests for rendering the title
+    ui.renderTitle = function (canvas, basicChartGeometry) {
+        // NOTE: There are no tests for rendering the title
+        var bcg = basicChartGeometry;
 		var ctx = canvas.getContext("2d");
 		ctx.save();
 		ctx.fillStyle = "black";
 		ctx.font = "bold 20px Arial";
-		ctx.fillText(" ", chartData.canvasWidth / 2 - chartData.groupWidthMargin, chartData.canvasHeight * .07);
+		ctx.fillText(" ", bcg.canvasWidth / 2 - bcg.groupWidthMargin, bcg.canvasHeight * .07);
 		ctx.restore();
 	}
-    ui.renderLegendTitle = function (canvas, chartData) {
+    ui.renderLegendTitle = function () {
 		var titleElement = document.getElementById("legend-title");
 		var titleContent = document.createTextNode("The agent predicts that, by the end of the game, it will get:");
 		titleElement.appendChild(titleContent);
@@ -247,63 +248,66 @@ function getBasicChartUI() {
 		var ctx = canvas.getContext("2d");
 		for (var i in chartData.actions) {
 			var bar = chartData.actions[i];
-			chartData.positionActionBar(bar, i);
-			chartData.dimensionActionBar(bar);
+			chartData.basicChartGeometry.positionActionBar(bar, i);
+			chartData.basicChartGeometry.dimensionActionBar(bar);
 			this.renderBar(ctx, bar, "normal");
 		}
 	}
 
 
 	ui.renderActionNames = function (canvas, chartData) {
-		chartData.positionActionLabels(30);
+        var bcg = chartData.basicChartGeometry;
+		bcg.positionActionLabels(30);
 		var ctx = canvas.getContext("2d");
 		for (var i = 0; i < chartData.actions.length; i++) {
             ctx.save();
             ctx.fillStyle = "black";
 			ctx.font = "bold 15px Arial";
-			ctx.fillText(chartData.actionNames[i], chartData.actions[i].actionLabelOriginX - chartData.groupWidthMargin, chartData.actions[i].actionLabelOriginY)
+			ctx.fillText(chartData.actionNames[i], chartData.actions[i].actionLabelOriginX - bcg.groupWidthMargin, chartData.actions[i].actionLabelOriginY)
             ctx.restore();
 		}
 	}
 	
-	ui.renderZeroValueLabel = function (canvas, chartData) {
+	ui.renderZeroValueLabel = function (canvas, basicChartGeometry) {
 		// NOTE: there is no test for the zero value label
 		var ctx = canvas.getContext("2d");
 		ctx.save();
 		ctx.fillStyle = "black";
 		ctx.font = "bold 10px Arial";
-		ctx.fillText(0, chartData.groupWidthMargin - 25, chartData.canvasHeight / 2);
+		ctx.fillText(0, basicChartGeometry.groupWidthMargin - 25, basicChartGeometry.canvasHeight / 2);
 		ctx.restore();
 	}
 
-	ui.renderChartValueLabels = function (canvas, chartData, numberOfLines) {
-		chartData.positionValueMarkers(numberOfLines);
+	ui.renderChartValueLabels = function (canvas, basicChartGeometry, numberOfLines) {
+        var bcg = basicChartGeometry;
+		bcg.positionValueMarkers(numberOfLines);
 		var ctx = canvas.getContext("2d");
 		for (var i = 0; i < numberOfLines; i++) {
             ctx.save();
             ctx.fillStyle = "black";
             ctx.font = "bold 10px Arial";
-			ctx.fillText(chartData.positiveMarkerValues[i], chartData.groupWidthMargin - 25, chartData.canvasHeight / 2 - Number(chartData.positiveMarkerYPixelsFromXAxis[i]));
-			ctx.fillText(-chartData.positiveMarkerValues[i], chartData.groupWidthMargin - 25, chartData.canvasHeight / 2 + Number(chartData.positiveMarkerYPixelsFromXAxis[i]));
+			ctx.fillText(bcg.positiveMarkerValues[i], bcg.groupWidthMargin - 25, bcg.canvasHeight / 2 - Number(bcg.positiveMarkerYPixelsFromXAxis[i]));
+			ctx.fillText(-bcg.positiveMarkerValues[i], bcg.groupWidthMargin - 25, bcg.canvasHeight / 2 + Number(bcg.positiveMarkerYPixelsFromXAxis[i]));
             ctx.restore();
 		}
 	}
 
 
-	ui.renderChartValueLines = function (canvas, chartData, numberOfLines) {
-		chartData.positionValueLines(numberOfLines);
+	ui.renderChartValueLines = function (canvas, basicChartGeometry, numberOfLines) {
+        var bcg = basicChartGeometry;
+		bcg.positionValueLines(numberOfLines);
 		var ctx = canvas.getContext("2d");
 		for (var i = 0; i < numberOfLines; i++) {
 			ctx.save();
 			ctx.strokeStyle = "grey";
 			ctx.beginPath();
-			ctx.moveTo(chartData.positiveLineOriginX, chartData.positiveLineOriginY[i]);
-			ctx.lineTo(Number(chartData.positiveLineOriginX) + Number(chartData.positiveLineLength), chartData.positiveLineOriginY[i]);
+			ctx.moveTo(bcg.positiveLineOriginX, bcg.positiveLineOriginY[i]);
+			ctx.lineTo(Number(bcg.positiveLineOriginX) + Number(bcg.positiveLineLength), bcg.positiveLineOriginY[i]);
 			ctx.stroke();
 			ctx.closePath();
 			ctx.beginPath();
-			ctx.moveTo(chartData.positiveLineOriginX, chartData.canvasHeight / 2 - chartData.positiveMarkerYPixelsFromXAxis[i]);
-			ctx.lineTo(Number(chartData.positiveLineOriginX) + Number(chartData.positiveLineLength), chartData.canvasHeight / 2 - chartData.positiveMarkerYPixelsFromXAxis[i]);
+			ctx.moveTo(bcg.positiveLineOriginX, bcg.canvasHeight / 2 - bcg.positiveMarkerYPixelsFromXAxis[i]);
+			ctx.lineTo(Number(bcg.positiveLineOriginX) + Number(bcg.positiveLineLength), bcg.canvasHeight / 2 - bcg.positiveMarkerYPixelsFromXAxis[i]);
 			ctx.stroke()
 			ctx.closePath();
 			ctx.restore();
@@ -311,43 +315,46 @@ function getBasicChartUI() {
 	}
 
 	ui.renderActionSeparatorLines = function (canvas, chartData) {
-		chartData.positionActionSeparatorLines();
+        var bcg = chartData.basicChartGeometry;
+		bcg.positionActionSeparatorLines();
 		var ctx = canvas.getContext("2d");
 		for (var i = 0; i < chartData.actions.length - 1; i++) {
 			ctx.save();
 			ctx.strokeStyle = "red";
 			ctx.beginPath();
 			ctx.setLineDash([5, 15]);
-			ctx.moveTo(chartData.actionLinesOriginX[i], chartData.actionLinesOriginY);
-			ctx.lineTo(chartData.actionLinesOriginX[i], Number(chartData.actionLinesOriginY) + Number(chartData.actionLinesLength));
+			ctx.moveTo(bcg.actionLinesOriginX[i], bcg.actionLinesOriginY);
+			ctx.lineTo(bcg.actionLinesOriginX[i], Number(bcg.actionLinesOriginY) + Number(bcg.actionLinesLength));
 			ctx.stroke();
 			ctx.restore();
 		}
 	}
 
-	ui.renderXAxis = function (canvas, chartData) {
-		chartData.positionXAxisLine();
+	ui.renderXAxis = function (canvas, basicChartGeometry) {
+        var bcg = basicChartGeometry;
+		bcg.positionXAxisLine();
 		var ctx = canvas.getContext("2d");
 		ctx.save();
 		ctx.strokeStyle = "black";
 		ctx.lineWidth = 1;
 		ctx.beginPath();
-		ctx.moveTo(chartData.xAxisOriginX, chartData.xAxisOriginY);
-		ctx.lineTo(Number(chartData.xAxisOriginX) + Number(chartData.xAxisLength), chartData.xAxisOriginY);
+		ctx.moveTo(bcg.xAxisOriginX, bcg.xAxisOriginY);
+		ctx.lineTo(Number(bcg.xAxisOriginX) + Number(bcg.xAxisLength), bcg.xAxisOriginY);
 		ctx.closePath();
 		ctx.stroke();
 		ctx.restore();
 	}
 
-	ui.renderYAxis = function (canvas, chartData) {
-		chartData.positionYAxisLine();
+	ui.renderYAxis = function (canvas, basicChartGeometry) {
+        var bcg = basicChartGeometry;
+		bcg.positionYAxisLine();
 		var ctx = canvas.getContext("2d");
 		ctx.save();
 		ctx.strokeStyle = "black";
 		ctx.lineWidth = 1;
 		ctx.beginPath();
-		ctx.moveTo(chartData.yAxisOriginX, chartData.yAxisOriginY);
-		ctx.lineTo(chartData.yAxisOriginX, Number(chartData.yAxisOriginY) + Number(chartData.yAxisLength));
+		ctx.moveTo(bcg.yAxisOriginX, bcg.yAxisOriginY);
+		ctx.lineTo(bcg.yAxisOriginX, Number(bcg.yAxisOriginY) + Number(bcg.yAxisLength));
 		ctx.closePath();
 		ctx.stroke();
 		ctx.restore();
@@ -388,8 +395,8 @@ function getBasicChartUI() {
 			var action = chartData.actions[i];
 			for (var j=0; j<chartData.rewardNames.length; j++) {
 				var bar = action.bars[j];
-				chartData.positionRewardBar(bar, i, j);
-				chartData.dimensionRewardBar(bar);
+				chartData.basicChartGeometry.positionRewardBar(bar, i, j);
+				chartData.basicChartGeometry.dimensionRewardBar(bar);
 				if (bar.selected == true) {
 					var saveSelected = bar;
 				} else if (bar.highlight == true) {
@@ -413,9 +420,10 @@ function getBasicChartUI() {
 	}	
 	ui.renderBar = function (ctx, bar, mode) {
 		// originY is always on the x axis
-		ctx.save();
-		var x0 = bar.originX;
-		var y0 = bar.originY;
+        ctx.save();
+        var barBcg = bar.basicChartGeometry;
+		var x0 = barBcg.originX;
+		var y0 = barBcg.originY;
 
 		var upperLeftOriginX = x0;
 		var upperLeftOriginY = undefined;
@@ -426,73 +434,73 @@ function getBasicChartUI() {
 			upperLeftOriginY = y0;
 		}	
 		ctx.beginPath();
-
+        
 		if (mode == "outlineT3") {
-			ctx.clearRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+			ctx.clearRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
 			ctx.lineWidth = shape_outline_width;
 			ctx.strokeStyle = "white";
-			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
 
 			var rgbaBarColor = hexToRgbA(bar.color);
 			ctx.fillStyle = rgbaBarColor + " 0.7)";
-			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
 
 			var pattern = this.renderPattern(bar.color);
 			ctx.fillStyle = ctx.createPattern(pattern, 'repeat');
-			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bbarBcgar.width, barBcg.height);
 	
 		} else if (mode == "outlineBlue") {
             var adjustedBarHeight = 0;
             if (bar.value > 0) {
                 upperLeftOriginOutline = upperLeftOriginY - 3;
-                heightOutline = bar.height + 3;
+                heightOutline = barBcg.height + 3;
             }
             else {
                 upperLeftOriginOutline = upperLeftOriginY;
-                heightOutline = bar.height + 3;
+                heightOutline = barBcg.height + 3;
             }	
-			ctx.clearRect(upperLeftOriginX - 3, upperLeftOriginOutline, bar.width + 6, heightOutline);
+			ctx.clearRect(upperLeftOriginX - 3, upperLeftOriginOutline, barBcg.width + 6, heightOutline);
             ctx.strokeStyle = "blue";
-			ctx.strokeRect(upperLeftOriginX - 3, upperLeftOriginOutline, bar.width + 6, heightOutline);
+			ctx.strokeRect(upperLeftOriginX - 3, upperLeftOriginOutline, barBcg.width + 6, heightOutline);
 
 			var rgbaBarColor = hexToRgbA(bar.color);
 			ctx.fillStyle = rgbaBarColor + " 0.7)";
-			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
 
 			var pattern = this.renderPattern(bar.color);
 			ctx.fillStyle = ctx.createPattern(pattern, 'repeat');
-			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
 	
         } else if (mode == "outline") {
-			ctx.clearRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+			ctx.clearRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
 			ctx.lineWidth = shape_outline_width;
 			ctx.strokeStyle = "white";
-			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
 		
 			ctx.fillStyle = bar.color;
-			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
 		} else if (mode == "gradient") {
-			ctx.clearRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+			ctx.clearRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
 			ctx.lineWidth = shape_outline_width;
 			ctx.strokeStyle = bar.color;
 
-			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
 
 			var rgbaBarColor = hexToRgbA(bar.color);
 			ctx.fillStyle = rgbaBarColor + " 0.7)";
-			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
 
 			var pattern = this.renderPattern(bar.color);
 			ctx.fillStyle = ctx.createPattern(pattern, 'repeat');
-			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
 		} else {
 			ctx.lineWidth = shape_outline_width;
 			ctx.strokeStyle = bar.color;
 
-			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
 
 			ctx.fillStyle = bar.color;
-			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bar.width, bar.height);
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
 		}
 		ctx.restore();
 	}

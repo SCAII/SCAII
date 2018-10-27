@@ -1,201 +1,202 @@
 
-function addGeometryFunctions(rawChartData) {
-    var rd = rawChartData;
+function addBasicChartGeometryFunctions(chartData) {
+    chartData.basicChartGeometry = {};
+    var basicCG = chartData.basicChartGeometry;
 
     //added variables here
-    rd.canvasHeight                 = undefined;
-    rd.canvasWidth                  = undefined;
-    rd.scalingFactor                = undefined;
-    rd.widthAvailableForGroup       = undefined;
-    rd.groupWidthMargin             = undefined;
-    rd.widthAvailableForRewardBars  = undefined;
-    rd.widthAvailableForRewardBar   = undefined;
-    rd.rewardSpacerWidth            = undefined;
-    rd.rewardBarWidth               = undefined;
-    rd.xAxisOriginX                 = undefined;
-    rd.xAxisOriginY                 = undefined;
-    rd.xAxisLength                  = undefined;
-    rd.yAxisOriginX                 = undefined;
-    rd.yAxisOriginY                 = undefined;
-    rd.yAxisLength                  = undefined;
-    rd.actionLinesOriginX           = [];
-    rd.actionLinesOriginY           = undefined;
-    rd.actionLineLength             = undefined;
-    rd.positiveLineOriginY          = [];
-    rd.positiveLineLength           = undefined;
-    rd.positiveLineOriginX          = undefined;
-    rd.positiveMarkerValues         = [];
-    rd.positiveMarkerYPixelsFromXAxis   = [];
-    for (var i in rd.actions) {
-        rd.actions[i].actionLabelOriginX    = undefined;
+    basicCG.canvasHeight                 = undefined;
+    basicCG.canvasWidth                  = undefined;
+    basicCG.scalingFactor                = undefined;
+    basicCG.widthAvailableForGroup       = undefined;
+    basicCG.groupWidthMargin             = undefined;
+    basicCG.widthAvailableForRewardBars  = undefined;
+    basicCG.widthAvailableForRewardBar   = undefined;
+    basicCG.rewardSpacerWidth            = undefined;
+    basicCG.rewardBarWidth               = undefined;
+    basicCG.xAxisOriginX                 = undefined;
+    basicCG.xAxisOriginY                 = undefined;
+    basicCG.xAxisLength                  = undefined;
+    basicCG.yAxisOriginX                 = undefined;
+    basicCG.yAxisOriginY                 = undefined;
+    basicCG.yAxisLength                  = undefined;
+    basicCG.actionLinesOriginX           = [];
+    basicCG.actionLinesOriginY           = undefined;
+    basicCG.actionLineLength             = undefined;
+    basicCG.positiveLineOriginY          = [];
+    basicCG.positiveLineLength           = undefined;
+    basicCG.positiveLineOriginX          = undefined;
+    basicCG.positiveMarkerValues         = [];
+    basicCG.positiveMarkerYPixelsFromXAxis   = [];
+    // for (var i in chartData.actions) {
+    //     chartData.actions[i].basicChartGeometry.actionLabelOriginX    = undefined;
+    // }
+
+    basicCG.initChartDimensions = function (canvasHeight, canvasWidth, groupWidthMarginFactor, rewardSpacerWidth) {
+        basicCG.rewardSpacerWidth = rewardSpacerWidth;
+        basicCG.canvasHeight = canvasHeight;
+        basicCG.canvasWidth = canvasWidth;
+        basicCG.widthAvailableForGroup = Math.floor(basicCG.canvasWidth / chartData.actions.length);
+        basicCG.groupWidthMargin = Math.floor((basicCG.widthAvailableForGroup * groupWidthMarginFactor) / 2);
+        basicCG.widthAvailableForRewardBars = Math.floor(basicCG.widthAvailableForGroup - 2 * basicCG.groupWidthMargin);
+        basicCG.widthAvailableForRewardBar = Math.floor(basicCG.widthAvailableForRewardBars / chartData.rewardNames.length);
+        basicCG.rewardBarWidth = Math.floor(basicCG.widthAvailableForRewardBar - 2 * rewardSpacerWidth);
+        basicCG.scalingFactor = ((canvasHeight / 2) * 0.75 / chartData.getMaxAbsRewardOrActionValue()).toFixed(2);
     }
 
-    rd.initChartDimensions = function (canvasHeight, canvasWidth, groupWidthMarginFactor, rewardSpacerWidth) {
-        this.rewardSpacerWidth = rewardSpacerWidth;
-        this.canvasHeight = canvasHeight;
-        this.canvasWidth = canvasWidth;
-        this.widthAvailableForGroup = Math.floor(this.canvasWidth / this.actions.length);
-        this.groupWidthMargin = Math.floor((this.widthAvailableForGroup * groupWidthMarginFactor) / 2);
-        this.widthAvailableForRewardBars = Math.floor(this.widthAvailableForGroup - 2 * this.groupWidthMargin);
-        this.widthAvailableForRewardBar = Math.floor(this.widthAvailableForRewardBars / this.rewardNames.length);
-        this.rewardBarWidth = Math.floor(this.widthAvailableForRewardBar - 2 * rewardSpacerWidth);
-        this.scalingFactor = ((canvasHeight / 2) * 0.75 / this.getMaxAbsRewardOrActionValue()).toFixed(2);
-    }
-
-    rd.positionActionSeparatorLines = function() {
+    basicCG.positionActionSeparatorLines = function() {
         // acitonLinesLength = maxAbsRewardValue * 2 * scalingFactor + aBitMore
         // actionLinesOriginX
         // actionLinesOriginY = (canvasHeight - yAxisLength) / 2
-        this.actionLinesLength = Math.floor(this.getMaxAbsRewardOrActionValue() * 2 * this.scalingFactor + 10);
-        var actionLineBasedOffYAxis = this.getMaxAbsRewardOrActionValue() * 2 * this.scalingFactor + 10;
-        this.actionLinesOriginY = (this.canvasHeight - actionLineBasedOffYAxis) / 2;
-        for (var i = 1; i < this.actions.length; i++) {
-            this.actionLinesOriginX.push(this.widthAvailableForGroup * i);
+        basicCG.actionLinesLength = Math.floor(chartData.getMaxAbsRewardOrActionValue() * 2 * basicCG.scalingFactor + 10);
+        var actionLineBasedOffYAxis = chartData.getMaxAbsRewardOrActionValue() * 2 * basicCG.scalingFactor + 10;
+        basicCG.actionLinesOriginY = (basicCG.canvasHeight - actionLineBasedOffYAxis) / 2;
+        for (var i = 1; i < chartData.actions.length; i++) {
+            basicCG.actionLinesOriginX.push(basicCG.widthAvailableForGroup * i);
         }
     }
 
-    rd.positionXAxisLine = function(){
+    basicCG.positionXAxisLine = function(){
         // xAxisLength = width - 2 * groupWidthMargin
         // xAxisOriginX = groupWidthMargin;
         // xAxisOriginY = height / 2
-        this.xAxisLength = this.canvasWidth - 2 * this.groupWidthMargin;
-        this.xAxisOriginY = this.canvasHeight / 2;
-        this.xAxisOriginX = this.groupWidthMargin;
+        basicCG.xAxisLength = basicCG.canvasWidth - 2 * basicCG.groupWidthMargin;
+        basicCG.xAxisOriginY = basicCG.canvasHeight / 2;
+        basicCG.xAxisOriginX = basicCG.groupWidthMargin;
     }
 
-    rd.positionYAxisLine = function(){
+    basicCG.positionYAxisLine = function(){
         // yAxisLength = maxAbsRewardValue * 2 * scalingFactor + aBitMore
         // yAxisOriginX = groupWidthMargin;
         // yAxisOriginY = (canvasHeight - yAxisLength) / 2
-        this.yAxisLength = this.getMaxAbsRewardOrActionValue() * 2 * this.scalingFactor + 10;
-        this.yAxisOriginY = (this.canvasHeight - this.yAxisLength) / 2;
-        this.yAxisOriginX = this.groupWidthMargin;
+        basicCG.yAxisLength = chartData.getMaxAbsRewardOrActionValue() * 2 * basicCG.scalingFactor + 10;
+        basicCG.yAxisOriginY = (basicCG.canvasHeight - basicCG.yAxisLength) / 2;
+        basicCG.yAxisOriginX = basicCG.groupWidthMargin;
     }
 
-    rd.positionRewardBar = function (rewardBar, actionIndex, rewardIndex) {
+    basicCG.positionRewardBar = function (rewardBar, actionIndex, rewardIndex) {
         //what is passed: ch.actionRewardForNameMap["action_0.reward_0"] & action number
         //204 widthAvailableForGroup == canvasWidth / actionCount 
         //groupWidthMargin = (widthAvailableForGroup * .2) / 2
         //bar.originX = i*widthAvailableForGroup + groupWidthMargin + j *(rewardBarWidth)
         //bar.originY = canvasHeight/2 ==> constant 320.0
-        rewardBar.originX = Math.floor(actionIndex * this.widthAvailableForGroup + this.groupWidthMargin + rewardIndex * this.rewardBarWidth);
-        rewardBar.originY = this.canvasHeight / 2;
+        rewardBar.basicChartGeometry.originX = Math.floor(actionIndex * basicCG.widthAvailableForGroup + basicCG.groupWidthMargin + rewardIndex * basicCG.rewardBarWidth);//FIXME? add basicChartGeometry object
+        rewardBar.basicChartGeometry.originY = basicCG.canvasHeight / 2;
     }
 
-    rd.dimensionRewardBar = function (rewardBar) {
+    basicCG.dimensionRewardBar = function (rewardBar) {
         //ch.actionRewardForNameMap["action_0.reward_0"]
         //widthAvailableForRewardBars = widthAvailableForGroup - 2 * groupWidthMargin
         //widthAvailableForRewardBar = widthAvailableForRewardBars / rewardBarCount
-        rewardBar.height = Math.abs(rewardBar.value * this.scalingFactor);
-        rewardBar.width = this.rewardBarWidth;
+        rewardBar.basicChartGeometry.height = Math.abs(rewardBar.value * basicCG.scalingFactor);
+        rewardBar.basicChartGeometry.width = basicCG.rewardBarWidth;
     }
 
-    rd.positionActionBar = function (actionBar, action) {
+    basicCG.positionActionBar = function (actionBar, action) {
         //ch.actionForNameMap["action_0"]
     	// x coord == groupWidthmargin + i * (widthAvailableForGroup)
     	// y coord == the axis location == canvas_height / 2
-        actionBar.originX = this.groupWidthMargin + action * this.widthAvailableForGroup;
-        actionBar.originY = this.canvasHeight / 2;
+        actionBar.basicChartGeometry.originX = basicCG.groupWidthMargin + action * basicCG.widthAvailableForGroup; 
+        actionBar.basicChartGeometry.originY = basicCG.canvasHeight / 2;
     }
 
 
-    rd.dimensionActionBar = function (actionBar) {
+    basicCG.dimensionActionBar = function (actionBar) {
         //ch.actionForNameMap["action_0"]
         var total = 0;
         for (var i in actionBar.bars) {
             total += actionBar.bars[i].value;
         }
-        actionBar.height = Math.abs(total * this.scalingFactor);
-        actionBar.width = this.widthAvailableForRewardBars;
-        actionBar.value = total;
+        actionBar.basicChartGeometry.height = Math.abs(total * basicCG.scalingFactor);
+        actionBar.basicChartGeometry.width = basicCG.widthAvailableForRewardBars;
+        actionBar.value = total;//FIXME? is actionBar value same in basic and other views (if even in other views)?
     }
 
-    rd.positionActionLabels = function(minDistanceFromBarOrAxis) {
-        var maxAbsValNegReward = this.getMaxAbsValNegativeReward();
-        var maxAbsValNegativeAction = this.getMaxAbsValNegativeAction();
+    basicCG.positionActionLabels = function(minDistanceFromBarOrAxis) {
+        var maxAbsValNegReward = chartData.getMaxAbsValNegativeReward();
+        var maxAbsValNegativeAction = chartData.getMaxAbsValNegativeAction();
         var maxAbsValNegBar = Math.max(maxAbsValNegReward, maxAbsValNegativeAction);
         var actionLabelY = undefined;
         if (maxAbsValNegBar == undefined){
-            actionLabelY = this.canvasHeight / 2 + minDistanceFromBarOrAxis;
+            actionLabelY = basicCG.canvasHeight / 2 + minDistanceFromBarOrAxis;
         }
         else if (maxAbsValNegBar < minDistanceFromBarOrAxis){
-            actionLabelY = this.canvasHeight / 2 + minDistanceFromBarOrAxis;
+            actionLabelY = basicCG.canvasHeight / 2 + minDistanceFromBarOrAxis;
         }
         else {
-            actionLabelY = this.canvasHeight / 2 + maxAbsValNegBar * this.scalingFactor + minDistanceFromBarOrAxis;
+            actionLabelY = basicCG.canvasHeight / 2 + maxAbsValNegBar * basicCG.scalingFactor + minDistanceFromBarOrAxis;
         }
-        for (var i in this.actions){
-            var action = this.actions[i];
+        for (var i in chartData.actions){
+            var action = chartData.actions[i];
             //groupWidthMargin + i * widthAvailableForGroup +  widthAvailableForRewardBars / 2
-            action.actionLabelOriginX = this.groupWidthMargin + Number(i)* this.widthAvailableForGroup + this.widthAvailableForRewardBars / 2;
-            action.actionLabelOriginY = actionLabelY;
+            action.basicChartGeometry.actionLabelOriginX = basicCG.groupWidthMargin + Number(i)* basicCG.widthAvailableForGroup + basicCG.widthAvailableForRewardBars / 2;
+            action.basicChartGeometry.actionLabelOriginY = actionLabelY;//FIXME? is action same as actionBar and thus only one instance of basicChartGeometry
         }
     }
 
-    rd.positionValueMarkers = function (numberOfLines) {
-        this.positiveMarkerValues = [numberOfLines];
-        this.positiveMarkerYPixelsFromXAxis = [numberOfLines];
-        var valueMarkers = Math.floor(this.getMaxAbsRewardOrActionValue() / numberOfLines);
+    basicCG.positionValueMarkers = function (numberOfLines) {
+        basicCG.positiveMarkerValues = [numberOfLines];
+        basicCG.positiveMarkerYPixelsFromXAxis = [numberOfLines];
+        var valueMarkers = Math.floor(chartData.getMaxAbsRewardOrActionValue() / numberOfLines);
         var setValue = valueMarkers;
         for (var i=0; i < numberOfLines; i++) {
-            this.positiveMarkerValues[i] = setValue;
-            this.positiveMarkerYPixelsFromXAxis[i] = (setValue * this.scalingFactor).toFixed(2);
+            basicCG.positiveMarkerValues[i] = setValue;
+            basicCG.positiveMarkerYPixelsFromXAxis[i] = (setValue * basicCG.scalingFactor).toFixed(2);
             setValue += valueMarkers;
         }
     }
 
-    rd.positionValueLines = function (numberOfLines) {
-        var length = this.canvasWidth - this.groupWidthMargin * 2;
-        this.positiveLine = [numberOfLines];
-        var lineSpacing = Math.floor(this.getMaxAbsRewardOrActionValue() / numberOfLines * this.scalingFactor);
-        this.positiveLineLength = this.canvasWidth - 2 * this.groupWidthMargin;
-        this.positiveLineOriginX = this.groupWidthMargin;
+    basicCG.positionValueLines = function (numberOfLines) {
+        basicCG.positiveLine = [numberOfLines];
+        var lineSpacing = Math.floor(chartData.getMaxAbsRewardOrActionValue() / numberOfLines * basicCG.scalingFactor);
+        basicCG.positiveLineLength = basicCG.canvasWidth - 2 * basicCG.groupWidthMargin;
+        basicCG.positiveLineOriginX = basicCG.groupWidthMargin;
         for (var i = 0; i < numberOfLines; i++) {
-            this.positiveLine[i] = {};
-            this.positiveLineOriginY[i] = ((this.canvasHeight / 2) + (1 + Number(i)) * lineSpacing).toFixed(2);
+            basicCG.positiveLine[i] = {};
+            basicCG.positiveLineOriginY[i] = ((basicCG.canvasHeight / 2) + (1 + Number(i)) * lineSpacing).toFixed(2);
         }
     }
-    rd.positionTooltips = function(){
-        for (var i in this.actionRewardNames) {
-            var actionRewardName = this.actionRewardNames[i];
-            var rewardBar = this.actionRewardForNameMap[actionRewardName];
+    basicCG.positionTooltips = function(){
+        for (var i in chartData.actionRewardNames) {
+            var actionRewardName = chartData.actionRewardNames[i];
+            var rewardBar = chartData.actionRewardForNameMap[actionRewardName];
             //originX + rewardBarWidth
 
-            rewardBar.tooltipOriginX = rewardBar.originX + this.rewardBarWidth;
+            rewardBar.basicChartGeometry.tooltipOriginX = rewardBar.basicChartGeometry.originX + basicCG.rewardBarWidth;
             // (canvasHeight / 2) - ((ch.rewardBar[i].bars[j].value * scalingFactor) * 0.75)
-            rewardBar.tooltipOriginY = this.canvasHeight/2 - rewardBar.value * this.scalingFactor * 0.75; 
+            rewardBar.basicChartGeometry.tooltipOriginY = basicCG.canvasHeight/2 - rewardBar.value * basicCG.scalingFactor * 0.75; 
         }
     }
-    rd.positionValueTooltips = function() {
-        for (var i in this.actionRewardNames) {
-            var actionRewardName = this.actionRewardNames[i];
-            var rewardBar = this.actionRewardForNameMap[actionRewardName];
+    basicCG.positionValueTooltips = function() {
+        for (var i in chartData.actionRewardNames) {
+            var actionRewardName = chartData.actionRewardNames[i];
+            var rewardBar = chartData.actionRewardForNameMap[actionRewardName];
 
 
-            rewardBar.tooltipOriginX = rewardBar.originX - Number(this.rewardBarWidth / 2);
+            rewardBar.tooltipOriginX = rewardBar.originX - Number(basicCG.rewardBarWidth / 2);
             // (canvasHeight / 2) - ((ch.rewardBar[i].bars[j].value * scalingFactor) * 0.75)
             if (rewardBar.value >= 0) {
-                rewardBar.tooltipOriginY = this.canvasHeight/2 - (rewardBar.value + 30) * this.scalingFactor; 
+                rewardBar.basicChartGeometry.tooltipOriginY = basicCG.canvasHeight/2 - (rewardBar.value + 30) * basicCG.scalingFactor; //FIXME? rewardBar.value
             } else {
-                rewardBar.tooltipOriginY = this.canvasHeight/2 - (rewardBar.value) * this.scalingFactor; 
-            }
+                rewardBar.basicChartGeometry.tooltipOriginY = basicCG.canvasHeight/2 - (rewardBar.value) * basicCG.scalingFactor; //FIXME? rewardBar.value
+            }// FIXME?  rewardBar.basicChartGeometry.tooltipOriginY set in both positionValueTooltips and positionTooltips - error or dead code?
         }
     }
-    rd.getActionBarNameForCoordinates = function(x,y) {
-        for (var i in this.actionRewardNames){
-            var barName = this.actionRewardNames[i];
-            var bar = this.actionRewardForNameMap[barName];
+    basicCG.getActionBarNameForCoordinates = function(x,y) {
+        for (var i in chartData.actionRewardNames){
+            var barName = chartData.actionRewardNames[i];
+            var bar = chartData.actionRewardForNameMap[barName];
             var isHeightNegative = true;
-            if (bar.value > 0){
+            if (bar.value > 0){//FIXME? rewardBar.value
                 isHeightNegative = false;
             }
-            if (this.isPointInsideBox(x, y, bar.originX, bar.originY, bar.width, bar.height, isHeightNegative)){
+            var barCg = bar.basicChartGeometry;
+            if (chartData.isPointInsideBox(x, y, barCg.originX, barCg.originY, barCg.width, barCg.height, isHeightNegative)){ //FIXME? where is isPointInsideBox
                 return bar.fullName;
             }
         }
         return "None";
     }
-    rd.isPointInsideBox = function(x, y, originX, originY, width, height, isHeightNegative){
+    chartData.isPointInsideBox = function(x, y, originX, originY, width, height, isHeightNegative){
         if (x < originX || x > originX + width){
             return false;
         }
@@ -221,5 +222,5 @@ function addGeometryFunctions(rawChartData) {
         }
         return true;
     }
-    return rd;
+    return chartData;
 }

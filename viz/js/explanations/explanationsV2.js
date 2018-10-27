@@ -60,13 +60,13 @@ function renderWhyButton(step, x, y){
     })
 }
 function addFunctionsToRawChart(rawChart){
-    var ch = addColorToBars(rawChart);
-    ch = addUtilityFunctions(ch);
+    var ch = addColorToBars(rawChart); // not different versions
+    ch = addUtilityFunctions(ch); // not different
     ch.actions = ch.getActionsInQuadrantOrder(ch.actions);
-    ch = addRankingFunctions(ch);
-    ch = addSelectionFunctions(ch);
-    ch = addTextFunctions(ch);
-    ch = addGeometryFunctions(ch);
+    ch = addRankingFunctions(ch); // not different
+    ch = addSelectionFunctions(ch); // not different
+    ch = addTextFunctions(ch); // would be different but might not be used?
+    ch = addBasicChartGeometryFunctions(ch); // DIFFERENT
     return ch;
 }
 
@@ -96,6 +96,9 @@ function addConvenienceDataStructures(chartData) {
             action.type = "action";
             chartData.actionForNameMap[actionName] = action;
             chartData.actionNames.push(actionName);
+            action.basicChartGeometry = {};
+            action.msxChartGeometry = {};
+            action.advChartGeometry = {};
         }
     }
     
@@ -109,6 +112,9 @@ function addConvenienceDataStructures(chartData) {
                 if (bar.name == "Living") {
                     //Do nothing
                 } else {
+                    bar.basicChartGeometry = {};
+                    bar.msxChartGeometry = {};
+                    bar.advChartGeometry = {};
                     bar.fullName = action.name+ "." + bar.name;
                     bar.type = "reward";
                     bar.actionName = action.name;
@@ -212,7 +218,8 @@ function getExplanationsV2Manager(){
     cm.setChartData = function(rawChartData, step){
         var cachedChartData = this.chartDataForStep[step];
         if (cachedChartData == undefined) {
-            this.data = addFunctionsToRawChart(rawChartData);
+            this.data = rawChartData;
+            this.data = addFunctionsToRawChart(this.data);
             this.data = ensureActionValuesSet(this.data);
             this.data = addConvenienceDataStructures(this.data);
             this.data = setDefaultSelections(this.data, this.treatmentID);

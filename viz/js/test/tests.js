@@ -53,7 +53,7 @@ function runTests(){
         } else {
             chartTesting = "allNegatives";
         }
-        runChartDataGeometryTests(fc, chartTesting);
+        runBasicChartGeometryTests(fc, chartTesting);
         
         runMsxChartDataColorTests(fc, chartTesting);
         runMsxRankingTests(fc, chartTesting);
