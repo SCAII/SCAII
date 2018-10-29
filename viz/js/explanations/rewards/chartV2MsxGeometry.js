@@ -52,6 +52,14 @@ function addMsxGeometryFunctions(chartData) {
             rewardBar.originY = msxCG.canvasHeight / 2;
 
         }
+
+    msxCG.dimensionRewardBar = function (rewardBar) {
+        //ch.actionRewardForNameMap["action_0.reward_0"]
+        //widthAvailableForRewardBars = widthAvailableForGroup - 2 * groupWidthMargin
+        //widthAvailableForRewardBar = widthAvailableForRewardBars / rewardBarCount
+        rewardBar.msxChartGeometry.height = Math.abs(rewardBar.value * msxCG.scalingFactor);
+        rewardBar.msxChartGeometry.width = msxCG.rewardBarWidth;
+    }
     
     msxCG.positionMsxActionLabels = function(minDistanceFromBarOrAxis) {
         var maxAbsValNegBar = chartData.getMaxAbsValNegativeReward();

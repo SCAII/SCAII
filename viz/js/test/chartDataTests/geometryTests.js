@@ -195,20 +195,20 @@ function runBasicChartGeometryTests(failureChecker, chartTesting) {
     // y coord == the axis location == canvas_height / 2
     fc.setCase("action bar positioning");
     bcg.positionActionBar(ch.actionForNameMap["action_0"], 0);
-    fc.assert(ch.actionForNameMap["action_0"].basicChartGeometry.originX, 20.0, "originX action_0");// 20  + 0
-    fc.assert(ch.actionForNameMap["action_0"].basicChartGeometry.originY, 320.0, "originY action_0");// 320 
+    fc.assert(ch.actionForNameMap["action_0"].originX, 20.0, "originX action_0");// 20  + 0
+    fc.assert(ch.actionForNameMap["action_0"].originY, 320.0, "originY action_0");// 320 
 
     bcg.positionActionBar(ch.actionForNameMap["action_1"], 1);
-    fc.assert(ch.actionForNameMap["action_1"].basicChartGeometry.originX, 224.0, "originX action_1");// 20  + 204
-    fc.assert(ch.actionForNameMap["action_1"].basicChartGeometry.originY, 320.0, "originY action_1");// 320 
+    fc.assert(ch.actionForNameMap["action_1"].originX, 224.0, "originX action_1");// 20  + 204
+    fc.assert(ch.actionForNameMap["action_1"].originY, 320.0, "originY action_1");// 320 
 
     bcg.positionActionBar(ch.actionForNameMap["action_2"], 2);
-    fc.assert(ch.actionForNameMap["action_2"].basicChartGeometry.originX, 428.0, "originX action_2");// 20 + 408
-    fc.assert(ch.actionForNameMap["action_2"].basicChartGeometry.originY, 320.0, "originY action_2");// 320 
+    fc.assert(ch.actionForNameMap["action_2"].originX, 428.0, "originX action_2");// 20 + 408
+    fc.assert(ch.actionForNameMap["action_2"].originY, 320.0, "originY action_2");// 320 
 
     bcg.positionActionBar(ch.actionForNameMap["action_3"], 3);
-    fc.assert(ch.actionForNameMap["action_3"].basicChartGeometry.originX, 632.0, "originX action_3");// 20  + 612
-    fc.assert(ch.actionForNameMap["action_3"].basicChartGeometry.originY, 320.0, "originY action_3");// 320 
+    fc.assert(ch.actionForNameMap["action_3"].originX, 632.0, "originX action_3");// 20  + 612
+    fc.assert(ch.actionForNameMap["action_3"].originY, 320.0, "originY action_3");// 320 
     //
     //
     if (chartTesting == "seeSaw") {
@@ -387,7 +387,7 @@ function runBasicChartGeometryTests(failureChecker, chartTesting) {
         // 60 == lineSpacing = maxAbsoluteValue * scaling factor / 4
         // y = (canvasHeight / 2) + (1 + Number(i)) * linSpacing
         bcg.positionValueLines(4);
-        fc.assert(bcg.positiveLineLength, 776.0, "line distance" + ch.positiveLineLength);
+        fc.assert(bcg.positiveLineLength, 776.0, "line distance" + bcg.positiveLineLength);
         fc.assert(bcg.positiveLineOriginX, 20.0, "line originX");
         fc.assert(bcg.positiveLineOriginY[0], 380.0, "line 0 positionY"); //320 + 60
         fc.assert(bcg.positiveLineOriginY[1], 440.0, "line 1 positionY"); //320 + 120
@@ -397,9 +397,9 @@ function runBasicChartGeometryTests(failureChecker, chartTesting) {
     else if (chartTesting == "allPositives") {
         fc.setCase("value line positioning allPositives");
         bcg.positionValueLines(4);
-        fc.assert(bcg.positiveLineLength, 776.0, "line distance" + ch.positiveLineLength);
+        fc.assert(bcg.positiveLineLength, 776.0, "line distance" + bcg.positiveLineLength);
         fc.assert(bcg.positiveLineOriginX, 20.0, "line originX");
-        fc.assert(bcg.positiveLineOriginY[0], 380.0, "line 0 positionY" + ch.positiveLineOriginY[0]); //320 + 165
+        fc.assert(bcg.positiveLineOriginY[0], 380.0, "line 0 positionY" + bcg.positiveLineOriginY[0]); //320 + 165
         fc.assert(bcg.positiveLineOriginY[1], 440.0, "line 1 positionY"); //320 + 330
         fc.assert(bcg.positiveLineOriginY[2], 500.0, "line 2 positionY"); //320 + 495
         fc.assert(bcg.positiveLineOriginY[3], 560.0, "line 3 positionY"); //320 + 660
@@ -407,7 +407,7 @@ function runBasicChartGeometryTests(failureChecker, chartTesting) {
     else if (chartTesting == "allNegatives") {
         fc.setCase("value line positioning allNegatives");
         bcg.positionValueLines(4);
-        fc.assert(bcg.positiveLineLength, 776.0, "line distance" + ch.positiveLineLength);
+        fc.assert(bcg.positiveLineLength, 776.0, "line distance" + bcg.positiveLineLength);
         fc.assert(bcg.positiveLineOriginX, 20.0, "line originX");
         fc.assert(bcg.positiveLineOriginY[0], 380.0, "line 0 positionY"); //320 + 165
         fc.assert(bcg.positiveLineOriginY[1], 440.0, "line 1 positionY"); //320 + 330

@@ -67,6 +67,7 @@ function addFunctionsToRawChart(rawChart){
     ch = addSelectionFunctions(ch); // not different
     ch = addTextFunctions(ch); // would be different but might not be used?
     ch = addBasicChartGeometryFunctions(ch); // DIFFERENT
+    ch = addMsxGeometryFunctions(ch); //EVAN - adding to get dimension bar to work- 10/29/18 
     return ch;
 }
 
