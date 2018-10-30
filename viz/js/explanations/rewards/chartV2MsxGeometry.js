@@ -45,11 +45,11 @@ function addMsxGeometryFunctions(chartData) {
             //bar.originY = canvasHeight/2 ==> constant 320.0
 
             if (maxValueAction == true) {
-                rewardBar.originX = Math.floor((msxCG.groupWidthMargin * 2) + (rewardIndex * msxCG.rewardBarWidth));
+                rewardBar.msxChartGeometry.originX = Math.floor((msxCG.groupWidthMargin * 2) + (rewardIndex * msxCG.rewardBarWidth));
             } else {
-                rewardBar.originX = Math.floor(msxCG.widthAvailableForGroup + msxCG.groupWidthMargin + (rewardIndex * msxCG.rewardBarWidth));
+                rewardBar.msxChartGeometry.originX = Math.floor(msxCG.widthAvailableForGroup + msxCG.groupWidthMargin + (rewardIndex * msxCG.rewardBarWidth));
             }
-            rewardBar.originY = msxCG.canvasHeight / 2;
+            rewardBar.msxChartGeometry.originY = msxCG.canvasHeight / 2;
 
         }
 
@@ -78,11 +78,11 @@ function addMsxGeometryFunctions(chartData) {
             //X = (groupWidthMargin*2) + (widthAvailableForGroup / 2) **For picked best action**
             //X = widthAvailableForGroup + (groupWidthMargin*2) + (widthAvailableForGroup / 2) **For all other actions**
             if (action.msxMaxValueAction) {
-                action.actionLabelOriginX = (msxCG.groupWidthMargin*2) + (msxCG.widthAvailableForGroup / 2);
+                action.msxChartGeometry.actionLabelOriginX = (msxCG.groupWidthMargin*2) + (msxCG.widthAvailableForGroup / 2);
             } else {
-                action.actionLabelOriginX = msxCG.widthAvailableForGroup + (msxCG.groupWidthMargin*2) + (msxCG.widthAvailableForGroup / 2);
+                action.msxChartGeometry.actionLabelOriginX = msxCG.widthAvailableForGroup + (msxCG.groupWidthMargin*2) + (msxCG.widthAvailableForGroup / 2);
             }
-            action.actionLabelOriginY = actionLabelY;
+            action.msxChartGeometry.actionLabelOriginY = actionLabelY;
         }
 
     }
