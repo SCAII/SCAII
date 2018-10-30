@@ -95,8 +95,8 @@ function addBasicChartGeometryFunctions(chartData) {
         //ch.actionForNameMap["action_0"]
     	// x coord == groupWidthmargin + i * (widthAvailableForGroup)
     	// y coord == the axis location == canvas_height / 2
-        actionBar.basicChartGeometry.originX = basicCG.groupWidthMargin + action * basicCG.widthAvailableForGroup; 
-        actionBar.basicChartGeometry.originY = basicCG.canvasHeight / 2;
+        actionBar.originX = basicCG.groupWidthMargin + action * basicCG.widthAvailableForGroup; 
+        actionBar.originY = basicCG.canvasHeight / 2;
     }
 
 
@@ -106,8 +106,8 @@ function addBasicChartGeometryFunctions(chartData) {
         for (var i in actionBar.bars) {
             total += actionBar.bars[i].value;
         }
-        actionBar.basicChartGeometry.height = Math.abs(total * basicCG.scalingFactor);
-        actionBar.basicChartGeometry.width = basicCG.widthAvailableForRewardBars;
+        actionBar.height = Math.abs(total * basicCG.scalingFactor);
+        actionBar.width = basicCG.widthAvailableForRewardBars;
         actionBar.value = total;//FIXME? is actionBar value same in basic and other views (if even in other views)?
     }
 

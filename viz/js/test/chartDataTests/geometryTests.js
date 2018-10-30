@@ -291,50 +291,50 @@ function runBasicChartGeometryTests(failureChecker, chartTesting) {
         */
         bcg.positionActionLabels(20);
 
-        fc.assert(ch.actions[0].actionLabelOriginX, 102.0, "actions_0.X");// 20 + 0 * 204 + 82 = 102
-        fc.assert(ch.actions[0].actionLabelOriginY, 580.0, "actions_0.Y");//  320 + 120*2 + 20 = 580
+        fc.assert(ch.actions[0].basicChartGeometry.actionLabelOriginX, 102.0, "actions_0.X");// 20 + 0 * 204 + 82 = 102
+        fc.assert(ch.actions[0].basicChartGeometry.actionLabelOriginY, 580.0, "actions_0.Y");//  320 + 120*2 + 20 = 580
 
-        fc.assert(ch.actions[1].actionLabelOriginX, 306.0, "actions_1.X");//20 + 1 * 204 + 82 = 306
-        fc.assert(ch.actions[1].actionLabelOriginY, 580.0, "actions_1.Y");
+        fc.assert(ch.actions[1].basicChartGeometry.actionLabelOriginX, 306.0, "actions_1.X");//20 + 1 * 204 + 82 = 306
+        fc.assert(ch.actions[1].basicChartGeometry.actionLabelOriginY, 580.0, "actions_1.Y");
 
-        fc.assert(ch.actions[2].actionLabelOriginX, 510.0, "actions_2.X");//20 + 2 * 204 + 82 = 510
-        fc.assert(ch.actions[2].actionLabelOriginY, 580.0, "actions_2.Y");
+        fc.assert(ch.actions[2].basicChartGeometry.actionLabelOriginX, 510.0, "actions_2.X");//20 + 2 * 204 + 82 = 510
+        fc.assert(ch.actions[2].basicChartGeometry.actionLabelOriginY, 580.0, "actions_2.Y");
 
-        fc.assert(ch.actions[3].actionLabelOriginX, 714.0, "actions_3.X");//20 + 3 * 204 + 82 = 714
-        fc.assert(ch.actions[3].actionLabelOriginY, 580.0, "actions_3.Y");
+        fc.assert(ch.actions[3].basicChartGeometry.actionLabelOriginX, 714.0, "actions_3.X");//20 + 3 * 204 + 82 = 714
+        fc.assert(ch.actions[3].basicChartGeometry.actionLabelOriginY, 580.0, "actions_3.Y");
     }
     else if (chartTesting == "allPositives") {
         fc.setCase("action labels positioning allPositives");
         bcg.positionActionLabels(20);
 
-        fc.assert(ch.actions[0].actionLabelOriginX, 102.0, "actions_0.X");// 20 + 0 * 204 + 82 = 102
-        fc.assert(ch.actions[0].actionLabelOriginY, 340.0, "actions_0.Y");//  320 + 0*2 + 20 = 0
+        fc.assert(ch.actions[0].basicChartGeometry.actionLabelOriginX, 102.0, "actions_0.X");// 20 + 0 * 204 + 82 = 102
+        fc.assert(ch.actions[0].basicChartGeometry.actionLabelOriginY, 340.0, "actions_0.Y");//  320 + 0*2 + 20 = 0
 
-        fc.assert(ch.actions[1].actionLabelOriginX, 306.0, "actions_1.X");//20 + 1 * 204 + 82 = 306
-        fc.assert(ch.actions[1].actionLabelOriginY, 340.0, "actions_1.Y");
+        fc.assert(ch.actions[1].basicChartGeometry.actionLabelOriginX, 306.0, "actions_1.X");//20 + 1 * 204 + 82 = 306
+        fc.assert(ch.actions[1].basicChartGeometry.actionLabelOriginY, 340.0, "actions_1.Y");
 
-        fc.assert(ch.actions[2].actionLabelOriginX, 510.0, "actions_2.X");//20 + 2 * 204 + 82 = 510
-        fc.assert(ch.actions[2].actionLabelOriginY, 340.0, "actions_2.Y");
+        fc.assert(ch.actions[2].basicChartGeometry.actionLabelOriginX, 510.0, "actions_2.X");//20 + 2 * 204 + 82 = 510
+        fc.assert(ch.actions[2].basicChartGeometry.actionLabelOriginY, 340.0, "actions_2.Y");
 
-        fc.assert(ch.actions[3].actionLabelOriginX, 714.0, "actions_3.X");//20 + 3 * 204 + 82 = 714
-        fc.assert(ch.actions[3].actionLabelOriginY, 340.0, "actions_3.Y");
+        fc.assert(ch.actions[3].basicChartGeometry.actionLabelOriginX, 714.0, "actions_3.X");//20 + 3 * 204 + 82 = 714
+        fc.assert(ch.actions[3].basicChartGeometry.actionLabelOriginY, 340.0, "actions_3.Y");
     }
     else if (chartTesting == "allNegatives") {
         fc.setCase("action labels positioning allNegatives");
 
         bcg.positionActionLabels(20);
 
-        fc.assert(ch.actions[0].actionLabelOriginX, 102.0, "actions_0.X");// 20 + 0 * 204 + 82 = 102
-        fc.assert(ch.actions[0].actionLabelOriginY, 580.9, "actions_0.Y");//  320 + 330*.73 + 20 = 580.9
+        fc.assert(ch.actions[0].basicChartGeometry.actionLabelOriginX, 102.0, "actions_0.X");// 20 + 0 * 204 + 82 = 102
+        fc.assert(ch.actions[0].basicChartGeometry.actionLabelOriginY, 580.9, "actions_0.Y");//  320 + 330*.73 + 20 = 580.9
 
-        fc.assert(ch.actions[1].actionLabelOriginX, 306.0, "actions_1.X");//20 + 1 * 204 + 82 = 306
-        fc.assert(ch.actions[1].actionLabelOriginY, 580.9, "actions_1.Y");
+        fc.assert(ch.actions[1].basicChartGeometry.actionLabelOriginX, 306.0, "actions_1.X");//20 + 1 * 204 + 82 = 306
+        fc.assert(ch.actions[1].basicChartGeometry.actionLabelOriginY, 580.9, "actions_1.Y");
 
-        fc.assert(ch.actions[2].actionLabelOriginX, 510.0, "actions_2.X");//20 + 2 * 204 + 82 = 510
-        fc.assert(ch.actions[2].actionLabelOriginY, 580.9, "actions_2.Y");
+        fc.assert(ch.actions[2].basicChartGeometry.actionLabelOriginX, 510.0, "actions_2.X");//20 + 2 * 204 + 82 = 510
+        fc.assert(ch.actions[2].basicChartGeometry.actionLabelOriginY, 580.9, "actions_2.Y");
 
-        fc.assert(ch.actions[3].actionLabelOriginX, 714.0, "actions_3.X");//20 + 3 * 204 + 82 = 714
-        fc.assert(ch.actions[3].actionLabelOriginY, 580.9, "actions_3.Y");
+        fc.assert(ch.actions[3].basicChartGeometry.actionLabelOriginX, 714.0, "actions_3.X");//20 + 3 * 204 + 82 = 714
+        fc.assert(ch.actions[3].basicChartGeometry.actionLabelOriginY, 580.9, "actions_3.Y");
     }
 
     if (chartTesting == "seeSaw") {
@@ -344,40 +344,40 @@ function runBasicChartGeometryTests(failureChecker, chartTesting) {
         // pixel distance 
         // assume scaling factor of 2 pixels per 1 value, so value of 120 is 240 pixels
         bcg.positionValueMarkers(4); //give something with maxPosValue and maxNegValue
-        fc.assert(ch.positiveMarkerValues[0], 30.0, "line 1 value");
-        fc.assert(ch.positiveMarkerYPixelsFromXAxis[0], 60.0, "line 1 pixel distance");
-        fc.assert(ch.positiveMarkerValues[1], 60.0, "line 2 value");
-        fc.assert(ch.positiveMarkerYPixelsFromXAxis[1], 120.0, "line 2 pixel distance");
-        fc.assert(ch.positiveMarkerValues[2], 90.0, "line 3 value");
-        fc.assert(ch.positiveMarkerYPixelsFromXAxis[2], 180.0, "line 3 pixel distance");
-        fc.assert(ch.positiveMarkerValues[3], 120.0, "line 4 value");
-        fc.assert(ch.positiveMarkerYPixelsFromXAxis[3], 240.0, "line 4 pixel distance");
+        fc.assert(bcg.positiveMarkerValues[0], 30.0, "line 1 value");
+        fc.assert(bcg.positiveMarkerYPixelsFromXAxis[0], 60.0, "line 1 pixel distance");
+        fc.assert(bcg.positiveMarkerValues[1], 60.0, "line 2 value");
+        fc.assert(bcg.positiveMarkerYPixelsFromXAxis[1], 120.0, "line 2 pixel distance");
+        fc.assert(bcg.positiveMarkerValues[2], 90.0, "line 3 value");
+        fc.assert(bcg.positiveMarkerYPixelsFromXAxis[2], 180.0, "line 3 pixel distance");
+        fc.assert(bcg.positiveMarkerValues[3], 120.0, "line 4 value");
+        fc.assert(bcg.positiveMarkerYPixelsFromXAxis[3], 240.0, "line 4 pixel distance");
     }
     else if (chartTesting == "allPositives") {
         fc.setCase("value markers positioning allPositives");
         //scalingFactor = (canvasHeight / 2) * 0.75 / this.getMaxAbsRewardOrActionValue(); == .72
         bcg.positionValueMarkers(4); //give something with maxPosValue and maxNegValue
-        fc.assert(ch.positiveMarkerValues[0], 82.0, "line 1 value");
-        fc.assert(ch.positiveMarkerYPixelsFromXAxis[0], 59.86, "line 1 pixel distance");
-        fc.assert(ch.positiveMarkerValues[1], 164.0, "line 2 value");
-        fc.assert(ch.positiveMarkerYPixelsFromXAxis[1], 119.72, "line 2 pixel distance");
-        fc.assert(ch.positiveMarkerValues[2], 246.0, "line 3 value");
-        fc.assert(ch.positiveMarkerYPixelsFromXAxis[2], 179.58, "line 3 pixel distance" + ch.scalingFactor);
-        fc.assert(ch.positiveMarkerValues[3], 328.0, "line 4 value");
-        fc.assert(ch.positiveMarkerYPixelsFromXAxis[3], 239.44, "line 4 pixel distance");
+        fc.assert(bcg.positiveMarkerValues[0], 82.0, "line 1 value");
+        fc.assert(bcg.positiveMarkerYPixelsFromXAxis[0], 59.86, "line 1 pixel distance");
+        fc.assert(bcg.positiveMarkerValues[1], 164.0, "line 2 value");
+        fc.assert(bcg.positiveMarkerYPixelsFromXAxis[1], 119.72, "line 2 pixel distance");
+        fc.assert(bcg.positiveMarkerValues[2], 246.0, "line 3 value");
+        fc.assert(bcg.positiveMarkerYPixelsFromXAxis[2], 179.58, "line 3 pixel distance" + ch.scalingFactor);
+        fc.assert(bcg.positiveMarkerValues[3], 328.0, "line 4 value");
+        fc.assert(bcg.positiveMarkerYPixelsFromXAxis[3], 239.44, "line 4 pixel distance");
     }
     else if (chartTesting == "allNegatives") {
         fc.setCase("value markers positioning allNegatives");
         //scalingFactor = (canvasHeight / 2) * 0.75 / this.getMaxAbsRewardOrActionValue(); == .72
         bcg.positionValueMarkers(4); //give something with maxPosValue and maxNegValue
-        fc.assert(ch.positiveMarkerValues[0], 82.0, "line 1 value");
-        fc.assert(ch.positiveMarkerYPixelsFromXAxis[0], 59.86, "line 1 pixel distance");
-        fc.assert(ch.positiveMarkerValues[1], 164.0, "line 2 value");
-        fc.assert(ch.positiveMarkerYPixelsFromXAxis[1], 119.72, "line 2 pixel distance");
-        fc.assert(ch.positiveMarkerValues[2], 246.0, "line 3 value");
-        fc.assert(ch.positiveMarkerYPixelsFromXAxis[2], 179.58, "line 3 pixel distance");
-        fc.assert(ch.positiveMarkerValues[3], 328.0, "line 4 value");
-        fc.assert(ch.positiveMarkerYPixelsFromXAxis[3], 239.44, "line 4 pixel distance");
+        fc.assert(bcg.positiveMarkerValues[0], 82.0, "line 1 value");
+        fc.assert(bcg.positiveMarkerYPixelsFromXAxis[0], 59.86, "line 1 pixel distance");
+        fc.assert(bcg.positiveMarkerValues[1], 164.0, "line 2 value");
+        fc.assert(bcg.positiveMarkerYPixelsFromXAxis[1], 119.72, "line 2 pixel distance");
+        fc.assert(bcg.positiveMarkerValues[2], 246.0, "line 3 value");
+        fc.assert(bcg.positiveMarkerYPixelsFromXAxis[2], 179.58, "line 3 pixel distance");
+        fc.assert(bcg.positiveMarkerValues[3], 328.0, "line 4 value");
+        fc.assert(bcg.positiveMarkerYPixelsFromXAxis[3], 239.44, "line 4 pixel distance");
     }
 
     if (chartTesting == "seeSaw") {
