@@ -79,7 +79,7 @@ function addBasicChartGeometryFunctions(chartData) {
         //groupWidthMargin = (widthAvailableForGroup * .2) / 2
         //bar.originX = i*widthAvailableForGroup + groupWidthMargin + j *(rewardBarWidth)
         //bar.originY = canvasHeight/2 ==> constant 320.0
-        rewardBar.basicChartGeometry.originX = Math.floor(actionIndex * basicCG.widthAvailableForGroup + basicCG.groupWidthMargin + rewardIndex * basicCG.rewardBarWidth);//FIXME? add basicChartGeometry object
+        rewardBar.basicChartGeometry.originX = Math.floor(actionIndex * basicCG.widthAvailableForGroup + basicCG.groupWidthMargin + rewardIndex * basicCG.rewardBarWidth);
         rewardBar.basicChartGeometry.originY = basicCG.canvasHeight / 2;
     }
 
@@ -108,7 +108,7 @@ function addBasicChartGeometryFunctions(chartData) {
         }
         actionBar.height = Math.abs(total * basicCG.scalingFactor);
         actionBar.width = basicCG.widthAvailableForRewardBars;
-        actionBar.value = total;//FIXME? is actionBar value same in basic and other views (if even in other views)?
+        actionBar.value = total;
     }
 
     basicCG.positionActionLabels = function(minDistanceFromBarOrAxis) {
@@ -129,7 +129,7 @@ function addBasicChartGeometryFunctions(chartData) {
             var action = chartData.actions[i];
             //groupWidthMargin + i * widthAvailableForGroup +  widthAvailableForRewardBars / 2
             action.basicChartGeometry.actionLabelOriginX = basicCG.groupWidthMargin + Number(i)* basicCG.widthAvailableForGroup + basicCG.widthAvailableForRewardBars / 2;
-            action.basicChartGeometry.actionLabelOriginY = actionLabelY;//FIXME? is action same as actionBar and thus only one instance of basicChartGeometry
+            action.basicChartGeometry.actionLabelOriginY = actionLabelY;
         }
     }
 
@@ -175,10 +175,10 @@ function addBasicChartGeometryFunctions(chartData) {
             rewardBar.tooltipOriginX = rewardBar.originX - Number(basicCG.rewardBarWidth / 2);
             // (canvasHeight / 2) - ((ch.rewardBar[i].bars[j].value * scalingFactor) * 0.75)
             if (rewardBar.value >= 0) {
-                rewardBar.basicChartGeometry.tooltipOriginY = basicCG.canvasHeight/2 - (rewardBar.value + 30) * basicCG.scalingFactor; //FIXME? rewardBar.value
+                rewardBar.basicChartGeometry.tooltipOriginY = basicCG.canvasHeight/2 - (rewardBar.value + 30) * basicCG.scalingFactor;
             } else {
-                rewardBar.basicChartGeometry.tooltipOriginY = basicCG.canvasHeight/2 - (rewardBar.value) * basicCG.scalingFactor; //FIXME? rewardBar.value
-            }// FIXME?  rewardBar.basicChartGeometry.tooltipOriginY set in both positionValueTooltips and positionTooltips - error or dead code?
+                rewardBar.basicChartGeometry.tooltipOriginY = basicCG.canvasHeight/2 - (rewardBar.value) * basicCG.scalingFactor;
+            }
         }
     }
     basicCG.getActionBarNameForCoordinates = function(x,y) {
@@ -186,11 +186,11 @@ function addBasicChartGeometryFunctions(chartData) {
             var barName = chartData.actionRewardNames[i];
             var bar = chartData.actionRewardForNameMap[barName];
             var isHeightNegative = true;
-            if (bar.value > 0){//FIXME? rewardBar.value
+            if (bar.value > 0){
                 isHeightNegative = false;
             }
             var barCg = bar.basicChartGeometry;
-            if (chartData.isPointInsideBox(x, y, barCg.originX, barCg.originY, barCg.width, barCg.height, isHeightNegative)){ //FIXME? where is isPointInsideBox
+            if (chartData.isPointInsideBox(x, y, barCg.originX, barCg.originY, barCg.width, barCg.height, isHeightNegative)){ 
                 return bar.fullName;
             }
         }

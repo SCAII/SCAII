@@ -256,7 +256,7 @@ function getSaliencyV2UI() {
         combinedChannel.height = expLayers[0].getHeight();
         combinedChannel.name = "all features";
         combinedChannel.cells = getAggregatedCells(expLayers);
-        combinedChannel.normalizationKey = "Combined-standin-saliency";// FIXME (Evan)
+        combinedChannel.normalizationKey = "Combined-standin-saliency";
         combinedChannel.scaleFactor = 1.0;
         combinedChannel.saliencyId = bar.saliencyId;
         combinedChannel.id = convertNameToLegalId(prependDPNumber(bar.saliencyId + "--" + combinedChannel.name));

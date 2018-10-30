@@ -527,4 +527,8 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
     fc.assert(msxCG.actionLinesOriginY, 80.0, "actionLineOriginY");
     fc.assert(msxCG.actionLinesLength, 480.0, "actionLineLength");
 
+    // NEED TO DO
+    // tooltip placement 
+    // (tooltip values position same)
+    // getActionBarNameForCoordinates
 }

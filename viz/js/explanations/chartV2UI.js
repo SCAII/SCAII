@@ -167,9 +167,9 @@ function getBasicChartUI() {
             chartData.clearRewardBarSelections();
             chartData.selectSingleRewardBar(rewardBarName);
             if (treatment == "T3" || treatment== "NA") {
-                chartData.clearHighlightSelections(); // FIXME?  need to be different for diff charts?
+                chartData.clearHighlightSelections(); // 
                 var trueRewardBarName = rewardBarName.split(".")[1];
-                chartData.highlightSimilarRewardBars(trueRewardBarName); // FIXME?  need to be different for diff charts?
+                chartData.highlightSimilarRewardBars(trueRewardBarName);
             }
             this.renderBars(chartCanvas, chartData, treatment);
             var bar = chartData.actionRewardForNameMap[rewardBarName];
