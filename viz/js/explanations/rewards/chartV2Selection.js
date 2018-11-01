@@ -8,6 +8,7 @@ function addSelectionFunctions (rawChartData) {
             }
         }
     }
+
     rd.clearRewardBarSelections = function () {
         for (var i in rd.actions) {
             for (var j in rd.actions[i].bars) {
@@ -15,6 +16,7 @@ function addSelectionFunctions (rawChartData) {
             }
         }
     }
+
     rd.clearHighlightSelections = function () {
         for (var i in rd.actions) {
             for (var j in rd.actions[i].bars) {
@@ -23,6 +25,12 @@ function addSelectionFunctions (rawChartData) {
         }
     }
 
+    rd.clearHighlightSelectionForAction = function (action) {
+        for (var j in action.bars) {
+            action.bars[j].highlight = false;
+        }
+    }
+    
     rd.clearRewardBarSelections();
     rd.clearSaliencyMapSelections();
     rd.clearHighlightSelections();
@@ -66,6 +74,17 @@ function addSelectionFunctions (rawChartData) {
             for (var j in rd.actions[i].bars) {
                 if (rd.actions[i].bars[j].name == barName) {
                     rd.actions[i].bars[j].highlight = true;
+                }
+            }
+        }
+    }
+    
+    rd.highlightSimilarRewardBarsForActions = function (barName, action1, action2) {
+        var actions = [ action1, action2];
+        for (var i in actions) {
+            for (var j in actions[i].bars) {
+                if (actions[i].bars[j].name == barName) {
+                    actions[i].bars[j].highlight = true;
                 }
             }
         }

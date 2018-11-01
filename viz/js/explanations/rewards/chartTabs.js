@@ -1,4 +1,6 @@
+var activeMsxChart = "tab-msx-best-vs-second-best"; //initialize to best vs second best
 
+var actionForMsxTabId = {};
 function generateChartTabs() {
     var t1 = generateDisabledChartTab("tab-msx-best-vs-second-best", "Best vs Second Best", "tab-chart-class");
     var t1 = generateDisabledChartTab("tab-msx-best-vs-third-best", "Best vs Third Best", "tab-chart-class");
@@ -28,4 +30,6 @@ function enableChartTab(tabId) {
     }
     var tabControlToMakeActive = document.getElementById(tabId)
     tabControlToMakeActive.className += " active";
+    activeMsxChart = tabId;
+    currentExplManager.render("live");
 }

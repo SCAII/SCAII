@@ -1,32 +1,49 @@
 // just a clone of getBasicChartUI so far
 function getMsxChartUI() {
     var ui = {};
-
     var chartCanvas = undefined;
-    ui.whyButtonInfo = undefined;
     ui.rewardBarTooltipManager = undefined;
     ui.backgroundColor = "#eeeeee";
     ui.renderChart = function(chartData, treatment, canvasHeight, canvasWidth){
+        var msxGeometry = chartData.msxChartGeometry;
         //specify dimensions
-        chartData.basicChartGeometry.initChartDimensions(canvasHeight, canvasWidth, 0.5, 0.0);
+        msxGeometry.initChartDimensions(canvasHeight, canvasWidth, 0.5, 0.0);
         // create canvas
         chartCanvas = document.createElement("canvas");
         chartCanvas.setAttribute("width", canvasWidth);
         chartCanvas.setAttribute("height", canvasHeight);
-		chartCanvas.setAttribute("id", "chartV2-canvas");
+        chartCanvas.setAttribute("id", "chartV2-canvas");
+        var winningAction = chartData.actionBest;
+        var losingAction = actionForMsxTabId[activeMsxChart];
+        chartData.clearHighlightSelectionForAction(winningAction);
+        this.recoverWinningActionStateAfterViewSwitch(winningAction, losingAction);
         chartCanvas.onclick = function(e){
             var x = e.offsetX;
 		    var y = e.offsetY;
-            var rewardBarName = chartData.getActionBarNameForCoordinates(x, y);
-            currentExplManager.chartUI.processRewardBarClick(rewardBarName, chartData, e, treatment);
+            var rewardBarName = msxGeometry.getActionBarNameForCoordinates(x, y);
+            currentExplManager.chartUI.processRewardBarClick(rewardBarName, chartData, e, treatment, winningAction, losingAction);
         }
+        // create the MSX div which will contain the tabs above the active chart
+        var msxContainer = document.createElement("div");
+        msxContainer.setAttribute("id", "msx-container");
+        msxContainer.setAttribute("class", "flex-column");
+        $("#explanations-rewards").append(msxContainer);
+
+        // create the MSX tabs div
+        var msxTabsContainer = document.createElement("div");
+        msxTabsContainer.setAttribute("id", "msx-chart-tabs");
+        msxTabsContainer.setAttribute("class", "master-tab-container flex-row");
+        $("#msx-container").append(msxTabsContainer);
+        generateChartTabs();
+        enableChartTab(activeMsxChart);
+
         // create chartCanvasContainer because some layout issues dealing with canvas directly
         var chartCanvasContainer = document.createElement("div");
         chartCanvasContainer.setAttribute("width", canvasWidth);
         chartCanvasContainer.setAttribute("height", canvasHeight);
         chartCanvasContainer.setAttribute("id", "chartV2-canvas-container");
         
-        $("#explanations-rewards").append(chartCanvasContainer);
+        $("#msx-container").append(chartCanvasContainer);
         $("#chartV2-canvas-container").append(chartCanvas);
 
         // append legend div in explanationRewards so will be right of chartCanvas
@@ -36,98 +53,32 @@ function getMsxChartUI() {
         legendDiv.setAttribute("class", "flex-column");
         legendDiv.setAttribute("style", "background-color:" + this.backgroundColor + ";height:" + canvasHeight + "px;");
         $("#explanations-rewards").append(legendDiv);
-
-        // create legend area where names and boxes will exist
-        var legendRewards = document.createElement("DIV");
-        legendRewards.setAttribute("id", "legend-rewards");
-        legendRewards.setAttribute("class", "grid");
-        legendRewards.setAttribute("style", "background-color:" + this.backgroundColor + ";padding:6px");
-        $("#legend-div").append(legendRewards);
-
-		// append legend title to legend area
-		var legendTitle = document.createElement("DIV");
-		legendTitle.setAttribute("id", "legend-title");
-		legendTitle.setAttribute("class", "r0c0_1");
-		legendTitle.setAttribute("style", "height:20px;padding:5px");
-		$("#legend-rewards").append(legendTitle);
-
-		// append desc, legend names, and boxes to legend area
-        for (var i in chartData.rewardNames) {
-			var iPlusOne = Number(i) + 1;
-			if (iPlusOne % 2 == 0) {
-				var rewardDesc = document.createElement('DIV');
-				rewardDesc.setAttribute("id", "legend-desc-" + i);
-				rewardDesc.setAttribute("class", "r" + iPlusOne + "c0");
-				rewardDesc.setAttribute("style", "height:20px;width:100px;position:relative;left:15px;padding-top:3px;padding-right:5px;padding-bottom:10px");
-				$("#legend-rewards").append(rewardDesc);
-
-				var rewardBox = document.createElement("DIV");
-				rewardBox.setAttribute("id", "legend-box-" + i);
-				rewardBox.setAttribute("class", "r" + iPlusOne + "c1");
-				rewardBox.setAttribute("style", "background-color:" + chartData.colors[i] + ";height:17px;width:17px;position:relative;top:2px;");
-				$("#legend-rewards").append(rewardBox);
-
-				var rewardInfo = document.createElement("DIV");
-				rewardInfo.setAttribute("id", "legend-name-" + i);
-				rewardInfo.setAttribute("class", "r" + iPlusOne + "c2");
-				rewardInfo.setAttribute("style", "height:20px;padding-top:3px;padding-left:3px;padding-bottom:10px");
-				$("#legend-rewards").append(rewardInfo);
-
-			} else {
-				var rewardDesc = document.createElement('DIV');
-				rewardDesc.setAttribute("id", "legend-desc-" + i);
-				rewardDesc.setAttribute("class", "r" + iPlusOne + "c0");
-				rewardDesc.setAttribute("style", "height:20px;width:100px;position:relative;left:15px;padding-top:3px;padding-right:5px");
-				$("#legend-rewards").append(rewardDesc);
-
-				var rewardBox = document.createElement("DIV");
-				rewardBox.setAttribute("id", "legend-box-" + i);
-				rewardBox.setAttribute("class", "r" + iPlusOne + "c1");
-				rewardBox.setAttribute("style", "background-color:" + chartData.colors[i] + ";height:17px;width:17px;position:relative;top:2px;");
-				$("#legend-rewards").append(rewardBox);
-
-				var rewardInfo = document.createElement("DIV");
-				rewardInfo.setAttribute("id", "legend-name-" + i);
-				rewardInfo.setAttribute("class", "r" + iPlusOne + "c2");
-				rewardInfo.setAttribute("style", "height:20px;padding-top:3px;padding-left:3px");
-				$("#legend-rewards").append(rewardInfo);
-			}
-
-        }
-		// append legend total name and box to legend area
-        var rewardLegendTotalBox = document.createElement("DIV");
-		rewardLegendTotalBox.setAttribute("id", "legend-box-" + i);
-		rewardLegendTotalBox.setAttribute("class", "r" + Number(chartData.rewardNames.length + 1) + "c1");
-		rewardLegendTotalBox.setAttribute("style", "background-color:" + chartData.actions[0].color + ";height:17px;width:17px;position:relative;top:4px;");
-		$("#legend-rewards").append(rewardLegendTotalBox);
-		var rewardLegendTotal = document.createElement("DIV");
-		rewardLegendTotal.setAttribute("id", "legend-total-name");
-		rewardLegendTotal.setAttribute("class", "r" + Number(chartData.rewardNames.length + 1) + "c2");
-		rewardLegendTotal.setAttribute("style", "height:20px;padding-top:3px;padding-left:3px");
-		$("#legend-rewards").append(rewardLegendTotal);
+        positionLegendPieces(chartData, this.backgroundColor);
 
         var ctx = chartCanvas.getContext("2d");
         $("#chartV2-canvas").css("background-color", this.backgroundColor);
         
-
-        this.renderActionSeparatorLines(chartCanvas, chartData);
-        this.renderChartValueLabels(chartCanvas, chartData.basicChartGeometry, 4);
-        this.renderChartValueLines(chartCanvas, chartData.basicChartGeometry, 4);
-        this.renderZeroValueLabel(chartCanvas, chartData.basicChartGeometry);
-        
-        this.renderActionBars(chartCanvas, chartData);
-        this.renderBars(chartCanvas,chartData, treatment);
-        this.renderXAxis(chartCanvas, chartData.basicChartGeometry);
-		this.renderYAxis(chartCanvas, chartData.basicChartGeometry);
-
-		this.renderActionNames(chartCanvas, chartData);
-		this.renderLegend(chartData);
-		this.renderLegendTitle();
-        this.renderTitle(chartCanvas, chartData.basicChartGeometry);
-        this.rewardBarTooltipManager = getRewardBarTooltipManager(chartCanvas,chartData);
+        this.renderChart(chartCanvas, msxGeometry, chartData, winningAction, losingAction);
 	}
 
-    ui.processRewardBarClick = function(rewardBarName, chartData, e, treatment){
+    ui.renderChart = function(chartCanvas, msxGeometry, chartData, winningAction, losingAction){
+        this.renderActionSeparatorLines(chartCanvas, chartData);
+        this.renderChartValueLabels(chartCanvas, msxGeometry, 4);
+        this.renderChartValueLines(chartCanvas, msxGeometry, 4);
+        this.renderZeroValueLabel(chartCanvas, msxGeometry);
+        
+        this.renderBars(chartCanvas,chartData, treatment, winningAction, losingAction);
+        this.renderXAxis(chartCanvas, msxGeometry);
+		this.renderYAxis(chartCanvas, msxGeometry);
+
+		this.renderActionNames(chartCanvas, chartData, winningAction, losingAction);
+		this.renderLegend(chartData);
+		this.renderLegendTitle();
+        this.renderTitle(chartCanvas, msxGeometry);
+        this.rewardBarTooltipManager = getRewardBarTooltipManager(chartCanvas,chartData);
+    }
+
+    ui.processRewardBarClick = function(rewardBarName, chartData, e, treatment, winningAction, losingAction){
         if (userStudyMode){
             if (isSaliencyMapSwitchBlockedByQuestion(treatment)){
                 return;
@@ -139,12 +90,12 @@ function getMsxChartUI() {
         if (rewardBarName != "None") {
             chartData.clearRewardBarSelections();
             chartData.selectSingleRewardBar(rewardBarName);
-            if (treatment == "T3" || treatment== "NA") {
+            if (treatment == "T4" || treatment== "NA") {
                 chartData.clearHighlightSelections(); // 
                 var trueRewardBarName = rewardBarName.split(".")[1];
-                chartData.highlightSimilarRewardBars(trueRewardBarName);
+                chartData.highlightSimilarRewardBarsForActions(trueRewardBarName, winningAction, losingAction);
             }
-            this.renderBars(chartCanvas, chartData, treatment);
+            this.renderBars(chartCanvas, chartData, treatment, winningAction, losingAction);
             var bar = chartData.actionRewardForNameMap[rewardBarName];
             chartData.showSalienciesForRewardName(bar.name);
             currentExplManager.saliencyVisible = true;
@@ -153,14 +104,21 @@ function getMsxChartUI() {
         }
     }
 
-    ui.renderTitle = function (canvas, basicChartGeometry) {
+    ui.recoverWinningActionStateAfterViewSwitch = function(winningAction, losingAction){
+        // if the losingAction has a selected bar, then we do not select the corresponding bar on winningAction
+        // if it doesn't, then we do.
+
+        // whatever is highlighed on the losingAction, highlight that for the winningAction
+
+    }
+    ui.renderTitle = function (canvas, msxChartGeometry) {
         // NOTE: There are no tests for rendering the title
-        var bcg = basicChartGeometry;
+        var msxGeometry = msxChartGeometry;
 		var ctx = canvas.getContext("2d");
 		ctx.save();
 		ctx.fillStyle = "black";
 		ctx.font = "bold 20px Arial";
-		ctx.fillText(" ", bcg.canvasWidth / 2 - bcg.groupWidthMargin, bcg.canvasHeight * .07);
+		ctx.fillText(" ", msxGeometry.canvasWidth / 2 - msxGeometry.groupWidthMargin, msxGeometry.canvasHeight * .07);
 		ctx.restore();
 	}
     ui.renderLegendTitle = function () {
@@ -217,70 +175,61 @@ function getMsxChartUI() {
 		totalName.appendChild(totalContent);
 	}
 
-	ui.renderActionBars = function (canvas, chartData){
-		var ctx = canvas.getContext("2d");
-		for (var i in chartData.actions) {
-			var bar = chartData.actions[i];
-			chartData.basicChartGeometry.positionActionBar(bar, i);
-			chartData.basicChartGeometry.dimensionActionBar(bar);
-			this.renderBar(ctx, bar, "normal");
-		}
-	}
 
-
-	ui.renderActionNames = function (canvas, chartData) {
-        var bcg = chartData.basicChartGeometry;
-		bcg.positionActionLabels(30);
+	ui.renderActionNames = function (canvas, chartData, winningAction, losingAction) {
+        var actions = [ winningAction, losingAction];
+        var msxGeometry = chartData.msxChartGeometry;
+		msxGeometry.positionActionLabels(30);
 		var ctx = canvas.getContext("2d");
-		for (var i = 0; i < chartData.actions.length; i++) {
+		for (var i = 0; i < actions.length; i++) {
             ctx.save();
             ctx.fillStyle = "black";
 			ctx.font = "bold 15px Arial";
-			ctx.fillText(chartData.actionNames[i], chartData.actions[i].actionLabelOriginX - bcg.groupWidthMargin, chartData.actions[i].actionLabelOriginY)
+			ctx.fillText(actionNames[i], actions[i].msxChartGeometry.actionLabelOriginX - msxGeometry.groupWidthMargin, actions[i].msxChartGeometry.actionLabelOriginY)
             ctx.restore();
 		}
 	}
 	
-	ui.renderZeroValueLabel = function (canvas, basicChartGeometry) {
+	ui.renderZeroValueLabel = function (canvas, msxChartGeometry) {
 		// NOTE: there is no test for the zero value label
 		var ctx = canvas.getContext("2d");
 		ctx.save();
 		ctx.fillStyle = "black";
 		ctx.font = "bold 10px Arial";
-		ctx.fillText(0, basicChartGeometry.groupWidthMargin - 25, basicChartGeometry.canvasHeight / 2);
+		ctx.fillText(0, msxChartGeometry.groupWidthMargin - 25, msxChartGeometry.canvasHeight / 2);
 		ctx.restore();
 	}
 
-	ui.renderChartValueLabels = function (canvas, basicChartGeometry, numberOfLines) {
-        var bcg = basicChartGeometry;
-		bcg.positionValueMarkers(numberOfLines);
+	ui.renderChartValueLabels = function (canvas, msxChartGeometry, numberOfLines) {
+        var msxGeometry = msxChartGeometry;
+		msxGeometry.positionValueMarkers(numberOfLines);
 		var ctx = canvas.getContext("2d");
 		for (var i = 0; i < numberOfLines; i++) {
             ctx.save();
             ctx.fillStyle = "black";
             ctx.font = "bold 10px Arial";
-			ctx.fillText(bcg.positiveMarkerValues[i], bcg.groupWidthMargin - 25, bcg.canvasHeight / 2 - Number(bcg.positiveMarkerYPixelsFromXAxis[i]));
-			ctx.fillText(-bcg.positiveMarkerValues[i], bcg.groupWidthMargin - 25, bcg.canvasHeight / 2 + Number(bcg.positiveMarkerYPixelsFromXAxis[i]));
+			ctx.fillText(msxGeometry.positiveMarkerValues[i], msxGeometry.groupWidthMargin - 25, msxGeometry.canvasHeight / 2 - Number(msxGeometry.positiveMarkerYPixelsFromXAxis[i]));
+			ctx.fillText(-msxGeometry.positiveMarkerValues[i], msxGeometry.groupWidthMargin - 25, msxGeometry.canvasHeight / 2 + Number(msxGeometry.positiveMarkerYPixelsFromXAxis[i]));
             ctx.restore();
 		}
 	}
 
 
-	ui.renderChartValueLines = function (canvas, basicChartGeometry, numberOfLines) {
-        var bcg = basicChartGeometry;
-		bcg.positionValueLines(numberOfLines);
+	ui.renderChartValueLines = function (canvas, msxChartGeometry, numberOfLines) {
+        var msxGeometry = msxChartGeometry;
+		msxGeometry.positionValueLines(numberOfLines);
 		var ctx = canvas.getContext("2d");
 		for (var i = 0; i < numberOfLines; i++) {
 			ctx.save();
 			ctx.strokeStyle = "grey";
 			ctx.beginPath();
-			ctx.moveTo(bcg.positiveLineOriginX, bcg.positiveLineOriginY[i]);
-			ctx.lineTo(Number(bcg.positiveLineOriginX) + Number(bcg.positiveLineLength), bcg.positiveLineOriginY[i]);
+			ctx.moveTo(msxGeometry.positiveLineOriginX, msxGeometry.positiveLineOriginY[i]);
+			ctx.lineTo(Number(msxGeometry.positiveLineOriginX) + Number(msxGeometry.positiveLineLength), msxGeometry.positiveLineOriginY[i]);
 			ctx.stroke();
 			ctx.closePath();
 			ctx.beginPath();
-			ctx.moveTo(bcg.positiveLineOriginX, bcg.canvasHeight / 2 - bcg.positiveMarkerYPixelsFromXAxis[i]);
-			ctx.lineTo(Number(bcg.positiveLineOriginX) + Number(bcg.positiveLineLength), bcg.canvasHeight / 2 - bcg.positiveMarkerYPixelsFromXAxis[i]);
+			ctx.moveTo(msxGeometry.positiveLineOriginX, msxGeometry.canvasHeight / 2 - msxGeometry.positiveMarkerYPixelsFromXAxis[i]);
+			ctx.lineTo(Number(msxGeometry.positiveLineOriginX) + Number(msxGeometry.positiveLineLength), msxGeometry.canvasHeight / 2 - msxGeometry.positiveMarkerYPixelsFromXAxis[i]);
 			ctx.stroke()
 			ctx.closePath();
 			ctx.restore();
@@ -288,46 +237,44 @@ function getMsxChartUI() {
 	}
 
 	ui.renderActionSeparatorLines = function (canvas, chartData) {
-        var bcg = chartData.basicChartGeometry;
-		bcg.positionActionSeparatorLines();
+        var msxGeometry = chartData.msxChartGeometry;
+		msxGeometry.positionActionSeparatorLines();
 		var ctx = canvas.getContext("2d");
-		for (var i = 0; i < chartData.actions.length - 1; i++) {
-			ctx.save();
-			ctx.strokeStyle = "red";
-			ctx.beginPath();
-			ctx.setLineDash([5, 15]);
-			ctx.moveTo(bcg.actionLinesOriginX[i], bcg.actionLinesOriginY);
-			ctx.lineTo(bcg.actionLinesOriginX[i], Number(bcg.actionLinesOriginY) + Number(bcg.actionLinesLength));
-			ctx.stroke();
-			ctx.restore();
-		}
+        ctx.save();
+        ctx.strokeStyle = "red";
+        ctx.beginPath();
+        ctx.setLineDash([5, 15]);
+        ctx.moveTo(msxGeometry.actionLinesOriginX[0], msxGeometry.actionLinesOriginY);
+        ctx.lineTo(msxGeometry.actionLinesOriginX[0], Number(msxGeometry.actionLinesOriginY) + Number(msxGeometry.actionLinesLength));
+        ctx.stroke();
+        ctx.restore();
 	}
 
-	ui.renderXAxis = function (canvas, basicChartGeometry) {
-        var bcg = basicChartGeometry;
-		bcg.positionXAxisLine();
+	ui.renderXAxis = function (canvas, msxChartGeometry) {
+        var msxGeometry = msxChartGeometry;
+		msxGeometry.positionXAxisLine();
 		var ctx = canvas.getContext("2d");
 		ctx.save();
 		ctx.strokeStyle = "black";
 		ctx.lineWidth = 1;
 		ctx.beginPath();
-		ctx.moveTo(bcg.xAxisOriginX, bcg.xAxisOriginY);
-		ctx.lineTo(Number(bcg.xAxisOriginX) + Number(bcg.xAxisLength), bcg.xAxisOriginY);
+		ctx.moveTo(msxGeometry.xAxisOriginX, msxGeometry.xAxisOriginY);
+		ctx.lineTo(Number(msxGeometry.xAxisOriginX) + Number(msxGeometry.xAxisLength), msxGeometry.xAxisOriginY);
 		ctx.closePath();
 		ctx.stroke();
 		ctx.restore();
 	}
 
-	ui.renderYAxis = function (canvas, basicChartGeometry) {
-        var bcg = basicChartGeometry;
-		bcg.positionYAxisLine();
+	ui.renderYAxis = function (canvas, msxChartGeometry) {
+        var msxGeometry = msxChartGeometry;
+		msxGeometry.positionYAxisLine();
 		var ctx = canvas.getContext("2d");
 		ctx.save();
 		ctx.strokeStyle = "black";
 		ctx.lineWidth = 1;
 		ctx.beginPath();
-		ctx.moveTo(bcg.yAxisOriginX, bcg.yAxisOriginY);
-		ctx.lineTo(bcg.yAxisOriginX, Number(bcg.yAxisOriginY) + Number(bcg.yAxisLength));
+		ctx.moveTo(msxGeometry.yAxisOriginX, msxGeometry.yAxisOriginY);
+		ctx.lineTo(msxGeometry.yAxisOriginX, Number(msxGeometry.yAxisOriginY) + Number(msxGeometry.yAxisLength));
 		ctx.closePath();
 		ctx.stroke();
 		ctx.restore();
@@ -362,14 +309,15 @@ function getMsxChartUI() {
 
 		return p;
 	}
-	ui.renderBars = function (canvas, chartData, treatment) {
-		var ctx = canvas.getContext("2d");
-		for (var i=0; i<chartData.actions.length; i++) {
-			var action = chartData.actions[i];
+	ui.renderBars = function (canvas, chartData, treatment, winningAction, losingAction) {
+        var ctx = canvas.getContext("2d");
+        var actions = [ winningAction, losingAction];
+		for (var i=0; i< actions.length; i++) {
+			var action = actions[i];
 			for (var j=0; j<chartData.rewardNames.length; j++) {
 				var bar = action.bars[j];
-				chartData.basicChartGeometry.positionRewardBar(bar, i, j);
-				chartData.basicChartGeometry.dimensionRewardBar(bar);
+				chartData.msxChartGeometry.positionRewardBar(bar, i, j);
+				chartData.msxChartGeometry.dimensionRewardBar(bar);
 				if (bar.selected == true) {
 					var saveSelected = bar;
 				} else if (bar.highlight == true) {
@@ -394,9 +342,9 @@ function getMsxChartUI() {
 	ui.renderBar = function (ctx, bar, mode) {
 		// originY is always on the x axis
         ctx.save();
-        var barBcg = bar.basicChartGeometry;
-		var x0 = barBcg.originX;
-		var y0 = barBcg.originY;
+        var barMcg = bar.msxChartGeometry;
+		var x0 = barMcg.originX;
+		var y0 = barMcg.originY;
 
 		var upperLeftOriginX = x0;
 		var upperLeftOriginY = undefined;
@@ -409,71 +357,71 @@ function getMsxChartUI() {
 		ctx.beginPath();
         
 		if (mode == "outlineT3") {
-			ctx.clearRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
+			ctx.clearRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 			ctx.lineWidth = shape_outline_width;
 			ctx.strokeStyle = "white";
-			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
+			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 
 			var rgbaBarColor = hexToRgbA(bar.color);
 			ctx.fillStyle = rgbaBarColor + " 0.7)";
-			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 
 			var pattern = this.renderPattern(bar.color);
 			ctx.fillStyle = ctx.createPattern(pattern, 'repeat');
-			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, bbarBcgar.width, barBcg.height);
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 	
 		} else if (mode == "outlineBlue") {
             var adjustedBarHeight = 0;
             if (bar.value > 0) {
                 upperLeftOriginOutline = upperLeftOriginY - 3;
-                heightOutline = barBcg.height + 3;
+                heightOutline = barMcg.height + 3;
             }
             else {
                 upperLeftOriginOutline = upperLeftOriginY;
-                heightOutline = barBcg.height + 3;
+                heightOutline = barMcg.height + 3;
             }	
-			ctx.clearRect(upperLeftOriginX - 3, upperLeftOriginOutline, barBcg.width + 6, heightOutline);
+			ctx.clearRect(upperLeftOriginX - 3, upperLeftOriginOutline, barMcg.width + 6, heightOutline);
             ctx.strokeStyle = "blue";
-			ctx.strokeRect(upperLeftOriginX - 3, upperLeftOriginOutline, barBcg.width + 6, heightOutline);
+			ctx.strokeRect(upperLeftOriginX - 3, upperLeftOriginOutline, barMcg.width + 6, heightOutline);
 
 			var rgbaBarColor = hexToRgbA(bar.color);
 			ctx.fillStyle = rgbaBarColor + " 0.7)";
-			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 
 			var pattern = this.renderPattern(bar.color);
 			ctx.fillStyle = ctx.createPattern(pattern, 'repeat');
-			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 	
         } else if (mode == "outline") {
-			ctx.clearRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
+			ctx.clearRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 			ctx.lineWidth = shape_outline_width;
 			ctx.strokeStyle = "white";
-			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
+			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 		
 			ctx.fillStyle = bar.color;
-			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 		} else if (mode == "gradient") {
-			ctx.clearRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
+			ctx.clearRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 			ctx.lineWidth = shape_outline_width;
 			ctx.strokeStyle = bar.color;
 
-			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
+			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 
 			var rgbaBarColor = hexToRgbA(bar.color);
 			ctx.fillStyle = rgbaBarColor + " 0.7)";
-			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 
 			var pattern = this.renderPattern(bar.color);
 			ctx.fillStyle = ctx.createPattern(pattern, 'repeat');
-			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 		} else {
 			ctx.lineWidth = shape_outline_width;
 			ctx.strokeStyle = bar.color;
 
-			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
+			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 
 			ctx.fillStyle = bar.color;
-			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barBcg.width, barBcg.height);
+			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 		}
 		ctx.restore();
 	}

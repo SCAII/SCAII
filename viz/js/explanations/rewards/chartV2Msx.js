@@ -32,7 +32,6 @@ function sortMsxBars(rawChartData) {
                         bar.msxColor = rd.colors[j];
                     }
                 }
-                
             }
         } else {
             action.msxMaxValueAction = true;

@@ -177,7 +177,7 @@ function getExplanationsV2Manager(){
     cm.currentQuestionType = undefined;
     cm.entityListForDP = {};
     cm.waitForClickDP = 0;
-    cm.actionsRanked = [];
+    
 
     cm.captureEntitiesForDecisionPoint = function(step) {
         if (this.entityListForDP[step] == undefined){
@@ -226,7 +226,12 @@ function getExplanationsV2Manager(){
             this.data = setDefaultSelections(this.data, this.treatmentID);
             this.chartDataForStep[step] = this.data;
             this.stepsWithExplanations.push(step);
-            this.actionsRanked = rankThings(this.data.actions, getThingWithMaxValue);
+            this.data.actionsRanked = [];
+            this.data.actionsRanked = rankThings(this.data.actions, getThingWithMaxValue);
+            this.data.actionBest = this.data.actionsRanked[0];
+            actionForMsxTabId["tab-msx-best-vs-second-best"] = this.data.actionsRanked[1];
+            actionForMsxTabId["tab-msx-best-vs-third-best"] = this.data.actionsRanked[2];
+            actionForMsxTabId["tab-msx-best-vs-worst"] = this.data.actionsRanked[3];
         }
         else {
             this.data = cachedChartData;

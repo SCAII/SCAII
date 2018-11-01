@@ -2,12 +2,12 @@ function getBasicChartUI() {
     var ui = {};
 
     var chartCanvas = undefined;
-    ui.whyButtonInfo = undefined;
     ui.rewardBarTooltipManager = undefined;
     ui.backgroundColor = "#eeeeee";
     ui.renderChart = function(chartData, treatment, canvasHeight, canvasWidth){
+        var geometry = chartData.basicChartGeometry;
         //specify dimensions
-        chartData.basicChartGeometry.initChartDimensions(canvasHeight, canvasWidth, 0.5, 0.0);
+        geometry.initChartDimensions(canvasHeight, canvasWidth, 0.5, 0.0);
         // create canvas
         chartCanvas = document.createElement("canvas");
         chartCanvas.setAttribute("width", canvasWidth);
@@ -16,7 +16,7 @@ function getBasicChartUI() {
         chartCanvas.onclick = function(e){
             var x = e.offsetX;
 		    var y = e.offsetY;
-            var rewardBarName = chartData.getActionBarNameForCoordinates(x, y);
+            var rewardBarName = geometry.getActionBarNameForCoordinates(x, y);
             currentExplManager.chartUI.processRewardBarClick(rewardBarName, chartData, e, treatment);
         }
         // create chartCanvasContainer because some layout issues dealing with canvas directly
@@ -35,64 +35,8 @@ function getBasicChartUI() {
         legendDiv.setAttribute("class", "flex-column");
         legendDiv.setAttribute("style", "background-color:" + this.backgroundColor + ";height:" + canvasHeight + "px;");
         $("#explanations-rewards").append(legendDiv);
-
-        // create legend area where names and boxes will exist
-        var legendRewards = document.createElement("DIV");
-        legendRewards.setAttribute("id", "legend-rewards");
-        legendRewards.setAttribute("class", "grid");
-        legendRewards.setAttribute("style", "background-color:" + this.backgroundColor + ";padding:6px");
-        $("#legend-div").append(legendRewards);
-
-		// append legend title to legend area
-		var legendTitle = document.createElement("DIV");
-		legendTitle.setAttribute("id", "legend-title");
-		legendTitle.setAttribute("class", "r0c0_1");
-		legendTitle.setAttribute("style", "height:20px;padding:5px");
-		$("#legend-rewards").append(legendTitle);
-
-		// append desc, legend names, and boxes to legend area
-        for (var i in chartData.rewardNames) {
-			var iPlusOne = Number(i) + 1;
-			if (iPlusOne % 2 == 0) {
-				var rewardDesc = document.createElement('DIV');
-				rewardDesc.setAttribute("id", "legend-desc-" + i);
-				rewardDesc.setAttribute("class", "r" + iPlusOne + "c0");
-				rewardDesc.setAttribute("style", "height:20px;width:100px;position:relative;left:15px;padding-top:3px;padding-right:5px;padding-bottom:10px");
-				$("#legend-rewards").append(rewardDesc);
-
-				var rewardBox = document.createElement("DIV");
-				rewardBox.setAttribute("id", "legend-box-" + i);
-				rewardBox.setAttribute("class", "r" + iPlusOne + "c1");
-				rewardBox.setAttribute("style", "background-color:" + chartData.colors[i] + ";height:17px;width:17px;position:relative;top:2px;");
-				$("#legend-rewards").append(rewardBox);
-
-				var rewardInfo = document.createElement("DIV");
-				rewardInfo.setAttribute("id", "legend-name-" + i);
-				rewardInfo.setAttribute("class", "r" + iPlusOne + "c2");
-				rewardInfo.setAttribute("style", "height:20px;padding-top:3px;padding-left:3px;padding-bottom:10px");
-				$("#legend-rewards").append(rewardInfo);
-
-			} else {
-				var rewardDesc = document.createElement('DIV');
-				rewardDesc.setAttribute("id", "legend-desc-" + i);
-				rewardDesc.setAttribute("class", "r" + iPlusOne + "c0");
-				rewardDesc.setAttribute("style", "height:20px;width:100px;position:relative;left:15px;padding-top:3px;padding-right:5px");
-				$("#legend-rewards").append(rewardDesc);
-
-				var rewardBox = document.createElement("DIV");
-				rewardBox.setAttribute("id", "legend-box-" + i);
-				rewardBox.setAttribute("class", "r" + iPlusOne + "c1");
-				rewardBox.setAttribute("style", "background-color:" + chartData.colors[i] + ";height:17px;width:17px;position:relative;top:2px;");
-				$("#legend-rewards").append(rewardBox);
-
-				var rewardInfo = document.createElement("DIV");
-				rewardInfo.setAttribute("id", "legend-name-" + i);
-				rewardInfo.setAttribute("class", "r" + iPlusOne + "c2");
-				rewardInfo.setAttribute("style", "height:20px;padding-top:3px;padding-left:3px");
-				$("#legend-rewards").append(rewardInfo);
-			}
-
-        }
+        positionLegendPieces(chartData, this.backgroundColor);
+        
 		// append legend total name and box to legend area
         var rewardLegendTotalBox = document.createElement("DIV");
 		rewardLegendTotalBox.setAttribute("id", "legend-box-" + i);
@@ -110,19 +54,19 @@ function getBasicChartUI() {
         
 
         this.renderActionSeparatorLines(chartCanvas, chartData);
-        this.renderChartValueLabels(chartCanvas, chartData.basicChartGeometry, 4);
-        this.renderChartValueLines(chartCanvas, chartData.basicChartGeometry, 4);
-        this.renderZeroValueLabel(chartCanvas, chartData.basicChartGeometry);
+        this.renderChartValueLabels(chartCanvas, geometry, 4);
+        this.renderChartValueLines(chartCanvas, geometry, 4);
+        this.renderZeroValueLabel(chartCanvas, geometry);
         
         this.renderActionBars(chartCanvas, chartData);
         this.renderBars(chartCanvas,chartData, treatment);
-        this.renderXAxis(chartCanvas, chartData.basicChartGeometry);
-		this.renderYAxis(chartCanvas, chartData.basicChartGeometry);
+        this.renderXAxis(chartCanvas, geometry);
+		this.renderYAxis(chartCanvas, geometry);
 
 		this.renderActionNames(chartCanvas, chartData);
 		this.renderLegend(chartData);
 		this.renderLegendTitle();
-        this.renderTitle(chartCanvas, chartData.basicChartGeometry);
+        this.renderTitle(chartCanvas, geometry);
         this.rewardBarTooltipManager = getRewardBarTooltipManager(chartCanvas,chartData);
 	}
 
