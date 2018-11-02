@@ -12,7 +12,6 @@ function generateChartTabs() {
 
 function generateDisabledChartTab(cssId,text,className) {
     var b = document.createElement("BUTTON");
-    b.disabled = true;
     b.setAttribute("id", cssId);
     b.setAttribute("class", className);
     b.innerHTML = text;
