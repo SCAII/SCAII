@@ -179,7 +179,7 @@ function getBasicChartUI() {
             ctx.save();
             ctx.fillStyle = "black";
 			ctx.font = "bold 15px Arial";
-			ctx.fillText(chartData.actionNames[i], chartData.actions[i].actionLabelOriginX - bcg.groupWidthMargin, chartData.actions[i].actionLabelOriginY)
+			ctx.fillText(chartData.actionNames[i], chartData.actions[i].basicChartGeometry.actionLabelOriginX - bcg.groupWidthMargin, chartData.actions[i].basicChartGeometry.actionLabelOriginY)
             ctx.restore();
 		}
 	}
