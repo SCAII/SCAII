@@ -37,13 +37,19 @@ function getMsxChartUI() {
         generateChartTabs();
         enableChartTab(activeMsxChart);
 
+        // create a row div so that chart and legend will be side by side
+        var msxChartLegendRowDiv = document.createElement("div");
+        msxChartLegendRowDiv.setAttribute("id", "msx-chart-legend-row");
+        msxChartLegendRowDiv.setAttribute("class", "flex-row");
+        $("#msx-container").append(msxChartLegendRowDiv);
+
         // create chartCanvasContainer because some layout issues dealing with canvas directly
         var chartCanvasContainer = document.createElement("div");
         chartCanvasContainer.setAttribute("width", canvasWidth);
         chartCanvasContainer.setAttribute("height", canvasHeight);
         chartCanvasContainer.setAttribute("id", "chartV2-canvas-container");
         
-        $("#msx-container").append(chartCanvasContainer);
+        $("#msx-chart-legend-row").append(chartCanvasContainer);
         $("#chartV2-canvas-container").append(chartCanvas);
 
         // append legend div in explanationRewards so will be right of chartCanvas
@@ -52,7 +58,7 @@ function getMsxChartUI() {
         legendDiv.setAttribute("id", "legend-div");
         legendDiv.setAttribute("class", "flex-column");
         legendDiv.setAttribute("style", "background-color:" + this.backgroundColor + ";height:" + canvasHeight + "px;");
-        $("#explanations-rewards").append(legendDiv);
+        $("#msx-chart-legend-row").append(legendDiv);
         positionLegendPieces(chartData, this.backgroundColor);
 
         var ctx = chartCanvas.getContext("2d");

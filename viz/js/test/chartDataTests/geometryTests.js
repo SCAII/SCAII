@@ -195,20 +195,20 @@ function runBasicChartGeometryTests(failureChecker, chartTesting) {
     // y coord == the axis location == canvas_height / 2
     fc.setCase("action bar positioning");
     bcg.positionActionBar(ch.actionForNameMap["action_0"], 0);
-    fc.assert(ch.actionForNameMap["action_0"].originX, 20.0, "originX action_0");// 20  + 0
-    fc.assert(ch.actionForNameMap["action_0"].originY, 320.0, "originY action_0");// 320 
+    fc.assert(ch.actionForNameMap["action_0"].basicChartGeometry.originX, 20.0, "originX action_0");// 20  + 0
+    fc.assert(ch.actionForNameMap["action_0"].basicChartGeometry.originY, 320.0, "originY action_0");// 320 
 
     bcg.positionActionBar(ch.actionForNameMap["action_1"], 1);
-    fc.assert(ch.actionForNameMap["action_1"].originX, 224.0, "originX action_1");// 20  + 204
-    fc.assert(ch.actionForNameMap["action_1"].originY, 320.0, "originY action_1");// 320 
+    fc.assert(ch.actionForNameMap["action_1"].basicChartGeometry.originX, 224.0, "originX action_1");// 20  + 204
+    fc.assert(ch.actionForNameMap["action_1"].basicChartGeometry.originY, 320.0, "originY action_1");// 320 
 
     bcg.positionActionBar(ch.actionForNameMap["action_2"], 2);
-    fc.assert(ch.actionForNameMap["action_2"].originX, 428.0, "originX action_2");// 20 + 408
-    fc.assert(ch.actionForNameMap["action_2"].originY, 320.0, "originY action_2");// 320 
+    fc.assert(ch.actionForNameMap["action_2"].basicChartGeometry.originX, 428.0, "originX action_2");// 20 + 408
+    fc.assert(ch.actionForNameMap["action_2"].basicChartGeometry.originY, 320.0, "originY action_2");// 320 
 
     bcg.positionActionBar(ch.actionForNameMap["action_3"], 3);
-    fc.assert(ch.actionForNameMap["action_3"].originX, 632.0, "originX action_3");// 20  + 612
-    fc.assert(ch.actionForNameMap["action_3"].originY, 320.0, "originY action_3");// 320 
+    fc.assert(ch.actionForNameMap["action_3"].basicChartGeometry.originX, 632.0, "originX action_3");// 20  + 612
+    fc.assert(ch.actionForNameMap["action_3"].basicChartGeometry.originY, 320.0, "originY action_3");// 320 
     //
     //
     if (chartTesting == "seeSaw") {
@@ -217,20 +217,20 @@ function runBasicChartGeometryTests(failureChecker, chartTesting) {
         // width == widthAvailableForRewardBars== 192
         // height == sum of the bars
         bcg.dimensionActionBar(ch.actionForNameMap["action_0"]);
-        fc.assert(ch.actionForNameMap["action_0"].height, 40.0, "originHeight action_0");  // Abs((10  -20 + 30) * scallingFactor of 2)
-        fc.assert(ch.actionForNameMap["action_0"].width, 164.0, "originWidth action_0");
+        fc.assert(ch.actionForNameMap["action_0"].basicChartGeometry.height, 40.0, "originHeight action_0");  // Abs((10  -20 + 30) * scallingFactor of 2)
+        fc.assert(ch.actionForNameMap["action_0"].basicChartGeometry.width, 164.0, "originWidth action_0");
 
         bcg.dimensionActionBar(ch.actionForNameMap["action_1"]);
-        fc.assert(ch.actionForNameMap["action_1"].height, 100.0, "originHeight action_1"); //  Abs((-40 + 50 - 60) * scallingFacotr of 2)
-        fc.assert(ch.actionForNameMap["action_1"].width, 164.0, "originWidth action_1");
+        fc.assert(ch.actionForNameMap["action_1"].basicChartGeometry.height, 100.0, "originHeight action_1"); //  Abs((-40 + 50 - 60) * scallingFacotr of 2)
+        fc.assert(ch.actionForNameMap["action_1"].basicChartGeometry.width, 164.0, "originWidth action_1");
 
         bcg.dimensionActionBar(ch.actionForNameMap["action_2"]);
-        fc.assert(ch.actionForNameMap["action_2"].height, 160.0, "originHeight action_2"); // Abs((70 - 80 + 90) * scallingFacotr of 2)
-        fc.assert(ch.actionForNameMap["action_2"].width, 164.0, "originWidth action_2");
+        fc.assert(ch.actionForNameMap["action_2"].basicChartGeometry.height, 160.0, "originHeight action_2"); // Abs((70 - 80 + 90) * scallingFacotr of 2)
+        fc.assert(ch.actionForNameMap["action_2"].basicChartGeometry.width, 164.0, "originWidth action_2");
 
         bcg.dimensionActionBar(ch.actionForNameMap["action_3"]);
-        fc.assert(ch.actionForNameMap["action_3"].height, 220.0, "originHeight action_3");  // Abs((-100 + 110 - 120) * scallingFactor of 2)
-        fc.assert(ch.actionForNameMap["action_3"].width, 164.0, "originWidth action_3");
+        fc.assert(ch.actionForNameMap["action_3"].basicChartGeometry.height, 220.0, "originHeight action_3");  // Abs((-100 + 110 - 120) * scallingFactor of 2)
+        fc.assert(ch.actionForNameMap["action_3"].basicChartGeometry.width, 164.0, "originWidth action_3");
     }
     else if (chartTesting == "allPositives") {
         fc.setCase("action bar dimensioning allPositives");
@@ -238,20 +238,20 @@ function runBasicChartGeometryTests(failureChecker, chartTesting) {
         // width == widthAvailableForRewardBars== 192
         // height == sum of the bars
         bcg.dimensionActionBar(ch.actionForNameMap["action_0"]);
-        fc.assert(ch.actionForNameMap["action_0"].height, 0.0, "originHeight action_0");  // Abs((10  -20 + 30) * scallingFactor of 2)
-        fc.assert(ch.actionForNameMap["action_0"].width, 164.0, "originWidth action_0");
+        fc.assert(ch.actionForNameMap["action_0"].basicChartGeometry.height, 0.0, "originHeight action_0");  // Abs((10  -20 + 30) * scallingFactor of 2)
+        fc.assert(ch.actionForNameMap["action_0"].basicChartGeometry.width, 164.0, "originWidth action_0");
 
         bcg.dimensionActionBar(ch.actionForNameMap["action_1"]);
-        fc.assert(ch.actionForNameMap["action_1"].height, 73.0, "originHeight action_1"); //  Abs((-40 + 50 - 60) * scallingFacotr of 2)
-        fc.assert(ch.actionForNameMap["action_1"].width, 164.0, "originWidth action_1");
+        fc.assert(ch.actionForNameMap["action_1"].basicChartGeometry.height, 73.0, "originHeight action_1"); //  Abs((-40 + 50 - 60) * scallingFacotr of 2)
+        fc.assert(ch.actionForNameMap["action_1"].basicChartGeometry.width, 164.0, "originWidth action_1");
 
         bcg.dimensionActionBar(ch.actionForNameMap["action_2"]);
-        fc.assert(ch.actionForNameMap["action_2"].height, 175.2, "originHeight action_2"); // Abs((70 - 80 + 90) * scallingFacotr of 2)
-        fc.assert(ch.actionForNameMap["action_2"].width, 164.0, "originWidth action_2");
+        fc.assert(ch.actionForNameMap["action_2"].basicChartGeometry.height, 175.2, "originHeight action_2"); // Abs((70 - 80 + 90) * scallingFacotr of 2)
+        fc.assert(ch.actionForNameMap["action_2"].basicChartGeometry.width, 164.0, "originWidth action_2");
 
         bcg.dimensionActionBar(ch.actionForNameMap["action_3"]);
-        fc.assert(ch.actionForNameMap["action_3"].height, 240.9, "originHeight action_3");  // Abs((-100 + 110 - 120) * scallingFactor of 2)
-        fc.assert(ch.actionForNameMap["action_3"].width, 164.0, "originWidth action_3");
+        fc.assert(ch.actionForNameMap["action_3"].basicChartGeometry.height, 240.9, "originHeight action_3");  // Abs((-100 + 110 - 120) * scallingFactor of 2)
+        fc.assert(ch.actionForNameMap["action_3"].basicChartGeometry.width, 164.0, "originWidth action_3");
     }
     else if (chartTesting == "allNegatives") {
         fc.setCase("action bar dimensioning allNegatives");
@@ -259,20 +259,20 @@ function runBasicChartGeometryTests(failureChecker, chartTesting) {
         // width == widthAvailableForRewardBars== 192
         // height == sum of the bars
         bcg.dimensionActionBar(ch.actionForNameMap["action_0"]);
-        fc.assert(ch.actionForNameMap["action_0"].height, 43.8, "originHeight action_0");  // Abs((10  -20 + 30) * scallingFactor of 2)
-        fc.assert(ch.actionForNameMap["action_0"].width, 164.0, "originWidth action_0");
+        fc.assert(ch.actionForNameMap["action_0"].basicChartGeometry.height, 43.8, "originHeight action_0");  // Abs((10  -20 + 30) * scallingFactor of 2)
+        fc.assert(ch.actionForNameMap["action_0"].basicChartGeometry.width, 164.0, "originWidth action_0");
 
         bcg.dimensionActionBar(ch.actionForNameMap["action_1"]);
-        fc.assert(ch.actionForNameMap["action_1"].height, 109.5, "originHeight action_1"); //  Abs((-40 + 50 - 60) * scallingFacotr of 2)
-        fc.assert(ch.actionForNameMap["action_1"].width, 164.0, "originWidth action_1");
+        fc.assert(ch.actionForNameMap["action_1"].basicChartGeometry.height, 109.5, "originHeight action_1"); //  Abs((-40 + 50 - 60) * scallingFacotr of 2)
+        fc.assert(ch.actionForNameMap["action_1"].basicChartGeometry.width, 164.0, "originWidth action_1");
 
         bcg.dimensionActionBar(ch.actionForNameMap["action_2"]);
-        fc.assert(ch.actionForNameMap["action_2"].height, 175.2, "originHeight action_2"); // Abs((70 - 80 + 90) * scallingFacotr of 2)
-        fc.assert(ch.actionForNameMap["action_2"].width, 164.0, "originWidth action_2");
+        fc.assert(ch.actionForNameMap["action_2"].basicChartGeometry.height, 175.2, "originHeight action_2"); // Abs((70 - 80 + 90) * scallingFacotr of 2)
+        fc.assert(ch.actionForNameMap["action_2"].basicChartGeometry.width, 164.0, "originWidth action_2");
 
         bcg.dimensionActionBar(ch.actionForNameMap["action_3"]);
-        fc.assert(ch.actionForNameMap["action_3"].height, 240.9, "originHeight action_3");  // Abs((-100 + 110 - 120) * scallingFactor of 2)
-        fc.assert(ch.actionForNameMap["action_3"].width, 164.0, "originWidth action_3");
+        fc.assert(ch.actionForNameMap["action_3"].basicChartGeometry.height, 240.9, "originHeight action_3");  // Abs((-100 + 110 - 120) * scallingFactor of 2)
+        fc.assert(ch.actionForNameMap["action_3"].basicChartGeometry.width, 164.0, "originWidth action_3");
     }
     else {
         fc.assert(chartTesting, "none", "chartTesting has wrong variable name or no chart!");
