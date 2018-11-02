@@ -32,7 +32,7 @@ function getMsxChartUI() {
         // create the MSX tabs div
         var msxTabsContainer = document.createElement("div");
         msxTabsContainer.setAttribute("id", "msx-chart-tabs");
-        msxTabsContainer.setAttribute("class", "master-tab-container flex-row");
+        msxTabsContainer.setAttribute("class", "msx-tab-container flex-row");
         $("#msx-container").append(msxTabsContainer);
         generateChartTabs();
         enableChartTab(activeMsxChart);
