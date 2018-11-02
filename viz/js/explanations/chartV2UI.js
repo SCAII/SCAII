@@ -142,8 +142,10 @@ function populateRewardsSelector() {
 	radioBasicRewards.setAttribute("id", "radio-basic-rewards");
 	radioBasicRewards.setAttribute("name", "rewardView");
 	radioBasicRewards.setAttribute("value", "rewardBasic");
-	radioBasicRewards.setAttribute("style", "margin-left:20px; ");
-	radioBasicRewards.setAttribute("checked", "checked");
+    radioBasicRewards.setAttribute("style", "margin-left:20px; ");
+    if (chartStyle == "basic"){
+        radioBasicRewards.setAttribute("checked", "checked");
+    }
 	radioBasicRewards.onclick = function(e) {
         chartStyle = "basic";
         currentExplManager.render("live");
@@ -160,7 +162,10 @@ function populateRewardsSelector() {
 	radioMsxRewards.setAttribute("id", "radio-msx-rewards");
 	radioMsxRewards.setAttribute("name", "rewardView");
 	radioMsxRewards.setAttribute("value", "rewardMsx");
-	radioMsxRewards.setAttribute("style", "margin-left:20px; ");
+    radioMsxRewards.setAttribute("style", "margin-left:20px; ");
+    if (chartStyle == "msx"){
+        radioMsxRewards.setAttribute("checked", "checked");
+    }
 	radioMsxRewards.onclick = function(e) {
         chartStyle = "msx";
 		currentExplManager.render("live");
@@ -177,7 +182,10 @@ function populateRewardsSelector() {
 	radioAdvantageRewards.setAttribute("id", "radio-advantage-rewards");
 	radioAdvantageRewards.setAttribute("name", "rewardView");
 	radioAdvantageRewards.setAttribute("value", "rewardAdvantage");
-	radioAdvantageRewards.setAttribute("style", "margin-left:20px; ");
+    radioAdvantageRewards.setAttribute("style", "margin-left:20px; ");
+    if (chartStyle == "advantage"){
+        radioAdvantageRewards.setAttribute("checked", "checked");
+    }
 	radioAdvantageRewards.onclick = function(e) {
         chartStyle = "advantage";
 		currentExplManager.render("live");
@@ -250,9 +258,9 @@ function positionLegendPieces(chartData, backgroundColor){
     legendTitle.setAttribute("class", "r0c0_1");
     legendTitle.setAttribute("style", "height:20px;padding:5px");
     $("#legend-rewards").append(legendTitle);
-
+    var i;
     // append desc, legend names, and boxes to legend area
-    for (var i in chartData.rewardNames) {
+    for (i in chartData.rewardNames) {
         var iPlusOne = Number(i) + 1;
         if (iPlusOne % 2 == 0) {
             var rewardDesc = document.createElement('DIV');
@@ -294,4 +302,5 @@ function positionLegendPieces(chartData, backgroundColor){
         }
 
     }
+    return i;
 }

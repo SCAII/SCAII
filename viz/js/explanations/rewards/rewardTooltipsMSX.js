@@ -1,11 +1,11 @@
-function getRewardBarTooltipManager(canvas, chartData){
+function getMSXRewardBarTooltipManager(canvas, chartData){
     var ttm = {};
 
     ttm.chartData = chartData;
     ttm.canvas = canvas;
 
     ttm.generateTooltips= function(){
-        this.chartData.basicChartGeometry.positionTooltips();
+        this.chartData.msxChartGeometry.positionTooltips();
         for (var i in this.chartData.actionRewardNames){
             var actionRewardName = this.chartData.actionRewardNames[i];
             var rewardBar = this.chartData.actionRewardForNameMap[actionRewardName];
@@ -14,7 +14,7 @@ function getRewardBarTooltipManager(canvas, chartData){
         }
     }
     ttm.generateValueTooltips = function () {
-        this.chartData.basicChartGeometry.positionValueTooltips();
+        this.chartData.msxChartGeometry.positionValueTooltips();
         for (var i in this.chartData.actionRewardNames) {
             var actionRewardName = this.chartData.actionRewardNames[i];
             var rewardBar = this.chartData.actionRewardForNameMap[actionRewardName];
@@ -27,7 +27,7 @@ function getRewardBarTooltipManager(canvas, chartData){
     canvas.onmousemove = function(e){
         var x = e.offsetX;
         var y = e.offsetY;
-        var actionRewardName = chartData.basicChartGeometry.getActionBarNameForCoordinates(x, y);
+        var actionRewardName = chartData.msxChartGeometry.getActionBarNameForCoordinates(x, y);
         if (actionRewardName == "None"){
             ttm.hideAllToolTips();
         }
@@ -76,8 +76,8 @@ function getRewardBarTooltipManager(canvas, chartData){
 
 function createTooltipDiv(text, rewardBar, canvas) {
     var canvas_bounds = canvas.getBoundingClientRect();
-    var x = rewardBar.basicChartGeometry.tooltipOriginX + canvas_bounds.left;
-    var y = rewardBar.basicChartGeometry.tooltipOriginY  + canvas_bounds.top;
+    var x = rewardBar.msxChartGeometry.tooltipOriginX + canvas_bounds.left;
+    var y = rewardBar.msxChartGeometry.tooltipOriginY  + canvas_bounds.top;
 
     var tooltipContainer = document.createElement("div");
     tooltipContainer.setAttribute("id", "tooltip-container-" + rewardBar.fullName);
@@ -116,8 +116,8 @@ function createValueTooltipDiv (text, rewardBar, canvas) {
     var ttDiv = document.createElement("div");
     ttDiv.setAttribute("id",id);
     var canvas_bounds = canvas.getBoundingClientRect();
-    var x = rewardBar.basicChartGeometry.tooltipOriginX + canvas_bounds.left;
-    var y = rewardBar.basicChartGeometry.tooltipOriginY  + canvas_bounds.top;
+    var x = rewardBar.msxChartGeometry.tooltipOriginX + canvas_bounds.left;
+    var y = rewardBar.msxChartGeometry.tooltipOriginY  + canvas_bounds.top;
     ttDiv.setAttribute("style", 'position:absolute;visibility:hidden;padding:4px;pointer-events:none;z-index:' + zIndexMap["tooltip"] + ';left:' + x + 'px;top:' + y + 'px;color:black;font-family:Arial');
     var textNode = document.createTextNode(text);
     ttDiv.append(textNode)

@@ -27,19 +27,19 @@ function addMsxGeometryFunctions(chartData) {
     msxCG.positiveMarkerYPixelsFromXAxis   = [];
 
 
-    msxCG.initMsxChartDimensions = function (canvasHeight, canvasWidth, groupWidthMarginFactor, rewardSpacerWidth) {
-            msxCG.canvasHeight = canvasHeight;
-            msxCG.canvasWidth = canvasWidth;
-            msxCG.widthAvailableForGroup = Math.floor(msxCG.canvasWidth / 2);
-            msxCG.groupWidthMargin = Math.floor((msxCG.widthAvailableForGroup * groupWidthMarginFactor) / 2);
-            msxCG.widthAvailableForRewardBars = Math.floor(msxCG.widthAvailableForGroup - (3 * msxCG.groupWidthMargin));
-            msxCG.widthAvailableForRewardBar = Math.floor(msxCG.widthAvailableForRewardBars / chartData.rewardNames.length);
-            msxCG.rewardBarWidth = Math.floor(msxCG.widthAvailableForRewardBar - (rewardSpacerWidth));
-            //biggest bar should take up .75 of canvasHeight/2  (120 * scalingFactor == 3/4 * canvasHeight/2) (we assumed scalingFactor == 2)
-            msxCG.scalingFactor = ( ((msxCG.canvasHeight / 2) * 0.75) / chartData.getMaxAbsoluteValueReward() ).toFixed(2);
+    msxCG.initChartDimensions = function (canvasHeight, canvasWidth, groupWidthMarginFactor, rewardSpacerWidth) {
+        msxCG.canvasHeight = canvasHeight;
+        msxCG.canvasWidth = canvasWidth;
+        msxCG.widthAvailableForGroup = Math.floor(msxCG.canvasWidth / 2);
+        msxCG.groupWidthMargin = Math.floor((msxCG.widthAvailableForGroup * groupWidthMarginFactor) / 2);
+        msxCG.widthAvailableForRewardBars = Math.floor(msxCG.widthAvailableForGroup - (3 * msxCG.groupWidthMargin));
+        msxCG.widthAvailableForRewardBar = Math.floor(msxCG.widthAvailableForRewardBars / chartData.rewardNames.length);
+        msxCG.rewardBarWidth = Math.floor(msxCG.widthAvailableForRewardBar - (rewardSpacerWidth));
+        //biggest bar should take up .75 of canvasHeight/2  (120 * scalingFactor == 3/4 * canvasHeight/2) (we assumed scalingFactor == 2)
+        msxCG.scalingFactor = ( ((msxCG.canvasHeight / 2) * 0.75) / chartData.getMaxAbsoluteValueReward() ).toFixed(2);
     }
 
-    msxCG.positionMsxRewardBar = function (maxValueAction, rewardBar, actionIndex, rewardIndex) {
+    msxCG.positionRewardBar = function (maxValueAction, rewardBar, rewardIndex) {
             //bar.originX = (groupWidthMargin*2) + j *(rewardBarWidth) **For picked best action**
             //bar.originX = widthAvailableForGroup + (groupWidthMargin*2) + j *(rewardBarWidth) **For all other actions**
             //bar.originY = canvasHeight/2 ==> constant 320.0
@@ -61,7 +61,7 @@ function addMsxGeometryFunctions(chartData) {
         rewardBar.msxChartGeometry.width = msxCG.rewardBarWidth;
     }
     
-    msxCG.positionMsxActionLabels = function(minDistanceFromBarOrAxis) {
+    msxCG.positionActionLabels = function(minDistanceFromBarOrAxis) {
         var maxAbsValNegBar = chartData.getMaxAbsValNegativeReward();
         var actionLabelY = undefined;
         if (maxAbsValNegBar == undefined){
@@ -86,7 +86,7 @@ function addMsxGeometryFunctions(chartData) {
         }
 
     }
-    msxCG.positionMsxValueMarkers = function (numberOfLines) {
+    msxCG.positionValueMarkers = function (numberOfLines) {
         msxCG.positiveMarkerValues = [numberOfLines];
         msxCG.positiveMarkerYPixelsFromXAxis = [numberOfLines];
         var valueMarkers = Math.floor(chartData.getMaxAbsoluteValueReward() / numberOfLines);
@@ -97,7 +97,7 @@ function addMsxGeometryFunctions(chartData) {
             setValue += valueMarkers;
         }
     }
-    msxCG.positionMsxValueLines = function (numberOfLines) {
+    msxCG.positionValueLines = function (numberOfLines) {
         msxCG.positiveLine = [numberOfLines];
         var lineSpacing = Math.floor(chartData.getMaxAbsoluteValueReward() / numberOfLines * msxCG.scalingFactor);
         msxCG.positiveLineLength = msxCG.canvasWidth - 2 * msxCG.groupWidthMargin;
@@ -108,7 +108,35 @@ function addMsxGeometryFunctions(chartData) {
         }
     }
 
-    msxCG.positionMsxXAxisLine = function(){
+    msxCG.positionTooltips = function(){
+        for (var i in chartData.actionRewardNames) {
+            var actionRewardName = chartData.actionRewardNames[i];
+            var rewardBar = chartData.actionRewardForNameMap[actionRewardName];
+            //originX + rewardBarWidth
+
+            rewardBar.msxChartGeometry.tooltipOriginX = rewardBar.msxChartGeometry.originX + basicCG.rewardBarWidth;
+            // (canvasHeight / 2) - ((ch.rewardBar[i].bars[j].value * scalingFactor) * 0.75)
+            rewardBar.msxChartGeometry.tooltipOriginY = basicCG.canvasHeight/2 - rewardBar.value * basicCG.scalingFactor * 0.75; 
+        }
+    }
+
+    msxCG.positionValueTooltips = function() {
+        for (var i in chartData.actionRewardNames) {
+            var actionRewardName = chartData.actionRewardNames[i];
+            var rewardBar = chartData.actionRewardForNameMap[actionRewardName];
+
+
+            rewardBar.msxChartGeometry.tooltipOriginX = rewardBar.msxChartGeometry.originX - Number(basicCG.rewardBarWidth / 2);
+            // (canvasHeight / 2) - ((ch.rewardBar[i].bars[j].value * scalingFactor) * 0.75)
+            if (rewardBar.value >= 0) {
+                rewardBar.msxChartGeometry.tooltipOriginY = basicCG.canvasHeight/2 - (rewardBar.value + 30) * basicCG.scalingFactor;
+            } else {
+                rewardBar.msxChartGeometry.tooltipOriginY = basicCG.canvasHeight/2 - (rewardBar.value) * basicCG.scalingFactor;
+            }
+        }
+    }
+
+    msxCG.positionXAxisLine = function(){
         // xAxisLength = width - 2 * groupWidthMargin
         // xAxisOriginX = groupWidthMargin;
         // xAxisOriginY = height / 2
@@ -117,7 +145,7 @@ function addMsxGeometryFunctions(chartData) {
         msxCG.xAxisOriginX = msxCG.groupWidthMargin;
     }
 
-    msxCG.positionMsxYAxisLine = function(){
+    msxCG.positionYAxisLine = function(){
         // yAxisLength = maxAbsRewardValue * 2 * scalingFactor
         // yAxisOriginX = groupWidthMargin;
         // yAxisOriginY = (canvasHeight - yAxisLength) / 2
@@ -126,7 +154,7 @@ function addMsxGeometryFunctions(chartData) {
         msxCG.yAxisOriginX = msxCG.groupWidthMargin;
     }
 
-    msxCG.positionMsxActionSeparatorLines = function() {
+    msxCG.positionActionSeparatorLines = function() {
         // acitonLinesLength = maxAbsRewardValue * 2 * scalingFactor + aBitMore
         // actionLinesOriginX
         // actionLinesOriginY = (canvasHeight - yAxisLength) / 2

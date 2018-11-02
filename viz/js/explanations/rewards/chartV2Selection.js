@@ -30,7 +30,13 @@ function addSelectionFunctions (rawChartData) {
             action.bars[j].highlight = false;
         }
     }
-    
+
+    rd.clearSelectionForAction = function (action) {
+        for (var j in action.bars) {
+            action.bars[j].selected = false;
+        }
+    }
+
     rd.clearRewardBarSelections();
     rd.clearSaliencyMapSelections();
     rd.clearHighlightSelections();
@@ -79,6 +85,22 @@ function addSelectionFunctions (rawChartData) {
         }
     }
     
+    rd.highlightSimilarRewardBarsForAction = function (barName, action) {
+        for (var j in action.bars) {
+            if (action.bars[j].name == barName) {
+                action.bars[j].highlight = true;
+            }
+        }
+    }
+
+    rd.selectSimilarRewardBarsForAction = function (barName, action) {
+        for (var j in action.bars) {
+            if (action.bars[j].name == barName) {
+                action.bars[j].selected = true;
+            }
+        }
+    }
+
     rd.highlightSimilarRewardBarsForActions = function (barName, action1, action2) {
         var actions = [ action1, action2];
         for (var i in actions) {

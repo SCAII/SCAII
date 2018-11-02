@@ -16,7 +16,7 @@ function getMsxChartUI() {
         var winningAction = chartData.actionBest;
         var losingAction = actionForMsxTabId[activeMsxChart];
         chartData.clearHighlightSelectionForAction(winningAction);
-        this.recoverWinningActionStateAfterViewSwitch(winningAction, losingAction);
+        this.recoverWinningActionStateAfterViewSwitch(chartData, winningAction, losingAction);
         chartCanvas.onclick = function(e){
             var x = e.offsetX;
 		    var y = e.offsetY;
@@ -58,10 +58,10 @@ function getMsxChartUI() {
         var ctx = chartCanvas.getContext("2d");
         $("#chartV2-canvas").css("background-color", this.backgroundColor);
         
-        this.renderChart(chartCanvas, msxGeometry, chartData, winningAction, losingAction);
+        this.renderChartComponents(chartCanvas, msxGeometry, chartData, treatment, winningAction, losingAction);
 	}
 
-    ui.renderChart = function(chartCanvas, msxGeometry, chartData, winningAction, losingAction){
+    ui.renderChartComponents = function(chartCanvas, msxGeometry, chartData, treatment, winningAction, losingAction){
         this.renderActionSeparatorLines(chartCanvas, chartData);
         this.renderChartValueLabels(chartCanvas, msxGeometry, 4);
         this.renderChartValueLines(chartCanvas, msxGeometry, 4);
@@ -104,11 +104,37 @@ function getMsxChartUI() {
         }
     }
 
-    ui.recoverWinningActionStateAfterViewSwitch = function(winningAction, losingAction){
-        // if the losingAction has a selected bar, then we do not select the corresponding bar on winningAction
-        // if it doesn't, then we do.
-
-        // whatever is highlighed on the losingAction, highlight that for the winningAction
+    // Since we are using the losingActions to remember state of highlight and selection,
+    // we need to use the following logic to deduce whether the winningAction has any selection 
+    // in the context of the current pair:
+    //
+    // clear the selection state and highlight state of all bars on the winning action 
+    // if losingAction has highlighted bar
+    //      highlight corresponding bar in winningAction
+    //      if losingAction's highlighted bar is not selected
+    //           select corresponding bar on winningAction 
+    //
+    ui.recoverWinningActionStateAfterViewSwitch = function(chartData, winningAction, losingAction){
+        // clear the selection state and highlight state of all bars on the winning action 
+        chartData.clearHighlightSelectionForAction(winningAction);
+        chartData.clearSelectionForAction(winningAction);
+        var highlightedLosingActionBar = undefined;
+        for (var i in losingAction.bars){
+            var bar = losingAction.bars[i];
+            if (bar.highlight){
+                highlightedLosingActionBar = bar;
+            }
+        }
+        // if losingAction has highlighted bar
+        //      highlight corresponding bar in winningAction
+        //      if losingAction's highlighted bar is not selected
+        //           select corresponding bar on winningAction 
+        if (highlightedLosingActionBar != undefined){
+            chartData.highlightSimilarRewardBarsForAction(winningAction, highlightedLosingActionBar.name);
+            if (!highlightedLosingActionBar.selected){
+                chartData.selectSimilarRewardBarsForAction(winningAction, highlightedLosingActionBar.name);
+            }
+        }
 
     }
     ui.renderTitle = function (canvas, msxChartGeometry) {
@@ -170,9 +196,6 @@ function getMsxChartUI() {
 			 *********************************************************************************************/
 			name.appendChild(content);
 		}	
-		var totalName = document.getElementById("legend-total-name");
-		var totalContent = document.createTextNode("Sum of above rewards");
-		totalName.appendChild(totalContent);
 	}
 
 
@@ -182,10 +205,11 @@ function getMsxChartUI() {
 		msxGeometry.positionActionLabels(30);
 		var ctx = canvas.getContext("2d");
 		for (var i = 0; i < actions.length; i++) {
+            var action = actions[i];
             ctx.save();
             ctx.fillStyle = "black";
 			ctx.font = "bold 15px Arial";
-			ctx.fillText(actionNames[i], actions[i].msxChartGeometry.actionLabelOriginX - msxGeometry.groupWidthMargin, actions[i].msxChartGeometry.actionLabelOriginY)
+			ctx.fillText(action.name, action.msxChartGeometry.actionLabelOriginX - msxGeometry.groupWidthMargin, action.msxChartGeometry.actionLabelOriginY)
             ctx.restore();
 		}
 	}
@@ -316,7 +340,7 @@ function getMsxChartUI() {
 			var action = actions[i];
 			for (var j=0; j<chartData.rewardNames.length; j++) {
 				var bar = action.bars[j];
-				chartData.msxChartGeometry.positionRewardBar(bar, i, j);
+				chartData.msxChartGeometry.positionRewardBar(action.msxMaxValueAction, bar, j);
 				chartData.msxChartGeometry.dimensionRewardBar(bar);
 				if (bar.selected == true) {
 					var saveSelected = bar;
@@ -349,7 +373,7 @@ function getMsxChartUI() {
 		var upperLeftOriginX = x0;
 		var upperLeftOriginY = undefined;
 		if (bar.value > 0) {
-			upperLeftOriginY = y0 - bar.height;
+			upperLeftOriginY = y0 - barMcg.height;
 		}
 		else {
 			upperLeftOriginY = y0;

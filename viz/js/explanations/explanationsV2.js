@@ -224,6 +224,7 @@ function getExplanationsV2Manager(){
             this.data = ensureActionValuesSet(this.data);
             this.data = addConvenienceDataStructures(this.data);
             this.data = setDefaultSelections(this.data, this.treatmentID);
+            this.data = addMsxToBars(this.data);
             this.chartDataForStep[step] = this.data;
             this.stepsWithExplanations.push(step);
             this.data.actionsRanked = [];

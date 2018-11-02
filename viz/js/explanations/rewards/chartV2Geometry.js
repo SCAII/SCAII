@@ -95,8 +95,8 @@ function addBasicChartGeometryFunctions(chartData) {
         //ch.actionForNameMap["action_0"]
     	// x coord == groupWidthmargin + i * (widthAvailableForGroup)
     	// y coord == the axis location == canvas_height / 2
-        actionBar.originX = basicCG.groupWidthMargin + action * basicCG.widthAvailableForGroup; 
-        actionBar.originY = basicCG.canvasHeight / 2;
+        actionBar.basicChartGeometry.originX = basicCG.groupWidthMargin + action * basicCG.widthAvailableForGroup; 
+        actionBar.basicChartGeometry.originY = basicCG.canvasHeight / 2;
     }
 
 
@@ -106,8 +106,8 @@ function addBasicChartGeometryFunctions(chartData) {
         for (var i in actionBar.bars) {
             total += actionBar.bars[i].value;
         }
-        actionBar.height = Math.abs(total * basicCG.scalingFactor);
-        actionBar.width = basicCG.widthAvailableForRewardBars;
+        actionBar.basicChartGeometry.height = Math.abs(total * basicCG.scalingFactor);
+        actionBar.basicChartGeometry.width = basicCG.widthAvailableForRewardBars;
         actionBar.value = total;
     }
 
@@ -172,7 +172,7 @@ function addBasicChartGeometryFunctions(chartData) {
             var rewardBar = chartData.actionRewardForNameMap[actionRewardName];
 
 
-            rewardBar.tooltipOriginX = rewardBar.originX - Number(basicCG.rewardBarWidth / 2);
+            rewardBar.basicChartGeometry.tooltipOriginX = rewardBar.basicChartGeometry.originX - Number(basicCG.rewardBarWidth / 2);
             // (canvasHeight / 2) - ((ch.rewardBar[i].bars[j].value * scalingFactor) * 0.75)
             if (rewardBar.value >= 0) {
                 rewardBar.basicChartGeometry.tooltipOriginY = basicCG.canvasHeight/2 - (rewardBar.value + 30) * basicCG.scalingFactor;

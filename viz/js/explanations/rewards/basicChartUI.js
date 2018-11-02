@@ -35,11 +35,11 @@ function getBasicChartUI() {
         legendDiv.setAttribute("class", "flex-column");
         legendDiv.setAttribute("style", "background-color:" + this.backgroundColor + ";height:" + canvasHeight + "px;");
         $("#explanations-rewards").append(legendDiv);
-        positionLegendPieces(chartData, this.backgroundColor);
+        var nextIndex = positionLegendPieces(chartData, this.backgroundColor);
         
 		// append legend total name and box to legend area
         var rewardLegendTotalBox = document.createElement("DIV");
-		rewardLegendTotalBox.setAttribute("id", "legend-box-" + i);
+		rewardLegendTotalBox.setAttribute("id", "legend-box-" + nextIndex);
 		rewardLegendTotalBox.setAttribute("class", "r" + Number(chartData.rewardNames.length + 1) + "c1");
 		rewardLegendTotalBox.setAttribute("style", "background-color:" + chartData.actions[0].color + ";height:17px;width:17px;position:relative;top:4px;");
 		$("#legend-rewards").append(rewardLegendTotalBox);
@@ -344,7 +344,7 @@ function getBasicChartUI() {
 		var upperLeftOriginX = x0;
 		var upperLeftOriginY = undefined;
 		if (bar.value > 0) {
-			upperLeftOriginY = y0 - bar.height;
+			upperLeftOriginY = y0 - barBcg.height;
 		}
 		else {
 			upperLeftOriginY = y0;

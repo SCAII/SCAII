@@ -39,168 +39,168 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
     */
     ch = addMsxGeometryFunctions(ch);
     var msxCG = ch.msxChartGeometry;
-    msxCG.initMsxChartDimensions(640.0, 816.0, 0.2, 0.0);
+    msxCG.initChartDimensions(640.0, 816.0, 0.2, 0.0);
     var rewardForName = ch.actionRewardForNameMap;
     if (chartTesting == "seeSaw") {
         //fc.setCase("seeSaw [DETAIL]");
         fc.setCase("msx seeSaw bar positioning");
         //------------------------------------------------------------------------------
-        msxCG.positionMsxRewardBar(ch.actions[0].msxMaxValueAction, rewardForName["action_0.reward_0"], 0, 0);
+        msxCG.positionRewardBar(ch.actions[0].msxMaxValueAction, rewardForName["action_0.reward_0"], 0, 0);
         fc.assert(rewardForName["action_0.reward_0"].msxChartGeometry.originX, 448.0, "originX 0.0");
         fc.assert(rewardForName["action_0.reward_0"].msxChartGeometry.originY, 320.0, "originY 0.0");
 
-        msxCG.positionMsxRewardBar(ch.actions[0].msxMaxValueAction, rewardForName["action_0.reward_1"], 0, 1);
+        msxCG.positionRewardBar(ch.actions[0].msxMaxValueAction, rewardForName["action_0.reward_1"], 0, 1);
         fc.assert(rewardForName["action_0.reward_1"].msxChartGeometry.originX, 544.0, "originX 0.1");
         fc.assert(rewardForName["action_0.reward_1"].msxChartGeometry.originY, 320.0, "originY 0.1");
 
-        msxCG.positionMsxRewardBar(ch.actions[0].msxMaxValueAction, rewardForName["action_0.reward_2"], 0, 2);
+        msxCG.positionRewardBar(ch.actions[0].msxMaxValueAction, rewardForName["action_0.reward_2"], 0, 2);
         fc.assert(rewardForName["action_0.reward_2"].msxChartGeometry.originX, 640.0, "originX 0.2");
         fc.assert(rewardForName["action_0.reward_2"].msxChartGeometry.originY, 320.0, "originY 0.2");
 
         //------------------------------------------------------------------------------
-        msxCG.positionMsxRewardBar(ch.actions[1].msxMaxValueAction, rewardForName["action_1.reward_0"], 1, 0);
+        msxCG.positionRewardBar(ch.actions[1].msxMaxValueAction, rewardForName["action_1.reward_0"], 1, 0);
         fc.assert(rewardForName["action_1.reward_0"].msxChartGeometry.originX, 448.0, "originX 1.0");
         fc.assert(rewardForName["action_1.reward_0"].msxChartGeometry.originY, 320.0, "originY 1.0");
 
-        msxCG.positionMsxRewardBar(ch.actions[1].msxMaxValueAction, rewardForName["action_1.reward_1"], 1, 1);
+        msxCG.positionRewardBar(ch.actions[1].msxMaxValueAction, rewardForName["action_1.reward_1"], 1, 1);
         fc.assert(rewardForName["action_1.reward_1"].msxChartGeometry.originX, 544.0, "originX 1.1");
         fc.assert(rewardForName["action_1.reward_1"].msxChartGeometry.originY, 320.0, "originY 1.1");
 
-        msxCG.positionMsxRewardBar(ch.actions[1].msxMaxValueAction, rewardForName["action_1.reward_2"], 1, 2);
+        msxCG.positionRewardBar(ch.actions[1].msxMaxValueAction, rewardForName["action_1.reward_2"], 1, 2);
         fc.assert(rewardForName["action_1.reward_2"].msxChartGeometry.originX, 640.0, "originX 1.2");
         fc.assert(rewardForName["action_1.reward_2"].msxChartGeometry.originY, 320.0, "originY 1.2");
 
         //------------------------------------------------------------------------------
-        msxCG.positionMsxRewardBar(ch.actions[2].msxMaxValueAction, rewardForName["action_2.reward_0"], 2, 0);
+        msxCG.positionRewardBar(ch.actions[2].msxMaxValueAction, rewardForName["action_2.reward_0"], 2, 0);
         fc.assert(rewardForName["action_2.reward_0"].msxChartGeometry.originX, 80.0, "originX 2.0");
         fc.assert(rewardForName["action_2.reward_0"].msxChartGeometry.originY, 320.0, "originY 2.0");
 
-        msxCG.positionMsxRewardBar(ch.actions[2].msxMaxValueAction, rewardForName["action_2.reward_1"], 2, 1);
+        msxCG.positionRewardBar(ch.actions[2].msxMaxValueAction, rewardForName["action_2.reward_1"], 2, 1);
         fc.assert(rewardForName["action_2.reward_1"].msxChartGeometry.originX, 176.0, "originX 2.1");
         fc.assert(rewardForName["action_2.reward_1"].msxChartGeometry.originY, 320.0, "originY 2.1");
 
-        msxCG.positionMsxRewardBar(ch.actions[2].msxMaxValueAction, rewardForName["action_2.reward_2"], 2, 2);
+        msxCG.positionRewardBar(ch.actions[2].msxMaxValueAction, rewardForName["action_2.reward_2"], 2, 2);
         fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.originX, 272.0, "originX 2.2");
         fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.originY, 320.0, "originY 2.2");
 
         //------------------------------------------------------------------------------
-        msxCG.positionMsxRewardBar(ch.actions[3].msxMaxValueAction, rewardForName["action_3.reward_0"], 3, 0);
+        msxCG.positionRewardBar(ch.actions[3].msxMaxValueAction, rewardForName["action_3.reward_0"], 3, 0);
         fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.originX, 448.0, "originX 3.0");
         fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.originY, 320.0, "originY 3.0");
         
-        msxCG.positionMsxRewardBar(ch.actions[3].msxMaxValueAction, rewardForName["action_3.reward_1"], 3, 1);
+        msxCG.positionRewardBar(ch.actions[3].msxMaxValueAction, rewardForName["action_3.reward_1"], 3, 1);
         fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.originX, 544.0, "originX 3.1");
         fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.originY, 320.0, "originY 3.1");
 
-        msxCG.positionMsxRewardBar(ch.actions[3].msxMaxValueAction, rewardForName["action_3.reward_2"], 3, 2);
+        msxCG.positionRewardBar(ch.actions[3].msxMaxValueAction, rewardForName["action_3.reward_2"], 3, 2);
         fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.originX, 640.0, "originX 3.2");
         fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.originY, 320.0, "originY 3.2");
 
     } else if (chartTesting == "allPositives") {
         fc.setCase("msx allPositives bar positioning");
         //------------------------------------------------------------------------------
-        msxCG.positionMsxRewardBar(ch.actions[0].msxMaxValueAction, rewardForName["action_0.reward_0"], 0, 0);
+        msxCG.positionRewardBar(ch.actions[0].msxMaxValueAction, rewardForName["action_0.reward_0"], 0, 0);
         fc.assert(rewardForName["action_0.reward_0"].msxChartGeometry.originX, 448.0, "originX 0.0");
         fc.assert(rewardForName["action_0.reward_0"].msxChartGeometry.originY, 320.0, "originY 0.0");
 
-        msxCG.positionMsxRewardBar(ch.actions[0].msxMaxValueAction, rewardForName["action_0.reward_1"], 0, 1);
+        msxCG.positionRewardBar(ch.actions[0].msxMaxValueAction, rewardForName["action_0.reward_1"], 0, 1);
         fc.assert(rewardForName["action_0.reward_1"].msxChartGeometry.originX, 544.0, "originX 0.1");
         fc.assert(rewardForName["action_0.reward_1"].msxChartGeometry.originY, 320.0, "originY 0.1");
 
-        msxCG.positionMsxRewardBar(ch.actions[0].msxMaxValueAction, rewardForName["action_0.reward_2"], 0, 2);
+        msxCG.positionRewardBar(ch.actions[0].msxMaxValueAction, rewardForName["action_0.reward_2"], 0, 2);
         fc.assert(rewardForName["action_0.reward_2"].msxChartGeometry.originX, 640.0, "originX 0.2");
         fc.assert(rewardForName["action_0.reward_2"].msxChartGeometry.originY, 320.0, "originY 0.2");
 
         //------------------------------------------------------------------------------
-        msxCG.positionMsxRewardBar(ch.actions[1].msxMaxValueAction, rewardForName["action_1.reward_0"], 1, 0);
+        msxCG.positionRewardBar(ch.actions[1].msxMaxValueAction, rewardForName["action_1.reward_0"], 1, 0);
         fc.assert(rewardForName["action_1.reward_0"].msxChartGeometry.originX, 448.0, "originX 1.0");
         fc.assert(rewardForName["action_1.reward_0"].msxChartGeometry.originY, 320.0, "originY 1.0");
 
-        msxCG.positionMsxRewardBar(ch.actions[1].msxMaxValueAction, rewardForName["action_1.reward_1"], 1, 1);
+        msxCG.positionRewardBar(ch.actions[1].msxMaxValueAction, rewardForName["action_1.reward_1"], 1, 1);
         fc.assert(rewardForName["action_1.reward_1"].msxChartGeometry.originX, 544.0, "originX 1.1");
         fc.assert(rewardForName["action_1.reward_1"].msxChartGeometry.originY, 320.0, "originY 1.1");
 
-        msxCG.positionMsxRewardBar(ch.actions[1].msxMaxValueAction, rewardForName["action_1.reward_2"], 1, 2);
+        msxCG.positionRewardBar(ch.actions[1].msxMaxValueAction, rewardForName["action_1.reward_2"], 1, 2);
         fc.assert(rewardForName["action_1.reward_2"].msxChartGeometry.originX, 640.0, "originX 1.2");
         fc.assert(rewardForName["action_1.reward_2"].msxChartGeometry.originY, 320.0, "originY 1.2");
 
         //------------------------------------------------------------------------------
-        msxCG.positionMsxRewardBar(ch.actions[2].msxMaxValueAction, rewardForName["action_2.reward_0"], 2, 0);
+        msxCG.positionRewardBar(ch.actions[2].msxMaxValueAction, rewardForName["action_2.reward_0"], 2, 0);
         fc.assert(rewardForName["action_2.reward_0"].msxChartGeometry.originX, 448.0, "originX 2.0");
         fc.assert(rewardForName["action_2.reward_0"].msxChartGeometry.originY, 320.0, "originY 2.0");
 
-        msxCG.positionMsxRewardBar(ch.actions[2].msxMaxValueAction, rewardForName["action_2.reward_1"], 2, 1);
+        msxCG.positionRewardBar(ch.actions[2].msxMaxValueAction, rewardForName["action_2.reward_1"], 2, 1);
         fc.assert(rewardForName["action_2.reward_1"].msxChartGeometry.originX, 544.0, "originX 2.1");
         fc.assert(rewardForName["action_2.reward_1"].msxChartGeometry.originY, 320.0, "originY 2.1");
 
-        msxCG.positionMsxRewardBar(ch.actions[2].msxMaxValueAction, rewardForName["action_2.reward_2"], 2, 2);
+        msxCG.positionRewardBar(ch.actions[2].msxMaxValueAction, rewardForName["action_2.reward_2"], 2, 2);
         fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.originX, 640.0, "originX 2.2");
         fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.originY, 320.0, "originY 2.2");
 
         //------------------------------------------------------------------------------
-        msxCG.positionMsxRewardBar(ch.actions[3].msxMaxValueAction, rewardForName["action_3.reward_0"], 3, 0);
+        msxCG.positionRewardBar(ch.actions[3].msxMaxValueAction, rewardForName["action_3.reward_0"], 3, 0);
         fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.originX, 80.0, "originX 3.0");
         fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.originY, 320.0, "originY 3.0");
         
-        msxCG.positionMsxRewardBar(ch.actions[3].msxMaxValueAction, rewardForName["action_3.reward_1"], 3, 1);
+        msxCG.positionRewardBar(ch.actions[3].msxMaxValueAction, rewardForName["action_3.reward_1"], 3, 1);
         fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.originX, 176.0, "originX 3.1");
         fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.originY, 320.0, "originY 3.1");
 
-        msxCG.positionMsxRewardBar(ch.actions[3].msxMaxValueAction, rewardForName["action_3.reward_2"], 3, 2);
+        msxCG.positionRewardBar(ch.actions[3].msxMaxValueAction, rewardForName["action_3.reward_2"], 3, 2);
         fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.originX, 272.0, "originX 3.2");
         fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.originY, 320.0, "originY 3.2");
 
     } else if (chartTesting == "allNegatives") {
         fc.setCase("msx allNegatives bar positioning");
         //------------------------------------------------------------------------------
-        msxCG.positionMsxRewardBar(ch.actions[0].msxMaxValueAction, rewardForName["action_0.reward_0"], 0, 0);
+        msxCG.positionRewardBar(ch.actions[0].msxMaxValueAction, rewardForName["action_0.reward_0"], 0, 0);
         fc.assert(rewardForName["action_0.reward_0"].msxChartGeometry.originX, 80.0, "originX 0.0");
         fc.assert(rewardForName["action_0.reward_0"].msxChartGeometry.originY, 320.0, "originY 0.0");
 
-        msxCG.positionMsxRewardBar(ch.actions[0].msxMaxValueAction, rewardForName["action_0.reward_1"], 0, 1);
+        msxCG.positionRewardBar(ch.actions[0].msxMaxValueAction, rewardForName["action_0.reward_1"], 0, 1);
         fc.assert(rewardForName["action_0.reward_1"].msxChartGeometry.originX, 176.0, "originX 0.1");
         fc.assert(rewardForName["action_0.reward_1"].msxChartGeometry.originY, 320.0, "originY 0.1");
 
-        msxCG.positionMsxRewardBar(ch.actions[0].msxMaxValueAction, rewardForName["action_0.reward_2"], 0, 2);
+        msxCG.positionRewardBar(ch.actions[0].msxMaxValueAction, rewardForName["action_0.reward_2"], 0, 2);
         fc.assert(rewardForName["action_0.reward_2"].msxChartGeometry.originX, 272.0, "originX 0.2");
         fc.assert(rewardForName["action_0.reward_2"].msxChartGeometry.originY, 320.0, "originY 0.2");
 
         //------------------------------------------------------------------------------
-        msxCG.positionMsxRewardBar(ch.actions[1].msxMaxValueAction, rewardForName["action_1.reward_0"], 1, 0);
+        msxCG.positionRewardBar(ch.actions[1].msxMaxValueAction, rewardForName["action_1.reward_0"], 1, 0);
         fc.assert(rewardForName["action_1.reward_0"].msxChartGeometry.originX, 448.0, "originX 1.0");
         fc.assert(rewardForName["action_1.reward_0"].msxChartGeometry.originY, 320.0, "originY 1.0");
 
-        msxCG.positionMsxRewardBar(ch.actions[1].msxMaxValueAction, rewardForName["action_1.reward_1"], 1, 1);
+        msxCG.positionRewardBar(ch.actions[1].msxMaxValueAction, rewardForName["action_1.reward_1"], 1, 1);
         fc.assert(rewardForName["action_1.reward_1"].msxChartGeometry.originX, 544.0, "originX 1.1");
         fc.assert(rewardForName["action_1.reward_1"].msxChartGeometry.originY, 320.0, "originY 1.1");
 
-        msxCG.positionMsxRewardBar(ch.actions[1].msxMaxValueAction, rewardForName["action_1.reward_2"], 1, 2);
+        msxCG.positionRewardBar(ch.actions[1].msxMaxValueAction, rewardForName["action_1.reward_2"], 1, 2);
         fc.assert(rewardForName["action_1.reward_2"].msxChartGeometry.originX, 640.0, "originX 1.2");
         fc.assert(rewardForName["action_1.reward_2"].msxChartGeometry.originY, 320.0, "originY 1.2");
 
         //------------------------------------------------------------------------------
-        msxCG.positionMsxRewardBar(ch.actions[2].msxMaxValueAction, rewardForName["action_2.reward_0"], 2, 0);
+        msxCG.positionRewardBar(ch.actions[2].msxMaxValueAction, rewardForName["action_2.reward_0"], 2, 0);
         fc.assert(rewardForName["action_2.reward_0"].msxChartGeometry.originX, 448.0, "originX 2.0");
         fc.assert(rewardForName["action_2.reward_0"].msxChartGeometry.originY, 320.0, "originY 2.0");
 
-        msxCG.positionMsxRewardBar(ch.actions[2].msxMaxValueAction, rewardForName["action_2.reward_1"], 2, 1);
+        msxCG.positionRewardBar(ch.actions[2].msxMaxValueAction, rewardForName["action_2.reward_1"], 2, 1);
         fc.assert(rewardForName["action_2.reward_1"].msxChartGeometry.originX, 544.0, "originX 2.1");
         fc.assert(rewardForName["action_2.reward_1"].msxChartGeometry.originY, 320.0, "originY 2.1");
 
-        msxCG.positionMsxRewardBar(ch.actions[2].msxMaxValueAction, rewardForName["action_2.reward_2"], 2, 2);
+        msxCG.positionRewardBar(ch.actions[2].msxMaxValueAction, rewardForName["action_2.reward_2"], 2, 2);
         fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.originX, 640.0, "originX 2.2");
         fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.originY, 320.0, "originY 2.2");
 
         //------------------------------------------------------------------------------
-        msxCG.positionMsxRewardBar(ch.actions[3].msxMaxValueAction, rewardForName["action_3.reward_0"], 3, 0);
+        msxCG.positionRewardBar(ch.actions[3].msxMaxValueAction, rewardForName["action_3.reward_0"], 3, 0);
         fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.originX, 448.0, "originX 3.0");
         fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.originY, 320.0, "originY 3.0");
         
-        msxCG.positionMsxRewardBar(ch.actions[3].msxMaxValueAction, rewardForName["action_3.reward_1"], 3, 1);
+        msxCG.positionRewardBar(ch.actions[3].msxMaxValueAction, rewardForName["action_3.reward_1"], 3, 1);
         fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.originX, 544.0, "originX 3.1");
         fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.originY, 320.0, "originY 3.1");
 
-        msxCG.positionMsxRewardBar(ch.actions[3].msxMaxValueAction, rewardForName["action_3.reward_2"], 3, 2);
+        msxCG.positionRewardBar(ch.actions[3].msxMaxValueAction, rewardForName["action_3.reward_2"], 3, 2);
         fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.originX, 640.0, "originX 3.2");
         fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.originY, 320.0, "originY 3.2");
     }
@@ -374,10 +374,10 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
             //X = widthAvailableForGroup + (groupWidthMargin*2) + (widthAvailableForGroup / 2) **For all other actions**
         // y == canvasHeight/2 + maxAbsNegativeRewardValue * scalingFactor + 20
     
-    //Need to be a msxCG.positionActionLabelsMsx(minDistanceFromBarOrAxis) minDistance should be 20
+    //Need to be a msxCG.positionActionLabels(minDistanceFromBarOrAxis) minDistance should be 20
     if (chartTesting == "seeSaw") {
         fc.setCase("action labels positioning seeSaw");
-        msxCG.positionMsxActionLabels(20);
+        msxCG.positionActionLabels(20);
 
         fc.assert(ch.actions[0].msxChartGeometry.actionLabelOriginX, 692.0, "actions_0.X");// 40*2 + 408/2 = 692
         fc.assert(ch.actions[0].msxChartGeometry.actionLabelOriginY, 580.0, "actions_0.Y");//  320 + 120*2 + 20 = 580
@@ -393,7 +393,7 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
 
     } else if (chartTesting == "allPositives") {
         fc.setCase("action labels positioning allPositives");
-        msxCG.positionMsxActionLabels(20);
+        msxCG.positionActionLabels(20);
 
         fc.assert(ch.actions[0].msxChartGeometry.actionLabelOriginX, 692.0, "actions_0.X");// 408 + 40*2 + 408/2 = 692
         fc.assert(ch.actions[0].msxChartGeometry.actionLabelOriginY, 340.0, "actions_0.Y");//  320 + 0*2 + 20 = 340
@@ -409,7 +409,7 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
 
     } else if (chartTesting == "allNegatives") {
         fc.setCase("action labels positioning allNegatives");
-        msxCG.positionMsxActionLabels(20);
+        msxCG.positionActionLabels(20);
 
         fc.assert(ch.actions[0].msxChartGeometry.actionLabelOriginX, 284.0, "actions_0.X");// 40*2 + 408/2 = 284
         fc.assert(ch.actions[0].msxChartGeometry.actionLabelOriginY, 580.0, "actions_0.Y");//  320 + 120*2 + 20 = 580
@@ -430,7 +430,7 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
         // value  i * maxAbsValue / 4
         // pixel distance 
         // assume scaling factor of 2 pixels per 1 value, so value of 120 is 240 pixels
-        msxCG.positionMsxValueMarkers(4); //give something with maxPosValue and maxNegValue
+        msxCG.positionValueMarkers(4); //give something with maxPosValue and maxNegValue
         fc.assert(msxCG.positiveMarkerValues[0], 30.0, "line 1 value");
         fc.assert(msxCG.positiveMarkerYPixelsFromXAxis[0], 60.0, "line 1 pixel distance");
         fc.assert(msxCG.positiveMarkerValues[1], 60.0, "line 2 value");
@@ -443,7 +443,7 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
     } else if (chartTesting == "allPositives") {
         fc.setCase("value markers positioning allPositives");
 
-        msxCG.positionMsxValueMarkers(4);
+        msxCG.positionValueMarkers(4);
         fc.assert(msxCG.positiveMarkerValues[0], 30.0, "line 1 value");
         fc.assert(msxCG.positiveMarkerYPixelsFromXAxis[0], 60.0, "line 1 pixel distance");
         fc.assert(msxCG.positiveMarkerValues[1], 60.0, "line 2 value");
@@ -456,7 +456,7 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
     } else if (chartTesting == "allNegatives") {
         fc.setCase("value markers positioning allNegatives");
 
-        msxCG.positionMsxValueMarkers(4);
+        msxCG.positionValueMarkers(4);
         fc.assert(msxCG.positiveMarkerValues[0], 30.0, "line 1 value");
         fc.assert(msxCG.positiveMarkerYPixelsFromXAxis[0], 60.0, "line 1 pixel distance");
         fc.assert(msxCG.positiveMarkerValues[1], 60.0, "line 2 value");
@@ -474,7 +474,7 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
         //scalingFactor = (canvasHeight / 2) * 0.75 / this.getMaxAbsRewardOrActionValue();
         // 60 == lineSpacing = maxAbsoluteValue * scaling factor / 4
         // y = (canvasHeight / 2) + (1 + Number(i)) * linSpacing
-        msxCG.positionMsxValueLines(4);
+        msxCG.positionValueLines(4);
         fc.assert(msxCG.positiveLineLength, 736.0, "line distance" + msxCG.positiveLineLength);
         fc.assert(msxCG.positiveLineOriginX, 40.0, "line originX");
         fc.assert(msxCG.positiveLineOriginY[0], 380.0, "line 0 positionY"); //320 + 60
@@ -484,7 +484,7 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
     }
     else if (chartTesting == "allPositives") {
         fc.setCase("value line positioning allPositives");
-        msxCG.positionMsxValueLines(4);
+        msxCG.positionValueLines(4);
         fc.assert(msxCG.positiveLineLength, 736.0, "line distance" + msxCG.positiveLineLength);
         fc.assert(msxCG.positiveLineOriginX, 40.0, "line originX");
         fc.assert(msxCG.positiveLineOriginY[0], 380.0, "line 0 positionY" + msxCG.positiveLineOriginY[0]); //320 + 60
@@ -494,7 +494,7 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
     }
     else if (chartTesting == "allNegatives") {
         fc.setCase("value line positioning allNegatives");
-        msxCG.positionMsxValueLines(4);
+        msxCG.positionValueLines(4);
         fc.assert(msxCG.positiveLineLength, 736.0, "line distance" + msxCG.positiveLineLength);
         fc.assert(msxCG.positiveLineOriginX, 40.0, "line originX");
         fc.assert(msxCG.positiveLineOriginY[0], 380.0, "line 0 positionY"); //320 + 60
@@ -507,7 +507,7 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
     // xAxisLength = width - 2 * groupWidthMargin
     // xAxisOriginX = groupWidthMargin;
     // xAxisOriginY = height / 2
-    msxCG.positionMsxXAxisLine();
+    msxCG.positionXAxisLine();
     fc.assert(msxCG.xAxisOriginX, 40.0, "xAxisOriginX");
     fc.assert(msxCG.xAxisOriginY, 320.0, "xAxisOriginY");
     fc.assert(msxCG.xAxisLength, 736.0, "xAxisLength");
@@ -516,13 +516,13 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
     // yAxisLength = maxAbsRewardValue * 2 * scalingFactor + aBitMore
     // yAxisOriginX = groupWidthMargin;
     // yAxisOriginY = (canvasHeight - yAxisLength) / 2
-    msxCG.positionMsxYAxisLine();
+    msxCG.positionYAxisLine();
     fc.assert(msxCG.yAxisOriginX, 40.0, "yAxisOriginX");
     fc.assert(msxCG.yAxisOriginY, 80.0, "yAxisOriginY");
     fc.assert(msxCG.yAxisLength, 480.0, "yAxisLength");
 
     fc.setCase("position Action Separators seeSaw");
-    msxCG.positionMsxActionSeparatorLines();
+    msxCG.positionActionSeparatorLines();
     fc.assert(msxCG.actionLinesOriginX[0], 408.0, "actionLineOriginX 0");
     fc.assert(msxCG.actionLinesOriginY, 80.0, "actionLineOriginY");
     fc.assert(msxCG.actionLinesLength, 480.0, "actionLineLength");
