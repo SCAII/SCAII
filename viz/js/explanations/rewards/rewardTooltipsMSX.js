@@ -30,10 +30,12 @@ function getMSXRewardBarTooltipManager(canvas, chartData){
         var winningAction = ttm.chartData.actionBest;
         var losingAction = actionForMsxTabId[activeMsxChart];
         var actionRewardName = chartData.msxChartGeometry.getActionBarNameForCoordinates(x, y, winningAction, losingAction);
+
         if (actionRewardName == "None"){
             ttm.hideAllToolTips();
         }
         else {
+            console.log("actionRewardName hovered over was " + actionRewardName);
             if (ttm.isToolTipShowingForRewardBar(actionRewardName)){
                 // do nothing, it's already showing
             }
@@ -41,7 +43,7 @@ function getMSXRewardBarTooltipManager(canvas, chartData){
                 ttm.hideAllToolTips();
                 ttm.showTooltipForRewardBar(actionRewardName);
 
-                ttm.showSimilarBarValues(actionRewardName);
+                ttm.showSimilarBarValues(actionRewardName, winningAction, losingAction);
             }
         }
     }
@@ -64,11 +66,12 @@ function getMSXRewardBarTooltipManager(canvas, chartData){
         var toolContainerID = document.getElementById("tooltip-container-" + rewardBar.fullName);
         toolContainerID.style.visibility = "visible";
     }
-    ttm.showSimilarBarValues = function (actionRewardName) {
+    ttm.showSimilarBarValues = function (actionRewardName, winningAction, losingAction) {
         var rewardBarName = actionRewardName.split(".")[1];
-        for (var i=0; i < chartData.actions.length; i++) {
-            var action = "Attack Q" + Number(i + 1) + ".";
-            var similarBar = action + rewardBarName;
+        var actions = [ winningAction, losingAction ];
+        for (var i=0; i < actions.length; i++) {
+            var action = actions[i];
+            var similarBar = action.name + "." + rewardBarName;
             var rewardBar = chartData.actionRewardForNameMap[similarBar];
             $("#" + rewardBar.tooltipValueID).css("visibility","visible");
         }
