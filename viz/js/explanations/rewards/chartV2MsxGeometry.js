@@ -114,7 +114,6 @@ function addMsxGeometryFunctions(chartData) {
             action.msxChartGeometry.actionLabelOriginX = centerXOfLabel - 35;
             action.msxChartGeometry.actionLabelOriginY = actionLabelY;
         }
-
     }
     msxCG.positionValueMarkers = function (numberOfLines) {
         msxCG.positiveMarkerValues = [numberOfLines];

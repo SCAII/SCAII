@@ -338,8 +338,19 @@ function getMsxChartUI() {
 		pctx.stroke();	
 
 		return p;
-	}
+    }
+    
+    ui.copyLosingActionBarColorsToWinningAction = function(winningAction, losingAction){
+        // grey out the winning action's bars
+        for (var i in winningAction.bars){
+            var winningBar = winningAction.bars[i];
+            var losingBar = losingAction.bars[i];
+            winningBar.msxColor = losingBar.msxColor;
+        }
+    }
+
 	ui.renderBars = function (canvas, chartData, treatment, winningAction, losingAction) {
+        this.copyLosingActionBarColorsToWinningAction(winningAction, losingAction);
         var ctx = canvas.getContext("2d");
         var actions = [ winningAction, losingAction];
 		for (var i=0; i< actions.length; i++) {
@@ -392,11 +403,11 @@ function getMsxChartUI() {
 			ctx.strokeStyle = "white";
 			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 
-			var rgbaBarColor = hexToRgbA(bar.color);
+			var rgbaBarColor = hexToRgbA(bar.msxColor);
 			ctx.fillStyle = rgbaBarColor + " 0.7)";
 			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 
-			var pattern = this.renderPattern(bar.color);
+			var pattern = this.renderPattern(bar.msxColor);
 			ctx.fillStyle = ctx.createPattern(pattern, 'repeat');
 			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 	
@@ -414,11 +425,11 @@ function getMsxChartUI() {
             ctx.strokeStyle = "blue";
 			ctx.strokeRect(upperLeftOriginX - 3, upperLeftOriginOutline, barMcg.width + 6, heightOutline);
 
-			var rgbaBarColor = hexToRgbA(bar.color);
+			var rgbaBarColor = hexToRgbA(bar.msxColor);
 			ctx.fillStyle = rgbaBarColor + " 0.7)";
 			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 
-			var pattern = this.renderPattern(bar.color);
+			var pattern = this.renderPattern(bar.msxColor);
 			ctx.fillStyle = ctx.createPattern(pattern, 'repeat');
 			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 	
@@ -428,29 +439,29 @@ function getMsxChartUI() {
 			ctx.strokeStyle = "white";
 			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 		
-			ctx.fillStyle = bar.color;
+			ctx.fillStyle = bar.msxColor;
 			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 		} else if (mode == "gradient") {
 			ctx.clearRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 			ctx.lineWidth = shape_outline_width;
-			ctx.strokeStyle = bar.color;
+			ctx.strokeStyle = bar.msxColor;
 
 			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 
-			var rgbaBarColor = hexToRgbA(bar.color);
+			var rgbaBarColor = hexToRgbA(bar.msxColor);
 			ctx.fillStyle = rgbaBarColor + " 0.7)";
 			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 
-			var pattern = this.renderPattern(bar.color);
+			var pattern = this.renderPattern(bar.msxColor);
 			ctx.fillStyle = ctx.createPattern(pattern, 'repeat');
 			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 		} else {
 			ctx.lineWidth = shape_outline_width;
-			ctx.strokeStyle = bar.color;
+			ctx.strokeStyle = bar.msxColor;
 
 			ctx.strokeRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 
-			ctx.fillStyle = bar.color;
+			ctx.fillStyle = bar.msxColor;
 			ctx.fillRect(upperLeftOriginX, upperLeftOriginY, barMcg.width, barMcg.height);
 		}
 		ctx.restore();

@@ -5,7 +5,7 @@ function addMsxToBars(rawChartData) {
         action.msxMaxValueAction = false;
         for (var j in rd.actions[i].bars) {
             var bar = rd.actions[i].bars[j];
-            bar.msxColor = "grey";
+            bar.msxColor = "#C0C0C0";// grey
             bar.msxImportantBar = false;
         }
     }
