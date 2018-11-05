@@ -20,7 +20,7 @@ function getMsxChartUI() {
         chartCanvas.onclick = function(e){
             var x = e.offsetX;
 		    var y = e.offsetY;
-            var rewardBarName = msxGeometry.getActionBarNameForCoordinates(x, y);
+            var rewardBarName = msxGeometry.getActionBarNameForCoordinates(x, y, winningAction, losingAction);
             currentExplManager.chartUI.processRewardBarClick(rewardBarName, chartData, e, treatment, winningAction, losingAction);
         }
         // create the MSX div which will contain the tabs above the active chart
@@ -81,7 +81,7 @@ function getMsxChartUI() {
 		this.renderLegend(chartData);
 		this.renderLegendTitle();
         this.renderTitle(chartCanvas, msxGeometry);
-        this.rewardBarTooltipManager = getRewardBarTooltipManager(chartCanvas,chartData);
+        this.rewardBarTooltipManager = getMSXRewardBarTooltipManager(chartCanvas,chartData);
     }
 
     ui.processRewardBarClick = function(rewardBarName, chartData, e, treatment, winningAction, losingAction){
@@ -215,7 +215,7 @@ function getMsxChartUI() {
             ctx.save();
             ctx.fillStyle = "black";
 			ctx.font = "bold 15px Arial";
-			ctx.fillText(action.name, action.msxChartGeometry.actionLabelOriginX - msxGeometry.groupWidthMargin, action.msxChartGeometry.actionLabelOriginY)
+			ctx.fillText(action.name, action.msxChartGeometry.actionLabelOriginX, action.msxChartGeometry.actionLabelOriginY)
             ctx.restore();
 		}
 	}

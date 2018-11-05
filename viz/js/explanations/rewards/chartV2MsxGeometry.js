@@ -53,6 +53,31 @@ function addMsxGeometryFunctions(chartData) {
 
         }
 
+        
+    msxCG.getActionBarNameForCoordinatesForAction = function(x,y,action){
+        var result = "None";
+        for (var i in action.bars){
+            var bar = action.bars[i];
+            var isHeightNegative = true;
+            if (bar.value > 0){
+                isHeightNegative = false;
+            }
+            var barCg = bar.msxChartGeometry;
+            if (barCg != undefined) {
+                if (chartData.isPointInsideBox(x, y, barCg.originX, barCg.originY, barCg.width, barCg.height, isHeightNegative)){ 
+                    result = bar.fullName;
+                } 
+            }
+        }
+        return result;
+    }
+    msxCG.getActionBarNameForCoordinates = function(x,y, winningAction,losingAction) {
+        var result = msxCG.getActionBarNameForCoordinatesForAction(x,y,losingAction);
+        if (result == "None"){
+            result = msxCG.getActionBarNameForCoordinatesForAction(x,y,winningAction);
+        }
+        return result;
+    }
     msxCG.dimensionRewardBar = function (rewardBar) {
         //ch.actionRewardForNameMap["action_0.reward_0"]
         //widthAvailableForRewardBars = widthAvailableForGroup - 2 * groupWidthMargin
@@ -77,11 +102,16 @@ function addMsxGeometryFunctions(chartData) {
             var action = chartData.actions[i];
             //X = (groupWidthMargin*2) + (widthAvailableForGroup / 2) **For picked best action**
             //X = widthAvailableForGroup + (groupWidthMargin*2) + (widthAvailableForGroup / 2) **For all other actions**
+            var centerXOfLabel;
             if (action.msxMaxValueAction) {
-                action.msxChartGeometry.actionLabelOriginX = (msxCG.groupWidthMargin*2) + (msxCG.widthAvailableForGroup / 2);
+                //action.msxChartGeometry.actionLabelOriginX = (msxCG.groupWidthMargin*2) + (msxCG.widthAvailableForGroup / 2);
+                centerXOfLabel = Math.floor(msxCG.groupWidthMargin*2 + msxCG.widthAvailableForRewardBars / 2);
+                
             } else {
-                action.msxChartGeometry.actionLabelOriginX = msxCG.widthAvailableForGroup + (msxCG.groupWidthMargin*2) + (msxCG.widthAvailableForGroup / 2);
+                //action.msxChartGeometry.actionLabelOriginX = msxCG.widthAvailableForGroup + (msxCG.groupWidthMargin*2) + (msxCG.widthAvailableForGroup / 2); 
+                centerXOfLabel = Math.floor(msxCG.widthAvailableForGroup + msxCG.groupWidthMargin + msxCG.widthAvailableForRewardBars / 2);
             }
+            action.msxChartGeometry.actionLabelOriginX = centerXOfLabel - 35;
             action.msxChartGeometry.actionLabelOriginY = actionLabelY;
         }
 
@@ -113,10 +143,14 @@ function addMsxGeometryFunctions(chartData) {
             var actionRewardName = chartData.actionRewardNames[i];
             var rewardBar = chartData.actionRewardForNameMap[actionRewardName];
             //originX + rewardBarWidth
-
-            rewardBar.msxChartGeometry.tooltipOriginX = rewardBar.msxChartGeometry.originX + basicCG.rewardBarWidth;
+            //if (actionRewardName.startswith(chartData.actionBest.name)){
+                rewardBar.msxChartGeometry.tooltipOriginX = rewardBar.msxChartGeometry.originX + msxCG.rewardBarWidth;
+            //}
+            //else {
+           //     rewardBar.msxChartGeometry.tooltipOriginX = rewardBar.msxChartGeometry.originX + msxCG.rewardBarWidth;
+           // }
             // (canvasHeight / 2) - ((ch.rewardBar[i].bars[j].value * scalingFactor) * 0.75)
-            rewardBar.msxChartGeometry.tooltipOriginY = basicCG.canvasHeight/2 - rewardBar.value * basicCG.scalingFactor * 0.75; 
+            rewardBar.msxChartGeometry.tooltipOriginY = msxCG.canvasHeight/2 - rewardBar.value * msxCG.scalingFactor * 0.75; 
         }
     }
 
@@ -126,12 +160,12 @@ function addMsxGeometryFunctions(chartData) {
             var rewardBar = chartData.actionRewardForNameMap[actionRewardName];
 
 
-            rewardBar.msxChartGeometry.tooltipOriginX = rewardBar.msxChartGeometry.originX - Number(basicCG.rewardBarWidth / 2);
+            rewardBar.msxChartGeometry.tooltipOriginX = rewardBar.msxChartGeometry.originX - Number(msxCG.rewardBarWidth / 2);
             // (canvasHeight / 2) - ((ch.rewardBar[i].bars[j].value * scalingFactor) * 0.75)
             if (rewardBar.value >= 0) {
-                rewardBar.msxChartGeometry.tooltipOriginY = basicCG.canvasHeight/2 - (rewardBar.value + 30) * basicCG.scalingFactor;
+                rewardBar.msxChartGeometry.tooltipOriginY = msxCG.canvasHeight/2 - (rewardBar.value + 30) * msxCG.scalingFactor;
             } else {
-                rewardBar.msxChartGeometry.tooltipOriginY = basicCG.canvasHeight/2 - (rewardBar.value) * basicCG.scalingFactor;
+                rewardBar.msxChartGeometry.tooltipOriginY = msxCG.canvasHeight/2 - (rewardBar.value) * msxCG.scalingFactor;
             }
         }
     }

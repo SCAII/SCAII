@@ -128,7 +128,9 @@ function addBasicChartGeometryFunctions(chartData) {
         for (var i in chartData.actions){
             var action = chartData.actions[i];
             //groupWidthMargin + i * widthAvailableForGroup +  widthAvailableForRewardBars / 2
-            action.basicChartGeometry.actionLabelOriginX = basicCG.groupWidthMargin + Number(i)* basicCG.widthAvailableForGroup + basicCG.widthAvailableForRewardBars / 2;
+            var centerXOfLabel = basicCG.groupWidthMargin + Number(i)* basicCG.widthAvailableForGroup + basicCG.widthAvailableForRewardBars / 2;
+            // account for inability to predict width of text by providing an adjustment here that centers the text
+            action.basicChartGeometry.actionLabelOriginX = centerXOfLabel - 35;
             action.basicChartGeometry.actionLabelOriginY = actionLabelY;
         }
     }

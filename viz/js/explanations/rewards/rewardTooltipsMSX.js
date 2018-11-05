@@ -27,7 +27,9 @@ function getMSXRewardBarTooltipManager(canvas, chartData){
     canvas.onmousemove = function(e){
         var x = e.offsetX;
         var y = e.offsetY;
-        var actionRewardName = chartData.msxChartGeometry.getActionBarNameForCoordinates(x, y);
+        var winningAction = ttm.chartData.actionBest;
+        var losingAction = actionForMsxTabId[activeMsxChart];
+        var actionRewardName = chartData.msxChartGeometry.getActionBarNameForCoordinates(x, y, winningAction, losingAction);
         if (actionRewardName == "None"){
             ttm.hideAllToolTips();
         }
