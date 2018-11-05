@@ -341,7 +341,7 @@ function getMsxChartUI() {
     }
     
     ui.copyLosingActionBarColorsToWinningAction = function(winningAction, losingAction){
-        // grey out the winning action's bars
+        // replace winning action's bar colors with that of losingAction (as that is where msx state is stored)
         for (var i in winningAction.bars){
             var winningBar = winningAction.bars[i];
             var losingBar = losingAction.bars[i];
@@ -349,8 +349,22 @@ function getMsxChartUI() {
         }
     }
 
+    ui.copyLosingActionBarColorsToLegend = function(losingAction){
+        // replace legend's bar colors with that of losingAction (as that is where msx state is stored)
+        for (var i in losingAction.bars){
+            var losingBar = losingAction.bars[i];
+            var losingBarColor = losingBar.msxColor;
+            $("#legend-box-" + i).css("background-color", losingBarColor);
+            if (losingBarColor == msxGrey){
+                $("#legend-desc-" + i).css("color", msxGrey);
+                $("#legend-name-" + i).css("color", msxGrey);
+            }
+        }
+    }
+
 	ui.renderBars = function (canvas, chartData, treatment, winningAction, losingAction) {
         this.copyLosingActionBarColorsToWinningAction(winningAction, losingAction);
+        this.copyLosingActionBarColorsToLegend(losingAction);
         var ctx = canvas.getContext("2d");
         var actions = [ winningAction, losingAction];
 		for (var i=0; i< actions.length; i++) {

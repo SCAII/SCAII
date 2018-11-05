@@ -1,3 +1,4 @@
+var msxGrey = "#C0C0C0";
 function addMsxToBars(rawChartData) {
     var rd = rawChartData;
     for (var i in rd.actions) {
@@ -5,7 +6,7 @@ function addMsxToBars(rawChartData) {
         action.msxMaxValueAction = false;
         for (var j in rd.actions[i].bars) {
             var bar = rd.actions[i].bars[j];
-            bar.msxColor = "#C0C0C0";// grey
+            bar.msxColor = msxGrey;
             bar.msxImportantBar = false;
         }
     }
