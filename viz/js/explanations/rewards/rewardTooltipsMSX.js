@@ -10,7 +10,7 @@ function getMSXRewardBarTooltipManager(canvas, chartData){
             var actionRewardName = this.chartData.actionRewardNames[i];
             var rewardBar = this.chartData.actionRewardForNameMap[actionRewardName];
             var tooltipText = "Value of " + rewardBar.name + " is " + Math.floor(rewardBar.value);
-            rewardBar.tooltipID = createTooltipDiv(tooltipText, rewardBar, this.canvas);
+            rewardBar.tooltipID = createMsxTooltipDiv(tooltipText, rewardBar, this.canvas);
         }
     }
     ttm.generateValueTooltips = function () {
@@ -18,7 +18,7 @@ function getMSXRewardBarTooltipManager(canvas, chartData){
         for (var i in this.chartData.actionRewardNames) {
             var actionRewardName = this.chartData.actionRewardNames[i];
             var rewardBar = this.chartData.actionRewardForNameMap[actionRewardName];
-            rewardBar.tooltipValueID = createValueTooltipDiv(Math.floor(rewardBar.value), rewardBar, this.canvas);
+            rewardBar.tooltipValueID = createMsxValueTooltipDiv(Math.floor(rewardBar.value), rewardBar, this.canvas);
         }
     }
     ttm.generateValueTooltips();
@@ -79,7 +79,7 @@ function getMSXRewardBarTooltipManager(canvas, chartData){
     return ttm;
 }
 
-function createTooltipDiv(text, rewardBar, canvas) {
+function createMsxTooltipDiv(text, rewardBar, canvas) {
     var canvas_bounds = canvas.getBoundingClientRect();
     var x = rewardBar.msxChartGeometry.tooltipOriginX + canvas_bounds.left;
     var y = rewardBar.msxChartGeometry.tooltipOriginY  + canvas_bounds.top;
@@ -116,7 +116,7 @@ function createTooltipDiv(text, rewardBar, canvas) {
     return id;
 }
 
-function createValueTooltipDiv (text, rewardBar, canvas) {
+function createMsxValueTooltipDiv (text, rewardBar, canvas) {
     var id = convertNameToLegalId("tooltip-value-" + rewardBar.fullName);
     var ttDiv = document.createElement("div");
     ttDiv.setAttribute("id",id);
