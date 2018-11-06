@@ -1,4 +1,5 @@
 var activeMsxChart = "tab-msx-best-vs-second-best"; //initialize to best vs second best
+var chartTabSwitched = false;
 
 var actionForMsxTabId = {};
 function generateChartTabs() {
@@ -24,6 +25,7 @@ function generateDisabledChartTab(cssId,text,className) {
 }
 function setActiveChartTab(tabId){
     activeMsxChart = tabId;
+    chartTabSwitched = true;
 }
 function enableChartTab(tabId) {
     var i, tablinks;

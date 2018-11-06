@@ -16,7 +16,11 @@ function getMsxChartUI() {
         var winningAction = chartData.actionBest;
         var losingAction = actionForMsxTabId[activeMsxChart];
         chartData.clearHighlightSelectionForAction(winningAction);
-        this.recoverWinningActionStateAfterViewSwitch(chartData, winningAction, losingAction);
+        if (chartTabSwitched){
+            this.recoverWinningActionStateAfterViewSwitch(chartData, winningAction, losingAction);
+            chartTabSwitched = false;
+        }
+        
         chartCanvas.onclick = function(e){
             var x = e.offsetX;
 		    var y = e.offsetY;
