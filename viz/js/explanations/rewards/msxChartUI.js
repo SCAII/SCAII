@@ -68,8 +68,6 @@ function getMsxChartUI() {
 	}
 
     ui.selectHighestScoringMsxBar = function(chartData, winningAction, losingAction){
-        chartData.clearSelectionForAction(winningAction);
-        chartData.clearSelectionForAction(losingAction);
         var highestBarValue = -9999999;
         var highestBar;
         for (var i in losingAction.bars){
@@ -86,6 +84,19 @@ function getMsxChartUI() {
         chartData.showSalienciesForRewardName(highestBar.name);
     }
 
+    ui.isAnyBarInActionsSelected = function(actions){
+        for (var i in actions){
+            var action = actions[i];
+            for (var j in action.bars){
+                var bar = action.bars[j];
+                if (bar.selected) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     ui.renderChartComponents = function(chartCanvas, msxGeometry, chartData, treatment, winningAction, losingAction){
         this.renderActionSeparatorLines(chartCanvas, chartData);
         this.renderChartValueLabels(chartCanvas, msxGeometry, 4);
@@ -94,7 +105,9 @@ function getMsxChartUI() {
         
         var winningAction = chartData.actionBest;
         var losingAction = actionForMsxTabId[activeMsxChart];
-        this.selectHighestScoringMsxBar(chartData, winningAction, losingAction);
+        if (!this.isAnyBarInActionsSelected([winningAction, losingAction])){
+            this.selectHighestScoringMsxBar(chartData, winningAction, losingAction);
+        }
         this.renderBars(chartCanvas,chartData, treatment, winningAction, losingAction);
         this.renderXAxis(chartCanvas, msxGeometry);
 		this.renderYAxis(chartCanvas, msxGeometry);

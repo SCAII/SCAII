@@ -35,7 +35,7 @@ function getMSXRewardBarTooltipManager(canvas, chartData){
             ttm.hideAllToolTips();
         }
         else {
-            console.log("actionRewardName hovered over was " + actionRewardName);
+            //console.log("actionRewardName hovered over was " + actionRewardName);
             if (ttm.isToolTipShowingForRewardBar(actionRewardName)){
                 // do nothing, it's already showing
             }
