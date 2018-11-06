@@ -21,7 +21,7 @@ function getMsxChartUI() {
             var x = e.offsetX;
 		    var y = e.offsetY;
             var rewardBarName = msxGeometry.getActionBarNameForCoordinates(x, y, winningAction, losingAction);
-            currentExplManager.chartUI.processRewardBarClick(rewardBarName, chartData, e, treatment, winningAction, losingAction);
+            currentExplManager.chartUI.activeChart.processRewardBarClick(rewardBarName, chartData, e, treatment, winningAction, losingAction);
         }
         // create the MSX div which will contain the tabs above the active chart
         var msxContainer = document.createElement("div");
@@ -67,12 +67,34 @@ function getMsxChartUI() {
         this.renderChartComponents(chartCanvas, msxGeometry, chartData, treatment, winningAction, losingAction);
 	}
 
+    ui.selectHighestScoringMsxBar = function(chartData, winningAction, losingAction){
+        chartData.clearSelectionForAction(winningAction);
+        chartData.clearSelectionForAction(losingAction);
+        var highestBarValue = -9999999;
+        var highestBar;
+        for (var i in losingAction.bars){
+            var bar = losingAction.bars[i];
+            if (bar.msxImportantBar){
+                var winningBar = winningAction.bars[i];
+                if (winningBar.value > highestBarValue){
+                    highestBarValue = winningBar.value;
+                    highestBar = winningBar;
+                }
+            }
+        }
+        highestBar.selected = true;
+        chartData.showSalienciesForRewardName(highestBar.name);
+    }
+
     ui.renderChartComponents = function(chartCanvas, msxGeometry, chartData, treatment, winningAction, losingAction){
         this.renderActionSeparatorLines(chartCanvas, chartData);
         this.renderChartValueLabels(chartCanvas, msxGeometry, 4);
         this.renderChartValueLines(chartCanvas, msxGeometry, 4);
         this.renderZeroValueLabel(chartCanvas, msxGeometry);
         
+        var winningAction = chartData.actionBest;
+        var losingAction = actionForMsxTabId[activeMsxChart];
+        this.selectHighestScoringMsxBar(chartData, winningAction, losingAction);
         this.renderBars(chartCanvas,chartData, treatment, winningAction, losingAction);
         this.renderXAxis(chartCanvas, msxGeometry);
 		this.renderYAxis(chartCanvas, msxGeometry);

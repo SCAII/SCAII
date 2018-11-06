@@ -17,7 +17,7 @@ function getBasicChartUI() {
             var x = e.offsetX;
 		    var y = e.offsetY;
             var rewardBarName = geometry.getActionBarNameForCoordinates(x, y);
-            currentExplManager.chartUI.processRewardBarClick(rewardBarName, chartData, e, treatment);
+            currentExplManager.chartUI.activeChart.processRewardBarClick(rewardBarName, chartData, e, treatment);
         }
         // create chartCanvasContainer because some layout issues dealing with canvas directly
         var chartCanvasContainer = document.createElement("div");

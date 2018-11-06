@@ -1,27 +1,27 @@
 var chartStyle = "basic";
 
 function getChartV2UI() {
-    var uis = {};
-
-    uis.renderChart = function(chartData, treatment){
+    var ui = {};
+    var activeChart;
+    ui.renderChart = function(chartData, treatment){
         var canvasHeight = 500;
         var canvasWidth = 700;
         createRewardChartContainer(canvasHeight);
         if (userStudyMode){
-            this.chart = getBasicChartUI();
+            this.activeChart = getBasicChartUI();
         }
         else if (chartStyle == "basic"){
-            this.chart = getBasicChartUI();
+            this.activeChart = getBasicChartUI();
         }
         else if (chartStyle == "msx"){
-            this.chart = getMsxChartUI();
+            this.activeChart = getMsxChartUI();
         }
         else {
-            this.chart = getAdvantageChartUI();
+            this.activeChart = getAdvantageChartUI();
         }
-        this.chart.renderChart(chartData, treatment,canvasHeight, canvasWidth);
+        this.activeChart.renderChart(chartData, treatment,canvasHeight, canvasWidth);
     }
-    return uis;
+    return ui;
 }
 
 
