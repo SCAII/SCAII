@@ -172,7 +172,7 @@ function populateRewardsSelector() {
 	};
 	var msxRewardsLabel = document.createElement("div");
 	msxRewardsLabel.setAttribute("style", "margin-left:10px;font-family:Arial;font-size:14px;");
-	msxRewardsLabel.innerHTML = "MSX Reward View";
+	msxRewardsLabel.innerHTML = "Influential Reward View";
 	$("#why-radios").append(radioMsxRewards);
     $("#why-radios").append(msxRewardsLabel);
 
