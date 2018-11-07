@@ -38,7 +38,7 @@ function getMsxChartUI() {
         msxTabsContainer.setAttribute("id", "msx-chart-tabs");
         msxTabsContainer.setAttribute("class", "msx-tab-container flex-row");
         $("#msx-container").append(msxTabsContainer);
-        generateChartTabs();
+        generateChartTabs(chartData.actionsRanked);
         enableChartTab(activeMsxChart);
 
         // create a row div so that chart and legend will be side by side
