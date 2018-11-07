@@ -64,10 +64,10 @@ function buildChartFromActionInfos(actionInfos){
 }
 function getSeeSawChart() {
     var actionInfos = [];
-    actionInfos.push([ "action_0", 20, [[ "reward_0" , 10],  ["reward_1", -20], ["reward_2", 30] ]]);
-    actionInfos.push([ "action_1", -50, [[ "reward_0" , -40], ["reward_1", 50],  ["reward_2", -60] ]]);
-    actionInfos.push([ "action_2", 80, [[ "reward_0" , 70],  ["reward_1", -80], ["reward_2", 90] ]]);
-    actionInfos.push([ "action_3", -110, [[ "reward_0" , -100],["reward_1", 110], ["reward_2", -120] ]]);
+    actionInfos.push([ "action_0", 20, [[ "reward_0" , 10],  ["reward_1", -20], ["reward_2", 30] ]]);     //40
+    actionInfos.push([ "action_1", -50, [[ "reward_0" , -40], ["reward_1", 50],  ["reward_2", -60] ]]);   //-100
+    actionInfos.push([ "action_2", 80, [[ "reward_0" , 70],  ["reward_1", -80], ["reward_2", 90] ]]);     //160  winner
+    actionInfos.push([ "action_3", -110, [[ "reward_0" , -100],["reward_1", 110], ["reward_2", -120] ]]); //-220
     var ch = buildChartFromActionInfos(actionInfos);
     ch = addConvenienceDataStructures(ch);
     return ch;
@@ -75,10 +75,10 @@ function getSeeSawChart() {
 
 function getAllPositivesChart() {
     var actionInfos = [];
-    actionInfos.push([ "action_0", 0, [[ "reward_0" , 0], ["reward_1", 0], ["reward_2", 0] ]]);
-    actionInfos.push([ "action_1", 100, [[ "reward_0" , 40], ["reward_1", 0], ["reward_2", 60] ]]);
-    actionInfos.push([ "action_2", 240, [[ "reward_0" , 70], ["reward_1", 80], ["reward_2", 90] ]]);
-    actionInfos.push([ "action_3", 330, [[ "reward_0" , 100],["reward_1", 110],["reward_2", 120] ]]);
+    actionInfos.push([ "action_0", 0, [[ "reward_0" , 0], ["reward_1", 0], ["reward_2", 0] ]]);         // 0
+    actionInfos.push([ "action_1", 100, [[ "reward_0" , 40], ["reward_1", 0], ["reward_2", 60] ]]);     // 200
+    actionInfos.push([ "action_2", 240, [[ "reward_0" , 70], ["reward_1", 80], ["reward_2", 90] ]]);    // 480
+    actionInfos.push([ "action_3", 330, [[ "reward_0" , 100],["reward_1", 110],["reward_2", 120] ]]);   // 660   winner
     var ch = buildChartFromActionInfos(actionInfos);
     ch = addConvenienceDataStructures(ch);
     return ch;
@@ -86,10 +86,10 @@ function getAllPositivesChart() {
 
 function getAllNegativesChart() {
     var actionInfos = [];
-    actionInfos.push([ "action_0", -60, [[ "reward_0" , -10], ["reward_1", -20], ["reward_2", -30] ]]);
-    actionInfos.push([ "action_1", -150, [[ "reward_0" , -40], ["reward_1", -50], ["reward_2", -60] ]]);
-    actionInfos.push([ "action_2", -240, [[ "reward_0" , -70], ["reward_1", -80], ["reward_2", -90] ]]);
-    actionInfos.push([ "action_3", -330, [[ "reward_0" , -100],["reward_1", -110],["reward_2", -120] ]]);
+    actionInfos.push([ "action_0", -60, [[ "reward_0" , -10], ["reward_1", -20], ["reward_2", -30] ]]);     //-120 winner
+    actionInfos.push([ "action_1", -150, [[ "reward_0" , -40], ["reward_1", -50], ["reward_2", -60] ]]);    //-300
+    actionInfos.push([ "action_2", -240, [[ "reward_0" , -70], ["reward_1", -80], ["reward_2", -90] ]]);    //-480
+    actionInfos.push([ "action_3", -330, [[ "reward_0" , -100],["reward_1", -110],["reward_2", -120] ]]);   //-660
     var ch = buildChartFromActionInfos(actionInfos);
     ch = addConvenienceDataStructures(ch);
     return ch;

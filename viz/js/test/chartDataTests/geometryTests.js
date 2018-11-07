@@ -290,33 +290,33 @@ function runBasicChartGeometryTests(failureChecker, chartTesting) {
             20 == groupWidthMargin = (widthAvailableForGroup * .2) / 2
         */
         bcg.positionActionLabels(20);
-
-        fc.assert(ch.actions[0].basicChartGeometry.actionLabelOriginX, 102.0, "actions_0.X");// 20 + 0 * 204 + 82 = 102
+                                                                                             //fudge factor is -35
+        fc.assert(ch.actions[0].basicChartGeometry.actionLabelOriginX, 67.0, "actions_0.X");// 20 + 0 * 204 + 82 = 102 - 35
         fc.assert(ch.actions[0].basicChartGeometry.actionLabelOriginY, 580.0, "actions_0.Y");//  320 + 120*2 + 20 = 580
 
-        fc.assert(ch.actions[1].basicChartGeometry.actionLabelOriginX, 306.0, "actions_1.X");//20 + 1 * 204 + 82 = 306
+        fc.assert(ch.actions[1].basicChartGeometry.actionLabelOriginX, 271.0, "actions_1.X");//20 + 1 * 204 + 82 = 306 - 35
         fc.assert(ch.actions[1].basicChartGeometry.actionLabelOriginY, 580.0, "actions_1.Y");
 
-        fc.assert(ch.actions[2].basicChartGeometry.actionLabelOriginX, 510.0, "actions_2.X");//20 + 2 * 204 + 82 = 510
+        fc.assert(ch.actions[2].basicChartGeometry.actionLabelOriginX, 475.0, "actions_2.X");//20 + 2 * 204 + 82 = 510 - 35
         fc.assert(ch.actions[2].basicChartGeometry.actionLabelOriginY, 580.0, "actions_2.Y");
 
-        fc.assert(ch.actions[3].basicChartGeometry.actionLabelOriginX, 714.0, "actions_3.X");//20 + 3 * 204 + 82 = 714
+        fc.assert(ch.actions[3].basicChartGeometry.actionLabelOriginX, 679.0, "actions_3.X");//20 + 3 * 204 + 82 = 714 - 35
         fc.assert(ch.actions[3].basicChartGeometry.actionLabelOriginY, 580.0, "actions_3.Y");
     }
     else if (chartTesting == "allPositives") {
         fc.setCase("action labels positioning allPositives");
         bcg.positionActionLabels(20);
 
-        fc.assert(ch.actions[0].basicChartGeometry.actionLabelOriginX, 102.0, "actions_0.X");// 20 + 0 * 204 + 82 = 102
+        fc.assert(ch.actions[0].basicChartGeometry.actionLabelOriginX, 67.0, "actions_0.X");// 20 + 0 * 204 + 82 = 102 - 35
         fc.assert(ch.actions[0].basicChartGeometry.actionLabelOriginY, 340.0, "actions_0.Y");//  320 + 0*2 + 20 = 0
 
-        fc.assert(ch.actions[1].basicChartGeometry.actionLabelOriginX, 306.0, "actions_1.X");//20 + 1 * 204 + 82 = 306
+        fc.assert(ch.actions[1].basicChartGeometry.actionLabelOriginX, 271.0, "actions_1.X");//20 + 1 * 204 + 82 = 306 - 35
         fc.assert(ch.actions[1].basicChartGeometry.actionLabelOriginY, 340.0, "actions_1.Y");
 
-        fc.assert(ch.actions[2].basicChartGeometry.actionLabelOriginX, 510.0, "actions_2.X");//20 + 2 * 204 + 82 = 510
+        fc.assert(ch.actions[2].basicChartGeometry.actionLabelOriginX, 475.0, "actions_2.X");//20 + 2 * 204 + 82 = 510 - 35
         fc.assert(ch.actions[2].basicChartGeometry.actionLabelOriginY, 340.0, "actions_2.Y");
 
-        fc.assert(ch.actions[3].basicChartGeometry.actionLabelOriginX, 714.0, "actions_3.X");//20 + 3 * 204 + 82 = 714
+        fc.assert(ch.actions[3].basicChartGeometry.actionLabelOriginX, 679.0, "actions_3.X");//20 + 3 * 204 + 82 = 714 - 35
         fc.assert(ch.actions[3].basicChartGeometry.actionLabelOriginY, 340.0, "actions_3.Y");
     }
     else if (chartTesting == "allNegatives") {
@@ -324,16 +324,16 @@ function runBasicChartGeometryTests(failureChecker, chartTesting) {
 
         bcg.positionActionLabels(20);
 
-        fc.assert(ch.actions[0].basicChartGeometry.actionLabelOriginX, 102.0, "actions_0.X");// 20 + 0 * 204 + 82 = 102
+        fc.assert(ch.actions[0].basicChartGeometry.actionLabelOriginX, 67.0, "actions_0.X");// 20 + 0 * 204 + 82 = 102 - 35
         fc.assert(ch.actions[0].basicChartGeometry.actionLabelOriginY, 580.9, "actions_0.Y");//  320 + 330*.73 + 20 = 580.9
 
-        fc.assert(ch.actions[1].basicChartGeometry.actionLabelOriginX, 306.0, "actions_1.X");//20 + 1 * 204 + 82 = 306
+        fc.assert(ch.actions[1].basicChartGeometry.actionLabelOriginX, 271.0, "actions_1.X");//20 + 1 * 204 + 82 = 306 - 35
         fc.assert(ch.actions[1].basicChartGeometry.actionLabelOriginY, 580.9, "actions_1.Y");
 
-        fc.assert(ch.actions[2].basicChartGeometry.actionLabelOriginX, 510.0, "actions_2.X");//20 + 2 * 204 + 82 = 510
+        fc.assert(ch.actions[2].basicChartGeometry.actionLabelOriginX, 475.0, "actions_2.X");//20 + 2 * 204 + 82 = 510 - 35
         fc.assert(ch.actions[2].basicChartGeometry.actionLabelOriginY, 580.9, "actions_2.Y");
 
-        fc.assert(ch.actions[3].basicChartGeometry.actionLabelOriginX, 714.0, "actions_3.X");//20 + 3 * 204 + 82 = 714
+        fc.assert(ch.actions[3].basicChartGeometry.actionLabelOriginX, 679.0, "actions_3.X");//20 + 3 * 204 + 82 = 714 - 35
         fc.assert(ch.actions[3].basicChartGeometry.actionLabelOriginY, 580.9, "actions_3.Y");
     }
 

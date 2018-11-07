@@ -370,57 +370,57 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
     }
 
     //fc.setCase("action labels positioning seeSaw");
-            //X = (groupWidthMargin*2) + (widthAvailableForGroup / 2) **For picked best action**
-            //X = widthAvailableForGroup + (groupWidthMargin*2) + (widthAvailableForGroup / 2) **For all other actions**
+            //X = (groupWidthMargin*2) + (widthAvailableForRewardBars / 2) **For picked best action**
+            //X = widthAvailableForGroup + groupWidthMargin + (widthAvailableForRewardBars / 2) **For all other actions**
         // y == canvasHeight/2 + maxAbsNegativeRewardValue * scalingFactor + 20
     
     //Need to be a msxCG.positionActionLabels(minDistanceFromBarOrAxis) minDistance should be 20
     if (chartTesting == "seeSaw") {
         fc.setCase("action labels positioning seeSaw");
         msxCG.positionActionLabels(20);
-
-        fc.assert(ch.actions[0].msxChartGeometry.actionLabelOriginX, 692.0, "actions_0.X");// 40*2 + 408/2 = 692
+                                                                                        // fudgeFactor == -35
+        fc.assert(ch.actions[0].msxChartGeometry.actionLabelOriginX, 557.0, "actions_0.X");// 408 + 40 + 288/2 = 592 - 35
         fc.assert(ch.actions[0].msxChartGeometry.actionLabelOriginY, 580.0, "actions_0.Y");//  320 + 120*2 + 20 = 580
 
-        fc.assert(ch.actions[1].msxChartGeometry.actionLabelOriginX, 692.0, "actions_1.X");// 40*2 + 408/2 = 692
+        fc.assert(ch.actions[1].msxChartGeometry.actionLabelOriginX, 557.0, "actions_1.X");// 408 + 40 + 288/2 = 592 - 35
         fc.assert(ch.actions[1].msxChartGeometry.actionLabelOriginY, 580.0, "actions_1.Y");//  320 + 120*2 + 20 = 580
 
-        fc.assert(ch.actions[2].msxChartGeometry.actionLabelOriginX, 284.0, "actions_2.X");// 40*2 + 408/2 = 284
+        fc.assert(ch.actions[2].msxChartGeometry.actionLabelOriginX, 189.0, "actions_2.X");//       40*2 + 288/2 = 224 - 35
         fc.assert(ch.actions[2].msxChartGeometry.actionLabelOriginY, 580.0, "actions_2.Y");//  320 + 120*2 + 20 = 580
 
-        fc.assert(ch.actions[3].msxChartGeometry.actionLabelOriginX, 692.0, "actions_3.X");// 40*2 + 408/2 = 692
+        fc.assert(ch.actions[3].msxChartGeometry.actionLabelOriginX, 557.0, "actions_3.X");// 408 + 40 + 288/2 = 592 - 35
         fc.assert(ch.actions[3].msxChartGeometry.actionLabelOriginY, 580.0, "actions_3.Y");//  320 + 120*2 + 20 = 580
 
     } else if (chartTesting == "allPositives") {
         fc.setCase("action labels positioning allPositives");
         msxCG.positionActionLabels(20);
 
-        fc.assert(ch.actions[0].msxChartGeometry.actionLabelOriginX, 692.0, "actions_0.X");// 408 + 40*2 + 408/2 = 692
+        fc.assert(ch.actions[0].msxChartGeometry.actionLabelOriginX, 557.0, "actions_0.X");// 408 + 40 + 288/2 =  - 35
         fc.assert(ch.actions[0].msxChartGeometry.actionLabelOriginY, 340.0, "actions_0.Y");//  320 + 0*2 + 20 = 340
 
-        fc.assert(ch.actions[1].msxChartGeometry.actionLabelOriginX, 692.0, "actions_1.X");// 408 + 40*2 + 408/2 = 692
+        fc.assert(ch.actions[1].msxChartGeometry.actionLabelOriginX, 557.0, "actions_1.X");// 408 + 40 + 288/2 =  - 35
         fc.assert(ch.actions[1].msxChartGeometry.actionLabelOriginY, 340.0, "actions_1.Y");//  320 + 0*2 + 20 = 340
 
-        fc.assert(ch.actions[2].msxChartGeometry.actionLabelOriginX, 692.0, "actions_2.X");// 408 + 40*2 + 408/2 = 692
+        fc.assert(ch.actions[2].msxChartGeometry.actionLabelOriginX, 557.0, "actions_2.X");// 408 + 40 + 288/2 =  - 35
         fc.assert(ch.actions[2].msxChartGeometry.actionLabelOriginY, 340.0, "actions_2.Y");//  320 + 0*2 + 20 = 340
 
-        fc.assert(ch.actions[3].msxChartGeometry.actionLabelOriginX, 284.0, "actions_3.X");// 40*2 + 408/2 = 284
+        fc.assert(ch.actions[3].msxChartGeometry.actionLabelOriginX, 189.0, "actions_3.X");// 40*2 + 288/2 =  - 35
         fc.assert(ch.actions[3].msxChartGeometry.actionLabelOriginY, 340.0, "actions_3.Y");//  320 + 0*2 + 20 = 340
 
     } else if (chartTesting == "allNegatives") {
         fc.setCase("action labels positioning allNegatives");
         msxCG.positionActionLabels(20);
 
-        fc.assert(ch.actions[0].msxChartGeometry.actionLabelOriginX, 284.0, "actions_0.X");// 40*2 + 408/2 = 284
+        fc.assert(ch.actions[0].msxChartGeometry.actionLabelOriginX, 189.0, "actions_0.X");// 40*2 + 288/2 =  - 35
         fc.assert(ch.actions[0].msxChartGeometry.actionLabelOriginY, 580.0, "actions_0.Y");//  320 + 120*2 + 20 = 580
 
-        fc.assert(ch.actions[1].msxChartGeometry.actionLabelOriginX, 692.0, "actions_1.X");// 408 + 40*2 + 408/2 = 692
+        fc.assert(ch.actions[1].msxChartGeometry.actionLabelOriginX, 557.0, "actions_1.X");// 408 + 40 + 288/2 =  - 35
         fc.assert(ch.actions[1].msxChartGeometry.actionLabelOriginY, 580.0, "actions_1.Y");//  320 + 120*2 + 20 = 580
 
-        fc.assert(ch.actions[2].msxChartGeometry.actionLabelOriginX, 692.0, "actions_2.X");// 408 + 40*2 + 408/2 = 692
+        fc.assert(ch.actions[2].msxChartGeometry.actionLabelOriginX, 557.0, "actions_2.X");// 408 + 40 + 288/2 =  - 35
         fc.assert(ch.actions[2].msxChartGeometry.actionLabelOriginY, 580.0, "actions_2.Y");//  320 + 120*2 + 20 = 580
 
-        fc.assert(ch.actions[3].msxChartGeometry.actionLabelOriginX, 692.0, "actions_3.X");// 408 + 4-*2 + 408/2 = 692
+        fc.assert(ch.actions[3].msxChartGeometry.actionLabelOriginX, 557.0, "actions_3.X");// 408 + 40 + 288/2 =  - 35
         fc.assert(ch.actions[3].msxChartGeometry.actionLabelOriginY, 580.0, "actions_3.Y");//  320 + 120*2 + 20 = 580
 
     }
