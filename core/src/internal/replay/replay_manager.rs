@@ -38,6 +38,7 @@ pub struct ReplayManager {
     pub test_mode: bool,
     pub poll_timer_count: u32,
     pub step_timer_count: u32,
+    pub user_study_mode: bool,
     pub user_study_questions: Option<study_util::UserStudyQuestions>
 }
 
@@ -58,12 +59,12 @@ impl ReplayManager {
                 self.replay_sequencer = replay_sequencer;
             } else {
                 let replay_filenames = replay_util::get_replay_filenames()?;
-                let replay_choice_config = pkt_util::get_replay_choice_config_message(replay_filenames);
+                let replay_choice_config = pkt_util::get_replay_choice_config_message(replay_filenames, &self.user_study_mode);
                 let mm = pkt_util::wrap_packet_in_multi_message(replay_choice_config);
                 self.env.route_messages(&mm);
                 self.env.update();
             }
-            self.run_and_poll();
+            self.run_and_poll()?;
         }
     }
 

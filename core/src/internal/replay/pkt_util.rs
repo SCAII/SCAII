@@ -264,7 +264,7 @@ pub fn get_study_questions_pkt(study_questions : StudyQuestions) -> ScaiiPacket 
         specific_msg: Some(SpecificMsg::StudyQuestions(study_questions)),
     }
 }
-pub fn get_replay_choice_config_message(replay_filenames: Vec<String>) -> ScaiiPacket {
+pub fn get_replay_choice_config_message(replay_filenames: Vec<String>, user_study_mode: &bool) -> ScaiiPacket {
     ScaiiPacket {
         src: protos::Endpoint {
             endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
@@ -276,6 +276,7 @@ pub fn get_replay_choice_config_message(replay_filenames: Vec<String>) -> ScaiiP
         },
         specific_msg: Some(SpecificMsg::ReplayChoiceConfig(ReplayChoiceConfig {
             replay_filenames: replay_filenames,
+            user_study_mode: *user_study_mode,
         })),
     }
 }

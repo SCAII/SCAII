@@ -40,7 +40,7 @@ replay.
 
 Usage:
   replay webserver
-  replay file
+  replay file [--user-study]
   replay test [--data-hardcoded | --data-from-recorded-file]
   replay (-h | --help)
 
@@ -121,6 +121,7 @@ impl Replay for ReplayMessageQueue {}
 pub enum RunMode {
     Live,
     Test,
+    UserStudy,
 }
 
 fn main() {
@@ -147,9 +148,16 @@ fn try_main() -> Result<(), Box<Error>> {
         run_replay(RunMode::Test)?;
         return Ok(());
     } else if args.cmd_file {
-        println!("Running Replay in live mode...");
-        run_replay(RunMode::Live)?;
-        return Ok(());
+        if args.user_study_mode {
+            println!("Running Replay in user-study mode...");
+            run_replay(RunMode::UserStudy)?;
+            return Ok(());
+        }
+        else {
+            println!("Running Replay in live mode...");
+            run_replay(RunMode::Live)?;
+            return Ok(());
+        }
     } else {
         panic!("Unrecognized command mode for replay: {:?}", args);
     }
@@ -158,6 +166,7 @@ fn try_main() -> Result<(), Box<Error>> {
 #[allow(unused_assignments)]
 pub fn run_replay(run_mode: RunMode) -> Result<(), Box<Error>> {
     let mut mode_is_test = true;
+    let mut mode_is_user_study = false;
     let mut environment: Environment = Environment::new();
 
     match run_mode {
@@ -166,6 +175,11 @@ pub fn run_replay(run_mode: RunMode) -> Result<(), Box<Error>> {
         }
         RunMode::Live => {
             mode_is_test = false;
+        }
+        
+        RunMode::UserStudy => {
+            mode_is_test = false;
+            mode_is_user_study = true;
         }
     }
     let dummy_agent = DummyAgentMessageQueue {
@@ -204,6 +218,7 @@ pub fn run_replay(run_mode: RunMode) -> Result<(), Box<Error>> {
         poll_timer_count: 5,
         //step_timer_count: 25,
         step_timer_count: 10,
+        user_study_mode: mode_is_user_study,
         user_study_questions: None,
     };
     let result = replay_manager.start();
