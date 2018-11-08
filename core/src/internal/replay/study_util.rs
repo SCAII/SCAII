@@ -36,7 +36,6 @@ println!("{}", result); // => "Hello World!"
                 println!("treatment_id {}", treatment_id);
             },
         }
-        let q_file = question_filename.clone();
         questionfile_path.push(&question_filename.unwrap().as_str());
         println!("path is {:?}", questionfile_path);
 
@@ -66,7 +65,6 @@ println!("{}", result); // => "Hello World!"
     }
     
     fn get_study_question(&mut self, line : &String) -> Result<StudyQuestion, Box<Error>> {
-        use super::ReplayError;
         let line_parts_iterator = line.split(";");
         let vec: Vec<&str> = line_parts_iterator.collect();
 
@@ -93,7 +91,7 @@ println!("{}", result); // => "Hello World!"
     }
 
     pub fn persist_log_entry_incremental(&mut self, lfe: LogFileEntry) -> Result<(), Box<Error>> {
-        use std::fs::{File, OpenOptions,remove_file};
+        use std::fs::{File, OpenOptions};
         use std::io::Write;
         use scaii_core;
         println!("{:?}", &lfe);
@@ -109,35 +107,6 @@ println!("{}", result); // => "Hello World!"
         let mut file = OpenOptions::new().append(true).open(answerfile_path).unwrap();
         file.write_all(output_line.as_bytes())?;
         file.write_all("\n".to_string().as_bytes())?;
-        Ok(())
-    }
-    pub fn persist_log_entry(&mut self, lfe: LogFileEntry) -> Result<(), Box<Error>> {
-        use std::fs::{File, OpenOptions,remove_file};
-        use std::io::Write;
-        use scaii_core;
-        println!("{:?}", &lfe);
-        let output_line = lfe.entry;
-        self.answer_lines.push(output_line);
-
-        if lfe.is_last_line {
-            let mut answerfile_path = scaii_core::get_default_replay_dir()?;
-            // append to file called replayX_answers_userID_treatmentID.txt
-            // or ??? replayX_answers_userID_sessionID_treatmentID.txt
-            let filename = lfe.filename;
-            answerfile_path.push(filename);
-            if answerfile_path.exists(){
-                remove_file(&answerfile_path)?;
-            }
-            println!("answerfile_path is {:?}", answerfile_path);
-            File::create(&answerfile_path)?;
-            let mut file = OpenOptions::new().append(true).open(answerfile_path).unwrap();
-            for line in &self.answer_lines {
-                file.write_all(line.as_bytes())?;
-                file.write_all("\n".to_string().as_bytes())?;
-                //writeln!(file, format!("{}",line))?;
-            }
-        }
-        
         Ok(())
     }
 
@@ -260,8 +229,6 @@ fn check_question(line: &String, line_num: &u8, fname: &str) ->u8{
     let line_parts_iterator = line_copy.split(";");
     let vec: Vec<&str> = line_parts_iterator.collect();
 
-    let mut temp:u8 = 0; // Correct lines have error code 0 (no error)
-
     // Checks that there are atleast 3 ;    error code 1
     if line.chars().filter(|&c| c == ';').count() < 3 {
         return check_regex(01, "$^".to_string(), "Missing \';\' delimiter".to_string(), &line, &line, &line_num, &fname);
@@ -269,7 +236,8 @@ fn check_question(line: &String, line_num: &u8, fname: &str) ->u8{
 
     let field0: String = vec[0].to_string();
     // Checks that field 0 is either a number or "summary"  error code 2
-    temp = check_regex(02, "[0-9]+|summary".to_string(), "Invalid entry for step number in Field 0.".to_string(), &field0, &line, &line_num, &fname);
+    let mut temp:u8 = check_regex(02, "[0-9]+|summary".to_string(), "Invalid entry for step number in Field 0.".to_string(), &field0, &line, &line_num, &fname);
+    // Correct lines have error code 0 (no error)
     if temp != 0 { return temp; }
 
     // Checks that field 1 is a number  error code 3
@@ -297,11 +265,11 @@ fn check_question(line: &String, line_num: &u8, fname: &str) ->u8{
                 if temp != 0 { return temp; }
                 
                 // Rust regex does not support positive lookahead, so we need to check for repeated entries this way. error code 7
-                let wFCvec: Vec<&str> = f2vec[1].split("_").collect();
+                let wfc_vec: Vec<&str> = f2vec[1].split("_").collect();
                 
-                if wFCvec.iter().filter(|&n| *n == "gameboard").count() > 1 
-                || wFCvec.iter().filter(|&n| *n == "rewardBar").count() > 1
-                || wFCvec.iter().filter(|&n| *n == "saliencyMap").count() > 1 {
+                if wfc_vec.iter().filter(|&n| *n == "gameboard").count() > 1 
+                || wfc_vec.iter().filter(|&n| *n == "rewardBar").count() > 1
+                || wfc_vec.iter().filter(|&n| *n == "saliencyMap").count() > 1 {
                     return check_regex(07, "$^".to_string(), "Repeated entries in Field 2, subfield 1. Use options {gameboard, rewardBar, saliencyMap} at most once each.".to_string(), &f2vec[1].to_string(), &line, &line_num, &fname);
                 }
     

@@ -150,10 +150,6 @@ impl ReplaySequencer {
         }
     }
 
-    pub fn get_index_rewound_to(&mut self) -> u32 {
-        self.rewound_to.clone()
-    }
-
     pub fn rewind(&mut self) -> ScaiiPacket {
         let zero_index: u32 = 0;
         let key_frame_pkt = self.keyframe_map.get(&zero_index).unwrap().clone();

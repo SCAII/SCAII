@@ -297,6 +297,7 @@ message GameComplete {}
 // the replay files available for replay
 message ReplayChoiceConfig {
 	repeated string replay_filenames = 1;
+    required bool user_study_mode = 6;
 }
 
 message ReplaySessionConfig {

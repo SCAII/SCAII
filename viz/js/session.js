@@ -217,6 +217,7 @@ function promoteTutorialFileIfPresent(replayNames) {
     return result;
 }
 
+var userStudyMode = false;
 var rewardDivMap = {};
 function handleReplayChoiceConfig(config){
     var replayNames = config.getReplayFilenamesList();
@@ -230,7 +231,10 @@ function handleReplayChoiceConfig(config){
 			text: name
 		}));
     }
-    if (userStudyMode){
+    userStudyMode = config.getUserStudyMode();
+    if (userStudyMode) {
+        removeFileSelectorEtc();
+        tabManager = getTabManager();
         tabManager.openFirstTab();
     }
     else {

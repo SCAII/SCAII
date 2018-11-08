@@ -1883,10 +1883,10 @@ proto.scaii.common.BackendCfg.serializeBinaryToWriter = function(message, writer
 
 /**
  * optional bytes cfg_msg = 1;
- * @return {string}
+ * @return {!(string|Uint8Array)}
  */
 proto.scaii.common.BackendCfg.prototype.getCfgMsg = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
@@ -2094,10 +2094,10 @@ proto.scaii.common.AgentCfg.serializeBinaryToWriter = function(message, writer) 
 
 /**
  * optional bytes cfg_msg = 1;
- * @return {string}
+ * @return {!(string|Uint8Array)}
  */
 proto.scaii.common.AgentCfg.prototype.getCfgMsg = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
@@ -2274,10 +2274,10 @@ proto.scaii.common.ModuleCfg.serializeBinaryToWriter = function(message, writer)
 
 /**
  * optional bytes cfg_msg = 1;
- * @return {string}
+ * @return {!(string|Uint8Array)}
  */
 proto.scaii.common.ModuleCfg.prototype.getCfgMsg = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
@@ -14380,10 +14380,10 @@ proto.scaii.common.State.prototype.hasReward = function() {
 
 /**
  * optional bytes expanded_state = 4;
- * @return {string}
+ * @return {!(string|Uint8Array)}
  */
 proto.scaii.common.State.prototype.getExpandedState = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
 };
 
 
@@ -14712,10 +14712,10 @@ proto.scaii.common.Action.prototype.clearContinuousActionsList = function() {
 
 /**
  * optional bytes alternate_actions = 3;
- * @return {string}
+ * @return {!(string|Uint8Array)}
  */
 proto.scaii.common.Action.prototype.getAlternateActions = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
@@ -15006,10 +15006,10 @@ proto.scaii.common.Error.prototype.hasFatal = function() {
 
 /**
  * optional bytes error_info = 3;
- * @return {string}
+ * @return {!(string|Uint8Array)}
  */
 proto.scaii.common.Error.prototype.getErrorInfo = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
@@ -15227,10 +15227,10 @@ proto.scaii.common.Other.prototype.hasName = function() {
 
 /**
  * optional bytes msg = 2;
- * @return {string}
+ * @return {!(string|Uint8Array)}
  */
 proto.scaii.common.Other.prototype.getMsg = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
@@ -15575,10 +15575,10 @@ proto.scaii.common.SerializationResponse.serializeBinaryToWriter = function(mess
 
 /**
  * required bytes serialized = 1;
- * @return {string}
+ * @return {!(string|Uint8Array)}
  */
 proto.scaii.common.SerializationResponse.prototype.getSerialized = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
@@ -16707,7 +16707,8 @@ proto.scaii.common.ReplayChoiceConfig.prototype.toObject = function(opt_includeI
  */
 proto.scaii.common.ReplayChoiceConfig.toObject = function(includeInstance, msg) {
   var f, obj = {
-    replayFilenamesList: jspb.Message.getRepeatedField(msg, 1)
+    replayFilenamesList: jspb.Message.getRepeatedField(msg, 1),
+    userStudyMode: jspb.Message.getField(msg, 6)
   };
 
   if (includeInstance) {
@@ -16748,6 +16749,10 @@ proto.scaii.common.ReplayChoiceConfig.deserializeBinaryFromReader = function(msg
       var value = /** @type {string} */ (reader.readString());
       msg.addReplayFilenames(value);
       break;
+    case 6:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setUserStudyMode(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -16784,6 +16789,13 @@ proto.scaii.common.ReplayChoiceConfig.serializeBinaryToWriter = function(message
       f
     );
   }
+  f = /** @type {boolean} */ (jspb.Message.getField(message, 6));
+  if (f != null) {
+    writer.writeBool(
+      6,
+      f
+    );
+  }
 };
 
 
@@ -16813,6 +16825,37 @@ proto.scaii.common.ReplayChoiceConfig.prototype.addReplayFilenames = function(va
 
 proto.scaii.common.ReplayChoiceConfig.prototype.clearReplayFilenamesList = function() {
   this.setReplayFilenamesList([]);
+};
+
+
+/**
+ * required bool user_study_mode = 6;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.scaii.common.ReplayChoiceConfig.prototype.getUserStudyMode = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 6, false));
+};
+
+
+/** @param {boolean} value */
+proto.scaii.common.ReplayChoiceConfig.prototype.setUserStudyMode = function(value) {
+  jspb.Message.setField(this, 6, value);
+};
+
+
+proto.scaii.common.ReplayChoiceConfig.prototype.clearUserStudyMode = function() {
+  jspb.Message.setField(this, 6, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.ReplayChoiceConfig.prototype.hasUserStudyMode = function() {
+  return jspb.Message.getField(this, 6) != null;
 };
 
 
