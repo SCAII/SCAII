@@ -165,7 +165,7 @@ function getExplanationsV2Manager(){
     cm.showHoverScores = false;
     cm.chartUI = getChartV2UI();
     cm.saliencyUI = getSaliencyV2UI();
-    cm.stepsWithExplanations = [];
+    cm.stepsWithExplanations = [];  // set by handleReplaySessionConfig
     cm.chartDataForStep = {};
     cm.currentQuestionType = undefined;
     cm.entityListForDP = {};
@@ -217,7 +217,6 @@ function getExplanationsV2Manager(){
             this.data = addConvenienceDataStructures(this.data);
             this.data = setDefaultSelections(this.data, this.treatmentID);
             this.chartDataForStep[step] = this.data;
-            this.stepsWithExplanations.push(step);
             this.actionsRanked = rankThings(this.data.actions, getThingWithMaxValue);
         }
         else {
@@ -235,7 +234,9 @@ function getExplanationsV2Manager(){
         for (var i in this.stepsWithExplanations){
             var step = this.stepsWithExplanations[i];
             var data = this.chartDataForStep[step];
-            f(data, key);
+            if (data != undefined) { // in case we haven't landed on this dp yet
+                f(data, key);
+            }
         }
     }
     cm.hasExplDataForStep = function(step) {

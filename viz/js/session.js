@@ -294,7 +294,8 @@ function handleReplaySessionConfig(rsc, selectedStep) {
     }
 	var timelineWidth = expl_ctrl_canvas.width - 2*timelineMargin;
 	sessionIndexManager = getSessionIndexManager(rsc.getStepCount(), rsc.getExplanationStepsList(), timelineWidth);
-	sessionIndexManager.setReplaySequencerIndex(0);
+    sessionIndexManager.setReplaySequencerIndex(0);
+    currentExplManager.stepsWithExplanations = replaySessionConfig.getExplanationStepsList();
 }
 
 
