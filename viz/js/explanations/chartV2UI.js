@@ -16,8 +16,11 @@ function getChartV2UI() {
         else if (chartStyle == "msx"){
             this.activeChart = getMsxChartUI();
         }
-        else {
+        else if (chartStyle == "advantage"){
             this.activeChart = getAdvantageChartUI();
+        }
+        else {
+            this.activeChart = getBasicChartUI();
         }
         this.activeChart.renderChart(chartData, treatment,canvasHeight, canvasWidth);
     }
