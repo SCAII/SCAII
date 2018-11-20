@@ -137,19 +137,26 @@ function addMsxGeometryFunctions(chartData) {
         }
     }
 
-    msxCG.positionTooltips = function(){
-        for (var i in chartData.actionRewardNames) {
-            var actionRewardName = chartData.actionRewardNames[i];
-            var rewardBar = chartData.actionRewardForNameMap[actionRewardName];
-            //originX + rewardBarWidth
-            //if (actionRewardName.startswith(chartData.actionBest.name)){
-                rewardBar.msxChartGeometry.tooltipOriginX = rewardBar.msxChartGeometry.originX + msxCG.rewardBarWidth;
-            //}
-            //else {
-           //     rewardBar.msxChartGeometry.tooltipOriginX = rewardBar.msxChartGeometry.originX + msxCG.rewardBarWidth;
-           // }
-            // (canvasHeight / 2) - ((ch.rewardBar[i].bars[j].value * scalingFactor) * 0.75)
-            rewardBar.msxChartGeometry.tooltipOriginY = msxCG.canvasHeight/2 - rewardBar.value * msxCG.scalingFactor * 0.75; 
+    msxCG.positionTooltips = function() {
+        var totalBars = chartData.actions[0].bars.length;
+        console.log(msxCG);
+        for (var i in chartData.actions) {
+            var action = chartData.actions[i];
+            if (action.msxMaxValueAction == false) {
+                for (var j in action.bars) {
+                    var bar = action.bars[j];
+                    var calc = Number((Number(i) * Number(totalBars)) + Number(j));
+                    var actionRewardName = chartData.actionRewardNames[calc];
+                    var rewardBar = chartData.actionRewardForNameMap[actionRewardName];
+                    if (bar.msxImportantBar == true) {
+                        rewardBar.msxChartGeometry.tooltipOriginX = rewardBar.msxChartGeometry.originX - (msxCG.widthAvailableForRewardBars + (msxCG.groupWidthMargin * 2)) - 10;
+                        rewardBar.msxChartGeometry.tooltipOriginY = (msxCG.canvasHeight - (chartData.getMaxAbsoluteValueReward() * 2 * msxCG.scalingFactor)) / 2
+                    } else {
+                        rewardBar.msxChartGeometry.tooltipOriginX = rewardBar.msxChartGeometry.originX + msxCG.rewardBarWidth;
+                        rewardBar.msxChartGeometry.tooltipOriginY = msxCG.canvasHeight/2 - rewardBar.value * msxCG.scalingFactor * 0.75;
+                    }
+                }
+            }
         }
     }
 

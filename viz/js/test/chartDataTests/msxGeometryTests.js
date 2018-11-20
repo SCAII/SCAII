@@ -527,8 +527,131 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
     fc.assert(msxCG.actionLinesOriginY, 80.0, "actionLineOriginY");
     fc.assert(msxCG.actionLinesLength, 480.0, "actionLineLength");
 
-    // NEED TO DO
     // tooltip placement 
+    /*
+    if (importantBar)
+        tooltips will assume sit at top of chart (where Y-axis line starts) and stretch length of the distance
+        between the two rewardBars plus a little bit more.
+        There will be two arrows pointing downward towards the bar these also need to be positioned but difficult
+        since can't see them.
+            The bar for the arrow will be at Xpos of the Bar. Ypos will be slightly below where Y-axis line starts
+            Length will be based on reward bar.
+                if (rewardBar.value < 0)
+                    Length will be to the X-axis line
+                else
+                    Length will be to the (x-axis line - rewardBar.value * scale factor - (extra bit so values can still display))
+            Arrows will follow their Xpos based off the length of the bar for the arrow
+            Hard to judge this one since not solid on how arrows work in DOM
+    else
+        Tooltips will assume sit at 3/4 the height of bar
+        tooltipHeight = 50;
+        tooltipWidth = 75;
+        ch.toolTip.originX = rewardForName["action_i.reward_j"].basicChartGeometry.originX + rewardBarWidth
+        ch.toolTip.originY = (canvasHeight / 2) - ((ch.rewardBar[i].bars[j].value * scallingFactor) * 0.75)
+    */
+    if (chartTesting == "seeSaw") {
+        fc.setCase("tooltips positioning seeSaw");
+        msxCG.positionTooltips();
+        //MATH for originX is semi-same for all but picked action
+        // 408 + 40 + (reward# * 96)
+
+        fc.assert(rewardForName["action_0.reward_0"].msxChartGeometry.tooltipOriginX, 70.0, "tooltip X action_0.reward_0");
+        fc.assert(rewardForName["action_0.reward_0"].msxChartGeometry.tooltipOriginY, 80.0, "tooltip Y action_0.reward_0");// (640 - (120 * 2 * 2)) / 2
+        fc.assert(rewardForName["action_0.reward_1"].msxChartGeometry.tooltipOriginX, 640.0, "tooltip X action_0.reward_1");
+        fc.assert(rewardForName["action_0.reward_1"].msxChartGeometry.tooltipOriginY, 350.0, "tooltip Y action_0.reward_1");// 320 - (-20) * 2 * 0.75
+        fc.assert(rewardForName["action_0.reward_2"].msxChartGeometry.tooltipOriginX, 262.0, "tooltip X action_0.reward_2");
+        fc.assert(rewardForName["action_0.reward_2"].msxChartGeometry.tooltipOriginY, 80.0, "tooltip Y action_0.reward_2");// (640 - (120 * 2 * 2)) / 2
+
+        fc.assert(rewardForName["action_1.reward_0"].msxChartGeometry.tooltipOriginX, 544.0, "tooltip X action_1.reward_0");
+        fc.assert(rewardForName["action_1.reward_0"].msxChartGeometry.tooltipOriginY, 380.0, "tooltip Y action_1.reward_0");// 320 - (-40) * 2 * 0.75
+        fc.assert(rewardForName["action_1.reward_1"].msxChartGeometry.tooltipOriginX, 640.0, "tooltip X action_1.reward_1");
+        fc.assert(rewardForName["action_1.reward_1"].msxChartGeometry.tooltipOriginY, 245.0, "tooltip Y action_1.reward_1");// 320 - 50 * 2 * 0.75
+        fc.assert(rewardForName["action_1.reward_2"].msxChartGeometry.tooltipOriginX, 262.0, "tooltip X action_1.reward_2");
+        fc.assert(rewardForName["action_1.reward_2"].msxChartGeometry.tooltipOriginY, 80.0, "tooltip Y action_1.reward_2");// (640 - (120 * 2 * 2)) / 2
+
+        // fc.assert(rewardForName["action_2.reward_0"].msxChartGeometry.tooltipOriginX, 536.0, "tooltip X action_2.reward_1");
+        // fc.assert(rewardForName["action_2.reward_0"].msxChartGeometry.tooltipOriginY, 440.0, "tooltip Y action_2.reward_1"); //  70
+        // fc.assert(rewardForName["action_2.reward_1"].msxChartGeometry.tooltipOriginX, 536.0, "tooltip X action_2.reward_1");
+        // fc.assert(rewardForName["action_2.reward_1"].msxChartGeometry.tooltipOriginY, 440.0, "tooltip Y action_2.reward_1"); // -80
+        // fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.tooltipOriginX, 536.0, "tooltip X action_2.reward_1");
+        // fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.tooltipOriginY, 440.0, "tooltip Y action_2.reward_1"); //  90
+
+        fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.tooltipOriginX, 544.0, "tooltip X action_3.reward_0");
+        fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.tooltipOriginY, 470.0, "tooltip Y action_3.reward_0");// 320 - (-100) * 2 * 0.75
+        fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.tooltipOriginX, 640.0, "tooltip X action_3.reward_1");
+        fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.tooltipOriginY, 155.0, "tooltip Y action_3.reward_1");// 320 - 110 * 2 * 0.75
+        fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.tooltipOriginX, 262.0, "tooltip X action_3.reward_2");
+        fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.tooltipOriginY, 80.0, "tooltip Y action_3.reward_2");// (640 - (120 * 2 * 2)) / 2
+
+    } else if (chartTesting == "allPositives") {
+        fc.setCase("tooltips positioning allPositives");
+        msxCG.positionTooltips();
+        //MATH for originX is semi-same for all but picked action
+        // 408 + 40 + (reward# * 96)
+
+        fc.assert(rewardForName["action_0.reward_0"].msxChartGeometry.tooltipOriginX, 544.0, "tooltip X action_0.reward_0");
+        fc.assert(rewardForName["action_0.reward_0"].msxChartGeometry.tooltipOriginY, 320.0, "tooltip Y action_0.reward_0");// 320 - 0 * 2 * 0.75
+        fc.assert(rewardForName["action_0.reward_1"].msxChartGeometry.tooltipOriginX, 640.0, "tooltip X action_0.reward_1");
+        fc.assert(rewardForName["action_0.reward_1"].msxChartGeometry.tooltipOriginY, 320.0, "tooltip Y action_0.reward_1");// 320 - 0 * 2 * 0.75
+        fc.assert(rewardForName["action_0.reward_2"].msxChartGeometry.tooltipOriginX, 262.0, "tooltip X action_0.reward_2");
+        fc.assert(rewardForName["action_0.reward_2"].msxChartGeometry.tooltipOriginY, 80.0, "tooltip Y action_0.reward_2");// (640 - (120 * 2 * 2)) / 2
+
+        fc.assert(rewardForName["action_1.reward_0"].msxChartGeometry.tooltipOriginX, 544.0, "tooltip X action_1.reward_0");
+        fc.assert(rewardForName["action_1.reward_0"].msxChartGeometry.tooltipOriginY, 260.0, "tooltip Y action_1.reward_0");// 320 - 40 * 2 * 0.75
+        fc.assert(rewardForName["action_1.reward_1"].msxChartGeometry.tooltipOriginX, 166.0, "tooltip X action_1.reward_1");
+        fc.assert(rewardForName["action_1.reward_1"].msxChartGeometry.tooltipOriginY, 80.0, "tooltip Y action_1.reward_1");// (640 - (120 * 2 * 2)) / 2
+        fc.assert(rewardForName["action_1.reward_2"].msxChartGeometry.tooltipOriginX, 736.0, "tooltip X action_1.reward_2");
+        fc.assert(rewardForName["action_1.reward_2"].msxChartGeometry.tooltipOriginY, 230.0, "tooltip Y action_1.reward_2");// 320 - 60 * 2 * 0.75
+
+        fc.assert(rewardForName["action_2.reward_0"].msxChartGeometry.tooltipOriginX, 70.0, "tooltip X action_2.reward_0");
+        fc.assert(rewardForName["action_2.reward_0"].msxChartGeometry.tooltipOriginY, 80.0, "tooltip Y action_2.reward_0");// (640 - (120 * 2 * 2)) / 2
+        fc.assert(rewardForName["action_2.reward_1"].msxChartGeometry.tooltipOriginX, 640.0, "tooltip X action_2.reward_1");
+        fc.assert(rewardForName["action_2.reward_1"].msxChartGeometry.tooltipOriginY, 200.0, "tooltip Y action_2.reward_1");// 320 - 80 * 2 * 0.75
+        fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.tooltipOriginX, 736.0, "tooltip X action_2.reward_2");
+        fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.tooltipOriginY, 185.0, "tooltip Y action_2.reward_2");// 320 - 90 * 2 * 0.75
+
+        // fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.tooltipOriginX, 794.0, "tooltip X action_3.reward_2");
+        // fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.tooltipOriginY, 500.0, "tooltip Y action_3.reward_2"); // 100
+        // fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.tooltipOriginX, 794.0, "tooltip X action_3.reward_2");
+        // fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.tooltipOriginY, 500.0, "tooltip Y action_3.reward_2"); // 110
+        // fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.tooltipOriginX, 794.0, "tooltip X action_3.reward_2");
+        // fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.tooltipOriginY, 500.0, "tooltip Y action_3.reward_2"); // 120
+
+    } else if (chartTesting == "allNegatives") {
+        fc.setCase("tooltips positioning allNegatives");
+        msxCG.positionTooltips();
+        //MATH for originX is semi-same for all but picked action
+        // 408 + 40 + (reward# * 96)
+
+        // fc.assert(rewardForName["action_0.reward_0"].msxChartGeometry.tooltipOriginX, 74.0, "tooltip X action_0.reward_0");
+        // fc.assert(rewardForName["action_0.reward_0"].msxChartGeometry.tooltipOriginY, 305.0, "tooltip Y action_0.reward_0"); // -10
+        // fc.assert(rewardForName["action_0.reward_1"].msxChartGeometry.tooltipOriginX, 128.0, "tooltip X action_0.reward_1");
+        // fc.assert(rewardForName["action_0.reward_1"].msxChartGeometry.tooltipOriginY, 350.0, "tooltip Y action_0.reward_1"); // -20
+        // fc.assert(rewardForName["action_0.reward_2"].msxChartGeometry.tooltipOriginX, 182.0, "tooltip X action_0.reward_2");
+        // fc.assert(rewardForName["action_0.reward_2"].msxChartGeometry.tooltipOriginY, 275.0, "tooltip Y action_0.reward_2"); // -30
+
+        fc.assert(rewardForName["action_1.reward_0"].msxChartGeometry.tooltipOriginX, 70.0, "tooltip X action_1.reward_0");
+        fc.assert(rewardForName["action_1.reward_0"].msxChartGeometry.tooltipOriginY, 80.0, "tooltip Y action_1.reward_0");// (640 - (120 * 2 * 2)) / 2
+        fc.assert(rewardForName["action_1.reward_1"].msxChartGeometry.tooltipOriginX, 640.0, "tooltip X action_1.reward_1");
+        fc.assert(rewardForName["action_1.reward_1"].msxChartGeometry.tooltipOriginY, 395.0, "tooltip Y action_1.reward_1");// 320 - -50 * 2 * 0.75
+        fc.assert(rewardForName["action_1.reward_2"].msxChartGeometry.tooltipOriginX, 736.0, "tooltip X action_1.reward_2");
+        fc.assert(rewardForName["action_1.reward_2"].msxChartGeometry.tooltipOriginY, 410.0, "tooltip Y action_1.reward_2");// 320 - -60 * 2 * 0.75
+
+        fc.assert(rewardForName["action_2.reward_0"].msxChartGeometry.tooltipOriginX, 70.0, "tooltip X action_2.reward_0");
+        fc.assert(rewardForName["action_2.reward_0"].msxChartGeometry.tooltipOriginY, 80.0, "tooltip Y action_2.reward_0");// (640 - (120 * 2 * 2)) / 2
+        fc.assert(rewardForName["action_2.reward_1"].msxChartGeometry.tooltipOriginX, 640.0, "tooltip X action_2.reward_1");
+        fc.assert(rewardForName["action_2.reward_1"].msxChartGeometry.tooltipOriginY, 440.0, "tooltip Y action_2.reward_1");// 320 - -80 * 2 * 0.75
+        fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.tooltipOriginX, 736.0, "tooltip X action_2.reward_2");
+        fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.tooltipOriginY, 455.0, "tooltip Y action_2.reward_2");// 320 - -90 * 2 * 0.75
+
+        fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.tooltipOriginX, 70.0, "tooltip X action_3.reward_0");
+        fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.tooltipOriginY, 80.0, "tooltip Y action_3.reward_0");// (640 - (120 * 2 * 2)) / 2
+        fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.tooltipOriginX, 640.0, "tooltip X action_3.reward_1");
+        fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.tooltipOriginY, 485.0, "tooltip Y action_3.reward_1");// 320 - -110 * 2 * 0.75
+        fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.tooltipOriginX, 736.0, "tooltip X action_3.reward_2");
+        fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.tooltipOriginY, 500.0, "tooltip Y action_3.reward_2");// 320 - -120 * 2 * 0.75
+
+    }
+    // NEED TO DO
     // (tooltip values position same)
-    // getActionBarNameForCoordinates
 }
