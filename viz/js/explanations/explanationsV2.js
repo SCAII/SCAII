@@ -9,8 +9,8 @@ function handleExplanationDetails(explDetails){
         var rawChart = convertProtobufChartToJSChart(barChartMessage);
         //ignore true data for testing
         //currentExplManager.setChartData(getSeeSawChart());
-        var saliency = explanationPoint.getSaliency();
-        saliencyLookupMap = saliency.getSaliencyMapMap();
+        // var saliency = explanationPoint.getSaliency();
+        // saliencyLookupMap = saliency.getSaliencyMapMap();
         var step = sessionIndexManager.getCurrentIndex();
         currentExplManager.setChartData(rawChart, step);
 	}
@@ -432,15 +432,15 @@ function getExplanationsV2Manager(){
             }
             this.renderChartDetailed(mode, "NA");
         }
-        if (this.showSaliencyAccessButton && this.chartVisible){
-            this.renderSaliencyAccessButton(mode);
-        }
-        if (this.saliencyVisible && this.saliencyCombined){
-            this.renderSaliencyCombined(mode);
-        }
-        if (this.saliencyVisible && !this.saliencyCombined){
-            this.renderSaliencyDetailed(mode);
-        }
+        // if (this.showSaliencyAccessButton && this.chartVisible){
+        //     this.renderSaliencyAccessButton(mode);
+        // }
+        // if (this.saliencyVisible && this.saliencyCombined){
+        //     this.renderSaliencyCombined(mode);
+        // }
+        // if (this.saliencyVisible && !this.saliencyCombined){
+        //     this.renderSaliencyDetailed(mode);
+        // }
     }
 
     cm.renderChartDetailed = function(mode, treatment){
