@@ -1,17 +1,17 @@
 use std::collections::{HashMap, HashSet};
 
 use super::FactionId;
-use engine::components::{AttackSensor, CollisionHandle, Color, Hp, Movable, Pos, Shape, Speed,
-                         Static, UnitTypeTag};
+use engine::components::Color;
 
 use scaii_defs::protos::{Action, State, Viz};
 
 use specs::prelude::*;
-use specs::world::LazyBuilder;
 
 pub mod collision;
+mod unit_type;
 
-pub use self::collision::*;
+pub use self::{collision::*, unit_type::*};
+pub use engine::systems::lua::userdata::DataStore;
 
 // Recommended by ncollide
 pub const COLLISION_MARGIN: f64 = 0.02;
@@ -19,14 +19,28 @@ pub const COLLISION_MARGIN: f64 = 0.02;
 // we should probably set this as a resource from Lua in the future
 pub const COLLISION_SCALE: f64 = 5.0;
 
-pub const MAX_FACTIONS: usize = 15;
+pub const UNIVERSAL_SENSOR: usize = SENSOR_OFFSET + MAX_FACTIONS;
+pub const SENSOR_OFFSET: usize = MAX_FACTIONS;
+pub const SENSOR_BLACKLIST: [usize; MAX_FACTIONS + 1] = [
+    SENSOR_OFFSET,
+    SENSOR_OFFSET + 1,
+    SENSOR_OFFSET + 2,
+    SENSOR_OFFSET + 3,
+    UNIVERSAL_SENSOR,
+];
+
+pub const MAX_FACTIONS: usize = 4;
 
 pub const STATE_SIZE: usize = 40;
 pub const STATE_SCALE: usize = 1;
 
 lazy_static! {
     pub static ref PLAYER_COLORS: Vec<Color> = vec![
-        Color { r: 255, g: 181, b: 0 },
+        Color {
+            r: 255,
+            g: 181,
+            b: 0,
+        },
         Color { r: 255, g: 0, b: 0 },
         Color { r: 0, g: 0, b: 255 },
     ];
@@ -37,9 +51,9 @@ lazy_static! {
 const SIXTY_FPS: f64 = 1.0 / 60.0;
 
 pub(super) fn register_world_resources(world: &mut World) {
-    use util;
-    use specs::saveload::U64MarkerAllocator;
     use ndarray::Array3;
+    use specs::saveload::U64MarkerAllocator;
+    use util;
 
     let rng = util::make_rng();
     world.add_resource(rng);
@@ -54,12 +68,14 @@ pub(super) fn register_world_resources(world: &mut World) {
     world.add_resource(UnitTypeMap::default());
     world.add_resource(U64MarkerAllocator::new());
     world.add_resource(ActionInput::default());
-    world.add_resource(SkyCollisionWorld::new(COLLISION_MARGIN));
+    world.add_resource(new_collision_world());
+
     world.add_resource(RtsState(State {
         features: Array3::zeros([STATE_SIZE, STATE_SIZE, 4]).into_raw_vec(),
         feature_array_dims: vec![STATE_SIZE as u32, STATE_SIZE as u32, 4],
         ..Default::default()
     }));
+
     world.add_resource(Reward::default());
     world.add_resource(Skip(false, None));
     world.add_resource(SerializeBytes::default());
@@ -69,6 +85,7 @@ pub(super) fn register_world_resources(world: &mut World) {
     world.add_resource(SpawnBuffer::default());
     world.add_resource(Deserializing(false));
     world.add_resource(CumReward::default());
+    world.add_resource(DataStore::default());
 }
 
 #[derive(Default, Debug, Clone, PartialEq)]
@@ -120,229 +137,6 @@ pub struct CumReward(pub HashMap<String, f64>);
 
 #[derive(Eq, PartialEq, Default, Clone, Debug, Hash)]
 pub struct Skip(pub bool, pub Option<String>);
-
-#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-pub struct UnitType {
-    pub tag: String,
-    pub max_hp: f64,
-    pub movable: bool,
-    pub shape: Shape,
-    pub kill_reward: f64,
-    pub death_penalty: f64,
-    pub damage_deal_reward: Option<f64>,
-    pub damage_recv_penalty: Option<f64>,
-    pub speed: f64,
-    pub attack_range: f64,
-    pub attack_damage: f64,
-    pub attack_delay: f64,
-
-    pub death_type: String,
-    pub dmg_recv_type: String,
-    pub dmg_deal_type: String,
-    pub kill_type: String,
-}
-
-impl Default for UnitType {
-    fn default() -> Self {
-        UnitType {
-            tag: "".to_string(),
-            max_hp: 100.0,
-            movable: true,
-            shape: Shape::Triangle { base_len: 10.0 },
-            kill_reward: 0.0,
-            death_penalty: 0.0,
-            damage_deal_reward: None,
-            damage_recv_penalty: None,
-            death_type: "death".to_string(),
-            dmg_recv_type: "dmg_recvd".to_string(),
-            dmg_deal_type: "dmg_dealt".to_string(),
-            kill_type: "killed_enemy".to_string(),
-            speed: 20.0,
-            attack_range: 10.0,
-            attack_delay: 1.0,
-            attack_damage: 10.0,
-        }
-    }
-}
-
-impl UnitType {
-    pub fn build_entity(
-        &self,
-        world: &mut World,
-        pos: Pos,
-        curr_hp: Option<f64>,
-        faction: usize,
-    ) -> Entity {
-        let lazy_update = world.read_resource::<LazyUpdate>();
-        let lazy_build = lazy_update.create_entity(&world.entities());
-
-        let players = &**world.read_resource::<Vec<Player>>();
-
-        self.build_entity_lazy(lazy_build, &*lazy_update, pos, curr_hp, faction, players)
-    }
-
-    /// Creates and places the unit in the game world given its initial
-    /// position and faction.
-    ///
-    /// This also initializes anything it needs such as colliders in the collision system.
-    pub fn build_entity_lazy(
-        &self,
-        entity: LazyBuilder,
-        update: &LazyUpdate,
-        pos: Pos,
-        curr_hp: Option<f64>,
-        faction: usize,
-        players: &[Player],
-    ) -> Entity {
-        use specs::saveload::U64Marker;
-
-        let color = players[faction].color;
-
-        // Scoping for borrow shenanigans
-        let entity = {
-            let entity = entity
-                .with(pos)
-                .with(self.shape)
-                .with(color)
-                .with(FactionId(faction))
-                .with(UnitTypeTag(self.tag.clone()))
-                .with(Hp {
-                    max_hp: self.max_hp,
-                    curr_hp: curr_hp.unwrap_or(self.max_hp),
-                })
-                .marked::<U64Marker>();
-
-            if self.movable {
-                entity.with(Movable(0)).with(Speed(self.speed))
-            } else {
-                entity.with(Static(0))
-            }
-        }.build();
-
-        let me = self.clone();
-
-        update.execute(move |world| {
-            let mut col_storage = world.write::<CollisionHandle>();
-            let mut atk_storage = world.write::<AttackSensor>();
-
-            let mut c_world = world.write_resource();
-            me.register_collision(
-                entity,
-                pos,
-                faction,
-                &mut col_storage,
-                &mut atk_storage,
-                &mut *c_world,
-            );
-        });
-
-        entity
-    }
-
-    /// Registers a unit with the collision system based on its unit type
-    /// and places the collision system handles into the appropriate components
-    pub fn register_collision(
-        &self,
-        entity: Entity,
-        pos: Pos,
-        faction: usize,
-        col_storage: &mut WriteStorage<CollisionHandle>,
-        atk_storage: &mut WriteStorage<AttackSensor>,
-        c_world: &mut SkyCollisionWorld,
-    ) -> Entity {
-        use ncollide::shape::{Ball, Cuboid, Cylinder, ShapeHandle};
-        use ncollide::world::{CollisionGroups, GeometricQueryType};
-        use nalgebra::{Isometry2, Vector2};
-        use nalgebra;
-
-        let mut collider_group = CollisionGroups::new();
-        collider_group.modify_membership(faction, true);
-
-        let mut sensor_group = CollisionGroups::new();
-        sensor_group.modify_membership(MAX_FACTIONS + faction, true);
-        // sensor_group.set_blacklist(&SENSOR_BLACKLIST);
-
-        let (collider, atk_radius) = match self.shape {
-            Shape::Rect { width, height } => {
-                let width = width / COLLISION_SCALE;
-                let height = height / COLLISION_SCALE;
-
-                // ncollide likes half widths and heights, so divide by 2
-                let collider = Cuboid::new(Vector2::new(width / 2.0, height / 2.0));
-                let collider = ShapeHandle::new(collider);
-
-                let atk_radius = width.max(height) + (self.attack_range / COLLISION_SCALE);
-                let atk_sensor = Ball::new(atk_radius);
-                let atk_sensor = ShapeHandle::new(atk_sensor);
-
-                (collider, atk_sensor)
-            }
-            Shape::Triangle { base_len } => {
-                let base_len = base_len / COLLISION_SCALE;
-
-                // equilateral triangle dimensions
-                let half_height = base_len / (2.0 as f64).sqrt() / 2.0;
-                let radius = base_len / 2.0;
-
-                // A cylinder in 2D is an isoscelese triangle in ncollide
-                let collider = Cylinder::new(half_height, radius);
-                let collider = ShapeHandle::new(collider);
-
-                let atk_radius = half_height + (self.attack_range / COLLISION_SCALE);
-                let atk_sensor = Ball::new(atk_radius);
-                let atk_sensor = ShapeHandle::new(atk_sensor);
-
-                (collider, atk_sensor)
-            }
-        };
-
-        // We need the entity ID for this, so do it after building the entity and then add the component.
-        let (collider, atk_radius) = {
-            let pos = Isometry2::new(
-                Vector2::new(pos.x / COLLISION_SCALE, pos.y / COLLISION_SCALE),
-                nalgebra::zero(),
-            );
-
-            let q_type = GeometricQueryType::Contacts(0.0, 0.0);
-            let collider = c_world.add(
-                pos,
-                collider,
-                collider_group,
-                q_type,
-                ColliderData {
-                    e: entity,
-                    detector: false,
-                },
-            );
-
-            let atk_radius = c_world.add(
-                pos,
-                atk_radius,
-                sensor_group,
-                q_type,
-                ColliderData {
-                    e: entity,
-                    detector: true,
-                },
-            );
-
-            (collider, atk_radius)
-        };
-
-        col_storage.insert(entity, CollisionHandle(collider));
-        atk_storage.insert(entity, AttackSensor(atk_radius));
-
-        c_world.update();
-
-        entity
-    }
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize, Default)]
-pub struct UnitTypeMap {
-    pub typ_ids: HashMap<String, usize>,
-    pub tag_map: HashMap<String, UnitType>,
-}
 
 #[derive(Clone, Debug, PartialEq, Eq, Default)]
 pub struct SerializeBytes(pub Vec<u8>);

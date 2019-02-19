@@ -9,10 +9,6 @@ function deleteShape(shapeList, shape) {
   }
 }
 
-function addShape(shapesList, shape) {
-  masterShapes.push(updateShape);
-}
-
 function updateMasterPosition(masterPos, updatePos) {
   if (updatePos != undefined) {
     if (updatePos.hasX()) {
@@ -53,36 +49,97 @@ function updateMasterColor(masterShape, masterColor, updateColor) {
   }
 }
 
-function updateMasterRect(masterShape, masterRect, updateRect) {
-  if (updateRect == undefined) {
-    return;
-  }
-  if (masterRect == undefined) {
-    masterShape.setRect(updateRect);
-    return;
-  }
-  if (updateRect.hasWidth()) {
-    masterRect.setWidth(updateRect.getWidth());
-  }
-  if (updateRect.hasHeight()) {
-    masterRect.setHeight(updateRect.getHeight());
-  }
+function transferSpecificShape(masterShape, updateShape){
+    var masterShapeType = getShapeType(masterShape);
+    var updateShapeType = getShapeType(updateShape);
+    clearShape(masterShape, masterShapeType);
+    var specificShape = getShapeOfType(updateShape,updateShapeType);
+    setShape(masterShape, specificShape, updateShapeType);
 }
 
-function updateMasterTriangle(masterShape, masterTri, updateTri) {
-  if (updateTri == undefined) {
-    return;
-  }
-  if (masterTri == undefined) {
-    masterShape.setTriangle(updateTri);
-    return;
-  }
-
-  if (updateTri.hasBaseLen()) {
-    masterTri.setBaseLen(updateTri.getBaseLen());
-  }
+function getShapeType(shape){
+    if (shape.hasCircle()) {
+        return "circle";
+    }
+    else if (shape.hasRect()) {
+        return "rect";
+    }
+    else if (shape.hasKite()) {
+        return "kite";
+    }
+    else if (shape.hasOctagon()) {
+        return "octagon";
+    }
+    else if (shape.hasArrow()) {
+        return "arrow";
+    }
+    else if (shape.hasTriangle()) {
+        return "triangle";
+    }
 }
 
+function setShape(shape, specificShape, type) {
+    if (type == "circle") {
+        shape.setCircle(specificShape);
+    }
+    else if (type =="rect") {
+        shape.setRect(specificShape);
+    }
+    else if (type =="kite") {
+        shape.setKite(specificShape);
+    }
+    else if (type =="octagon") {
+        shape.setOctagon(specificShape);
+    }
+    else if (type =="arrow") {
+        shape.setArrow(specificShape);
+    }
+    else if (type =="triangle") {
+        shape.setTriangle(specificShape);
+    }
+}
+
+function clearShape(shape, type) {
+    if (type == "circle") {
+        shape.clearCircle();
+    }
+    else if (type =="rect") {
+        shape.clearRect();
+    }
+    else if (type =="kite") {
+        shape.clearKite();
+    }
+    else if (type =="octagon") {
+        shape.clearOctagon();
+    }
+    else if (type =="arrow") {
+        shape.clearArrow();
+    }
+    else if (type =="triangle") {
+        shape.clearTriangle();
+    }
+}
+
+function getShapeOfType(shape, type) {
+    if (type == "circle") {
+        return shape.getCircle();
+    }
+    else if (type =="rect") {
+        return shape.getRect();
+    }
+    else if (type =="kite") {
+        return shape.getKite();
+    }
+    else if (type =="octagon") {
+        return shape.getOctagon();
+    }
+    else if (type =="arrow") {
+        return shape.getArrow();
+    }
+    else if (type =="triangle") {
+        return shape.getTriangle();
+    }
+}
 function updateMasterShape(master, update) {
   var updatePos = update.getRelativePos();
   var masterPos = master.getRelativePos();
@@ -93,39 +150,8 @@ function updateMasterShape(master, update) {
   var updateRotation = update.getRotation();
   var masterRotation = master.getRotation();
   updateMasterRotation(master, masterRotation, updateRotation);
-  var updateRect = update.getRect();
-  var masterRect = master.getRect();
-  var updateTriangle = update.getTriangle();
-  var masterTriangle = master.getTriangle();
-  if (masterRect != undefined) {
-    if (updateTriangle != undefined) {
-      // the triangle is replacing the rectangle
-      master.clearRect();
-      master.setTriangle(updateTriangle)
-    }
-    else if (updateRect != undefined) {
-      // we're updating the existing rectangle
-      updateMasterRect(master, masterRect, updateRect);
-    }
-    else {
-      // do nothing
-    }
-
-  }
-  else if (masterTriangle != undefined) {
-    if (updateRect != undefined) {
-      //the rectangle is replacing the triangle
-      master.clearTriangle();
-      master.setRect(updateRect);
-    }
-    else if (updateTriangle != undefined) {
-      // we're updating the triangle  
-      updateMasterTriangle(master, masterTriangle, updateTriangle);
-    }
-    else {
-      //do nothing
-    }
-  }
+  
+  transferSpecificShape(master, update);
 }
 
 function updateMasterEntity(master, update) {
@@ -141,7 +167,6 @@ function updateMasterEntity(master, update) {
   }
   var masterShapes = master.getShapesList();
   var updateShapes = update.getShapesList();
-  var newShapesToAdd = [];
   for (var i in updateShapes) {
     var updateShape = updateShapes[i];
     if (!updateShape.hasId()) {
@@ -151,17 +176,10 @@ function updateMasterEntity(master, update) {
     var updateShapeId = updateShape.getId();
     var masterShape = getShapeWithMatchingId(masterShapes, updateShapeId);
     if (masterShape == undefined) {
-      addShape(masterShapes, updateShape);
+        masterShapes.push(updateShape);
     }
     else {
-      if (updateShape.hasDelete() && updateShape.getDelete()) {
-        var fullShapeId = getShapeId(update, updeateShape);
-        removeFullShapeIdFromTrackingLists(fullShapeId);
-        deleteShape(masterShapes, masterShape);
-      }
-      else {
         updateMasterShape(masterShape, updateShape);
-      }
     }
   }
   updateMetadata(master, update);

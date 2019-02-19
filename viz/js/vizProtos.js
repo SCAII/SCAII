@@ -13,6 +13,7 @@ goog.provide('proto.scaii.common.Action');
 goog.provide('proto.scaii.common.AgentCfg');
 goog.provide('proto.scaii.common.AgentEndpoint');
 goog.provide('proto.scaii.common.AgentSupported');
+goog.provide('proto.scaii.common.Arrow');
 goog.provide('proto.scaii.common.BackendCfg');
 goog.provide('proto.scaii.common.BackendEndpoint');
 goog.provide('proto.scaii.common.BackendInit');
@@ -25,6 +26,7 @@ goog.provide('proto.scaii.common.Cfg');
 goog.provide('proto.scaii.common.ChartActions');
 goog.provide('proto.scaii.common.ChartInfo');
 goog.provide('proto.scaii.common.ChartValueVector');
+goog.provide('proto.scaii.common.Circle');
 goog.provide('proto.scaii.common.Color');
 goog.provide('proto.scaii.common.CoreCfg');
 goog.provide('proto.scaii.common.CoreEndpoint');
@@ -37,13 +39,17 @@ goog.provide('proto.scaii.common.ExplanationPoint');
 goog.provide('proto.scaii.common.ExplanationPoints');
 goog.provide('proto.scaii.common.GameComplete');
 goog.provide('proto.scaii.common.InitAs');
+goog.provide('proto.scaii.common.JedTest');
+goog.provide('proto.scaii.common.Kite');
 goog.provide('proto.scaii.common.Layer');
 goog.provide('proto.scaii.common.Layers');
+goog.provide('proto.scaii.common.LogFileEntry');
 goog.provide('proto.scaii.common.ModuleCfg');
 goog.provide('proto.scaii.common.ModuleEndpoint');
 goog.provide('proto.scaii.common.ModuleInit');
 goog.provide('proto.scaii.common.ModuleSupported');
 goog.provide('proto.scaii.common.MultiMessage');
+goog.provide('proto.scaii.common.Octagon');
 goog.provide('proto.scaii.common.Other');
 goog.provide('proto.scaii.common.PluginType');
 goog.provide('proto.scaii.common.Pos');
@@ -66,6 +72,9 @@ goog.provide('proto.scaii.common.SerializationResponse');
 goog.provide('proto.scaii.common.Shape');
 goog.provide('proto.scaii.common.SkyRts');
 goog.provide('proto.scaii.common.State');
+goog.provide('proto.scaii.common.StudyQuestion');
+goog.provide('proto.scaii.common.StudyQuestionAnswer');
+goog.provide('proto.scaii.common.StudyQuestions');
 goog.provide('proto.scaii.common.SupportedBehavior');
 goog.provide('proto.scaii.common.TestControl');
 goog.provide('proto.scaii.common.Triangle');
@@ -1874,10 +1883,10 @@ proto.scaii.common.BackendCfg.serializeBinaryToWriter = function(message, writer
 
 /**
  * optional bytes cfg_msg = 1;
- * @return {string}
+ * @return {!(string|Uint8Array)}
  */
 proto.scaii.common.BackendCfg.prototype.getCfgMsg = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
@@ -2085,10 +2094,10 @@ proto.scaii.common.AgentCfg.serializeBinaryToWriter = function(message, writer) 
 
 /**
  * optional bytes cfg_msg = 1;
- * @return {string}
+ * @return {!(string|Uint8Array)}
  */
 proto.scaii.common.AgentCfg.prototype.getCfgMsg = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
@@ -2265,10 +2274,10 @@ proto.scaii.common.ModuleCfg.serializeBinaryToWriter = function(message, writer)
 
 /**
  * optional bytes cfg_msg = 1;
- * @return {string}
+ * @return {!(string|Uint8Array)}
  */
 proto.scaii.common.ModuleCfg.prototype.getCfgMsg = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
@@ -6689,7 +6698,11 @@ proto.scaii.common.Entity.toObject = function(includeInstance, msg) {
     floatstringmetadataMap: (f = msg.getFloatstringmetadataMap()) ? f.toObject(includeInstance, undefined) : [],
     intmetadataMap: (f = msg.getIntmetadataMap()) ? f.toObject(includeInstance, undefined) : [],
     boolmetadataMap: (f = msg.getBoolmetadataMap()) ? f.toObject(includeInstance, undefined) : [],
-    floatmetadataMap: (f = msg.getFloatmetadataMap()) ? f.toObject(includeInstance, undefined) : []
+    floatmetadataMap: (f = msg.getFloatmetadataMap()) ? f.toObject(includeInstance, undefined) : [],
+    uiLayer: jspb.Message.getField(msg, 11),
+    nonClickable: jspb.Message.getField(msg, 12),
+    hp: jspb.Message.getOptionalFloatingPointField(msg, 13),
+    maxHp: jspb.Message.getOptionalFloatingPointField(msg, 14)
   };
 
   if (includeInstance) {
@@ -6780,6 +6793,22 @@ proto.scaii.common.Entity.deserializeBinaryFromReader = function(msg, reader) {
         jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readFloat);
          });
       break;
+    case 11:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setUiLayer(value);
+      break;
+    case 12:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setNonClickable(value);
+      break;
+    case 13:
+      var value = /** @type {number} */ (reader.readFloat());
+      msg.setHp(value);
+      break;
+    case 14:
+      var value = /** @type {number} */ (reader.readFloat());
+      msg.setMaxHp(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -6862,6 +6891,34 @@ proto.scaii.common.Entity.serializeBinaryToWriter = function(message, writer) {
   f = message.getFloatmetadataMap(true);
   if (f && f.getLength() > 0) {
     f.serializeBinary(10, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeFloat);
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 11));
+  if (f != null) {
+    writer.writeUint64(
+      11,
+      f
+    );
+  }
+  f = /** @type {boolean} */ (jspb.Message.getField(message, 12));
+  if (f != null) {
+    writer.writeBool(
+      12,
+      f
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 13));
+  if (f != null) {
+    writer.writeFloat(
+      13,
+      f
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 14));
+  if (f != null) {
+    writer.writeFloat(
+      14,
+      f
+    );
   }
 };
 
@@ -7092,6 +7149,124 @@ proto.scaii.common.Entity.prototype.getFloatmetadataMap = function(opt_noLazyCre
 
 proto.scaii.common.Entity.prototype.clearFloatmetadataMap = function() {
   this.getFloatmetadataMap().clear();
+};
+
+
+/**
+ * optional uint64 ui_layer = 11;
+ * @return {number}
+ */
+proto.scaii.common.Entity.prototype.getUiLayer = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 11, 0));
+};
+
+
+/** @param {number} value */
+proto.scaii.common.Entity.prototype.setUiLayer = function(value) {
+  jspb.Message.setField(this, 11, value);
+};
+
+
+proto.scaii.common.Entity.prototype.clearUiLayer = function() {
+  jspb.Message.setField(this, 11, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Entity.prototype.hasUiLayer = function() {
+  return jspb.Message.getField(this, 11) != null;
+};
+
+
+/**
+ * optional bool non_clickable = 12;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.scaii.common.Entity.prototype.getNonClickable = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 12, false));
+};
+
+
+/** @param {boolean} value */
+proto.scaii.common.Entity.prototype.setNonClickable = function(value) {
+  jspb.Message.setField(this, 12, value);
+};
+
+
+proto.scaii.common.Entity.prototype.clearNonClickable = function() {
+  jspb.Message.setField(this, 12, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Entity.prototype.hasNonClickable = function() {
+  return jspb.Message.getField(this, 12) != null;
+};
+
+
+/**
+ * optional float hp = 13;
+ * @return {number}
+ */
+proto.scaii.common.Entity.prototype.getHp = function() {
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 13, 0.0));
+};
+
+
+/** @param {number} value */
+proto.scaii.common.Entity.prototype.setHp = function(value) {
+  jspb.Message.setField(this, 13, value);
+};
+
+
+proto.scaii.common.Entity.prototype.clearHp = function() {
+  jspb.Message.setField(this, 13, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Entity.prototype.hasHp = function() {
+  return jspb.Message.getField(this, 13) != null;
+};
+
+
+/**
+ * optional float max_hp = 14;
+ * @return {number}
+ */
+proto.scaii.common.Entity.prototype.getMaxHp = function() {
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 14, 0.0));
+};
+
+
+/** @param {number} value */
+proto.scaii.common.Entity.prototype.setMaxHp = function(value) {
+  jspb.Message.setField(this, 14, value);
+};
+
+
+proto.scaii.common.Entity.prototype.clearMaxHp = function() {
+  jspb.Message.setField(this, 14, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Entity.prototype.hasMaxHp = function() {
+  return jspb.Message.getField(this, 14) != null;
 };
 
 
@@ -7738,6 +7913,162 @@ proto.scaii.common.Triangle.prototype.hasBaseLen = function() {
  * @extends {jspb.Message}
  * @constructor
  */
+proto.scaii.common.Circle = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.scaii.common.Circle, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.Circle.displayName = 'proto.scaii.common.Circle';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.Circle.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.Circle.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.Circle} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.Circle.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    radius: jspb.Message.getOptionalFloatingPointField(msg, 1)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.Circle}
+ */
+proto.scaii.common.Circle.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.Circle;
+  return proto.scaii.common.Circle.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.Circle} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.Circle}
+ */
+proto.scaii.common.Circle.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readDouble());
+      msg.setRadius(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.Circle.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.scaii.common.Circle.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Circle} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.Circle.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = /** @type {number} */ (jspb.Message.getField(message, 1));
+  if (f != null) {
+    writer.writeDouble(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional double radius = 1;
+ * @return {number}
+ */
+proto.scaii.common.Circle.prototype.getRadius = function() {
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 1, 0.0));
+};
+
+
+/** @param {number} value */
+proto.scaii.common.Circle.prototype.setRadius = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+proto.scaii.common.Circle.prototype.clearRadius = function() {
+  jspb.Message.setField(this, 1, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Circle.prototype.hasRadius = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
 proto.scaii.common.Rect = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
@@ -7935,6 +8266,723 @@ proto.scaii.common.Rect.prototype.hasHeight = function() {
  * @extends {jspb.Message}
  * @constructor
  */
+proto.scaii.common.Kite = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.scaii.common.Kite, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.Kite.displayName = 'proto.scaii.common.Kite';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.Kite.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.Kite.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.Kite} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.Kite.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    width: jspb.Message.getOptionalFloatingPointField(msg, 1),
+    length: jspb.Message.getOptionalFloatingPointField(msg, 2)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.Kite}
+ */
+proto.scaii.common.Kite.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.Kite;
+  return proto.scaii.common.Kite.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.Kite} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.Kite}
+ */
+proto.scaii.common.Kite.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readDouble());
+      msg.setWidth(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readDouble());
+      msg.setLength(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.Kite.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.scaii.common.Kite.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Kite} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.Kite.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = /** @type {number} */ (jspb.Message.getField(message, 1));
+  if (f != null) {
+    writer.writeDouble(
+      1,
+      f
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 2));
+  if (f != null) {
+    writer.writeDouble(
+      2,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional double width = 1;
+ * @return {number}
+ */
+proto.scaii.common.Kite.prototype.getWidth = function() {
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 1, 0.0));
+};
+
+
+/** @param {number} value */
+proto.scaii.common.Kite.prototype.setWidth = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+proto.scaii.common.Kite.prototype.clearWidth = function() {
+  jspb.Message.setField(this, 1, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Kite.prototype.hasWidth = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * optional double length = 2;
+ * @return {number}
+ */
+proto.scaii.common.Kite.prototype.getLength = function() {
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 2, 0.0));
+};
+
+
+/** @param {number} value */
+proto.scaii.common.Kite.prototype.setLength = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+proto.scaii.common.Kite.prototype.clearLength = function() {
+  jspb.Message.setField(this, 2, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Kite.prototype.hasLength = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.scaii.common.Arrow = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.scaii.common.Arrow, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.Arrow.displayName = 'proto.scaii.common.Arrow';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.Arrow.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.Arrow.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.Arrow} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.Arrow.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    targetPos: (f = msg.getTargetPos()) && proto.scaii.common.Pos.toObject(includeInstance, f),
+    thickness: jspb.Message.getField(msg, 2),
+    headLength: jspb.Message.getField(msg, 3),
+    headWidth: jspb.Message.getField(msg, 4)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.Arrow}
+ */
+proto.scaii.common.Arrow.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.Arrow;
+  return proto.scaii.common.Arrow.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.Arrow} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.Arrow}
+ */
+proto.scaii.common.Arrow.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = new proto.scaii.common.Pos;
+      reader.readMessage(value,proto.scaii.common.Pos.deserializeBinaryFromReader);
+      msg.setTargetPos(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setThickness(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setHeadLength(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setHeadWidth(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.Arrow.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.scaii.common.Arrow.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Arrow} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.Arrow.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getTargetPos();
+  if (f != null) {
+    writer.writeMessage(
+      1,
+      f,
+      proto.scaii.common.Pos.serializeBinaryToWriter
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 2));
+  if (f != null) {
+    writer.writeUint32(
+      2,
+      f
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 3));
+  if (f != null) {
+    writer.writeUint32(
+      3,
+      f
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 4));
+  if (f != null) {
+    writer.writeUint32(
+      4,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional Pos target_pos = 1;
+ * @return {?proto.scaii.common.Pos}
+ */
+proto.scaii.common.Arrow.prototype.getTargetPos = function() {
+  return /** @type{?proto.scaii.common.Pos} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.Pos, 1));
+};
+
+
+/** @param {?proto.scaii.common.Pos|undefined} value */
+proto.scaii.common.Arrow.prototype.setTargetPos = function(value) {
+  jspb.Message.setWrapperField(this, 1, value);
+};
+
+
+proto.scaii.common.Arrow.prototype.clearTargetPos = function() {
+  this.setTargetPos(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Arrow.prototype.hasTargetPos = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * optional uint32 thickness = 2;
+ * @return {number}
+ */
+proto.scaii.common.Arrow.prototype.getThickness = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.scaii.common.Arrow.prototype.setThickness = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+proto.scaii.common.Arrow.prototype.clearThickness = function() {
+  jspb.Message.setField(this, 2, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Arrow.prototype.hasThickness = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional uint32 head_length = 3;
+ * @return {number}
+ */
+proto.scaii.common.Arrow.prototype.getHeadLength = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/** @param {number} value */
+proto.scaii.common.Arrow.prototype.setHeadLength = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+proto.scaii.common.Arrow.prototype.clearHeadLength = function() {
+  jspb.Message.setField(this, 3, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Arrow.prototype.hasHeadLength = function() {
+  return jspb.Message.getField(this, 3) != null;
+};
+
+
+/**
+ * optional uint32 head_width = 4;
+ * @return {number}
+ */
+proto.scaii.common.Arrow.prototype.getHeadWidth = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/** @param {number} value */
+proto.scaii.common.Arrow.prototype.setHeadWidth = function(value) {
+  jspb.Message.setField(this, 4, value);
+};
+
+
+proto.scaii.common.Arrow.prototype.clearHeadWidth = function() {
+  jspb.Message.setField(this, 4, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Arrow.prototype.hasHeadWidth = function() {
+  return jspb.Message.getField(this, 4) != null;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.scaii.common.Octagon = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.scaii.common.Octagon, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.Octagon.displayName = 'proto.scaii.common.Octagon';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.Octagon.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.Octagon.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.Octagon} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.Octagon.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    edgeTop: jspb.Message.getOptionalFloatingPointField(msg, 1),
+    edgeCorner: jspb.Message.getOptionalFloatingPointField(msg, 2),
+    edgeLeft: jspb.Message.getOptionalFloatingPointField(msg, 3)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.Octagon}
+ */
+proto.scaii.common.Octagon.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.Octagon;
+  return proto.scaii.common.Octagon.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.Octagon} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.Octagon}
+ */
+proto.scaii.common.Octagon.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readDouble());
+      msg.setEdgeTop(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readDouble());
+      msg.setEdgeCorner(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readDouble());
+      msg.setEdgeLeft(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.Octagon.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.scaii.common.Octagon.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.Octagon} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.Octagon.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = /** @type {number} */ (jspb.Message.getField(message, 1));
+  if (f != null) {
+    writer.writeDouble(
+      1,
+      f
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 2));
+  if (f != null) {
+    writer.writeDouble(
+      2,
+      f
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 3));
+  if (f != null) {
+    writer.writeDouble(
+      3,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional double edge_top = 1;
+ * @return {number}
+ */
+proto.scaii.common.Octagon.prototype.getEdgeTop = function() {
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 1, 0.0));
+};
+
+
+/** @param {number} value */
+proto.scaii.common.Octagon.prototype.setEdgeTop = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+proto.scaii.common.Octagon.prototype.clearEdgeTop = function() {
+  jspb.Message.setField(this, 1, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Octagon.prototype.hasEdgeTop = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * optional double edge_corner = 2;
+ * @return {number}
+ */
+proto.scaii.common.Octagon.prototype.getEdgeCorner = function() {
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 2, 0.0));
+};
+
+
+/** @param {number} value */
+proto.scaii.common.Octagon.prototype.setEdgeCorner = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+proto.scaii.common.Octagon.prototype.clearEdgeCorner = function() {
+  jspb.Message.setField(this, 2, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Octagon.prototype.hasEdgeCorner = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional double edge_left = 3;
+ * @return {number}
+ */
+proto.scaii.common.Octagon.prototype.getEdgeLeft = function() {
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 3, 0.0));
+};
+
+
+/** @param {number} value */
+proto.scaii.common.Octagon.prototype.setEdgeLeft = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+proto.scaii.common.Octagon.prototype.clearEdgeLeft = function() {
+  jspb.Message.setField(this, 3, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Octagon.prototype.hasEdgeLeft = function() {
+  return jspb.Message.getField(this, 3) != null;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
 proto.scaii.common.Shape = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
@@ -7979,6 +9027,10 @@ proto.scaii.common.Shape.toObject = function(includeInstance, msg) {
     triangle: (f = msg.getTriangle()) && proto.scaii.common.Triangle.toObject(includeInstance, f),
     tag: jspb.Message.getField(msg, 22),
     gradientColor: (f = msg.getGradientColor()) && proto.scaii.common.Color.toObject(includeInstance, f),
+    kite: (f = msg.getKite()) && proto.scaii.common.Kite.toObject(includeInstance, f),
+    octagon: (f = msg.getOctagon()) && proto.scaii.common.Octagon.toObject(includeInstance, f),
+    arrow: (f = msg.getArrow()) && proto.scaii.common.Arrow.toObject(includeInstance, f),
+    circle: (f = msg.getCircle()) && proto.scaii.common.Circle.toObject(includeInstance, f),
     pb_delete: jspb.Message.getField(msg, 40)
   };
 
@@ -8052,6 +9104,26 @@ proto.scaii.common.Shape.deserializeBinaryFromReader = function(msg, reader) {
       var value = new proto.scaii.common.Color;
       reader.readMessage(value,proto.scaii.common.Color.deserializeBinaryFromReader);
       msg.setGradientColor(value);
+      break;
+    case 24:
+      var value = new proto.scaii.common.Kite;
+      reader.readMessage(value,proto.scaii.common.Kite.deserializeBinaryFromReader);
+      msg.setKite(value);
+      break;
+    case 25:
+      var value = new proto.scaii.common.Octagon;
+      reader.readMessage(value,proto.scaii.common.Octagon.deserializeBinaryFromReader);
+      msg.setOctagon(value);
+      break;
+    case 26:
+      var value = new proto.scaii.common.Arrow;
+      reader.readMessage(value,proto.scaii.common.Arrow.deserializeBinaryFromReader);
+      msg.setArrow(value);
+      break;
+    case 27:
+      var value = new proto.scaii.common.Circle;
+      reader.readMessage(value,proto.scaii.common.Circle.deserializeBinaryFromReader);
+      msg.setCircle(value);
       break;
     case 40:
       var value = /** @type {boolean} */ (reader.readBool());
@@ -8145,6 +9217,38 @@ proto.scaii.common.Shape.serializeBinaryToWriter = function(message, writer) {
       23,
       f,
       proto.scaii.common.Color.serializeBinaryToWriter
+    );
+  }
+  f = message.getKite();
+  if (f != null) {
+    writer.writeMessage(
+      24,
+      f,
+      proto.scaii.common.Kite.serializeBinaryToWriter
+    );
+  }
+  f = message.getOctagon();
+  if (f != null) {
+    writer.writeMessage(
+      25,
+      f,
+      proto.scaii.common.Octagon.serializeBinaryToWriter
+    );
+  }
+  f = message.getArrow();
+  if (f != null) {
+    writer.writeMessage(
+      26,
+      f,
+      proto.scaii.common.Arrow.serializeBinaryToWriter
+    );
+  }
+  f = message.getCircle();
+  if (f != null) {
+    writer.writeMessage(
+      27,
+      f,
+      proto.scaii.common.Circle.serializeBinaryToWriter
     );
   }
   f = /** @type {boolean} */ (jspb.Message.getField(message, 40));
@@ -8395,6 +9499,126 @@ proto.scaii.common.Shape.prototype.hasGradientColor = function() {
 
 
 /**
+ * optional Kite kite = 24;
+ * @return {?proto.scaii.common.Kite}
+ */
+proto.scaii.common.Shape.prototype.getKite = function() {
+  return /** @type{?proto.scaii.common.Kite} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.Kite, 24));
+};
+
+
+/** @param {?proto.scaii.common.Kite|undefined} value */
+proto.scaii.common.Shape.prototype.setKite = function(value) {
+  jspb.Message.setWrapperField(this, 24, value);
+};
+
+
+proto.scaii.common.Shape.prototype.clearKite = function() {
+  this.setKite(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Shape.prototype.hasKite = function() {
+  return jspb.Message.getField(this, 24) != null;
+};
+
+
+/**
+ * optional Octagon octagon = 25;
+ * @return {?proto.scaii.common.Octagon}
+ */
+proto.scaii.common.Shape.prototype.getOctagon = function() {
+  return /** @type{?proto.scaii.common.Octagon} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.Octagon, 25));
+};
+
+
+/** @param {?proto.scaii.common.Octagon|undefined} value */
+proto.scaii.common.Shape.prototype.setOctagon = function(value) {
+  jspb.Message.setWrapperField(this, 25, value);
+};
+
+
+proto.scaii.common.Shape.prototype.clearOctagon = function() {
+  this.setOctagon(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Shape.prototype.hasOctagon = function() {
+  return jspb.Message.getField(this, 25) != null;
+};
+
+
+/**
+ * optional Arrow arrow = 26;
+ * @return {?proto.scaii.common.Arrow}
+ */
+proto.scaii.common.Shape.prototype.getArrow = function() {
+  return /** @type{?proto.scaii.common.Arrow} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.Arrow, 26));
+};
+
+
+/** @param {?proto.scaii.common.Arrow|undefined} value */
+proto.scaii.common.Shape.prototype.setArrow = function(value) {
+  jspb.Message.setWrapperField(this, 26, value);
+};
+
+
+proto.scaii.common.Shape.prototype.clearArrow = function() {
+  this.setArrow(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Shape.prototype.hasArrow = function() {
+  return jspb.Message.getField(this, 26) != null;
+};
+
+
+/**
+ * optional Circle circle = 27;
+ * @return {?proto.scaii.common.Circle}
+ */
+proto.scaii.common.Shape.prototype.getCircle = function() {
+  return /** @type{?proto.scaii.common.Circle} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.Circle, 27));
+};
+
+
+/** @param {?proto.scaii.common.Circle|undefined} value */
+proto.scaii.common.Shape.prototype.setCircle = function(value) {
+  jspb.Message.setWrapperField(this, 27, value);
+};
+
+
+proto.scaii.common.Shape.prototype.clearCircle = function() {
+  this.setCircle(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.Shape.prototype.hasCircle = function() {
+  return jspb.Message.getField(this, 27) != null;
+};
+
+
+/**
  * required bool delete = 40;
  * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
  * You should avoid comparisons like {@code val === true/false} in those cases.
@@ -8422,6 +9646,1381 @@ proto.scaii.common.Shape.prototype.clearDelete = function() {
  */
 proto.scaii.common.Shape.prototype.hasDelete = function() {
   return jspb.Message.getField(this, 40) != null;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.scaii.common.StudyQuestions = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.scaii.common.StudyQuestions.repeatedFields_, null);
+};
+goog.inherits(proto.scaii.common.StudyQuestions, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.StudyQuestions.displayName = 'proto.scaii.common.StudyQuestions';
+}
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.scaii.common.StudyQuestions.repeatedFields_ = [1];
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.StudyQuestions.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.StudyQuestions.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.StudyQuestions} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.StudyQuestions.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    studyQuestionsList: jspb.Message.toObjectList(msg.getStudyQuestionsList(),
+    proto.scaii.common.StudyQuestion.toObject, includeInstance),
+    userId: jspb.Message.getField(msg, 2),
+    treatmentId: jspb.Message.getField(msg, 3),
+    answerFilename: jspb.Message.getField(msg, 4)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.StudyQuestions}
+ */
+proto.scaii.common.StudyQuestions.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.StudyQuestions;
+  return proto.scaii.common.StudyQuestions.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.StudyQuestions} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.StudyQuestions}
+ */
+proto.scaii.common.StudyQuestions.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = new proto.scaii.common.StudyQuestion;
+      reader.readMessage(value,proto.scaii.common.StudyQuestion.deserializeBinaryFromReader);
+      msg.addStudyQuestions(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setUserId(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTreatmentId(value);
+      break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setAnswerFilename(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.StudyQuestions.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.scaii.common.StudyQuestions.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.StudyQuestions} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.StudyQuestions.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getStudyQuestionsList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      1,
+      f,
+      proto.scaii.common.StudyQuestion.serializeBinaryToWriter
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 2));
+  if (f != null) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 3));
+  if (f != null) {
+    writer.writeString(
+      3,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 4));
+  if (f != null) {
+    writer.writeString(
+      4,
+      f
+    );
+  }
+};
+
+
+/**
+ * repeated StudyQuestion study_questions = 1;
+ * @return {!Array.<!proto.scaii.common.StudyQuestion>}
+ */
+proto.scaii.common.StudyQuestions.prototype.getStudyQuestionsList = function() {
+  return /** @type{!Array.<!proto.scaii.common.StudyQuestion>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.scaii.common.StudyQuestion, 1));
+};
+
+
+/** @param {!Array.<!proto.scaii.common.StudyQuestion>} value */
+proto.scaii.common.StudyQuestions.prototype.setStudyQuestionsList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 1, value);
+};
+
+
+/**
+ * @param {!proto.scaii.common.StudyQuestion=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.scaii.common.StudyQuestion}
+ */
+proto.scaii.common.StudyQuestions.prototype.addStudyQuestions = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.scaii.common.StudyQuestion, opt_index);
+};
+
+
+proto.scaii.common.StudyQuestions.prototype.clearStudyQuestionsList = function() {
+  this.setStudyQuestionsList([]);
+};
+
+
+/**
+ * required string user_id = 2;
+ * @return {string}
+ */
+proto.scaii.common.StudyQuestions.prototype.getUserId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.StudyQuestions.prototype.setUserId = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+proto.scaii.common.StudyQuestions.prototype.clearUserId = function() {
+  jspb.Message.setField(this, 2, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.StudyQuestions.prototype.hasUserId = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * required string treatment_id = 3;
+ * @return {string}
+ */
+proto.scaii.common.StudyQuestions.prototype.getTreatmentId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.StudyQuestions.prototype.setTreatmentId = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+proto.scaii.common.StudyQuestions.prototype.clearTreatmentId = function() {
+  jspb.Message.setField(this, 3, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.StudyQuestions.prototype.hasTreatmentId = function() {
+  return jspb.Message.getField(this, 3) != null;
+};
+
+
+/**
+ * required string answer_filename = 4;
+ * @return {string}
+ */
+proto.scaii.common.StudyQuestions.prototype.getAnswerFilename = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.StudyQuestions.prototype.setAnswerFilename = function(value) {
+  jspb.Message.setField(this, 4, value);
+};
+
+
+proto.scaii.common.StudyQuestions.prototype.clearAnswerFilename = function() {
+  jspb.Message.setField(this, 4, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.StudyQuestions.prototype.hasAnswerFilename = function() {
+  return jspb.Message.getField(this, 4) != null;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.scaii.common.StudyQuestion = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.scaii.common.StudyQuestion.repeatedFields_, null);
+};
+goog.inherits(proto.scaii.common.StudyQuestion, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.StudyQuestion.displayName = 'proto.scaii.common.StudyQuestion';
+}
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.scaii.common.StudyQuestion.repeatedFields_ = [3];
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.StudyQuestion.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.StudyQuestion.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.StudyQuestion} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.StudyQuestion.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    step: jspb.Message.getField(msg, 1),
+    question: jspb.Message.getField(msg, 2),
+    answersList: jspb.Message.getRepeatedField(msg, 3),
+    questionIdForStep: jspb.Message.getField(msg, 4),
+    questionType: jspb.Message.getField(msg, 5)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.StudyQuestion}
+ */
+proto.scaii.common.StudyQuestion.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.StudyQuestion;
+  return proto.scaii.common.StudyQuestion.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.StudyQuestion} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.StudyQuestion}
+ */
+proto.scaii.common.StudyQuestion.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setStep(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setQuestion(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addAnswers(value);
+      break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setQuestionIdForStep(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setQuestionType(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.StudyQuestion.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.scaii.common.StudyQuestion.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.StudyQuestion} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.StudyQuestion.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = /** @type {string} */ (jspb.Message.getField(message, 1));
+  if (f != null) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 2));
+  if (f != null) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
+  f = message.getAnswersList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      3,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 4));
+  if (f != null) {
+    writer.writeString(
+      4,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 5));
+  if (f != null) {
+    writer.writeString(
+      5,
+      f
+    );
+  }
+};
+
+
+/**
+ * required string step = 1;
+ * @return {string}
+ */
+proto.scaii.common.StudyQuestion.prototype.getStep = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.StudyQuestion.prototype.setStep = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+proto.scaii.common.StudyQuestion.prototype.clearStep = function() {
+  jspb.Message.setField(this, 1, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.StudyQuestion.prototype.hasStep = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * required string question = 2;
+ * @return {string}
+ */
+proto.scaii.common.StudyQuestion.prototype.getQuestion = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.StudyQuestion.prototype.setQuestion = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+proto.scaii.common.StudyQuestion.prototype.clearQuestion = function() {
+  jspb.Message.setField(this, 2, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.StudyQuestion.prototype.hasQuestion = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * repeated string answers = 3;
+ * @return {!Array.<string>}
+ */
+proto.scaii.common.StudyQuestion.prototype.getAnswersList = function() {
+  return /** @type {!Array.<string>} */ (jspb.Message.getRepeatedField(this, 3));
+};
+
+
+/** @param {!Array.<string>} value */
+proto.scaii.common.StudyQuestion.prototype.setAnswersList = function(value) {
+  jspb.Message.setField(this, 3, value || []);
+};
+
+
+/**
+ * @param {!string} value
+ * @param {number=} opt_index
+ */
+proto.scaii.common.StudyQuestion.prototype.addAnswers = function(value, opt_index) {
+  jspb.Message.addToRepeatedField(this, 3, value, opt_index);
+};
+
+
+proto.scaii.common.StudyQuestion.prototype.clearAnswersList = function() {
+  this.setAnswersList([]);
+};
+
+
+/**
+ * required string question_id_for_step = 4;
+ * @return {string}
+ */
+proto.scaii.common.StudyQuestion.prototype.getQuestionIdForStep = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.StudyQuestion.prototype.setQuestionIdForStep = function(value) {
+  jspb.Message.setField(this, 4, value);
+};
+
+
+proto.scaii.common.StudyQuestion.prototype.clearQuestionIdForStep = function() {
+  jspb.Message.setField(this, 4, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.StudyQuestion.prototype.hasQuestionIdForStep = function() {
+  return jspb.Message.getField(this, 4) != null;
+};
+
+
+/**
+ * required string question_type = 5;
+ * @return {string}
+ */
+proto.scaii.common.StudyQuestion.prototype.getQuestionType = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.StudyQuestion.prototype.setQuestionType = function(value) {
+  jspb.Message.setField(this, 5, value);
+};
+
+
+proto.scaii.common.StudyQuestion.prototype.clearQuestionType = function() {
+  jspb.Message.setField(this, 5, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.StudyQuestion.prototype.hasQuestionType = function() {
+  return jspb.Message.getField(this, 5) != null;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.scaii.common.StudyQuestionAnswer = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.scaii.common.StudyQuestionAnswer, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.StudyQuestionAnswer.displayName = 'proto.scaii.common.StudyQuestionAnswer';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.StudyQuestionAnswer.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.StudyQuestionAnswer.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.StudyQuestionAnswer} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.StudyQuestionAnswer.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    step: jspb.Message.getField(msg, 1),
+    questionNumber: jspb.Message.getField(msg, 2),
+    question: jspb.Message.getField(msg, 3),
+    answer: jspb.Message.getField(msg, 4),
+    userId: jspb.Message.getField(msg, 5),
+    treatmentId: jspb.Message.getField(msg, 6)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.StudyQuestionAnswer}
+ */
+proto.scaii.common.StudyQuestionAnswer.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.StudyQuestionAnswer;
+  return proto.scaii.common.StudyQuestionAnswer.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.StudyQuestionAnswer} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.StudyQuestionAnswer}
+ */
+proto.scaii.common.StudyQuestionAnswer.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setStep(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setQuestionNumber(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setQuestion(value);
+      break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setAnswer(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setUserId(value);
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTreatmentId(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.StudyQuestionAnswer.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.scaii.common.StudyQuestionAnswer.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.StudyQuestionAnswer} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.StudyQuestionAnswer.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = /** @type {string} */ (jspb.Message.getField(message, 1));
+  if (f != null) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 2));
+  if (f != null) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 3));
+  if (f != null) {
+    writer.writeString(
+      3,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 4));
+  if (f != null) {
+    writer.writeString(
+      4,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 5));
+  if (f != null) {
+    writer.writeString(
+      5,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 6));
+  if (f != null) {
+    writer.writeString(
+      6,
+      f
+    );
+  }
+};
+
+
+/**
+ * required string step = 1;
+ * @return {string}
+ */
+proto.scaii.common.StudyQuestionAnswer.prototype.getStep = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.StudyQuestionAnswer.prototype.setStep = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+proto.scaii.common.StudyQuestionAnswer.prototype.clearStep = function() {
+  jspb.Message.setField(this, 1, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.StudyQuestionAnswer.prototype.hasStep = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * required string question_number = 2;
+ * @return {string}
+ */
+proto.scaii.common.StudyQuestionAnswer.prototype.getQuestionNumber = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.StudyQuestionAnswer.prototype.setQuestionNumber = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+proto.scaii.common.StudyQuestionAnswer.prototype.clearQuestionNumber = function() {
+  jspb.Message.setField(this, 2, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.StudyQuestionAnswer.prototype.hasQuestionNumber = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * required string question = 3;
+ * @return {string}
+ */
+proto.scaii.common.StudyQuestionAnswer.prototype.getQuestion = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.StudyQuestionAnswer.prototype.setQuestion = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+proto.scaii.common.StudyQuestionAnswer.prototype.clearQuestion = function() {
+  jspb.Message.setField(this, 3, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.StudyQuestionAnswer.prototype.hasQuestion = function() {
+  return jspb.Message.getField(this, 3) != null;
+};
+
+
+/**
+ * required string answer = 4;
+ * @return {string}
+ */
+proto.scaii.common.StudyQuestionAnswer.prototype.getAnswer = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.StudyQuestionAnswer.prototype.setAnswer = function(value) {
+  jspb.Message.setField(this, 4, value);
+};
+
+
+proto.scaii.common.StudyQuestionAnswer.prototype.clearAnswer = function() {
+  jspb.Message.setField(this, 4, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.StudyQuestionAnswer.prototype.hasAnswer = function() {
+  return jspb.Message.getField(this, 4) != null;
+};
+
+
+/**
+ * required string user_id = 5;
+ * @return {string}
+ */
+proto.scaii.common.StudyQuestionAnswer.prototype.getUserId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.StudyQuestionAnswer.prototype.setUserId = function(value) {
+  jspb.Message.setField(this, 5, value);
+};
+
+
+proto.scaii.common.StudyQuestionAnswer.prototype.clearUserId = function() {
+  jspb.Message.setField(this, 5, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.StudyQuestionAnswer.prototype.hasUserId = function() {
+  return jspb.Message.getField(this, 5) != null;
+};
+
+
+/**
+ * required string treatment_id = 6;
+ * @return {string}
+ */
+proto.scaii.common.StudyQuestionAnswer.prototype.getTreatmentId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.StudyQuestionAnswer.prototype.setTreatmentId = function(value) {
+  jspb.Message.setField(this, 6, value);
+};
+
+
+proto.scaii.common.StudyQuestionAnswer.prototype.clearTreatmentId = function() {
+  jspb.Message.setField(this, 6, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.StudyQuestionAnswer.prototype.hasTreatmentId = function() {
+  return jspb.Message.getField(this, 6) != null;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.scaii.common.LogFileEntry = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.scaii.common.LogFileEntry, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.LogFileEntry.displayName = 'proto.scaii.common.LogFileEntry';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.LogFileEntry.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.LogFileEntry.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.LogFileEntry} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.LogFileEntry.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    filename: jspb.Message.getField(msg, 1),
+    entry: jspb.Message.getField(msg, 2),
+    isLastLine: jspb.Message.getField(msg, 3)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.LogFileEntry}
+ */
+proto.scaii.common.LogFileEntry.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.LogFileEntry;
+  return proto.scaii.common.LogFileEntry.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.LogFileEntry} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.LogFileEntry}
+ */
+proto.scaii.common.LogFileEntry.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setFilename(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setEntry(value);
+      break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIsLastLine(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.LogFileEntry.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.scaii.common.LogFileEntry.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.LogFileEntry} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.LogFileEntry.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = /** @type {string} */ (jspb.Message.getField(message, 1));
+  if (f != null) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 2));
+  if (f != null) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
+  f = /** @type {boolean} */ (jspb.Message.getField(message, 3));
+  if (f != null) {
+    writer.writeBool(
+      3,
+      f
+    );
+  }
+};
+
+
+/**
+ * required string filename = 1;
+ * @return {string}
+ */
+proto.scaii.common.LogFileEntry.prototype.getFilename = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.LogFileEntry.prototype.setFilename = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+proto.scaii.common.LogFileEntry.prototype.clearFilename = function() {
+  jspb.Message.setField(this, 1, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.LogFileEntry.prototype.hasFilename = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * required string entry = 2;
+ * @return {string}
+ */
+proto.scaii.common.LogFileEntry.prototype.getEntry = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.LogFileEntry.prototype.setEntry = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+proto.scaii.common.LogFileEntry.prototype.clearEntry = function() {
+  jspb.Message.setField(this, 2, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.LogFileEntry.prototype.hasEntry = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * required bool is_last_line = 3;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.scaii.common.LogFileEntry.prototype.getIsLastLine = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 3, false));
+};
+
+
+/** @param {boolean} value */
+proto.scaii.common.LogFileEntry.prototype.setIsLastLine = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+proto.scaii.common.LogFileEntry.prototype.clearIsLastLine = function() {
+  jspb.Message.setField(this, 3, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.LogFileEntry.prototype.hasIsLastLine = function() {
+  return jspb.Message.getField(this, 3) != null;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.scaii.common.JedTest = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.scaii.common.JedTest, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.scaii.common.JedTest.displayName = 'proto.scaii.common.JedTest';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.scaii.common.JedTest.prototype.toObject = function(opt_includeInstance) {
+  return proto.scaii.common.JedTest.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.scaii.common.JedTest} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.JedTest.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    ignoreThis: jspb.Message.getField(msg, 1)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.scaii.common.JedTest}
+ */
+proto.scaii.common.JedTest.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.scaii.common.JedTest;
+  return proto.scaii.common.JedTest.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.scaii.common.JedTest} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.scaii.common.JedTest}
+ */
+proto.scaii.common.JedTest.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setIgnoreThis(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.scaii.common.JedTest.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.scaii.common.JedTest.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.scaii.common.JedTest} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.scaii.common.JedTest.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = /** @type {string} */ (jspb.Message.getField(message, 1));
+  if (f != null) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * required string ignore_this = 1;
+ * @return {string}
+ */
+proto.scaii.common.JedTest.prototype.getIgnoreThis = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/** @param {string} value */
+proto.scaii.common.JedTest.prototype.setIgnoreThis = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+proto.scaii.common.JedTest.prototype.clearIgnoreThis = function() {
+  jspb.Message.setField(this, 1, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.JedTest.prototype.hasIgnoreThis = function() {
+  return jspb.Message.getField(this, 1) != null;
 };
 
 
@@ -8619,7 +11218,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.scaii.common.ScaiiPacket.oneofGroups_ = [[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,29]];
+proto.scaii.common.ScaiiPacket.oneofGroups_ = [[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]];
 
 /**
  * @enum {number}
@@ -8651,6 +11250,9 @@ proto.scaii.common.ScaiiPacket.SpecificMsgCase = {
   EXPL_DETAILS: 23,
   REPLAY_CONTROL: 24,
   REPLAY_CHOICE_CONFIG: 25,
+  STUDY_QUESTIONS: 26,
+  STUDY_QUESTION_ANSWER: 27,
+  LOG_FILE_ENTRY: 28,
   OTHER: 29
 };
 
@@ -8715,6 +11317,9 @@ proto.scaii.common.ScaiiPacket.toObject = function(includeInstance, msg) {
     explDetails: (f = msg.getExplDetails()) && proto.scaii.common.ExplanationDetails.toObject(includeInstance, f),
     replayControl: (f = msg.getReplayControl()) && proto.scaii.common.ReplayControl.toObject(includeInstance, f),
     replayChoiceConfig: (f = msg.getReplayChoiceConfig()) && proto.scaii.common.ReplayChoiceConfig.toObject(includeInstance, f),
+    studyQuestions: (f = msg.getStudyQuestions()) && proto.scaii.common.StudyQuestions.toObject(includeInstance, f),
+    studyQuestionAnswer: (f = msg.getStudyQuestionAnswer()) && proto.scaii.common.StudyQuestionAnswer.toObject(includeInstance, f),
+    logFileEntry: (f = msg.getLogFileEntry()) && proto.scaii.common.LogFileEntry.toObject(includeInstance, f),
     other: (f = msg.getOther()) && proto.scaii.common.Other.toObject(includeInstance, f),
     src: (f = msg.getSrc()) && proto.scaii.common.Endpoint.toObject(includeInstance, f),
     dest: (f = msg.getDest()) && proto.scaii.common.Endpoint.toObject(includeInstance, f)
@@ -8875,6 +11480,21 @@ proto.scaii.common.ScaiiPacket.deserializeBinaryFromReader = function(msg, reade
       var value = new proto.scaii.common.ReplayChoiceConfig;
       reader.readMessage(value,proto.scaii.common.ReplayChoiceConfig.deserializeBinaryFromReader);
       msg.setReplayChoiceConfig(value);
+      break;
+    case 26:
+      var value = new proto.scaii.common.StudyQuestions;
+      reader.readMessage(value,proto.scaii.common.StudyQuestions.deserializeBinaryFromReader);
+      msg.setStudyQuestions(value);
+      break;
+    case 27:
+      var value = new proto.scaii.common.StudyQuestionAnswer;
+      reader.readMessage(value,proto.scaii.common.StudyQuestionAnswer.deserializeBinaryFromReader);
+      msg.setStudyQuestionAnswer(value);
+      break;
+    case 28:
+      var value = new proto.scaii.common.LogFileEntry;
+      reader.readMessage(value,proto.scaii.common.LogFileEntry.deserializeBinaryFromReader);
+      msg.setLogFileEntry(value);
       break;
     case 29:
       var value = new proto.scaii.common.Other;
@@ -9115,6 +11735,30 @@ proto.scaii.common.ScaiiPacket.serializeBinaryToWriter = function(message, write
       25,
       f,
       proto.scaii.common.ReplayChoiceConfig.serializeBinaryToWriter
+    );
+  }
+  f = message.getStudyQuestions();
+  if (f != null) {
+    writer.writeMessage(
+      26,
+      f,
+      proto.scaii.common.StudyQuestions.serializeBinaryToWriter
+    );
+  }
+  f = message.getStudyQuestionAnswer();
+  if (f != null) {
+    writer.writeMessage(
+      27,
+      f,
+      proto.scaii.common.StudyQuestionAnswer.serializeBinaryToWriter
+    );
+  }
+  f = message.getLogFileEntry();
+  if (f != null) {
+    writer.writeMessage(
+      28,
+      f,
+      proto.scaii.common.LogFileEntry.serializeBinaryToWriter
     );
   }
   f = message.getOther();
@@ -9894,6 +12538,96 @@ proto.scaii.common.ScaiiPacket.prototype.clearReplayChoiceConfig = function() {
  */
 proto.scaii.common.ScaiiPacket.prototype.hasReplayChoiceConfig = function() {
   return jspb.Message.getField(this, 25) != null;
+};
+
+
+/**
+ * optional StudyQuestions study_questions = 26;
+ * @return {?proto.scaii.common.StudyQuestions}
+ */
+proto.scaii.common.ScaiiPacket.prototype.getStudyQuestions = function() {
+  return /** @type{?proto.scaii.common.StudyQuestions} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.StudyQuestions, 26));
+};
+
+
+/** @param {?proto.scaii.common.StudyQuestions|undefined} value */
+proto.scaii.common.ScaiiPacket.prototype.setStudyQuestions = function(value) {
+  jspb.Message.setOneofWrapperField(this, 26, proto.scaii.common.ScaiiPacket.oneofGroups_[0], value);
+};
+
+
+proto.scaii.common.ScaiiPacket.prototype.clearStudyQuestions = function() {
+  this.setStudyQuestions(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.ScaiiPacket.prototype.hasStudyQuestions = function() {
+  return jspb.Message.getField(this, 26) != null;
+};
+
+
+/**
+ * optional StudyQuestionAnswer study_question_answer = 27;
+ * @return {?proto.scaii.common.StudyQuestionAnswer}
+ */
+proto.scaii.common.ScaiiPacket.prototype.getStudyQuestionAnswer = function() {
+  return /** @type{?proto.scaii.common.StudyQuestionAnswer} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.StudyQuestionAnswer, 27));
+};
+
+
+/** @param {?proto.scaii.common.StudyQuestionAnswer|undefined} value */
+proto.scaii.common.ScaiiPacket.prototype.setStudyQuestionAnswer = function(value) {
+  jspb.Message.setOneofWrapperField(this, 27, proto.scaii.common.ScaiiPacket.oneofGroups_[0], value);
+};
+
+
+proto.scaii.common.ScaiiPacket.prototype.clearStudyQuestionAnswer = function() {
+  this.setStudyQuestionAnswer(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.ScaiiPacket.prototype.hasStudyQuestionAnswer = function() {
+  return jspb.Message.getField(this, 27) != null;
+};
+
+
+/**
+ * optional LogFileEntry log_file_entry = 28;
+ * @return {?proto.scaii.common.LogFileEntry}
+ */
+proto.scaii.common.ScaiiPacket.prototype.getLogFileEntry = function() {
+  return /** @type{?proto.scaii.common.LogFileEntry} */ (
+    jspb.Message.getWrapperField(this, proto.scaii.common.LogFileEntry, 28));
+};
+
+
+/** @param {?proto.scaii.common.LogFileEntry|undefined} value */
+proto.scaii.common.ScaiiPacket.prototype.setLogFileEntry = function(value) {
+  jspb.Message.setOneofWrapperField(this, 28, proto.scaii.common.ScaiiPacket.oneofGroups_[0], value);
+};
+
+
+proto.scaii.common.ScaiiPacket.prototype.clearLogFileEntry = function() {
+  this.setLogFileEntry(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.ScaiiPacket.prototype.hasLogFileEntry = function() {
+  return jspb.Message.getField(this, 28) != null;
 };
 
 
@@ -11646,10 +14380,10 @@ proto.scaii.common.State.prototype.hasReward = function() {
 
 /**
  * optional bytes expanded_state = 4;
- * @return {string}
+ * @return {!(string|Uint8Array)}
  */
 proto.scaii.common.State.prototype.getExpandedState = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
 };
 
 
@@ -11978,10 +14712,10 @@ proto.scaii.common.Action.prototype.clearContinuousActionsList = function() {
 
 /**
  * optional bytes alternate_actions = 3;
- * @return {string}
+ * @return {!(string|Uint8Array)}
  */
 proto.scaii.common.Action.prototype.getAlternateActions = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
@@ -12272,10 +15006,10 @@ proto.scaii.common.Error.prototype.hasFatal = function() {
 
 /**
  * optional bytes error_info = 3;
- * @return {string}
+ * @return {!(string|Uint8Array)}
  */
 proto.scaii.common.Error.prototype.getErrorInfo = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
@@ -12493,10 +15227,10 @@ proto.scaii.common.Other.prototype.hasName = function() {
 
 /**
  * optional bytes msg = 2;
- * @return {string}
+ * @return {!(string|Uint8Array)}
  */
 proto.scaii.common.Other.prototype.getMsg = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
@@ -12841,10 +15575,10 @@ proto.scaii.common.SerializationResponse.serializeBinaryToWriter = function(mess
 
 /**
  * required bytes serialized = 1;
- * @return {string}
+ * @return {!(string|Uint8Array)}
  */
 proto.scaii.common.SerializationResponse.prototype.getSerialized = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
@@ -13973,7 +16707,8 @@ proto.scaii.common.ReplayChoiceConfig.prototype.toObject = function(opt_includeI
  */
 proto.scaii.common.ReplayChoiceConfig.toObject = function(includeInstance, msg) {
   var f, obj = {
-    replayFilenamesList: jspb.Message.getRepeatedField(msg, 1)
+    replayFilenamesList: jspb.Message.getRepeatedField(msg, 1),
+    userStudyMode: jspb.Message.getField(msg, 6)
   };
 
   if (includeInstance) {
@@ -14014,6 +16749,10 @@ proto.scaii.common.ReplayChoiceConfig.deserializeBinaryFromReader = function(msg
       var value = /** @type {string} */ (reader.readString());
       msg.addReplayFilenames(value);
       break;
+    case 6:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setUserStudyMode(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -14050,6 +16789,13 @@ proto.scaii.common.ReplayChoiceConfig.serializeBinaryToWriter = function(message
       f
     );
   }
+  f = /** @type {boolean} */ (jspb.Message.getField(message, 6));
+  if (f != null) {
+    writer.writeBool(
+      6,
+      f
+    );
+  }
 };
 
 
@@ -14079,6 +16825,37 @@ proto.scaii.common.ReplayChoiceConfig.prototype.addReplayFilenames = function(va
 
 proto.scaii.common.ReplayChoiceConfig.prototype.clearReplayFilenamesList = function() {
   this.setReplayFilenamesList([]);
+};
+
+
+/**
+ * required bool user_study_mode = 6;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.scaii.common.ReplayChoiceConfig.prototype.getUserStudyMode = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 6, false));
+};
+
+
+/** @param {boolean} value */
+proto.scaii.common.ReplayChoiceConfig.prototype.setUserStudyMode = function(value) {
+  jspb.Message.setField(this, 6, value);
+};
+
+
+proto.scaii.common.ReplayChoiceConfig.prototype.clearUserStudyMode = function() {
+  jspb.Message.setField(this, 6, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.ReplayChoiceConfig.prototype.hasUserStudyMode = function() {
+  return jspb.Message.getField(this, 6) != null;
 };
 
 
@@ -14139,7 +16916,8 @@ proto.scaii.common.ReplaySessionConfig.toObject = function(includeInstance, msg)
     stepCount: jspb.Message.getField(msg, 1),
     explanationStepsList: jspb.Message.getRepeatedField(msg, 2),
     explanationTitlesList: jspb.Message.getRepeatedField(msg, 3),
-    chartTitlesList: jspb.Message.getRepeatedField(msg, 4)
+    chartTitlesList: jspb.Message.getRepeatedField(msg, 4),
+    suppressInteractivity: jspb.Message.getField(msg, 5)
   };
 
   if (includeInstance) {
@@ -14191,6 +16969,10 @@ proto.scaii.common.ReplaySessionConfig.deserializeBinaryFromReader = function(ms
     case 4:
       var value = /** @type {string} */ (reader.readString());
       msg.addChartTitles(value);
+      break;
+    case 5:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setSuppressInteractivity(value);
       break;
     default:
       reader.skipField();
@@ -14246,6 +17028,13 @@ proto.scaii.common.ReplaySessionConfig.serializeBinaryToWriter = function(messag
   if (f.length > 0) {
     writer.writeRepeatedString(
       4,
+      f
+    );
+  }
+  f = /** @type {boolean} */ (jspb.Message.getField(message, 5));
+  if (f != null) {
+    writer.writeBool(
+      5,
       f
     );
   }
@@ -14365,6 +17154,37 @@ proto.scaii.common.ReplaySessionConfig.prototype.addChartTitles = function(value
 
 proto.scaii.common.ReplaySessionConfig.prototype.clearChartTitlesList = function() {
   this.setChartTitlesList([]);
+};
+
+
+/**
+ * required bool suppress_interactivity = 5;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.scaii.common.ReplaySessionConfig.prototype.getSuppressInteractivity = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 5, false));
+};
+
+
+/** @param {boolean} value */
+proto.scaii.common.ReplaySessionConfig.prototype.setSuppressInteractivity = function(value) {
+  jspb.Message.setField(this, 5, value);
+};
+
+
+proto.scaii.common.ReplaySessionConfig.prototype.clearSuppressInteractivity = function() {
+  jspb.Message.setField(this, 5, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.scaii.common.ReplaySessionConfig.prototype.hasSuppressInteractivity = function() {
+  return jspb.Message.getField(this, 5) != null;
 };
 
 

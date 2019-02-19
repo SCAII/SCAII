@@ -2,10 +2,10 @@ use std::fmt::Debug;
 
 use super::Pos;
 
-use specs::prelude::*;
-use specs::storage::HashMapStorage;
-use specs::saveload::SaveLoadComponent;
 use specs::error::NoError;
+use specs::prelude::*;
+use specs::saveload::SaveLoadComponent;
+use specs::storage::HashMapStorage;
 
 use serde::{Deserialize, Serialize};
 
@@ -17,23 +17,18 @@ pub struct Speed(pub f64);
 #[storage(HashMapStorage)]
 pub struct Movable(pub usize);
 
-// Opposite of movable for entities with a shape that can't be moved
-#[derive(Copy, Clone, Default, Component, PartialEq, Serialize, Deserialize)]
-#[storage(HashMapStorage)]
-pub struct Static(pub usize);
-
-#[derive(Copy, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Copy, Clone, PartialEq, Serialize, Deserialize, Debug)]
 pub enum MoveBehavior {
     Straight,
 }
 
-#[derive(Copy, Clone, PartialEq)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 pub enum MoveTarget {
     Ground(Pos),
-    Unit(Entity),
+    AttackUnit(Entity),
 }
 
-#[derive(Component, Copy, Clone, PartialEq)]
+#[derive(Component, Copy, Clone, PartialEq, Debug)]
 #[storage(HashMapStorage)]
 pub struct Move {
     pub behavior: MoveBehavior,
@@ -41,16 +36,23 @@ pub struct Move {
 }
 
 impl Move {
+    pub fn attack(target: Entity) -> Self {
+        Move {
+            behavior: MoveBehavior::Straight,
+            target: MoveTarget::AttackUnit(target),
+        }
+    }
+
     pub fn is_attacking(&self) -> bool {
         match self.target {
-            MoveTarget::Unit(_) => true,
+            MoveTarget::AttackUnit(_) => true,
             _ => false,
         }
     }
 
     pub fn attack_target(&self) -> Option<Entity> {
         match self.target {
-            MoveTarget::Unit(id) => Some(id),
+            MoveTarget::AttackUnit(id) => Some(id),
             _ => None,
         }
     }
@@ -59,7 +61,7 @@ impl Move {
 #[derive(Clone, PartialEq, Serialize, Deserialize)]
 pub enum MarkedMoveTarget<M> {
     Ground(Pos),
-    Unit(M),
+    AttackUnit(M),
 }
 
 #[derive(Clone, PartialEq, Serialize, Deserialize)]
@@ -83,7 +85,9 @@ where
             behavior: self.behavior,
             target: match self.target {
                 MoveTarget::Ground(pos) => MarkedMoveTarget::Ground(pos),
-                MoveTarget::Unit(entity) => MarkedMoveTarget::Unit(ids(entity).unwrap()),
+                MoveTarget::AttackUnit(entity) => {
+                    MarkedMoveTarget::AttackUnit(ids(entity).unwrap())
+                }
             },
         })
     }
@@ -96,7 +100,7 @@ where
             behavior: data.behavior,
             target: match data.target {
                 MarkedMoveTarget::Ground(pos) => MoveTarget::Ground(pos),
-                MarkedMoveTarget::Unit(mark) => MoveTarget::Unit(ids(mark).unwrap()),
+                MarkedMoveTarget::AttackUnit(mark) => MoveTarget::AttackUnit(ids(mark).unwrap()),
             },
         })
     }

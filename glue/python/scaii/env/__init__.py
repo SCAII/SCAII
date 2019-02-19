@@ -185,6 +185,7 @@ class ScaiiEnv():
             \"connect\" on the SCAII visualization (viz) page now")
             self.load_rpc_module("viz")
             self.viz_initialized = True
+            
 
         self.frames_since_keyframe = 0
 
@@ -204,7 +205,13 @@ class ScaiiEnv():
             self.recording = False
 
         self._send_recv_msg()
+        
+
         self.state = self._decode_handle_msg()["state"]
+        if visualize:
+            self.set_replay_config(100000)
+            self._send_recv_msg()
+
         if record:
             self._game_complete(self.state.terminal)
 
@@ -369,6 +376,22 @@ class ScaiiEnv():
         packet.config.core_cfg.plugin_type.rpc.init_as.module.name = name
         packet.config.core_cfg.plugin_type.rpc.port = 6112
         packet.config.core_cfg.plugin_type.rpc.ip = "127.0.0.1"
+
+    def set_replay_config(self, step_count):
+        """
+        Tells viz to turn off interactivity and sets step count high as we don't know how many steps will be in game.
+
+        Paramters:
+        ==========
+        name: step_count
+            High enough number to keep the default step-forward logic from tripping up
+        """
+        packet = self.next_msg.packets.add()
+
+        packet.src.agent.SetInParent()
+        packet.dest.module.name = "viz"
+        packet.replay_session_config.step_count = step_count
+        packet.replay_session_config.suppress_interactivity = True
 
     def handle_messages(self):
         """

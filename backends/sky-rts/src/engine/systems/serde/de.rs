@@ -6,7 +6,7 @@ use specs::error::NoError;
 
 use rand::Isaac64Rng;
 
-use engine::resources::{CumReward, LuaPath, SerializeBytes, SpawnBuffer, Terminal};
+use engine::resources::{CumReward, DataStore, LuaPath, SerializeBytes, SpawnBuffer, Terminal};
 
 #[derive(SystemData)]
 pub struct DeserializeSystemData<'a> {
@@ -17,6 +17,7 @@ pub struct DeserializeSystemData<'a> {
     terminal: FetchMut<'a, Terminal>,
     spawns: FetchMut<'a, SpawnBuffer>,
     cum_reward: FetchMut<'a, CumReward>,
+    lua_data: FetchMut<'a, DataStore>,
 
     decode: Fetch<'a, SerializeBytes>,
 }
@@ -28,10 +29,10 @@ impl<'a> System<'a> for DeserializeSystem {
 
     fn run(&mut self, mut world: Self::SystemData) {
         use super::SerTarget;
-        use serde::Deserialize;
         use serde::de::DeserializeSeed;
-        use serde_cbor::Deserializer;
+        use serde::Deserialize;
         use serde_cbor::de::SliceRead;
+        use serde_cbor::Deserializer;
 
         let mut de = Deserializer::new(SliceRead::new(&world.decode.0));
 
@@ -47,5 +48,6 @@ impl<'a> System<'a> for DeserializeSystem {
         *world.terminal = tar.terminal;
         *world.spawns = tar.spawns;
         *world.cum_reward = tar.cum_reward;
+        *world.lua_data = tar.lua_data;
     }
 }

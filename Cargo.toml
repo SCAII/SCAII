@@ -3,5 +3,9 @@ members = [
     "core",
     "scaii_defs",
     "backends/sky-rts",
-    "tools/reward-fixer",
+    "tools/reward-fixer"
 ]
+
+[profile.release]
+codegen-units = 1
+lto = true

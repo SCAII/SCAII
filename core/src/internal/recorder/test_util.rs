@@ -2,12 +2,12 @@ use scaii_defs::protos::{ExplanationPoint, ExplanationPoints, Layer};
 use std::error::Error;
 
 pub fn generate_test_saliency_file() -> Result<(), Box<Error>> {
-    use super::RecorderError;
-    use std::fs::File;
-    use std::path::PathBuf;
-    use std::io::Write;
     use super::get_default_replay_dir;
+    use super::RecorderError;
     use prost::Message;
+    use std::fs::File;
+    use std::io::Write;
+    use std::path::PathBuf;
 
     let ep1 = get_test_explanation_point(0, "moveX".to_string(), "moveX details".to_string());
     let ep2 = get_test_explanation_point(5, "moveY".to_string(), "moveY details".to_string());

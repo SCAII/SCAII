@@ -66,20 +66,24 @@
     margin: auto;
 }
 */
-.Button:active, .active {
-    background-color:#C4D6A4; /* OSU reindeer moss */
-    color: black;
-}
+/*.Button:active, .active {
+	background-color:#EEDDCC;*/
+   /* background-color:#C4D6A4; /* OSU reindeer moss */
+  /*  color: black;
+}*/
 #rewards-titled-container {
-    background-color:#C4D6A4; /* OSU reindeer moss */
+	background-color:#EEDDCC;
+   /* background-color:#C4D6A4; /* OSU reindeer moss */
 }
 .rewards-bg {
-    background-color:#C4D6A4; /* OSU reindeer moss */
+	background-color:#EEDDCC;
+   /* background-color:#C4D6A4; /* OSU reindeer moss */
 }
 
 .saliencies-bg {
+	background-color:#EEDDCC;
 	/*background-color:#C6DAE7; /* OSU moondust */
-	background-color:#E0E0E0; /* OSU moondust */
+	/*background-color:#E0E0E0; /* OSU moondust */
 }
 
 .value-tooltip-holder{

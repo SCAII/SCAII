@@ -1,5 +1,6 @@
 var jumpInProgress = false;
 var userInputBlocked = false;
+var liveModeInputBlocked = false;
 
 function paintProgress(value) {
 	showPositionOnTimeline(value);
@@ -10,17 +11,17 @@ var cursorHeight = 60;
 var cursorWidth = 4;
 function showPositionOnTimeline(value) {
 	drawExplanationTimeline();
-	var widthOfTimeline = expl_ctrl_canvas.width - 2*timelineMargin;
+	var widthOfTimeline = expl_ctrl_canvas.width - 2 * timelineMargin;
 	var x = timelineMargin + (value / 100) * widthOfTimeline;
 	var y = explanationControlYPosition;
-	
-	var xLeft = x - cursorWidth/2;
-	var xRight = x + cursorWidth/2;
-	var yBottom = y + cursorHeight/2;
-	var yTop = y - cursorHeight/2;
+
+	var xLeft = x - cursorWidth / 2;
+	var xRight = x + cursorWidth / 2;
+	var yBottom = y + cursorHeight / 2;
+	var yTop = y - cursorHeight / 2;
 	var ctx = expl_ctrl_ctx;
 	ctx.beginPath();
-	
+
 	ctx.fillStyle = 'darkgrey';
 	ctx.lineWidth = 1;
 	ctx.strokeStyle = 'darkgray';
@@ -29,12 +30,12 @@ function showPositionOnTimeline(value) {
 	var upperRightVertexX = xRight;
 	var upperRightVertexY = yTop;
 	var lowerLeftVertexX = xLeft;
-	var lowerLeftVertexY =  yBottom;
+	var lowerLeftVertexY = yBottom;
 	var lowerRightVertexX = xRight;
 	var lowerRightVertexY = yBottom;
 
 	ctx.moveTo(upperLeftVertexX, upperLeftVertexY);
-	ctx.lineTo(upperRightVertexX,upperRightVertexY);
+	ctx.lineTo(upperRightVertexX, upperRightVertexY);
 	ctx.lineTo(lowerRightVertexX, lowerRightVertexY);
 	ctx.lineTo(lowerLeftVertexX, lowerLeftVertexY);
 	ctx.lineTo(upperLeftVertexX, upperLeftVertexY);
@@ -47,19 +48,21 @@ function processTimelineClick(e) {
 	var clickX = e.offsetX - timelineMargin;
 	var replaySequenceTargetStep = sessionIndexManager.getReplaySequencerIndexForClick(clickX);
 	var targetStepString = "" + replaySequenceTargetStep;
-	var args = [targetStepString];
-	var userCommand = new proto.scaii.common.UserCommand;
-	userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
-	userCommand.setArgsList(args);
-	stageUserCommand(userCommand);
+	var logLine = templateMap["expl-control-canvas"];
+	logLine = logLine.replace("<TIME_LINE_NUM>", targetStepString);
+	targetClickHandler(e, logLine);
+    jumpToStep(targetStepString);
 }
 function stageUserCommand(userCommand) {
 	var scaiiPkt = new proto.scaii.common.ScaiiPacket;
 	scaiiPkt.setUserCommand(userCommand);
 	userCommandScaiiPackets.push(scaiiPkt);
 }
-var tryPause = function () {
+var tryPause = function (e) {
 	if (!userInputBlocked) {
+		var logLine = templateMap["pauseButton"];
+		logLine = logLine.replace("<TIME_LINE_PAUSE>", "NA");
+		targetClickHandler(e, logLine);
 		pauseGame();
 	}
 }
@@ -75,8 +78,11 @@ function pauseGame() {
 	}
 }
 
-var tryResume = function () {
+var tryResume = function (e) {
 	if (!userInputBlocked) {
+		var logLine = templateMap["playButton"];
+		logLine = logLine.replace("<TIME_LINE_PLAY>", "NA");
+		targetClickHandler(e, logLine);
 		resumeGame();
 	}
 }
@@ -87,24 +93,34 @@ function resumeGame() {
 		var userCommand = new proto.scaii.common.UserCommand;
 		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.RESUME);
 		stageUserCommand(userCommand);
+		// if play button cue arrow present, remove it
+        $("#cue-arrow-div").remove();
+        if (userStudyMode){
+            if (activeStudyQuestionManager.allQuestionsAtDecisionPointAnswered) {
+                $('#q-and-a-div').empty();
+            }
+        }
 	}
 	catch (err) {
 		alert(err.message);
 	}
 }
 
-var tryRewind = function () {
+var tryRewind = function (e) {
 	if (!userInputBlocked) {
+		var logLine = templateMap["rewindButton"];
+		logLine = logLine.replace("<TIME_LINE_RWND>", "NA");
+		targetClickHandler(e, logLine);
 		rewindGame();
 	}
 }
 function rewindGame() {
 	pauseGame();
 	try {
-		controlsManager.userClickedRewind();
-		var userCommand = new proto.scaii.common.UserCommand;
-		userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.REWIND);
-		stageUserCommand(userCommand);
+        controlsManager.userClickedRewind();
+        var userCommand = new proto.scaii.common.UserCommand;
+        userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.REWIND);
+        stageUserCommand(userCommand);
 	}
 	catch (err) {
 		alert(err.message);
@@ -117,7 +133,7 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	manager.pauseResumeButton = pauseResumeButton;
 	manager.rewindButton = rewindButton;
 
-	manager.registerJQueryHandleForWaitCursor = function(item) {
+	manager.registerJQueryHandleForWaitCursor = function (item) {
 		manager.registeredItems.push(item)
 	}
 	manager.setControlsNotReady = function () {
@@ -136,32 +152,33 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 		this.disableRewind();
 		this.setWaitCursor();
 	}
-	
+
 	manager.doneLoadReplayFile = function () {
 		userInputBlocked = false;
+		this.expressResumeButton();
 		this.enablePauseResume();
 		this.enableRewind();
 		this.clearWaitCursor();
 	}
-	
+
 	manager.gameSteppingForward = function () {
 		this.enableRewind();
 	}
-	
+
 	manager.reachedEndOfGame = function () {
 		this.expressResumeButton();
 		this.disablePauseResume();
 	}
 
 	manager.setWaitCursor = function () {
-		for (var i in this.registeredItems){
+		for (var i in this.registeredItems) {
 			var item = this.registeredItems[i];
 			item.css("cursor", "wait");
 		}
 	}
-	
+
 	manager.clearWaitCursor = function () {
-		for (var i in this.registeredItems){
+		for (var i in this.registeredItems) {
 			var item = this.registeredItems[i];
 			item.css("cursor", "default");
 		}
@@ -211,11 +228,17 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 		this.pauseResumeButton.innerHTML = '<img src="imgs/pause.png", height="16px" width="14px"/>';
 	}
 
+    manager.isPauseButtonDisplayed = function() {
+        if (this.pauseResumeButton.onclick == tryPause) {
+            return true;
+        }
+        return false;
+    }
 	//
 	// rewind
 	//
 	manager.userClickedRewind = function () {
-		userInputBlocked = true;
+        userInputBlocked = true;
 		this.pendingAction = this.adjustToRewindClick;
 	}
 
@@ -265,7 +288,8 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	manager.userCommandSent = function () {
 		//this.restorePriorStates();
 		if (this.pendingAction != undefined) {
-			this.pendingAction();
+            this.pendingAction();
+            this.pendingAction = undefined;
 		}
 		userInputBlocked = false;
 	}
@@ -273,7 +297,9 @@ var configureControlsManager = function (pauseResumeButton, rewindButton) {
 	return manager;
 }
 
-
+function isUserInputBlocked() {
+	return userInputBlocked || liveModeInputBlocked;
+}
 function updateButtonsAfterJump() {
 	if (sessionIndexManager.isAtGameStart()) {
 		controlsManager.expressResumeButton();
@@ -295,4 +321,18 @@ function updateButtonsAfterJump() {
 		controlsManager.enablePauseResume();
 		controlsManager.enableRewind();
 	}
+}
+
+function jumpToStep(step){
+    var userCommand = new proto.scaii.common.UserCommand;
+    userCommand.setCommandType(proto.scaii.common.UserCommand.UserCommandType.JUMP_TO_STEP);
+    var args = ['' +step];
+    userCommand.setArgsList(args);
+    stageUserCommand(userCommand);
+    controlsManager.userJumped();
+    cleanEntities();
+    cleanToolTips();
+    if (userStudyMode){
+        currentExplManager.setExplanationVisibility(activeStudyQuestionManager.squim.decisionPointSteps, step);
+    }
 }

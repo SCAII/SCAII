@@ -1,7 +1,7 @@
 //! Utility functions for RTS-wide use
 
-use rand::{Isaac64Rng, SeedableRng};
 use rand;
+use rand::{Isaac64Rng, SeedableRng};
 
 use scaii_defs::protos::MultiMessage;
 
@@ -19,8 +19,8 @@ pub fn diverge(rng: &mut Isaac64Rng) {
 /// to ping back the Agent.
 #[allow(dead_code)]
 pub fn ack_msg() -> MultiMessage {
-    use scaii_defs::protos::{Ack, ScaiiPacket};
     use scaii_defs::protos;
+    use scaii_defs::protos::{Ack, ScaiiPacket};
 
     let scaii_packet = ScaiiPacket {
         src: protos::Endpoint {

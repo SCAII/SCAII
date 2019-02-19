@@ -85,14 +85,14 @@ extern crate specs;
 extern crate specs_derive;
 
 pub mod engine;
-pub(crate) mod util;
 pub mod protos;
+pub(crate) mod util;
 
 use engine::Rts;
 
-use scaii_defs::{Backend, BackendSupported, Module, SerializationStyle};
-use scaii_defs::protos::{BackendCfg, Endpoint, MultiMessage, ScaiiPacket, SerializationRequest};
 use scaii_defs::protos::SerializationResponse as SerResp;
+use scaii_defs::protos::{BackendCfg, Endpoint, MultiMessage, ScaiiPacket, SerializationRequest};
+use scaii_defs::{Backend, BackendSupported, Module, SerializationStyle};
 
 use std::error::Error;
 
@@ -126,8 +126,8 @@ impl<'a, 'b> Context<'a, 'b> {
     /// Configures the RTS from a configuration packet, mostly just loads the
     /// scenario.
     fn configure(&mut self, cfg: &BackendCfg) -> Result<(), Box<Error>> {
-        use protos::{Config, Scenario};
         use prost::Message;
+        use protos::{Config, Scenario};
 
         if let Some(ref bytes) = cfg.cfg_msg {
             let cfg = Config::decode(&*bytes)?;
@@ -147,10 +147,10 @@ impl<'a, 'b> Context<'a, 'b> {
 
     /// Serializes the RTS and diverges if necessary.
     fn handle_ser(&mut self, req: &SerializationRequest, src: &Endpoint) -> Result<(), Box<Error>> {
-        use scaii_defs::protos::SerializationFormat as Format;
-        use scaii_defs::protos::scaii_packet::SpecificMsg;
         use scaii_defs::protos::endpoint::Endpoint as End;
+        use scaii_defs::protos::scaii_packet::SpecificMsg;
         use scaii_defs::protos::BackendEndpoint;
+        use scaii_defs::protos::SerializationFormat as Format;
 
         let serialized = match req.format() {
             Format::Diverging => self.serialize_diverging(None)?,
@@ -211,9 +211,9 @@ impl<'a, 'b> Context<'a, 'b> {
 
 impl<'a, 'b> Module for Context<'a, 'b> {
     fn process_msg(&mut self, packet: &ScaiiPacket) -> Result<(), Box<Error>> {
+        use scaii_defs::protos::cfg::WhichModule;
         use scaii_defs::protos::scaii_packet::SpecificMsg;
         use scaii_defs::protos::Cfg;
-        use scaii_defs::protos::cfg::WhichModule;
         use scaii_defs::protos::Record;
         use util;
 

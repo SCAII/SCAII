@@ -1,6 +1,6 @@
-use specs::prelude::*;
 use engine::components::{Move, MoveBehavior, MoveTarget, MovedFlag, Pos, Speed};
 use engine::DeltaT;
+use specs::prelude::*;
 
 #[derive(SystemData)]
 pub struct MoveSystemData<'a> {
@@ -46,7 +46,7 @@ impl<'a> System<'a> for MoveSystem {
                 // For borrow reasons, we need to defer targeted moves until later
                 // (we can't get a position while iterating over positions!)
                 Move {
-                    target: MoveTarget::Unit(target),
+                    target: MoveTarget::AttackUnit(target),
                     ..
                 } => {
                     targets.push((id, target));

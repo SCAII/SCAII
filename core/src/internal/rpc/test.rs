@@ -1,13 +1,13 @@
+use scaii_defs::protos::{BackendEndpoint, ModuleEndpoint, MultiMessage, ScaiiPacket};
 use websocket::message;
 use websocket::OwnedMessage;
-use scaii_defs::protos::{BackendEndpoint, ModuleEndpoint, MultiMessage, ScaiiPacket};
 
 #[test]
 fn connect_attempt() {
-    use std::sync::mpsc;
-    use std::thread;
     use super::*;
     use scaii_defs::protos::scaii_packet;
+    use std::sync::mpsc;
+    use std::thread;
     let (tx, rx) = mpsc::channel();
     // start a thread that starts listening on the port
     let handle = thread::spawn(move || {
@@ -27,6 +27,7 @@ fn connect_attempt() {
                     gameboard_width: Some(400),
                     gameboard_height: Some(400),
                     explanations: Vec::new(),
+                    ..protos::VizInit::default()
                 })) {
                     tx.send(String::from("success")).unwrap();
                 } else {
@@ -76,6 +77,7 @@ fn get_dummy_scaii_pkt() -> ScaiiPacket {
             gameboard_width: Some(400),
             gameboard_height: Some(400),
             explanations: Vec::new(),
+            ..protos::VizInit::default()
         })),
     }
 }

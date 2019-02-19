@@ -46,13 +46,13 @@ goog.require('proto.scaii.common.VizInit');
 * LICENSE file in the root directory of this source tree. An additional grant
 * of patent rights can be found in the PATENTS file in the same directory.
 */
-
 var main = function () {
+    runTests();
 	initUI();
 	var debug = true;
 	if (debug) {
 		var connectButton = document.createElement("BUTTON");
-		var connectText = document.createTextNode("Connect");
+		var connectText = document.createTextNode("Start");
 		connectButton.setAttribute("class", "connectButton");
 		connectButton.setAttribute("id", "connectButton");
 		connectButton.appendChild(connectText);
@@ -61,11 +61,14 @@ var main = function () {
 		};
 		$("#playback-controls-panel").append(connectButton);
 		$("#connectButton").css("font-size", "14px");
+		$("#connectButton").css("padding-left", "20px");
+		$("#connectButton").css("padding-right", "20px");
+		$("#connectButton").css("width", "15%");
 	} else {
 		tryConnect('.', 0);
 	}
 }
 function debug(position, message){
-	$("#debug" + position).html(message);
+	//$("#debug" + position).html(message);
 }
 main();

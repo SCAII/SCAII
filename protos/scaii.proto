@@ -51,6 +51,9 @@ message ScaiiPacket {
 		ExplanationDetails expl_details = 23;
 		ReplayControl replay_control = 24;
 		ReplayChoiceConfig replay_choice_config = 25;
+        StudyQuestions study_questions = 26;
+        StudyQuestionAnswer study_question_answer = 27;
+        LogFileEntry log_file_entry = 28;
 		Other other = 29;
 	}
 
@@ -294,6 +297,7 @@ message GameComplete {}
 // the replay files available for replay
 message ReplayChoiceConfig {
 	repeated string replay_filenames = 1;
+    required bool user_study_mode = 6;
 }
 
 message ReplaySessionConfig {
@@ -301,6 +305,7 @@ message ReplaySessionConfig {
 	repeated uint32 explanation_steps = 2;
 	repeated string explanation_titles= 3;
 	repeated string chart_titles= 4;
+    required bool suppress_interactivity = 5;
 }
 
 // Configures a module (e.g. backend) to begin recording, logging how often 

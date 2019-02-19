@@ -4,9 +4,9 @@ extern crate prost_derive;
 extern crate serde_derive;
 extern crate bincode;
 
+use std::cell::RefCell;
 use std::error::Error;
 use std::rc::Rc;
-use std::cell::RefCell;
 
 /// Contains protobuf definitions
 pub mod protos;

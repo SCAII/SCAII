@@ -1,14 +1,16 @@
-use protos::{BackendEndpoint, BarChart, BarGroup, Cfg, CoreEndpoint, ModuleEndpoint, MultiMessage,
-             PluginType, ReplayChoiceConfig, ReplayEndpoint, ReplaySessionConfig, ScaiiPacket};
+use super::*;
 use protos::cfg::WhichModule;
-use protos::plugin_type::PluginType::SkyRts;
 use protos::endpoint::Endpoint;
+use protos::plugin_type::PluginType::SkyRts;
 use protos::scaii_packet::SpecificMsg;
+use protos::{
+    BackendEndpoint, BarChart, BarGroup, Cfg, CoreEndpoint, ModuleEndpoint, MultiMessage,
+    PluginType, ReplayChoiceConfig, ReplayEndpoint, ReplaySessionConfig, ScaiiPacket, StudyQuestions,
+};
+use scaii_core;
 use scaii_core::{ActionWrapper, ScaiiConfig};
 use scaii_defs::protos;
 use std::error::Error;
-use super::*;
-use scaii_core;
 
 pub fn adjust_cfg_packets(
     cfg_pkts: Vec<ScaiiPacket>,
@@ -249,7 +251,20 @@ pub fn get_reset_env_pkt() -> ScaiiPacket {
     }
 }
 
-pub fn get_replay_choice_config_message(replay_filenames: Vec<String>) -> ScaiiPacket {
+pub fn get_study_questions_pkt(study_questions : StudyQuestions) -> ScaiiPacket {
+    ScaiiPacket {
+        src: protos::Endpoint {
+            endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
+        },
+        dest: protos::Endpoint {
+            endpoint: Some(Endpoint::Module(ModuleEndpoint {
+                name: "viz".to_string(),
+            })),
+        },
+        specific_msg: Some(SpecificMsg::StudyQuestions(study_questions)),
+    }
+}
+pub fn get_replay_choice_config_message(replay_filenames: Vec<String>, user_study_mode: &bool) -> ScaiiPacket {
     ScaiiPacket {
         src: protos::Endpoint {
             endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
@@ -261,6 +276,7 @@ pub fn get_replay_choice_config_message(replay_filenames: Vec<String>) -> ScaiiP
         },
         specific_msg: Some(SpecificMsg::ReplayChoiceConfig(ReplayChoiceConfig {
             replay_filenames: replay_filenames,
+            user_study_mode: *user_study_mode,
         })),
     }
 }
@@ -359,6 +375,7 @@ pub fn create_replay_session_config_message(
             explanation_steps: expl_steps,
             explanation_titles: expl_titles,
             chart_titles: chart_titles,
+            suppress_interactivity: false,
         })),
     }
 }
