@@ -18,6 +18,7 @@ def rename_var(output_path, filename, oldline, newline):
         os.rename(temp_file, output_path + filename)
 
 def gen_protos(input_path, output_path, target, lang):
+    print("hi", input_path)
     if(os.path.isdir(input_path)):
         all_proto = ''
         if target != '':
@@ -56,12 +57,12 @@ def check_paths(files_arr):
             current = find(files_arr[p], os.getcwd())
             if dir == current:
                 print("Found " + files_arr[p] + " at " + str(dir))
-                return str(dir) + "\\"
+                return str(dir) + "/"
             else:
                 print("ERROR: Could not find directory with files: " + str(files_arr))
                 exit(1)
     else:
-        return str(dir) + "\\"
+        return str(dir) + "/"
 
 # Assume the script is cloned into SCAII or Sky_RTS.
 # Get curent directory and go up one level.

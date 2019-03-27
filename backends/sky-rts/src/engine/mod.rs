@@ -44,6 +44,7 @@ pub struct Rts<'a, 'b> {
     frames_since_keyframe: usize,
     keyframe_interval: Option<usize>,
     last_action: Action,
+    lua_path: Option<String>,
 }
 
 impl<'a, 'b> Rts<'a, 'b> {
@@ -99,6 +100,7 @@ impl<'a, 'b> Rts<'a, 'b> {
             frames_since_keyframe: 0,
             keyframe_interval: None,
             last_action: Default::default(),
+            lua_path: None,
         }
     }
 
@@ -127,6 +129,7 @@ impl<'a, 'b> Rts<'a, 'b> {
     /// in `$HOME/.scaii/backends/sky-rts/maps/foo/`, pass in simply
     /// `foo/my_scenario`.
     pub fn set_lua_path(&mut self, path: &str) {
+        self.lua_path = Some(path.to_string());
         self.world.write_resource::<LuaPath>().0 =
             Some(format!(".scaii/backends/sky-rts/maps/{}.lua", path));
     }
@@ -205,6 +208,12 @@ impl<'a, 'b> Rts<'a, 'b> {
         use util;
 
         if !self.initialized {
+            self.init();
+        } else {
+            // Screw it just hardcore rebuild every time, hopefully fixes generational crashes.
+            let mut new_rts = Self::new();
+            new_rts.set_lua_path(&*self.lua_path.as_ref().expect("No lua?"));
+            *self = new_rts;
             self.init();
         }
 
