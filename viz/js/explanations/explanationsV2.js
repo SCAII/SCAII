@@ -68,7 +68,7 @@ function addFunctionsToRawChart(rawChart){
     ch = addTextFunctions(ch); // would be different but might not be used?
     ch = addBasicChartGeometryFunctions(ch); // DIFFERENT
     ch = addMsxGeometryFunctions(ch); //EVAN - adding to get dimension bar to work- 10/29/18 
-    ch = addAdvantageGeometryFunctions(ch);
+    //ch = addAdvantageGeometryFunctions(ch);
     return ch;
 }
 
@@ -106,6 +106,7 @@ function addConvenienceDataStructures(chartData) {
     
     if (chartData.actionRewardForNameMap == undefined){
         chartData.actionRewardForNameMap = {};
+        console.log("$$$$$$$$$$$$$$$$$$ CREATING actionRewardForNameMap! $$$$$$$$$$$$$$");
         chartData.actionRewardNames = [];
         for(var i in chartData.actions){
             var action = chartData.actions[i];
@@ -121,10 +122,14 @@ function addConvenienceDataStructures(chartData) {
                     bar.type = "reward";
                     bar.actionName = action.name;
                     chartData.actionRewardForNameMap[bar.fullName] = bar;
+                    console.log("SETTING actionRewardForNameMap[" + bar.fullName+ "]");
                     chartData.actionRewardNames.push(bar.fullName);
                 }
             }
         }
+        //console.log("--------------chartData.actionRewardForNameMap---------------");
+        //console.log(chartData.actionRewardForNameMap);
+        //console.log("-------------------------------------------------------------");
     }
     
     if (chartData.rewardNames == undefined){
@@ -376,6 +381,14 @@ function getExplanationsV2Manager(){
             this.saliencyCombined = false;
             
         }
+        else if (val == "T4"){
+            this.treatmentID = "T4";
+            this.chartVisible = true;
+            this.showSaliencyAccessButton = false;
+            this.saliencyVisible = false;
+            this.saliencyCombined = false;
+            
+        }
         else {
             alert("unknown treatment name " +val);
         }
@@ -398,6 +411,11 @@ function getExplanationsV2Manager(){
         else if (this.treatmentID == "T3"){
             // normal mode falls through to here and matches T3 as desired
             this.renderT3(mode);
+        } 
+        else if (this.treatmentID == "T4"){
+            // msx
+            chartStyle = "msx";
+            this.renderT4(mode);
         } 
         else {
             this.renderNoTreatment(mode);
@@ -434,6 +452,12 @@ function getExplanationsV2Manager(){
         }
     }
 
+    
+    cm.renderT4 = function(mode){
+        if (this.chartVisible){
+            this.renderChart(mode, "T4");
+        }
+    }
     cm.renderNoTreatment = function(mode){
         if (this.chartVisible){
             var selectedBars = this.data.getSelectedBars();

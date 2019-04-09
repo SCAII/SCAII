@@ -80,6 +80,7 @@ function convertProtobufChartToJSChart(pbch){
     chart.h_title = pbch.getHTitle();
     var groupsList = pbch.getGroupsList();
     chart.actions = [];
+    console.log("==============----------- CONVERTING PROTOBUF TO JSCHART -----------=================");
     for (var i in groupsList){
         var groupMessage  = groupsList[i];
         var action = {};
@@ -95,7 +96,10 @@ function convertProtobufChartToJSChart(pbch){
             bar.value = barMessage.getValue();
             bar.saliencyId = barMessage.getSaliencyId();
             bar.name = barMessage.getName();
-            action.bars.push(bar);
+            // screen out the bar for Living as we've chosen not to use it in the UI.
+            if (bar.name != "Living"){
+                action.bars.push(bar);
+            }
         }
     }
     return chart;

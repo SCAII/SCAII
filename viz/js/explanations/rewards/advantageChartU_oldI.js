@@ -58,7 +58,7 @@ function getAdvantageChartUI() {
         this.renderChartValueLines(chartCanvas, geometry, 4);
         this.renderZeroValueLabel(chartCanvas, geometry);
         
-        //this.renderActionBars(chartCanvas, chartData);
+        this.renderActionBars(chartCanvas, chartData);
         this.renderBars(chartCanvas,chartData, treatment);
         this.renderXAxis(chartCanvas, geometry);
 		this.renderYAxis(chartCanvas, geometry);
@@ -306,8 +306,7 @@ function getAdvantageChartUI() {
 		return p;
 	}
 	ui.renderBars = function (canvas, chartData, treatment) {
-        var ctx = canvas.getContext("2d");
-        var bestAction = chartData.actionsRanked[0];
+		var ctx = canvas.getContext("2d");
 		for (var i=0; i<chartData.actions.length; i++) {
 			var action = chartData.actions[i];
 			for (var j=0; j<chartData.rewardNames.length; j++) {

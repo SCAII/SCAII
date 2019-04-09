@@ -551,7 +551,8 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
     */
     if (chartTesting == "seeSaw") {
         fc.setCase("tooltips positioning seeSaw");
-        msxCG.positionTooltips();
+        msxCG.positionTooltips(ch.actions[0],0);
+        msxCG.positionTooltips(ch.actions[1],1);
         //MATH for originX is semi-same for all but picked action
         // 408 + 40 + (reward# * 96)
 
@@ -576,16 +577,17 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
         // fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.tooltipOriginX, 536.0, "tooltip X action_2.reward_1");
         // fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.tooltipOriginY, 440.0, "tooltip Y action_2.reward_1"); //  90
 
-        fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.tooltipOriginX, 544.0, "tooltip X action_3.reward_0");
-        fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.tooltipOriginY, 470.0, "tooltip Y action_3.reward_0");// 320 - (-100) * 2 * 0.75
-        fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.tooltipOriginX, 640.0, "tooltip X action_3.reward_1");
-        fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.tooltipOriginY, 155.0, "tooltip Y action_3.reward_1");// 320 - 110 * 2 * 0.75
-        fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.tooltipOriginX, 262.0, "tooltip X action_3.reward_2");
-        fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.tooltipOriginY, 80.0, "tooltip Y action_3.reward_2");// (640 - (120 * 2 * 2)) / 2
+        // fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.tooltipOriginX, 544.0, "tooltip X action_3.reward_0");
+        // fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.tooltipOriginY, 470.0, "tooltip Y action_3.reward_0");// 320 - (-100) * 2 * 0.75
+        // fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.tooltipOriginX, 640.0, "tooltip X action_3.reward_1");
+        // fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.tooltipOriginY, 155.0, "tooltip Y action_3.reward_1");// 320 - 110 * 2 * 0.75
+        // fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.tooltipOriginX, 262.0, "tooltip X action_3.reward_2");
+        // fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.tooltipOriginY, 80.0, "tooltip Y action_3.reward_2");// (640 - (120 * 2 * 2)) / 2
 
     } else if (chartTesting == "allPositives") {
         fc.setCase("tooltips positioning allPositives");
-        msxCG.positionTooltips();
+        msxCG.positionTooltips(ch.actions[0],0);
+        msxCG.positionTooltips(ch.actions[1],1);
         //MATH for originX is semi-same for all but picked action
         // 408 + 40 + (reward# * 96)
 
@@ -603,12 +605,12 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
         fc.assert(rewardForName["action_1.reward_2"].msxChartGeometry.tooltipOriginX, 736.0, "tooltip X action_1.reward_2");
         fc.assert(rewardForName["action_1.reward_2"].msxChartGeometry.tooltipOriginY, 230.0, "tooltip Y action_1.reward_2");// 320 - 60 * 2 * 0.75
 
-        fc.assert(rewardForName["action_2.reward_0"].msxChartGeometry.tooltipOriginX, 70.0, "tooltip X action_2.reward_0");
-        fc.assert(rewardForName["action_2.reward_0"].msxChartGeometry.tooltipOriginY, 80.0, "tooltip Y action_2.reward_0");// (640 - (120 * 2 * 2)) / 2
-        fc.assert(rewardForName["action_2.reward_1"].msxChartGeometry.tooltipOriginX, 640.0, "tooltip X action_2.reward_1");
-        fc.assert(rewardForName["action_2.reward_1"].msxChartGeometry.tooltipOriginY, 200.0, "tooltip Y action_2.reward_1");// 320 - 80 * 2 * 0.75
-        fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.tooltipOriginX, 736.0, "tooltip X action_2.reward_2");
-        fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.tooltipOriginY, 185.0, "tooltip Y action_2.reward_2");// 320 - 90 * 2 * 0.75
+        // fc.assert(rewardForName["action_2.reward_0"].msxChartGeometry.tooltipOriginX, 70.0, "tooltip X action_2.reward_0");
+        // fc.assert(rewardForName["action_2.reward_0"].msxChartGeometry.tooltipOriginY, 80.0, "tooltip Y action_2.reward_0");// (640 - (120 * 2 * 2)) / 2
+        // fc.assert(rewardForName["action_2.reward_1"].msxChartGeometry.tooltipOriginX, 640.0, "tooltip X action_2.reward_1");
+        // fc.assert(rewardForName["action_2.reward_1"].msxChartGeometry.tooltipOriginY, 200.0, "tooltip Y action_2.reward_1");// 320 - 80 * 2 * 0.75
+        // fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.tooltipOriginX, 736.0, "tooltip X action_2.reward_2");
+        // fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.tooltipOriginY, 185.0, "tooltip Y action_2.reward_2");// 320 - 90 * 2 * 0.75
 
         // fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.tooltipOriginX, 794.0, "tooltip X action_3.reward_2");
         // fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.tooltipOriginY, 500.0, "tooltip Y action_3.reward_2"); // 100
@@ -619,7 +621,8 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
 
     } else if (chartTesting == "allNegatives") {
         fc.setCase("tooltips positioning allNegatives");
-        msxCG.positionTooltips();
+        msxCG.positionTooltips(ch.actions[1],0);
+        msxCG.positionTooltips(ch.actions[2],1);
         //MATH for originX is semi-same for all but picked action
         // 408 + 40 + (reward# * 96)
 
@@ -644,12 +647,12 @@ function runMsxGeometryTests (failureChecker, chartTesting) {
         fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.tooltipOriginX, 736.0, "tooltip X action_2.reward_2");
         fc.assert(rewardForName["action_2.reward_2"].msxChartGeometry.tooltipOriginY, 455.0, "tooltip Y action_2.reward_2");// 320 - -90 * 2 * 0.75
 
-        fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.tooltipOriginX, 70.0, "tooltip X action_3.reward_0");
-        fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.tooltipOriginY, 80.0, "tooltip Y action_3.reward_0");// (640 - (120 * 2 * 2)) / 2
-        fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.tooltipOriginX, 640.0, "tooltip X action_3.reward_1");
-        fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.tooltipOriginY, 485.0, "tooltip Y action_3.reward_1");// 320 - -110 * 2 * 0.75
-        fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.tooltipOriginX, 736.0, "tooltip X action_3.reward_2");
-        fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.tooltipOriginY, 500.0, "tooltip Y action_3.reward_2");// 320 - -120 * 2 * 0.75
+        // fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.tooltipOriginX, 70.0, "tooltip X action_3.reward_0");
+        // fc.assert(rewardForName["action_3.reward_0"].msxChartGeometry.tooltipOriginY, 80.0, "tooltip Y action_3.reward_0");// (640 - (120 * 2 * 2)) / 2
+        // fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.tooltipOriginX, 640.0, "tooltip X action_3.reward_1");
+        // fc.assert(rewardForName["action_3.reward_1"].msxChartGeometry.tooltipOriginY, 485.0, "tooltip Y action_3.reward_1");// 320 - -110 * 2 * 0.75
+        // fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.tooltipOriginX, 736.0, "tooltip X action_3.reward_2");
+        // fc.assert(rewardForName["action_3.reward_2"].msxChartGeometry.tooltipOriginY, 500.0, "tooltip Y action_3.reward_2");// 320 - -120 * 2 * 0.75
 
     }
     // NEED TO DO

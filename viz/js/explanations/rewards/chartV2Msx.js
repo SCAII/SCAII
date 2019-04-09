@@ -4,8 +4,8 @@ function addMsxToBars(rawChartData) {
     for (var i in rd.actions) {
         var action = rd.actions[i];
         action.msxMaxValueAction = false;
-        for (var j in rd.actions[i].bars) {
-            var bar = rd.actions[i].bars[j];
+        for (var j in action.bars) {
+            var bar = action.bars[j];
             bar.msxColor = msxGrey;
             bar.msxImportantBar = false;
         }

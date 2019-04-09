@@ -8,7 +8,12 @@ function getChartV2UI() {
         var canvasWidth = 700;
         createRewardChartContainer(canvasHeight);
         if (userStudyMode){
-            this.activeChart = getBasicChartUI();
+            if (chartStyle == "msx"){
+                this.activeChart = getMsxChartUI();
+            }
+            else {
+                this.activeChart = getBasicChartUI();
+            }
         }
         else if (chartStyle == "basic"){
             this.activeChart = getBasicChartUI();

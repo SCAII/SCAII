@@ -5,19 +5,38 @@ function getMSXRewardBarTooltipManager(canvas, chartData){
     ttm.canvas = canvas;
 
     ttm.generateTooltips= function(){
-        this.chartData.msxChartGeometry.positionTooltips();
-        for (var i in this.chartData.actionRewardNames){
-            var actionRewardName = this.chartData.actionRewardNames[i];
-            var rewardBar = this.chartData.actionRewardForNameMap[actionRewardName];
+        var winningAction = this.chartData.actionBest;
+        // winningAction will be undefined for unit tests, so skip
+        if (winningAction != undefined){
+            var losingAction = actionForMsxTabId[activeMsxChart];
+            this.chartData.msxChartGeometry.positionTooltips(winningAction,0);
+            this.chartData.msxChartGeometry.positionTooltips(losingAction,1);
+            this.generateTooltipsForAction(winningAction);
+            this.generateTooltipsForAction(losingAction);
+            
+        }
+    }
+    ttm.generateTooltipsForAction = function(action){
+        for (var i in action.bars){
+            var rewardBar = action.bars[i];
             var tooltipText = "Value of " + rewardBar.name + " is " + Math.floor(rewardBar.value);
             rewardBar.tooltipID = createMsxTooltipDiv(tooltipText, rewardBar, this.canvas);
         }
     }
     ttm.generateValueTooltips = function () {
-        this.chartData.msxChartGeometry.positionValueTooltips();
-        for (var i in this.chartData.actionRewardNames) {
-            var actionRewardName = this.chartData.actionRewardNames[i];
-            var rewardBar = this.chartData.actionRewardForNameMap[actionRewardName];
+        var winningAction = this.chartData.actionBest;
+        // winningAction will be undefined for unit tests, so skip
+        if (winningAction != undefined){
+            var losingAction = actionForMsxTabId[activeMsxChart];
+            this.chartData.msxChartGeometry.positionValueTooltips(winningAction);
+            this.chartData.msxChartGeometry.positionValueTooltips(losingAction);
+            this.generateValueTooltipsForAction(winningAction);
+            this.generateValueTooltipsForAction(losingAction);
+        }
+    }
+    ttm.generateValueTooltipsForAction = function(action) {
+        for (var i in action.bars) {
+            var rewardBar = action.bars[i];
             rewardBar.tooltipValueID = createMsxValueTooltipDiv(Math.floor(rewardBar.value), rewardBar, this.canvas);
         }
     }
@@ -54,8 +73,14 @@ function getMSXRewardBarTooltipManager(canvas, chartData){
         return (ttVisibility == "visible");
     }
     ttm.hideAllToolTips = function(){
-        for (var i in this.chartData.actionRewardNames){
-            var rewardBar = chartData.actionRewardForNameMap[this.chartData.actionRewardNames[i]];
+        var winningAction = this.chartData.actionBest;
+        var losingAction = actionForMsxTabId[activeMsxChart];
+        this.hideTooltipsForAction(winningAction);
+        this.hideTooltipsForAction(losingAction);
+    }
+    ttm.hideTooltipsForAction = function(action) {
+        for (var i in action.bars){
+            var rewardBar = action.bars[i];
             var toolContainerID = document.getElementById("tooltip-container-" + rewardBar.fullName);
             toolContainerID.style.visibility = "hidden";
             $("#" + rewardBar.tooltipValueID).css("visibility","hidden");

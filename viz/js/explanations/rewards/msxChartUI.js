@@ -140,7 +140,7 @@ function getMsxChartUI() {
                 var trueRewardBarName = rewardBarName.split(".")[1];
                 chartData.highlightSimilarRewardBarsForActions(trueRewardBarName, winningAction, losingAction);
             }
-            this.renderBars(chartCanvas, chartData, treatment, winningAction, losingAction);
+            //this.renderBars(chartCanvas, chartData, treatment, winningAction, losingAction);
             var bar = chartData.actionRewardForNameMap[rewardBarName];
             chartData.showSalienciesForRewardName(bar.name);
             currentExplManager.saliencyVisible = true;
@@ -408,7 +408,7 @@ function getMsxChartUI() {
         var actions = [ winningAction, losingAction];
 		for (var i=0; i< actions.length; i++) {
 			var action = actions[i];
-			for (var j=0; j<chartData.rewardNames.length; j++) {
+			for (var j = 0; j<chartData.rewardNames.length; j++) {
 				var bar = action.bars[j];
 				chartData.msxChartGeometry.positionRewardBar(action.msxMaxValueAction, bar, j);
 				chartData.msxChartGeometry.dimensionRewardBar(bar);
