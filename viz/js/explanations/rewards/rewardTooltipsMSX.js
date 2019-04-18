@@ -31,7 +31,13 @@ function getMSXRewardBarTooltipManager(canvas, chartData){
         for (var i in action1.bars){
             var rewardBar1 = action1.bars[i];
             var rewardBar2 = action2.bars[i];
-            var tooltipText = "Values of " + rewardBar2.name + " are " + Math.floor(rewardBar1.value) + " and " + Math.floor(rewardBar2.value);
+            var tooltipText;
+            if (rewardBar2.msxImportantBar){
+                tooltipText = "Values of " + rewardBar2.name + " are " + Math.floor(rewardBar1.value) + " and " + Math.floor(rewardBar2.value);
+            }
+            else {
+                tooltipText = "The agent did not find this as influential as the colored bars in its decision."
+            }
             rewardBar1.tooltipID = createMsxPairedTooltipDiv(tooltipText, rewardBar1, this.canvas);
             rewardBar2.tooltipID = createMsxPairedTooltipDiv(tooltipText, rewardBar2, this.canvas);
         }
@@ -132,38 +138,57 @@ function createMsxPairedTooltipDiv(text, rewardBar, canvas) {
     //
     var arrowHalfWidth = 9;
     var arrowHeight = 12; 
-    var tooltipBubbleHeight = 80;
+    
     var minArrowStemLength = 30;
     var spaceToAvoidValueTooltipOverwrite = 15;
     var tooltipColor = "#00aabb";
     var canvas_bounds = canvas.getBoundingClientRect();
     var xDistanceFromTooltipEdgeToArrowTip = 40;
-    var tooltipContainerOriginX = canvas_bounds.left + rewardBar.msxChartGeometry.tooltipPairOriginX1 - xDistanceFromTooltipEdgeToArrowTip;
-    // make y 80 higher than the highest of the two bars
-    var y1 = rewardBar.msxChartGeometry.tooltipPairOriginY1;
-    var y2 = rewardBar.msxChartGeometry.tooltipPairOriginY2;
-    var toolTipContainerOriginY = canvas_bounds.top + Math.min(y1,y2) - tooltipBubbleHeight - minArrowStemLength - arrowHeight;// i.e. tooltipBubbleHeight "above" the max value bar
 
-    var tooltipContainer = document.createElement("div");
-    tooltipContainer.setAttribute("id", "tooltip-container-" + rewardBar.fullName);
-    tooltipContainer.setAttribute("style", "position:absolute;left:" + tooltipContainerOriginX + "px;top:" + toolTipContainerOriginY + "px;visibility:hidden");
-
+    var spaceToAvoidOverwritingValueLeft = 0;
+    var spaceToAvoidOverwritingValueRight = 0;
+    if (rewardBar.msxChartGeometry.leftBarIsPositive){
+        spaceToAvoidOverwritingValueLeft = spaceToAvoidValueTooltipOverwrite;
+    }
+    if (rewardBar.msxChartGeometry.rightBarIsPositive){
+        spaceToAvoidOverwritingValueRight = spaceToAvoidValueTooltipOverwrite;
+    }
+    var maxSpaceToAvoidOverwritingValue = Math.max(spaceToAvoidOverwritingValueRight, spaceToAvoidOverwritingValueLeft)
     var id = convertNameToLegalId("tooltip-" + rewardBar.fullName);
     var ttDiv = document.createElement("div");
     ttDiv.setAttribute("id",id);
     var xDistanceBetweenBars = Math.abs(rewardBar.msxChartGeometry.tooltipPairOriginX1 - rewardBar.msxChartGeometry.tooltipPairOriginX2);
     var fullTooltipWidth = xDistanceFromTooltipEdgeToArrowTip * 2 + xDistanceBetweenBars;
-    ttDiv.setAttribute("style", 'width:' + fullTooltipWidth + 'px;height:' + tooltipBubbleHeight + 'px;white-space: pre-wrap;' + 
-    'padding:4px;background-color:' + tooltipColor + ';' + 
+    var bubblePadding = 4;
+    ttDiv.setAttribute("style", 'width:' + fullTooltipWidth + 'px;white-space: pre-wrap;' + 
+    'padding:' + bubblePadding + 'px;background-color:' + tooltipColor + ';' + 
     'z-index:' + zIndexMap["tooltip"] + ';' + 
     'color:black;font-family:Arial;' + 
     'border-radius:.4em;');
     
     ttDiv.innerHTML = text;
-
+    // add it in so we can compute the height based on text needs
+    var tooltipContainer = document.createElement("div");
     tooltipContainer.append(ttDiv);
-
     $("#explanations-rewards").append(tooltipContainer);
+    var tooltipBubbleHeight = $("#" + id).height();
+
+    var tooltipContainerOriginX = canvas_bounds.left + rewardBar.msxChartGeometry.tooltipPairOriginX1 - xDistanceFromTooltipEdgeToArrowTip;
+    // make y 80 higher than the highest of the two bars
+    var y1 = rewardBar.msxChartGeometry.tooltipPairOriginY1;
+    var y2 = rewardBar.msxChartGeometry.tooltipPairOriginY2;
+    var toolTipContainerOriginY = canvas_bounds.top + Math.min(y1,y2) - tooltipBubbleHeight - minArrowStemLength - arrowHeight;// i.e. tooltipBubbleHeight "above" the max value bar
+    // adjust higher if one of the bars is positive and we have to boost up past the value tooltip
+    toolTipContainerOriginY = toolTipContainerOriginY - maxSpaceToAvoidOverwritingValue;
+   
+    tooltipContainer.setAttribute("id", "tooltip-container-" + rewardBar.fullName);
+    tooltipContainer.setAttribute("style", "position:absolute;left:" + tooltipContainerOriginX + "px;top:" + toolTipContainerOriginY + "px;visibility:hidden");
+
+    
+
+    //tooltipContainer.append(ttDiv);
+
+    
     // Tooltip positioning has computed the tips of both downward arrows of the two arrow bubble.
     // rewardBar.msxChartGeometry.tooltipPairOriginX1
     // rewardBar.msxChartGeometry.tooltipPairOriginY1
@@ -176,44 +201,30 @@ function createMsxPairedTooltipDiv(text, rewardBar, canvas) {
     var barHeightDifference = Math.abs(y1 - y2);
     var leftArrowOriginRelativeToTTDivY;
     var rightArrowOriginRelativeToTTDivY;
-    var spaceToAvoidOverwritingValueLeft = 0;
-    var spaceToAvoidOverwritingValueRight = 0;
-    if (rewardBar.msxChartGeometry.leftBarIsPositive){
-        spaceToAvoidOverwritingValueLeft = spaceToAvoidValueTooltipOverwrite;
-    }
-    if (rewardBar.msxChartGeometry.rightBarIsPositive){
-        spaceToAvoidOverwritingValueRight = spaceToAvoidValueTooltipOverwrite;
-    }
+    
     if (y1 >= y2){ // right bar is taller or same
-        leftArrowOriginRelativeToTTDivY = tooltipBubbleHeight + minArrowStemLength + barHeightDifference - spaceToAvoidOverwritingValueLeft;
-        rightArrowOriginRelativeToTTDivY = tooltipBubbleHeight + minArrowStemLength - spaceToAvoidOverwritingValueRight;
+        leftArrowOriginRelativeToTTDivY = tooltipBubbleHeight + minArrowStemLength + barHeightDifference;
+        rightArrowOriginRelativeToTTDivY = tooltipBubbleHeight + minArrowStemLength;
     }
     else { // left bar is taller 
-        leftArrowOriginRelativeToTTDivY = tooltipBubbleHeight + minArrowStemLength - spaceToAvoidOverwritingValueLeft;
-        rightArrowOriginRelativeToTTDivY = tooltipBubbleHeight + minArrowStemLength + barHeightDifference - spaceToAvoidOverwritingValueRight;
+        leftArrowOriginRelativeToTTDivY = tooltipBubbleHeight + minArrowStemLength;
+        rightArrowOriginRelativeToTTDivY = tooltipBubbleHeight + minArrowStemLength + barHeightDifference;
     }
-    var arrowHeadLeft  = createDownwardArrowhead("arrow-left-"  + rewardBar.fullName,arrowHeight, arrowHalfWidth, leftArrowOriginRelativeToTTDivX, leftArrowOriginRelativeToTTDivY, tooltipColor);
-    var arrowHeadRight = createDownwardArrowhead("arrow-right-" + rewardBar.fullName,arrowHeight, arrowHalfWidth, rightArrowOriginRelativeToTTDivX, rightArrowOriginRelativeToTTDivY, tooltipColor);
+    var arrowHeadLeft  = createDownwardArrowhead(convertNameToLegalId("arrow-left-"  + rewardBar.fullName),arrowHeight, arrowHalfWidth, leftArrowOriginRelativeToTTDivX, leftArrowOriginRelativeToTTDivY, tooltipColor);
+    var arrowHeadRight = createDownwardArrowhead(convertNameToLegalId("arrow-right-" + rewardBar.fullName),arrowHeight, arrowHalfWidth, rightArrowOriginRelativeToTTDivX, rightArrowOriginRelativeToTTDivY, tooltipColor);
     tooltipContainer.appendChild(arrowHeadLeft);
     tooltipContainer.appendChild(arrowHeadRight);
      
-    var stemHeightLeft = leftArrowOriginRelativeToTTDivY - tooltipBubbleHeight;
-    var stemHeightRight = rightArrowOriginRelativeToTTDivY - tooltipBubbleHeight;
+    var stemHeightLeft = leftArrowOriginRelativeToTTDivY - tooltipBubbleHeight - bubblePadding
+    var stemHeightRight = rightArrowOriginRelativeToTTDivY - tooltipBubbleHeight - bubblePadding;
     var stemWidth = (arrowHalfWidth - 4) * 2;
     var leftArrowStemOriginRelativeToTTDivX = xDistanceFromTooltipEdgeToArrowTip - (stemWidth/2);
-    var leftArrowStemOriginRelativeToTTDivY = tooltipBubbleHeight 
+    var leftArrowStemOriginRelativeToTTDivY = tooltipBubbleHeight + bubblePadding;
     var rightArrowStemOriginRelativeToTTDivX = xDistanceFromTooltipEdgeToArrowTip - (stemWidth/2) + xDistanceBetweenBars;
-    var rightArrowStemOriginRelativeToTTDivY = tooltipBubbleHeight
-    // if (y1 >= y2){ // right bar is taller or same
-    //     leftArrowStemOriginRelativeToTTDivY = tooltipBubbleHeight + minArrowStemLength + barHeightDifference - spaceToAvoidOverwritingValueLeft;
-    //     rightArrowStemOriginRelativeToTTDivY = tooltipBubbleHeight + minArrowStemLength - spaceToAvoidOverwritingValueRight;
-    // }
-    // else { // left bar is taller 
-    //     leftArrowOriginRelativeToTTDivY = tooltipBubbleHeight + minArrowStemLength - spaceToAvoidOverwritingValueLeft;
-    //     rightArrowOriginRelativeToTTDivY = tooltipBubbleHeight + minArrowStemLength + barHeightDifference - spaceToAvoidOverwritingValueRight;
-    // }
-    var arrowStemLeft  = createArrowStem("arrow-stem-left-"  + rewardBar.fullName, stemHeightLeft, stemWidth, leftArrowStemOriginRelativeToTTDivX, leftArrowStemOriginRelativeToTTDivY, tooltipColor);
-    var arrowStemRight = createArrowStem("arrow-stem-right-" + rewardBar.fullName, stemHeightRight, stemWidth, rightArrowStemOriginRelativeToTTDivX, rightArrowStemOriginRelativeToTTDivY, tooltipColor);
+    var rightArrowStemOriginRelativeToTTDivY = tooltipBubbleHeight + bubblePadding;
+    
+    var arrowStemLeft  = createArrowStem(convertNameToLegalId("arrow-stem-left-"  + rewardBar.fullName), stemHeightLeft, stemWidth, leftArrowStemOriginRelativeToTTDivX, leftArrowStemOriginRelativeToTTDivY, tooltipColor);
+    var arrowStemRight = createArrowStem(convertNameToLegalId("arrow-stem-right-" + rewardBar.fullName), stemHeightRight, stemWidth, rightArrowStemOriginRelativeToTTDivX, rightArrowStemOriginRelativeToTTDivY, tooltipColor);
     tooltipContainer.appendChild(arrowStemLeft);
     tooltipContainer.appendChild(arrowStemRight);  //var ttContainerDiv = document.getElementById("tooltip-container-" + rewardBar.fullName);
    // ttContainerDiv.style.top = Number(y - (ttDivFromDOM.clientHeight / 2)) + "px";
@@ -224,7 +235,7 @@ function createMsxPairedTooltipDiv(text, rewardBar, canvas) {
 function createArrowStem(stemId,stemHeight, stemWidth, relativePositionLeft, relativePositionTop, arrowColor){
     var stem = document.createElement("div");
     stem.setAttribute("id", stemId);
-    stem.setAttribute("style", "position:absolute;left:" + relativePositionLeft + "px;top:" + relativePositionTop + "px;width:"+stemWidth + "px; height:" + stemHeight +"px; background-color:" + arrowColor + ";");
+    stem.setAttribute("style", "position:absolute;z-index:" + zIndexMap["tooltip"] + ";left:" + relativePositionLeft + "px;top:" + relativePositionTop + "px;width:"+stemWidth + "px; height:" + stemHeight +"px; background-color:" + arrowColor + ";");
     return stem;
 }
 

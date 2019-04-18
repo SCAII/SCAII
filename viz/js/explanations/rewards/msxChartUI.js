@@ -5,6 +5,7 @@ function getMsxChartUI() {
     ui.rewardBarTooltipManager = undefined;
     ui.backgroundColor = "#eeeeee";
     ui.renderChart = function(chartData, treatment, canvasHeight, canvasWidth){
+        //addMsxToBars(chartData);
         var msxGeometry = chartData.msxChartGeometry;
         //specify dimensions
         msxGeometry.initChartDimensions(canvasHeight, canvasWidth, 0.5, 0.0);
@@ -100,7 +101,6 @@ function getMsxChartUI() {
         }
         return false;
     }
-
     ui.renderChartComponents = function(chartCanvas, msxGeometry, chartData, treatment, winningAction, losingAction){
         this.renderActionSeparatorLines(chartCanvas, chartData);
         this.renderChartValueLabels(chartCanvas, msxGeometry, 4);

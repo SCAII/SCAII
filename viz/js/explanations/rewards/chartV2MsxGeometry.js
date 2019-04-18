@@ -196,15 +196,8 @@ function addMsxGeometryFunctions(chartData) {
         for (var j in action.bars) {
             var bar = action.bars[j];
             var calc = Number((Number(actionPositionInGraph) * Number(barsPerAction)) + Number(j));
-            // var actionRewardName = chartData.actionRewardNames[calc];
-
-            // if (bar.msxImportantBar == true) {
-            //     bar.msxChartGeometry.tooltipOriginX = bar.msxChartGeometry.originX - (msxCG.widthAvailableForRewardBars + (msxCG.groupWidthMargin * 2)) - 10;
-            //     bar.msxChartGeometry.tooltipOriginY = (msxCG.canvasHeight - (chartData.getMaxAbsoluteValueReward() * 2 * msxCG.scalingFactor)) / 2
-            // } else {
-                bar.msxChartGeometry.tooltipOriginX = bar.msxChartGeometry.originX + msxCG.rewardBarWidth;
-                bar.msxChartGeometry.tooltipOriginY = msxCG.canvasHeight/2 - bar.msxChartGeometry.scaledValue * 0.75;
-            //}
+            bar.msxChartGeometry.tooltipOriginX = bar.msxChartGeometry.originX + msxCG.rewardBarWidth;
+            bar.msxChartGeometry.tooltipOriginY = msxCG.canvasHeight/2 - bar.msxChartGeometry.scaledValue * 0.75;
         }
     }
 
