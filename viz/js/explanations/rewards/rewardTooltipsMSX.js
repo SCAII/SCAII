@@ -31,13 +31,7 @@ function getMSXRewardBarTooltipManager(canvas, chartData){
         for (var i in action1.bars){
             var rewardBar1 = action1.bars[i];
             var rewardBar2 = action2.bars[i];
-            var tooltipText;
-            if (rewardBar2.msxImportantBar){
-                tooltipText = "Values of " + rewardBar2.name + " are " + Math.floor(rewardBar1.value) + " and " + Math.floor(rewardBar2.value);
-            }
-            else {
-                tooltipText = "The agent did not find this as influential as the colored bars in its decision."
-            }
+            var tooltipText = createMSXTooltipText(rewardBar1, rewardBar2);
             rewardBar1.tooltipID = createMsxPairedTooltipDiv(tooltipText, rewardBar1, this.canvas);
             rewardBar2.tooltipID = createMsxPairedTooltipDiv(tooltipText, rewardBar2, this.canvas);
         }
@@ -350,4 +344,31 @@ function createMsxValueTooltipDiv (text, rewardBar, canvas) {
     ttDiv.append(textNode)
     $("#explanations-rewards").append(ttDiv);
     return id;
+}
+
+function createMSXTooltipText(rewardBar1, rewardBar2){
+    if (!rewardBar2.msxImportantBar){
+        return "The agent did not find this as influential as the colored bars in its decision.";
+    }
+    var t;
+    var difference = Math.floor(Math.abs(rewardBar1.value - rewardBar2.value));
+    if (rewardBar1.value < 0){
+        //these are penalties
+        if (rewardBar1.value >= rewardBar2.value){
+            t = "The agent expects that by the end of the game, if will have " + difference + " less of a penalty for " + rewardBar1.name;
+        }
+        else {
+            t = "The agent expects that by the end of the game, if will have " + difference + " more of a penalty for " + rewardBar1.name;
+        }
+    }
+    else {
+        //these are rewards
+        if (rewardBar1.value >= rewardBar2.value){
+            t = "The agent expects that by the end of the game, if will have " + difference + " more of a reward for " + rewardBar1.name;
+        }
+        else {
+            t = "The agent expects that by the end of the game, if will have " + difference + " less of a reward for " + rewardBar1.name;
+        }
+    }
+    return t;
 }
