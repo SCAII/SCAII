@@ -69,9 +69,17 @@ function addMsxGeometryFunctions(chartData) {
             }
             var barCg = bar.msxChartGeometry;
             if (barCg != undefined) {
-                if (chartData.isPointInsideBox(x, y, barCg.originX, barCg.originY, barCg.width, barCg.height, isHeightNegative)){ 
-                    result = bar.fullName;
-                } 
+                if (bar.value < 10 && bar.value > -10){
+                    // if very low value, make the isPointInsideBox test more lax in vertical direction (20 pixel high box will match)
+                    if (chartData.isPointInsideBox(x, y, barCg.originX, barCg.originY - 10, barCg.width, 20, isHeightNegative)){ 
+                        result = bar.fullName;
+                    } 
+                }
+                else {
+                    if (chartData.isPointInsideBox(x, y, barCg.originX, barCg.originY, barCg.width, barCg.height, isHeightNegative)){ 
+                        result = bar.fullName;
+                    } 
+                }
             }
         }
         return result;
