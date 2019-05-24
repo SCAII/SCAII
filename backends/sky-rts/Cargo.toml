@@ -9,7 +9,7 @@ rlua  = "0.13"
 serde = "1"
 serde_derive = "1"
 
-rand = { git = 'https://github.com/rust-lang-nursery/rand', features=["serde-1"], rev="1591eadd954" }
+rand = { version = "0.5", features=["serde1"] }
 
 serde_cbor  = "0.8"
 
