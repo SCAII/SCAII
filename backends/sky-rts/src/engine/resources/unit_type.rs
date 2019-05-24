@@ -3,6 +3,7 @@ use engine::{
 };
 use specs::prelude::*;
 
+use ncollide::math::Point as P2;
 use std::collections::HashMap;
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
@@ -124,7 +125,7 @@ impl UnitType {
         use nalgebra;
         use nalgebra::{Isometry2, Vector2};
         use ncollide::{
-            shape::{Ball, Cuboid, Cylinder, ShapeHandle},
+            shape::{Ball, Cuboid, Polyline, ShapeHandle, Triangle}, transformation::ToPolyline,
             world::{CollisionGroups, GeometricQueryType},
         };
 
@@ -147,10 +148,14 @@ impl UnitType {
 
                 // equilateral triangle dimensions
                 let half_height = base_len / (2.0 as f64).sqrt() / 2.0;
-                let radius = base_len / 2.0;
+                let half_base_len = base_len / 2.0;
 
-                // A cylinder in 2D is an isoscelese triangle in ncollide
-                let collider = Cylinder::new(half_height, radius);
+                let p1 = P2::new(-half_height, -half_base_len);
+                let p2 = P2::new(-half_height, half_base_len);
+                let p3 = P2::new(half_height, 0.0);
+
+                let collider = Triangle::new(p1, p2, p3).to_polyline(()).unwrap();
+                let collider = Polyline::new(collider.0, None);
                 let collider = ShapeHandle::new(collider);
 
                 collider
@@ -177,7 +182,7 @@ impl UnitType {
             },
         );
 
-        col_storage.insert(entity, CollisionHandle(collider));
+        col_storage.insert(entity, CollisionHandle(collider.handle()));
 
         entity
     }

@@ -88,7 +88,7 @@ pub fn register_sensor_collision(world: &mut World, sensor: Entity) -> Entity {
 
     world
         .write::<CollisionHandle>()
-        .insert(sensor, CollisionHandle(collider));
+        .insert(sensor, CollisionHandle(collider.handle()));
 
     sensor
 }

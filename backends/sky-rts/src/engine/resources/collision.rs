@@ -1,5 +1,3 @@
-use nalgebra::Isometry2 as I2;
-use nalgebra::Point2 as P2;
 use ncollide::{
     broad_phase::BroadPhasePairFilter, world::{CollisionObject, CollisionWorld},
 };
@@ -12,7 +10,7 @@ pub struct ColliderData {
     pub sensor: bool,
 }
 
-pub type SkyCollisionWorld = CollisionWorld<P2<f64>, I2<f64>, ColliderData>;
+pub type SkyCollisionWorld = CollisionWorld<f64, ColliderData>;
 
 pub fn new_collision_world() -> SkyCollisionWorld {
     let mut c_world = SkyCollisionWorld::new(0.02);
@@ -25,11 +23,11 @@ pub fn new_collision_world() -> SkyCollisionWorld {
 #[doc(hidden)]
 pub struct SkyBroadPhaseFilter;
 
-impl BroadPhasePairFilter<P2<f64>, I2<f64>, ColliderData> for SkyBroadPhaseFilter {
+impl BroadPhasePairFilter<f64, ColliderData> for SkyBroadPhaseFilter {
     fn is_pair_valid(
         &self,
-        b1: &CollisionObject<P2<f64>, I2<f64>, ColliderData>,
-        b2: &CollisionObject<P2<f64>, I2<f64>, ColliderData>,
+        b1: &CollisionObject<f64, ColliderData>,
+        b2: &CollisionObject<f64, ColliderData>,
     ) -> bool {
         // This seems to not be always working on add?
         b1.data().owner != Some(b2.data().e) && b2.data().owner != Some(b1.data().e)

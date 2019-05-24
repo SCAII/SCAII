@@ -64,7 +64,7 @@ extern crate bytes;
 #[macro_use]
 extern crate lazy_static;
 extern crate nalgebra;
-extern crate ncollide;
+extern crate ncollide2d as ncollide;
 extern crate ndarray;
 extern crate prost;
 #[macro_use]
