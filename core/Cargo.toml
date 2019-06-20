@@ -29,14 +29,8 @@ serde_derive="1"
 bincode = "0.9.2"
 url = "1.5.1"
 toml = "0.4.5"
+regex = "0.2"
 
 # local deps
 scaii_defs = {path = "../scaii_defs"}
 sky-rts = {path="../backends/sky-rts", optional = true}
-
-
-[profile.release]
-#We can't unwind over C boundaries
-panic = "abort"
-codegen-units = 1
-lto = true

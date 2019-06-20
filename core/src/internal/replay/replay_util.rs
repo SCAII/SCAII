@@ -1,15 +1,15 @@
-use protos::ScaiiPacket;
+use super::*;
+use bincode::{deserialize_from, Infinite};
 use protos::cfg::WhichModule;
 use protos::scaii_packet::SpecificMsg;
+use protos::ScaiiPacket;
+use scaii_core;
 use scaii_core::{ReplayAction, SerializedProtosSerializationResponse};
 use scaii_defs::protos;
 use std::error::Error;
 use std::fs::File;
-use std::path::Path;
 use std::io::BufReader;
-use bincode::{deserialize_from, Infinite};
-use super::*;
-use scaii_core;
+use std::path::Path;
 
 pub fn load_replay_file(path: &Path) -> Result<Vec<ReplayAction>, Box<Error>> {
     //use super::ReplayAction;
@@ -201,6 +201,7 @@ pub struct Args {
     //
     pub cmd_file: bool,
     pub arg_path_to_replay_file: String,
+    pub user_study_mode: bool,
 }
 
 pub fn parse_args(arguments: Vec<String>) -> Args {
@@ -212,6 +213,7 @@ pub fn parse_args(arguments: Vec<String>) -> Args {
 
         cmd_file: false,
         arg_path_to_replay_file: "".to_string(),
+        user_study_mode: false,
     };
     //      replay webserver
     //  replay file
@@ -231,6 +233,18 @@ pub fn parse_args(arguments: Vec<String>) -> Args {
             match arguments.len() {
                 2 => {
                     // no further arguments
+                }
+                3 => {
+                    let flag = &arguments[2];
+                    match flag.as_ref() {
+                        "--user-study" => {
+                            args.user_study_mode = true;
+                        }
+                        _ => {
+                            println!("{}", USAGE);
+                            std::process::exit(0);
+                        }
+                    }
                 }
                 _ => {
                     println!("{}", USAGE);

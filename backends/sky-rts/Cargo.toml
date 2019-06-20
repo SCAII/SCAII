@@ -5,11 +5,11 @@ authors = ["Zoe Juozapaitis <Jragonmiris@gmail.com>"]
 
 [dependencies]
 scaii_defs = { path="../../scaii_defs" }
-rlua  = "0.9"
+rlua  = "0.13"
 serde = "1"
 serde_derive = "1"
 
-rand = { git = 'https://github.com/rust-lang-nursery/rand', features=["serde-1"], rev="1591eadd954" }
+rand = { version = "0.5", features=["serde1"] }
 
 serde_cbor  = "0.8"
 
@@ -25,8 +25,8 @@ bytes = "0.4.5"
 lazy_static = "1.0"
 ndarray = {version="0.11", features=["serde-1"]}
 
-nalgebra = {version="0.14", features=["serde-serialize"]}
-ncollide = "0.14"
+nalgebra = {version="0.18", features=["serde-serialize"]}
+ncollide2d = "0.19"
 
 rayon = "1"
 
@@ -36,7 +36,3 @@ glob = "0.2.11"
 
 [dev-dependencies]
 websocket = "0.20"
-
-[profile.release]
-lto = true
-codegen-units = 1

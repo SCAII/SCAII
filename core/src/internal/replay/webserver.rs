@@ -2,12 +2,12 @@
 //#[macro_use]
 //extern crate serde_derive;
 
-use std::process;
+use scaii_core::scaii_config;
+use scaii_core::util;
+use scaii_core::{ScaiiConfig, ScaiiError};
 use std::env;
 use std::error::Error;
-use scaii_core::{ScaiiConfig, ScaiiError};
-use scaii_core::util;
-use scaii_core::scaii_config;
+use std::process;
 
 // launch the simple python webserver if python3 installed
 pub fn launch_webserver() {
@@ -134,11 +134,16 @@ fn change_to_viz_dir() -> Result<(), Box<Error>> {
 fn launch_webserver_using_command(python_command: &str) {
     //python -m http.server <port>
     let mut scaii_config: ScaiiConfig = scaii_config::load_scaii_config();
+    println!("current dir is {:?}",env::current_dir());
     let port = scaii_config.get_replay_port();
     let command = python_command.to_string();
     let mut args: Vec<String> = Vec::new();
-    args.push("-m".to_string());
-    args.push("http.server".to_string());
+    //args.push("-m".to_string());
+    args.push("..\\core\\src\\internal\\replay\\no_cache_webserver.py".to_string());
+    //args.push(".\\no_cache_webserver.py".to_string());
+    //args.push("http.server".to_string());
+    //args.push("-c-1".to_string());
+    //args.push("-p".to_string());
     args.push(port);
     let run_result = util::run_command(&command, args);
     match run_result {

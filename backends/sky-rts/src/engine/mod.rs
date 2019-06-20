@@ -10,8 +10,8 @@
 //! initializing, updating, and configuring it.
 
 pub mod components;
-pub mod systems;
 pub mod resources;
+pub mod systems;
 
 use self::resources::*;
 
@@ -20,8 +20,9 @@ use scaii_defs::protos::{Action, MultiMessage, ScaiiPacket};
 use specs::prelude::*;
 
 use self::components::FactionId;
-use self::systems::lua::LuaSystem;
-use self::systems::serde::{DeserializeSystem, RedoCollisionSys, SerializeSystem};
+use self::systems::{
+    lua::LuaSystem, serde::{DeserializeSystem, RedoCollisionSys, SerializeSystem}, SpawnSystem,
+};
 
 /// This contains the `specs` system and world context
 /// for running an RTS game, as well as a few flags controlling
@@ -34,6 +35,7 @@ pub struct Rts<'a, 'b> {
     sim_systems: Dispatcher<'a, 'b>,
     lua_sys: LuaSystem,
     out_systems: Dispatcher<'a, 'b>,
+    spawn_sys: SpawnSystem,
 
     ser_system: SerializeSystem,
     de_system: DeserializeSystem,
@@ -47,10 +49,12 @@ pub struct Rts<'a, 'b> {
 impl<'a, 'b> Rts<'a, 'b> {
     /// Initializes a new RTS with all systems, components, and resources.
     pub fn new() -> Self {
-        use self::systems::{AttackSystem, CleanupSystem, CollisionSystem, InputSystem, MoveSystem,
-                            RenderSystem, SpawnSystem, StateBuildSystem};
-        use std::sync::Arc;
+        use self::systems::{
+            AttackSystem, CleanupSystem, CollisionSystem, InputSystem, MoveSystem, RenderSystem,
+            SpawnSystem, StateBuildSystem,
+        };
         use rayon::ThreadPoolBuilder;
+        use std::sync::Arc;
 
         let mut world = World::new();
         components::register_world_components(&mut world);
@@ -65,7 +69,6 @@ impl<'a, 'b> Rts<'a, 'b> {
 
         let simulation_builder: Dispatcher = DispatcherBuilder::new()
             .with_pool(pool.clone())
-            .add(SpawnSystem::default(), "spawn", &[])
             .add(InputSystem::new(), "input", &[])
             .add(MoveSystem::new(), "movement", &["input"])
             .add(CollisionSystem, "collision", &["movement"])
@@ -80,10 +83,12 @@ impl<'a, 'b> Rts<'a, 'b> {
             .build();
 
         let lua_sys = LuaSystem::new();
+        let spawn_sys = SpawnSystem::default();
 
         Rts {
             world,
             lua_sys,
+            spawn_sys,
             initialized: false,
             render: false,
             sim_systems: simulation_builder,
@@ -134,9 +139,9 @@ impl<'a, 'b> Rts<'a, 'b> {
         use engine::resources::LuaPath;
         use SUPPORTED;
 
-        use std::env;
         use scaii_defs::protos;
         use scaii_defs::protos::{EnvDescription, ScaiiPacket};
+        use std::env;
 
         if self.initialized {
             panic!("Double initialize in RTS");
@@ -144,7 +149,8 @@ impl<'a, 'b> Rts<'a, 'b> {
 
         self.initialized = true;
 
-        let lua_path = self.world
+        let lua_path = self
+            .world
             .read_resource::<LuaPath>()
             .0
             .as_ref()
@@ -170,7 +176,8 @@ impl<'a, 'b> Rts<'a, 'b> {
             src: protos::BACKEND_ENDPOINT,
             dest: protos::AGENT_ENDPOINT,
             specific_msg: Some(protos::scaii_packet::SpecificMsg::EnvDesc(EnvDescription {
-                reward_types: self.world
+                reward_types: self
+                    .world
                     .read_resource::<RewardTypes>()
                     .0
                     .iter()
@@ -190,12 +197,12 @@ impl<'a, 'b> Rts<'a, 'b> {
     /// Resets the game to a clean state, running the scenario
     /// Lua's `reset` function, populating initial entities.
     pub fn reset(&mut self) -> MultiMessage {
-        use rand::Isaac64Rng;
-        use util;
-        use scaii_defs::protos::ScaiiPacket;
-        use scaii_defs::protos;
-        use shred::RunNow;
         use self::resources::COLLISION_MARGIN;
+        use rand::Isaac64Rng;
+        use scaii_defs::protos;
+        use scaii_defs::protos::ScaiiPacket;
+        use shred::RunNow;
+        use util;
 
         if !self.initialized {
             self.init();
@@ -206,6 +213,7 @@ impl<'a, 'b> Rts<'a, 'b> {
         self.world.write_resource::<Skip>().0 = false;
         self.world.write_resource::<Skip>().1 = None;
         self.world.write_resource::<NeedsKeyInfo>().0 = true;
+        self.world.write_resource::<DataStore>().clear();
         self.last_action = Default::default();
 
         self.world.delete_all();
@@ -226,6 +234,7 @@ impl<'a, 'b> Rts<'a, 'b> {
 
         // Ensure changes and render
         self.world.maintain();
+        self.spawn_sys.update(&mut self.world);
         self.sim_systems.dispatch_seq(&self.world.res);
         self.world.maintain(); // for spawn
         self.lua_sys.run_now(&self.world.res);
@@ -244,7 +253,8 @@ impl<'a, 'b> Rts<'a, 'b> {
                 dest: protos::mod_endpoint("viz"),
                 specific_msg: Some(protos::scaii_packet::SpecificMsg::VizInit(
                     protos::VizInit {
-                        reward_types: self.world
+                        reward_types: self
+                            .world
                             .read_resource::<RewardTypes>()
                             .0
                             .iter()
@@ -290,8 +300,8 @@ impl<'a, 'b> Rts<'a, 'b> {
 
     fn record(&mut self) -> Vec<ScaiiPacket> {
         use scaii_defs::protos;
-        use scaii_defs::protos::{RecorderStep, SerializationFormat};
         use scaii_defs::protos::SerializationResponse as SerResp;
+        use scaii_defs::protos::{RecorderStep, SerializationFormat};
 
         if let Some(_) = self.keyframe_interval {
             let mut out = Vec::with_capacity(2);
@@ -358,6 +368,7 @@ impl<'a, 'b> Rts<'a, 'b> {
             mm.packets.append(&mut packets);
         }
 
+        self.spawn_sys.update(&mut self.world);
         self.sim_systems.dispatch_seq(&self.world.res);
         self.world.maintain();
         self.lua_sys.run_now(&self.world.res);
@@ -426,9 +437,9 @@ impl<'a, 'b> Rts<'a, 'b> {
     /// recalculating anything like collision that cannot be
     /// serialized.
     pub fn deserialize(&mut self, buf: Vec<u8>) -> MultiMessage {
-        use scaii_defs::protos;
-        use engine::resources::{Deserializing, PLAYER_COLORS};
         use engine::components::Color;
+        use engine::resources::{Deserializing, PLAYER_COLORS};
+        use scaii_defs::protos;
 
         self.world.write_resource::<Deserializing>().0 = true;
 
@@ -444,11 +455,14 @@ impl<'a, 'b> Rts<'a, 'b> {
                 .expect("Could not delete");
         }
         self.world.maintain();
+        for entity in self.world.entities().join() {
+            println!("{:?} still alive?", entity);
+        }
 
         self.world.write_resource::<SerializeBytes>().0 = buf;
 
         self.de_system.run_now(&self.world.res);
-        self.redo_col_sys.run_now(&self.world.res);
+        self.redo_col_sys.redo_collision(&mut self.world);
 
         for id in self.world.entities().join() {
             if let Some(faction) = self.world.read::<FactionId>().get(id) {
@@ -498,6 +512,7 @@ impl<'a, 'b> Rts<'a, 'b> {
     }
 }
 
+/*
 #[cfg(test)]
 mod tests {
     use super::{Player, Rts};
@@ -518,3 +533,4 @@ mod tests {
         let _mm = rts.reset();
     }
 }
+*/

@@ -1,20 +1,22 @@
-use super::*;
 use super::super::super::Environment;
+use super::*;
+use bincode::{deserialize_from, ErrorKind, Infinite};
 use scaii_defs::protos;
-use scaii_defs::{Agent, Backend, Module};
-use scaii_defs::protos::{cfg, scaii_packet, AgentEndpoint, BackendCfg, BackendEndpoint, Cfg,
-                         CoreEndpoint, GameComplete, MultiMessage, RecorderConfig,
-                         RecorderEndpoint, ReplayEndpoint, ScaiiPacket, SerializationResponse};
 use scaii_defs::protos::cfg::WhichModule;
 use scaii_defs::protos::endpoint::Endpoint;
 use scaii_defs::protos::scaii_packet::SpecificMsg;
-use std::error::Error;
-use std::rc::Rc;
+use scaii_defs::protos::{
+    cfg, scaii_packet, AgentEndpoint, BackendCfg, BackendEndpoint, Cfg, CoreEndpoint, GameComplete,
+    MultiMessage, RecorderConfig, RecorderEndpoint, ReplayEndpoint, ScaiiPacket,
+    SerializationResponse,
+};
+use scaii_defs::{Agent, Backend, Module};
 use std::cell::RefCell;
-use std::path::Path;
+use std::error::Error;
 use std::fs::File;
-use bincode::{deserialize_from, ErrorKind, Infinite};
 use std::io::BufReader;
+use std::path::Path;
+use std::rc::Rc;
 
 struct RecorderTesterMessageQueue {
     incoming_messages: Vec<protos::ScaiiPacket>,

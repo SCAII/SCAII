@@ -11,7 +11,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 env/
-!glue/python/scaii/env
+!**/glue/python/**
 build/
 develop-eggs/
 dist/

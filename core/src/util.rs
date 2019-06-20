@@ -1,8 +1,8 @@
-use std::process::Command;
 use std::env;
-use std::fmt;
 use std::error::Error;
+use std::fmt;
 use std::path::PathBuf;
+use std::process::Command;
 
 #[derive(Debug)]
 pub struct ScaiiError {

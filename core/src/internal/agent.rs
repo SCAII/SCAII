@@ -1,5 +1,5 @@
-use scaii_defs::{Agent, Module};
 use scaii_defs::protos::{MultiMessage, ScaiiPacket};
+use scaii_defs::{Agent, Module};
 
 use std::error::Error;
 

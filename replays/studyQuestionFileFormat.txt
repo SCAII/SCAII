@@ -1,0 +1,47 @@
+Question filename has format:
+
+assuming the replay file has the name "replayXYZ.scr", the system will look for a file that starts with "replayXYZ_questions_" and then parse that name as follows:
+
+<replayFilenameRoot>_questions_<studyParticipantId>_<treatmentNumber>.txt
+
+For example, 
+
+replayXYZ_questions_user1_2.txt    for user1 doing treatment 2   
+
+valid treatments are 0,1,2,3
+
+
+
+
+
+Question format specification
+
+fields separated by semicolon ";"
+
+field 0 -  the step number of the decision point as determined by examining the replay in the UI
+
+field 1 -  multiple questions can be asked at a step.  This field is the index number of the question in that list of questions for this step
+
+field 2 - this field has three subfields, separated by colon ":"
+		    subfield 0 -   question type - can be "waitForClick"  or "plain" 
+			
+			subfield 1 -   names of the areas that are ok to click on in this question
+					the legal value of this is one or more of these value -  gameboard  rewardBar  saliencyMap
+					if multiple, they are selarated by underscores "_"  like this - gameboard_rewardBar_saliencyMap
+					
+					if the value of subfield 0 is "plain", subfield 1 must be "NA"
+					
+		    subfield 2 -   text telling the user what to click on
+					if the value of subfield 0 is "plain", subfield 2 must be "NA"
+	
+		
+field 3 - text for the question that is being asked at this screen
+
+
+example content:
+1;0;waitForClick:gameboard:Please click on the most important entity in the gameboard above.  Then answer the question below.;What is your favorite color?
+31;0;waitForClick:gameboard_rewardBar_saliencyMap:Please click on the most important entity in the gameboard above or the other two places. Then answer the question below.;What is your favorite car?;honda;chevy;toyota;tesla
+63;0;plain:NA:NA;How did this happen?;not sure;it's too obvious to tell
+summary;0;plain:NA:NA;what is your mental model?
+summary;1;plain:NA:NA;what is it now?
+

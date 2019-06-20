@@ -1,14 +1,16 @@
 use prost::Message;
-use scaii_defs;
-use protos::{cfg, scaii_packet, BackendCfg, BackendEndpoint, Cfg, Entity, ModuleEndpoint,
-             MultiMessage, RecorderConfig, RecorderEndpoint, ReplayEndpoint, ScaiiPacket, Viz,
-             VizInit};
 use protos::endpoint::Endpoint;
-use scaii_core::{ActionWrapper, ReplayAction, ReplayHeader, SerializationInfo,
-                 SerializedProtosEndpoint, SerializedProtosScaiiPacket,
-                 SerializedProtosSerializationResponse};
-use scaii_defs::protos;
 use protos::scaii_packet::SpecificMsg;
+use protos::{
+    cfg, scaii_packet, BackendCfg, BackendEndpoint, Cfg, Entity, ModuleEndpoint, MultiMessage,
+    RecorderConfig, RecorderEndpoint, ReplayEndpoint, ScaiiPacket, Viz, VizInit,
+};
+use scaii_core::{
+    ActionWrapper, ReplayAction, ReplayHeader, SerializationInfo, SerializedProtosEndpoint,
+    SerializedProtosScaiiPacket, SerializedProtosSerializationResponse,
+};
+use scaii_defs;
+use scaii_defs::protos;
 use scaii_defs::{Backend, Module};
 use std::error::Error;
 
@@ -90,6 +92,7 @@ impl Module for MockRts {
                 explanation_steps: _,
                 explanation_titles: _,
                 chart_titles: _,
+                suppress_interactivity: false,
             })) => {
                 println!("got replaySessionConfig");
                 self.step_count = steps as u32;
@@ -272,29 +275,31 @@ pub fn create_triangle_entity_at(x: &f64, y: &f64, orient: &f64) -> Entity {
             x: Some(*x),
             y: Some(*y),
         }),
-        shapes: vec![
-            protos::Shape {
-                id: 0,
-                relative_pos: Some(protos::Pos {
-                    x: Some(0.0),
-                    y: Some(0.0),
-                }),
-                color: Some(protos::Color {
-                    r: 0,
-                    b: 0,
-                    g: 255,
-                    a: 255,
-                }),
-                rotation: *orient,
-                rect: None,
-                triangle: Some(protos::Triangle {
-                    base_len: Some(10.0),
-                }),
-                delete: false,
-                tag: None,
-                gradient_color: None,
-            },
-        ],
+        shapes: vec![protos::Shape {
+            id: 0,
+            relative_pos: Some(protos::Pos {
+                x: Some(0.0),
+                y: Some(0.0),
+            }),
+            color: Some(protos::Color {
+                r: 0,
+                b: 0,
+                g: 255,
+                a: 255,
+            }),
+            rotation: *orient,
+            rect: None,
+            arrow: None,
+            circle: None,
+            kite: None,
+            octagon: None,
+            triangle: Some(protos::Triangle {
+                base_len: Some(10.0),
+            }),
+            delete: false,
+            tag: None,
+            gradient_color: None,
+        }],
         delete: false,
         ..Entity::default()
     }
@@ -307,30 +312,32 @@ pub fn create_rectangle_entity_at(x: &f64, y: &f64, orient: &f64) -> Entity {
             x: Some(*x),
             y: Some(*y),
         }),
-        shapes: vec![
-            protos::Shape {
-                id: 0,
-                relative_pos: Some(protos::Pos {
-                    x: Some(0.0),
-                    y: Some(0.0),
-                }),
-                color: Some(protos::Color {
-                    r: 0,
-                    b: 0,
-                    g: 255,
-                    a: 255,
-                }),
-                rotation: *orient,
-                rect: Some(protos::Rect {
-                    width: Some(10.0),
-                    height: Some(10.0),
-                }),
-                triangle: None,
-                delete: false,
-                tag: None,
-                gradient_color: None,
-            },
-        ],
+        shapes: vec![protos::Shape {
+            id: 0,
+            relative_pos: Some(protos::Pos {
+                x: Some(0.0),
+                y: Some(0.0),
+            }),
+            color: Some(protos::Color {
+                r: 0,
+                b: 0,
+                g: 255,
+                a: 255,
+            }),
+            rotation: *orient,
+            rect: Some(protos::Rect {
+                width: Some(10.0),
+                height: Some(10.0),
+            }),
+            triangle: None,
+            arrow: None,
+            circle: None,
+            kite: None,
+            octagon: None,
+            delete: false,
+            tag: None,
+            gradient_color: None,
+        }],
         delete: false,
         ..Entity::default()
     }
@@ -393,6 +400,7 @@ fn create_cfg_pkt(step_count: u32) -> ScaiiPacket {
                 explanation_steps: explanation_steps,
                 explanation_titles: expl_titles,
                 chart_titles: chart_titles,
+                suppress_interactivity: false,
             },
         )),
     };

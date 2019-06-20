@@ -1,0 +1,689 @@
+date,time,secSince1970,decisionPoint,questionId,userAction,combinedReward,detailedReward,combinedAdvantage,detailedAdvantage,combinedSaliency,detailedSaliency,
+tutorial.scr,9-19-2018,15:42:1:478,1537396921479,undefined,undefined,stepIntoDecisionPoint:1,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:1:480,1537396921480,1,undefined,showQuestion:1.1,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:1:486,1537396921486,1,1.1,region:waitScreen;target:enter-welcome-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:3:430,1537396923430,1,1.1,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:3:650,1537396923650,1,1.1,stepIntoDecisionPoint:1,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:9:559,1537396929559,1,1.1,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:9:691,1537396929691,1,1.1,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:9:692,1537396929692,1,1.1,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--FriendEnemy;startMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:9:891,1537396929891,1,1.1,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--FriendEnemy;endMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:12:781,1537396932781,1,1.1,userClick:1277_348;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q4.Friend Destroyed,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:13:742,1537396933742,1,1.1,userClick:242_647;region:QnA;NA;NA,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:24:828,1537396944828,1,1.1,showQuestion:1.2,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:24:831,1537396944831,1,1.2,userClick:290_701;region:QnA;target:button-save;answerQuestion:1.1_"somthingESCAPED-NEWLINE"_NA_(tutorial.scr,9-19-2018,15:42:12:781,1537396932781,1,1.1,userClick:1277_348;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q4.Friend Destroyed,false,false,false,false,false,false),false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:25:843,1537396945843,1,1.2,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:26:23,1537396946023,1,1.2,showEntityTooltip:friendly-Tank_lowerRightQuadrant,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:26:123,1537396946123,1,1.2,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:26:350,1537396946350,1,1.2,showEntityTooltip:friendly-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:26:660,1537396946660,1,1.2,userClick:388_135;region:gameArea;target:gameboard;clickEntity:friendly-Big Fort_upperLeftQuadrant_73_71,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:26:839,1537396946839,1,1.2,showEntityTooltip:friendly-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:26:924,1537396946924,1,1.2,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:27:581,1537396947581,1,1.2,userClick:250_653;region:QnA;NA;NA,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:31:971,1537396951971,1,1.2,userClick:300_703;region:QnA;target:button-save;answerQuestion:1.2_"white"_NA_(tutorial.scr,9-19-2018,15:42:26:660,1537396946660,1,1.2,userClick:388_135;region:gameArea;target:gameboard;clickEntity:friendly-Big Fort_upperLeftQuadrant_73_71,false,false,false,false,false,false),false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:31:991,1537396951991,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--HP;startMouseOverSaliencyMap:HP,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:32:675,1537396952675,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--HP;endMouseOverSaliencyMap:HP,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:33:806,1537396953806,1,1.2,userClick:430_340;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:36:863,1537396956863,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:36:890,1537396956890,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--Tank;endMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:36:890,1537396956890,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:36:908,1537396956908,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:36:908,1537396956908,1,1.2,region:saliencyMap;target:saliencyMap--DP1-4_FriendDestroyed--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:36:923,1537396956923,1,1.2,region:saliencyMap;target:saliencyMap--DP1-4_FriendDestroyed--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:36:923,1537396956923,1,1.2,region:saliencyMap;target:saliencyMap--DP1-4_FriendDestroyed--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:36:928,1537396956928,1,1.2,region:saliencyMap;target:saliencyMap--DP1-4_FriendDestroyed--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:39:61,1537396959061,1,1.2,region:saliencyMap;target:saliencyMap--DP1-4_FriendDestroyed--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:39:69,1537396959069,1,1.2,region:saliencyMap;target:saliencyMap--DP1-4_FriendDestroyed--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:50:537,1537396970537,1,1.2,showQuestion:75.0,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:50:540,1537396970540,1,75.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:50:773,1537396970773,1,75.0,stepIntoDecisionPoint:75,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:54:429,1537396974429,75,75.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:56:74,1537396976074,75,75.0,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:56:107,1537396976107,75,75.0,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:56:107,1537396976107,75,75.0,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--FriendEnemy;startMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:56:943,1537396976943,75,75.0,userClick:1301_876;region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--FriendEnemy;clickSaliencyMap:Friend/Enemy_(friendly-Tank_upperRightQuadrant),false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:56:966,1537396976966,75,75.0,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--FriendEnemy;endMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:57:675,1537396977675,75,75.0,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:42:57:758,1537396977758,75,75.0,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:1:837,1537396981837,75,75.0,userClick:271_645;region:QnA;NA;NA,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:24:892,1537397004892,75,75.0,showQuestion:75.1,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:24:894,1537397004894,75,75.1,userClick:285_698;region:QnA;target:button-save;answerQuestion:75.0_"aESCAPED-COMMAb(cESCAPED-UNDERSCOREdESCAPED-SEMICOLONf.g"_NA_(tutorial.scr,9-19-2018,15:42:56:943,1537396976943,75,75.0,userClick:1301_876;region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--FriendEnemy;clickSaliencyMap:Friend/Enemy_(friendly-Tank_upperRightQuadrant),false,false,false,false,false,false),false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:27:391,1537397007391,75,75.1,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:27:590,1537397007590,75,75.1,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:27:917,1537397007917,75,75.1,userClick:396_260;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_lowerLeftQuadrant_80_196,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:28:494,1537397008494,75,75.1,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:29:253,1537397009253,75,75.1,userClick:162_603;region:QnA;NA;NA,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:31:587,1537397011587,75,75.1,showQuestion:75.2,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:31:590,1537397011590,75,75.2,userClick:301_658;region:QnA;target:button-save;answerQuestion:75.1_"6554"_NA_(NA),false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:33:41,1537397013041,75,75.2,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:33:358,1537397013358,75,75.2,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:33:391,1537397013391,75,75.2,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:33:893,1537397013893,75,75.2,userClick:407_280;region:gameArea;target:gameboardBackground;clickGameQuadrant:lowerLeftQuadrant,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:34:159,1537397014159,75,75.2,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:35:931,1537397015931,75,75.2,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:35:957,1537397015957,75,75.2,hideEntityTooltips:all,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:36:91,1537397016091,75,75.2,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:36:322,1537397016322,75,75.2,userClick:385_276;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_lowerLeftQuadrant_69_212,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:36:658,1537397016658,75,75.2,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:37:309,1537397017309,75,75.2,userClick:207_662;region:QnA;NA;NA,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:40:974,1537397020974,75,75.2,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--HP;startMouseOverSaliencyMap:HP,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:41:174,1537397021174,75,75.2,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--HP;endMouseOverSaliencyMap:HP,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:42:19,1537397022019,75,75.2,showQuestion:75.3,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:42:21,1537397022021,75,75.3,userClick:302_567;region:QnA;target:button-save;answerQuestion:75.2_"80000"_NA_(tutorial.scr,9-19-2018,15:43:36:322,1537397016322,75,75.2,userClick:385_276;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_lowerLeftQuadrant_69_212,false,false,false,false,false,false),false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:42:509,1537397022509,75,75.3,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:42:573,1537397022573,75,75.3,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:43:757,1537397023757,75,75.3,userClick:362_607;region:QnA;NA;NA,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:45:360,1537397025360,75,75.3,userClick:303_648;region:QnA;target:button-save;answerQuestion:75.3_"2"_NA_(NA),false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:46:414,1537397026414,75,75.3,userClick:426_337;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:57:435,1537397037435,75,75.3,showQuestion:124.0,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:57:437,1537397037437,75,124.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:57:665,1537397037665,75,124.0,stepIntoDecisionPoint:124,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:43:59:309,1537397039309,124,124.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:44:0:957,1537397040957,124,124.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:44:4:139,1537397044139,124,124.0,showQuestion:124.1,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:44:4:141,1537397044141,124,124.1,userClick:332_652;region:QnA;target:button-save;answerQuestion:124.0_"56657"_NA_(NA),false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:44:5:455,1537397045455,124,124.1,userClick:278_588;region:QnA;NA;NA,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:44:6:295,1537397046295,124,124.1,userClick:320_660;region:QnA;target:button-save;answerQuestion:124.1_"56"_NA_(NA),false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:44:7:501,1537397047501,124,124.1,userClick:428_338;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:44:10:883,1537397050883,124,124.1,userClick:532_410;region:gameArea;target:expl-control-canvas;timelineClick:182,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:44:11:996,1537397051996,124,124.1,userClick:417_320;region:gameArea;NA;NA,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:44:12:453,1537397052453,124,124.1,userClick:427_342;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:44:14:753,1537397054753,124,124.1,showQuestion:summary.0,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:44:16:837,1537397056837,124,summary.0,userClick:166_607;region:QnA;NA;NA,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:44:19:746,1537397059746,124,summary.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:44:19:747,1537397059747,124,summary.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+tutorial.scr,9-19-2018,15:44:22:212,1537397062212,124,summary.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task1.scr,9-19-2018,15:44:24:950,1537397064950,124,summary.0,stepIntoDecisionPoint:1,false,false,false,false,false,false
+task1.scr,9-19-2018,15:44:24:950,1537397064950,1,summary.0,showQuestion:1.0,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:8:974,1537397408974,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:9:40,1537397409040,1,1.0,showEntityTooltip:friendly-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:9:58,1537397409058,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:9:408,1537397409408,1,1.0,showEntityTooltip:friendly-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:10:157,1537397410157,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:10:224,1537397410224,1,1.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:10:342,1537397410342,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:10:823,1537397410823,1,1.0,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:11:375,1537397411375,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:11:742,1537397411742,1,1.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:12:2,1537397412002,1,1.0,userClick:398_147;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_83_83,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:12:247,1537397412247,1,1.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:12:308,1537397412308,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:13:310,1537397413310,1,1.0,userClick:262_683;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:14:981,1537397414981,1,1.0,userClick:290_750;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:15:965,1537397415965,1,1.0,showQuestion:1.1,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:15:967,1537397415967,1,1.1,userClick:302_736;region:QnA;target:button-save;answerQuestion:1.0_"yyyy"_NA_(task1.scr,9-19-2018,15:50:12:2,1537397412002,1,1.0,userClick:398_147;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_83_83,false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:40:8,1537397440008,1,1.1,userClick:1097_330;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q3.Friend Destroyed,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:41:230,1537397441230,1,1.1,userClick:432_671;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:42:931,1537397442931,1,1.1,showQuestion:1.2,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:42:934,1537397442934,1,1.2,userClick:320_742;region:QnA;target:button-save;answerQuestion:1.1_"ddsfds"_NA_(task1.scr,9-19-2018,15:50:40:8,1537397440008,1,1.1,userClick:1097_330;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q3.Friend Destroyed,false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:44:860,1537397444860,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:45:92,1537397445092,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:45:92,1537397445092,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:45:542,1537397445542,1,1.2,userClick:842_911;region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--Size;clickSaliencyMap:Size_(NA_upperRightQuadrant),false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:45:564,1537397445564,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:46:8,1537397446008,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:46:75,1537397446075,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--Tank;endMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:46:662,1537397446662,1,1.2,userClick:213_662;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:48:397,1537397448397,1,1.2,showQuestion:1.3,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:48:401,1537397448401,1,1.3,userClick:308_735;region:QnA;target:button-save;answerQuestion:1.2_"dsdsfdsfds"_NA_(task1.scr,9-19-2018,15:50:45:542,1537397445542,1,1.2,userClick:842_911;region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--Size;clickSaliencyMap:Size_(NA_upperRightQuadrant),false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:49:357,1537397449357,1,1.3,userClick:233_605;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:50:54:230,1537397454230,1,1.3,userClick:201_690;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:8:661,1537397468661,1,1.3,userClick:168_710;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:30:647,1537397490647,1,1.3,userClick:301_762;region:QnA;target:button-save;answerQuestion:1.3_"yESCAPED-NEWLINEyESCAPED-NEWLINEy"_"zzz"_(NA),false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:30:670,1537397490670,1,1.3,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--HP;startMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:32:7,1537397492007,1,1.3,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--HP;endMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:32:8,1537397492008,1,1.3,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:32:58,1537397492058,1,1.3,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--Tank;endMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:32:91,1537397492091,1,1.3,region:saliencyMap;target:saliencyMap--DP1-4_FriendDestroyed--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:32:286,1537397492286,1,1.3,region:saliencyMap;target:saliencyMap--DP1-4_FriendDestroyed--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:32:967,1537397492967,1,1.3,region:saliencyMap;target:saliencyMap--DP1-4_FriendDestroyed--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:33:23,1537397493023,1,1.3,region:saliencyMap;target:saliencyMap--DP1-4_FriendDestroyed--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:33:23,1537397493023,1,1.3,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:33:90,1537397493090,1,1.3,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:34:174,1537397494174,1,1.3,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:36:126,1537397496126,1,1.3,userClick:433_341;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:39:741,1537397499741,1,1.3,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:39:775,1537397499775,1,1.3,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:39:775,1537397499775,1,1.3,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--FriendEnemy;startMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:39:792,1537397499792,1,1.3,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--FriendEnemy;endMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:39:792,1537397499792,1,1.3,region:saliencyMap;target:saliencyMap--DP1-4_FriendDestroyed--FriendEnemy;startMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:39:973,1537397499973,1,1.3,region:saliencyMap;target:saliencyMap--DP1-4_FriendDestroyed--FriendEnemy;endMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:41:173,1537397501173,1,1.3,region:saliencyMap;target:saliencyMap--DP1-4_FriendDestroyed--FriendEnemy;startMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:41:207,1537397501207,1,1.3,region:saliencyMap;target:saliencyMap--DP1-4_FriendDestroyed--FriendEnemy;endMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:41:208,1537397501208,1,1.3,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--FriendEnemy;startMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:41:241,1537397501241,1,1.3,region:saliencyMap;target:saliencyMap--DP1-2_FriendDestroyed--FriendEnemy;endMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:49:361,1537397509361,1,1.3,showQuestion:61.0,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:49:366,1537397509366,1,61.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task1.scr,9-19-2018,15:51:49:606,1537397509606,1,61.0,stepIntoDecisionPoint:61,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:25:780,1537397785780,61,61.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:31:607,1537397791607,61,61.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:31:975,1537397791975,61,61.0,showEntityTooltip:friendly-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:32:230,1537397792230,61,61.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:32:813,1537397792813,61,61.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:33:186,1537397793186,61,61.0,userClick:507_253;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_lowerRightQuadrant_191_189,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:33:431,1537397793431,61,61.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:33:475,1537397793475,61,61.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:34:61,1537397794061,61,61.0,userClick:340_718;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:36:103,1537397796103,61,61.0,showQuestion:61.1,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:36:105,1537397796105,61,61.1,userClick:297_753;region:QnA;target:button-save;answerQuestion:61.0_"dsfdsfdf"_NA_(task1.scr,9-19-2018,15:56:33:186,1537397793186,61,61.0,userClick:507_253;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_lowerRightQuadrant_191_189,false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:40:409,1537397800409,61,61.1,userClick:1057_296;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q3.Enemy Damaged,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:41:573,1537397801573,61,61.1,userClick:196_701;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:46:490,1537397806490,61,61.1,showQuestion:61.2,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:46:493,1537397806493,61,61.2,userClick:295_733;region:QnA;target:button-save;answerQuestion:61.1_"tttt"_NA_(task1.scr,9-19-2018,15:56:40:409,1537397800409,61,61.1,userClick:1057_296;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q3.Enemy Damaged,false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:47:891,1537397807891,61,61.2,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDamaged--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:47:924,1537397807924,61,61.2,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDamaged--Tank;endMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:47:924,1537397807924,61,61.2,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDamaged--HP;startMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:48:197,1537397808197,61,61.2,userClick:368_876;region:saliencyMap;target:saliencyMap--DP2-2_EnemyDamaged--HP;clickSaliencyMap:HP_(NA_upperRightQuadrant),false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:48:219,1537397808219,61,61.2,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDamaged--HP;endMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:49:173,1537397809173,61,61.2,userClick:291_666;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:50:531,1537397810531,61,61.2,showQuestion:61.3,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:50:533,1537397810533,61,61.3,userClick:298_730;region:QnA;target:button-save;answerQuestion:61.2_"dsfdsfdsf"_NA_(task1.scr,9-19-2018,15:56:48:197,1537397808197,61,61.2,userClick:368_876;region:saliencyMap;target:saliencyMap--DP2-2_EnemyDamaged--HP;clickSaliencyMap:HP_(NA_upperRightQuadrant),false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:51:517,1537397811517,61,61.3,userClick:170_610;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:55:573,1537397815573,61,61.3,userClick:166_696;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:56:855,1537397816855,61,61.3,userClick:310_757;region:QnA;target:button-save;answerQuestion:61.3_"qqq"_"www"_(NA),false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:56:878,1537397816878,61,61.3,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDamaged--HP;startMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:57:291,1537397817291,61,61.3,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDamaged--HP;endMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task1.scr,9-19-2018,15:56:58:357,1537397818357,61,61.3,userClick:425_337;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:2:846,1537397822846,61,61.3,showQuestion:82.0,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:2:849,1537397822849,61,82.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:3:88,1537397823088,61,82.0,stepIntoDecisionPoint:82,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:5:20,1537397825020,82,82.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:36:608,1537397856608,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:36:790,1537397856790,82,82.0,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:37:108,1537397857108,82,82.0,showEntityTooltip:friendly-Town_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:37:493,1537397857493,82,82.0,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:38:570,1537397858570,82,82.0,userClick:506_147;region:gameArea;target:gameboard;clickEntity:enemy-Tank_upperRightQuadrant_190_83,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:39:58,1537397859058,82,82.0,showEntityTooltip:enemy-Tank_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:39:91,1537397859091,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:40:93,1537397860093,82,82.0,userClick:231_715;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:42:653,1537397862653,82,82.0,showQuestion:82.1,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:42:655,1537397862655,82,82.1,userClick:292_763;region:QnA;target:button-save;answerQuestion:82.0_"dsfdsds"_NA_(task1.scr,9-19-2018,15:57:38:570,1537397858570,82,82.0,userClick:506_147;region:gameArea;target:gameboard;clickEntity:enemy-Tank_upperRightQuadrant_190_83,false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:47:867,1537397867867,82,82.1,userClick:703_307;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q1.Enemy Damaged,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:48:870,1537397868870,82,82.1,userClick:248_700;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:50:571,1537397870572,82,82.1,showQuestion:82.2,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:50:574,1537397870574,82,82.2,userClick:306_736;region:QnA;target:button-save;answerQuestion:82.1_"sdfdsdsf"_NA_(task1.scr,9-19-2018,15:57:47:867,1537397867867,82,82.1,userClick:703_307;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q1.Enemy Damaged,false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:53:359,1537397873359,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--HP;startMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:53:424,1537397873424,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--HP;endMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:53:424,1537397873424,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:53:474,1537397873474,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--Tank;endMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:53:474,1537397873474,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:53:510,1537397873510,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:53:510,1537397873510,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:53:643,1537397873643,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:53:643,1537397873643,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--FriendEnemy;startMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:53:990,1537397873990,82,82.2,userClick:1271_896;region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--FriendEnemy;clickSaliencyMap:Friend/Enemy_(NA_upperLeftQuadrant),false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:54:13,1537397874013,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--FriendEnemy;endMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:54:459,1537397874459,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:54:508,1537397874508,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:54:508,1537397874508,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:54:576,1537397874576,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:54:576,1537397874576,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:54:609,1537397874609,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--Tank;endMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:55:213,1537397875213,82,82.2,userClick:192_671;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:58:260,1537397878260,82,82.2,showQuestion:82.3,false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:58:263,1537397878263,82,82.3,userClick:315_733;region:QnA;target:button-save;answerQuestion:82.2_"tttttt"_NA_(task1.scr,9-19-2018,15:57:53:990,1537397873990,82,82.2,userClick:1271_896;region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--FriendEnemy;clickSaliencyMap:Friend/Enemy_(NA_upperLeftQuadrant),false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-19-2018,15:57:59:237,1537397879237,82,82.3,userClick:211_618;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:58:1:38,1537397881038,82,82.3,userClick:187_705;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:58:2:32,1537397882032,82,82.3,userClick:315_756;region:QnA;target:button-save;answerQuestion:82.3_"dsdsf"_"sdfdsfdsf"_(NA),false,false,false,false,false,false
+task1.scr,9-19-2018,15:58:2:46,1537397882046,82,82.3,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--HP;startMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task1.scr,9-19-2018,15:58:2:492,1537397882492,82,82.3,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--HP;endMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task1.scr,9-19-2018,15:58:3:278,1537397883278,82,82.3,userClick:423_346;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:58:10:186,1537397890186,82,82.3,showQuestion:114.0,false,false,false,false,false,false
+task1.scr,9-19-2018,15:58:10:190,1537397890190,82,114.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task1.scr,9-19-2018,15:58:10:416,1537397890416,82,114.0,stepIntoDecisionPoint:114,false,false,false,false,false,false
+task1.scr,9-19-2018,15:58:12:461,1537397892461,114,114.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task1.scr,9-19-2018,15:58:53:90,1537397933091,114,114.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-19-2018,15:58:53:157,1537397933157,114,114.0,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-19-2018,15:58:53:292,1537397933292,114,114.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-19-2018,15:58:53:493,1537397933493,114,114.0,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-19-2018,15:58:53:755,1537397933755,114,114.0,userClick:520_140;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_upperRightQuadrant_204_76,false,false,false,false,false,false
+task1.scr,9-19-2018,15:58:53:918,1537397933918,114,114.0,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task1.scr,9-19-2018,15:58:53:957,1537397933957,114,114.0,hideEntityTooltips:all,false,false,false,false,false,false
+task1.scr,9-19-2018,15:58:54:965,1537397934965,114,114.0,userClick:243_708;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:58:56:768,1537397936768,114,114.0,showQuestion:114.1,false,false,false,false,false,false
+task1.scr,9-19-2018,15:58:56:770,1537397936770,114,114.1,userClick:290_756;region:QnA;target:button-save;answerQuestion:114.0_"yyyy"_NA_(task1.scr,9-19-2018,15:58:53:755,1537397933755,114,114.0,userClick:520_140;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_upperRightQuadrant_204_76,false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:0:846,1537397940846,114,114.1,userClick:1231_296;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q4.Enemy Damaged,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:2:190,1537397942190,114,114.1,userClick:292_683;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:3:907,1537397943907,114,114.1,showQuestion:114.2,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:3:909,1537397943909,114,114.2,userClick:311_730;region:QnA;target:button-save;answerQuestion:114.1_"qwwqqew"_NA_(task1.scr,9-19-2018,15:59:0:846,1537397940846,114,114.1,userClick:1231_296;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q4.Enemy Damaged,false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:5:392,1537397945392,114,114.2,region:saliencyMap;target:saliencyMap--DP4-2_EnemyDamaged--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:5:493,1537397945493,114,114.2,region:saliencyMap;target:saliencyMap--DP4-2_EnemyDamaged--Tank;endMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:5:493,1537397945493,114,114.2,region:saliencyMap;target:saliencyMap--DP4-2_EnemyDamaged--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:5:559,1537397945559,114,114.2,region:saliencyMap;target:saliencyMap--DP4-2_EnemyDamaged--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:5:559,1537397945559,114,114.2,region:saliencyMap;target:saliencyMap--DP4-2_EnemyDamaged--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:5:759,1537397945759,114,114.2,region:saliencyMap;target:saliencyMap--DP4-2_EnemyDamaged--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:5:759,1537397945759,114,114.2,region:saliencyMap;target:saliencyMap--DP4-2_EnemyDamaged--FriendEnemy;startMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:6:358,1537397946358,114,114.2,region:saliencyMap;target:saliencyMap--DP4-2_EnemyDamaged--FriendEnemy;endMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:6:358,1537397946358,114,114.2,region:saliencyMap;target:saliencyMap--DP4-2_EnemyDamaged--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:6:702,1537397946702,114,114.2,userClick:1023_925;region:saliencyMap;target:saliencyMap--DP4-2_EnemyDamaged--CityFort;clickSaliencyMap:City/Fort_(NA_upperLeftQuadrant),false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:6:725,1537397946725,114,114.2,region:saliencyMap;target:saliencyMap--DP4-2_EnemyDamaged--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:6:991,1537397946991,114,114.2,region:saliencyMap;target:saliencyMap--DP4-2_EnemyDamaged--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:7:43,1537397947043,114,114.2,region:saliencyMap;target:saliencyMap--DP4-2_EnemyDamaged--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:7:43,1537397947043,114,114.2,region:saliencyMap;target:saliencyMap--DP4-2_EnemyDamaged--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:7:109,1537397947109,114,114.2,region:saliencyMap;target:saliencyMap--DP4-2_EnemyDamaged--Tank;endMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:7:541,1537397947541,114,114.2,userClick:170_683;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:9:277,1537397949277,114,114.2,showQuestion:114.3,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:9:279,1537397949279,114,114.3,userClick:316_737;region:QnA;target:button-save;answerQuestion:114.2_"wqewqewqwqe"_NA_(task1.scr,9-19-2018,15:59:6:702,1537397946702,114,114.2,userClick:1023_925;region:saliencyMap;target:saliencyMap--DP4-2_EnemyDamaged--CityFort;clickSaliencyMap:City/Fort_(NA_upperLeftQuadrant),false,false,false,false,false,false),false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:10:94,1537397950094,114,114.3,userClick:196_610;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:11:797,1537397951797,114,114.3,userClick:190_711;region:QnA;NA;NA,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:12:817,1537397952817,114,114.3,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:12:820,1537397952820,114,114.3,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task1.scr,9-19-2018,15:59:14:908,1537397954908,114,114.3,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:18:97,1537397958097,114,114.3,stepIntoDecisionPoint:1,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:18:99,1537397958099,1,114.3,showQuestion:1.0,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:18:791,1537397958791,1,1.0,showEntityTooltip:friendly-Tank_lowerRightQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:19:64,1537397959064,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:22:542,1537397962542,1,1.0,showEntityTooltip:friendly-Tank_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:22:693,1537397962693,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:23:25,1537397963025,1,1.0,showEntityTooltip:friendly-Town_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:23:59,1537397963059,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:23:476,1537397963476,1,1.0,showEntityTooltip:friendly-Town_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:23:509,1537397963509,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:24:77,1537397964077,1,1.0,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:24:346,1537397964346,1,1.0,userClick:525_141;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_upperRightQuadrant_209_77,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:24:486,1537397964486,1,1.0,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:24:542,1537397964542,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:25:581,1537397965581,1,1.0,userClick:267_730;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:28:935,1537397968935,1,1.0,showQuestion:1.1,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:28:938,1537397968938,1,1.1,userClick:306_758;region:QnA;target:button-save;answerQuestion:1.0_"rttr"_NA_(task2.scr,9-19-2018,15:59:24:346,1537397964346,1,1.0,userClick:525_141;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_upperRightQuadrant_209_77,false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:35:403,1537397975403,1,1.1,userClick:900_277;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q2.Enemy Destroyed,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:36:366,1537397976366,1,1.1,userClick:275_700;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:37:890,1537397977890,1,1.1,showQuestion:1.2,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:37:894,1537397977894,1,1.2,userClick:295_736;region:QnA;target:button-save;answerQuestion:1.1_"aaaa"_NA_(task2.scr,9-19-2018,15:59:35:403,1537397975403,1,1.1,userClick:900_277;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q2.Enemy Destroyed,false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:41:575,1537397981576,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:41:592,1537397981592,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:41:592,1537397981592,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--FriendEnemy;startMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:41:626,1537397981626,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--FriendEnemy;endMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:41:741,1537397981741,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--FriendEnemy;startMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:41:826,1537397981826,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--FriendEnemy;endMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:41:826,1537397981826,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:43:410,1537397983410,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:43:410,1537397983410,1,1.2,region:saliencyMap;target:saliencyMap--DP1-3_EnemyDestroyed--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:43:894,1537397983894,1,1.2,region:saliencyMap;target:saliencyMap--DP1-3_EnemyDestroyed--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:43:894,1537397983894,1,1.2,region:saliencyMap;target:saliencyMap--DP1-1_EnemyDestroyed--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:44:294,1537397984294,1,1.2,region:saliencyMap;target:saliencyMap--DP1-1_EnemyDestroyed--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:44:294,1537397984294,1,1.2,region:saliencyMap;target:saliencyMap--DP1-1_EnemyDestroyed--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:44:614,1537397984614,1,1.2,userClick:826_975;region:saliencyMap;target:saliencyMap--DP1-1_EnemyDestroyed--Size;clickSaliencyMap:Size_(NA_upperRightQuadrant),false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:44:636,1537397984636,1,1.2,region:saliencyMap;target:saliencyMap--DP1-1_EnemyDestroyed--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:44:859,1537397984859,1,1.2,region:saliencyMap;target:saliencyMap--DP1-1_EnemyDestroyed--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:44:892,1537397984892,1,1.2,region:saliencyMap;target:saliencyMap--DP1-1_EnemyDestroyed--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:44:894,1537397984894,1,1.2,region:saliencyMap;target:saliencyMap--DP1-1_EnemyDestroyed--FriendEnemy;startMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:44:909,1537397984909,1,1.2,region:saliencyMap;target:saliencyMap--DP1-1_EnemyDestroyed--FriendEnemy;endMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:46:549,1537397986549,1,1.2,userClick:392_675;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:48:706,1537397988706,1,1.2,showQuestion:1.3,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:48:709,1537397988709,1,1.3,userClick:311_731;region:QnA;target:button-save;answerQuestion:1.2_"rttr"_NA_(task2.scr,9-19-2018,15:59:44:614,1537397984614,1,1.2,userClick:826_975;region:saliencyMap;target:saliencyMap--DP1-1_EnemyDestroyed--Size;clickSaliencyMap:Size_(NA_upperRightQuadrant),false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:49:702,1537397989702,1,1.3,userClick:336_633;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:51:45,1537397991045,1,1.3,userClick:345_708;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:52:64,1537397992064,1,1.3,userClick:295_767;region:QnA;target:button-save;answerQuestion:1.3_"iii"_"ooo"_(NA),false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:52:86,1537397992086,1,1.3,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--HP;startMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:52:376,1537397992376,1,1.3,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--HP;endMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:53:165,1537397993165,1,1.3,userClick:426_338;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:54:802,1537397994802,1,1.3,userClick:203_406;region:gameArea;target:expl-control-canvas;timelineClick:48,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:55:975,1537397995975,1,1.3,userClick:427_332;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:58:120,1537397998120,1,1.3,showQuestion:59.0,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:58:123,1537397998123,1,59.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task2.scr,9-19-2018,15:59:58:363,1537397998363,1,59.0,stepIntoDecisionPoint:59,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:0:213,1537398000213,59,59.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:2:660,1537398002660,59,59.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:3:599,1537398003599,59,59.0,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:3:909,1537398003909,59,59.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:4:259,1537398004259,59,59.0,showEntityTooltip:enemy-Small Fort_lowerRightQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:4:459,1537398004459,59,59.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:4:609,1537398004609,59,59.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:5:191,1537398005191,59,59.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:5:242,1537398005242,59,59.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:5:275,1537398005275,59,59.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:5:509,1537398005509,59,59.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:5:762,1537398005762,59,59.0,userClick:396_135;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_80_71,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:5:927,1537398005927,59,59.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:5:992,1537398005992,59,59.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:6:26,1537398006026,59,59.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:6:43,1537398006043,59,59.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:7:13,1537398007013,59,59.0,userClick:227_670;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:7:662,1537398007662,59,59.0,userClick:233_697;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:9:492,1537398009492,59,59.0,showQuestion:59.1,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:9:494,1537398009495,59,59.1,userClick:318_750;region:QnA;target:button-save;answerQuestion:59.0_"wwww"_NA_(task2.scr,9-19-2018,16:0:5:762,1537398005762,59,59.0,userClick:396_135;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_80_71,false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:16:69,1537398016069,59,59.1,userClick:717_150;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q1.Enemy Destroyed,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:16:965,1537398016965,59,59.1,userClick:291_691;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:18:739,1537398018739,59,59.1,showQuestion:59.2,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:18:742,1537398018742,59,59.2,userClick:320_736;region:QnA;target:button-save;answerQuestion:59.1_"dsdsdsf"_NA_(task2.scr,9-19-2018,16:0:16:69,1537398016069,59,59.1,userClick:717_150;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q1.Enemy Destroyed,false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:23:109,1537398023109,59,59.2,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:23:445,1537398023445,59,59.2,userClick:785_948;region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--Size;clickSaliencyMap:Size_(NA_lowerLeftQuadrant),false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:23:468,1537398023468,59,59.2,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:23:758,1537398023758,59,59.2,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:23:809,1537398023809,59,59.2,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--Tank;endMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:24:255,1537398024255,59,59.2,userClick:236_673;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:27:427,1537398027427,59,59.2,showQuestion:59.3,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:27:431,1537398027431,59,59.3,userClick:300_733;region:QnA;target:button-save;answerQuestion:59.2_"eeeESCAPED-NEWLINEoo"_NA_(task2.scr,9-19-2018,16:0:23:445,1537398023445,59,59.2,userClick:785_948;region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--Size;clickSaliencyMap:Size_(NA_lowerLeftQuadrant),false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:28:381,1537398028381,59,59.3,userClick:158_622;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:30:54,1537398030054,59,59.3,userClick:250_703;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:35:528,1537398035528,59,59.3,userClick:306_763;region:QnA;target:button-save;answerQuestion:59.3_"qqq"_"@#$%^&*()"_(NA),false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:35:549,1537398035549,59,59.3,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--HP;startMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:36:192,1537398036192,59,59.3,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--HP;endMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:37:349,1537398037349,59,59.3,userClick:427_343;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:42:385,1537398042385,59,59.3,showQuestion:82.0,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:42:388,1537398042388,59,82.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:42:624,1537398042624,59,82.0,stepIntoDecisionPoint:82,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:44:517,1537398044517,82,82.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:45:259,1537398045259,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:47:38,1537398047038,82,82.0,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:47:371,1537398047371,82,82.0,userClick:385_136;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_upperLeftQuadrant_69_72,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:47:463,1537398047463,82,82.0,showEntityTooltip:enemy-Small Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:47:508,1537398047508,82,82.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:47:593,1537398047593,82,82.0,showEntityTooltip:friendly-City_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:48:302,1537398048302,82,82.0,userClick:228_718;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:50:286,1537398050286,82,82.0,showQuestion:82.1,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:50:289,1537398050289,82,82.1,userClick:316_747;region:QnA;target:button-save;answerQuestion:82.0_"yyyy"_NA_(task2.scr,9-19-2018,16:0:47:371,1537398047371,82,82.0,userClick:385_136;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_upperLeftQuadrant_69_72,false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:53:653,1537398053653,82,82.1,userClick:1252_298;region:rewards;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:54:260,1537398054260,82,82.1,userClick:1243_300;region:rewards;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:57:91,1537398057091,82,82.1,userClick:1243_301;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q4.Enemy Destroyed,false,false,false,false,false,false
+task2.scr,9-19-2018,16:0:57:877,1537398057877,82,82.1,userClick:337_693;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:0:956,1537398060956,82,82.1,showQuestion:82.2,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:0:959,1537398060959,82,82.2,userClick:315_732;region:QnA;target:button-save;answerQuestion:82.1_"tttt"_NA_(task2.scr,9-19-2018,16:0:57:91,1537398057091,82,82.1,userClick:1243_301;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q4.Enemy Destroyed,false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:3:359,1537398063359,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDestroyed--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:3:475,1537398063475,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDestroyed--Tank;endMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:3:475,1537398063475,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDestroyed--HP;startMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:3:798,1537398063798,82,82.2,userClick:355_887;region:saliencyMap;target:saliencyMap--DP3-2_EnemyDestroyed--HP;clickSaliencyMap:HP_(NA_upperRightQuadrant),false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:3:820,1537398063820,82,82.2,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDestroyed--HP;endMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:4:645,1537398064645,82,82.2,userClick:266_681;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:12:284,1537398072284,82,82.2,showQuestion:82.3,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:12:286,1537398072286,82,82.3,userClick:310_732;region:QnA;target:button-save;answerQuestion:82.2_"~!~!ESCAPED-UNDERSCORE++ESCAPED-UNDERSCORE"_NA_(task2.scr,9-19-2018,16:1:3:798,1537398063798,82,82.2,userClick:355_887;region:saliencyMap;target:saliencyMap--DP3-2_EnemyDestroyed--HP;clickSaliencyMap:HP_(NA_upperRightQuadrant),false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:13:437,1537398073437,82,82.3,userClick:161_578;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:13:853,1537398073853,82,82.3,userClick:161_601;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:23:749,1537398083749,82,82.3,userClick:172_595;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:26:28,1537398086028,82,82.3,userClick:96_608;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:37:581,1537398097581,82,82.3,userClick:328_691;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:40:319,1537398100319,82,82.3,userClick:303_761;region:QnA;target:button-save;answerQuestion:82.3_"><>><?/""_"'"_(NA),false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:40:341,1537398100341,82,82.3,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDestroyed--HP;startMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:40:976,1537398100977,82,82.3,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDestroyed--HP;endMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:41:798,1537398101798,82,82.3,userClick:418_332;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:50:547,1537398110547,82,82.3,showQuestion:121.0,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:50:550,1537398110550,82,121.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:50:773,1537398110773,82,121.0,stepIntoDecisionPoint:121,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:52:917,1537398112917,121,121.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:54:141,1537398114141,121,121.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:54:159,1537398114159,121,121.0,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:54:176,1537398114176,121,121.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:54:243,1537398114243,121,121.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:54:376,1537398114376,121,121.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:54:692,1537398114692,121,121.0,showEntityTooltip:friendly-Tank_upperLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:54:708,1537398114708,121,121.0,hideEntityTooltips:all,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:55:77,1537398115077,121,121.0,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:55:488,1537398115488,121,121.0,userClick:387_258;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_lowerLeftQuadrant_71_194,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:55:655,1537398115655,121,121.0,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:56:309,1537398116309,121,121.0,userClick:288_716;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:58:827,1537398118827,121,121.0,showQuestion:121.1,false,false,false,false,false,false
+task2.scr,9-19-2018,16:1:58:829,1537398118829,121,121.1,userClick:292_761;region:QnA;target:button-save;answerQuestion:121.0_"weewr"_NA_(task2.scr,9-19-2018,16:1:55:488,1537398115488,121,121.0,userClick:387_258;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_lowerLeftQuadrant_71_194,false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-19-2018,16:2:4:18,1537398124018,121,121.1,userClick:1103_325;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q3.Friend Destroyed,false,false,false,false,false,false
+task2.scr,9-19-2018,16:2:5:38,1537398125038,121,121.1,userClick:320_680;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:2:7:290,1537398127290,121,121.1,showQuestion:121.2,false,false,false,false,false,false
+task2.scr,9-19-2018,16:2:7:293,1537398127293,121,121.2,userClick:321_737;region:QnA;target:button-save;answerQuestion:121.1_"qwewqe"_NA_(task2.scr,9-19-2018,16:2:4:18,1537398124018,121,121.1,userClick:1103_325;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q3.Friend Destroyed,false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-19-2018,16:2:11:292,1537398131292,121,121.2,region:saliencyMap;target:saliencyMap--DP4-2_FriendDestroyed--HP;startMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task2.scr,9-19-2018,16:2:11:525,1537398131525,121,121.2,userClick:340_840;region:saliencyMap;target:saliencyMap--DP4-2_FriendDestroyed--HP;clickSaliencyMap:HP_(NA_upperRightQuadrant),false,false,false,false,false,false
+task2.scr,9-19-2018,16:2:11:548,1537398131548,121,121.2,region:saliencyMap;target:saliencyMap--DP4-2_FriendDestroyed--HP;endMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task2.scr,9-19-2018,16:2:12:141,1537398132141,121,121.2,userClick:245_682;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:2:14:381,1537398134381,121,121.2,userClick:245_673;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:2:21:347,1537398141347,121,121.2,showQuestion:121.3,false,false,false,false,false,false
+task2.scr,9-19-2018,16:2:21:350,1537398141350,121,121.3,userClick:295_742;region:QnA;target:button-save;answerQuestion:121.2_"1234567890-="_NA_(task2.scr,9-19-2018,16:2:11:525,1537398131525,121,121.2,userClick:340_840;region:saliencyMap;target:saliencyMap--DP4-2_FriendDestroyed--HP;clickSaliencyMap:HP_(NA_upperRightQuadrant),false,false,false,false,false,false),false,false,false,false,false,false
+task2.scr,9-19-2018,16:2:22:285,1537398142285,121,121.3,userClick:228_621;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:2:26:645,1537398146645,121,121.3,userClick:178_702;region:QnA;NA;NA,false,false,false,false,false,false
+task2.scr,9-19-2018,16:2:31:464,1537398151464,121,121.3,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task2.scr,9-19-2018,16:2:31:468,1537398151468,121,121.3,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task2.scr,9-19-2018,16:2:33:612,1537398153612,121,121.3,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task3.scr,9-19-2018,16:2:35:521,1537398155521,121,121.3,stepIntoDecisionPoint:1,false,false,false,false,false,false
+task3.scr,9-19-2018,16:2:35:522,1537398155522,1,121.3,showQuestion:1.0,false,false,false,false,false,false
+task3.scr,9-19-2018,16:2:41:25,1537398161025,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-19-2018,16:2:41:425,1537398161425,1,1.0,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-19-2018,16:2:42:929,1537398162929,1,1.0,userClick:392_272;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_lowerLeftQuadrant_76_208,false,false,false,false,false,false
+task3.scr,9-19-2018,16:2:43:183,1537398163183,1,1.0,showEntityTooltip:enemy-Small Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-19-2018,16:2:43:210,1537398163210,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-19-2018,16:2:43:773,1537398163773,1,1.0,userClick:228_706;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:2:45:840,1537398165840,1,1.0,showQuestion:1.1,false,false,false,false,false,false
+task3.scr,9-19-2018,16:2:45:842,1537398165842,1,1.1,userClick:291_753;region:QnA;target:button-save;answerQuestion:1.0_"qqqqq"_NA_(task3.scr,9-19-2018,16:2:42:929,1537398162929,1,1.0,userClick:392_272;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_lowerLeftQuadrant_76_208,false,false,false,false,false,false),false,false,false,false,false,false
+task3.scr,9-19-2018,16:2:46:878,1537398166878,1,1.1,userClick:91_690;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:2:55:29,1537398175029,1,1.1,userClick:685_340;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q1.City Damaged,false,false,false,false,false,false
+task3.scr,9-19-2018,16:2:56:29,1537398176029,1,1.1,userClick:385_707;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:5:35,1537398185035,1,1.1,showQuestion:1.2,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:5:37,1537398185037,1,1.2,userClick:305_733;region:QnA;target:button-save;answerQuestion:1.1_"ESCAPED-COMMA.ESCAPED-COMMA./\ESCAPED-NEWLINE\|"_NA_(task3.scr,9-19-2018,16:2:55:29,1537398175029,1,1.1,userClick:685_340;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q1.City Damaged,false,false,false,false,false,false),false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:6:408,1537398186408,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_CityDamaged--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:6:594,1537398186594,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_CityDamaged--Tank;endMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:6:594,1537398186594,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_CityDamaged--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:6:625,1537398186625,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_CityDamaged--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:6:625,1537398186625,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_CityDamaged--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:6:742,1537398186742,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_CityDamaged--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:6:742,1537398186742,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_CityDamaged--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:7:29,1537398187029,1,1.2,userClick:837_910;region:saliencyMap;target:saliencyMap--DP1-2_CityDamaged--Size;clickSaliencyMap:Size_(NA_upperRightQuadrant),false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:7:52,1537398187052,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_CityDamaged--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:7:208,1537398187208,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_CityDamaged--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:7:242,1537398187242,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_CityDamaged--Tank;endMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:7:702,1537398187702,1,1.2,userClick:260_691;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:9:522,1537398189522,1,1.2,showQuestion:1.3,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:9:526,1537398189526,1,1.3,userClick:287_732;region:QnA;target:button-save;answerQuestion:1.2_"assad"_NA_(task3.scr,9-19-2018,16:3:7:29,1537398187029,1,1.2,userClick:837_910;region:saliencyMap;target:saliencyMap--DP1-2_CityDamaged--Size;clickSaliencyMap:Size_(NA_upperRightQuadrant),false,false,false,false,false,false),false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:10:325,1537398190325,1,1.3,userClick:295_616;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:11:870,1537398191870,1,1.3,userClick:207_705;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:13:207,1537398193207,1,1.3,userClick:306_757;region:QnA;target:button-save;answerQuestion:1.3_"5yrttr"_"trtrtrtr"_(NA),false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:13:209,1537398193209,1,1.3,region:saliencyMap;target:saliencyMap--DP1-2_CityDamaged--HP;startMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:13:575,1537398193575,1,1.3,region:saliencyMap;target:saliencyMap--DP1-2_CityDamaged--HP;endMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:14:454,1537398194454,1,1.3,userClick:428_338;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:17:106,1537398197106,1,1.3,userClick:246_413;region:gameArea;target:expl-control-canvas;timelineClick:49,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:18:438,1537398198438,1,1.3,userClick:430_341;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:19:634,1537398199634,1,1.3,showQuestion:56.0,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:19:637,1537398199637,1,56.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:19:890,1537398199890,1,56.0,stepIntoDecisionPoint:56,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:21:582,1537398201582,56,56.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:25:491,1537398205491,56,56.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:25:508,1537398205509,56,56.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:25:525,1537398205525,56,56.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:25:827,1537398205827,56,56.0,showEntityTooltip:friendly-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:25:926,1537398205926,56,56.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:26:209,1537398206209,56,56.0,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:26:506,1537398206506,56,56.0,userClick:511_131;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperRightQuadrant_195_67,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:26:629,1537398206629,56,56.0,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:26:691,1537398206691,56,56.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:27:358,1537398207358,56,56.0,userClick:218_722;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:29:726,1537398209726,56,56.0,showQuestion:56.1,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:29:728,1537398209728,56,56.1,userClick:302_751;region:QnA;target:button-save;answerQuestion:56.0_"qwewqwqeewq"_NA_(task3.scr,9-19-2018,16:3:26:506,1537398206506,56,56.0,userClick:511_131;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperRightQuadrant_195_67,false,false,false,false,false,false),false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:34:741,1537398214741,56,56.1,userClick:903_296;region:rewards;target:rewardBar;selectedRewardBar:None,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:35:234,1537398215234,56,56.1,userClick:898_296;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q2.Enemy Destroyed,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:36:126,1537398216126,56,56.1,userClick:357_695;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:39:69,1537398219069,56,56.1,userClick:328_751;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:39:571,1537398219571,56,56.1,showQuestion:56.2,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:39:574,1537398219574,56,56.2,userClick:311_737;region:QnA;target:button-save;answerQuestion:56.1_"22233eee"_NA_(task3.scr,9-19-2018,16:3:35:234,1537398215234,56,56.1,userClick:898_296;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q2.Enemy Destroyed,false,false,false,false,false,false),false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:40:325,1537398220325,56,56.2,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:40:853,1537398220853,56,56.2,userClick:835_910;region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--Size;clickSaliencyMap:Size_(NA_upperRightQuadrant),false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:40:877,1537398220877,56,56.2,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:41:93,1537398221093,56,56.2,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:41:142,1537398221142,56,56.2,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--Tank;endMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:41:709,1537398221709,56,56.2,userClick:305_687;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:44:98,1537398224098,56,56.2,showQuestion:56.3,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:44:100,1537398224100,56,56.3,userClick:301_733;region:QnA;target:button-save;answerQuestion:56.2_"qewwqwqwqe"_NA_(task3.scr,9-19-2018,16:3:40:853,1537398220853,56,56.2,userClick:835_910;region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--Size;clickSaliencyMap:Size_(NA_upperRightQuadrant),false,false,false,false,false,false),false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:44:901,1537398224901,56,56.3,userClick:267_616;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:47:333,1537398227333,56,56.3,userClick:203_705;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:51:760,1537398231760,56,56.3,userClick:310_760;region:QnA;target:button-save;answerQuestion:56.3_"ghgghh"_"ESCAPED-COMMAESCAPED-COMMAESCAPED-COMMAESCAPED-COMMAESCAPED-COMMAESCAPED-COMMAESCAPED-COMMA......."_(NA),false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:51:780,1537398231780,56,56.3,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--HP;startMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:52:125,1537398232125,56,56.3,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--HP;endMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:53:69,1537398233069,56,56.3,userClick:425_337;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:55:171,1537398235171,56,56.3,userClick:421_411;region:gameArea;target:expl-control-canvas;timelineClick:90,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:56:77,1537398236077,56,56.3,userClick:426_342;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:57:786,1537398237786,56,56.3,showQuestion:99.0,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:57:790,1537398237790,56,99.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:58:18,1537398238018,56,99.0,stepIntoDecisionPoint:99,false,false,false,false,false,false
+task3.scr,9-19-2018,16:3:59:868,1537398239868,99,99.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:4:159,1537398244159,99,99.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:4:225,1537398244225,99,99.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:4:276,1537398244276,99,99.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:4:389,1537398244389,99,99.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:4:474,1537398244474,99,99.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:4:575,1537398244575,99,99.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:4:708,1537398244708,99,99.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:4:775,1537398244775,99,99.0,showEntityTooltip:friendly-City_lowerRightQuadrant,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:5:141,1537398245141,99,99.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:5:241,1537398245241,99,99.0,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:6:510,1537398246510,99,99.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:6:830,1537398246830,99,99.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:7:126,1537398247126,99,99.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:7:159,1537398247159,99,99.0,showEntityTooltip:friendly-Tank_lowerLeftQuadrant,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:7:192,1537398247192,99,99.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:7:425,1537398247425,99,99.0,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:7:609,1537398247609,99,99.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:7:780,1537398247780,99,99.0,userClick:530_131;region:gameArea;target:gameboardBackground;clickGameQuadrant:upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:7:951,1537398247951,99,99.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:7:991,1537398247991,99,99.0,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:8:195,1537398248195,99,99.0,userClick:521_138;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_upperRightQuadrant_205_74,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:8:327,1537398248327,99,99.0,showEntityTooltip:enemy-Small Fort_upperRightQuadrant,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:8:358,1537398248358,99,99.0,hideEntityTooltips:all,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:9:84,1537398249084,99,99.0,userClick:176_705;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:12:13,1537398252013,99,99.0,showQuestion:99.1,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:12:16,1537398252016,99,99.1,userClick:298_760;region:QnA;target:button-save;answerQuestion:99.0_"sdcx"_NA_(task3.scr,9-19-2018,16:4:8:195,1537398248195,99,99.0,userClick:521_138;region:gameArea;target:gameboard;clickEntity:enemy-Small Fort_upperRightQuadrant_205_74,false,false,false,false,false,false),false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:17:341,1537398257341,99,99.1,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:17:893,1537398257893,99,99.1,userClick:1045_902;region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--CityFort;clickSaliencyMap:City/Fort_(NA_upperLeftQuadrant),false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:18:125,1537398258125,99,99.1,region:saliencyMap;target:saliencyMap--DP3-2_EnemyDamaged--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:19:390,1537398259390,99,99.1,userClick:1203_365;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q4.City Damaged,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:20:693,1537398260693,99,99.1,userClick:226_681;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:22:571,1537398262571,99,99.1,showQuestion:99.2,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:22:573,1537398262573,99,99.2,userClick:296_730;region:QnA;target:button-save;answerQuestion:99.1_"rttr"_NA_(task3.scr,9-19-2018,16:4:19:390,1537398259390,99,99.1,userClick:1203_365;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q4.City Damaged,false,false,false,false,false,false),false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:23:508,1537398263508,99,99.2,region:saliencyMap;target:saliencyMap--DP3-2_CityDamaged--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:23:708,1537398263708,99,99.2,region:saliencyMap;target:saliencyMap--DP3-2_CityDamaged--Tank;endMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:23:708,1537398263708,99,99.2,region:saliencyMap;target:saliencyMap--DP3-2_CityDamaged--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:23:842,1537398263842,99,99.2,region:saliencyMap;target:saliencyMap--DP3-2_CityDamaged--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:23:842,1537398263842,99,99.2,region:saliencyMap;target:saliencyMap--DP3-2_CityDamaged--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:24:191,1537398264191,99,99.2,region:saliencyMap;target:saliencyMap--DP3-2_CityDamaged--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:24:192,1537398264192,99,99.2,region:saliencyMap;target:saliencyMap--DP3-2_CityDamaged--FriendEnemy;startMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:24:677,1537398264677,99,99.2,userClick:1273_926;region:saliencyMap;target:saliencyMap--DP3-2_CityDamaged--FriendEnemy;clickSaliencyMap:Friend/Enemy_(NA_upperLeftQuadrant),false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:24:700,1537398264700,99,99.2,region:saliencyMap;target:saliencyMap--DP3-2_CityDamaged--FriendEnemy;endMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:24:942,1537398264942,99,99.2,region:saliencyMap;target:saliencyMap--DP3-2_CityDamaged--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:25:25,1537398265025,99,99.2,region:saliencyMap;target:saliencyMap--DP3-2_CityDamaged--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:25:25,1537398265025,99,99.2,region:saliencyMap;target:saliencyMap--DP3-2_CityDamaged--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:25:75,1537398265075,99,99.2,region:saliencyMap;target:saliencyMap--DP3-2_CityDamaged--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:25:734,1537398265734,99,99.2,userClick:232_677;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:27:618,1537398267618,99,99.2,showQuestion:99.3,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:27:621,1537398267621,99,99.3,userClick:295_733;region:QnA;target:button-save;answerQuestion:99.2_"qwqwewqe"_NA_(task3.scr,9-19-2018,16:4:24:677,1537398264677,99,99.2,userClick:1273_926;region:saliencyMap;target:saliencyMap--DP3-2_CityDamaged--FriendEnemy;clickSaliencyMap:Friend/Enemy_(NA_upperLeftQuadrant),false,false,false,false,false,false),false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:28:492,1537398268492,99,99.3,userClick:246_628;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:30:68,1537398270068,99,99.3,userClick:283_697;region:QnA;NA;NA,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:30:824,1537398270824,99,99.3,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:30:828,1537398270828,99,99.3,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task3.scr,9-19-2018,16:4:32:667,1537398272667,99,99.3,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task4.scr,9-19-2018,16:4:34:882,1537398274882,99,99.3,stepIntoDecisionPoint:1,false,false,false,false,false,false
+task4.scr,9-19-2018,16:4:34:883,1537398274883,1,99.3,showQuestion:1.0,false,false,false,false,false,false
+task4.scr,9-19-2018,16:4:38:592,1537398278592,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-19-2018,16:4:39:46,1537398279046,1,1.0,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task4.scr,9-19-2018,16:4:39:450,1537398279450,1,1.0,userClick:508_136;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperRightQuadrant_193_72,false,false,false,false,false,false
+task4.scr,9-19-2018,16:4:39:590,1537398279590,1,1.0,showEntityTooltip:enemy-Big Fort_upperRightQuadrant,false,false,false,false,false,false
+task4.scr,9-19-2018,16:4:39:642,1537398279642,1,1.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-19-2018,16:4:40:93,1537398280093,1,1.0,userClick:220_681;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:4:40:693,1537398280693,1,1.0,userClick:218_697;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:4:42:956,1537398282956,1,1.0,showQuestion:1.1,false,false,false,false,false,false
+task4.scr,9-19-2018,16:4:42:958,1537398282958,1,1.1,userClick:305_757;region:QnA;target:button-save;answerQuestion:1.0_"sddsfds"_NA_(task4.scr,9-19-2018,16:4:39:450,1537398279450,1,1.0,userClick:508_136;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperRightQuadrant_193_72,false,false,false,false,false,false),false,false,false,false,false,false
+task4.scr,9-19-2018,16:4:51:251,1537398291251,1,1.1,userClick:725_158;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q1.Enemy Destroyed,false,false,false,false,false,false
+task4.scr,9-19-2018,16:4:52:981,1537398292981,1,1.1,userClick:155_678;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:4:56:330,1537398296330,1,1.1,showQuestion:1.2,false,false,false,false,false,false
+task4.scr,9-19-2018,16:4:56:332,1537398296332,1,1.2,userClick:295_740;region:QnA;target:button-save;answerQuestion:1.1_"dssdfdsf"_NA_(task4.scr,9-19-2018,16:4:51:251,1537398291251,1,1.1,userClick:725_158;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q1.Enemy Destroyed,false,false,false,false,false,false),false,false,false,false,false,false
+task4.scr,9-19-2018,16:4:58:726,1537398298726,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:0:924,1537398300924,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:3:509,1537398303509,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:3:525,1537398303525,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:3:525,1537398303525,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--FriendEnemy;startMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:3:859,1537398303859,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--FriendEnemy;endMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:3:859,1537398303859,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:3:992,1537398303992,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:3:992,1537398303992,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--FriendEnemy;startMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:4:557,1537398304557,1,1.2,userClick:1262_911;region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--FriendEnemy;clickSaliencyMap:Friend/Enemy_(NA_upperLeftQuadrant),false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:4:581,1537398304581,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--FriendEnemy;endMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:4:841,1537398304841,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:4:891,1537398304891,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:4:891,1537398304891,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:4:942,1537398304942,1,1.2,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:6:181,1537398306181,1,1.2,userClick:147_685;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:8:12,1537398308012,1,1.2,showQuestion:1.3,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:8:13,1537398308013,1,1.3,userClick:307_735;region:QnA;target:button-save;answerQuestion:1.2_"sddsfds"_NA_(task4.scr,9-19-2018,16:5:4:557,1537398304557,1,1.2,userClick:1262_911;region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--FriendEnemy;clickSaliencyMap:Friend/Enemy_(NA_upperLeftQuadrant),false,false,false,false,false,false),false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:9:982,1537398309982,1,1.3,userClick:185_636;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:11:565,1537398311565,1,1.3,userClick:240_723;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:13:272,1537398313272,1,1.3,userClick:307_752;region:QnA;target:button-save;answerQuestion:1.3_"ttttt"_"uuuuu"_(NA),false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:13:293,1537398313293,1,1.3,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--HP;startMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:13:659,1537398313659,1,1.3,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--HP;endMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:14:350,1537398314350,1,1.3,userClick:431_335;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:28:306,1537398328306,1,1.3,showQuestion:63.0,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:28:308,1537398328308,1,63.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:28:551,1537398328551,1,63.0,stepIntoDecisionPoint:63,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:31:45,1537398331045,63,63.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:33:609,1537398333609,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:34:61,1537398334061,63,63.0,showEntityTooltip:friendly-Town_upperLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:34:242,1537398334242,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:34:391,1537398334391,63,63.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:34:442,1537398334442,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:34:658,1537398334658,63,63.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:35:298,1537398335298,63,63.0,userClick:397_256;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_lowerLeftQuadrant_81_192,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:35:624,1537398335624,63,63.0,showEntityTooltip:enemy-Big Fort_lowerLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:35:675,1537398335675,63,63.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:37:861,1537398337861,63,63.0,userClick:171_686;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:39:950,1537398339950,63,63.0,showQuestion:63.1,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:39:952,1537398339952,63,63.1,userClick:292_753;region:QnA;target:button-save;answerQuestion:63.0_"sddsf"_NA_(task4.scr,9-19-2018,16:5:35:298,1537398335298,63,63.0,userClick:397_256;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_lowerLeftQuadrant_81_192,false,false,false,false,false,false),false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:44:107,1537398344107,63,63.1,userClick:1067_290;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q3.Enemy Destroyed,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:45:333,1537398345333,63,63.1,userClick:161_686;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:47:372,1537398347372,63,63.1,showQuestion:63.2,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:47:374,1537398347374,63,63.2,userClick:305_728;region:QnA;target:button-save;answerQuestion:63.1_"erererreer"_NA_(task4.scr,9-19-2018,16:5:44:107,1537398344107,63,63.1,userClick:1067_290;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q3.Enemy Destroyed,false,false,false,false,false,false),false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:48:676,1537398348676,63,63.2,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--HP;startMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:49:69,1537398349069,63,63.2,userClick:361_967;region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--HP;clickSaliencyMap:HP_(NA_upperRightQuadrant),false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:49:93,1537398349093,63,63.2,region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--HP;endMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:49:805,1537398349805,63,63.2,userClick:310_701;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:51:157,1537398351157,63,63.2,userClick:320_762;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:51:880,1537398351880,63,63.2,userClick:332_825;region:QnA;target:button-save;answerQuestion:63.2_"qqq"_"aaa"_(task4.scr,9-19-2018,16:5:49:69,1537398349069,63,63.2,userClick:361_967;region:saliencyMap;target:saliencyMap--DP2-2_EnemyDestroyed--HP;clickSaliencyMap:HP_(NA_upperRightQuadrant),false,false,false,false,false,false),false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:53:261,1537398353261,63,63.2,userClick:422_335;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:53:578,1537398353578,63,63.2,showQuestion:62.3,false,false,false,false,false,false
+task4.scr,9-19-2018,16:5:57:734,1537398357734,63,62.3,userClick:177_620;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:1:485,1537398361485,63,62.3,userClick:177_620;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:3:165,1537398363165,63,62.3,userClick:196_697;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:4:184,1537398364184,63,62.3,userClick:292_763;region:QnA;target:button-save;answerQuestion:62.3_"rtrtrt"_"rttrrtrtrt"_(NA),false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:4:205,1537398364205,63,62.3,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--HP;startMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:4:659,1537398364659,63,62.3,region:saliencyMap;target:saliencyMap--DP1-2_EnemyDestroyed--HP;endMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:5:437,1537398365437,63,62.3,userClick:432_337;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:5:711,1537398365711,63,62.3,stepIntoDecisionPoint:63,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:9:785,1537398369785,63,62.3,userClick:457_411;region:gameArea;target:expl-control-canvas;timelineClick:95,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:10:854,1537398370854,63,62.3,userClick:426_341;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:12:837,1537398372837,63,62.3,showQuestion:105.0,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:12:839,1537398372839,63,105.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:13:84,1537398373084,63,105.0,stepIntoDecisionPoint:105,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:14:997,1537398374997,105,105.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:20:760,1537398380760,105,105.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:21:60,1537398381060,105,105.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:25:523,1537398385523,105,105.0,userClick:405_150;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_89_86,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:25:742,1537398385742,105,105.0,showEntityTooltip:enemy-Big Fort_upperLeftQuadrant,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:25:776,1537398385776,105,105.0,hideEntityTooltips:all,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:26:685,1537398386685,105,105.0,userClick:268_683;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:28:871,1537398388871,105,105.0,showQuestion:105.1,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:28:873,1537398388873,105,105.1,userClick:320_751;region:QnA;target:button-save;answerQuestion:105.0_"nnnnn"_NA_(task4.scr,9-19-2018,16:6:25:523,1537398385523,105,105.0,userClick:405_150;region:gameArea;target:gameboard;clickEntity:enemy-Big Fort_upperLeftQuadrant_89_86,false,false,false,false,false,false),false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:33:914,1537398393914,105,105.1,userClick:1098_311;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q3.Friend Destroyed,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:35:157,1537398395157,105,105.1,userClick:286_687;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:36:922,1537398396922,105,105.1,showQuestion:105.2,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:36:925,1537398396925,105,105.2,userClick:315_731;region:QnA;target:button-save;answerQuestion:105.1_"werewewr"_NA_(task4.scr,9-19-2018,16:6:33:914,1537398393914,105,105.1,userClick:1098_311;region:scaii-interface;target:rewardBar;selectedRewardBar:Attack Q3.Friend Destroyed,false,false,false,false,false,false),false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:39:260,1537398399260,105,105.2,region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--HP;startMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:39:526,1537398399526,105,105.2,region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--HP;endMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:39:526,1537398399526,105,105.2,region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--Tank;startMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:39:610,1537398399610,105,105.2,region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--Tank;endMouseOverSaliencyMap:Tank,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:39:610,1537398399610,105,105.2,region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:39:759,1537398399759,105,105.2,region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:39:759,1537398399759,105,105.2,region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:40:93,1537398400093,105,105.2,region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:40:93,1537398400093,105,105.2,region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--FriendEnemy;startMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:40:374,1537398400374,105,105.2,userClick:1296_930;region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--FriendEnemy;clickSaliencyMap:Friend/Enemy_(friendly-Tank_lowerRightQuadrant),false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:40:593,1537398400593,105,105.2,region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--FriendEnemy;endMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:40:593,1537398400593,105,105.2,region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--CityFort;startMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:40:674,1537398400674,105,105.2,region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--CityFort;endMouseOverSaliencyMap:City/Fort,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:40:674,1537398400674,105,105.2,region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--Size;startMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:40:726,1537398400726,105,105.2,region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--Size;endMouseOverSaliencyMap:Size,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:41:189,1537398401189,105,105.2,userClick:253_665;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:43:107,1537398403107,105,105.2,showQuestion:105.3,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:43:110,1537398403110,105,105.3,userClick:300_742;region:QnA;target:button-save;answerQuestion:105.2_"ewwerrewewr"_NA_(task4.scr,9-19-2018,16:6:40:374,1537398400374,105,105.2,userClick:1296_930;region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--FriendEnemy;clickSaliencyMap:Friend/Enemy_(friendly-Tank_lowerRightQuadrant),false,false,false,false,false,false),false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:44:28,1537398404028,105,105.3,userClick:203_617;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:45:261,1537398405261,105,105.3,userClick:235_692;region:QnA;NA;NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:46:383,1537398406383,105,105.3,userClick:290_756;region:QnA;target:button-save;answerQuestion:105.3_"ssss"_"ssss"_(NA),false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:46:405,1537398406405,105,105.3,region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--HP;startMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:46:925,1537398406925,105,105.3,region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--HP;endMouseOverSaliencyMap:HP,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:47:965,1537398407965,105,105.3,userClick:433_336;region:gameArea;target:pauseResumeButton;play:NA,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:50:973,1537398410973,105,105.3,showQuestion:summary.0,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:50:974,1537398410974,105,summary.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:53:85,1537398413085,105,summary.0,region:waitScreen;target:user-wait-button-continue;waitForResearcherEnd:yes,false,false,false,false,false,false
+task4.scr,9-19-2018,16:6:54:357,1537398414357,105,summary.0,region:waitScreen;target:enter-wait-screen;waitForResearcherStart:yes,false,false,false,false,false,false
+task4.scr,9-19-2018,16:7:5:510,1537398425510,105,summary.0,userClick:286_673;region:QnA;target:button-save;answerQuestion:summary.0_"aaa.ESCAPED-NEWLINEbbb.ESCAPED-NEWLINEccc.ESCAPED-NEWLINEESCAPED-NEWLINEESCAPED-NEWLINE"_NA_(NA),false,false,false,false,false,false
+task4.scr,9-19-2018,16:7:16:659,1537398436659,105,summary.0,region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--FriendEnemy;startMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false
+task4.scr,9-19-2018,16:7:16:693,1537398436693,105,summary.0,region:saliencyMap;target:saliencyMap--DP3-2_FriendDestroyed--FriendEnemy;endMouseOverSaliencyMap:Friend/Enemy,false,false,false,false,false,false

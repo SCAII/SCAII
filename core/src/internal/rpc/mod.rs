@@ -1,17 +1,17 @@
+use scaii_defs::protos::{ModuleInit, MultiMessage, RpcConfig, ScaiiPacket, ModuleEndpoint};
 use scaii_defs::Module;
-use scaii_defs::protos::{ModuleInit, MultiMessage, RpcConfig, ScaiiPacket};
 use std::error::Error;
 use std::net::{IpAddr, SocketAddr};
 use websocket::client::sync::Client;
 use websocket::stream::sync::TcpStream;
 
-use scaii_defs::protos::endpoint::Endpoint;
-use std::process::{Child, Command};
 use super::LoadedAs;
-use scaii_defs::protos::init_as::InitAs;
 use scaii_defs::protos;
-use std::thread;
+use scaii_defs::protos::endpoint::Endpoint;
+use scaii_defs::protos::init_as::InitAs;
+use std::process::{Child, Command};
 use std::sync::mpsc;
+use std::thread;
 
 #[cfg(test)]
 mod test;
@@ -134,12 +134,15 @@ impl Rpc {
                 // Send error msg to ourselves.
                 let err_packet = ScaiiPacket {
                     src: protos::Endpoint {
-                        endpoint: Some(Endpoint::Core(protos::CoreEndpoint {})),
+                         endpoint: Some(Endpoint::Module(ModuleEndpoint {
+                         name: "viz".to_string(),
+                        })),
                     },
                     dest: protos::Endpoint {
-                        endpoint: Some(Endpoint::Core(protos::CoreEndpoint {})),
+                        endpoint: Some(Endpoint::Replay(protos::ReplayEndpoint {})), //Should be replay endpoint
                     },
-                    specific_msg: Some(scaii_packet::SpecificMsg::Err(protos::Error {
+                    specific_msg: Some(
+                        scaii_packet::SpecificMsg::Err(protos::Error {
                         fatal: None,
                         error_info: None,
                         description: format!(
@@ -148,7 +151,6 @@ impl Rpc {
                         ),
                     })),
                 };
-
                 self.messages_from_socket_client.push(MultiMessage {
                     packets: vec![err_packet],
                 });
@@ -179,8 +181,8 @@ impl Module for RpcModule {
 }
 
 fn receive_and_decode_proto(client: &mut Client<TcpStream>) -> Result<MultiMessage, Box<Error>> {
-    use scaii_defs::protos::MultiMessage;
     use prost::Message;
+    use scaii_defs::protos::MultiMessage;
     use websocket::OwnedMessage;
 
     let msg = client.recv_message()?;
@@ -207,10 +209,10 @@ fn encode_and_send_proto(
 }
 
 fn connect(settings: &RpcConfig) -> Result<Client<TcpStream>, Box<Error>> {
-    use websocket::sync::Server;
     use std::str::FromStr;
     use std::time::Duration;
     use std::{u16, u32};
+    use websocket::sync::Server;
 
     let port = settings.port.unwrap();
     if port > u32::from(u16::MAX) {

@@ -1,10 +1,10 @@
 use super::protos::{Action, ExplanationPoint, ExplanationPoints};
-use scaii_core::{ActionWrapper, ReplayAction};
-use std::path::PathBuf;
-use std::collections::BTreeMap;
-use std::error::Error;
 use super::ReplayError;
 use prost::Message;
+use scaii_core::{ActionWrapper, ReplayAction};
+use std::collections::BTreeMap;
+use std::error::Error;
+use std::path::PathBuf;
 
 pub struct Explanations {
     pub step_indices: Vec<u32>,
@@ -154,10 +154,10 @@ pub fn get_explanations_for_replay_file(
 pub fn get_explanations_for_explanations_file(
     path: PathBuf,
 ) -> Result<Option<Explanations>, Box<Error>> {
+    use super::prost::Message;
     use std::fs::File;
     use std::io::BufReader;
     use std::io::Read;
-    use super::prost::Message;
 
     if !path.as_path().exists() {
         return Ok(None);

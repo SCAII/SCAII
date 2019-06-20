@@ -9,12 +9,12 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 extern crate websocket;
-use scaii_defs::protos::{AgentEndpoint, MultiMessage, ScaiiPacket};
-use std::error::Error;
-use internal::router::Router;
 use internal::agent::PublisherAgent;
-use std::rc::Rc;
+use internal::router::Router;
+use scaii_defs::protos::{AgentEndpoint, MultiMessage, ScaiiPacket};
 use std::cell::RefCell;
+use std::error::Error;
+use std::rc::Rc;
 
 #[cfg(feature = "c-api")]
 mod c_api;
@@ -29,10 +29,11 @@ pub use scaii_config::*;
 // Don't publicly expose our internal structure to FFI
 pub(crate) mod internal;
 //...but expose ReplayAction so Replay can access it in Recorder (Replay is a binary so different crate)
-pub use internal::recorder::{get_default_replay_dir, get_default_replay_file_path, ActionWrapper,
-                             ReplayAction, ReplayHeader, SerializationInfo,
-                             SerializedProtosAction, SerializedProtosEndpoint,
-                             SerializedProtosScaiiPacket, SerializedProtosSerializationResponse};
+pub use internal::recorder::{
+    get_default_replay_dir, get_default_replay_file_path, ActionWrapper, ReplayAction,
+    ReplayHeader, SerializationInfo, SerializedProtosAction, SerializedProtosEndpoint,
+    SerializedProtosScaiiPacket, SerializedProtosSerializationResponse,
+};
 pub use internal::rpc::get_rpc_config_for_viz;
 
 /// The Environment created by this library.
@@ -80,9 +81,9 @@ impl Environment {
     /// Processes all messages returned by module message processing routed to
     /// "core"
     fn process_core_messages(&mut self, packets: Vec<ScaiiPacket>) {
+        use scaii_defs::protos::cfg::WhichModule;
         use scaii_defs::protos::scaii_packet::SpecificMsg;
         use scaii_defs::protos::{Cfg, CoreCfg, PluginType};
-        use scaii_defs::protos::cfg::WhichModule;
         for packet in packets {
             if packet.specific_msg.is_none() {
                 self.handle_errors_possible_failure(
@@ -127,17 +128,18 @@ impl Environment {
         &mut self,
         plugin_type: &mut scaii_defs::protos::plugin_type::PluginType,
     ) -> Result<(), Box<Error>> {
-        use scaii_defs::protos::plugin_type::PluginType::*;
         use internal::rpc;
-        use internal::LoadedAs;
         use internal::static_backends;
+        use internal::LoadedAs;
+        use scaii_defs::protos::plugin_type::PluginType::*;
 
         match *plugin_type {
             SkyRts(_) => {
                 if !cfg!(feature = "static-rts") {
                     Err(format!("RTS not linked statically, did you disable default features? Recompile with the static-rts feature enabled."))?
                 } else {
-                    let prev = self.router
+                    let prev = self
+                        .router
                         .register_backend(Box::new(static_backends::load_rts()));
                     if prev.is_some() {
                         Err(format!("Backend previously registered, overwriting",))?
@@ -170,7 +172,8 @@ impl Environment {
         use scaii_defs::protos::CoreEndpoint;
 
         let error_src = packet.src.endpoint.as_ref().unwrap();
-        let res = self.router
+        let res = self
+            .router
             .send_error(descrip, error_src, &Endpoint::Core(CoreEndpoint {}));
 
         if let Err(err) = res {
@@ -195,8 +198,8 @@ impl Environment {
     /// Forwards an error to the owner of this environment,
     /// panicking on failure because something has gone very wrong.
     fn forward_err_to_owner(&mut self, packet: &mut ScaiiPacket) {
-        use scaii_defs::protos::endpoint;
         use scaii_defs::protos;
+        use scaii_defs::protos::endpoint;
 
         let dest = protos::Endpoint {
             endpoint: Some(endpoint::Endpoint::Agent(AgentEndpoint {})),
