@@ -119,7 +119,7 @@ fn get_python_version(python_command: String) -> Option<String> {
 
 fn change_to_viz_dir() -> Result<(), Box<Error>> {
     //cd <SCAII_ROOT>\viz
-    let mut root = util::get_scaii_root()?;
+    let mut root = util::get_exec_dir()?;
     root.push("viz");
     if env::set_current_dir(&root.as_path()).is_ok() {
         Ok(())
@@ -139,7 +139,10 @@ fn launch_webserver_using_command(python_command: &str) {
     let command = python_command.to_string();
     let mut args: Vec<String> = Vec::new();
     //args.push("-m".to_string());
-    args.push("..\\core\\src\\internal\\replay\\no_cache_webserver.py".to_string());
+    let mut path = util::get_exec_dir().unwrap();
+    path.push("core/src/internal/replay/no_cache_webserver.py");
+    let path = path.canonicalize().unwrap();
+    args.push(path.to_str().unwrap().to_owned());
     //args.push(".\\no_cache_webserver.py".to_string());
     //args.push("http.server".to_string());
     //args.push("-c-1".to_string());

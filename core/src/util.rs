@@ -157,42 +157,98 @@ pub fn run_command_read_stderr(command: &String, args: Vec<String>) -> Result<St
     run_command_platform(final_command, args, "stderr")
 }
 
-pub fn get_scaii_root() -> Result<PathBuf, Box<Error>> {
-    //look upwardfrom current dir until find valid parent.
-    let current_dir = env::current_dir()?;
-    let mut candidate_dir: PathBuf = current_dir.clone();
-    let mut seeking = true;
-    while seeking {
-        let is_dir_scaii_root = is_dir_scaii_root(&candidate_dir);
-        if is_dir_scaii_root {
-            seeking = false;
-        } else {
-            let candidate_clone = candidate_dir.clone();
-            let parent_search_result = candidate_clone.parent();
-            match parent_search_result {
-                Some(parent_path) => {
-                    candidate_dir = parent_path.clone().to_path_buf();
-                }
-                None => {
-                    return Err(Box::new(ScaiiError::new(&format!(
-                        "cannot find scaii_root above current directory {:?}",
-                        current_dir
-                    ))));
-                }
-            }
+/// There's a simple priority system in play for determining executable
+/// directories:
+///
+///     1. Our directory, or a parent of ours, is executable, this handles development execution.
+///     2. The proper directory is $SCAII_ROOT/bin/..., make sure it's installed properly
+pub fn get_exec_dir() -> Result<PathBuf, Box<Error>> {
+    let mut pwd = env::current_dir()?.to_path_buf();
+
+    if let Ok(pwd) = is_valid_exec_dir(&mut pwd) {
+        return Ok(pwd.clone());
+    }
+
+    while pwd.pop() {
+        if let Ok(pwd) = is_valid_exec_dir(&mut pwd) {
+            return Ok(pwd.clone());
         }
     }
-    Ok(candidate_dir)
+
+    println!("Could not find valid replay executable directory in parent tree, \
+    testing for install");
+
+    #[allow(deprecated)]
+    let mut install_dir = env::home_dir().ok_or("Can't get home_dir")?;
+    install_dir.push(".scaii/bin");
+
+    is_valid_exec_dir(&mut install_dir)?;
+    Ok(install_dir)
 }
 
-fn is_dir_scaii_root(dir: &PathBuf) -> bool {
-    let mut candidate_dir = dir.clone();
-    candidate_dir.push("core");
-    let core_dir_exists = candidate_dir.exists();
+/// Verify we can execute replay from here, we at minimum need to viz directory
+/// and the cfg.toml
+fn is_valid_exec_dir(dir: &mut PathBuf) -> Result<&mut PathBuf, Box<Error>> {
+    let mut viz = dir.clone();
+    viz.push("viz");
 
-    let mut candidate_dir = dir.clone();
-    candidate_dir.push("protos");
-    let common_protos_dir_exists = candidate_dir.exists();
+    let mut protobuf_js = viz.clone();
+    protobuf_js.push("js/protobuf_js");
 
-    core_dir_exists && common_protos_dir_exists
+    let mut closure_lib = viz.clone();
+    closure_lib.push("js/closure-library");
+
+    let mut cfg_file = dir.clone();
+    cfg_file.push("cfg.toml");
+
+    let mut escape = false;
+    let mut err_string: String = format!("Bad directory \"{}\", cannot find ", dir.display());
+    if !viz.is_dir() {
+        escape = true;
+        err_string += "viz directory";
+    }
+
+    if !cfg_file.is_file() {
+        if escape {
+            err_string += " or ";
+        }
+        escape = true;
+        err_string += "configuration file (cfg.toml)";
+    }
+
+    if escape {
+        return Err(Box::new(ScaiiError::new(&err_string)))
+    }
+
+    err_string.clear();
+    err_string += &format!("\"{}\" appears to be a valid directory but ", dir.display());
+
+    let mut both_missing = false;
+
+    if !protobuf_js.is_dir() {
+        escape = true;
+        err_string += "protobuf_js";
+    }
+
+    if !closure_lib.is_dir() {
+        if escape {
+            err_string += " and ";
+            both_missing = true;
+        }
+
+        err_string += "closure_library"
+    }
+
+    if both_missing {
+        err_string += " are ";
+    } else if escape {
+        err_string += " is ";
+    }
+
+    if escape {
+        err_string += "missing, are you sure you installed properly?";
+        Err(Box::new(ScaiiError::new(&err_string)))
+    } else {
+        Ok(dir)
+    }
 }

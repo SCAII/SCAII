@@ -48,7 +48,7 @@ pub fn load_scaii_config() -> ScaiiConfig {
     use std::fs::File;
     use std::io::prelude::*;
     // create the path to cfg.toml
-    let scaii_root_result = util::get_scaii_root();
+    let scaii_root_result = util::get_exec_dir();
     let mut config_file_pathbuf: PathBuf = PathBuf::new();
     match scaii_root_result {
         Ok(root) => {
