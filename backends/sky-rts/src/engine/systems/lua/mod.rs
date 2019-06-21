@@ -80,7 +80,8 @@ impl<'a> System<'a> for LuaSystem {
             &sys_data.hp,
             &sys_data.death,
             &*sys_data.ids,
-        ).join()
+        )
+            .join()
         {
             let lua_data: *mut _ = &mut sys_data.lua_data.get_mut(id).unwrap().0;
 
@@ -134,7 +135,8 @@ impl<'a> System<'a> for LuaSystem {
             &sys_data.hp,
             &sys_data.spawned,
             &mut sys_data.lua_data,
-        ).join()
+        )
+            .join()
         {
             let unit = UserDataUnit {
                 faction: *faction,

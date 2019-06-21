@@ -152,8 +152,7 @@ fn try_main() -> Result<(), Box<Error>> {
             println!("Running Replay in user-study mode...");
             run_replay(RunMode::UserStudy)?;
             return Ok(());
-        }
-        else {
+        } else {
             println!("Running Replay in live mode...");
             run_replay(RunMode::Live)?;
             return Ok(());
@@ -176,7 +175,7 @@ pub fn run_replay(run_mode: RunMode) -> Result<(), Box<Error>> {
         RunMode::Live => {
             mode_is_test = false;
         }
-        
+
         RunMode::UserStudy => {
             mode_is_test = false;
             mode_is_user_study = true;

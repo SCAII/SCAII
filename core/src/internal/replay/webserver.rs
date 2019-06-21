@@ -104,10 +104,10 @@ fn get_python_version(python_command: String) -> Option<String> {
         return Some("3".to_string());
     } else {
         let output_stderr = Command::new(&python_command) // Python 3.4 outputs to stderr
-        .arg("--version")
-        .stderr(Stdio::piped())
-        .output()
-        .expect("Failed to execute command");
+            .arg("--version")
+            .stderr(Stdio::piped())
+            .output()
+            .expect("Failed to execute command");
 
         let result = String::from_utf8_lossy(&output_stderr.stderr);
         if result.starts_with("Python 3") {
@@ -134,7 +134,7 @@ fn change_to_viz_dir() -> Result<(), Box<Error>> {
 fn launch_webserver_using_command(python_command: &str) {
     //python -m http.server <port>
     let mut scaii_config: ScaiiConfig = scaii_config::load_scaii_config();
-    println!("current dir is {:?}",env::current_dir());
+    println!("current dir is {:?}", env::current_dir());
     let port = scaii_config.get_replay_port();
     let command = python_command.to_string();
     let mut args: Vec<String> = Vec::new();

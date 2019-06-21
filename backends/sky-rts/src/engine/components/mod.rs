@@ -28,7 +28,9 @@ pub(crate) mod move_component;
 pub(crate) mod sensor;
 
 pub use self::{
-    collision::*, move_component::*, sensor::{SensorRadius, SensorType, Sensors},
+    collision::*,
+    move_component::*,
+    sensor::{SensorRadius, SensorType, Sensors},
 };
 
 pub(super) fn register_world_components(world: &mut World) {
@@ -196,8 +198,20 @@ impl Shape {
     }
 }
 
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug, Serialize,
-         Deserialize, Component)]
+#[derive(
+    Copy,
+    Clone,
+    Eq,
+    PartialEq,
+    Ord,
+    PartialOrd,
+    Hash,
+    Default,
+    Debug,
+    Serialize,
+    Deserialize,
+    Component,
+)]
 #[storage(VecStorage)]
 pub struct FactionId(pub usize);
 

@@ -1,4 +1,4 @@
-use scaii_defs::protos::{ModuleInit, MultiMessage, RpcConfig, ScaiiPacket, ModuleEndpoint};
+use scaii_defs::protos::{ModuleEndpoint, ModuleInit, MultiMessage, RpcConfig, ScaiiPacket};
 use scaii_defs::Module;
 use std::error::Error;
 use std::net::{IpAddr, SocketAddr};
@@ -134,15 +134,14 @@ impl Rpc {
                 // Send error msg to ourselves.
                 let err_packet = ScaiiPacket {
                     src: protos::Endpoint {
-                         endpoint: Some(Endpoint::Module(ModuleEndpoint {
-                         name: "viz".to_string(),
+                        endpoint: Some(Endpoint::Module(ModuleEndpoint {
+                            name: "viz".to_string(),
                         })),
                     },
                     dest: protos::Endpoint {
                         endpoint: Some(Endpoint::Replay(protos::ReplayEndpoint {})), //Should be replay endpoint
                     },
-                    specific_msg: Some(
-                        scaii_packet::SpecificMsg::Err(protos::Error {
+                    specific_msg: Some(scaii_packet::SpecificMsg::Err(protos::Error {
                         fatal: None,
                         error_info: None,
                         description: format!(

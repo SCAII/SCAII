@@ -7,8 +7,9 @@ use serde::{Deserialize, Serialize};
 
 use std::{collections::BTreeMap, fmt::Debug};
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Component, Serialize,
-         Deserialize)]
+#[derive(
+    Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Component, Serialize, Deserialize,
+)]
 #[storage(HashMapStorage)]
 pub enum SensorType {
     Attack,
@@ -40,7 +41,8 @@ pub fn register_sensor_collision(world: &mut World, sensor: Entity) -> Entity {
     use nalgebra;
     use nalgebra::{Isometry2, Vector2};
     use ncollide::{
-        shape::{Ball, ShapeHandle}, world::{CollisionGroups, GeometricQueryType},
+        shape::{Ball, ShapeHandle},
+        world::{CollisionGroups, GeometricQueryType},
     };
 
     let sensor_radius = *world.read::<SensorRadius>().get(sensor).unwrap();

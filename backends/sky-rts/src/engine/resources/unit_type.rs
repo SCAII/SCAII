@@ -1,5 +1,6 @@
 use engine::{
-    components::{CollisionHandle, DataStoreComponent, Pos, Shape}, resources::SkyCollisionWorld,
+    components::{CollisionHandle, DataStoreComponent, Pos, Shape},
+    resources::SkyCollisionWorld,
 };
 use specs::prelude::*;
 
@@ -87,7 +88,8 @@ impl UnitType {
             } else {
                 entity
             }
-        }.build();
+        }
+        .build();
 
         let me = {
             let mut col_storage = world.write::<CollisionHandle>();
@@ -120,12 +122,14 @@ impl UnitType {
         c_world: &mut SkyCollisionWorld,
     ) -> Entity {
         use engine::{
-            components::Shape, resources::{ColliderData, COLLISION_SCALE},
+            components::Shape,
+            resources::{ColliderData, COLLISION_SCALE},
         };
         use nalgebra;
         use nalgebra::{Isometry2, Vector2};
         use ncollide::{
-            shape::{Ball, Cuboid, Polyline, ShapeHandle, Triangle}, transformation::ToPolyline,
+            shape::{Ball, Cuboid, Polyline, ShapeHandle, Triangle},
+            transformation::ToPolyline,
             world::{CollisionGroups, GeometricQueryType},
         };
 

@@ -229,7 +229,8 @@ impl ReplaySequencer {
             .clone();
         result.push(key_frame_pkt.clone());
         println!("   ...pushed keyframe at index {}", prior_keyframe_index);
-        let mut action_pkts: Vec<ScaiiPacket> = self.ff_simple_mode(prior_keyframe_index, target)?;
+        let mut action_pkts: Vec<ScaiiPacket> =
+            self.ff_simple_mode(prior_keyframe_index, target)?;
         result.append(&mut action_pkts);
         Ok(result)
     }

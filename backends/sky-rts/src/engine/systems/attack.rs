@@ -36,7 +36,8 @@ impl<'a> System<'a> for AttackSystem {
             &sys_data.contact_states,
             &sys_data.owners,
             &sys_data.sensor_type,
-        ).join()
+        )
+            .join()
             .filter(|(_, _, t)| **t == SensorType::Attack)
         {
             let id = owner.0;

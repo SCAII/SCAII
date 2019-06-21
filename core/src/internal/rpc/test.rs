@@ -21,14 +21,16 @@ fn connect_attempt() {
                 rpc_module.process_msg(&dummy_scaii_pkt).unwrap();
                 let mut multi_message = rpc_module.get_messages();
                 let pkt = multi_message.packets.pop().unwrap();
-                if pkt.specific_msg == Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {
-                    test_mode: Some(false),
-                    step_count: Some(100),
-                    gameboard_width: Some(400),
-                    gameboard_height: Some(400),
-                    explanations: Vec::new(),
-                    ..protos::VizInit::default()
-                })) {
+                if pkt.specific_msg
+                    == Some(scaii_packet::SpecificMsg::VizInit(protos::VizInit {
+                        test_mode: Some(false),
+                        step_count: Some(100),
+                        gameboard_width: Some(400),
+                        gameboard_height: Some(400),
+                        explanations: Vec::new(),
+                        ..protos::VizInit::default()
+                    }))
+                {
                     tx.send(String::from("success")).unwrap();
                 } else {
                     tx.send(String::from("fail")).unwrap();
@@ -83,7 +85,7 @@ fn get_dummy_scaii_pkt() -> ScaiiPacket {
 }
 fn encode_multi_message(
     //packet: &ScaiiPacket,
-    multi_message: &MultiMessage
+    multi_message: &MultiMessage,
 ) -> Vec<u8> {
     use prost::Message;
     let mut buf: Vec<u8> = Vec::new();

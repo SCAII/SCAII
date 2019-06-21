@@ -5,7 +5,8 @@ use protos::plugin_type::PluginType::SkyRts;
 use protos::scaii_packet::SpecificMsg;
 use protos::{
     BackendEndpoint, BarChart, BarGroup, Cfg, CoreEndpoint, ModuleEndpoint, MultiMessage,
-    PluginType, ReplayChoiceConfig, ReplayEndpoint, ReplaySessionConfig, ScaiiPacket, StudyQuestions,
+    PluginType, ReplayChoiceConfig, ReplayEndpoint, ReplaySessionConfig, ScaiiPacket,
+    StudyQuestions,
 };
 use scaii_core;
 use scaii_core::{ActionWrapper, ScaiiConfig};
@@ -251,7 +252,7 @@ pub fn get_reset_env_pkt() -> ScaiiPacket {
     }
 }
 
-pub fn get_study_questions_pkt(study_questions : StudyQuestions) -> ScaiiPacket {
+pub fn get_study_questions_pkt(study_questions: StudyQuestions) -> ScaiiPacket {
     ScaiiPacket {
         src: protos::Endpoint {
             endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),
@@ -264,7 +265,10 @@ pub fn get_study_questions_pkt(study_questions : StudyQuestions) -> ScaiiPacket 
         specific_msg: Some(SpecificMsg::StudyQuestions(study_questions)),
     }
 }
-pub fn get_replay_choice_config_message(replay_filenames: Vec<String>, user_study_mode: &bool) -> ScaiiPacket {
+pub fn get_replay_choice_config_message(
+    replay_filenames: Vec<String>,
+    user_study_mode: &bool,
+) -> ScaiiPacket {
     ScaiiPacket {
         src: protos::Endpoint {
             endpoint: Some(Endpoint::Replay(ReplayEndpoint {})),

@@ -1,5 +1,6 @@
 use ncollide::{
-    broad_phase::BroadPhasePairFilter, world::{CollisionObject, CollisionWorld},
+    broad_phase::BroadPhasePairFilter,
+    world::{CollisionObject, CollisionWorld},
 };
 use specs::prelude::*;
 

@@ -39,7 +39,7 @@ pub struct ReplayManager {
     pub poll_timer_count: u32,
     pub step_timer_count: u32,
     pub user_study_mode: bool,
-    pub user_study_questions: Option<study_util::UserStudyQuestions>
+    pub user_study_questions: Option<study_util::UserStudyQuestions>,
 }
 
 impl ReplayManager {
@@ -59,7 +59,10 @@ impl ReplayManager {
                 self.replay_sequencer = replay_sequencer;
             } else {
                 let replay_filenames = replay_util::get_replay_filenames()?;
-                let replay_choice_config = pkt_util::get_replay_choice_config_message(replay_filenames, &self.user_study_mode);
+                let replay_choice_config = pkt_util::get_replay_choice_config_message(
+                    replay_filenames,
+                    &self.user_study_mode,
+                );
                 let mm = pkt_util::wrap_packet_in_multi_message(replay_choice_config);
                 self.env.route_messages(&mm);
                 self.env.update();
@@ -238,12 +241,12 @@ impl ReplayManager {
             )),
         };
         let result = self.send_pkt_to_viz(pkt)?;
-       /* match result {
+        /* match result {
             Ok(ref vec) => {
                 println!("Size of result: {:?}", vec.len())
-            } 
+            }
             _ => {
-                
+
             }
         }*/
         Ok(result)
@@ -328,14 +331,15 @@ impl ReplayManager {
                             replay_filename: filename,
                             answer_lines: Vec::new(),
                         };
-                        let study_questions : Option<StudyQuestions> =  user_study_questions.get_questions()?;
+                        let study_questions: Option<StudyQuestions> =
+                            user_study_questions.get_questions()?;
                         //let study_questions : Option<StudyQuestions> =  study_util::get_questions_for_replay(&filename)?;
                         if study_questions != None {
-                            self.user_study_questions= Some(user_study_questions);
-                            let study_questions_pkt = pkt_util::get_study_questions_pkt(study_questions.unwrap());
+                            self.user_study_questions = Some(user_study_questions);
+                            let study_questions_pkt =
+                                pkt_util::get_study_questions_pkt(study_questions.unwrap());
                             self.send_pkt_to_viz(study_questions_pkt)?;
                         }
-                        
                     }
                     UserCommandType::Explain => {
                         println!(
@@ -409,13 +413,15 @@ impl ReplayManager {
                 game_state = GameState::BrokenLink;
             } else if scaii_defs::protos::is_study_question_answer_pkt(scaii_pkt) {
                 use scaii_defs::protos::StudyQuestionAnswer;
-                let sqa : StudyQuestionAnswer = scaii_defs::protos::get_study_question_answer_from_pkt(scaii_pkt).unwrap();
+                let sqa: StudyQuestionAnswer =
+                    scaii_defs::protos::get_study_question_answer_from_pkt(scaii_pkt).unwrap();
                 if let Some(ref mut user_study_questions) = self.user_study_questions {
                     user_study_questions.persist_study_question_answer(sqa)?;
                 }
             } else if scaii_defs::protos::is_log_file_entry_pkt(scaii_pkt) {
                 use scaii_defs::protos::LogFileEntry;
-                let lfe : LogFileEntry = scaii_defs::protos::get_log_file_entry_from_pkt(scaii_pkt).unwrap();
+                let lfe: LogFileEntry =
+                    scaii_defs::protos::get_log_file_entry_from_pkt(scaii_pkt).unwrap();
                 if let Some(ref mut user_study_questions) = self.user_study_questions {
                     user_study_questions.persist_log_entry_incremental(lfe)?;
                 }
@@ -554,8 +560,7 @@ impl ReplayManager {
                     GameState::BrokenLink => {
                         return Ok(());
                     }
-                    _ => {
-                    }
+                    _ => {}
                 }
                 poll_timer_count = self.poll_timer_count.clone();
             }
@@ -567,8 +572,7 @@ impl ReplayManager {
                     GameState::BrokenLink => {
                         return Ok(());
                     }
-                    _ => {
-                    }
+                    _ => {}
                 }
             }
         }
@@ -591,9 +595,9 @@ impl ReplayManager {
             GameState::Paused => {
                 // do nothing
             } // GameState::SingleStep => {
-              //     let _ignore_game_state = self.execute_run_step()?;
-              //     game_state = GameState::Paused;
-              // }
+            //     let _ignore_game_state = self.execute_run_step()?;
+            //     game_state = GameState::Paused;
+            // }
             GameState::BrokenLink => {
                 // do nothing
             }

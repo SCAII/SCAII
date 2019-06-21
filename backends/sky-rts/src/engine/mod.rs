@@ -21,7 +21,9 @@ use specs::prelude::*;
 
 use self::components::FactionId;
 use self::systems::{
-    lua::LuaSystem, serde::{DeserializeSystem, RedoCollisionSys, SerializeSystem}, SpawnSystem,
+    lua::LuaSystem,
+    serde::{DeserializeSystem, RedoCollisionSys, SerializeSystem},
+    SpawnSystem,
 };
 
 /// This contains the `specs` system and world context

@@ -41,7 +41,8 @@ impl<'a> System<'a> for CollisionSystem {
             &sys_data.pos,
             &sys_data.c_handle,
             &*sys_data.ids,
-        ).join()
+        )
+            .join()
         {
             let pos = Isometry2::new(
                 Vector2::new(pos.x / COLLISION_SCALE, pos.y / COLLISION_SCALE),

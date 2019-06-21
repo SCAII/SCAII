@@ -38,7 +38,8 @@ impl<'a> System<'a> for MoveSystem {
             &sys_data.moves,
             &sys_data.speeds,
             &*sys_data.ids,
-        ).join()
+        )
+            .join()
         {
             sys_data.moved.insert(id, MovedFlag(0));
 

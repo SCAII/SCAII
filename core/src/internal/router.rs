@@ -107,7 +107,8 @@ impl Router {
                     &format!("Module attempted to send message to itself:\n\t{:?}", msg),
                     src,
                     &Endpoint::Core(CoreEndpoint {}),
-                ).unwrap();
+                )
+                .unwrap();
                 continue;
             }
 

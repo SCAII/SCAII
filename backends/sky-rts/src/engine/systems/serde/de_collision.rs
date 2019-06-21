@@ -15,7 +15,8 @@ impl RedoCollisionSys {
             &world.read::<UnitTypeTag>(),
             &world.read::<FactionId>(),
             &*world.entities(),
-        ).join()
+        )
+            .join()
         {
             // Borrow checker won't let us one line this
             let u_type = world.read_resource::<UnitTypeMap>();

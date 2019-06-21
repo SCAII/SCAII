@@ -161,7 +161,8 @@ mod tests {
             ScaiiAction {
                 alternate_actions: Some(buf),
                 ..Default::default()
-            }.clone(),
+            }
+            .clone(),
         );
 
         let mut sys: Dispatcher = DispatcherBuilder::new()

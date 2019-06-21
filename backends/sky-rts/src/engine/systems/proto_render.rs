@@ -111,7 +111,8 @@ impl RenderSystem {
             &sys_data.pos,
             &sys_data.shape,
             &*sys_data.ids,
-        ).join()
+        )
+            .join()
         {
             let entity = self.render_new(&sys_data, id, color, pos, shape);
             sys_data.out.0.entities.push(entity);
@@ -221,10 +222,11 @@ mod tests {
         assert!(read_render.entities[0].id == test_target.id().into()); // Check that entity id matches test_target entity
 
         assert!(
-            read_render.entities[0].clone().pos.unwrap() == ScaiiPos {
-                x: Some(3.0),
-                y: Some(9.0)
-            }
+            read_render.entities[0].clone().pos.unwrap()
+                == ScaiiPos {
+                    x: Some(3.0),
+                    y: Some(9.0)
+                }
         ); // Check that entity positon converted SCAIIPOS correctly
 
         assert!(read_render.entities[0].clone().shapes[0].id == test_target.id().into()); // Verify that shape entity ID is 0
@@ -233,25 +235,28 @@ mod tests {
             read_render.entities[0].shapes[0]
                 .relative_pos
                 .clone()
-                .unwrap() == ScaiiPos {
-                x: Some(0.0),
-                y: Some(0.0)
-            }
+                .unwrap()
+                == ScaiiPos {
+                    x: Some(0.0),
+                    y: Some(0.0)
+                }
         ); // Verify that relative_pos offset is 0
 
         assert!(
-            read_render.entities[0].shapes[0].color.clone().unwrap() == ScaiiColor {
-                r: 23,
-                g: 255,
-                b: 124,
-                a: 255
-            }
+            read_render.entities[0].shapes[0].color.clone().unwrap()
+                == ScaiiColor {
+                    r: 23,
+                    g: 255,
+                    b: 124,
+                    a: 255
+                }
         ); // Verify that entity shape is correct color
 
         assert!(
-            read_render.entities[0].shapes[0].triangle.clone().unwrap() == ScaiiTriangle {
-                base_len: Some(23.0)
-            }
+            read_render.entities[0].shapes[0].triangle.clone().unwrap()
+                == ScaiiTriangle {
+                    base_len: Some(23.0)
+                }
         ); // Verify entity created is a trangle with base length of 23
 
         assert!(read_render.entities[0].shapes[0].tag == None);

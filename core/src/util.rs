@@ -175,8 +175,10 @@ pub fn get_exec_dir() -> Result<PathBuf, Box<Error>> {
         }
     }
 
-    println!("Could not find valid replay executable directory in parent tree, \
-    testing for install");
+    println!(
+        "Could not find valid replay executable directory in parent tree, \
+         testing for install"
+    );
 
     #[allow(deprecated)]
     let mut install_dir = env::home_dir().ok_or("Can't get home_dir")?;
@@ -217,7 +219,7 @@ fn is_valid_exec_dir(dir: &mut PathBuf) -> Result<&mut PathBuf, Box<Error>> {
     }
 
     if escape {
-        return Err(Box::new(ScaiiError::new(&err_string)))
+        return Err(Box::new(ScaiiError::new(&err_string)));
     }
 
     err_string.clear();
