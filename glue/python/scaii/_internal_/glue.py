@@ -60,24 +60,25 @@ try:
 except OSError:
     pass # Fallback to PATH
 
-try:
-    if platform.system().lower() == 'windows':
-        from ctypes import windll
-        SCAII_CORE = windll.LoadLibrary('scaii_core')
-    elif platform.system().lower() == 'darwin':
-        from ctypes import cdll
-        SCAII_CORE = cdll.LoadLibrary('scaii_core.dylib')
-    elif platform.system().lower() == 'linux':
-        from ctypes import cdll
-        SCAII_CORE = cdll.LoadLibrary('libscaii_core.so')
-    else:
-        raise UnsupportedPlatformError(
-            'We only support Linux, OS X (Darwin), and MSVC Windows\n'
-            + '\tIf you think your platform will work, please file an issue '
-            + 'on github.com/SCAII/SCAII\n'
-            + '\tYou may be able to alter `glue.py` to recognize your platform.')
-except OSError as oserr:
-    raise CoreMissing() from oserr
+if SCAII_CORE == None:
+    try:
+        if platform.system().lower() == 'windows':
+            from ctypes import windll
+            SCAII_CORE = windll.LoadLibrary('scaii_core')
+        elif platform.system().lower() == 'darwin':
+            from ctypes import cdll
+            SCAII_CORE = cdll.LoadLibrary('scaii_core.dylib')
+        elif platform.system().lower() == 'linux':
+            from ctypes import cdll
+            SCAII_CORE = cdll.LoadLibrary('libscaii_core.so')
+        else:
+            raise UnsupportedPlatformError(
+                'We only support Linux, OS X (Darwin), and MSVC Windows\n'
+                + '\tIf you think your platform will work, please file an issue '
+                + 'on github.com/SCAII/SCAII\n'
+                + '\tYou may be able to alter `glue.py` to recognize your platform.')
+    except OSError as oserr:
+        raise CoreMissing() from oserr
 
 
 # fn new_environment() -> *mut CContext
