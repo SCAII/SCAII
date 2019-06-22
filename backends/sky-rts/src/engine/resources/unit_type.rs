@@ -128,8 +128,7 @@ impl UnitType {
         use nalgebra;
         use nalgebra::{Isometry2, Vector2};
         use ncollide::{
-            shape::{Ball, Cuboid, Polyline, ShapeHandle, Triangle},
-            transformation::ToPolyline,
+            shape::{Ball, Cuboid, Polyline, ShapeHandle, ConvexPolygon},
             world::{CollisionGroups, GeometricQueryType},
         };
 
@@ -158,8 +157,7 @@ impl UnitType {
                 let p2 = P2::new(-half_height, half_base_len);
                 let p3 = P2::new(half_height, 0.0);
 
-                let collider = Triangle::new(p1, p2, p3).to_polyline(()).unwrap();
-                let collider = Polyline::new(collider.0, None);
+                let collider = ConvexPolygon::try_new(vec![p1, p2, p3]).unwrap();
                 let collider = ShapeHandle::new(collider);
 
                 collider
